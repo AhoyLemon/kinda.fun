@@ -123,7 +123,7 @@ var app = new Vue({
       }
 
       self.populateFinalRound();
-      //self.game.cameoQueue = gimmickRounds.richards.queue;
+      
 
     },
 

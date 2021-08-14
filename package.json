@@ -1,6 +1,6 @@
 {
   "name": "kinda-fun",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Games made by Lemon.",
   "dependencies": {
     "express": "^4.17.1",
