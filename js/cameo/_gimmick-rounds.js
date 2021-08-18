@@ -38,11 +38,11 @@ const gimmickRounds = {
       //{ name: "Bill Kelliher", desc:"Guitarist, Mastodon", slug:"butterslax", value:50 },
       { name: "Lajon Witherspoon", desc:"Vocals, Sevendust", slug:"ljspoon", value:50 },
       { name: "D Randall Blythe", desc:"Vocals, Lamb of God", slug:"drandallblythe", value:60 },
-      { name: "Chris Barnes", desc:"Vocalist, Cannibal Corpse", slug:"chrisbarnes", value:40 },
+      { name: "Chris Barnes", desc:"Vocalist, Six Feet Under", slug:"chrisbarnes", value:40 },
 
       { name: "Max Cavalera", desc:"Vocalist, Sepultura", slug:"maxcavalera", value:50 },
       { name: "Beefcake The Mighty", desc:"Bassist, GWAR", slug:"beefcake_the_mighty", value:40 },
-      { name: "David Ellefson", desc:"One of the Guys in Megadeth That Dave Mustane Fired", slug:"davidellefson", value:25 },
+      { name: "David Ellefson", desc:"One of the guys in Megadeth that Dave Mustane Fired", slug:"davidellefson", value:25 },
     ]
   },
 
