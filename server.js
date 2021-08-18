@@ -606,6 +606,14 @@ io.on('connection', (socket) => {
     addOneInDatabase("cameoGames","GamesStarted");
   });
 
+  socket.on('cameoSpecialGame', msg => {
+    console.log("a player started a SPECIAL game of COMPARATIVELY FAMOUS");
+    console.log("SPECIAL GAME: "+msg.gimmickName);
+    //DateStampInDatabase("allGamesLastPlayed",msg.gameName);
+    addOneInDatabase("cameoGames","SpecialGamesStarted");
+    incrementDatabase('cameoSpecialGames', msg.gimmickName);
+  });
+
   socket.on('cameoValuationMade', msg => {
     console.log(msg.celeb.name + " has been evaluated");
     var cameoName = msg.celeb.name;

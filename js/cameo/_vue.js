@@ -60,7 +60,19 @@ var app = new Vue({
       cameosPaid: false,
 
       // TODO: Remove temp load game stuff.
-      loadGameClicked: false
+      loadGameClicked: false,
+    },
+    gimmick: {
+      selectorVisible: false,
+      rounds: [
+        gimmickRounds.richards,
+        gimmickRounds.metalheads,
+        gimmickRounds.georges,
+        gimmickRounds.trumpworld
+      ],
+      selected: {},
+      selectedIndex: '',
+      isSelected: false
     }
 
   },
@@ -81,16 +93,38 @@ var app = new Vue({
         gameName: self.gameName
       });
       sendEvent("Comparatively Famous", "Game Started", "Fresh Game");
+      if (self.gimmick.isSelected && self.gimmick.selected.name) {
+        sendEvent("Comparatively Famous", "Special Game Started", self.gimmick.selected.name);
+        socket.emit('cameoSpecialGame', {
+          gameName: self.gameName,
+          gimmickName: self.gimmick.selected.name
+        });
+      }
 
     },
 
+
     loadGame() {
       const self = this;
-      self.ui.loadGameClicked = true;
 
-      setTimeout(function () {
-        self.ui.loadGameClicked = false;
-      }, 7500);
+      // DEPRECATED: This brought up the tooltip.
+      // Keeping this here because this will probably come back for legitimate
+      // save games.
+
+      self.gimmick.selectorVisible = true;
+
+      // self.ui.loadGameClicked = true;
+
+      // setTimeout(function () {
+      //   self.ui.loadGameClicked = false;
+      // }, 7500);
+    },
+
+    selectGimmickRound(e) {
+      const self = this;
+      const i = parseInt(e.target.value);
+      self.gimmick.selected = self.gimmick.rounds[i];
+      self.gimmick.isSelected = true;
     },
 
     generateGameCelebrities() {
@@ -123,7 +157,9 @@ var app = new Vue({
       }
 
       self.populateFinalRound();
-      
+      if (self.gimmick && self.gimmick.selected && self.gimmick.selected.queue) {
+        self.game.cameoQueue = self.gimmick.selected.queue;
+      }
 
     },
 
