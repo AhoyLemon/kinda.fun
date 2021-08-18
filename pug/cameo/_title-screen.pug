@@ -14,7 +14,7 @@ main.title-screen(v-if="!game.started")
           strong THIS 
           |  is a game about guessing those prices.
         
-      .video-holder(v-if="ui.watchingVideo")
+      //-.video-holder(v-if="ui.watchingVideo")
         figure.video
           iframe#ytplayer(type="text/html" src="https://www.youtube-nocookie.com/embed/2jE6ifrz9bU?autoplay=1&controls=0&fs=0&modestbranding=1&playsinline=1&color=white" frameborder="0" allowfullscreen)
         figcaption
@@ -28,10 +28,22 @@ main.title-screen(v-if="!game.started")
       span or
 
     .load
-      .disclaimer
+      //-.disclaimer
         .load-game-disclaimer.animate__animated.animate__fadeInUp.animate__faster(v-if="ui.loadGameClicked")
           strong Loading saved games isn't ready yet. 
           br
           br
           span Eventually you'll be able to play special rounds, and games your friends created. But for now, just start a new game.
-      button.start-multi(@click="loadGame()") Load Game
+      button.start-multi(id="LoadGameButton" @click="loadGame()") Load Special
+
+  .select-gimmick-rounds(v-if="gimmick.selectorVisible")
+    form(@submit.prevent="startSinglePlayerGame()")
+      fieldset
+        select(id="GimmickSelector" @change="selectGimmickRound($event)" v-model="gimmick.selectedIndex")
+          option(value="" disabled) -- Select A Round --
+          option(v-for="(gimmickRound, index) in gimmick.rounds" :value="index") {{gimmickRound.name}}
+      fieldset(v-if="gimmick.selected && gimmick.selected.description")
+        div(style="text-align:center;" v-text="gimmick.selected.description")
+      fieldset.button-holder
+        button(type="reset" @click="gimmick.selectorVisible = false") Cancel
+        button(type="submit" :disabled="!gimmick.selected || !gimmick.selected.name") Start Round
