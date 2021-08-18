@@ -1,7 +1,7 @@
 const gimmickRounds = {
   richards: {
     name: "Oops! All Richards",
-    description: "Let's evaluate some dicks",
+    description: "I've got 12 Dicks, and all of them need values.",
     queue: [
 
       { name: "Richard Hatch", desc:"Winner, Survivor Season 1", slug:"richhatch", value:50 },
@@ -23,21 +23,44 @@ const gimmickRounds = {
     ],
   },
 
+  metalheads: {
+    name: "Hëävÿ Mëtäl",
+    description: "Not the magazine. This is 12 heavy metal musicians for you to valuate.",
+    queue: [
+      { name: "Tommy Lee", desc:"Drummer, Mötley Crüe", slug:"tommylee", value:500 },
+      { name: "Scott Ian", desc:"Guitarist, Anthrax", slug:"scottian", value:99 },
+      { name: "Dave Mustaine", desc: "The guy in Megadeth who keeps firing the other guys in Megadeth", slug:"davemustaine", value:299 },
+
+      { name: "Stephen Pearcy", desc:"Singer, RATT", slug:"stephenepearcy", value:199 },
+      { name: "Eric Bloom", desc:"Singer, Blue Öyster Cult", slug:"ericbloom6", value:99 },
+      { name: "Riki Rachtman", desc:"Host, Headbanger's Ball", slug:"rikirachtman", value:50 },
+
+      //{ name: "Bill Kelliher", desc:"Guitarist, Mastodon", slug:"butterslax", value:50 },
+      { name: "Lajon Witherspoon", desc:"Vocals, Sevendust", slug:"ljspoon", value:50 },
+      { name: "D Randall Blythe", desc:"Vocals, Lamb of God", slug:"drandallblythe", value:60 },
+      { name: "Chris Barnes", desc:"Vocalist, Cannibal Corpse", slug:"chrisbarnes", value:40 },
+
+      { name: "Max Cavalera", desc:"Vocalist, Sepultura", slug:"maxcavalera", value:50 },
+      { name: "Beefcake The Mighty", desc:"Bassist, GWAR", slug:"beefcake_the_mighty", value:40 },
+      { name: "David Ellefson", desc:"One of the Guys in Megadeth That Dave Mustane Fired", slug:"davidellefson", value:25 },
+    ]
+  },
+
   georges: {
-    name: "100% GEORGEs",
-    description: "GEORGE! GEORGE! GEORGE!",
+    name: "100% GEORGE",
+    description: "All of these men are called George at least some of the time.",
     queue: [
 
-      { name: "George Foreman", desc:"Has Five Sons Named George (And A Daughter Named Georgetta)", slug:"steveharvey", value:750 },
+      { name: "George Papadopoulos", desc:"Served Twelve Days In Prison Before Getting Pardoned", slug:"papadopoulos", value:250 },
       { name: "George Clanton", desc:"Vaporwave Musician", slug:"georgeclanton", value:69 },
       { name: "George Clinton", desc:"Parliament Funkadelic", slug:"george_clinton", value:200 },
 
       { name: "George Hamilton", desc:"Incredibly Tan Actor", slug:"georgehamilton", value:200 },
-      { name: "George Wendt", desc:"Norm on Cheers", slug:"georgewendt", value:125 },
+      { name: "George Wallace", desc:"The Legendary Comedian (Not The Racist Senator)", slug:"georgewallace", value:50  },
       { name: "George", desc:"A Dog", slug:"georgegsd", value:999 },
 
       { name: "David Siegel", desc:"George Clooney Lookalike", slug:"davidasclooney", value:85  },
-      { name: "George Wallace", desc:"The Legendary Comedian (Not The Racist Senator)", slug:"georgewallace", value:50  },
+      { name: "George Wendt", desc:"Norm on Cheers", slug:"georgewendt", value:125 },
       { name: "George Shea", desc:"You Know Those Hot Dog Eating Contests? This Is The Guy That Emcees Them", slug:"gcshea", value:50  },
 
       { name: "George Lowe", desc:"Space Ghost", slug:"georgeloweofficial", value:100 },
@@ -48,25 +71,27 @@ const gimmickRounds = {
 
   trumpworld: {
     name: "Trumpworld",
-    desc: "This round is cursed.",
+    description: "Everyone on this list was either an employee of or an advisor to Donald J. Trump. This round is cursed.",
     queue: [
       { name: "Roger Stone", desc:"Commuted Felon", slug:"rogerstone", value:75 },
       { name: "Michael Cohen", desc:"Disbarred Legal Fixer", slug:"michaelcohen212", value:100 },
       { name: "Joe Arpaio", desc: "Former Sheriff, Convicted of Criminal Contempt", slug:"sheriffjoearpaio", value:30 },
-
-      { name: "Kevin Sorbo", desc: "Former Hercules, Current Gab Poster", slug:"ksorbs", value:80 },
-      { name: "Anthony Scaramucci", desc:"Former White House Communications Director", slug:"themooch", value:55 },
+      
+      { name: "Sean Spicer", desc:"Former White House Press Secretary", slug:"seanspicer", value:99 },
+      { name: "Ice Cube", desc: "Helped Trump Solve Racism", slug:"donmega69", value:500 },
       { name: "Rudy W. Giuliani", desc:"No longer licensed to practice law.", slug:"rudygiuliani", value:375 },
 
       { name: "Sarah Palin", desc:"Portent of Things To Come", slug:"sarahpalin", value:200 },
       { name: "Sebastian Gorka", desc:"Trump Strategist", slug:"sebastian_gorka", value:99 },
-      { name: "Sean Spicer", desc:"Former White House Press Secretary", slug:"seanspicer", value:99 },
+      { name: "Kevin Sorbo", desc: "Former Hercules, Current Gab Poster", slug:"ksorbs", value:80 },
 
-      { name: "Ice Cube", desc: "Helped Trump Solve Racism", slug:"donmega69", value:500 },
+      { name: "Anthony Scaramucci", desc:"Former White House Communications Director", slug:"themooch", value:55 },
       { name: "Donald Trump Jr.", desc:"Idiot", slug:"donaldjtrumpjr", value:500 },
       { name: "George Papadopoulos", desc:"Served Twelve Days In Prison Before Getting Pardoned", slug:"papadopoulos", value:250 },
     ]
   },
+
+  
 
   test: {
     name: "TEST",
