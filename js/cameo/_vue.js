@@ -419,7 +419,7 @@ var app = new Vue({
     showAGuessCard() {
       const self = this;
       self.ui.animateCameoIndex++;      
-      $('.list-group.unranked .cameo:nth-child('+self.ui.animateCameoIndex+')').removeClass('off-table').addClass('animate__animated animate__bounceInUp');
+      $('.list-group.unranked .cameo:nth-child('+self.ui.animateCameoIndex+')').removeClass('off-table').addClass('animate__animated animate__backInUp');
       setTimeout(function () {
         $('.list-group.unranked .cameo:nth-child('+self.ui.animateCameoIndex+')').removeClass('animate__animated animate__bounceInUp');
       }, 1000);
@@ -429,7 +429,7 @@ var app = new Vue({
       const self = this;
       self.ui.animateCameoIndex++;
       let n = (self.ui.animateCameoIndex -1);
-      $('.list-group.correct .cameo:nth-child('+self.ui.animateCameoIndex+')').removeClass('off-table').addClass('animate__animated animate__zoomInUp');
+      $('.list-group.correct .cameo:nth-child('+self.ui.animateCameoIndex+')').removeClass('off-table').addClass('animate__animated animate__jackInTheBox');
 
       setTimeout(function () {
         $('.list-group.guessed.ranked .cameo:nth-child('+self.ui.animateCameoIndex+')').addClass('colorized');
