@@ -91,6 +91,34 @@ const gimmickRounds = {
     ]
   },
 
+  porn: {
+    name: "Porno People",
+    desc: "I'd caution you to be wary of anyone who says “I don't recognize any of these people!”",
+    queue: [
+      // Dakota Charms
+      // Zoey Monroe
+      // Stoya
+      // Nickey Hunstsman
+      // Ginger Lynn
+      // Penny Pax
+      // Katie Morgan
+      // Dana DeArmond
+      // Annie Cruz
+      // Kate England
+      // Lisa Ann
+
+      // At least 3 guys...
+      // Nacho Vidal
+      // Manuel Skye
+      // Buck Angel
+      // Evan Stone
+      // Dolf Dietrich
+      // Tommy Pistol
+
+      // Ryan Creamer
+    ]
+  },
+
   
 
   test: {
