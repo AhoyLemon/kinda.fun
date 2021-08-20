@@ -103,7 +103,7 @@ main.sort-three { background: #282828; background: radial-gradient(#131015,#1807
   h4 { font-family:$displayFont; font-size:19px; }
 }
 
-@media (max-width:794px) {
+@media (max-width:810px) {
   .three-to-compare { gap:4px;
     .list-group { padding:20px 10px; }
   }
@@ -114,22 +114,28 @@ main.sort-three { background: #282828; background: radial-gradient(#131015,#1807
 }
 
 @media (max-width:666px) {
-  .three-to-compare .cameo {
-    figcaption { padding-right:70px; min-height: 105px; }
-    figure img { width:80px; height: 80px; } 
+  .three-to-compare {
+    .list-group { padding-top:40px; }
+    .cameo {
+      figcaption { padding-right:70px; min-height: 105px; }
+      figure img { width:80px; height: 80px; } 
+    } 
   }
 }
 
 @media (max-width:520px) {
   .three-to-compare  {
-    .cameo {
+    .list-group { padding-top:20px; }
+    .cameo { margin-bottom: 20px;
       figure { margin-bottom: -50px; text-align: center;
         img { width:120px; height:120px; }
       }
+      figcaption { margin-right: 0; padding:30px 20px 20px 10px;
+        border: 2px solid $unranked;
+        border-top-width: 30px;
+        .rank { bottom:unset; right:unset; top:-26px; left:6px; color:white !important; }
+      }
     }
-    figcaption { margin-right: 0; padding:30px 20px 20px 10px;
-      border-top:30px solid transparent; border-right:2px solid transparent; border-bottom: 2px solid transparent; border-left: 2px solid transparent;
-      .rank { bottom:unset; right:unset; top:-26px; left:6px; color:black; }
-    }
+
   }
 }
