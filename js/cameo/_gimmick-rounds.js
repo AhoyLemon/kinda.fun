@@ -1,7 +1,7 @@
 const gimmickRounds = {
   richards: {
     name: "Oops! All Richards",
-    description: "I've got 12 Dicks, and all of them need values.",
+    desc: "I've got 12 Dicks, and all of them need values.",
     queue: [
 
       { name: "Richard Hatch", desc:"Winner, Survivor Season 1", slug:"richhatch", value:50 },
@@ -21,11 +21,12 @@ const gimmickRounds = {
       { name: "Richard Petty", desc:"NASCAR driver", slug:"rlpetty43", value:250 },
 
     ],
+    reuseQueueForFinal: true
   },
 
   metalheads: {
     name: "Hëävÿ Mëtäl",
-    description: "Not the magazine. This is 12 heavy metal musicians for you to valuate.",
+    desc: "Not the magazine. This is 12 heavy metal musicians for you to valuate.",
     queue: [
       { name: "Tommy Lee", desc:"Drummer, Mötley Crüe", slug:"tommylee", value:500 },
       { name: "Scott Ian", desc:"Guitarist, Anthrax", slug:"scottian", value:99 },
@@ -43,12 +44,13 @@ const gimmickRounds = {
       { name: "Max Cavalera", desc:"Vocalist, Sepultura", slug:"maxcavalera", value:50 },
       { name: "Beefcake The Mighty", desc:"Bassist, GWAR", slug:"beefcake_the_mighty", value:40 },
       { name: "David Ellefson", desc:"One of the guys in Megadeth that Dave Mustane Fired", slug:"davidellefson", value:25 },
-    ]
+    ],
+    reuseQueueForFinal: true
   },
 
   georges: {
     name: "100% GEORGE",
-    description: "All of these men are called George at least some of the time.",
+    desc: "All of these men are called George at least some of the time.",
     queue: [
 
       { name: "George Papadopoulos", desc:"Served Twelve Days In Prison Before Getting Pardoned", slug:"papadopoulos", value:250 },
@@ -67,11 +69,12 @@ const gimmickRounds = {
       { name: "Boy George", desc:"Singer, Culture Club", slug: "boygeorge5", value:300 },
       { name: "George Papadopoulos", desc:"Served Twelve Days In Prison Before Getting Pardoned", slug:"papadopoulos", value:250 },
     ],
+    reuseQueueForFinal: true
   },
 
   trumpworld: {
     name: "Trumpworld",
-    description: "Everyone on this list was either an employee of or an advisor to Donald J. Trump. This round is cursed.",
+    desc: "Everyone on this list was either an employee of or an advisor to Donald J. Trump. This round is cursed.",
     queue: [
       { name: "Roger Stone", desc:"Commuted Felon", slug:"rogerstone", value:75 },
       { name: "Michael Cohen", desc:"Disbarred Legal Fixer", slug:"michaelcohen212", value:100 },
@@ -88,34 +91,133 @@ const gimmickRounds = {
       { name: "Anthony Scaramucci", desc:"Former White House Communications Director", slug:"themooch", value:55 },
       { name: "Donald Trump Jr.", desc:"Idiot", slug:"donaldjtrumpjr", value:500 },
       { name: "George Papadopoulos", desc:"Served Twelve Days In Prison Before Getting Pardoned", slug:"papadopoulos", value:250 },
-    ]
+    ],
+    reuseQueueForFinal: true
   },
 
   porn: {
     name: "Porno People",
     desc: "I'd caution you to be wary of anyone who says “I don't recognize any of these people!”",
     queue: [
-      // Dakota Charms
-      // Zoey Monroe
-      // Stoya
-      // Nickey Hunstsman
-      // Ginger Lynn
-      // Penny Pax
-      // Katie Morgan
-      // Dana DeArmond
-      // Annie Cruz
-      // Kate England
-      // Lisa Ann
 
-      // At least 3 guys...
-      // Nacho Vidal
-      // Manuel Skye
-      // Buck Angel
-      // Evan Stone
-      // Dolf Dietrich
-      // Tommy Pistol
 
-      // Ryan Creamer
+      { name: "Penny Pax", desc:"The Art Of Cheating (2017)", slug:"pennypax", value:69 },
+      { name: "Dolf Dietrich", desc:"Fire Island Fuck Boy (2017)", slug:"dolfdietrichxxx", value:25 },
+      { name: "Lisa Ann", desc:"Who's Nailin Paylin  (2008)", slug:"thereallisaann", value:125 },
+
+      { name: "Zoey Monroe", desc:"Spin Class Ass 2 (2014)", slug:"zoeyssweettea", value:175 },
+      { name: "Nacho Vidal", desc:"Bimbo Bangers From Barcelona (1998)", slug:"nachovidal", value:76 },
+      { name: "Lethal Lipps", desc:"Hella Butt (2007)", slug: "lethallipps___", value:100 },
+
+      { name: "Dakota Charms", desc:"Jerking Cheerleaders (2017)", slug:"dakotacharmsxxx", value:400 },
+      { name: "Ginger Lynn", desc:"New Wave Hookers (1985)", slug:"gingerlynn", value:50 },
+      { name: "Small Hands", desc:"Goth Anal Whores 2 (2018)", slug:"thesmallhands_", value:100 },
+      
+      { name: "Roobi Royal", desc:"Chubby Fucked 2 (2016)", slug:"roobiroyal", value:300 },
+      { name: "Manuel Skye", desc:"Empty Those Balls (2020)", slug:"manuelskye", value:49 },
+      { name: "Stoya", desc:"Sexual Freak 7 (2007)", slug:"stoya", value:53 },
+    ],
+    finalRoundQueue: [
+      { name: "Evan Stone", desc: "A Midsummer Night's Cream (2000)", slug:"evanstone", value:29 },
+      { name: "Ryan Creamer", desc:"I, Your Step Brother, Decline Your Advances but Am Flattered Nonetheless (2018)", slug: "coolboyryan", value:20 },
+      { name: "Annie Cruz", desc:"Asian Fucking Nation (2006)", slug: "anniecruz", value:40 },
+      { name: "Aleah Jasmine", desc:"(I swear that's the actual photo she uses for herself on Cameo)", slug:"aleahjasmine", value:65 },
+      { name: "Lisey Sweet", desc:"Gaping and Vaping (2019)", slug:"liseysweet", value:100 },
+      { name: "Lisa Ann", desc:"Who's Nailin Paylin  (2008)", slug:"thereallisaann", value:125 },
+      { name: "Nacho Vidal", desc:"Bimbo Bangers From Barcelona (1998)", slug:"nachovidal", value:76 },
+      { name: "Ginger Lynn", desc:"New Wave Hookers (1985)", slug:"gingerlynn", value:50 },
+      { name: "Small Hands", desc:"Goth Anal Whores 2 (2018)", slug:"thesmallhands_", value:100 },
+      { name: "Roobi Royal", desc:"Chubby Fucked 2 (2016)", slug:"roobiroyal", value:300 },
+    ]
+  },
+
+  dogs: {
+    name: "DOGS!",
+    desc: "WOOF! WOOF WOOF WOOF WOOF WOOF WOOF! WOOF! WOOF! WOOF WOOF WOOF WOOF!",
+    queue: [
+      
+      { name: "Puggy Smalls", desc:"Dog", slug: "thepuggysmalls", value:15 }, 
+      { name: "Anya", desc:"Dog", slug: "anyathegsd", value:100 },
+      { name: "Squid the Griff", desc:"Dog", slug:"squidthegriff", value:50 },
+      
+      { name: "JaytheBulldogNYC", desc:"Dog", slug: "jaythebulldognyc", value:5 },
+      { name: "George", desc:"Dog", slug:"georgegsd", value:999 },
+      { name: "Chupey Carlyle", desc:"Dog", slug: "chupey", value:8 },
+
+      { name: "Tinkerbelle The Dog", desc:"Dog", slug: "tinkerbellethedog", value:125 },
+      { name: "Amos Pearce", desc:"Dog", slug: "amospearce", value:15 },
+      { name: "LACORGI", desc:"2 Dogs", slug: "lacorgi", value:75 },
+
+      { name: "Potato Epstein", desc:"Dog", slug: "potatoepstein", value:100 },
+      { name: "Bosco and his big stick", desc:"Dog (with stick)", slug: "boscoandhisbigstick", value:25 },
+      { name: "Dog the Bounty Hunter", desc:"Not Actually A Dog", slug:"dogthebountyhunter", value:200 },
+    ],
+    reuseQueueForFinal: true
+  },
+
+
+  wrestlers: {
+    name: "Rasslin'",
+    desc: "",
+    queue: [
+      { name: "Sting", desc:"Wrestler of the Year (1990)", slug: "sting", value:500 },
+      { name: "Ric Flair", desc:"Rookie of the Year (1975)", slug: "natureboy16", value:500 },
+      { name: "Honky Tonk Man", desc:"NWA Alabama Heavyweight Champion", slug: "honkytonkman", value:200 },
+      { name: "Sgt Slaughter", desc:"Most Hated Wrestler of the Year (1991)", slug: "sgtslaughter", value:195 },
+      { name: "Bret “Hitman” Hart", desc:"Most Inspirational Wrestler of the Year (1994)", slug:"hitman", value:150  },
+      { name: "Mick Foley", desc:"WWE Hall of Fame (2013)", slug:"mickfoley", value:149 },
+      { name: "Brutus “The Barber” Beefcake", desc:"#173, in Pro Wrestling Illustrated's “500 Best Single Wrestlers”", slug:"brutusbeefcake", value:100 },
+      // Brutus "The Barber" Beefcake
+      // Jake The Snake Roberts
+      // Raven
+      // Hacksaw Jim Duggan
+
+    ]
+  },
+
+  daddies: {
+    name: "Daddies",
+    desc: "This round is probably weirder than you're imagining",
+    queue: [
+      // Bun Daddy
+      // Trick Daddy
+      // Daddy Kindred
+      // FREAK DADDY
+      // Matt Anipen (voice of Daddy Shark)
+      // Big Daddy Kane
+      // DJ Daddy K
+      // DaddysJuiced
+      // Daddy Long Deck
+      // Father Time
+      // Father Evil
+      // Somewhat Cool Dad
+      // AmericanDad
+      // Papa Gut
+      // Jacoby Shaddix
+      // Tom Papa
+    ]
+  },
+
+  mamas: {
+    name: "Daddies",
+    desc: "This round is probably weirder than you're imagining",
+    queue: [
+      // Bun Daddy
+      // Trick Daddy
+      // Daddy Kindred
+      // FREAK DADDY
+      // Matt Anipen (voice of Daddy Shark)
+      // Big Daddy Kane
+      // DJ Daddy K
+      // DaddysJuiced
+      // Daddy Long Deck
+      // Father Time
+      // Father Evil
+      // Somewhat Cool Dad
+      // AmericanDad
+      // Papa Gut
+      // Jacoby Shaddix
+      // Tom Papa
     ]
   },
 
@@ -125,6 +227,7 @@ const gimmickRounds = {
     name: "TEST",
     desc: "does my shit work.",
     queue: [
+      { name: "", desc:"", slug: "", value:0 },
       // { name: "Ben Stein", desc:"Said “Bueller?” in Ferris Bueller's Day Off", slug:"benstein99", value:150 },
       // { name: "Bob Bergen", desc:"Voice Actor, Porky Pig (1990 - present)", slug:"bobbergen", value:200 },
       // { name: "Count Binface", desc:"Formerly Lord Buckethead", slug:"countbinface", value:45 },

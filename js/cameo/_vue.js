@@ -65,6 +65,8 @@ var app = new Vue({
     gimmick: {
       selectorVisible: false,
       rounds: [
+        gimmickRounds.dogs,
+        gimmickRounds.porn,
         gimmickRounds.richards,
         gimmickRounds.metalheads,
         gimmickRounds.georges,
@@ -74,7 +76,6 @@ var app = new Vue({
       selectedIndex: '',
       isSelected: false
     }
-
   },
 
   methods: {
@@ -156,11 +157,11 @@ var app = new Vue({
         }
       }
 
-      self.populateFinalRound();
+      
       if (self.gimmick && self.gimmick.selected && self.gimmick.selected.queue) {
         self.game.cameoQueue = self.gimmick.selected.queue;
       }
-
+      self.populateFinalRound();
     },
 
     isThisADuplicate(x) {
@@ -261,8 +262,8 @@ var app = new Vue({
 
         if (self.ui.animateCameoIndex > self.round.correctSide.length) {
           clearInterval(intervalId);
+          $('.list-group.correct .cameo').removeClass('animate__animated animate__backInUp');
           self.ui.itsTimeToGuessValue = true;
-
         } else {
           self.showAnAnswerCard();
         }
@@ -458,7 +459,6 @@ var app = new Vue({
 
     showTheEmail() {
       const self = this;
-      self.populateFinalRound();
       self.ui.showEmailButton = false;
       $("#EmailFromPasha").removeClass('off-screen');
       
@@ -485,7 +485,21 @@ var app = new Vue({
 
     populateFinalRound() {
       const self = this;
-      let celebs = [...shuffle(self.celebs)];
+
+      let finalRoundCelebs;
+      //let celebs = [];
+
+      if (self.gimmick.isSelected && self.gimmick.selected.queue && self.gimmick.selected.reuseQueueForFinal) {
+        // If you're playing a gimmick round (and want to), you can reuse the queue in the final.
+        finalRoundCelebs = [...self.gimmick.selected.queue];
+      } else if (self.gimmick.isSelected && self.gimmick.selected.queue && self.gimmick.selected.finalRoundQueue) {
+        // Or, if you're playing a special round and you have a specific final round queue, use that.
+        finalRoundCelebs = [...self.gimmick.selected.finalRoundQueue];
+      } else {
+        // if not, just use the list of all celebs in the regular list.
+        finalRoundCelebs = [...self.celebs];
+      }
+      let celebs = shuffle(finalRoundCelebs);
       celebs = celebs.slice(0,10);
       self.game.availableToHire = celebs;
 
