@@ -108,6 +108,7 @@ const allValues = [
   { name: "Shaggy 2 Dope", desc:"Insane Clown Posse", slug:"shaggy.icp", value:134 },
 
   { name: "Chris Kirkpatrick", desc:"Formerly of *NSYNC", slug:"iamckirkpatrick", value:129 },
+  { name: "Lisa Ann", desc:"Who's Nailin Paylin  (2008)", slug:"thereallisaann", value:125 },
   { name: "Victoria Jackson", desc:"SNL", slug:"victoria_jackson_official", value:125 },
   { name: "Vincent Curatola", desc:"Johnny Sack on The Sopranos", slug:"vincentcuratola", value:125 },
   { name: "Jamie Farr", desc:"Klinger on M*A*S*H", slug:"jamiefarr1", value:125 },
@@ -156,6 +157,7 @@ const allValues = [
   { name: "RiFF RAFF", desc:"Public Nuisance", slug:"riffraff", value:85 },
   { name: "Rod Blagojevich", desc:"Convicted Felon", slug:"rblagojevich", value:80 },
   { name: "Larry Thomas", desc:"The Soup Nazi", slug:"realsoupnazi", value:80 },
+  
   { name: "Maci Bookout", desc:"Former Teen Mom, MTV's “Teen Mom”", slug:"macibookout", value:80 },
   { name: "George Shea", desc:"You Know Those Hot Dog Eating Contests? This Is The Guy That Emcees Them.", slug:"gcshea", value:50  },
   { name: "Kody Brown", desc:"Has Four Wives, TLC Made A Show About It", slug:"kodywinnbrown", value:75 },
@@ -175,7 +177,6 @@ const allValues = [
   { name: "KID from Kid N Play", desc:"Costar of House Party 1, 2 & 3", slug:"kidfromkidnplay", value:65  },
   { name: "Kato Kaelin", desc:"Stayed At OJ's House", slug:"kato", value:60 },
   { name: "Anthony Scaramucci", desc:"Former White House Communications Director", slug:"themooch", value:55 },
-
   { name: "George Wallace", desc:"The Legendary Comedian (Not The Racist Senator)", slug:"georgewallace", value:50  },
   { name: "Horny Mike", desc:"Airbrushes Cars, Sometimes Wears A Bandana With Horns On It", slug:"hornymike", value:50  },
   { name: "Pearl Mackie", desc:"Bill on Doctor Who (2016 - 2017)", slug:"pearlmackie", value:50  },
