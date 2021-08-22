@@ -6,7 +6,6 @@ var secrets = require('./secrets');
 
 app.use(express.static('public'));
 
-
 //////////////////////////////////////////////
 // SQL DATABASE
 
@@ -103,6 +102,9 @@ app.get('/wrongest', (req, res) => {
 
 app.get('/cameo', (req, res) => {
   res.sendFile(__dirname + '/html/cameo.html');
+});
+app.get('/sisyphus', (req, res) => {
+  res.sendFile(__dirname + '/html/sisyphus.html');
 });
 
 
