@@ -91,6 +91,17 @@ var app = new Vue({
             formatFn: this.formatDate
           } 
         ],
+        cameoSpecialGames: [
+          {
+            label: "Game",
+            field: "iname",
+          },
+          {
+            label: "Played",
+            field: "icount",
+            type: "number"
+          },
+        ],
         bugs: [
           {
             label: "Bug",
@@ -273,6 +284,7 @@ var app = new Vue({
               self.ui.cameoLoaded = true;
               self.ui.viewing = "cameo";
             });
+
           });
 
       } else if (game == "invalid") {
@@ -378,7 +390,6 @@ var app = new Vue({
           });
       }
     },
-
     formatTime(stamp,format) {
       if (format == "fromNow") {
         return moment(stamp).subtract('6','hours').fromNow();
@@ -394,12 +405,13 @@ var app = new Vue({
         return moment(stamp).subtract('6','hours').format('LLLL');
       }
     },
-
     addCommas(n) {
       const self = this;
       return addCommas(n);
     },
-
+    percentOf(total,part) {
+      return percentOf(total,part);
+    },
     dollars(amount) {
       const formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -422,11 +434,9 @@ var app = new Vue({
       }
       
     },
-
     formatStatement(statement) {
       return statement.replace('{','').replace('}','');
     },
-
     exceededBudgetOutput(v) {
       if (v == "YES" || v == "NO") {
         return v;
@@ -485,7 +495,6 @@ var app = new Vue({
 
       return cameoObject;
     },
-
     computedNaughtyPercentage() {
       const self = this;
 
@@ -504,7 +513,6 @@ var app = new Vue({
 
       return percentOf(self.stats.invalid.successfulPasswords.length, self.stats.invalid.cracks.length);
     },
-
     computedServerCrashes() {
       const self = this;
       if (!self.stats.invalid || !self.stats.invalid.crashes) {
@@ -516,7 +524,6 @@ var app = new Vue({
       });
       return c;
     },
-
     computedAvgMarketForces() {
       const self = this;
       if (!self.stats.cameo || !self.stats.cameo.celebs) {
@@ -530,6 +537,47 @@ var app = new Vue({
       });
       let a = (cCombined / cCount);
       return self.dollars(a);
+    },
+    computedMostPopularCameoGame() {
+      const self = this;
+      if (!self.ui.cameoLoaded || !self.stats.cameo.specialGames) {
+        return null;
+      } else if (self.stats.cameo.specialGames) {
+        let mostPlayedGame = "TIE!";
+        let playCount = 0;
+        let totalPlayCount = 0;
+        self.stats.cameo.specialGames.forEach((g) => {
+          if (g.icount > playCount) {
+            mostPlayedGame = g.iname;
+            playCount = g.icount;
+            totalPlayCount += g.icount;
+          }
+        });
+        return {
+          name: mostPlayedGame,
+          count: playCount,
+          percent: percentOf(totalPlayCount, playCount)
+        };
+      }
+    },
+    computedMostOvervaluedCeleb() {
+      const self = this;
+      if (!self.ui.cameoLoaded || !self.stats.cameo.celebs) {
+        return null;
+      } else if (self.stats.cameo.celebs) {
+        let lowestValue = 100;
+        let mostOvervalued = "";
+        self.stats.cameo.celebs.forEach((celeb) => {
+          if (celeb.marketForces < lowestValue) {
+            lowestValue = celeb.marketForces;
+            mostOvervalued = celeb.cameoName;
+          }
+        });
+        return {
+          name: mostOvervalued,
+          marketForces: lowestValue
+        };
+      }
     }
 
 
