@@ -65,6 +65,8 @@ var app = new Vue({
     gimmick: {
       selectorVisible: false,
       rounds: [
+        gimmickRounds.daddies,
+        gimmickRounds.wrestlers,
         gimmickRounds.dogs,
         gimmickRounds.porn,
         gimmickRounds.richards,
@@ -512,8 +514,6 @@ var app = new Vue({
       let avg = parseInt(costForAll / 2.5);
       if (avg > 1000) {
         self.round.budget = 1000;
-      } else if (avg < 500) {
-        self.round.budget = 500;
       } else {
         self.round.budget = avg;
       }
@@ -525,6 +525,7 @@ var app = new Vue({
 
       self.round.leftSide = [];
       self.ui.hiringFinished = true;
+      $('.list-group.unhired').animate({opacity:0.0},2000);
 
       self.ui.countingInterval = window.setInterval(function(){
 
