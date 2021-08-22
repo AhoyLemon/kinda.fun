@@ -109,7 +109,7 @@ const gimmickRounds = {
       { name: "Nacho Vidal", desc:"Bimbo Bangers From Barcelona (1998)", slug:"nachovidal", value:76 },
       { name: "Lethal Lipps", desc:"Hella Butt (2007)", slug: "lethallipps___", value:100 },
 
-      { name: "Dakota Charms", desc:"Jerking Cheerleaders (2017)", slug:"dakotacharmsxxx", value:400 },
+      { name: "Dakota Charms", desc:"Brat Spanks Brats 2 (2019)", slug:"dakotacharmsxxx", value:400 },
       { name: "Ginger Lynn", desc:"New Wave Hookers (1985)", slug:"gingerlynn", value:50 },
       { name: "Small Hands", desc:"Goth Anal Whores 2 (2018)", slug:"thesmallhands_", value:100 },
       
@@ -132,10 +132,9 @@ const gimmickRounds = {
   },
 
   dogs: {
-    name: "DOGS!",
+    name: "Nuthin' But Dogs",
     desc: "WOOF! WOOF WOOF WOOF WOOF WOOF WOOF! WOOF! WOOF! WOOF WOOF WOOF WOOF!",
     queue: [
-      
       { name: "Puggy Smalls", desc:"Dog", slug: "thepuggysmalls", value:15 }, 
       { name: "Anya", desc:"Dog", slug: "anyathegsd", value:100 },
       { name: "Squid the Griff", desc:"Dog", slug:"squidthegriff", value:50 },
@@ -155,45 +154,37 @@ const gimmickRounds = {
     reuseQueueForFinal: true
   },
 
-
   wrestlers: {
     name: "Rasslin'",
-    desc: "",
+    desc: "The matches may be pre-determined, but the desperation is real.",
     queue: [
-      { name: "Sting", desc:"Wrestler of the Year (1990)", slug: "sting", value:500 },
-      { name: "Ric Flair", desc:"Rookie of the Year (1975)", slug: "natureboy16", value:500 },
-      { name: "Honky Tonk Man", desc:"NWA Alabama Heavyweight Champion", slug: "honkytonkman", value:200 },
-      { name: "Sgt Slaughter", desc:"Most Hated Wrestler of the Year (1991)", slug: "sgtslaughter", value:195 },
-      { name: "Bret “Hitman” Hart", desc:"Most Inspirational Wrestler of the Year (1994)", slug:"hitman", value:150  },
       { name: "Mick Foley", desc:"WWE Hall of Fame (2013)", slug:"mickfoley", value:149 },
-      { name: "Brutus “The Barber” Beefcake", desc:"#173, in Pro Wrestling Illustrated's “500 Best Single Wrestlers”", slug:"brutusbeefcake", value:100 },
       { name: "Ted DiBiase, “The Million Dollar Man”", desc:"Million Dollar Champion (1989 & 1991)", slug:"mdmteddibiase", value:75 },
+      { name: "Ric Flair", desc:"Rookie of the Year (1975)", slug: "natureboy16", value:500 },
+      
+      { name: "Ricky “The Dragon” Steamboat", desc:"WWF Intercontinental Heavyweight Champion (1987)", slug: "dragon431", value:100 },
+      { name: "Bret “Hitman” Hart", desc:"Most Inspirational Wrestler of the Year (1994)", slug:"hitman", value:150  },
+      { name: "Sting", desc:"Wrestler of the Year (1990)", slug: "sting", value:500 },
+      
+      { name: "Brutus “The Barber” Beefcake", desc:"#173, in Pro Wrestling Illustrated's “500 Best Single Wrestlers”", slug:"brutusbeefcake", value:100 },
+      { name: "Sgt Slaughter", desc:"Most Hated Wrestler of the Year (1991)", slug: "sgtslaughter", value:195 },      
       { name: "Hacksaw Jim Duggan", desc:"Former Professional Wrestler", slug:"hacksawjimduggan", value:75 },
+
       { name: "Jake The Snake Roberts", desc:"WWE Hall Of Fame (2014)", slug: "jakesnake", value:100 },
+      { name: "Honky Tonk Man", desc:"WWF Intercontinental Champion (1987)", slug: "honkytonkman", value:200 },
+      { name: "Bryan Clark", desc:"Wrestling Observer's “Worst Tag Team” (2000 & 2001) with Brian Adams", slug: "bryanclark99", value:75 }
+    ],
+    finalRoundQueue: [
       { name: "Raven", desc:"ECW World Heavyweight Champion (1996)", slug: "ravenprime1", value:75 },
-      { name: "Bryan Clark", desc:"Wrestling Observer's “Worst Tag Team” (2000 & 2001) with Brian Adams", slug: "bryanclark99", value:75 },
       { name: "Tommy Dreamer", desc:"ECW World Heavyweight Champion (2000 & 2009)", slug: "thetommydreamer", value:50 },
       { name: "Sandman", desc:"ECW World Heavyweight Champion (5 Times)", slug: "sandmanecw", value:31 },
       { name: "Kylie Rae", desc:"AAW Women's Champion (2018)", slug: "iamkylierae", value:55 },
       { name: "Luchasaurus", desc:"MPW Heavyweight Champion (2016)", slug: "luchasaurus", value:120 },
-      { name: "Ricky “The Dragon” Steamboat", desc:"WWF Intercontinental Heavyweight Champion (1987)", slug: "dragon431", value:100 },
       { name: "J'den Cox", desc:"Bronze Medalist, Freestyle Wrestling (2016 Olympics, Rio)", slug: "jmiz_cusa", value:60 },
       { name: "Thunder Rosa", desc:"NWA World Women's Champion (2020)", slug: "thunderrosa22", value:60 },
-
-      // No pics yet
-      
-      
-      
-      
-      
-      { name: "Kamal Bey", desc:"Gold Medal in Greco-Roman Wrestling (US Nationals, 2019)", slug: "itz_kbey", value:20 },
-      
-      
-  
-      { name: "Thunder Rosa", desc:"NWA World Women's Champion (2020)", slug: "thunderrosa22", value:60 },
       { name: "Aubrey Edwards", desc:"Referee, All Elite Wrestling", slug: "refaubrey", value:50 },
-      { name: "Fred Ottman, aka Tugboat Typhoon", desc:"Wrestling Observer's “Worst Gimmick” (1993)", slug: "tugboatthomas", value:30 },
-      { name: "Crazzy Steve", desc:"Not to be confused with Crazy Steve, who was a character on Nickelodeons “Drake & Josh” ", slug: "", value:0 },
+      { name: "Fred Ottman, aka “Tugboat Typhoon”", desc:"Wrestling Observer's “Worst Gimmick” (1993)", slug: "tugboatthomas", value:30 },
+      { name: "Crazzy Steve", desc:"Not to be confused with Crazy Steve, who was a character on Nickelodeons “Drake & Josh” ", slug: "tna_crazzy_steve", value:50 },
     ]
   },
 
@@ -201,35 +192,33 @@ const gimmickRounds = {
     name: "Daddies",
     desc: "This round is probably weirder than you're imagining",
     queue: [
-
-      // no pics for any of these...
-      
       { name: "Big Daddy Kane", desc:"Rapper, Ain't No Half-Steppin'", slug: "bdkane", value:50 },
       { name: "Trick Daddy", desc:"Rapper on the albums Thug Matrimony: Married to the Streets, www.thug.com, and Book of Thugs: Chapter AK Verse 47", slug: "trick", value:195 },
+      { name: "Mathew Knowles", desc:"Beyoncé's Dad", slug: "mathewknowles", value:40 },
+
+      { name: "Jacoby Shaddix", desc:"Singer, Papa Roach", slug: "jacobyshaddix", value:200 },
+      { name: "Scott Steiner", desc:"Wrestler, aka “Big Poppa Pump”", slug:"scottsteiner", value:100 },
+      { name: "LaVar Ball", desc:"Father of Basketball Players", slug:"lavarball", value:133 },
+
+      { name: "Dj Daddy K", desc:"French DJ", slug: "djdaddyk", value:50 },
       { name: "FREAK DADDY", desc:"TikTok Creator", slug: "topfreakdaddy", value:15 },
       { name: "Daddy Kindred", desc:"Soul Singer", slug: "kindredthefam", value:75 },
+      
       { name: "Matt Anipen", desc:"voice of Daddy Shark in the song “Baby Shark”", slug: "matt_daddysharkanipen", value:30 },
-      // Big Daddy Kane
-      { name: "Dj Daddy K", desc:"French DJ", slug: "djdaddyk", value:50 },
       { name: "DaddysJuiced", desc:"Skateboarder", slug: "daddysjuiced", value:20 },
+      { name: "Tom Papa", desc:"Comedian", slug:"tpops1", value:250 },
+    ],
+    finalRoundQueue: [
       { name: "Daddy Long Neck", desc:"Instagram Influencer", slug:"damnlongneck", value:30 },
-      { name: "Mathew Knowles", desc:"Beyoncé's Dad", slug: "mathewknowles", value:40 },
-      // Bun Daddy
-      // Trick Daddy
-      // Daddy Kindred
-      // FREAK DADDY
-      // Matt Anipen (voice of Daddy Shark)
-      // Big Daddy Kane
-      // DJ Daddy K
-      // DaddysJuiced
-      // Daddy Long Deck
-      // Father Time
-      // Father Evil
-      // Somewhat Cool Dad
-      // AmericanDad
-      // Papa Gut
-      // Jacoby Shaddix
-      // Tom Papa
+      { name: "Papa Gut", desc:"TikTok  Influencer", slug: "papa_gut", value:20 },
+      { name: "Father Evil", desc:"does conventions", slug: "fatherevil", value:50 },
+      { name: "Father Time", desc:"has a cloak and an hourglass", slug: "fathertime", value:20 },
+      { name: "Father James Mitchell", desc:"Wrestling Manager, WCW & TNA", slug: "jamesmitchell", value:30 },
+      { name: "AmericanDad", desc:"Twitch Streamer", slug:"americandad", value:10 },
+      { name: "Somewhat Cool Dad", desc:"TikTok", slug:"somewhatcooldad", value:5 },
+      { name: "Mama Tits", desc:"Drag Queen", slug:"themamatits", value:25 },
+      { name: "Daddy Kindred", desc:"Soul Singer", slug: "kindredthefam", value:75 },
+      { name: "Big Daddy Kane", desc:"Rapper, Ain't No Half-Steppin'", slug: "bdkane", value:50 },
     ]
   },
 
@@ -237,7 +226,7 @@ const gimmickRounds = {
     name: "TEST",
     desc: "does my shit work.",
     queue: [
-      { name: "", desc:"", slug: "", value:0 },
+      { name: "", desc:"", slug:"", value:0 },
       // { name: "Ben Stein", desc:"Said “Bueller?” in Ferris Bueller's Day Off", slug:"benstein99", value:150 },
       // { name: "Bob Bergen", desc:"Voice Actor, Porky Pig (1990 - present)", slug:"bobbergen", value:200 },
       // { name: "Count Binface", desc:"Formerly Lord Buckethead", slug:"countbinface", value:45 },
