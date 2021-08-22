@@ -16,3 +16,6 @@ There's currently three games here.
 ![The Wrongest Words Logo](https://kinda.fun/img/wrongest/og-wide.png)
 
 * [The Wrongest Words Wiki](https://github.com/AhoyLemon/kinda.fun/wiki/The-Wrongest-Words)
+
+## Sisyphus Clicker
+![The Wrongest Words Logo](https://kinda.fun/img/sisyphus/og-wide.png)
