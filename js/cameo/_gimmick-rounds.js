@@ -167,11 +167,24 @@ const gimmickRounds = {
       { name: "Bret “Hitman” Hart", desc:"Most Inspirational Wrestler of the Year (1994)", slug:"hitman", value:150  },
       { name: "Mick Foley", desc:"WWE Hall of Fame (2013)", slug:"mickfoley", value:149 },
       { name: "Brutus “The Barber” Beefcake", desc:"#173, in Pro Wrestling Illustrated's “500 Best Single Wrestlers”", slug:"brutusbeefcake", value:100 },
-      // Brutus "The Barber" Beefcake
-      // Jake The Snake Roberts
-      // Raven
-      // Hacksaw Jim Duggan
+      { name: "Ted DiBiase, “The Million Dollar Man”", desc:"Million Dollar Champion (1989 & 1991)", slug:"mdmteddibiase", value:75 },
+      { name: "Hacksaw Jim Duggan", desc:"Former Professional Wrestler", slug:"hacksawjimduggan", value:75 },
 
+      // No pics yet
+      { name: "Jake The Snake Roberts", desc:"WWE Hall Of Fame (2014)", slug: "jakesnake", value:100 },
+      { name: "Raven", desc:"ECW World Heavyweight Champion (1996)", slug: "ravenprime1", value:75 },
+      { name: "Bryan Clark", desc:"Wrestling Observer's “Worst Tag Team” (2000 & 2001) with Brian Adams", slug: "bryanclark99", value:75 },
+      { name: "Tommy Dreamer", desc:"ECW World Heavyweight Champion (2000 & 2009)", slug: "thetommydreamer", value:50 },
+      { name: "Sandman", desc:"ECW World Heavyweight Champion (5 Times)", slug: "sandmanecw", value:31 },
+      { name: "Kylie Rae", desc:"AAW Women's Champion (2018)", slug: "iamkylierae", value:55 },
+      { name: "Kamal Bey", desc:"Gold Medal in Greco-Roman Wrestling (US Nationals, 2019)", slug: "itz_kbey", value:20 },
+      { name: "Luchasaurus", desc:"MPW Heavyweight Champion (2016)", slug: "luchasaurus", value:120 },
+      { name: "Ricky “The Dragon” Steamboat", desc:"WWF Intercontinental Heavyweight Champion (1987)", slug: "dragon431", value:100 },
+      { name: "J'den Cox", desc:"Bronze Medalist, Freestyle Wrestling (2016 Olympics, Rio)", slug: "jmiz_cusa", value:60 },
+      { name: "Thunder Rosa", desc:"NWA World Women's Champion (2020)", slug: "thunderrosa22", value:60 },
+      { name: "Aubrey Edwards", desc:"Referee, All Elite Wrestling", slug: "refaubrey", value:50 },
+      { name: "Fred Ottman, aka Tugboat Typhoon", desc:"Wrestling Observer's “Worst Gimmick” (1993)", slug: "tugboatthomas", value:30 },
+      { name: "Crazzy Steve", desc:"Not to be confused with Crazy Steve, who was a character on Nickelodeons “Drake & Josh” ", slug: "", value:0 },
     ]
   },
 
@@ -179,6 +192,17 @@ const gimmickRounds = {
     name: "Daddies",
     desc: "This round is probably weirder than you're imagining",
     queue: [
+
+      // no pics for any of these...
+      { name: "Trick Daddy", desc:"Rapper on the albums Thug Matrimony: Married to the Streets, www.thug.com, and Book of Thugs: Chapter AK Verse 47", slug: "trick", value:195 },
+      { name: "FREAK DADDY", desc:"TikTok Creator", slug: "topfreakdaddy", value:15 },
+      { name: "Daddy Kindred", desc:"Soul Singer", slug: "kindredthefam", value:75 },
+      { name: "Matt Anipen", desc:"voice of Daddy Shark in the song “Baby Shark”", slug: "matt_daddysharkanipen", value:30 },
+      // Big Daddy Kane
+      { name: "Dj Daddy K", desc:"French DJ", slug: "djdaddyk", value:50 },
+      { name: "DaddysJuiced", desc:"Skateboarder", slug: "daddysjuiced", value:20 },
+      { name: "Daddy Long Neck", desc:"Instagram Influencer", slug:"damnlongneck", value:30 },
+      { name: "Mathew Knowles", desc:"Beyoncé's Dad", slug: "mathewknowles", value:40 },
       // Bun Daddy
       // Trick Daddy
       // Daddy Kindred
@@ -197,31 +221,6 @@ const gimmickRounds = {
       // Tom Papa
     ]
   },
-
-  mamas: {
-    name: "Daddies",
-    desc: "This round is probably weirder than you're imagining",
-    queue: [
-      // Bun Daddy
-      // Trick Daddy
-      // Daddy Kindred
-      // FREAK DADDY
-      // Matt Anipen (voice of Daddy Shark)
-      // Big Daddy Kane
-      // DJ Daddy K
-      // DaddysJuiced
-      // Daddy Long Deck
-      // Father Time
-      // Father Evil
-      // Somewhat Cool Dad
-      // AmericanDad
-      // Papa Gut
-      // Jacoby Shaddix
-      // Tom Papa
-    ]
-  },
-
-  
 
   test: {
     name: "TEST",
