@@ -65,16 +65,20 @@ var app = new Vue({
     gimmick: {
       selectorVisible: false,
       rounds: [
-        gimmickRounds.richards,
-        gimmickRounds.metalheads,
+        gimmickRounds.dogs,
+        gimmickRounds.daddies,
+        gimmickRounds.topchef,
+        gimmickRounds.wrestlers,
+        gimmickRounds.porn,
         gimmickRounds.georges,
+        gimmickRounds.metalheads,
+        gimmickRounds.richards,
         gimmickRounds.trumpworld
       ],
       selected: {},
       selectedIndex: '',
       isSelected: false
     }
-
   },
 
   methods: {
@@ -156,11 +160,11 @@ var app = new Vue({
         }
       }
 
-      self.populateFinalRound();
+      
       if (self.gimmick && self.gimmick.selected && self.gimmick.selected.queue) {
         self.game.cameoQueue = self.gimmick.selected.queue;
       }
-
+      self.populateFinalRound();
     },
 
     isThisADuplicate(x) {
@@ -261,8 +265,8 @@ var app = new Vue({
 
         if (self.ui.animateCameoIndex > self.round.correctSide.length) {
           clearInterval(intervalId);
+          $('.list-group.correct .cameo').removeClass('animate__animated animate__backInUp');
           self.ui.itsTimeToGuessValue = true;
-
         } else {
           self.showAnAnswerCard();
         }
@@ -419,7 +423,7 @@ var app = new Vue({
     showAGuessCard() {
       const self = this;
       self.ui.animateCameoIndex++;      
-      $('.list-group.unranked .cameo:nth-child('+self.ui.animateCameoIndex+')').removeClass('off-table').addClass('animate__animated animate__bounceInUp');
+      $('.list-group.unranked .cameo:nth-child('+self.ui.animateCameoIndex+')').removeClass('off-table').addClass('animate__animated animate__backInUp');
       setTimeout(function () {
         $('.list-group.unranked .cameo:nth-child('+self.ui.animateCameoIndex+')').removeClass('animate__animated animate__bounceInUp');
       }, 1000);
@@ -429,7 +433,7 @@ var app = new Vue({
       const self = this;
       self.ui.animateCameoIndex++;
       let n = (self.ui.animateCameoIndex -1);
-      $('.list-group.correct .cameo:nth-child('+self.ui.animateCameoIndex+')').removeClass('off-table').addClass('animate__animated animate__zoomInUp');
+      $('.list-group.correct .cameo:nth-child('+self.ui.animateCameoIndex+')').removeClass('off-table').addClass('animate__animated animate__jackInTheBox');
 
       setTimeout(function () {
         $('.list-group.guessed.ranked .cameo:nth-child('+self.ui.animateCameoIndex+')').addClass('colorized');
@@ -458,7 +462,6 @@ var app = new Vue({
 
     showTheEmail() {
       const self = this;
-      self.populateFinalRound();
       self.ui.showEmailButton = false;
       $("#EmailFromPasha").removeClass('off-screen');
       
@@ -485,7 +488,21 @@ var app = new Vue({
 
     populateFinalRound() {
       const self = this;
-      let celebs = [...shuffle(self.celebs)];
+
+      let finalRoundCelebs;
+      //let celebs = [];
+
+      if (self.gimmick.isSelected && self.gimmick.selected.queue && self.gimmick.selected.reuseQueueForFinal) {
+        // If you're playing a gimmick round (and want to), you can reuse the queue in the final.
+        finalRoundCelebs = [...self.gimmick.selected.queue];
+      } else if (self.gimmick.isSelected && self.gimmick.selected.queue && self.gimmick.selected.finalRoundQueue) {
+        // Or, if you're playing a special round and you have a specific final round queue, use that.
+        finalRoundCelebs = [...self.gimmick.selected.finalRoundQueue];
+      } else {
+        // if not, just use the list of all celebs in the regular list.
+        finalRoundCelebs = [...self.celebs];
+      }
+      let celebs = shuffle(finalRoundCelebs);
       celebs = celebs.slice(0,10);
       self.game.availableToHire = celebs;
 
@@ -498,8 +515,6 @@ var app = new Vue({
       let avg = parseInt(costForAll / 2.5);
       if (avg > 1000) {
         self.round.budget = 1000;
-      } else if (avg < 500) {
-        self.round.budget = 500;
       } else {
         self.round.budget = avg;
       }
@@ -511,6 +526,7 @@ var app = new Vue({
 
       self.round.leftSide = [];
       self.ui.hiringFinished = true;
+      $('.list-group.unhired').animate({opacity:0.0},2000);
 
       self.ui.countingInterval = window.setInterval(function(){
 

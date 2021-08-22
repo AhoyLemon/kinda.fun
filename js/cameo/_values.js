@@ -71,6 +71,7 @@ const allValues = [
   { name: "Micky Dolenz", desc:"One Of The Monkees", slug:"mickydolenz", value:239 },
   { name: "David Koechner", desc:"Champ in Anchorman", slug:"davidkoechner", value:225 },
   { name: "Corey Feldman", desc:"Mouth in The Goonies", slug:"cdogg22", value:202 },
+  { name: "Jacoby Shaddix", desc:"Singer, Papa Roach", slug: "jacobyshaddix", value:200 },
   { name: "Bob Bergen", desc:"Voice Actor, Porky Pig (1990 - present)", slug:"bobbergen", value:200 },
   { name: "Dog the Bounty Hunter", desc:"Had a reality show on A&E", slug:"dogthebountyhunter", value:200 },
   { name: "Jaleel White", desc:"Urkel", slug:"jaleelwhite", value:200 },
@@ -108,6 +109,7 @@ const allValues = [
   { name: "Shaggy 2 Dope", desc:"Insane Clown Posse", slug:"shaggy.icp", value:134 },
 
   { name: "Chris Kirkpatrick", desc:"Formerly of *NSYNC", slug:"iamckirkpatrick", value:129 },
+  { name: "Lisa Ann", desc:"Who's Nailin Paylin  (2008)", slug:"thereallisaann", value:125 },
   { name: "Victoria Jackson", desc:"SNL", slug:"victoria_jackson_official", value:125 },
   { name: "Vincent Curatola", desc:"Johnny Sack on The Sopranos", slug:"vincentcuratola", value:125 },
   { name: "Jamie Farr", desc:"Klinger on M*A*S*H", slug:"jamiefarr1", value:125 },
@@ -120,8 +122,8 @@ const allValues = [
 
   { name: "John Bercow", desc:"The Guy That Used To Say “Order” In The House of Commons", slug:"johnbercow", value:110 },
   { name: "Colin Mochrie", desc:"Perennial Contestant, Whose Line is it Anyway?", slug:"colinmochrie7591", value:110 },
-
   { name: "Colin Baker", desc:"The Sixth Doctor on Doctor Who (1984 - 1986)", slug:"colinbaker", value:105 },
+  { name: "Brutus “The Barber” Beefcake", desc:"#173 in Pro Wrestling Illustrated's “500 Best Single Wrestlers”", slug:"brutusbeefcake", value:100 },
   { name: "Sylvester McCoy", desc:"The Seventh Doctor on Doctor Who (1987 - 1989)", slug:"earthling7", value:100 },
   { name: "George Lowe", desc:"Space Ghost", slug:"georgeloweofficial", value:100 },
   { name: "Nigel Farage", desc:"Caused Brexit, Pretty Much", slug:"nigelfarage", value:100 },
@@ -131,7 +133,6 @@ const allValues = [
   { name: "Burton Gilliam", desc:"“Lyle” in Blazing Saddles", slug:"camptownladies", value:100 },
   { name: "Montell Jordan", desc:"Singer, “This Is How We Do It”", slug:"mrjordan1911", value:100 },
   { name: "Michael Cohen", desc:"Disbarred Legal Fixer", slug:"michaelcohen212", value:100 },
-  
   { name: "Lisa Loeb", desc:"You say she only hears what she wants to.", slug:"lisaloeb", value:100 },
   { name: "Richard Karn", desc:"Al on Home Improvement", slug:"richardkarn", value:100 },
   { name: "Doug Bradley", desc:"Pinhead in Hellraiser", slug:"dougbradley", value:100 },
@@ -156,6 +157,7 @@ const allValues = [
   { name: "RiFF RAFF", desc:"Public Nuisance", slug:"riffraff", value:85 },
   { name: "Rod Blagojevich", desc:"Convicted Felon", slug:"rblagojevich", value:80 },
   { name: "Larry Thomas", desc:"The Soup Nazi", slug:"realsoupnazi", value:80 },
+  
   { name: "Maci Bookout", desc:"Former Teen Mom, MTV's “Teen Mom”", slug:"macibookout", value:80 },
   { name: "George Shea", desc:"You Know Those Hot Dog Eating Contests? This Is The Guy That Emcees Them.", slug:"gcshea", value:50  },
   { name: "Kody Brown", desc:"Has Four Wives, TLC Made A Show About It", slug:"kodywinnbrown", value:75 },
@@ -175,7 +177,6 @@ const allValues = [
   { name: "KID from Kid N Play", desc:"Costar of House Party 1, 2 & 3", slug:"kidfromkidnplay", value:65  },
   { name: "Kato Kaelin", desc:"Stayed At OJ's House", slug:"kato", value:60 },
   { name: "Anthony Scaramucci", desc:"Former White House Communications Director", slug:"themooch", value:55 },
-
   { name: "George Wallace", desc:"The Legendary Comedian (Not The Racist Senator)", slug:"georgewallace", value:50  },
   { name: "Horny Mike", desc:"Airbrushes Cars, Sometimes Wears A Bandana With Horns On It", slug:"hornymike", value:50  },
   { name: "Pearl Mackie", desc:"Bill on Doctor Who (2016 - 2017)", slug:"pearlmackie", value:50  },
@@ -199,6 +200,7 @@ const allValues = [
   { name: "Kevin Allison", desc:"RISK! Podcast", slug:"thekevinallison", value:45 },
   { name: "Evan Antin", desc:"Veterinarian", slug:"dr.evanantin", value:45 },
   { name: "Mermaid Elle", desc:"Freelance Mermaid", slug:"mermaidelle", value:45 },
+  { name: "Mathew Knowles", desc:"Beyoncé's Dad", slug: "mathewknowles", value:40 },
   { name: "Sleazy P Martini", desc:"Manager, GWAR", slug:"sleazymartini", value:40 },
   { name: "Tay Zonday", desc:"Chocolate Rainmaker", slug:"tayzonday", value:40 },
   { name: "Smelly", desc:"Drummer for NOFX", slug:"sandin", value:40 },
