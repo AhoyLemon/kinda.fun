@@ -1,6 +1,12 @@
-.counter-box { @include position(fixed,null,30px,10px); color:yellow; font-family: $font; border:1px solid currentColor; background:$black;
-  .label { display: block; border-bottom: 1px solid currentColor; text-align: center; text-transform: uppercase; background:yellow; color:$black; }
-  .count { display: block; text-align: center; font-size:300%; line-height: 100%; padding-bottom: 0.1em; }
+$color-counter:#f9ca77;
+
+.counters { @include position(fixed,null,null,10px,30px); font-family: $font;
+  .score-hud { display: inline-block; margin-right:2rem; border:1px solid $color-counter;
+    .label { background: $color-counter; color:#333; text-transform: uppercase; font-weight: $bold; text-align: center; padding:0.25em 1em; }
+    .count { color:$color-counter; padding:1rem; text-align: center; font-size: 2.5rem; line-height: 70%; min-width: 4ch;
+      a { cursor: help; }
+    }
+  }
 }
 
 @media screen and (max-width:$mobile-max) {

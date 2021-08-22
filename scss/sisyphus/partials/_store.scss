@@ -7,11 +7,8 @@ aside.store { overflow: hidden;  overflow-y: auto;
     &.buyable:active { background: linear-gradient(to bottom, saturate(#ff416c,50%), saturate(#ff4b2b,50%)); transform: scale(0.95); }
     &:not(.buyable):hover { background: linear-gradient(to bottom, darken(desaturate(#ff416c,80%),20%), darken(desaturate(#ff4b2b,80%),20%)); }
 
-    //@include flex-container();
-    // .name-and-desc { @include flex-item(calc(100% - 75px)); }
-    //.name { @include flex-item(100%); }
-    //.desc { @include flex-item(75%); }
-    .price { /* @include flex-item(75px); */  font-size:260%; text-align: left; padding-top:0.15em; font-weight:$bold; float:right;  }
+
+    .price { font-size:240%; text-align: left; padding-top:0.15em; font-weight:$bold; float:right;  }
   
   }
 }
@@ -30,7 +27,8 @@ aside.store { overflow: hidden;  overflow-y: auto;
 
 
 @media screen and (min-width:$desktop-min) { 
-  aside.store { @include position(fixed,0,0,0); width:calc(25% - 15px); padding:2em 1em 100px 2em;
+  aside.store { @include position(fixed,0,0,0); width:calc(25% - 15px); padding:2rem 1rem 100px 1rem;
+    .header { padding-left: 2em; }
     .item {
       .name { font-size:16px; }
       .desc { font-size:12px; }

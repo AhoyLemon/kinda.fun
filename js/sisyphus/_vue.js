@@ -20,7 +20,8 @@ var app = new Vue({
     store: storeItems,
     inventory: [],
     cheevos: [],
-    cheevoPoints: 0
+    cheevoPoints: 0,
+    cheevoReminders: 0
   },
 
   methods: {
@@ -34,28 +35,25 @@ var app = new Vue({
 
       if (self.totalClicks == 437) {
         self.getCheevo('437 clicks', "You've clicked on Sisyphus 437 times. And while that may seem like a meaningless number, have you considered that any other number is equally meaningless?", 25);
+      } else if (self.totalClicks == 1000) {
+        self.getCheevo('4 digits of clicks', "You've now clicked on Sisyphus 1,000 times. That might be too many times.", 25);
+      } else if (self.totalClicks == 10000) {
+        self.getCheevo('10,000 Clicks', "That's a whole lot of clicks!", 25);
       }
 
-      if (self.totalClicks == 114) {
+      if (self.totalClicks == 134) {
         var audio = new Audio('audio/bylemon.mp3');
         audio.play();
         new PNotify({
-          //title: 'Custom Styling',
           title: '<a href="https://ahoylemon.xyz">This site is by Lemon.</a>',
           addclass: 'stack-bottomright site-by-lemon',
           //delay: (PNotify.prototype.options.delay * 4)
-          /*
-          nonblock: {
-              nonblock: true
-          }
-          */
         });
       }
 
       if (self.totalClicks > 25) {
-        document.title = "["+self.totalClicks+"]" + " Sisyphus Clicked";
+        document.title = "["+addCommas(self.totalClicks)+"]" + " Sisyphus Clicked";
       }
-
 
       if (self.s.retreating == false) {
 
@@ -134,6 +132,9 @@ var app = new Vue({
             case 7:
               self.getCheevo('Still failing!', "It's rolled back 7 times now, but don't let that stop you.", 15);
               break;
+            case 13:
+              self.getCheevo('13 Rollbacks', "Hey, I know the rock has rolled back down the hill 13 times. Next time tho....", 15);
+              break;
           }
 
         }
@@ -146,7 +147,7 @@ var app = new Vue({
       if (self.score >= item.price) {
         self.score -= item.price;
 
-        let s = findInArray(self.store,'id',item.id);
+        let s = findKeyInArray(self.store,'id',item.id);
         let n = self.store[s];
         n.showDesc = false;
         self.inventory.push(n);
@@ -154,12 +155,27 @@ var app = new Vue({
         //self.store.splice(i,1);
         removeFromArray(self.store,'id',item.id);
         self.buyItemEffect(item.id);
-      }
 
-      sendEvent('item purchase', item.name, item.price);
+        sendEvent('item purchase', item.name, item.price);
       
-      if (self.inventory.length == 1) {
-        self.getCheevo('Shopping In Hades!', 'First item purchased.', 10);
+        if (self.inventory.length == 1) {
+          self.getCheevo('Shopping In Hades!', 'First item purchased.', 10);
+        }
+
+        
+        // Cheevos for specific purchased items....
+        switch (item.id) {
+          case 5:
+            self.getCheevo("Worth It!", "That was some very expensive peach tea.", 2);
+            break;
+          case 19:
+            self.getCheevo("Self Bondage", "I wonder if this game gets easier if you're in chains?", 9);
+            break;
+          case 20:
+            self.getCheevo("How Refreshing!", "Mmmmm, that's some effervescent water!", 4);
+            break;
+          
+        }
       }
 
     },
@@ -350,7 +366,6 @@ var app = new Vue({
         sendEvent("cheevo", title);
       }
 
-
       new PNotify({
         title: title,
         text: t
@@ -363,7 +378,6 @@ var app = new Vue({
       self.cheevos.push( { title:title,text:text,points:points });
 
       // give cheevos based on cheevos!
-      
       if (self.cheevos == 2) {
         setTimeout(function(){ 
           self.getCheevo("And Here Is A Third!", "You've had two achivements, so here is a third achievement for getting those.", 12);
@@ -375,6 +389,26 @@ var app = new Vue({
       }
       
     },
+
+    remindMeOfMyCheevos() {
+      const self = this;
+      self.cheevos.forEach((cheevo) => {
+        new PNotify({
+          title: cheevo.title,
+          text: '<strong>'+cheevo.points+'💀</strong> '+cheevo.text
+        });
+      });
+      self.cheevoReminders++;
+
+      if (self.cheevoReminders == 1) {
+        self.getCheevo("One more for the pile", "Hey, when you clicked to see your cheevos, did you expect to get a cheevo for that?", 11);
+      } else if (self.cheevoReminders == 5) {
+        self.getCheevo("Bad Memory", "Aparently you can't remember how many cheevos you have? Well, it's one more than that.", 9);
+      }
+
+    },
+
+
 
     everySecond() {
       let self = this;
@@ -416,8 +450,6 @@ var app = new Vue({
       
     }
 
-
-
   },
 
   computed: {
@@ -440,7 +472,6 @@ var app = new Vue({
       return 'translateX('+this.bg.transform+'%)';
     },
 
-
     availableUpgrades() {
       let self = this;
       let a = [];
@@ -450,14 +481,23 @@ var app = new Vue({
         }
       });
       return a;
+    },
+    computedGamerScore() {
+      const self = this;
+      let gamerScore = 0;
+      self.cheevos.forEach(function(item) {
+        if (item && item.points > 0) {
+          gamerScore += item.points;
+        }
+      });
+      return gamerScore;
     }
 
   },
 
   mounted: function() {
     let self = this;
-
-    self.getCheevo('Loaded Game', "SQUEAK!", 60);
+    //self.getCheevo('Loaded Game', "SQUEAK!", 60);
     setInterval(function () {
       self.everySecond();
     }, 1000); 
