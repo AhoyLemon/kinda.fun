@@ -1,7 +1,6 @@
 const storeItems = [
   {
     id: 1, name: "Fresh Kicks", price: 85, scoreToReveal: 60,
-    //id: 1, name: "Fresh Kicks", price: 1, scoreToReveal: 1, 
     desc: "Better arch support means that you can move slightly faster",
   },
   {

@@ -1,7 +1,3 @@
-function randomNumber(min,max) {
-  return Math.floor(Math.random() * (max - min) ) + min;
-}
-
 function workThisArray(myArray) {
 
   let r = Math.floor(Math.random()*(myArray.length));
@@ -31,6 +27,13 @@ function workThisArray(myArray) {
   return message;
 }
 
+function findKeyInArray(array,key,value) {
+  for (var i = array.length - 1; i >= 0; --i) {
+    if (array[i][key] == value) {
+      return i;
+    }
+  }
+}
 
 function stringInArray(s, a) {
   let n = a.indexOf(s);
@@ -39,33 +42,6 @@ function stringInArray(s, a) {
   } else {
     return false;
   }
-}
-
-function randomFrom(array) {
-  return array[Math.floor(Math.random()*(array.length))];
-}
-
-function removeFromArray(array,key,value) {
-  for (var i = array.length - 1; i >= 0; --i) {
-    if (array[i][key] == value) {
-        array.splice(i,1);
-    }
-  }
-}
-
-function findInArray(array,key,value) {
-  for (var i = array.length - 1; i >= 0; --i) {
-    if (array[i][key] == value) {
-      return i;
-      //alert(i);
-      //break;
-    }
-  }
-}
-
-function shuffle(o){
-  for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-  return o;
 }
 
 function capitalize(string) {
@@ -123,24 +99,5 @@ function testChance(chance) {
     return true;
   } else {
     return false;
-  }
-}
-
-function sendEvent(c, a, l, v) {
-  if (v) {
-    //ga('send', 'event', { eventCategory: c, eventAction: a, eventLabel: l, eventValue:v });
-    if (testing) {
-      console.log('CATEGORY: '+c+', ACTION:'+a+', LABEL:'+l+', VALUE:'+v);
-    }
-  } else if (l) {
-    //ga('send', 'event', { eventCategory: c, eventAction: a, eventLabel: l });
-    if (testing) {
-      console.log('CATEGORY: '+c+', ACTION:'+a+', LABEL:'+l);
-    }
-  } else {
-    //ga('send', 'event', { eventCategory: c, eventAction: a });
-    if (testing) {
-      console.log('CATEGORY: '+c+', ACTION:'+a);
-    }
   }
 }

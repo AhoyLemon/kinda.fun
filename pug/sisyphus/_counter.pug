@@ -1,3 +1,11 @@
-.score-hud.counter.counter-box(v-if="totalScore > 18" v-cloak)
-  span.label Score
-  span.count(v-text="score")
+.counters
+  .score-hud.counter.pushes(v-if="totalScore > 18" v-cloak)
+    .label Pushes
+    .count(v-text="score")
+
+  .score-hud.counter.gamerscore(v-if="computedGamerScore"
+    @click="" v-cloak)
+    .label Score
+    .count
+      a(@click="remindMeOfMyCheevos()") {{computedGamerScore}}
+
