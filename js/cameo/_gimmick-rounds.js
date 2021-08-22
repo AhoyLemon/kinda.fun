@@ -99,8 +99,6 @@ const gimmickRounds = {
     name: "Porno People",
     desc: "I'd caution you to be wary of anyone who says “I don't recognize any of these people!”",
     queue: [
-
-
       { name: "Penny Pax", desc:"The Art Of Cheating (2017)", slug:"pennypax", value:69 },
       { name: "Dolf Dietrich", desc:"Fire Island Fuck Boy (2017)", slug:"dolfdietrichxxx", value:25 },
       { name: "Lisa Ann", desc:"Who's Nailin Paylin  (2008)", slug:"thereallisaann", value:125 },
@@ -166,7 +164,7 @@ const gimmickRounds = {
       { name: "Bret “Hitman” Hart", desc:"Most Inspirational Wrestler of the Year (1994)", slug:"hitman", value:150  },
       { name: "Sting", desc:"Wrestler of the Year (1990)", slug: "sting", value:500 },
       
-      { name: "Brutus “The Barber” Beefcake", desc:"#173, in Pro Wrestling Illustrated's “500 Best Single Wrestlers”", slug:"brutusbeefcake", value:100 },
+      { name: "Brutus “The Barber” Beefcake", desc:"#173 in Pro Wrestling Illustrated's “500 Best Single Wrestlers”", slug:"brutusbeefcake", value:100 },
       { name: "Sgt Slaughter", desc:"Most Hated Wrestler of the Year (1991)", slug: "sgtslaughter", value:195 },      
       { name: "Hacksaw Jim Duggan", desc:"Former Professional Wrestler", slug:"hacksawjimduggan", value:75 },
 
@@ -222,56 +220,34 @@ const gimmickRounds = {
     ]
   },
 
+  topchef: {
+    name: "Top Chef Contestants",
+    desc: "None of these people won the season they were first on.",
+    queue: [
+      { name: "Brother Luck", desc:"11th Place, Season 16 (Kentucky)", slug:"chefbrotherluck", value:54 },
+      { name: "Eric Adjepong", desc:"3rd Place, Season 16 (Kentucky)", slug:"chefericadjepong", value:70 },
+      { name: "Nini Nguyen", desc:"12th Place, Season 16 (Kentucky)", slug:"chefnininguyen", value:95 },
+
+      { name: "Byron Gomez", desc:"6th Place, Season 18 (Portland)", slug:"chefbyrongomez", value:90 },
+      { name: "Shota Nakajima", desc:"Runner Up, Season 18 (Portland)", slug:"chefshota", value:150 },
+      { name: "Sara Hauman", desc:"8th Place, Season 18 (Portland)", slug:"chefsara", value:75 },
+
+      { name: "Richard Blais", desc:"3rd Place, Season 4 (Chicago)", slug:"richardblais", value:115 },
+      { name: "Spike Mendelsohn", desc:"5th Place, Season 4 (Chicago)", slug:"chefspike", value:65 },
+      { name: "Melissa King", desc:"4th Place, Season 12 (Boston)", slug:"chefmelissaking", value:150 },
+
+      { name: "Hugh Acheson", desc:"4th Place, Top Chef Masters Season 3", slug:"hughacheson", value:100 },
+      { name: "Carla Hall", desc:"4th Place, Season 5 (New York)", slug:"carlahall", value:150 },
+      { name: "Nyesha Arrington", desc:"11th Place, Season 9 (Texas)", slug:"nyeshajoyce", value:500 },
+    ],
+    reuseQueueForFinal: true
+  },
+
   test: {
     name: "TEST",
     desc: "does my shit work.",
     queue: [
       { name: "", desc:"", slug:"", value:0 },
-      // { name: "Ben Stein", desc:"Said “Bueller?” in Ferris Bueller's Day Off", slug:"benstein99", value:150 },
-      // { name: "Bob Bergen", desc:"Voice Actor, Porky Pig (1990 - present)", slug:"bobbergen", value:200 },
-      // { name: "Count Binface", desc:"Formerly Lord Buckethead", slug:"countbinface", value:45 },
-
-      // { name: "David Siegel", desc:"George Clooney Lookalike", slug:"davidasclooney", value:85 },
-      // { name: "Donald Trump Jr.", desc:"Idiot", slug:"donaldjtrumpjr", value:500 },
-      // { name: "Don Johnson", desc:"Sonny on Miami Vice", slug:"donjohnson", value:500 },
-
-      // { name: "George Shea", desc:"You Know Those Hot Dog Eating Contests? This Is The Guy That Emcees Them.", slug:"gcshea", value:50  },
-      // { name: "George Clanton", desc:"Vaporwave Musician", slug:"georgeclanton", value:69 },
-      
-
-      // { name: "George", desc:"A Dog", slug:"georgegsd", value:999 },
-      // { name: "George Lowe", desc:"Space Ghost", slug:"georgeloweofficial", value:100 },
-      // { name: "George Wallace", desc:"The Legendary Comedian (Not The Racist Senator)", slug:"georgewallace", value:50  },
-
-      { name: "Horny Mike", desc:"Airbrushes Cars, Sometimes Wears A Bandana With Horns On It", slug:"hornymike", value:50  },
-      { name: "John Bercow", desc:"The Guy That Used To Say “Order” In The House of Commons", slug:"johnbercow", value:110 },
-      { name: "Juicy J", desc:"Member of Three 6 Mafia", slug:"juicyjay", value:500 },
-
-      { name: "Kody Brown", desc:"Has Four Wives, TLC Made A Show About It", slug:"kodywinnbrown", value:75 },
-      { name: "Nigel Farage", desc:"Caused Brexit, Pretty Much", slug:"nigelfarage", value:100 },
-      { name: "Rudy W. Giuliani", desc:"No longer licensed to practice law.", slug:"rudygiuliani", value:375 },  
-
-      { name: "Ruth Buzzi", desc:"Cast Member, Rowan & Martin's Laugh-In", slug:"ruth_buzzi", value:500 },
-      { name: "Shirtless Violinist", desc: "Plays The Violin (Without A Shirt On)", slug:"shirtlessviolinist", value:250 },
-      { name: "Wayne Knight", desc:"Newman on Seinfeld, Nedry in Jurassic Park", slug: "wanite1", value:330 },
-
-      { name: "George Foreman", desc:"Has Five Sons Named George (And A Daughter Named Georgetta)", slug:"georgeforeman", value:750 },
-      { name: "George Lowe", desc:"Space Ghost", slug:"georgeloweofficial", value:100 },
-      { name: "George Wallace", desc:"The Legendary Comedian (Not The Racist Senator)", slug:"georgewallace", value:50  },
     ]
   }
 };
-
-/*
-///////////////////////////////////////////////////////////
-// These people ARE in gimmick rounds, but ARE NOT in the basic game.
-{ name: "Richard Blais", desc:"Perennial Top Chef Contestant", slug:"richardblais", value:115 },
-{ name: "Richard Hatch", desc:"Winner, Survivor Season 1", slug:"richhatch", value:50 },
-{ name: "Richard Dreyfuss", desc:"Hooper in Jaws", slug:"richarddreyfuss1", value:999 },
-{ name: "Richard Patrick", desc:"Vocals, Filter", slug:"filter_richard_patrick", value:70 },
-{ name: "Richard Roeper", desc:"Movie Critic, Formerly of Ebert & Roeper", slug:"richarderoeper", value:55 },
-{ name: "Richard Brake", desc:"The Night King on Game of Thrones", slug:"richbrake", value:80 },
-{ name: "Richard Turner", desc:"Bassist, Blackberry Smoke", slug:"richardturner", value:50 },
-{ name: "Richard Petty", desc:"NASCAR driver", slug:"rlpetty43", value:250 },
-{ name: "Richard Rosenblatt", desc:"Former Chairman of MySpace", slug:"richardrosenblatt", value:30 },
-*/
