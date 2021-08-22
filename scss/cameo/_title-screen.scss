@@ -34,12 +34,13 @@ main.title-screen { min-height: 99.9999vh;  color:#eee; display:grid; grid-templ
 
 
 // Gimmick Round Selector
-.select-gimmick-rounds { @include position(fixed,null,0,0,0); padding-top:40px; background:rgba(#160b22,0.65); backdrop-filter: blur(16px);
-  form { width:100%; max-width:320px; margin-left: auto; margin-right: auto; padding: 1em; display:grid; gap:10px; }
+.select-gimmick-rounds { @include position(fixed,null,0,0,0); padding-top:40px; padding-bottom: 40px;; background:rgba(#160b22,0.65); backdrop-filter: blur(16px);
+  form { width:100%; max-width:320px; margin-left: auto; margin-right: auto; padding: 1em; display:grid; gap:10px; border:1px solid rgba(255,255,255,0.35); }
   select { background:transparent; font-family: inherit; appearance: none; border:2px solid white; font-size:1.25rem; color:white; padding:0.5em 1.25em; width:100%; border-radius: 0; }
   option { color:#a2e3fd; padding:0.25em; background:#18072d; 
     &[value=""] { color:rgba(255,255,255,0.5); }
   }
+  .gimmick-desc { text-align: center; margin-bottom: 1em; color:#5bd0ff; font-size:1.1rem; }
   .button-holder { text-align: center; }
   button { font-family: $displayFont; background:transparent; border:1px solid; color:white; font-size:1.85rem; padding:0.25em 1em; cursor: pointer;
     &[type="submit"] { margin-left: 0.2em;  color: #1cb3ef; border-color: #1cb3ef;
@@ -53,4 +54,6 @@ main.title-screen { min-height: 99.9999vh;  color:#eee; display:grid; grid-templ
       &:hover, &:focus { background:transparent; }
     }
   }
+
+
 }
