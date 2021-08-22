@@ -160,7 +160,8 @@ app.get('/stats/live/cameo/json', (req, res) => {
     celebScores: [],
     playerScores: [],
     valuations: [],
-    celebs: []
+    celebs: [],
+    specialGames: []
   };
   liveConnection.query('SELECT * FROM cameoCelebScores;', function(err, results) {
     if(err) throw err;
@@ -173,6 +174,10 @@ app.get('/stats/live/cameo/json', (req, res) => {
   liveConnection.query('SELECT * FROM cameoValuations;', function(err, results) {
     if(err) throw err;
     cameoData.valuations = results;
+  });
+  liveConnection.query('SELECT * FROM cameoSpecialGames;', function(err, results) {
+    if(err) throw err;
+    cameoData.specialGames = results;
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(cameoData));
   });

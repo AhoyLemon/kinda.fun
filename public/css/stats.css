@@ -228,11 +228,32 @@ section .stats-boxes .box {
   padding: 20px;
   color: rgba(0, 0, 0, 0.9);
 }
+section .stats-boxes .caption {
+  font-size: 90%;
+  text-transform: uppercase;
+}
 section .stats-boxes .big-number .number {
   font-size: 260%;
 }
 section .stats-boxes .time-ago {
-  font-size: 185%;
+  font-size: 210%;
+}
+section .stats-boxes .big-name .name {
+  font-size: 210%;
+}
+section .stats-boxes.with-table {
+  -ms-grid-columns: 3fr 1fr;
+  grid-template-columns: 3fr 1fr;
+}
+section .stats-boxes.with-table .boxes {
+  display: -ms-grid;
+  display: grid;
+  gap: 40px;
+  -ms-grid-columns: 1fr 40px 1fr 40px 1fr;
+  grid-template-columns: repeat(3, 1fr);
+}
+section .stats-boxes.with-table .good-table {
+  padding-top: 0;
 }
 section .good-tables {
   display: -ms-grid;
@@ -424,12 +445,18 @@ aside.general-stats {
   padding: 100px 20px;
   font-family: "Lora", serif;
 }
+aside.general-stats .inside {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 20px;
+}
 aside.general-stats .summary {
-  margin-bottom: 6em;
+  margin-bottom: 4rem;
 }
 aside.general-stats .summary figure {
   cursor: pointer;
   opacity: 0.5;
+  margin-bottom: 1rem;
 }
 aside.general-stats .summary figure:hover {
   opacity: 1;
@@ -437,6 +464,15 @@ aside.general-stats .summary figure:hover {
 aside.general-stats .summary.active figure {
   cursor: default;
   opacity: 1;
+}
+aside.general-stats .summary.inactive {
+  color: rgba(255, 255, 255, 0.65);
+}
+aside.general-stats .summary .time-caption {
+  text-transform: uppercase;
+}
+aside.general-stats .summary .time-ago {
+  font-size: 165%;
 }
 
 .stats-screen {

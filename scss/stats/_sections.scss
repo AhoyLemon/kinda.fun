@@ -7,10 +7,22 @@ section { font-size:20px; font-family: $serif;
 
   .stats-boxes { display:grid; gap:$gap; grid-template-columns: repeat(4,1fr);
     .box { background:rgba(255,255,255,0.75); padding:$padding; color:rgba(0,0,0,0.9) }
+    .caption { font-size:90%; text-transform: uppercase; }
     .big-number {
       .number { font-size:260%; }
     }
-    .time-ago { font-size:185%; }
+    .time-ago { font-size:210%; }
+
+    .big-name { 
+      .name { font-size:210%; }
+    }
+
+
+
+    &.with-table { grid-template-columns: 3fr 1fr;
+      .boxes {  display:grid; gap:$gap; grid-template-columns: repeat(3,1fr); }
+      .good-table { padding-top:0; }
+    }
   }
 
   .good-tables { display:grid; grid-template-columns: repeat(3,1fr); gap:$gap;

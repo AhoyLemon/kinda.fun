@@ -42,7 +42,7 @@ main.title-screen(v-if="!game.started")
         div.gimmick-desc {{gimmick.selected.desc}}
       fieldset
         select(id="GimmickSelector" @change="selectGimmickRound($event)" v-model="gimmick.selectedIndex")
-          option(value="" disabled) -- Select A Round --
+          option(value="" disabled) -- Select A Special Game --
           option(v-for="(gimmickRound, index) in gimmick.rounds" :value="index") {{gimmickRound.name}}
       fieldset.button-holder
         button(type="reset" @click="gimmick.selectorVisible = false") Cancel
