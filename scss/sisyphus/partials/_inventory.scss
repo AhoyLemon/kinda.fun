@@ -17,7 +17,7 @@ aside.inventory { z-index: 2; overflow: hidden;
   }
 
   button.toggle.inventory { background-color:#0083b0; height:40px; width:40px; display: block; border:none; color:white; border-radius: 50%; font-size:20px; line-height: 40px;
-    @include position(fixed,4px,null,null,4px); z-index: $z-drawer-toggle;
+    @include position(fixed,80px,null,null,20px); z-index: $z-drawer-toggle;
   }
 
 }

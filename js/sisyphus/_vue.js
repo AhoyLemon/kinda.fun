@@ -1,6 +1,7 @@
 var app = new Vue({
   el: '#app',
   data: {
+    gameName: "sisyphus",
     phase: 'begin',
     message: 'Click Sisyphus to push the rock uphill.',
     score: 0,
@@ -41,13 +42,13 @@ var app = new Vue({
         self.getCheevo('10,000 Clicks', "That's a whole lot of clicks!", 25);
       }
 
-      if (self.totalClicks == 134) {
+      if (self.totalClicks == 143) {
         var audio = new Audio('audio/bylemon.mp3');
+        audio.volume = 0.5;
         audio.play();
         new PNotify({
           title: '<a href="https://ahoylemon.xyz">This site is by Lemon.</a>',
           addclass: 'stack-bottomright site-by-lemon',
-          //delay: (PNotify.prototype.options.delay * 4)
         });
       }
 
@@ -75,13 +76,34 @@ var app = new Vue({
         bT = (self.s.pushForce * 0.75);
         self.bg.transform -= bT;
         
-        //alert(self.r.peak);
         if (self.r.left >= self.r.peak) {
+          // The rock just fell back downhill
           self.r.bottom = begin.r.bottom;
           self.r.left = begin.r.left;
           self.r.falling = true;
           self.s.retreating = true;
           self.switchMessage('falling');
+          self.r.rollbacks++;
+
+          sendEvent("Rollback", self.r.rollbacks+' time(s)');
+          
+          socket.emit('sisyphusRollback', {
+            gameName: self.gameName
+          });
+
+          // Rollback Cheevos
+          switch(self.r.rollbacks) {
+            case 3:
+              self.getCheevo('Antiturkey', 'Three gutterballs! Clearly you should keep bowling.', 10);
+              break;
+            case 7:
+              self.getCheevo('Still failing!', "It's rolled back 7 times now, but don't let that stop you.", 15);
+              break;
+            case 13:
+              self.getCheevo('13 Rollbacks', "Hey, I know the rock has rolled back down the hill 13 times. Next time tho....", 15);
+              break;
+          }
+
         }
 
         /////////////////////////////
@@ -122,20 +144,6 @@ var app = new Vue({
           self.r.falling = false;
           self.fg.transform = 0;
           self.bg.transform = 0;
-          self.r.rollbacks++;
-          sendEvent("Rollback", self.r.rollbacks+' time(s)');
-
-          switch(self.r.rollbacks) {
-            case 3:
-              self.getCheevo('Antiturkey', 'Three gutterballs! Clearly you should keep bowling.', 10);
-              break;
-            case 7:
-              self.getCheevo('Still failing!', "It's rolled back 7 times now, but don't let that stop you.", 15);
-              break;
-            case 13:
-              self.getCheevo('13 Rollbacks', "Hey, I know the rock has rolled back down the hill 13 times. Next time tho....", 15);
-              break;
-          }
 
         }
       } 
@@ -388,6 +396,15 @@ var app = new Vue({
         }, 1500);
       }
       
+
+      // Log this Cheevo in the database.
+      socket.emit('sisyphusEarnedCheevo', {
+        gameName: self.gameName,
+        title: title,
+        text: text,
+        points: points
+      });
+
     },
 
     remindMeOfMyCheevos() {
@@ -482,6 +499,7 @@ var app = new Vue({
       });
       return a;
     },
+
     computedGamerScore() {
       const self = this;
       let gamerScore = 0;
@@ -502,6 +520,9 @@ var app = new Vue({
       self.everySecond();
     }, 1000); 
 
+    socket.emit('sisyphusMounted', {
+      gameName: self.gameName
+    });
   }
 
 });

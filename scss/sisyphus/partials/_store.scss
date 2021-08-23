@@ -21,7 +21,7 @@ aside.store { overflow: hidden;  overflow-y: auto;
   }
 
   button.toggle.store { background-color:#ff416c; height:40px; width:40px; display: block; border:none; color:white; border-radius: 50%; font-size:20px; line-height: 40px;
-    @include position(fixed,4px,4px); z-index: $z-drawer-toggle;
+    @include position(fixed,20px,null,null,20px); z-index: $z-drawer-toggle;
   }
 }
 
