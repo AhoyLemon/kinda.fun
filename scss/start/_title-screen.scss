@@ -1,4 +1,4 @@
-
+html { overflow-x: hidden; }
 .title-screen { display:grid; min-height: 99vh;  font-family: 'Lora', serif;
   .choice-holder { display:flex; align-items: center; justify-content: center;
     .inner { width:100%; }
@@ -8,7 +8,9 @@
   .game-choices {
     .game { 
       
-      figure { padding-bottom: 20px; cursor: pointer; transition:all 0.5s ease; }
+      figure { padding-bottom: 20px; cursor: pointer; transition:all 0.5s ease;
+        img { width:100%; max-width: 220px;}
+      }
       .slogan { margin-bottom: 1em; font-style: italic; font-size:110%; }
       .players-allowed { font-size:90%;}
       figcaption { opacity: 0; transition:opacity 0.5s linear; } 
@@ -45,28 +47,24 @@
   }
 }
 
-@media (max-width:600px) {
+@media (max-width:940px) {
   .title-screen {
-    .game-choices { display:grid; grid-template-columns: 1fr;
+    .game-choices { display:grid; grid-template-columns: 1fr; margin-bottom: 20vw;
       .game {
         figure { width:100%; max-width: 225px; margin-left: auto; margin-right: auto; }
       }
     }
-    .create-or-join { padding-top:2em;
+    .create-or-join { @include position(fixed,null,0,0,0); background:rgba(0,0,0,0.5); padding-top:0.5em; padding-bottom: 0.5em;
+      button, .or { font-size:5vw }
       .options { text-align: center;
-        button, .or { font-size:5vw }
         > * { display: inline-block; }
       }
     }
   }
 }
-@media (min-width:601px) {
+@media (min-width:941px) {
   .title-screen { grid-template-rows: 1fr 105px;
-    .game-choices { display: flex; align-items: center; justify-content: center;
-      .game { flex-basis: 320px; margin-right: 80px; 
-        &:last-child { margin-right: 0; }
-      }
-    }
+    .game-choices { display:grid; grid-template-columns: repeat(4,1fr); gap:40px; padding-left: 20px; padding-right: 20px; }
     .create-or-join { 
       .options { display:grid; grid-template-columns: 1fr 60px 1fr; }
       button { font-size:36px; }

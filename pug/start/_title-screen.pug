@@ -80,9 +80,41 @@
               "genre": "comedy",
               "description": "You're going to defend some very stupid ideas.",
             }
+        .game(:class="{ active: (gameChoice == 'sisyphus'), inactive: (gameChoice && gameChoice != 'sisyphus') }")
+          figure.logo(@click="gameChoice = 'sisyphus'")
+            img(src="svg/sisyphus/logo-ornate.svg")
+          figcaption
+            .slogan Push the rock uphill. Earn cheevos.
+            .players-allowed
+              | For 1 player
+              br
+              | (1 very lonely player)
+          script(type="application/ld+json").
+            {
+              "@context": "http://schema.org",
+              "@type": "VideoGame",
+              "name": "The Wrongest Words",
+              "url": "https://kinda.fun/wrongest",
+              "image": "https://kinda.fun/img/og-wrongest.png",
+              "playMode": "MultiPlayer",
+              "applicationCategory": "browser game",
+              "gamePlatform": "web browser",
+              "operatingSystem": "web browser",
+              "genre": "comedy",
+              "description": "You're going to defend some very stupid ideas.",
+
+        //.game
+          figure.logo
+            img(src="svg/sisyphus/logo-simple.svg")
+          figcaption
+            .slogan Push the rock uphill. See what happens next.
+            .players-allowed
+              | For 1 player
+              br
+              | (1 very lonely player)
 
   .create-or-join(v-if="gameChoice")
-    .start-playing(v-if="gameChoice == 'cameo'")
+    .start-playing(v-if="gameChoice == 'cameo' || gameChoice == 'sisyphus'")
       button(@click="startSinglePlayerGame()") Start Playing
     .options(v-else)
       .create
@@ -93,5 +125,3 @@
 
       .join
         button(@click="joinRoom()") Join a Room
-
-    

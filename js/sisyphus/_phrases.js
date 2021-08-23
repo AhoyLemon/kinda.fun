@@ -5,7 +5,8 @@ const keepPushingMessages = [
   "This time should work.",
   "Push the rock back up hill.",
   "You must push the rock uphill.",
-  "Continue pushing the rock uphill."
+  "Continue pushing the rock uphill.",
+  "Push the rock uphill, Sisyphus."
 ];
 
 const rockFellMessages = [
@@ -15,7 +16,9 @@ const rockFellMessages = [
   "The rock fell.",
   "Oh no.",
   "Crap!",
-  "Well, that's not great."
+  "Well, that's not great.",
+  "Shit.",
+  "The rock fell, Sisyphus."
 ];
 
 const retreatMessages = [
@@ -25,7 +28,7 @@ const retreatMessages = [
   "Maybe next time.",
   "No problem! Just go back.",
   "Go back down the hill.",
-  "Retrieve the rock",
+  "Retrieve the rock.",
   "Okay, back down to the bottom.",
   "Return for the boulder, Sisyphus.",
   "You must return for the boulder."

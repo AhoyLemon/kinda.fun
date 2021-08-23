@@ -85,6 +85,16 @@ function updateCameoStats(cameoName, sortScore, birthdayWishes) {
   });
 }
 
+function logCheevoEarned(title,text,points) {
+  const sql = `INSERT INTO sisyphusCheevos (iname, description, pointValue)
+                VALUES (${connection.escape(title)}, ${connection.escape(text)}, ${connection.escape(points)})
+                ON DUPLICATE KEY UPDATE icount = icount+1`;
+  connection.query(sql, function(err, rows, fields) {
+    if (err) throw err;
+  });
+}
+
+
 /////////////////////////////////////////////////////////////////////////////
 // Routing
 
@@ -650,11 +660,30 @@ io.on('connection', (socket) => {
   });
 
 
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  // SISYPHUS CLICKER sockets...
+
+  socket.on('sisyphusMounted', msg => {
+    console.log("a player mounted a game of SISYPHUS CLICKER");
+  });
+
+  socket.on('sisyphusRollback', msg => {
+    console.log("The Rock rolled back downhill");
+    incrementDatabase('sisyphusCounts', "Rock Rolled Downhill");
+  });
+
+  socket.on('sisyphusEarnedCheevo', msg => {
+    console.log("Cheevo Earned: " + msg.title);
+    logCheevoEarned(msg.title, msg.text, msg.points);
+  });
 
 
 
 
-
+  //incrementDatabase('sisyphusCounts', "Rock Rolled Downhill");
 
 
 
