@@ -34,25 +34,39 @@ var app = new Vue({
       let bT;
       self.totalClicks++;
 
-      if (self.totalClicks == 437) {
-        self.getCheevo('437 clicks', "You've clicked on Sisyphus 437 times. And while that may seem like a meaningless number, have you considered that any other number is equally meaningless?", 25);
-      } else if (self.totalClicks == 1000) {
-        self.getCheevo('4 digits of clicks', "You've now clicked on Sisyphus 1,000 times. That might be too many times.", 25);
-      } else if (self.totalClicks == 10000) {
-        self.getCheevo('10,000 Clicks', "That's a whole lot of clicks!", 25);
+      // Actions taken on specific clicks
+      switch (self.totalClicks) {
+
+        case 1:
+          socket.emit('sisyphusStartGame', {
+            gameName: self.gameName
+          });
+          break;
+        case 143:
+          // 
+          var audio = new Audio('audio/bylemon.mp3');
+          audio.volume = 0.5;
+          audio.play();
+          new PNotify({
+            title: '<a href="https://ahoylemon.xyz">This site is by Lemon.</a>',
+            addclass: 'stack-bottomright site-by-lemon',
+          });
+          break;
+        
+        // These are all cheevos
+        case 437:
+          self.getCheevo('437 clicks', "You've clicked on Sisyphus 437 times. And while that may seem like a meaningless number, have you considered that any other number is equally meaningless?", 25);
+          break;
+        case 1000:
+          self.getCheevo('4 digits of clicks', "You've now clicked on Sisyphus 1,000 times. That might be too many times.", 25);
+          break;
+        case 1000:
+          self.getCheevo('10,000 Clicks', "That's a whole lot of clicks!", 25);
+          break;
       }
 
-      if (self.totalClicks == 143) {
-        var audio = new Audio('audio/bylemon.mp3');
-        audio.volume = 0.5;
-        audio.play();
-        new PNotify({
-          title: '<a href="https://ahoylemon.xyz">This site is by Lemon.</a>',
-          addclass: 'stack-bottomright site-by-lemon',
-        });
-      }
-
-      if (self.totalClicks > 25) {
+      // Measure clicks in the browser window.
+      if (self.totalClicks > 125) {
         document.title = "["+addCommas(self.totalClicks)+"]" + " Sisyphus Clicked";
       }
 
@@ -108,8 +122,6 @@ var app = new Vue({
 
         /////////////////////////////
         // 🏆 Pushing rock cheevos
-
-
         if (self.totalScore == 100) {
           self.getCheevo('Making progress', "You have pushed the rock uphill 100 times. Congratulations?", 6);
         } else if (self.totalScore == 300) {
@@ -160,11 +172,17 @@ var app = new Vue({
         n.showDesc = false;
         self.inventory.push(n);
         
-        //self.store.splice(i,1);
-        removeFromArray(self.store,'id',item.id);
+        removeFromArrayByKey(self.store,'id',item.id);
         self.buyItemEffect(item.id);
 
         sendEvent('item purchase', item.name, item.price);
+        socket.emit('sisyphusBoughtItem', {
+          gameName: self.gameName,
+          id:item.id,
+          name:item.name,
+          desc:item.desc,
+          price:item.price
+        });
       
         if (self.inventory.length == 1) {
           self.getCheevo('Shopping In Hades!', 'First item purchased.', 10);
@@ -424,8 +442,6 @@ var app = new Vue({
       }
 
     },
-
-
 
     everySecond() {
       let self = this;
