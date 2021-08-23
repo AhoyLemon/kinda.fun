@@ -33,6 +33,7 @@ var app = new Vue({
       let r = self.s.retreatSpeed;
       let bT;
       self.totalClicks++;
+      document.getElementById('Sisyphus').blur();
 
       // Actions taken on specific clicks
       switch (self.totalClicks) {
@@ -531,14 +532,10 @@ var app = new Vue({
 
   mounted: function() {
     let self = this;
-    //self.getCheevo('Loaded Game', "SQUEAK!", 60);
     setInterval(function () {
       self.everySecond();
     }, 1000); 
 
-    socket.emit('sisyphusMounted', {
-      gameName: self.gameName
-    });
   }
 
 });
