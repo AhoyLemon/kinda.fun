@@ -1,7 +1,15 @@
-- var testing = true
+// HEY! Make sure this is FALSE when you push live.
+- var testing = false
+
 - var siteTitle = "Sisyphus Clicker"
-- var siteURL = "https://kinda.fun"
-- var pageURL = "https://kinda.fun/sisyphus"
+
+- var siteURL
+if (testing)
+  - siteURL = "http://localhost:3000"
+else 
+  - var siteURL = "https://kinda.fun"
+
+- var pageURL = siteURL + "/sisyphus"
 - var description = "Click on Sisyphus to push the rock up the mountain (formerly futile.fun)"
 - var d = new Date()
 - var lastUpdated = d.getFullYear() + '-' + (d.getMonth()<10?'0':'') + d.getMonth() + '-' + (d.getDate()<10?'0':'') + d.getDate() + '@' + (d.getHours()<10?'0':'') + d.getHours() + ':' + (d.getMinutes()<10?'0':'') + d.getMinutes() + ':' + (d.getSeconds()<10?'0':'') + d.getSeconds()
