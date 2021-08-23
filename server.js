@@ -86,9 +86,17 @@ function updateCameoStats(cameoName, sortScore, birthdayWishes) {
 }
 
 function logCheevoEarned(title,text,points) {
-  const sql = `INSERT INTO sisyphusCheevos (iname, description, pointValue)
-                VALUES (${connection.escape(title)}, ${connection.escape(text)}, ${connection.escape(points)})
-                ON DUPLICATE KEY UPDATE icount = icount+1`;
+  const sql = `INSERT INTO sisyphusCheevos (iname, description, pointValue, lastEarned)
+                VALUES (${connection.escape(title)}, ${connection.escape(text)}, ${connection.escape(points)}, NOW())
+                ON DUPLICATE KEY UPDATE icount = icount+1, lastEarned = NOW()`;
+  connection.query(sql, function(err, rows, fields) {
+    if (err) throw err;
+  });
+}
+function logSisyphusItemPurchase(name,desc,price) {
+  const sql = `INSERT INTO sisyphusPurchases (iname, description, price, lastPurchase)
+                VALUES (${connection.escape(name)}, ${connection.escape(desc)}, ${connection.escape(price)}, NOW())
+                ON DUPLICATE KEY UPDATE icount = icount+1, lastPurchase = NOW()`;
   connection.query(sql, function(err, rows, fields) {
     if (err) throw err;
   });
@@ -666,8 +674,10 @@ io.on('connection', (socket) => {
   /////////////////////////////////////////////////////////////////////////////
   // SISYPHUS CLICKER sockets...
 
-  socket.on('sisyphusMounted', msg => {
-    console.log("a player mounted a game of SISYPHUS CLICKER");
+  socket.on('sisyphusStartGame', msg => {
+    console.log("a player started a game of SISYPHUS CLICKER");
+    DateStampInDatabase("allGamesLastPlayed", msg.gameName);
+    incrementDatabase('sisyphusCounts', "First Click");
   });
 
   socket.on('sisyphusRollback', msg => {
@@ -678,6 +688,11 @@ io.on('connection', (socket) => {
   socket.on('sisyphusEarnedCheevo', msg => {
     console.log("Cheevo Earned: " + msg.title);
     logCheevoEarned(msg.title, msg.text, msg.points);
+  });
+
+  socket.on('sisyphusBoughtItem', msg => {
+    console.log("Bought Item: " + msg.name);
+    logSisyphusItemPurchase(msg.name,msg.desc,msg.price);
   });
 
 

@@ -1,4 +1,9 @@
 const storeItems = [
+
+  // {
+  //   id: 0, name: "Test Item", price: 1, scoreToReveal: 5,
+  //   desc: "This shouldn't show up in a production db.",
+  // },
   {
     id: 1, name: "Fresh Kicks", price: 85, scoreToReveal: 60,
     desc: "Better arch support means that you can move slightly faster",
