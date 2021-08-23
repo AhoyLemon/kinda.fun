@@ -1,6 +1,6 @@
 ![kinda.fun](https://kinda.fun/og-wide.png)
 
-There's currently three games here.
+There's currently four games here.
 
 ## Comparatively Famous
 ![Comparatively Famous Logo](https://kinda.fun/img/og-famous.png)
