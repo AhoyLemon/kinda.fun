@@ -392,17 +392,17 @@ var app = new Vue({
     },
     formatTime(stamp,format) {
       if (format == "fromNow") {
-        return moment(stamp).subtract('6','hours').fromNow();
+        return moment(stamp).tz("America/Chicago").fromNow();
       } else if (format == "calendar") {
         if (moment(stamp).diff(moment(),'days') > -7) {
-          return moment(stamp).subtract('6','hours').calendar();
+          return moment(stamp).tz("America/Chicago").calendar();
         } else {
-          return moment(stamp).subtract('6','hours').format('MMM Do @ LT');
+          return moment(stamp).tz("America/Chicago").format('MMM Do @ LT');
         }
       } else if (format) {
-        return moment(stamp).subtract('6','hours').format(format);
+        return moment(stamp).tz("America/Chicago").format(format);
       } else {
-        return moment(stamp).subtract('6','hours').format('LLLL');
+        return moment(stamp).tz("America/Chicago").format('LLLL');
       }
     },
     addCommas(n) {
@@ -428,7 +428,7 @@ var app = new Vue({
     },
     formatDate(d) {
       if (d) {
-        return moment(d).subtract('6','hours').format('MMM Do @ h:ss a'); 
+        return moment(d).tz("America/Chicago").format('MMM Do @ h:ss a'); 
       } else {
         return "";
       }
