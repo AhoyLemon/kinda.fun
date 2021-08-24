@@ -12,6 +12,7 @@ app.use(express.static('public'));
 const jawsDBurl = (process.env.JAWSDB_CRIMSON_URL || secrets.devSQLurl);
 const liveDBurl = (process.env.JAWSDB_CRIMSON_URL || secrets.liveSQLurl);
 console.log('SERVER: '+jawsDBurl);
+console.log('LIVE: '+liveDBurl); 
 var mysql = require('mysql');
 var connection = mysql.createConnection(jawsDBurl);
 var liveConnection = mysql.createConnection(liveDBurl);
