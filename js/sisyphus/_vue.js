@@ -1,3 +1,10 @@
+const uphillMusic = new Howl({
+  src: ['audio/sisyphus/uphill1.mp3']
+});
+const downhillMusic = new Howl({
+  src: ['audio/sisyphus/downhill.mp3']
+});
+
 var app = new Vue({
   el: '#app',
   data: {
@@ -22,7 +29,11 @@ var app = new Vue({
     inventory: [],
     cheevos: [],
     cheevoPoints: 0,
-    cheevoReminders: 0
+    cheevoReminders: 0,
+
+    // Audio stuff
+    isMusicPlaying: false,
+    uphillMusicTimer: undefined,
   },
 
   methods: {
@@ -71,6 +82,7 @@ var app = new Vue({
         document.title = "["+addCommas(self.totalClicks)+"]" + " Sisyphus Clicked";
       }
 
+      // Are you going up or down?
       if (self.s.retreating == false) {
 
         //////////////////////////////////////////////////////////////
@@ -86,6 +98,24 @@ var app = new Vue({
         self.r.bottom += f;
         self.r.left += f;
 
+        // Music check
+
+        if (self.uphillMusicTimer) {
+          clearTimeout(self.uphillMusicTimer);
+        }
+        self.uphillMusicTimer = setTimeout(function(){
+          uphillMusic.pause();
+          self.isMusicPlaying = false;
+        }, 650);
+
+        if (!self.isMusicPlaying) {
+          uphillMusic.play();
+          self.isMusicPlaying = true;
+        } else if (self.uphillMusicTimer) {
+        }
+
+
+
 
         //background transform
         bT = (self.s.pushForce * 0.75);
@@ -99,6 +129,13 @@ var app = new Vue({
           self.s.retreating = true;
           self.switchMessage('falling');
           self.r.rollbacks++;
+
+          uphillMusic.stop();
+          downhillMusic.play();
+          setTimeout(function(){
+            downhillMusic.stop();
+            self.isMusicPlaying = false;
+          }, 2000);
 
           sendEvent("Rollback", self.r.rollbacks+' time(s)');
           
@@ -534,7 +571,7 @@ var app = new Vue({
     let self = this;
     setInterval(function () {
       self.everySecond();
-    }, 1000); 
+    }, 1000);
 
   }
 
