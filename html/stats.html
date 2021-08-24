@@ -45,6 +45,17 @@
                 <button @click="getData('wrongest')">Details</button>
               </div>
             </div>
+            <div class="summary" v-if="stats.general &amp;&amp; stats.general.lastPlayed">
+              <figure><img src="svg/sisyphus/logo-simple.svg" @click="getData('sisyphus')"/></figure>
+              <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.sisyphus">
+                <div class="time-caption">Last Game</div>
+                <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.sisyphus,'fromNow')"></div>
+                <div class="calendar" v-text="formatTime(stats.general.lastPlayed.sisyphus,'calendar')"></div>
+              </div>
+              <div class="button-holder">
+                <button @click="getData('sisyphus')">Details</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="player-table"> 
@@ -75,6 +86,13 @@
             <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.wrongest">
               <div class="time-caption">Last Game</div>
               <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')"></div>
+            </div>
+          </div>
+          <div class="summary" :class="{ active: (ui.viewing == 'sisyphus'), inactive: (ui.viewing != 'sisyphus') }">
+            <figure><img src="svg/sisyphus/logo-simple.svg" @click="getData('sisyphus')"/></figure>
+            <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.sisyphus">
+              <div class="time-caption">Last Game</div>
+              <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.sisyphus,'fromNow')"></div>
             </div>
           </div>
         </div>

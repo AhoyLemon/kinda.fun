@@ -349,12 +349,13 @@ main.general-stats .game-summaries {
   display: -ms-grid;
   display: grid;
   gap: 80px;
-  -ms-grid-columns: 1fr 80px 1fr 80px 1fr;
-  grid-template-columns: repeat(3, 1fr);
+  -ms-grid-columns: 1fr 80px 1fr 80px 1fr 80px 1fr;
+  grid-template-columns: repeat(4, 1fr);
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  max-width: 1000px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 main.general-stats .game-summaries .summary {
   text-align: center;
@@ -375,6 +376,7 @@ main.general-stats .game-summaries figure {
 main.general-stats .game-summaries img {
   cursor: pointer;
   opacity: 0.8;
+  max-width: 100%;
 }
 main.general-stats .game-summaries img:hover, main.general-stats .game-summaries img:focus {
   opacity: 1;
@@ -444,6 +446,9 @@ main.general-stats .good-table table.vgt-table .last-played-cell {
 aside.general-stats {
   padding: 100px 20px;
   font-family: "Lora", serif;
+}
+aside.general-stats img {
+  max-width: 100%;
 }
 aside.general-stats .inside {
   position: -webkit-sticky;
