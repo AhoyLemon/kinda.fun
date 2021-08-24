@@ -2,7 +2,7 @@ const uphillMusic = new Howl({
   src: ['audio/sisyphus/uphill1.mp3']
 });
 const downhillMusic = new Howl({
-  src: ['audio/sisyphus/downhill.mp3']
+  src: ['audio/sisyphus/downhill2.mp3']
 });
 
 var app = new Vue({
