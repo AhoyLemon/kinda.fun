@@ -14,5 +14,10 @@ html
 body
   #app(v-cloak)
     include start/_title-screen.pug 
+
+    if testing
+        link(rel="stylesheet" href="css/testing.css")
+        .testing-banner.start
+          .inner Test Mode Is On
   
   include start/_javascripts

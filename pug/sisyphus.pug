@@ -25,6 +25,10 @@ html(lang="en")
       include sisyphus/_store.pug
       include sisyphus/_inventory.pug
       include sisyphus/_counter.pug
+      if testing
+        link(rel="stylesheet" href="css/testing.css")
+        .testing-banner.sisyphus
+          .inner Test Mode Is On
 
     include sisyphus/_javascripts.pug
     include sisyphus/_schema.pug

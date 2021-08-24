@@ -573,6 +573,25 @@ var app = new Vue({
       self.everySecond();
     }, 1000);
 
+    if (testing) {
+
+      // If you're in testing mode
+      // Press space to click
+      // hold down enter to continually advance.
+      window.addEventListener('keydown', function(ev) {
+        if (ev.code == "Enter") {
+          self.sisyphusClick();
+        }
+      });
+      window.addEventListener('keyup', function(ev) {
+        console.log(ev);
+        if (ev.code == "Space") {
+          self.sisyphusClick();
+        }
+      });
+
+    } 
+
   }
 
 });

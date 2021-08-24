@@ -12,5 +12,9 @@ body
     include wrongest/_presenting.pug
     include wrongest/_voting.pug
     include wrongest/_game-over.pug
+    if testing
+      link(rel="stylesheet" href="css/testing.css")
+      .testing-banner.wrongest
+        .inner Test Mode Is On
 
   include wrongest/_javascripts.pug
