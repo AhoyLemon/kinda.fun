@@ -13,12 +13,6 @@ main.title-screen(v-if="!game.started")
         p
           strong THIS 
           |  is a game about guessing those prices.
-        
-      //-.video-holder(v-if="ui.watchingVideo")
-        figure.video
-          iframe#ytplayer(type="text/html" src="https://www.youtube-nocookie.com/embed/2jE6ifrz9bU?autoplay=1&controls=0&fs=0&modestbranding=1&playsinline=1&color=white" frameborder="0" allowfullscreen)
-        figcaption
-          button.close-video(@click="ui.watchingVideo = false") Okay, close this video. 
 
   .start-or-load
     .start
@@ -28,16 +22,10 @@ main.title-screen(v-if="!game.started")
       span or
 
     .load
-      //-.disclaimer
-        .load-game-disclaimer.animate__animated.animate__fadeInUp.animate__faster(v-if="ui.loadGameClicked")
-          strong Loading saved games isn't ready yet. 
-          br
-          br
-          span Eventually you'll be able to play special rounds, and games your friends created. But for now, just start a new game.
       button.start-multi(id="LoadGameButton" @click="loadGame()") Load Special
 
-  .select-gimmick-rounds(v-if="gimmick.selectorVisible")
-    form(@submit.prevent="startSinglePlayerGame()")
+  .select-gimmick-rounds.animate__animated.animate__fadeIn(v-if="gimmick.selectorVisible")
+    form.animate__animated.animate__bounceInUp(@submit.prevent="startSinglePlayerGame()")
       fieldset(v-if="gimmick.selected && gimmick.selected.desc")
         div.gimmick-desc {{gimmick.selected.desc}}
       fieldset
