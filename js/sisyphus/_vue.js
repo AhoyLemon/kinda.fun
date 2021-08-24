@@ -60,7 +60,7 @@ var app = new Vue({
           audio.volume = 0.5;
           audio.play();
           new PNotify({
-            title: '<a href="https://ahoylemon.xyz">This site is by Lemon.</a>',
+            title: '<a href="https://ahoylemon.xyz" target="_blank">This site is by Lemon.</a>',
             addclass: 'stack-bottomright site-by-lemon',
           });
           break;
