@@ -26,7 +26,7 @@ aside.inventory { z-index: 2; overflow: hidden;
 @media screen and (min-width:$desktop-min) { 
   aside.inventory { @include position(fixed,0,null,0,0); width:calc(25% - 15px);
     .header { padding:2rem 3rem 1rem 1rem; }
-    .inner { padding:2em; @include position(absolute,60px,-17px,0,0); }
+    .inner { padding:2em; @include position(absolute,60px,-17px,0,0); padding-bottom: 110px; }
   }
 
   button.toggle.inventory { display: none; }

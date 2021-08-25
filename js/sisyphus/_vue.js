@@ -78,10 +78,14 @@ var app = new Vue({
         case 437:
           self.getCheevo('437 Clicks', "You've clicked on Sisyphus 437 times. And while that may seem like a meaningless number, have you considered that any other number is equally meaningless?", 25);
           break;
+        case 1400:
+          self.getCheevo('-100 Points', "I think you have too many points. You've just lost a hundred of them.", -100);
+          break;
         case 1000:
           self.getCheevo('4 Digits of Clicks', "You've now clicked on Sisyphus 1,000 times. That might be too many times.", 25);
           break;
-        case 1000:
+        
+        case 10000:
           self.getCheevo('10,000 Clicks', "That's a whole lot of clicks!", 25);
           break;
       }
@@ -160,16 +164,24 @@ var app = new Vue({
             case 13:
               self.getCheevo('13 Rollbacks', "Hey, I know the rock has rolled back down the hill 13 times. Next time tho....", 15);
               break;
+            case 25:
+              self.getCheevo('25 Rollbacks', "You're enjoying this, aren't you?", 10);
+              break;
           }
 
         }
 
         /////////////////////////////
         // 🏆 Pushing rock cheevos
-        if (self.totalScore == 100) {
-          self.getCheevo('Making Progress', "You have pushed the rock uphill 100 times. Congratulations?", 6);
-        } else if (self.totalScore == 300) {
-          self.getCheevo('300 Pushes', "You know how video game achievements like to do quotes of movies? Like maybe some achievement is about someone named Akbar and then the achievment is called like “It's A Trap!” or something? Anyway, you've clicked the rock 300 times. I don't think there's anything I can add to that.", 16);
+        switch(self.totalScore) {
+          case 100:
+            self.getCheevo('Making Progress', "You have pushed the rock uphill 100 times. Congratulations!", 6);
+            break;
+          case 300:
+            self.getCheevo('300 Pushes', "You know how video game achievements like to do quotes of movies? Like maybe some achievement is about someone named Akbar and then the achievment is called like “It's A Trap!” or something? Anyway, you've clicked the rock 300 times. I don't think there's anything I can add to that.", 3);
+            break;
+          case 414:
+            self.getCheevo('Keep Pushing That Rock!', "To help motivate you, I'm subtracting 40 points from your score.", 40);
         }
 
 
