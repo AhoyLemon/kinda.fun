@@ -1,8 +1,10 @@
 const uphillMusic = new Howl({
-  src: ['audio/sisyphus/uphill1.mp3']
+  src: ['audio/sisyphus/uphill3.mp3'],
+  loop:true
 });
 const downhillMusic = new Howl({
-  src: ['audio/sisyphus/downhill2.mp3']
+  src: ['audio/sisyphus/downhill5.mp3'],
+  loop: false
 });
 
 var app = new Vue({
@@ -43,8 +45,15 @@ var app = new Vue({
       let f = self.s.pushForce;
       let r = self.s.retreatSpeed;
       let bT;
-      self.totalClicks++;
+      
       document.getElementById('Sisyphus').blur();
+
+      // You can't move Sisyphus while the rock is falling...
+      if(self.r.falling) {
+        return false;
+      }
+
+      self.totalClicks++;
 
       // Actions taken on specific clicks
       switch (self.totalClicks) {
@@ -60,7 +69,7 @@ var app = new Vue({
           audio.volume = 0.5;
           audio.play();
           new PNotify({
-            title: '<a href="https://ahoylemon.xyz" target="_blank">This site is by Lemon.</a>',
+            title: `<a href="https://ahoylemon.xyz" target="_blank" onclick="sendEvent('outside link', 'site by Lemon', 'https://ahoylemon.xyz')">This site is by Lemon.</a>`,
             addclass: 'stack-bottomright site-by-lemon',
           });
           break;
@@ -106,16 +115,12 @@ var app = new Vue({
         self.uphillMusicTimer = setTimeout(function(){
           uphillMusic.pause();
           self.isMusicPlaying = false;
-        }, 650);
+        }, 780);
 
         if (!self.isMusicPlaying) {
           uphillMusic.play();
           self.isMusicPlaying = true;
-        } else if (self.uphillMusicTimer) {
         }
-
-
-
 
         //background transform
         bT = (self.s.pushForce * 0.75);
@@ -130,11 +135,12 @@ var app = new Vue({
           self.switchMessage('falling');
           self.r.rollbacks++;
 
-          uphillMusic.stop();
+          uphillMusic.pause();
           downhillMusic.play();
           setTimeout(function(){
             downhillMusic.stop();
             self.isMusicPlaying = false;
+            self.r.falling = false;
           }, 2000);
 
           sendEvent("Rollback", self.r.rollbacks+' time(s)');
@@ -191,7 +197,6 @@ var app = new Vue({
           self.s.retreating = false;
           self.s.bottom = begin.s.bottom;
           self.s.left = begin.s.left;
-          self.r.falling = false;
           self.fg.transform = 0;
           self.bg.transform = 0;
 
@@ -516,7 +521,7 @@ var app = new Vue({
       self.sidebarVisible = !self.sidebarVisible;
 
       if (self.sidebarVisible) {
-        sendEvent('sidebar opened', self.secondsPlayed+' seconds played', self.totalScore+' totalScore');
+        sendEvent('drawer', 'sidebar opened');
       }
       
     }
