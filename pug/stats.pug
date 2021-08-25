@@ -25,6 +25,12 @@ body
         include stats/_cameo
         include stats/_invalid
         include stats/_wrongest
+        include stats/_sisyphus
+
+    if testing
+      link(rel="stylesheet" href="css/testing.css")
+      .testing-banner.wrongest
+        .inner Test Mode Is On
 
   .javascripts
     if testing

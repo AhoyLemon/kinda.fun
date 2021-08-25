@@ -15,7 +15,12 @@ section.famous.stats(v-if="ui.viewing == 'cameo'")
           | (
           strong(v-text="percentOf(stats.general.cameo.GamesStarted,stats.general.cameo.GamesFinished) + '%'")
           | )
-      
+
+      .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
+        .caption Last Game
+        .time-ago(v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')")
+        .calendar(v-text="formatTime(stats.general.lastPlayed.cameo,'calendar')")
+
       .box.big-name
         .caption Most Played Special
         .name {{computedMostPopularCameoGame.name}}
@@ -24,11 +29,6 @@ section.famous.stats(v-if="ui.viewing == 'cameo'")
           |  times (
           strong(v-text="computedMostPopularCameoGame.percent")
           | %)
-
-      .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
-        .caption Last Game
-        .time-ago(v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')")
-        .calendar(v-text="formatTime(stats.general.lastPlayed.cameo,'calendar')")
 
       .box.big-number(v-if="computedCameoPlayerData.averagePoints != 0")
         .caption Average Player Score
@@ -77,6 +77,7 @@ section.famous.stats(v-if="ui.viewing == 'cameo'")
                       :line-numbers="true"
                       :sort-options="{ enabled: true, initialSortBy: {field: 'marketForces', type: 'desc'} }"
                       :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"
+                      :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
                     )
 
     .good-table.player-table(v-if="ui.cameoLoaded")
@@ -87,4 +88,4 @@ section.famous.stats(v-if="ui.viewing == 'cameo'")
                       styleClass="vgt-table condensed"
                       :line-numbers="true"
                       :sort-options="{ enabled: true, initialSortBy: {field: 'finishTime', type: 'desc'} }"
-        :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        :pagination-options="{ enabled: true, perPage: 31, position: 'top', perPageDropdown: [10, 31, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")

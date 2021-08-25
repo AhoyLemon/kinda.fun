@@ -114,15 +114,15 @@
                   (<strong v-text="percentOf(stats.general.cameo.GamesStarted,stats.general.cameo.GamesFinished) + '%'"></strong>)
                 </div>
               </div>
-              <div class="box big-name">
-                <div class="caption">Most Played Special</div>
-                <div class="name">{{computedMostPopularCameoGame.name}}</div>
-                <div class="subtext">played <strong v-text="computedMostPopularCameoGame.count"></strong> times (<strong v-text="computedMostPopularCameoGame.percent"></strong>%)</div>
-              </div>
               <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.cameo">
                 <div class="caption">Last Game</div>
                 <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')"></div>
                 <div class="calendar" v-text="formatTime(stats.general.lastPlayed.cameo,'calendar')"></div>
+              </div>
+              <div class="box big-name">
+                <div class="caption">Most Played Special</div>
+                <div class="name">{{computedMostPopularCameoGame.name}}</div>
+                <div class="subtext">played <strong v-text="computedMostPopularCameoGame.count"></strong> times (<strong v-text="computedMostPopularCameoGame.percent"></strong>%)</div>
               </div>
               <div class="box big-number" v-if="computedCameoPlayerData.averagePoints != 0">
                 <div class="caption">Average Player Score</div>
@@ -158,11 +158,11 @@
           <div class="two-tables">
             <div class="good-table celeb-table" v-if="ui.cameoLoaded">
               <h2>Celebrity Performance</h2>
-              <vue-good-table v-if="stats.cameo.celebs &amp;&amp; stats.cameo.celebs.length" :rows="stats.cameo.celebs" :columns="columns.celebs" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'marketForces', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table v-if="stats.cameo.celebs &amp;&amp; stats.cameo.celebs.length" :rows="stats.cameo.celebs" :columns="columns.celebs" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'marketForces', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}" :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"></vue-good-table>
             </div>
             <div class="good-table player-table" v-if="ui.cameoLoaded">
               <h2>Player Performance</h2>
-              <vue-good-table v-if="stats.cameo.playerScores &amp;&amp; stats.cameo.playerScores.length" :rows="stats.cameo.playerScores" :columns="columns.cameoPlayers" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'finishTime', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table v-if="stats.cameo.playerScores &amp;&amp; stats.cameo.playerScores.length" :rows="stats.cameo.playerScores" :columns="columns.cameoPlayers" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'finishTime', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 31, position: 'top', perPageDropdown: [10, 31, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
           </div>
         </section>
@@ -255,6 +255,44 @@
               <vue-good-table :rows="stats.wrongest.playerCounts" :columns="columns.playerCounts" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table><br/><br/>
               <h2>Player Names</h2>
               <vue-good-table :rows="stats.general.playerNames" :columns="columns.playerNames" :sort-options="{ enabled: true, initialSortBy: {field: 'lastPlayed', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+            </div>
+          </div>
+        </section>
+        <section class="sisyphus stats" v-if="ui.viewing == 'sisyphus'">
+          <figure><img src="svg/sisyphus/logo-simple.svg"/></figure>
+          <div class="stats-boxes">
+            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; stats.sisyphus.counts &amp;&amp; stats.sisyphus.counts['First Click']">
+              <div class="caption">Cursed Persons</div>
+              <div class="number" v-text="addCommas(stats.sisyphus.counts['First Click'])"></div>
+              <div class="subtext">people have logged their first click.</div>
+            </div>
+            <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.cameo">
+              <div class="caption">Last Game</div>
+              <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')"></div>
+              <div class="calendar" v-text="formatTime(stats.general.lastPlayed.cameo,'calendar')"></div>
+            </div>
+            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; stats.sisyphus.counts &amp;&amp; stats.sisyphus.counts['First Click']">
+              <div class="caption">The Rock Has Rolled Downhill</div>
+              <div class="number" v-text="addCommas(stats.sisyphus.counts['First Click'])"></div>
+              <div class="subtext">times</div>
+            </div>
+            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusCheevoCount">
+              <div class="caption">Cheevos Earned</div>
+              <div class="number" v-text="addCommas(computedSisyphusCheevoCount)"></div>
+            </div>
+            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusPurchaseCount">
+              <div class="caption">Purchases Made</div>
+              <div class="number" v-text="addCommas(computedSisyphusPurchaseCount)"></div>
+            </div>
+          </div>
+          <div class="two-tables">
+            <div class="good-table celeb-table" v-if="ui.sisyphusLoaded">
+              <h2>Cheevos Earned</h2>
+              <vue-good-table v-if="stats.sisyphus.cheevos &amp;&amp; stats.sisyphus.cheevos.length" :rows="stats.sisyphus.cheevos" :columns="columns.sisyphusCheevos" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+            </div>
+            <div class="good-table player-table" v-if="ui.sisyphusLoaded">
+              <h2>Purchases Made</h2>
+              <vue-good-table v-if="stats.sisyphus.purchases &amp;&amp; stats.sisyphus.purchases.length" :rows="stats.sisyphus.purchases" :columns="columns.sisyphusPurchases" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
           </div>
         </section>

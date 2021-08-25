@@ -76,10 +76,10 @@ var app = new Vue({
         
         // These are all cheevos
         case 437:
-          self.getCheevo('437 clicks', "You've clicked on Sisyphus 437 times. And while that may seem like a meaningless number, have you considered that any other number is equally meaningless?", 25);
+          self.getCheevo('437 Clicks', "You've clicked on Sisyphus 437 times. And while that may seem like a meaningless number, have you considered that any other number is equally meaningless?", 25);
           break;
         case 1000:
-          self.getCheevo('4 digits of clicks', "You've now clicked on Sisyphus 1,000 times. That might be too many times.", 25);
+          self.getCheevo('4 Digits of Clicks', "You've now clicked on Sisyphus 1,000 times. That might be too many times.", 25);
           break;
         case 1000:
           self.getCheevo('10,000 Clicks', "That's a whole lot of clicks!", 25);
@@ -152,10 +152,10 @@ var app = new Vue({
           // Rollback Cheevos
           switch(self.r.rollbacks) {
             case 3:
-              self.getCheevo('Antiturkey', 'Three gutterballs! Clearly you should keep bowling.', 10);
+              self.getCheevo('The Anti-Turkey', 'Three gutterballs! Clearly you should keep bowling.', 10);
               break;
             case 7:
-              self.getCheevo('Still failing!', "It's rolled back 7 times now, but don't let that stop you.", 15);
+              self.getCheevo('Still Failing!', "It's rolled back 7 times now, but don't let that stop you.", 15);
               break;
             case 13:
               self.getCheevo('13 Rollbacks', "Hey, I know the rock has rolled back down the hill 13 times. Next time tho....", 15);
@@ -167,9 +167,9 @@ var app = new Vue({
         /////////////////////////////
         // 🏆 Pushing rock cheevos
         if (self.totalScore == 100) {
-          self.getCheevo('Making progress', "You have pushed the rock uphill 100 times. Congratulations?", 6);
+          self.getCheevo('Making Progress', "You have pushed the rock uphill 100 times. Congratulations?", 6);
         } else if (self.totalScore == 300) {
-          self.getCheevo('300 pushes', "You know how video game achievements like to do quotes of movies? Like maybe some achievement is about someone named Akbar and then the achievment is called like “It's A Trap!” or something? Anyway, you've clicked the rock 300 times. I don't think there's anything I can add to that.", 16);
+          self.getCheevo('300 Pushes', "You know how video game achievements like to do quotes of movies? Like maybe some achievement is about someone named Akbar and then the achievment is called like “It's A Trap!” or something? Anyway, you've clicked the rock 300 times. I don't think there's anything I can add to that.", 16);
         }
 
 
@@ -495,7 +495,7 @@ var app = new Vue({
           self.getCheevo('Achievement Unlocked!', 'You have played this game for 15 seconds.', 5);
           break;
         case (60):
-          self.getCheevo('One minute mark!', 'You have played the game for one minute.', 10);
+          self.getCheevo('One Minute Mark!', 'You have played the game for one minute.', 10);
           break;
         case (300):
           self.getCheevo('Five Minutes', 'Five minutes of this! How are you feelng about life?', 20);
