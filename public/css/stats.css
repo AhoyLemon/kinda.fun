@@ -317,6 +317,21 @@ section.famous .two-tables {
   gap: 20px;
 }
 
+section.sisyphus {
+  padding: 80px 40px 40px 0;
+}
+section.sisyphus .stats-boxes {
+  -ms-grid-columns: (1fr)[3];
+  grid-template-columns: repeat(3, 1fr);
+}
+section.sisyphus .two-tables {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 40px 1fr;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
 section.invalid {
   padding: 80px 40px 40px 0;
 }

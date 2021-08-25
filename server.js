@@ -136,7 +136,7 @@ app.get('/stats', (req, res) => {
   res.sendFile(__dirname + '/html/stats.html');
 });
 
-app.get('/stats/live/general/json', (req, res) => {
+app.get('/stats/general/json', (req, res) => {
   let gameData =  {
     lastPlayed: {},
     cameo: {},
@@ -144,31 +144,31 @@ app.get('/stats/live/general/json', (req, res) => {
     wrongest: {},
     playerNames: []
   };
-  liveConnection.query('SELECT * FROM allGamesLastPlayed;', function(err, results) {
+  connection.query('SELECT * FROM allGamesLastPlayed;', function(err, results) {
     if(err) throw err;
     results.forEach((key) => {
       gameData.lastPlayed[key.gameName] = key.lastGameTime;
     });
   });
-  liveConnection.query('SELECT * FROM cameoGames;', function(err, results) {
+  connection.query('SELECT * FROM cameoGames;', function(err, results) {
     if(err) throw err;
     results.forEach((key) => {
       gameData.cameo[key.iname] = key.icount;
     });
   });
-  liveConnection.query('SELECT * FROM invalidGames;', function(err, results) {
+  connection.query('SELECT * FROM invalidGames;', function(err, results) {
     if(err) throw err;
     results.forEach((key) => {
       gameData.invalid[key.iname] = key.icount;
     });
   });
-  liveConnection.query('SELECT * FROM wrongestGames;', function(err, results) {
+  connection.query('SELECT * FROM wrongestGames;', function(err, results) {
     if(err) throw err;
     results.forEach((key) => {
       gameData.wrongest[key.iname] = key.icount;
     });
   });
-  liveConnection.query('SELECT * FROM allPlayerNames;', function(err, results) {
+  connection.query('SELECT * FROM allPlayerNames;', function(err, results) {
     if(err) throw err;
     gameData.playerNames = results;
     res.setHeader('Content-Type', 'application/json');
@@ -176,7 +176,7 @@ app.get('/stats/live/general/json', (req, res) => {
   });
 });
 
-app.get('/stats/live/cameo/json', (req, res) => {
+app.get('/stats/cameo/json', (req, res) => {
   let cameoData =  {
     celebScores: [],
     playerScores: [],
@@ -184,19 +184,19 @@ app.get('/stats/live/cameo/json', (req, res) => {
     celebs: [],
     specialGames: []
   };
-  liveConnection.query('SELECT * FROM cameoCelebScores;', function(err, results) {
+  connection.query('SELECT * FROM cameoCelebScores;', function(err, results) {
     if(err) throw err;
     cameoData.celebScores = results;
   });
-  liveConnection.query('SELECT * FROM cameoPlayerScores;', function(err, results) {
+  connection.query('SELECT * FROM cameoPlayerScores;', function(err, results) {
     if(err) throw err;
     cameoData.playerScores = results;
   });
-  liveConnection.query('SELECT * FROM cameoValuations;', function(err, results) {
+  connection.query('SELECT * FROM cameoValuations;', function(err, results) {
     if(err) throw err;
     cameoData.valuations = results;
   });
-  liveConnection.query('SELECT * FROM cameoSpecialGames;', function(err, results) {
+  connection.query('SELECT * FROM cameoSpecialGames;', function(err, results) {
     if(err) throw err;
     cameoData.specialGames = results;
     res.setHeader('Content-Type', 'application/json');
@@ -204,7 +204,7 @@ app.get('/stats/live/cameo/json', (req, res) => {
   });
 });
 
-app.get('/stats/live/invalid/json', (req, res) => {
+app.get('/stats/invalid/json', (req, res) => {
   let invalidData =  {
     bannedLetters: [],
     bugs: [],
@@ -218,39 +218,39 @@ app.get('/stats/live/invalid/json', (req, res) => {
     rules: [],
     successfulPasswords: []
   };
-  liveConnection.query('SELECT * FROM invalidBannedLetters;', function(err, results) {
+  connection.query('SELECT * FROM invalidBannedLetters;', function(err, results) {
     if(err) throw err;
     invalidData.bannedLetters = results;
   });
-  liveConnection.query('SELECT * FROM invalidBugs;', function(err, results) {
+  connection.query('SELECT * FROM invalidBugs;', function(err, results) {
     if(err) throw err;
     invalidData.bugs = results;
   });
-  liveConnection.query('SELECT * FROM invalidChallenges;', function(err, results) {
+  connection.query('SELECT * FROM invalidChallenges;', function(err, results) {
     if(err) throw err;
     invalidData.challenges = results;
   });
-  liveConnection.query('SELECT * FROM invalidCracks;', function(err, results) {
+  connection.query('SELECT * FROM invalidCracks;', function(err, results) {
     if(err) throw err;
     invalidData.cracks = results;
   });
-  liveConnection.query('SELECT * FROM invalidCrashes;', function(err, results) {
+  connection.query('SELECT * FROM invalidCrashes;', function(err, results) {
     if(err) throw err;
     invalidData.crashes = results;
   });
-  liveConnection.query('SELECT * FROM invalidDemandedLetters;', function(err, results) {
+  connection.query('SELECT * FROM invalidDemandedLetters;', function(err, results) {
     if(err) throw err;
     invalidData.demandedLetters = results;
   });
-  liveConnection.query('SELECT * FROM invalidPlayerCounts;', function(err, results) {
+  connection.query('SELECT * FROM invalidPlayerCounts;', function(err, results) {
     if(err) throw err;
     invalidData.playerCounts = results;
   });
-  liveConnection.query('SELECT * FROM invalidRules;', function(err, results) {
+  connection.query('SELECT * FROM invalidRules;', function(err, results) {
     if(err) throw err;
     invalidData.rules = results;
   });
-  liveConnection.query('SELECT * FROM invalidSuccessfulPasswords;', function(err, results) {
+  connection.query('SELECT * FROM invalidSuccessfulPasswords;', function(err, results) {
     if(err) throw err;
     invalidData.successfulPasswords = results;
     res.setHeader('Content-Type', 'application/json');
@@ -258,25 +258,50 @@ app.get('/stats/live/invalid/json', (req, res) => {
   });
 });
 
-app.get('/stats/live/wrongest/json', (req, res) => {
+app.get('/stats/wrongest/json', (req, res) => {
   let wrongestData =  {
     decks: [],
     playerCounts: [],
     statements: []
   };
-  liveConnection.query('SELECT * FROM wrongestDecks;', function(err, results) {
+  connection.query('SELECT * FROM wrongestDecks;', function(err, results) {
     if(err) throw err;
     wrongestData.decks = results;
   });
-  liveConnection.query('SELECT * FROM wrongestPlayerCounts;', function(err, results) {
+  connection.query('SELECT * FROM wrongestPlayerCounts;', function(err, results) {
     if(err) throw err;
     wrongestData.playerCounts = results;
   });
-  liveConnection.query('SELECT * FROM wrongestStatements;', function(err, results) {
+  connection.query('SELECT * FROM wrongestStatements;', function(err, results) {
     if(err) throw err;
     wrongestData.statements = results;
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(wrongestData));
+  });
+});
+
+app.get('/stats/sisyphus/json', (req, res) => {
+  let sisyphusData =  {
+    cheevos: [],
+    counts: {},
+    purchases: []
+  };
+  connection.query('SELECT * FROM sisyphusCheevos', function(err, results) {
+    if(err) throw err;
+    sisyphusData.cheevos = results;
+  });
+  connection.query('SELECT * FROM sisyphusCounts;', function(err, results) {
+    if(err) throw err;
+    results.forEach((key) => {
+      sisyphusData.counts[key.iname] = key.icount;
+    });
+    //sisyphusData.counts = results;
+  });
+  connection.query('SELECT * FROM sisyphusPurchases;', function(err, results) {
+    if(err) throw err;
+    sisyphusData.purchases = results;
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(sisyphusData));
   });
 });
 
