@@ -23,7 +23,7 @@
               "@type": "VideoGame",
               "name": "Comparatively Famous",
               "url": "https://kinda.fun/cameo",
-              "image": "https://kinda.fun/img/og-invalid.png",
+              "image": "https://kinda.fun/img/og-famous.png",
               "playMode": "SinglePlayer",
               "applicationCategory": "browser game",
               "gamePlatform": "web browser",
@@ -56,7 +56,6 @@
               "description": "A trivia game of unnecessary suffering.",
             }
 
-
         .game(:class="{ active: (gameChoice == 'wrongest'), inactive: (gameChoice && gameChoice != 'wrongest') }")
           figure.logo(@click="gameChoice = 'wrongest'")
             img(src="svg/wrongest.svg")
@@ -81,8 +80,32 @@
               "description": "You're going to defend some very stupid ideas.",
             }
 
+        .game(:class="{ active: (gameChoice == 'sisyphus'), inactive: (gameChoice && gameChoice != 'sisyphus') }")
+          figure.logo(@click="gameChoice = 'sisyphus'")
+            img(src="svg/sisyphus/logo-simple.svg")
+          figcaption
+            .slogan Push the rock uphill. Earn cheevos.
+            .players-allowed
+              | For 1 player
+              br
+              | (1 very lonely player)
+          script(type="application/ld+json").
+            {
+              "@context": "http://schema.org",
+              "@type": "VideoGame",
+              "name": "Sisyphus Clicker",
+              "url": "https://kinda.fun/sisyphus",
+              "image": "https://kinda.fun/img/sisyphus/og-wide.png",
+              "playMode": "SinglePlayer",
+              "applicationCategory": "browser game",
+              "gamePlatform": "web browser",
+              "operatingSystem": "web browser",
+              "genre": "comedy",
+              "description": "Click on Sisyphus to push the rock up the mountain (formerly futile.fun)"
+            }
+
   .create-or-join(v-if="gameChoice")
-    .start-playing(v-if="gameChoice == 'cameo'")
+    .start-playing(v-if="gameChoice == 'cameo' || gameChoice == 'sisyphus'")
       button(@click="startSinglePlayerGame()") Start Playing
     .options(v-else)
       .create
@@ -93,5 +116,3 @@
 
       .join
         button(@click="joinRoom()") Join a Room
-
-    

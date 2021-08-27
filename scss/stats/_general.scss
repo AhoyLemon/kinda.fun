@@ -1,9 +1,9 @@
 main.general-stats { grid-column: span 2; min-height: 99vh; display: flex; align-items: center; font-family: $serif;
   .inside { width:100%; }
-  .game-summaries { display:grid; gap:($gap * 2); grid-template-columns: repeat( 3, 1fr ); margin-left: auto; margin-right: auto;  width:100%; max-width: 1000px;
+  .game-summaries { display:grid; gap:($gap * 2); grid-template-columns: repeat(4, 1fr ); margin-left: auto; margin-right: auto;  width:100%; padding-left: 20px; padding-right: 20px;
     .summary { text-align: center; }
     figure { height: 42%; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; }
-    img { cursor: pointer; opacity: 0.8;
+    img { cursor: pointer; opacity: 0.8; max-width: 100%;
       &:hover, &:focus { opacity: 1; }
     }
     .last-played { padding-bottom: $padding; }
@@ -35,6 +35,7 @@ main.general-stats { grid-column: span 2; min-height: 99vh; display: flex; align
 }
 
 aside.general-stats { padding:100px $padding; font-family: $serif;
+  img { max-width: 100%; }
   .inside { position: sticky; top:20px; }
   .summary { margin-bottom: 4rem;
     figure { cursor: pointer; opacity: 0.5; margin-bottom: 1rem;

@@ -50,6 +50,12 @@ section.famous { padding:($gap * 2) $gap $gap 0;
     display: grid; grid-template-columns: 3fr 2fr; gap:20px;
   }
 }
+section.sisyphus { padding:($gap * 2) $gap $gap 0;
+  .stats-boxes { grid-template-columns: repeat(3,1fr); }
+  .two-tables { 
+    display: grid; grid-template-columns: 1fr 1fr; gap:40px;
+  }
+}
 
 section.invalid { padding:($gap * 2) $gap $gap 0;
   

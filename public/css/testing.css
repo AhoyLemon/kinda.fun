@@ -1,0 +1,17 @@
+.testing-banner {
+  background: rebeccapurple;
+  text-align: center;
+  padding: 0.5em 1em;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  color: oldlace;
+  font-family: Poppins, sans-serif;
+  font-size: 1rem;
+}
+
+.counters {
+  z-index: 3;
+}
+/*# sourceMappingURL=testing.css.map */

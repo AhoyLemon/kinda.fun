@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <link rel="preconnect" href="https://fonts.gstatic.com"/>
     <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
-    <link href="css/cameo.css?lastUpdated2021-07-22@11:35:23" type="text/css" rel="stylesheet"/>
+    <link href="css/cameo.css?lastUpdated2021-07-24@21:17:14" type="text/css" rel="stylesheet"/>
     <meta name="description" content="The Game of Celebrity Value"/>
-    <meta http-equiv="last-modified" content="2021-07-22@11:35:23"/>
+    <meta http-equiv="last-modified" content="2021-07-24@21:17:14"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/img/famous/apple-touch-icon.png"/>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/famous/favicon-32x32.png"/>
     <link rel="icon" type="image/png" sizes="16x16" href="/img/famous/favicon-16x16.png"/>
@@ -127,8 +127,8 @@
             <button class="start-multi" id="LoadGameButton" @click="loadGame()">Load Special</button>
           </div>
         </div>
-        <div class="select-gimmick-rounds" v-if="gimmick.selectorVisible">
-          <form @submit.prevent="startSinglePlayerGame()">
+        <div class="select-gimmick-rounds animate__animated animate__fadeIn" v-if="gimmick.selectorVisible">
+          <form class="animate__animated animate__bounceInUp" @submit.prevent="startSinglePlayerGame()">
             <fieldset v-if="gimmick.selected &amp;&amp; gimmick.selected.desc">
               <div class="gimmick-desc">{{gimmick.selected.desc}}</div>
             </fieldset>
@@ -360,8 +360,11 @@
       </main>
     </div>
     <div class="javascripts">
-      <script src="js/libraries/vue.full.js"></script>
-      <script>const testing = true;</script>
+      <script src="js/libraries/vue.min.js"></script>
+      <script>
+        const testing = false;
+        
+      </script>
       <script src="js/libraries/jquery.min.js"></script>
       <script src="js/libraries/howler.min.js"></script>
       <script src="js/libraries/sortable.min.js"></script>
@@ -373,7 +376,7 @@
         var socket = io.connect();
         
       </script>
-      <script src="js/min/cameo.min.js?updated2021-07-22@11:35:23"></script>
+      <script src="js/min/cameo.min.js?updated2021-07-24@21:17:14"></script>
       <script type="text/javascript">
         var _paq = window._paq = window._paq || [];
           /* tracker methods like "setCustomDimension" should be called before "trackPageView" */

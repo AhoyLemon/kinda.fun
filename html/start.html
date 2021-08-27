@@ -1,7 +1,7 @@
 
 <html>
   <head>
-    <title>kinda.fun</title>
+    <title>Kinda fun.</title>
     <link rel="preconnect" href="https://fonts.gstatic.com"/>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&amp;display=swap" rel="stylesheet"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -17,11 +17,11 @@
     <!-- Twitter-->
     <meta name="twitter:card" content="summary"/>
     <meta name="twitter:creator" content="@AhoyLemon"/>
-    <meta name="twitter:title" content="kinda.fun"/>
+    <meta name="twitter:title" content="Kinda fun."/>
     <meta name="twitter:description" content="Here's some multiplayer games that Lemon made. They're kinda fun!"/>
     <meta name="twitter:image" content="https://kinda.fun/og-square.png"/>
     <meta name="twitter:url" content="https://kinda.fun"/>
-    <meta property="og:title" content="kinda.fun"/>
+    <meta property="og:title" content="Kinda fun."/>
     <meta property="og:type" content="website"/>
     <meta property="og:image:width" content="600"/>
     <meta property="og:image:height" content="600"/>
@@ -52,7 +52,7 @@
                   "@type": "VideoGame",
                   "name": "Comparatively Famous",
                   "url": "https://kinda.fun/cameo",
-                  "image": "https://kinda.fun/img/og-invalid.png",
+                  "image": "https://kinda.fun/img/og-famous.png",
                   "playMode": "SinglePlayer",
                   "applicationCategory": "browser game",
                   "gamePlatform": "web browser",
@@ -84,7 +84,6 @@
                   "description": "A trivia game of unnecessary suffering.",
                 }
                 
-                
               </script>
             </div>
             <div class="game" :class="{ active: (gameChoice == 'wrongest'), inactive: (gameChoice &amp;&amp; gameChoice != 'wrongest') }">
@@ -110,11 +109,34 @@
                 
               </script>
             </div>
+            <div class="game" :class="{ active: (gameChoice == 'sisyphus'), inactive: (gameChoice &amp;&amp; gameChoice != 'sisyphus') }">
+              <figure class="logo" @click="gameChoice = 'sisyphus'"><img src="svg/sisyphus/logo-simple.svg"/></figure>
+              <figcaption>
+                <div class="slogan">Push the rock uphill. Earn cheevos.</div>
+                <div class="players-allowed">For 1 player<br/>(1 very lonely player)</div>
+              </figcaption>
+              <script type="application/ld+json">
+                {
+                  "@context": "http://schema.org",
+                  "@type": "VideoGame",
+                  "name": "Sisyphus Clicker",
+                  "url": "https://kinda.fun/sisyphus",
+                  "image": "https://kinda.fun/img/sisyphus/og-wide.png",
+                  "playMode": "SinglePlayer",
+                  "applicationCategory": "browser game",
+                  "gamePlatform": "web browser",
+                  "operatingSystem": "web browser",
+                  "genre": "comedy",
+                  "description": "Click on Sisyphus to push the rock up the mountain (formerly futile.fun)"
+                }
+                
+              </script>
+            </div>
           </div>
         </div>
       </div>
       <div class="create-or-join" v-if="gameChoice">
-        <div class="start-playing" v-if="gameChoice == 'cameo'">
+        <div class="start-playing" v-if="gameChoice == 'cameo' || gameChoice == 'sisyphus'">
           <button @click="startSinglePlayerGame()">Start Playing</button>
         </div>
         <div class="options" v-else="v-else">
@@ -130,11 +152,14 @@
     </div>
   </div>
   <div class="javascripts">
-    <script src="js/libraries/vue.full.js"></script>
-    <script>const testing = true;</script>
+    <script src="js/libraries/vue.min.js"></script>
+    <script>
+      const testing = false;
+      
+    </script>
     <script src="/socket.io/socket.io.js"></script>
     <script>var socket = io.connect();</script>
-    <script src="js/min/start.min.js?updated2021-02-31@11:09:08"></script>
+    <script src="js/min/start.min.js?updated2021-07-24@21:18:42"></script>
     <script type="text/javascript">
       var _paq = window._paq = window._paq || [];
       /* tracker methods like "setCustomDimension" should be called before "trackPageView" */

@@ -1,0 +1,34 @@
+include sisyphus/_variables.pug
+
+doctype html
+html(lang="en")
+  head
+    include sisyphus/_head.pug
+  body
+  
+    #app
+      main(v-cloak)
+
+        include sisyphus/_sidebar.pug
+
+        .scene
+          
+          include sisyphus/_scene.pug
+        
+          .pillar.one
+            img(src="/svg/sisyphus/pillar-1.svg")
+          .pillar.two
+            img(src="/svg/sisyphus/pillar-2.svg")
+          figcaption(v-if="message")
+            .inner(v-text="message")
+
+      include sisyphus/_store.pug
+      include sisyphus/_inventory.pug
+      include sisyphus/_counter.pug
+      if testing
+        link(rel="stylesheet" href="css/testing.css")
+        .testing-banner.sisyphus
+          .inner Test Mode Is On
+
+    include sisyphus/_javascripts.pug
+    include sisyphus/_schema.pug

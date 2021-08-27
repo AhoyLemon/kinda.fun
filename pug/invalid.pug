@@ -22,4 +22,9 @@ html(lang="en")
 
       include invalid/_game-over.pug
 
+      if testing
+        link(rel="stylesheet" href="css/testing.css")
+        .testing-banner.invalid
+          .inner Test Mode Is On
+
     include invalid/_javascripts

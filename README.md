@@ -1,6 +1,6 @@
 ![kinda.fun](https://kinda.fun/og-wide.png)
 
-There's currently three games here.
+There's currently four games here.
 
 ## Comparatively Famous
 ![Comparatively Famous Logo](https://kinda.fun/img/og-famous.png)
@@ -16,3 +16,6 @@ There's currently three games here.
 ![The Wrongest Words Logo](https://kinda.fun/img/wrongest/og-wide.png)
 
 * [The Wrongest Words Wiki](https://github.com/AhoyLemon/kinda.fun/wiki/The-Wrongest-Words)
+
+## Sisyphus Clicker
+![The Wrongest Words Logo](https://kinda.fun/img/sisyphus/og-wide.png)

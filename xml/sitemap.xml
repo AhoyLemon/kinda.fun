@@ -4,7 +4,7 @@
     <loc>https://kinda.fun</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
-    <lastmod>2021-07-21@16:31:42</lastmod>
+    <lastmod>2021-07-24@21:18:42</lastmod>
   </url>
   <url>
     <loc>https://kinda.fun/invalid</loc>
@@ -18,6 +18,11 @@
   </url>
   <url>
     <loc>https://kinda.fun/cameo</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://kinda.fun/sisyphus</loc>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
