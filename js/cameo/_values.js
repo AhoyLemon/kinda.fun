@@ -219,7 +219,7 @@ const allValues = [
   { name: "Evan Stone", desc: "Porn Actor", slug:"evanstone", value:29 },
   { name: "Ken Bone", desc:"Wore a red sweater at a Presidential debate", slug:"kenbone18", value:25 },
   { name: "Vermin Supreme", desc:"Presidential Candidate & Performance Artist", slug:"verminsupreme", value:25 },
-  { name: "David Ellefson", desc:"Bassist, Megadeth", slug:"davidellefson", value:25 },
+  { name: "David Ellefson", desc:"Former Bassist, Megadeth", slug:"davidellefson", value:25 },
   { name: "Kyle Troup", desc:"Professional Bowler", slug:"afrofish300", value:25 },
   { name: "Jonah Falcon", desc:"Has a 13.5\" penis. Talks about it a lot", slug:"jonahfalcon1970", value:25 },
   { name: "Boffo The Bear", desc: "YouTube Comedy Bear", slug: "boffothebear", value:20 },

@@ -1,10 +1,10 @@
-- var pageTitle = "";
+include global/_variables
+- var pageTitle = "Kinda Fun Stats";
 include stats/_mixins
 
 html
   head
-    - var testing = true 
-    title kinda.fun stats
+    title= pageTitle
     link(href="css/stats.css" type="text/css" rel="stylesheet")
     meta(name="viewport" content="width=device-width, initial-scale=1")
 body
@@ -25,6 +25,12 @@ body
         include stats/_cameo
         include stats/_invalid
         include stats/_wrongest
+        include stats/_sisyphus
+
+    if testing
+      link(rel="stylesheet" href="css/testing.css")
+      .testing-banner.wrongest
+        .inner Test Mode Is On
 
   .javascripts
     if testing

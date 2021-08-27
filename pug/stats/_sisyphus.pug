@@ -1,0 +1,50 @@
+section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
+  figure
+    img(src="svg/sisyphus/logo-simple.svg")
+
+  .stats-boxes
+
+    .box.big-number(v-if="stats.sisyphus && stats.sisyphus.counts && stats.sisyphus.counts['First Click']")
+      .caption Cursed Persons
+      .number(v-text="addCommas(stats.sisyphus.counts['First Click'])")
+      .subtext people have logged their first click.
+  
+    .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
+      .caption Last Game
+      .time-ago(v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')")
+      .calendar(v-text="formatTime(stats.general.lastPlayed.cameo,'calendar')")
+
+    .box.big-number(v-if="stats.sisyphus && stats.sisyphus.counts && stats.sisyphus.counts['First Click']")
+      .caption The Rock Has Rolled Downhill
+      .number(v-text="addCommas(stats.sisyphus.counts['First Click'])")
+      .subtext times
+
+    .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevoCount")
+      .caption Cheevos Earned
+      .number(v-text="addCommas(computedSisyphusCheevoCount)")
+
+    .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchaseCount")
+      .caption Purchases Made
+      .number(v-text="addCommas(computedSisyphusPurchaseCount)")
+
+  .two-tables
+
+    .good-table.celeb-table(v-if="ui.sisyphusLoaded")
+      h2 Cheevos Earned
+      vue-good-table( v-if="stats.sisyphus.cheevos && stats.sisyphus.cheevos.length"
+                      :rows="stats.sisyphus.cheevos"
+                      :columns="columns.sisyphusCheevos"
+                      styleClass="vgt-table condensed"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
+                      :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+    .good-table.player-table(v-if="ui.sisyphusLoaded")
+      h2 Purchases Made
+      vue-good-table( v-if="stats.sisyphus.purchases && stats.sisyphus.purchases.length"
+                      :rows="stats.sisyphus.purchases"
+                      :columns="columns.sisyphusPurchases"
+                      styleClass="vgt-table condensed"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
+                      :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")

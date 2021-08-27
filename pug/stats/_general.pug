@@ -33,6 +33,16 @@ main.general-stats(v-if="ui.viewing == 'general'")
         .button-holder
           button(@click="getData('wrongest')") Details
 
+      .summary(v-if="stats.general && stats.general.lastPlayed")
+        figure
+          img(src="svg/sisyphus/logo-simple.svg" @click="getData('sisyphus')")
+        .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.sisyphus")
+          .time-caption Last Game
+          .time-ago(v-text="formatTime(stats.general.lastPlayed.sisyphus,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.lastPlayed.sisyphus,'calendar')")
+        .button-holder
+          button(@click="getData('sisyphus')") Details
+
   .player-table 
     .good-table.player-table(v-if="stats.general.playerNames")
       vue-good-table(:rows="stats.general.playerNames" :columns="columns.playerNames" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"

@@ -6,7 +6,8 @@ var app = new Vue({
         general: {},
         cameo: {},
         invalid: {},
-        wrongest: {}
+        wrongest: {},
+        sisyphus: {}
       },
 
       columns: {
@@ -209,13 +210,59 @@ var app = new Vue({
             field: "icount",
             type: "number"
           },
+        ],
+        sisyphusCheevos: [
+          {
+            label: "Name",
+            field: "iname",
+          },
+          {
+            label: "Points",
+            field: "pointValue",
+            type:  "number"
+          },
+          {
+            label: "Earned",
+            field: "icount",
+            type:  "number"
+          },
+          {
+            label: "Last Earned",
+            field: "lastEarned",
+            type: "date",
+            formatFn: this.formatDate
+          }
+
+        ],
+        sisyphusPurchases: [
+          {
+            label: "Name",
+            field: "iname",
+          },
+          {
+            label: "Price",
+            field: "price",
+            type:  "number"
+          },
+          {
+            label: "Earned",
+            field: "icount",
+            type:  "number"
+          },
+          {
+            label: "Last Purchase",
+            field: "lastPurchase",
+            type: "date",
+            formatFn: this.formatDate
+          } 
         ]
       },
       ui: {
         viewing: "loading",
         cameoLoaded: false,
         invalidLoaded: false,
-        wrongestLoaded: false
+        wrongestLoaded: false,
+        sisyphusLoaded: false
       }
     };
   },
@@ -229,7 +276,7 @@ var app = new Vue({
 
       if (game == "cameo") {
 
-        axios.get('/stats/live/cameo/json')
+        axios.get('/stats/cameo/json')
           .then(function (response) {
             // handle success
             self.stats.cameo = response.data;
@@ -288,7 +335,7 @@ var app = new Vue({
           });
 
       } else if (game == "invalid") {
-        axios.get('/stats/live/invalid/json')
+        axios.get('/stats/invalid/json')
           .then(function (response) {
             // handle success
             self.stats.invalid = response.data;
@@ -373,7 +420,7 @@ var app = new Vue({
             self.ui.viewing = "invalid";
           });
       } else if (game == "wrongest") {
-        axios.get('/stats/live/wrongest/json')
+        axios.get('/stats/wrongest/json')
           .then(function (response) {
             // handle success
             self.stats.wrongest = response.data;
@@ -388,21 +435,37 @@ var app = new Vue({
             self.ui.wrongestLoaded = true;
             self.ui.viewing = "wrongest";
           });
+      } else if (game == "sisyphus") {
+        axios.get('/stats/sisyphus/json')
+          .then(function (response) {
+            // handle success
+            self.stats.sisyphus = response.data;
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          })
+          .then(function () {
+            // always executed
+            self.ui.sisyphusLoaded = true;
+            self.ui.viewing = "sisyphus";
+          });
       }
+
     },
     formatTime(stamp,format) {
       if (format == "fromNow") {
-        return moment(stamp).subtract('6','hours').fromNow();
+        return moment(stamp).subtract(timeZoneOffset,'minutes').fromNow();
       } else if (format == "calendar") {
         if (moment(stamp).diff(moment(),'days') > -7) {
           return moment(stamp).subtract('6','hours').calendar();
         } else {
-          return moment(stamp).subtract('6','hours').format('MMM Do @ LT');
+          return moment(stamp).subtract(timeZoneOffset,'minutes').format('MMM Do @ LT');
         }
       } else if (format) {
-        return moment(stamp).subtract('6','hours').format(format);
+        return moment(stamp).subtract(timeZoneOffset,'minutes').format(format);
       } else {
-        return moment(stamp).subtract('6','hours').format('LLLL');
+        return moment(stamp).subtract(timeZoneOffset,'minutes').format('LLLL');
       }
     },
     addCommas(n) {
@@ -428,11 +491,10 @@ var app = new Vue({
     },
     formatDate(d) {
       if (d) {
-        return moment(d).subtract('6','hours').format('MMM Do @ h:ss a'); 
+        return moment(d).subtract(timeZoneOffset,'minutes').format('MMM Do @ h:ss a'); 
       } else {
-        return "";
+        return moment(d).subtract(timeZoneOffset,'minutes'); 
       }
-      
     },
     formatStatement(statement) {
       return statement.replace('{','').replace('}','');
@@ -578,14 +640,37 @@ var app = new Vue({
           marketForces: lowestValue
         };
       }
+    },
+    computedSisyphusCheevoCount() {
+      const self = this;
+      if (!self.ui.sisyphusLoaded) {
+        return null;
+      } else {
+        let n = 0;
+        self.stats.sisyphus.cheevos.forEach((cheevo) => {
+          n += cheevo.icount;
+        });
+        return n;
+      }
+    },
+    computedSisyphusPurchaseCount() {
+      const self = this;
+      if (!self.ui.sisyphusLoaded) {
+        return null;
+      } else {
+        let n = 0;
+        self.stats.sisyphus.purchases.forEach((purchase) => {
+          n += purchase.icount;
+        });
+        return n;
+      }
     }
-
 
   },
 
   created: function() {
     const self = this;
-    axios.get('/stats/live/general/json')
+    axios.get('/stats/general/json')
       .then(function (response) {
         // handle success
         self.stats.general = response.data;

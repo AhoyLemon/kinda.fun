@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Sisyphus Clicker | Click on Sisyphus to push the rock up the mountain (formerly futile.fun)</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Click on Sisyphus to push the rock up the mountain (formerly futile.fun)">
+    <meta http-equiv="last-modified" content="2021-07-24@21:23:00">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700|Poppins:400,400i,700">
+    <link href="css/sisyphus.css?lastUpdated=2021-07-24@21:23:00" rel="stylesheet">
+    <link rel="canonical" href="https://kinda.fun/sisyphus">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://kinda.fun/img/sisyphus/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://kinda.fun/img/sisyphus/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://kinda.fun/img/sisyphus/favicon-16x16.png">
+    <link rel="manifest" href="https://kinda.fun/img/sisyphus/site.webmanifest">
+    <link rel="mask-icon" href="https://kinda.fun/img/sisyphus/safari-pinned-tab.svg" color="#f9ca77">
+    <link rel="shortcut icon" href="https://kinda.fun/img/sisyphus/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="https://kinda.fun/img/sisyphus/browserconfig.xml">
+    <meta name="theme-color" content="#333333">
+    <!-- Twitter-->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:creator" content="@AhoyLemon">
+    <meta name="twitter:title" content="Sisyphus Clicker">
+    <meta name="twitter:description" content="Click on Sisyphus to push the rock up the mountain (formerly futile.fun)">
+    <meta name="twitter:image" content="https://kinda.fun/img/sisyphus/og-wide.png">
+    <meta name="twitter:url" content="https://kinda.fun/sisyphus">
+    <!-- OpenGraph-->
+    <meta property="og:title" content="Sisyphus Clicker">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kinda.fun/sisyphus">
+    <meta property="og:image" content="https://kinda.fun/img/sisyphus/og-wide.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Click on Sisyphus to push the rock up the mountain (formerly futile.fun)">
+    <meta property="og:email" content="lemon@thefpl.us">
+    <meta name="google-site-verification" content="cXGgZ2HCUy8jYOL41BCPYmF20eSssZR40Joc3zoB_Yw">
+  </head>
+  <body>
+    <div id="app">
+      <main v-cloak>
+        <button class="sidebar-button" v-on:click="toggleSidebar" v-bind:class=" {active: sidebarVisible} " v-cloak aria-label="Open Sidebar">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <circle class="fill" cx="50.6" cy="49.7" r="42"></circle>
+            <path class="outline" d="M50 96C24.6 96 4 75.4 4 50S24.6 4 50 4s46 20.6 46 46-20.6 46-46 46zm0-86.2C27.8 9.8 9.8 27.8 9.8 50s18 40.3 40.2 40.3S90.3 72.2 90.3 50 72.2 9.8 50 9.8z"></path>
+            <path class="question-mark" d="M47.6 58.9c-.6-.7-.9-1.6-.9-2.8 0-2.4.4-4.3 1.3-5.9.9-1.6 2.1-3.3 3.8-5.2 1.2-1.4 2.2-2.6 2.7-3.6.6-.9.9-2 .9-3.2 0-1.3-.5-2.3-1.4-3.1-1-.7-2.3-1.1-3.9-1.1-1.5 0-2.9.3-4.1.9-1.3.6-3 1.5-5.1 2.8-1.3.7-2.4 1.1-3.3 1.1-1 0-1.8-.4-2.5-1.3s-1-1.9-1-3.1c0-.8.1-1.5.5-2.1.3-.6.8-1.1 1.4-1.6 2-1.6 4.4-2.9 7-3.8 2.7-.9 5.3-1.4 8-1.4 2.9 0 5.4.5 7.7 1.5s4.1 2.4 5.3 4.2c1.3 1.8 1.9 3.8 1.9 6 0 1.7-.3 3.3-1 4.7-.7 1.4-1.5 2.6-2.4 3.7-.9 1-2.2 2.3-3.7 3.8-1.8 1.6-3.1 3-4 4.1-.9 1.1-1.4 2.3-1.7 3.6-.2.9-.6 1.6-1.1 2-.6.5-1.3.7-2.1.7-1 .1-1.8-.2-2.3-.9zm-1.7 14.8c-1.1-1.1-1.7-2.6-1.7-4.3 0-1.7.6-3.1 1.7-4.3s2.5-1.7 4.2-1.7c1.7 0 3 .6 4.2 1.7 1.1 1.1 1.7 2.6 1.7 4.3 0 1.7-.6 3.1-1.7 4.3-1.1 1.1-2.5 1.7-4.2 1.7-1.7 0-3.1-.5-4.2-1.7z"></path>
+            <path class="x" d="M70.3 69c0 1.3-.5 2.4-1.5 3.3-1 .9-2.1 1.4-3.4 1.4-1.3 0-2.4-.6-3.4-1.7L49.6 56.9 37 72.1c-1 1.1-2.1 1.7-3.4 1.7-1.2 0-2.3-.5-3.3-1.4-1-.9-1.5-2.1-1.5-3.3 0-1.1.4-2.1 1.2-3L43.5 50l-13-15.8c-.8-1-1.3-2-1.3-3 0-1.3.5-2.4 1.5-3.3 1-.9 2.1-1.4 3.3-1.4 1.3 0 2.5.6 3.4 1.7l12.1 14.6 12-14.6c1-1.1 2.1-1.7 3.4-1.7 1.2 0 2.3.5 3.3 1.4 1 .9 1.5 2.1 1.5 3.3 0 1.1-.4 2.1-1.2 3l-13 15.6L69 65.9c.9 1 1.3 2 1.3 3.1z"></path>
+          </svg>
+        </button>
+        <div class="sidebar" v-bind:class=" {visible: sidebarVisible} ">
+          <ul>
+            <li><span class="label">This site is</span><span class="indent"><span>by </span><a href="https://ahoylemon.xyz" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'site by Lemon', 'https://ahoylemon.xyz')">Lemon</a></span></li>
+            <li><span class="label">with art by</span><span class="indent"><a href="https://twitter.com/AberrantWhimsy" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'Sanguinary Novel', 'https://twitter.com/AberrantWhimsy')">Sanguinary Novel</a></span></li>
+            <li><span class="label">and music by</span><span class="indent"><a href="https://bootsraingear.bandcamp.com" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'Boots Raingear', 'https://bootsraingear.bandcamp.com')">Boots Raingear</a>.</span></li>
+            <li><span class="label">There's more info in the</span><span class="indent"><a href="https://github.com/AhoyLemon/kinda.fun" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'GitHub Repo', 'https://github.com/AhoyLemon/kinda.fun')">GitHub repository</a></span></li>
+          </ul>
+        </div>
+        <div class="scene">
+          <figure>
+            <div class="background" :style="{transform: backgroundTransform}"></div>
+            <div class="hill"></div>
+            <div class="shine"></div>
+            <button class="sisyphys" id="Sisyphus" @click="sisyphusClick()" :style="{ bottom: s.bottom +'%', left: s.left+'%', width:s.width+'%', height:s.height+'%' }">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82 100">
+                <g v-if="phase == 'retreat'">
+                  <path class="st0" d="M11.4 46.9l-.6 2.4-3.4-2.9c0-.2-1.1-3-1.1-3l-2.1-.9 1.6-1.1-1-1.5-4.2.5.2 2 .6 3.5 3.2.7 3.9 8 5.1.8 1.9-1.8-4.1-6.7z"></path>
+                  <path class="st1" d="M13.8 55.9L8.2 55l-3.9-8-3.3-.8-.7-3.8L0 40l5-.6 1.4 2.1-1.3.9 1.5.7.1.2c.7 1.9 1 2.6 1.1 2.9.3.3 1.6 1.4 2.7 2.3l.7-2.8 4.9 7.9-2.3 2.3zm-5-1.8l4.7.8 1.4-1.4-3.3-5.4-.5 2.1-.6-.5c-3.5-3-3.5-3-3.5-3.2 0-.1-.5-1.4-1-2.7l-2.7-1.2 1.8-1.3-.6-.9-3.5.4.2 1.5.6 3.1 3.1.6 3.9 8.1z"></path>
+                  <path class="st2" d="M14.2 34.2c.5-.3 7.5-4.9 7.5-4.9L35.8 31l8.1 6.2h7.6l5.1 3.8 4.8 7.5-.6 7.9 2.5-8.9 9.1-1.3 3-4.5 6 9.9-4 4.8-.5-6.1-2.1-2.4-13 14.8-4.8-.5-5.7-9.3-2 3.7-10.9 7.6 2.5 1.1 12.2 9.6 2.5 1.7-7 8.4 1.1-8.8-18.6-6.9-1.6-5.4 9-16.3-9.9-2.9-6.5 14.1H19l-8.8-12.9-4.3-.7v-3L2 39.5l1.1-6.9 5.4-2.7 5.7 4.3z"></path>
+                  <path class="st1" d="M47.9 86.5l1.3-10-18.4-6.9-1.8-5.8 8.8-15.9-8.9-2.6-6.4 14h-3.8l-8.8-13-4.5-.7v-3.2l-3.9-2.7 1.2-7.4 5.9-2.9 5.7 4.3c1.1-.7 5.1-3.3 7.2-4.7l.1-.1L36 30.6l8.1 6.2h7.6l5.3 4 4.9 7.6-.3 3.3 1.3-4.6 9.2-1.3 3.3-4.9L82 51.7l-5 5.9-.6-7.1-1.6-1.9-12.9 14.6-5.2-.6-5.4-8.8-1.7 3.2-10.2 7.1 1.9.8 12.2 9.6 2.9 2-8.5 10zM31.5 68.9l18.7 6.9-.9 7.6 5.7-6.8-2.1-1.4-12.2-9.6-3.3-1.4 11.5-8 2.4-4.3 6 9.8 4.2.5 13.2-15 2.6 2.9.4 5.1 3-3.7-5.4-9-2.7 4.1-9 1.3-2.4 8.6-.9-.2.6-7.7-4.7-7.3-4.9-3.7h-7.6l-8.1-6.2-13.8-1.7c-1 .7-6.9 4.5-7.4 4.8l-.3.2-5.7-4.3-4.9 2.5-1 6.4L6.4 42v2.8l4.1.7 8.8 12.9h2.6l6.5-14.2 10.8 3.1L30 63.9l1.5 5z"></path>
+                  <path class="st1" d="M21.2 50.8l-10.9-7-.6-2.7 2.4-1.1-.7-1.2H7.3l-1.2 3.4-.9-.3 1.4-4.1H12l1.4 2.7-2.6 1.1.4 1.6 7.1 4.6-5-8.4 3.1-6.6 6.5-.6 5 8.7-.4 7.1h-.9l.3-6.9-4.6-7.9-5.3.5-2.6 5.6z"></path>
+                  <path class="st0" d="M15.3 46.4l-1.7-4.6-2.2 2.1 3.9 2.5z"></path>
+                  <path class="st1" d="M16.2 47.6l-5.3-3.4V44c0-.3 0-.3 2.3-2.5l.5-.5 2.5 6.6zm-4.1-3.8l2.2 1.4-1-2.6-1.2 1.2z"></path>
+                  <path class="st0" d="M53 39.9l.6 9.4-2.2 3.6 5.6 9.3 4.7.5 13.1-14.8 2.1 2.4.5 6.1 4-4.8-6-9.9-3 4.5-9.1 1.3-2.5 8.9.6-7.9-4.8-7.5-5.1-3.8h-.7z"></path>
+                  <path class="st1" d="M61.9 63.2l-5.2-.6-5.9-9.7 2.4-3.7-.6-9.1-2.8-3.4h1.8l5.3 4 4.9 7.6-.3 3.3 1.3-4.6 9.2-1.3 3.3-4.9 6.6 10.8-5 5.9-.6-7.1-1.6-1.9-12.8 14.7zm-4.6-1.4l4.2.5 13.2-15 2.6 2.9.4 5.1 3-3.7-5.4-9-2.7 4.1-9 1.3-2.4 8.6-.9-.2.6-7.7-4.7-7.3-3.6-2.7.9 1.1.6 9.7-2.2 3.5 5.4 8.8z"> </path>
+                </g>
+                <g v-else>
+                  <path class="st2" d="M24.6 91.7l-3.8-.1-.3 2 5.2 5.8 5.9-3.6-5-1.1 6-30.9 7.4-3.5-1.8 3.1 5.6 8.3L43 75l6.2 2.7 5.9-6.2-7.9.6-.4-19.9-8.9-.2 3.7-5.7 4.5-1.2 3.2-8.3 2.9 1.1 5.7-4.5-.1-4.2-2.1-2.7 1.4-1.4 3-14.3 1.3-1.3-2.3-6.2-2.7-2 .4 6.3-1.5-.2 1.3 2.7 1 1L51.7 22l1.2 3.2-8 5.8-8.6.5-10 19-4.7 5.1.5 5.9-1.3 1.3 5.5 13.3-4.5 1.2z"></path>
+                  <path class="st1" d="M25.6 100L20 93.8l.4-2.6 3.6.1L21.3 77l4.3-1.2-5.4-13.1 1.4-1.4-.5-5.9 4.8-5.3 10.1-19 8.7-.6 7.6-5.5-1.2-3L57 11.2l-.9-.9-1.6-3.5 1.8.3-.5-6.7L59.4 3 62 9.6 60.5 11l-3 14.3-1.2 1.2 1.9 2.5.1 4.5-6 4.8-2.8-1-3 8.1-4.6 1.2-3.1 4.8 8.5.2.4 19.9 8.6-.6-7 7.3-6.8-2.9.8-3.5-5.6-8.4 1.2-2-5.9 2.8-5.9 30.2 5.7 1.2-7.2 4.4zM21 93.5l4.8 5.3 4.6-2.8-4.4-.9 6.2-31.5 9-4.3-2.4 4.1 5.5 8.2-.7 3.2 5.5 2.4 4.8-5-7.1.5-.4-20-9.3-.2 4.2-6.6 4.5-1.2 3.2-8.6 3.1 1.2 5.3-4.2-.1-3.7-2.3-2.9 1.6-1.6 3-14.3 1.2-1.2-2.2-5.8-1.7-1.3.4 5.9-1.2-.2.9 1.8 1.3 1.2-6 11.1 1.3 3.3-8.6 6-8.4.6-9.9 18.7-4.6 5.1.5 5.9-1.3 1.3 5.6 13.5-4.5 1.2 2.8 14.5-3.9-.1-.3 1.4z"></path>
+                  <path class="st0" d="M32.6 63.8l-6.1-1-2.9-3.5.7-6.4-2.7 2.7.5 5.9-1.3 1.3 5.5 13.3-4.5 1.2 2.8 14.4-3.8-.1-.3 2 5.2 5.8 5.9-3.6-5-1.1z"></path>
+                  <path class="st1" d="M25.6 100L20 93.8l.4-2.6 3.6.1L21.3 77l4.3-1.2-5.4-13.1 1.4-1.4-.5-5.9 3.7-3.7-.8 7.5 2.7 3.2 6.4 1.1-6 30.9 5.7 1.2-7.2 4.4zM21 93.5l4.8 5.3 4.6-2.8-4.4-.9 6-30.8-5.8-1-3.2-3.8.5-5.2-1.6 1.6.5 5.9-1.1 1.2 5.6 13.5-4.5 1.2 2.8 14.5-3.9-.1-.3 1.4z"></path>
+                  <path class="st1" d="M43.4 42.4l-5.6-.6.1-.9 5.1.6 12.3-15.3.7.6z"></path>
+                  <path class="st0" d="M39.2 31.3l7.3-7.5 3.7-10.6-1-6.8 1.2-1.7 2 5.5.4-3.2 1.9 4.1-2.4 3.4.6 5.3-1.2 2.2.4 1-1.9 4.1-5.3 3.9z"></path>
+                  <path class="st1" d="M38 31.9l8.1-8.3 3.6-10.4-.9-7 1.8-2.5 1.6 4.4.3-2.8 2.8 5.8-2.5 3.6.6 5.2-1.2 2.2.4.9-2 4.4-5.5 4-7.1.5zM49.7 6.5l.9 6.8v.1l-3.8 10.8-6.4 6.6 4.3-.3 5.1-3.7 1.7-3.8-.4-1 1.3-2.3-.6-5.3 2.4-3.4-1.1-2.3-.4 3.5-2.4-6.5-.6.8z"></path>
+                </g>
+              </svg>
+            </button>
+            <div class="rock" :style="{ bottom:r.bottom+'%', left:rockLeft, width:rockWidth, height:rockHeight, marginLeft:rockMarginLeft }" :class="{ falling: r.falling }"></div>
+            <div class="foreground"></div>
+          </figure>
+          <div class="pillar one"><img src="/svg/sisyphus/pillar-1.svg"></div>
+          <div class="pillar two"><img src="/svg/sisyphus/pillar-2.svg"></div>
+          <figcaption v-if="message">
+            <div class="inner" v-text="message"></div>
+          </figcaption>
+        </div>
+      </main>
+      <button class="toggle store" v-if="availableUpgrades.length &gt; 0" @click="toggleDrawer('store')"><span class="count" v-text="availableUpgrades.length"></span></button>
+      <aside class="store" v-cloak v-if="availableUpgrades.length &gt; 0" v-bind:class="{ mobileVisible: (visibleDrawer == 'store') }">
+        <div class="header">Buy Upgrades</div>
+        <div class="animated zoomInDown" v-for="item,i in availableUpgrades" @click="buyItem(i,item)"><a class="item" v-bind:class="{ buyable: score &gt;= item.price}">
+            <div class="price">{{item.price}}</div>
+            <div class="name">{{item.name}}</div>
+            <div class="desc">{{item.desc}}</div></a></div>
+      </aside>
+      <button class="toggle inventory" v-if="inventory.length &gt; 0" @click="toggleDrawer('inventory')"><span class="count" v-text="inventory.length"></span></button>
+      <aside class="inventory" v-cloak v-show="inventory.length &gt; 0" v-bind:class="{ mobileVisible: (visibleDrawer == 'inventory') }">
+        <div class="header">Your Inventory</div>
+        <div class="inner">
+          <div class="item animated bounceInUp" v-for="item in inventory"><a class="toggle" v-on:click="foo(item)">
+              <div class="name">{{item.name}}</div>
+              <div class="desc" v-if="item.showDesc == true">{{item.desc}}</div></a></div>
+        </div>
+      </aside>
+      <div class="counters">
+        <div class="score-hud counter pushes" v-if="totalScore &gt; 18" v-cloak>
+          <div class="label">Pushes</div>
+          <div class="count" v-text="score"></div>
+        </div>
+        <div class="score-hud counter gamerscore" v-if="computedGamerScore" @click="" v-cloak>
+          <div class="label">Score</div>
+          <div class="count"><a @click="remindMeOfMyCheevos()">{{computedGamerScore}}</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="javascripts">
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+      <script src="js/libraries/vue.min.js"></script>
+      <script>
+        const testing = false;
+        
+      </script>
+      <script src="js/libraries/howler.min.js"></script>
+      <script src="js/libraries/pnotify.custom.min.js"></script>
+      <link rel="stylesheet" href="css/libraries/pnotify.custom.min.css">
+      <script>
+        //------ Pnotify settings & defaults ----------------
+        PNotify.prototype.options.icon = false;
+        var stack_bottomright = {"dir1": "up", "dir2": "left", "firstpos1": 25, "firstpos2": 25};
+        PNotify.prototype.options.stack = stack_bottomright;
+        PNotify.prototype.options.addclass = "stack-bottomright";
+        PNotify.prototype.options.animate.animate = true;
+        PNotify.prototype.options.animate.in_class = 'bounceInDown',
+        PNotify.prototype.options.animate.out_class = 'zoomOutRight';
+        PNotify.prototype.options.width = "460px";
+        PNotify.prototype.options.delay = 14000;
+        
+        PNotify.defaultStack = {
+          dir1: 'down',
+          dir2: 'left',
+          firstpos1: 25,
+          firstpos2: 25,
+          spacing1: 36,
+          spacing2: 36,
+          push: 'bottom',
+          context: document.body
+        }
+        
+      </script>
+      <script src="/socket.io/socket.io.js"></script>
+      <script>
+        var socket = io.connect();
+        
+      </script>
+      <script src="js/min/sisyphus.min.js"></script>
+      <!-- Matomo-->
+      <script>
+        var _paq = window._paq = window._paq || [];
+        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+        var u="https://thefpl.us/analytics/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '3']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
+      </script>
+      <!-- End Matomo Code-->
+      <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+      <script>
+        TrackJS.install({
+          token: "9947e081831c42b8aeb3a5fb81a152c4",
+          application: "kindafun"
+        });
+      </script>
+    </div>
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "VideoGame",
+        "name": "Sisyphus Clicker",
+        "url": "https://kinda.fun",
+        "image": "https://kinda.fun/img/sisyphus/og-wide.png",
+        "playMode": "SinglePlayer",
+        "applicationCategory": "browser game",
+        "gamePlatform": "web browser",
+        "operatingSystem": "web browser",
+        "genre": "clicker",
+        "description": "Click on Sisyphus to push the rock up the mountain (formerly futile.fun)",
+        "inLanguage": "English",
+        "author": {
+          "@type": "Person",
+          "name": "Lemon",
+          "url": "https://ahoylemon.xyz",
+          "sameAs": [
+            "https://thefpl.us/meet/lemon",
+            "https://twitter.com/AhoyLemon"
+          ]
+        },
+        "publisher": {
+          "@type": "PerformingGroup",
+          "name": "The F Plus",
+          "url": "https://thefpl.us"
+        },
+        "offers": {
+          "@type": "Offer",
+          "description": "free",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "screenshot": [
+          {
+            "@type": "ImageObject",
+            "url": "https://kinda.fun/img/sisyphus/screenshots/ss1.png",
+            "width": 1083,
+            "height": 924
+          },
+          {
+            "@type": "ImageObject",
+            "url": "https://kinda.fun/img/sisyphus/screenshots/ss2.png",
+            "width": 1083,
+            "height": 924
+          },
+          {
+            "@type": "ImageObject",
+            "url": "https://kinda.fun/img/sisyphus/screenshots/ss3.png",
+            "width": 1083,
+            "height": 924
+          }
+        ]
+      }
+    </script>
+  </body>
+</html>
