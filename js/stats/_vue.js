@@ -452,6 +452,11 @@ var app = new Vue({
           });
       }
 
+      const newURL = window.location.origin + window.location.pathname + "?game="+game;
+
+      history.pushState({game: game}, game + ' | Kinda Fun Stats', newURL);
+      document.title = game + ' | Kinda Fun Stats';
+
     },
     formatTime(stamp,format) {
       if (format == "fromNow") {
@@ -505,7 +510,14 @@ var app = new Vue({
       } else {
         return "-";
       }
+    },
+    getGameDataFromURL() {
+      const self = this;
+      const loadedURL = new URL(window.location.href);
+      const game = loadedURL.searchParams.get('game');
+      self.getData(game);
     }
+
   },
 
   computed: {
@@ -666,6 +678,15 @@ var app = new Vue({
       }
     }
 
+  },
+
+  mounted() {
+    const self = this;
+    const loadedURL = new URL(window.location.href);
+    if (loadedURL.searchParams.get('game')) {
+      const self = this;
+      self.getGameDataFromURL();
+    }
   },
 
   created: function() {
