@@ -1,12 +1,3 @@
-const uphillMusic = new Howl({
-  src: ['audio/sisyphus/uphill3.mp3'],
-  loop:true
-});
-const downhillMusic = new Howl({
-  src: ['audio/sisyphus/downhill5.mp3'],
-  loop: false
-});
-
 var app = new Vue({
   el: '#app',
   data: {
