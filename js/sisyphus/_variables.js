@@ -31,3 +31,21 @@ const rDefaults = {
   peak: 74,
   rollbacks: 0
 };
+
+const audioFolder = "audio/sisyphus";
+
+
+const uphillMusic = new Howl({
+  src: [
+    audioFolder+'/uphill4.ogg',
+    audioFolder+'/uphill4.mp3',
+  ],
+  loop:true
+});
+const downhillMusic = new Howl({
+  src: [
+    audioFolder+'/downhill6.ogg',
+    audioFolder+'/downhill6.mp3',
+  ],
+  loop: false
+});
