@@ -16,7 +16,7 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
 
     .box.big-number(v-if="stats.sisyphus && stats.sisyphus.counts && stats.sisyphus.counts['First Click']")
       .caption The Rock Has Rolled Downhill
-      .number(v-text="addCommas(stats.sisyphus.counts['First Click'])")
+      .number(v-text="addCommas(stats.sisyphus.counts['Rock Rolled Downhill'])")
       .subtext times
 
     .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevoCount")
