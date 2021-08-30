@@ -29,9 +29,7 @@ const storeItems = [
     desc: "You know, those shoes with the wheels on them? Probably better for downhill."
   },
   {
-    //id: 7, name: "Dignity", price: 60000, scoreToReveal: 600,
-    //id: 7, name: "Dignity", price: 1, scoreToReveal: 1,
-    id: 7, name: "Dignity", price: 1, scoreToReveal: 600,
+    id: 7, name: "Dignity", price: 60000, scoreToReveal: 600,
     desc: "You've played this game for far too long. I'm taking your diginity and you can buy it back."
   },
   {
