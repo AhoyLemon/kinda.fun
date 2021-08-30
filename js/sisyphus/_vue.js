@@ -4,10 +4,10 @@ var app = new Vue({
     gameName: "sisyphus",
     phase: 'begin',
     message: 'Click Sisyphus to push the rock uphill.',
-    score: 0,
-    totalScore: 0,
+    score: 1000,
+    totalScore: 1000,
     secondsPlayed: 0,
-    totalClicks: 0,
+    totalClicks: 2000,
     visibleDrawer: null,
     sidebarVisible: false,
     s: sDefaults,
@@ -18,10 +18,9 @@ var app = new Vue({
     bg: {
       transform:0
     },
-    store: storeItems,
+    store: [...storeItems],
     inventory: [],
     cheevos: [],
-    cheevoPoints: 0,
     cheevoReminders: 0,
 
     // Audio stuff
@@ -216,9 +215,11 @@ var app = new Vue({
         let s = findKeyInArray(self.store,'id',item.id);
         let n = self.store[s];
         n.showDesc = false;
+
         self.inventory.push(n);
         
         removeFromArrayByKey(self.store,'id',item.id);
+
         self.buyItemEffect(item.id);
 
         sendEvent('item purchase', item.name, item.price);
@@ -247,9 +248,25 @@ var app = new Vue({
             self.getCheevo("How Refreshing!", "Mmmmm, that's some effervescent water!", 4);
             break;
           
+          case 7:
+            let currentScore = self.computedGamerScore;
+            let negativeScore = (0 - currentScore);
+            self.cheevos = [];
+            self.score = 0;
+            self.inventory = [];
+            self.store = [...storeItems];
+            self.inventory = [
+              {
+                id: 7, name: "Dignity", price: 60000, scoreToReveal: 600,
+                desc: "You've played this game for far too long. I'm taking your diginity and you can buy it back."
+              }
+            ];
+            self.getCheevo("Dignity Restored!","You've finally reclaimed your dignity. However, it was at the expense of any points that you've earned so far. So I guess, if you want those points back, you should probably keep pushing the boulder.",negativeScore)
+            break;
         }
-      }
 
+
+      }
     },
 
     foo(item) {
@@ -293,7 +310,7 @@ var app = new Vue({
           break;
         case 7: 
           //---- dignity          
-          // TBD?
+          // These effects are handled elsewhere.
           break;
         case 8: 
           //---- a phone call from your mom
@@ -442,10 +459,6 @@ var app = new Vue({
         title: title,
         text: t
       });
-
-      if (points) {
-        self.cheevoPoints = self.cheevoPoints + 5;
-      }
 
       self.cheevos.push( { title:title,text:text,points:points });
 
