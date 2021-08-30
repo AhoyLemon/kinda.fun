@@ -1,9 +1,9 @@
 const storeItems = [
 
-  // {
-  //   id: 0, name: "Test Item", price: 1, scoreToReveal: 5,
-  //   desc: "This shouldn't show up in a production db.",
-  // },
+  {
+    id: 0, name: "Test Item", price: 1, scoreToReveal: 5,
+    desc: "This shouldn't show up in a production db.",
+  },
   {
     id: 1, name: "Fresh Kicks", price: 85, scoreToReveal: 60,
     desc: "Better arch support means that you can move slightly faster",
@@ -29,7 +29,9 @@ const storeItems = [
     desc: "You know, those shoes with the wheels on them? Probably better for downhill."
   },
   {
-    id: 7, name: "Dignity", price: 48635, scoreToReveal: 300,
+    //id: 7, name: "Dignity", price: 60000, scoreToReveal: 600,
+    //id: 7, name: "Dignity", price: 1, scoreToReveal: 1,
+    id: 7, name: "Dignity", price: 1, scoreToReveal: 600,
     desc: "You've played this game for far too long. I'm taking your diginity and you can buy it back."
   },
   {
@@ -45,7 +47,7 @@ const storeItems = [
     desc: "Some fresh beats to really get your heart pumping!"
   },
   {
-    id: 11, name: "Hades Haute Couture", price: 275, scoreToReveal: 220,
+    id: 11, name: "Hades Haute Couture", price: 275, scoreToReveal: 610,
     desc: "Mainly an aesthetic of ash, chains and sackcloth that is very much de riguer in the underworld."
   },
   {
@@ -65,23 +67,23 @@ const storeItems = [
     desc: "The gods start meddling with your bloodline and suddenly you are part mountain goat. Goats are good at climbing down mountains right?"
   },
   {
-    id: 16, name: "Yogurt Pouch", price: 15, scoreToReveal: 275,
+    id: 16, name: "Yogurt Pouch", price: 15, scoreToReveal: 333,
     desc: "Pushing for eternity makes you hungry. Get a protein rich snack to keep going."
   },
   {
-    id: 17, name: "Knee Braces", price: 35, scoreToReveal: 275,
+    id: 17, name: "Knee Braces", price: 35, scoreToReveal: 367,
     desc: "Doesn't really do much, but makes you feel better at least."
   },
   {
-    id: 18, name: "Moral Support", price: 125, scoreToReveal: 275,
+    id: 18, name: "Moral Support", price: 125, scoreToReveal: 412,
     desc: "You somehow have a friend left on Earth? It's a small comfort in your eternal task."
   },
   {
-    id: 19, name: "Thanatos Remembers", price: 666, scoreToReveal: 300,
+    id: 19, name: "Thanatos Remembers", price: 666, scoreToReveal: 380,
     desc: "Thanatos gives you back your chains, assured that you know how to use them."
   },
   {
-    id: 20, name: "Effervescent Lemon Water", price: 2, scoreToReveal: 150,
+    id: 20, name: "Effervescent Lemon Water", price: 2, scoreToReveal: 161,
     desc: "Refreshing, right?"
   },
   /*
@@ -95,7 +97,7 @@ const storeItems = [
     desc: "For a Little League baseball game. Makes you swell up with pride, unclear if that'll affect the boulder pushing thing or not"
   },
   {
-    id: 23, name: "Sand Paper", price: 40, scoreToReveal: 325,
+    id: 23, name: "Sand Paper", price: 40, scoreToReveal: 400,
     desc: "Are you really planning on whittling down the boulder with 20 grain sandpaper? Alright then go ahead."
   },
   {
@@ -113,15 +115,15 @@ const storeItems = [
   },
   */
   {
-    id: 27, name: "A Million Packs of Firecrackers", price: 75, scoreToReveal: 350,
+    id: 27, name: "A Million Packs of Firecrackers", price: 75, scoreToReveal: 435,
     desc: "How about you set off fireworks around the boulder and see if that makes any difference?"
   },
   {
-    id: 28, name: "Bedazzler", price: 112, scoreToReveal: 375,
+    id: 28, name: "Bedazzler", price: 112, scoreToReveal: 912,
     desc: "Because your boulder could use some ✨PIZZAZ✨"
   },
   {
-    id: 29, name: "Espresso Drip", price: 125, scoreToReveal: 370,
+    id: 29, name: "Espresso Drip", price: 125, scoreToReveal: 866,
     desc: "One of those beer hats, but filled with espresso."
   }
 ];
