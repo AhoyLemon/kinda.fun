@@ -1,9 +1,9 @@
 const storeItems = [
 
-  {
-    id: 0, name: "Test Item", price: 1, scoreToReveal: 5,
-    desc: "This shouldn't show up in a production db.",
-  },
+  // {
+  //   id: 0, name: "Test Item", price: 1, scoreToReveal: 5,
+  //   desc: "This shouldn't show up in a production db.",
+  // },
   {
     id: 1, name: "Fresh Kicks", price: 85, scoreToReveal: 60,
     desc: "Better arch support means that you can move slightly faster",
@@ -29,7 +29,8 @@ const storeItems = [
     desc: "You know, those shoes with the wheels on them? Probably better for downhill."
   },
   {
-    id: 7, name: "Dignity", price: 60000, scoreToReveal: 600,
+    id: 7, name: "Dignity", price: 50000, scoreToReveal: 600,
+    //id: 7, name: "Dignity", price: 1, scoreToReveal: 1,
     desc: "You've played this game for far too long. I'm taking your diginity and you can buy it back."
   },
   {
