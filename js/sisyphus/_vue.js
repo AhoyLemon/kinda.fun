@@ -18,15 +18,17 @@ var app = new Vue({
     bg: {
       transform:0
     },
-    store: storeItems,
+    store: [...storeItems],
     inventory: [],
     cheevos: [],
-    cheevoPoints: 0,
     cheevoReminders: 0,
 
     // Audio stuff
     isMusicPlaying: false,
     uphillMusicTimer: undefined,
+
+    // Dignity...
+    boughtDignity: false
   },
 
   methods: {
@@ -38,6 +40,18 @@ var app = new Vue({
       let bT;
       
       document.getElementById('Sisyphus').blur();
+
+      if (self.boughtDignity) {
+        self.inventory = [];
+        self.getCheevo("Dignity Retaken!","I was thinking that would make you stop clicking, but apparently not. Have five points I guess.", 5);
+        dignityLost.play();
+        self.store.push(
+          {
+            id: 7, name: "Dignity", price: 60000, scoreToReveal: 1,
+            desc: "I've taken your dignity back. Are you going to buy it again now?"
+          }
+        );
+      }
 
       // You can't move Sisyphus while the rock is falling...
       if(self.r.falling) {
@@ -216,10 +230,14 @@ var app = new Vue({
         let s = findKeyInArray(self.store,'id',item.id);
         let n = self.store[s];
         n.showDesc = false;
+
         self.inventory.push(n);
         
         removeFromArrayByKey(self.store,'id',item.id);
+
         self.buyItemEffect(item.id);
+
+        purchaseSound.play();
 
         sendEvent('item purchase', item.name, item.price);
         socket.emit('sisyphusBoughtItem', {
@@ -247,9 +265,28 @@ var app = new Vue({
             self.getCheevo("How Refreshing!", "Mmmmm, that's some effervescent water!", 4);
             break;
           
+          case 7:
+            let currentScore = self.computedGamerScore;
+            let negativeScore = (0 - currentScore);
+            self.cheevos = [];
+            self.score = 0;
+            self.inventory = [];
+            self.store = [...storeItems];
+            self.inventory = [
+              {
+                id: 7, name: "Dignity", price: 60000, scoreToReveal: 600,
+                desc: "You've played this game for far too long. I'm taking your diginity and you can buy it back."
+              }
+            ];
+            dignityGot.play();
+            self.getCheevo("Dignity Restored!","You've finally reclaimed your dignity. However, it was at the expense of any points that you've earned so far. So I guess, if you want those points back, you should probably keep pushing the boulder.",negativeScore);
+            removeFromArrayByKey(self.store,'id', 7);
+            self.boughtDignity = true;
+            break;
         }
-      }
 
+
+      }
     },
 
     foo(item) {
@@ -293,7 +330,7 @@ var app = new Vue({
           break;
         case 7: 
           //---- dignity          
-          // TBD?
+          // These effects are handled elsewhere.
           break;
         case 8: 
           //---- a phone call from your mom
@@ -438,14 +475,13 @@ var app = new Vue({
         sendEvent("cheevo", title);
       }
 
+
+      cheevoSound.play();
+
       new PNotify({
         title: title,
         text: t
       });
-
-      if (points) {
-        self.cheevoPoints = self.cheevoPoints + 5;
-      }
 
       self.cheevos.push( { title:title,text:text,points:points });
 
