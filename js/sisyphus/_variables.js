@@ -49,3 +49,31 @@ const downhillMusic = new Howl({
   ],
   loop: false
 });
+
+const cheevoSound = new Howl({
+  src: [
+    audioFolder+'/springy-350.mp3',
+  ],
+  loop: false
+});
+
+const purchaseSound = new Howl({
+  src: [
+    audioFolder+'/juntos-607.mp3',
+  ],
+  loop: false
+});
+
+const dignityGot = new Howl({
+  src: [
+    audioFolder+'/dignity-got.mp3',
+  ],
+  loop: false
+});
+
+const dignityLost = new Howl({
+  src: [
+    audioFolder+'/dignity-lost.mp3',
+  ],
+  loop: false
+});
