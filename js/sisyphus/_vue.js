@@ -26,6 +26,9 @@ var app = new Vue({
     // Audio stuff
     isMusicPlaying: false,
     uphillMusicTimer: undefined,
+
+    // Dignity...
+    boughtDignity: false
   },
 
   methods: {
@@ -37,6 +40,18 @@ var app = new Vue({
       let bT;
       
       document.getElementById('Sisyphus').blur();
+
+      if (self.boughtDignity) {
+        self.inventory = [];
+        self.getCheevo("Dignity Retaken!","I was thinking that would make you stop clicking, but apparently not. Have five points I guess.", 5);
+        dignityLost.play();
+        self.store.push(
+          {
+            id: 7, name: "Dignity", price: 60000, scoreToReveal: 1,
+            desc: "I've taken your dignity back. Are you going to buy it again now?"
+          }
+        );
+      }
 
       // You can't move Sisyphus while the rock is falling...
       if(self.r.falling) {
@@ -222,6 +237,8 @@ var app = new Vue({
 
         self.buyItemEffect(item.id);
 
+        purchaseSound.play();
+
         sendEvent('item purchase', item.name, item.price);
         socket.emit('sisyphusBoughtItem', {
           gameName: self.gameName,
@@ -261,7 +278,10 @@ var app = new Vue({
                 desc: "You've played this game for far too long. I'm taking your diginity and you can buy it back."
               }
             ];
-            self.getCheevo("Dignity Restored!","You've finally reclaimed your dignity. However, it was at the expense of any points that you've earned so far. So I guess, if you want those points back, you should probably keep pushing the boulder.",negativeScore)
+            dignityGot.play();
+            self.getCheevo("Dignity Restored!","You've finally reclaimed your dignity. However, it was at the expense of any points that you've earned so far. So I guess, if you want those points back, you should probably keep pushing the boulder.",negativeScore);
+            removeFromArrayByKey(self.store,'id', 7);
+            self.boughtDignity = true;
             break;
         }
 
@@ -454,6 +474,9 @@ var app = new Vue({
       } else if (title) {
         sendEvent("cheevo", title);
       }
+
+
+      cheevoSound.play();
 
       new PNotify({
         title: title,
