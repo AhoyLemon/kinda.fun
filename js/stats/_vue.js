@@ -224,7 +224,8 @@ var app = new Vue({
           {
             label: "Earned",
             field: "icount",
-            type:  "number"
+            type:  "number",
+            formatFn: this.addCommas
           },
           {
             label: "Last Earned",
@@ -247,7 +248,8 @@ var app = new Vue({
           {
             label: "Earned",
             field: "icount",
-            type:  "number"
+            type:  "number",
+            formatFn: this.addCommas
           },
           {
             label: "Last Purchase",
@@ -257,6 +259,7 @@ var app = new Vue({
           } 
         ]
       },
+
       ui: {
         viewing: "loading",
         cameoLoaded: false,

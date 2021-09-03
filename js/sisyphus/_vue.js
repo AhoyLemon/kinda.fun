@@ -451,6 +451,10 @@ var app = new Vue({
       }
     },
 
+    addCommas(n) {
+      const self = this;
+      return addCommas(n);
+    },
 
     getCheevo(title,text,points) {
       let self = this;

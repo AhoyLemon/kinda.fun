@@ -243,6 +243,37 @@ const gimmickRounds = {
     reuseQueueForFinal: true
   },
 
+  standUps: {
+    name: "Stand Ups with Catch Phrases",
+    queue: [
+      { name: "DC Young Fly", desc:"“Faawwkk You Mean”", slug:"dcyoungfly1", value:650 },
+      { name: "Bob Saget", desc:"“What's goin' on?”", slug:"dcyoungfly1", value:349 },
+      { name: "Andrew Dice Clay", desc:"“Ohhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh!”", slug:"dcyoungfly1", value:349 },
+
+      { name: "Jeff Ross", desc:"“[...] Bea Arthur's dick”", slug:"jeffross", value:300 },
+      { name: "Cedric The Entertainer", desc:"“”", slug:"4cedtheentertainer", value:250 },
+      { name: "Joe Piscopo", desc:"“You're from Joisey? I'm from Joisey!”", slug:"joepiscopo", value:250 },
+
+      { name: "Aries Spears", desc:"“”", slug:"aries", value:225 },
+      { name: "Doug Benson", desc:"“Did you know that I smoke marijuana?”", slug:"dougbenson", value:150 },
+      { name: "Carrot Top", desc:"“”", slug:"carrottop", value:150 },
+
+      { name: "Bill Engvall", desc:"“Here's your sign.”", slug:"billengvall", value:150 },
+      { name: "Brian Posehn", desc:"“And another thing I hate about Nickelback is...”", slug:"brianposehn", value:75 },
+      { name: "The Sklar Brothers", desc:"“”", slug:"sklarbrothers", value:70 },
+
+      { name: "Henning Wehn", desc:"“I'm German!”", slug:"hwe", value:70 },
+      { name: "Godfrey", desc:"“”", slug:"godfreycomedian", value:70 },
+      { name: "Kenny Kramer", desc:"“I'm the guy that Larry David based Kramer off of, isn't that interesting?”", slug:"therealkramer", value:49 },
+
+      { name: "Todd Glass", desc:"“”", slug:"toddglass", value:45 },
+      { name: "Greg Proops", desc:"“”", slug:"gproops", value:40 },
+      { name: "Andy Kindler", desc:"“”", slug:"andykindler", value:40 },
+    ]
+
+  },
+
+
   test: {
     name: "TEST",
     desc: "does my shit work.",

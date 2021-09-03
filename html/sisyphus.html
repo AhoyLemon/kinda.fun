@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Click on Sisyphus to push the rock up the mountain (formerly futile.fun)">
-    <meta http-equiv="last-modified" content="2021-07-31@23:05:41">
+    <meta http-equiv="last-modified" content="2021-08-03@08:50:05">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700|Poppins:400,400i,700">
-    <link href="css/sisyphus.css?lastUpdated=2021-07-31@23:05:41" rel="stylesheet">
+    <link href="css/sisyphus.css?lastUpdated=2021-08-03@08:50:05" rel="stylesheet">
     <link rel="canonical" href="https://kinda.fun/sisyphus">
     <link rel="apple-touch-icon" sizes="180x180" href="https://kinda.fun/img/sisyphus/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://kinda.fun/img/sisyphus/favicon-32x32.png">
@@ -99,7 +99,7 @@
       <aside class="store" v-cloak v-if="availableUpgrades.length &gt; 0" v-bind:class="{ mobileVisible: (visibleDrawer == 'store') }">
         <div class="header">Buy Upgrades</div>
         <div class="animated zoomInDown" v-for="item,i in availableUpgrades" @click="buyItem(i,item)"><a class="item" v-bind:class="{ buyable: score &gt;= item.price}">
-            <div class="price">{{item.price}}</div>
+            <div class="price">{{addCommas(item.price)}}</div>
             <div class="name">{{item.name}}</div>
             <div class="desc">{{item.desc}}</div></a></div>
       </aside>
@@ -115,7 +115,7 @@
       <div class="counters">
         <div class="score-hud counter pushes" v-if="totalScore &gt; 18" v-cloak>
           <div class="label">Pushes</div>
-          <div class="count" v-text="score"></div>
+          <div class="count" v-text="addCommas(score)"></div>
         </div>
         <div class="score-hud counter gamerscore" v-if="computedGamerScore" @click="" v-cloak>
           <div class="label">Score</div>
@@ -124,13 +124,13 @@
       </div>
     </div>
     <div class="javascripts">
-      <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
       <script src="js/libraries/vue.min.js"></script>
       <script>
         const testing = false;
         
       </script>
       <script src="js/libraries/howler.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
       <script src="js/libraries/pnotify.custom.min.js"></script>
       <link rel="stylesheet" href="css/libraries/pnotify.custom.min.css">
       <script>
