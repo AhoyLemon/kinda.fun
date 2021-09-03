@@ -1,7 +1,7 @@
 .counters
   .score-hud.counter.pushes(v-if="totalScore > 18" v-cloak)
     .label Pushes
-    .count(v-text="score")
+    .count(v-text="addCommas(score)")
 
   .score-hud.counter.gamerscore(v-if="computedGamerScore"
     @click="" v-cloak)
