@@ -11,19 +11,17 @@ button.sidebar-button(v-on:click="toggleSidebar" v-bind:class=" {active: sidebar
       span.label This site is
       span.indent
         span by 
-        a(href="https://ahoylemon.xyz" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'site by Lemon', 'https://ahoylemon.xyz')") Lemon
-
+        a(href="https://ahoylemon.xyz" target="_blank" rel="noopener" @click="openOutsideLink('Lemon', 'https://ahoylemon.xyz')") Lemon
     li
       span.label with art by
       span.indent
-        a(href="https://twitter.com/AberrantWhimsy" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'Sanguinary Novel', 'https://twitter.com/AberrantWhimsy')") Sanguinary Novel
+        a(href="https://twitter.com/AberrantWhimsy" target="_blank" rel="noopener" @click="openOutsideLink('Sanguinary Novel', 'https://twitter.com/AberrantWhimsy')") Sanguinary Novel
     li
       span.label and music by
       span.indent
-        a(href="https://bootsraingear.bandcamp.com" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'Boots Raingear', 'https://bootsraingear.bandcamp.com')") Boots Raingear
+        a(href="https://bootsraingear.bandcamp.com" target="_blank" rel="noopener" @click="openOutsideLink('Boots Raingear', 'https://bootsraingear.bandcamp.com')") Boots Raingear
         | .
-    
     li
       span.label There's more info in the
       span.indent
-        a(href="https://github.com/AhoyLemon/kinda.fun" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'GitHub Repo', 'https://github.com/AhoyLemon/kinda.fun')") GitHub repository
+        a(href="https://github.com/AhoyLemon/kinda.fun" target="_blank" rel="noopener" @click="openOutsideLink('GitHub Repo', 'https://github.com/AhoyLemon/kinda.fun')") GitHub repository
