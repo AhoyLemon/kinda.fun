@@ -9,6 +9,8 @@ var app = new Vue({
     secondsPlayed: 0,
     totalClicks: 0,
     visibleDrawer: null,
+    drawerOpenedCount: 0,
+    outsideLinksClicked: [],
     sidebarVisible: false,
     s: sDefaults,
     r: rDefaults,
@@ -289,6 +291,21 @@ var app = new Vue({
       }
     },
 
+    openOutsideLink(text,url) {
+      const self = this;
+      sendEvent('outside link', text, url);
+      self.outsideLinksClicked.push({text:text, url:url});
+
+      switch (self.outsideLinksClicked.length) {
+        case (1):
+          self.getCheevo("Website Clicker", "Welcome back, how did you enjoy the "+self.outsideLinksClicked[0].text+" website?", 10);
+          break;
+        case (4):
+          self.getCheevo('Complete Website Clicker!', "Which of those websites was your favorite?", 20);
+          break;
+      }
+    },
+
     foo(item) {
       item.showDesc = !item.showDesc;
     },
@@ -564,7 +581,30 @@ var app = new Vue({
       self.sidebarVisible = !self.sidebarVisible;
 
       if (self.sidebarVisible) {
+        self.drawerOpenedCount++;
         sendEvent('drawer', 'sidebar opened');
+        switch (self.drawerOpenedCount) {
+          case (1):
+            setTimeout(function() {
+              self.getCheevo('Drawer Opener', 'What does that question mark mean? Well now you know!', 8);
+            }, 400);
+            break;
+          case (5):
+            self.getCheevo("Habitual Drawer Opener", "How many times are you gonna click on that question mark?", 10);
+            break;
+          case (15):
+            self.getCheevo("Obsessive Drawer Opener", "Okay! You <i>definitely</i> know what happens when you click that question mark.", 13);
+            break;
+          case (50):
+            self.getCheevo("Problematic Drawer Opener", "Stop clicking that question mark.", 1);
+            break;
+          case (52):
+            self.getCheevo("Bad Listener", "I told you to stop.", -5);
+            break;
+          case (53):
+            self.getCheevo("Really Bad Listener", "God damn it.", -15);
+            break;
+        }
       }
       
     }
