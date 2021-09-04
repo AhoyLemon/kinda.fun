@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Click on Sisyphus to push the rock up the mountain (formerly futile.fun)">
-    <meta http-equiv="last-modified" content="2021-08-03@08:50:05">
+    <meta http-equiv="last-modified" content="2021-08-04@11:42:01">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700|Poppins:400,400i,700">
-    <link href="css/sisyphus.css?lastUpdated=2021-08-03@08:50:05" rel="stylesheet">
+    <link href="css/sisyphus.css?lastUpdated=2021-08-04@11:42:01" rel="stylesheet">
     <link rel="canonical" href="https://kinda.fun/sisyphus">
     <link rel="apple-touch-icon" sizes="180x180" href="https://kinda.fun/img/sisyphus/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://kinda.fun/img/sisyphus/favicon-32x32.png">
@@ -50,10 +50,10 @@
         </button>
         <div class="sidebar" v-bind:class=" {visible: sidebarVisible} ">
           <ul>
-            <li><span class="label">This site is</span><span class="indent"><span>by </span><a href="https://ahoylemon.xyz" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'site by Lemon', 'https://ahoylemon.xyz')">Lemon</a></span></li>
-            <li><span class="label">with art by</span><span class="indent"><a href="https://twitter.com/AberrantWhimsy" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'Sanguinary Novel', 'https://twitter.com/AberrantWhimsy')">Sanguinary Novel</a></span></li>
-            <li><span class="label">and music by</span><span class="indent"><a href="https://bootsraingear.bandcamp.com" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'Boots Raingear', 'https://bootsraingear.bandcamp.com')">Boots Raingear</a>.</span></li>
-            <li><span class="label">There's more info in the</span><span class="indent"><a href="https://github.com/AhoyLemon/kinda.fun" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'GitHub Repo', 'https://github.com/AhoyLemon/kinda.fun')">GitHub repository</a></span></li>
+            <li><span class="label">This site is</span><span class="indent"><span>by </span><a href="https://ahoylemon.xyz" target="_blank" rel="noopener" @click="openOutsideLink('Lemon', 'https://ahoylemon.xyz')">Lemon</a></span></li>
+            <li><span class="label">with art by</span><span class="indent"><a href="https://twitter.com/AberrantWhimsy" target="_blank" rel="noopener" @click="openOutsideLink('Sanguinary Novel', 'https://twitter.com/AberrantWhimsy')">Sanguinary Novel</a></span></li>
+            <li><span class="label">and music by</span><span class="indent"><a href="https://bootsraingear.bandcamp.com" target="_blank" rel="noopener" @click="openOutsideLink('Boots Raingear', 'https://bootsraingear.bandcamp.com')">Boots Raingear</a>.</span></li>
+            <li><span class="label">There's more info in the</span><span class="indent"><a href="https://github.com/AhoyLemon/kinda.fun" target="_blank" rel="noopener" @click="openOutsideLink('GitHub Repo', 'https://github.com/AhoyLemon/kinda.fun')">GitHub repository</a></span></li>
           </ul>
         </div>
         <div class="scene">
