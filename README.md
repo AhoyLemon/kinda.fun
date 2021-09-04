@@ -1,4 +1,4 @@
-![kinda.fun](https://kinda.fun/og-wide.png)
+[![kinda.fun](https://kinda.fun/og-wide.png)](https://kinda.fun)
 
 There's currently four games here.
 
