@@ -701,28 +701,28 @@ io.on('connection', (socket) => {
   // SISYPHUS CLICKER sockets...
 
   socket.on('sisyphusStartGame', msg => {
-    console.log("a player started a game of SISYPHUS CLICKER [UNLOGGED]");
-    //console.log("a player started a game of SISYPHUS CLICKER");
-    //DateStampInDatabase("allGamesLastPlayed", msg.gameName);
-    //incrementDatabase('sisyphusCounts', "First Click");
+    //console.log("a player started a game of SISYPHUS CLICKER [UNLOGGED]");
+    console.log("a player started a game of SISYPHUS CLICKER");
+    DateStampInDatabase("allGamesLastPlayed", msg.gameName);
+    incrementDatabase('sisyphusCounts', "First Click");
   });
 
   socket.on('sisyphusRollback', msg => {
-    console.log("The Rock rolled back downhill [UNLOGGED]");
-    //console.log("The Rock rolled back downhill");
-    //incrementDatabase('sisyphusCounts', "Rock Rolled Downhill");
+    //console.log("The Rock rolled back downhill [UNLOGGED]");
+    console.log("The Rock rolled back downhill");
+    incrementDatabase('sisyphusCounts', "Rock Rolled Downhill");
   });
 
   socket.on('sisyphusEarnedCheevo', msg => {
-    console.log("Cheevo Earned: " + msg.title + " [UNLOGGED]");
-    //console.log("Cheevo Earned: " + msg.title);
-    //logCheevoEarned(msg.title, msg.text, msg.points);
+    // console.log("Cheevo Earned: " + msg.title + " [UNLOGGED]");
+    console.log("Cheevo Earned: " + msg.title);
+    logCheevoEarned(msg.title, msg.text, msg.points);
   });
 
   socket.on('sisyphusBoughtItem', msg => {
-    console.log("Bought Item: " + msg.name + " [UNLOGGED]");
-    //console.log("Bought Item: " + msg.name);
-    //logSisyphusItemPurchase(msg.name,msg.desc,msg.price);
+    //console.log("Bought Item: " + msg.name + " [UNLOGGED]");
+    console.log("Bought Item: " + msg.name);
+    logSisyphusItemPurchase(msg.name,msg.desc,msg.price);
   });
 
 
