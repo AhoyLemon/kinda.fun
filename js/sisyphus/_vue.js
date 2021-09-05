@@ -44,6 +44,7 @@ var app = new Vue({
       document.getElementById('Sisyphus').blur();
 
       if (self.boughtDignity) {
+        self.boughtDignity = false;
         self.inventory = [];
         self.getCheevo("Dignity Retaken!","I was thinking that would make you stop clicking, but apparently not. Have five points I guess.", 5);
         dignityLost.play();
