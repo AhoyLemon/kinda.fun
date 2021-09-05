@@ -527,7 +527,7 @@ var app = new Vue({
     },
     calculateSpend(rowObj) {
       const self = this;
-      return (parseInt(rowObj.icount) * parseInt(rowObj.price));
+      return this.addCommas(parseInt(rowObj.icount) * parseInt(rowObj.price));
     }
 
   },

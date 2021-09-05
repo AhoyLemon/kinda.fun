@@ -10,7 +10,7 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
       .subtext damned souls have logged their first click.
   
     .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
-      .caption Last Game
+      .caption Last Damnation
       .time-ago(v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')")
       .calendar(v-text="formatTime(stats.general.lastPlayed.cameo,'calendar')")
 
