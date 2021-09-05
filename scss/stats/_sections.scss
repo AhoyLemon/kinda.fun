@@ -8,6 +8,9 @@ section { font-size:20px; font-family: $serif;
   .stats-boxes { display:grid; gap:$gap; grid-template-columns: repeat(4,1fr);
     .box { background:rgba(255,255,255,0.75); padding:$padding; color:rgba(0,0,0,0.9) }
     .caption { font-size:90%; text-transform: uppercase; }
+    [span="2"] { grid-column: span 2; }
+    [span="3"] { grid-column: span 3; }
+    [span="4"] { grid-column: span 4; }
     .big-number {
       .number { font-size:260%; }
     }
@@ -51,7 +54,7 @@ section.famous { padding:($gap * 2) $gap $gap 0;
   }
 }
 section.sisyphus { padding:($gap * 2) $gap $gap 0;
-  .stats-boxes { grid-template-columns: repeat(3,1fr); }
+  .stats-boxes { grid-template-columns: repeat(4,1fr); }
   .two-tables { 
     display: grid; grid-template-columns: 1fr 1fr; gap:40px;
   }

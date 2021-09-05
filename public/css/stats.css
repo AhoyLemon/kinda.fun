@@ -232,6 +232,18 @@ section .stats-boxes .caption {
   font-size: 90%;
   text-transform: uppercase;
 }
+section .stats-boxes [span="2"] {
+  -ms-grid-column-span: 2;
+  grid-column: span 2;
+}
+section .stats-boxes [span="3"] {
+  -ms-grid-column-span: 3;
+  grid-column: span 3;
+}
+section .stats-boxes [span="4"] {
+  -ms-grid-column-span: 4;
+  grid-column: span 4;
+}
 section .stats-boxes .big-number .number {
   font-size: 260%;
 }
@@ -321,8 +333,8 @@ section.sisyphus {
   padding: 80px 40px 40px 0;
 }
 section.sisyphus .stats-boxes {
-  -ms-grid-columns: (1fr)[3];
-  grid-template-columns: repeat(3, 1fr);
+  -ms-grid-columns: (1fr)[4];
+  grid-template-columns: repeat(4, 1fr);
 }
 section.sisyphus .two-tables {
   display: -ms-grid;
