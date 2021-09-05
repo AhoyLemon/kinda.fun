@@ -702,23 +702,23 @@ io.on('connection', (socket) => {
 
   socket.on('sisyphusStartGame', msg => {
     console.log("a player started a game of SISYPHUS CLICKER");
-    DateStampInDatabase("allGamesLastPlayed", msg.gameName);
-    incrementDatabase('sisyphusCounts', "First Click");
+    //DateStampInDatabase("allGamesLastPlayed", msg.gameName);
+    //incrementDatabase('sisyphusCounts', "First Click");
   });
 
   socket.on('sisyphusRollback', msg => {
     console.log("The Rock rolled back downhill");
-    incrementDatabase('sisyphusCounts', "Rock Rolled Downhill");
+    //incrementDatabase('sisyphusCounts', "Rock Rolled Downhill");
   });
 
   socket.on('sisyphusEarnedCheevo', msg => {
     console.log("Cheevo Earned: " + msg.title);
-    logCheevoEarned(msg.title, msg.text, msg.points);
+    //logCheevoEarned(msg.title, msg.text, msg.points);
   });
 
   socket.on('sisyphusBoughtItem', msg => {
     console.log("Bought Item: " + msg.name);
-    logSisyphusItemPurchase(msg.name,msg.desc,msg.price);
+    //logSisyphusItemPurchase(msg.name,msg.desc,msg.price);
   });
 
 
