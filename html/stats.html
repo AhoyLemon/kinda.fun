@@ -261,10 +261,10 @@
         <section class="sisyphus stats" v-if="ui.viewing == 'sisyphus'">
           <figure><img src="svg/sisyphus/logo-simple.svg"/></figure>
           <div class="stats-boxes">
-            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; stats.sisyphus.counts &amp;&amp; stats.sisyphus.counts['First Click']">
+            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; stats.sisyphus.counts &amp;&amp; stats.sisyphus.counts['First Click']" span="2">
               <div class="caption">Cursed Persons</div>
               <div class="number" v-text="addCommas(stats.sisyphus.counts['First Click'])"></div>
-              <div class="subtext">people have logged their first click.</div>
+              <div class="subtext">damned souls have logged their first click.</div>
             </div>
             <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.cameo">
               <div class="caption">Last Game</div>
@@ -276,13 +276,21 @@
               <div class="number" v-text="addCommas(stats.sisyphus.counts['Rock Rolled Downhill'])"></div>
               <div class="subtext">times</div>
             </div>
-            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusCheevoCount">
+            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusCheevos">
               <div class="caption">Cheevos Earned</div>
-              <div class="number" v-text="addCommas(computedSisyphusCheevoCount)"></div>
+              <div class="number" v-text="addCommas(computedSisyphusCheevos.count)"></div>
             </div>
-            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusPurchaseCount">
+            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusCheevos">
+              <div class="caption">Points Earned</div>
+              <div class="number" v-text="addCommas(computedSisyphusCheevos.points)"></div>
+            </div>
+            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusPurchases">
               <div class="caption">Purchases Made</div>
-              <div class="number" v-text="addCommas(computedSisyphusPurchaseCount)"></div>
+              <div class="number" v-text="addCommas(computedSisyphusPurchases.count)"></div>
+            </div>
+            <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusPurchases">
+              <div class="caption">Pushes Spent</div>
+              <div class="number" v-text="addCommas(computedSisyphusPurchases.spent)"></div>
             </div>
           </div>
           <div class="two-tables">
@@ -292,7 +300,10 @@
             </div>
             <div class="good-table player-table" v-if="ui.sisyphusLoaded">
               <h2>Purchases Made</h2>
-              <vue-good-table v-if="stats.sisyphus.purchases &amp;&amp; stats.sisyphus.purchases.length" :rows="stats.sisyphus.purchases" :columns="columns.sisyphusPurchases" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table v-if="stats.sisyphus.purchases &amp;&amp; stats.sisyphus.purchases.length" :rows="stats.sisyphus.purchases" :columns="columns.sisyphusPurchases" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}">
+                <!--template(slot="table-row" slot-scope="props")//span(v-if="props.column.field == ")
+                -->
+              </vue-good-table>
             </div>
           </div>
         </section>

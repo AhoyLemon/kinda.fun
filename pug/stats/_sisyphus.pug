@@ -4,10 +4,10 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
 
   .stats-boxes
 
-    .box.big-number(v-if="stats.sisyphus && stats.sisyphus.counts && stats.sisyphus.counts['First Click']")
+    .box.big-number(v-if="stats.sisyphus && stats.sisyphus.counts && stats.sisyphus.counts['First Click']" span="2")
       .caption Cursed Persons
       .number(v-text="addCommas(stats.sisyphus.counts['First Click'])")
-      .subtext people have logged their first click.
+      .subtext damned souls have logged their first click.
   
     .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
       .caption Last Game
@@ -19,13 +19,21 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
       .number(v-text="addCommas(stats.sisyphus.counts['Rock Rolled Downhill'])")
       .subtext times
 
-    .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevoCount")
+    .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevos")
       .caption Cheevos Earned
-      .number(v-text="addCommas(computedSisyphusCheevoCount)")
+      .number(v-text="addCommas(computedSisyphusCheevos.count)")
 
-    .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchaseCount")
+    .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevos")
+      .caption Points Earned
+      .number(v-text="addCommas(computedSisyphusCheevos.points)")
+
+    .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchases")
       .caption Purchases Made
-      .number(v-text="addCommas(computedSisyphusPurchaseCount)")
+      .number(v-text="addCommas(computedSisyphusPurchases.count)")
+    
+    .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchases")
+      .caption Pushes Spent
+      .number(v-text="addCommas(computedSisyphusPurchases.spent)")
 
   .two-tables
 
@@ -48,3 +56,5 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
                       :line-numbers="true"
                       :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
                       :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        //template(slot="table-row" slot-scope="props")
+          //span(v-if="props.column.field == ")

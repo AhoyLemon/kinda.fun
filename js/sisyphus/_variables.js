@@ -54,7 +54,8 @@ const cheevoSound = new Howl({
   src: [
     audioFolder+'/springy-350.mp3',
   ],
-  loop: false
+  loop: false,
+  volume: 0.5
 });
 
 const purchaseSound = new Howl({

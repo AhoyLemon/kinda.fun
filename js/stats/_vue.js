@@ -252,6 +252,11 @@ var app = new Vue({
             formatFn: this.addCommas
           },
           {
+            label: "Total Spent",
+            field: this.calculateSpend,
+            type:  "number"
+          },
+          {
             label: "Last Purchase",
             field: "lastPurchase",
             type: "date",
@@ -519,6 +524,10 @@ var app = new Vue({
       const loadedURL = new URL(window.location.href);
       const game = loadedURL.searchParams.get('game');
       self.getData(game);
+    },
+    calculateSpend(rowObj) {
+      const self = this;
+      return (parseInt(rowObj.icount) * parseInt(rowObj.price));
     }
 
   },
@@ -656,30 +665,42 @@ var app = new Vue({
         };
       }
     },
-    computedSisyphusCheevoCount() {
+
+    computedSisyphusCheevos() {
       const self = this;
       if (!self.ui.sisyphusLoaded) {
         return null;
       } else {
-        let n = 0;
+        let count = 0;
+        let points = 0;
         self.stats.sisyphus.cheevos.forEach((cheevo) => {
-          n += cheevo.icount;
+          count += cheevo.icount;
+          points += (cheevo.icount * cheevo.pointValue);
         });
-        return n;
+        return {
+          count: count,
+          points: points
+        };
       }
     },
-    computedSisyphusPurchaseCount() {
+
+    computedSisyphusPurchases() {
       const self = this;
       if (!self.ui.sisyphusLoaded) {
         return null;
       } else {
-        let n = 0;
+        let count = 0;
+        let spent = 0;
         self.stats.sisyphus.purchases.forEach((purchase) => {
-          n += purchase.icount;
+          count += purchase.icount;
+          spent += (purchase.icount * purchase.price);
         });
-        return n;
+        return {
+          count: count,
+          spent: spent
+        };
       }
-    }
+    },
 
   },
 
