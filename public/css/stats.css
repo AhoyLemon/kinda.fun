@@ -224,13 +224,17 @@ section .stats-boxes {
   grid-template-columns: repeat(4, 1fr);
 }
 section .stats-boxes .box {
-  background: rgba(255, 255, 255, 0.75);
+  -webkit-backdrop-filter: invert(1);
+          backdrop-filter: invert(1);
   padding: 20px;
-  color: rgba(0, 0, 0, 0.9);
+  color: #262626;
+  -webkit-box-shadow: 0 0 5px black;
+          box-shadow: 0 0 5px black;
 }
 section .stats-boxes .caption {
   font-size: 90%;
   text-transform: uppercase;
+  font-weight: 600;
 }
 section .stats-boxes [span="2"] {
   -ms-grid-column-span: 2;
@@ -252,6 +256,9 @@ section .stats-boxes .time-ago {
 }
 section .stats-boxes .big-name .name {
   font-size: 210%;
+}
+section .stats-boxes .calendar, section .stats-boxes .subtext {
+  font-size: 90%;
 }
 section .stats-boxes.with-table {
   -ms-grid-columns: 3fr 1fr;
@@ -285,14 +292,34 @@ section .good-table h2 {
   font-size: 190%;
   padding-bottom: 0.35em;
 }
+section .good-table .vgt-wrap {
+  -webkit-box-shadow: 0 0 10px black;
+          box-shadow: 0 0 10px black;
+}
 section .good-table table.vgt-table th {
   font-weight: 900;
-  padding: 5px;
+  padding: 5px 5px 5px 20px;
   text-transform: uppercase;
   font-size: 85%;
 }
 section .good-table table.vgt-table td {
   padding: 5px;
+}
+section .good-table table.vgt-table th.sorting-desc, section .good-table table.vgt-table th.sorting-asc {
+  color: #dce4ac;
+}
+section .good-table table.vgt-table th.sorting:hover:after {
+  border-bottom-color: currentColor;
+}
+section .good-table table.vgt-table th.sorting:after {
+  right: unset;
+  left: 5px;
+}
+section .good-table table.vgt-table th.sorting-desc:after {
+  border-top-color: currentColor;
+}
+section .good-table table.vgt-table th.sorting-asc:after {
+  border-bottom-color: currentColor;
 }
 
 section.loading {
