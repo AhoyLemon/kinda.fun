@@ -152,17 +152,17 @@
             </div>
             <div class="good-table games-table" v-if="ui.cameoLoaded">
               <h2>Special Games</h2>
-              <vue-good-table v-if="stats.cameo.specialGames &amp;&amp; stats.cameo.specialGames.length" :rows="stats.cameo.specialGames" :columns="columns.cameoSpecialGames" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"></vue-good-table>
+              <vue-good-table v-if="stats.cameo.specialGames &amp;&amp; stats.cameo.specialGames.length" :rows="stats.cameo.specialGames" :columns="columns.cameoSpecialGames" theme="black-rhino" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"></vue-good-table>
             </div>
           </div>
           <div class="two-tables">
             <div class="good-table celeb-table" v-if="ui.cameoLoaded">
               <h2>Celebrity Performance</h2>
-              <vue-good-table v-if="stats.cameo.celebs &amp;&amp; stats.cameo.celebs.length" :rows="stats.cameo.celebs" :columns="columns.celebs" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'marketForces', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}" :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"></vue-good-table>
+              <vue-good-table v-if="stats.cameo.celebs &amp;&amp; stats.cameo.celebs.length" :rows="stats.cameo.celebs" :columns="columns.celebs" theme="black-rhino" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'marketForces', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}" :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"></vue-good-table>
             </div>
             <div class="good-table player-table" v-if="ui.cameoLoaded">
               <h2>Player Performance</h2>
-              <vue-good-table v-if="stats.cameo.playerScores &amp;&amp; stats.cameo.playerScores.length" :rows="stats.cameo.playerScores" :columns="columns.cameoPlayers" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'finishTime', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 31, position: 'top', perPageDropdown: [10, 31, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table v-if="stats.cameo.playerScores &amp;&amp; stats.cameo.playerScores.length" :rows="stats.cameo.playerScores" :columns="columns.cameoPlayers" theme="black-rhino" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'finishTime', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 31, position: 'top', perPageDropdown: [10, 31, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
           </div>
         </section>
@@ -198,27 +198,27 @@
           <div class="good-tables" v-if="ui.invalidLoaded">
             <div class="good-table pass-table">
               <h2>Passwords</h2>
-              <vue-good-table :rows="stats.invalid.passwords" :columns="columns.passwords" :sort-options="{ enabled: true, initialSortBy: {field: 'used', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table :rows="stats.invalid.passwords" :columns="columns.passwords" :sort-options="{ enabled: true, initialSortBy: {field: 'used', type: 'desc'} }" theme="black-rhino" styleClass="vgt-table condensed" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
             <div class="good-table">
               <h2>Bugs</h2>
-              <vue-good-table :rows="stats.invalid.bugs" :columns="columns.bugs" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table :rows="stats.invalid.bugs" :columns="columns.bugs" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" theme="black-rhino" styleClass="vgt-table condensed" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
             <div class="good-table">
               <h2>Challenges</h2>
-              <vue-good-table :rows="stats.invalid.challenges" :columns="columns.challenges" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 40, position: 'top', perPageDropdown: [25, 40, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table :rows="stats.invalid.challenges" :columns="columns.challenges" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" theme="black-rhino" styleClass="vgt-table condensed" :pagination-options="{ enabled: true, perPage: 40, position: 'top', perPageDropdown: [25, 40, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
             <div class="good-table">
               <h2>Rules</h2>
-              <vue-good-table :rows="stats.invalid.rules" :columns="columns.rules" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table><br/><br/>
+              <vue-good-table :rows="stats.invalid.rules" :columns="columns.rules" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" theme="black-rhino" styleClass="vgt-table condensed" :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table><br/><br/>
               <h2>Letters</h2>
-              <vue-good-table :rows="stats.invalid.letters" :columns="columns.letters" :sort-options="{ enabled: true, initialSortBy: {field: 'letter', type: 'asc'} }" :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table :rows="stats.invalid.letters" :columns="columns.letters" :sort-options="{ enabled: true, initialSortBy: {field: 'letter', type: 'asc'} }" theme="black-rhino" styleClass="vgt-table condensed" :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
             <div class="good-table">
               <h2>Player Counts</h2>
-              <vue-good-table :rows="stats.invalid.playerCounts" :columns="columns.playerCounts" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 20], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table><br/><br/>
+              <vue-good-table :rows="stats.invalid.playerCounts" :columns="columns.playerCounts" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" theme="black-rhino" styleClass="vgt-table condensed" :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 20], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table><br/><br/>
               <h2>Player Names</h2>
-              <vue-good-table :rows="stats.general.playerNames" :columns="columns.playerNames" :sort-options="{ enabled: true, initialSortBy: {field: 'lastPlayed', type: 'asc'} }" :pagination-options="{ enabled: true, perPage: 27, position: 'top', perPageDropdown: [10, 27, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table :rows="stats.general.playerNames" :columns="columns.playerNames" :sort-options="{ enabled: true, initialSortBy: {field: 'lastPlayed', type: 'asc'} }" theme="black-rhino" styleClass="vgt-table condensed" :pagination-options="{ enabled: true, perPage: 27, position: 'top', perPageDropdown: [10, 27, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
           </div>
           <div class="good-tables" v-if="ui.invalidLoaded">
@@ -246,15 +246,15 @@
           <div class="good-tables" v-if="ui.wrongestLoaded">
             <div class="good-table pass-table">
               <h2>Statements</h2>
-              <vue-good-table :rows="stats.wrongest.statements" :columns="columns.wrongestStatements" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'asc'} }" :pagination-options="{ enabled: true, perPage: 50, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table :rows="stats.wrongest.statements" :columns="columns.wrongestStatements" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'asc'} }" theme="black-rhino" styleClass="vgt-table condensed" :pagination-options="{ enabled: true, perPage: 50, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
             <div class="good-table">
               <h2>Decks</h2>
-              <vue-good-table :rows="stats.wrongest.decks" :columns="columns.decks" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table><br/><br/>
+              <vue-good-table :rows="stats.wrongest.decks" :columns="columns.decks" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" theme="black-rhino" styleClass="vgt-table condensed" :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table><br/><br/>
               <h2>Player Counts</h2>
-              <vue-good-table :rows="stats.wrongest.playerCounts" :columns="columns.playerCounts" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table><br/><br/>
+              <vue-good-table :rows="stats.wrongest.playerCounts" :columns="columns.playerCounts" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" theme="black-rhino" styleClass="vgt-table condensed" :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table><br/><br/>
               <h2>Player Names</h2>
-              <vue-good-table :rows="stats.general.playerNames" :columns="columns.playerNames" :sort-options="{ enabled: true, initialSortBy: {field: 'lastPlayed', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table :rows="stats.general.playerNames" :columns="columns.playerNames" :sort-options="{ enabled: true, initialSortBy: {field: 'lastPlayed', type: 'desc'} }" theme="black-rhino" styleClass="vgt-table condensed" :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
           </div>
         </section>
@@ -296,14 +296,11 @@
           <div class="two-tables">
             <div class="good-table celeb-table" v-if="ui.sisyphusLoaded">
               <h2>Cheevos Earned</h2>
-              <vue-good-table v-if="stats.sisyphus.cheevos &amp;&amp; stats.sisyphus.cheevos.length" :rows="stats.sisyphus.cheevos" :columns="columns.sisyphusCheevos" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              <vue-good-table v-if="stats.sisyphus.cheevos &amp;&amp; stats.sisyphus.cheevos.length" :rows="stats.sisyphus.cheevos" :columns="columns.sisyphusCheevos" theme="black-rhino" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
             <div class="good-table player-table" v-if="ui.sisyphusLoaded">
               <h2>Purchases Made</h2>
-              <vue-good-table v-if="stats.sisyphus.purchases &amp;&amp; stats.sisyphus.purchases.length" :rows="stats.sisyphus.purchases" :columns="columns.sisyphusPurchases" styleClass="vgt-table condensed" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}">
-                <!--template(slot="table-row" slot-scope="props")//span(v-if="props.column.field == ")
-                -->
-              </vue-good-table>
+              <vue-good-table v-if="stats.sisyphus.purchases &amp;&amp; stats.sisyphus.purchases.length" :rows="stats.sisyphus.purchases" :columns="columns.sisyphusPurchases" theme="black-rhino" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
             </div>
           </div>
         </section>

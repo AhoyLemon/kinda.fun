@@ -42,7 +42,7 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
       vue-good-table( v-if="stats.sisyphus.cheevos && stats.sisyphus.cheevos.length"
                       :rows="stats.sisyphus.cheevos"
                       :columns="columns.sisyphusCheevos"
-                      styleClass="vgt-table condensed"
+                      theme="black-rhino"
                       :line-numbers="true"
                       :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
                       :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
@@ -52,9 +52,7 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
       vue-good-table( v-if="stats.sisyphus.purchases && stats.sisyphus.purchases.length"
                       :rows="stats.sisyphus.purchases"
                       :columns="columns.sisyphusPurchases"
-                      styleClass="vgt-table condensed"
+                      theme="black-rhino"
                       :line-numbers="true"
                       :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
                       :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-        //template(slot="table-row" slot-scope="props")
-          //span(v-if="props.column.field == ")
