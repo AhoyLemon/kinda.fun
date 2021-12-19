@@ -1,0 +1,20 @@
+.toggle { display: inline-block; position: relative;
+  input { visibility: hidden; height: 0; width: 0; position: absolute; }
+  
+  .track { display: inline-block; width:3rem; height: 1.6rem; border:1px solid rgba(0,0,0,0.25); background:rgba(#dbd8d0,0.5); border-radius: 2.5rem; padding:0.2rem; cursor: pointer; transition:background 0.6s linear; margin-right: 1rem; vertical-align: middle;
+    .circle { width:1.1rem; height:1.1rem; border-radius: 50%; background:#5e4e4e; display: block; transform:translateX(0); transition:transform 0.3s ease, background 0.5s linear; }
+  }
+
+  input:checked {
+    ~ .track { background:rgb(204, 233, 226, 0.5);
+      .circle { transform: translateX(120%); background:$color-active; }
+    }
+  }
+  input[disabled] {
+    ~ .track { opacity:0.6; filter:grayscale(0.6); }
+  }
+
+
+  .text { font-size:120%; font-weight: bold; }
+
+}

@@ -1,0 +1,24 @@
+[v-cloak] { display: none !important; }
+
+
+html { font-size:14px; }
+body { background:$body; color:$copy; font-family:$font-family; line-height: 1.6; }
+
+h1, h2, h3, h4, h5 {
+  margin-bottom:1.38rem;
+  font-family: $headline;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+h1 { font-size: 3.052rem;}
+h2 { font-size: 2.441rem;}
+h3 { font-size: 1.953rem;}
+h4 { font-size: 1.563rem;}
+h5 { font-size: 1.25rem;}
+p { margin-bottom: 1em; }
+
+img { max-width: 100%; }
+.inner { @include inner(); }
+
+$color-active: #087e63;

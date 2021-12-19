@@ -1,0 +1,74 @@
+- var pageTitle = null;
+include bop/_variables
+include bop/_mixins
+
+doctype html
+html(lang="en")
+  
+  include bop/_head.pug
+    
+  body
+    #app(v-cloak)
+
+      main(style="height:100vh; display:flex; align-items:center; justify-content:center;")
+        .inner
+
+          .timer(v-if="timer")
+            .value(v-html="computedTimerOutput")
+
+          h1(v-text="h1" style="text-align:center") 
+          .row
+            button(@click="startRound('gdpr')") Toggle banner
+            button(@click="startRound('camera')") Request Camera
+            button(@click="startRound('microphone')") Request Mic
+            button(@click="startTimer()") Start Timer
+          
+
+      transition(name="slide" enter-active-class="slideInUp" leave-active-class="slideOutDown" appear)
+        .gdpr-banner(v-if="gdpr.showBanner")
+          .inner
+            .headline
+              h2 We use cookies.
+            .text
+              p By clicking "Accept All cookies", you affirm that you're totally okay with being monitored to an extent best described as dystopian. We will harvest data from you without your consent and share it unencrypted with literal millions of unknown buyers, all for a fraction of a cent. Because your most sensitive information is worth $0.0006 to us.
+            .buttons
+              button.primary(@click="failPlayer(1)") Accept All cookies
+              button.secondary(@click="toggleCookieModal('open')") Customize Settings
+
+      transition(name="fade")
+        .modal.gdpr-modal(v-if="gdpr.showModal")
+          .cover-sheet(@click="toggleCookieModal('close')")
+          transition(name="bounce")
+            .box(v-if="gdpr.showModalInside")
+              .top
+                h3 We respect your privacy.
+              .middle
+                p That's a thing that companies say right when they start to describe how little they actually respect your privacy. Let me be emphatically clear: We do not respect anything about you. Can you imagine the amount of concern that a slaughterhouse worker has for a hog that they're currently processing? You are that hog. Choose your settings, hog.
+                ul.cookie-settings
+                  li(v-for="cookie in gdpr.cookies")
+                    label.toggle
+                      input(type="checkbox" v-model="cookie.allowed" :required="cookie.required" :disabled="cookie.required")
+                      .track
+                        .circle
+                      span.text {{cookie.label}}
+                      button.explain(@click="cookie.showInfo = !cookie.showInfo") ? 
+                    .info(v-html="cookie.info" v-if="cookie.showInfo")
+              .bottom
+                button.primary(@click="failPlayer(1)") Accept All Cookies
+                button.secondary(@click="confirmCookieSelection()") Confirm My Choices
+      
+      transition(name="fade")
+        .fail-screen(v-if="showFailureScreen" @click="showFailureScreen = false")
+          .big-text You failed
+          .text-box
+            h2(v-html="failure.title")
+            .message(v-html="failure.message")
+            .also(v-if="failure.also")
+              figure(v-if="failure.also.showVideo")
+                video(width="600" height="400")
+              .list(v-if="failure.also.list")
+                ul
+                  li(v-for="item in failure.also.list" v-text="item") 
+
+
+    include bop/_javascripts

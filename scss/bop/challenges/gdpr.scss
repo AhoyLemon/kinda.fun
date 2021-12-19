@@ -1,0 +1,19 @@
+.gdpr-banner { position: fixed; bottom:0; right:0; left:0; background:rgb(47, 51, 55); color:rgb(255, 255, 255); padding:1rem 4rem;
+  .inner { display:grid; grid-template-columns: 1fr 2fr 200px; gap:40px; margin-left: auto; }
+
+  .headline { text-align: right; }
+  button { font-family: $headline; padding:0.5em 1.25em; border:none; display:block; width:100%; cursor:pointer;
+    &.primary { background:#3838e8; color:#eee; margin-bottom: 1em; }
+    &.secondary { background:#c6c6c6; color:#333;}
+  }
+
+}
+
+.gdpr-modal { 
+  .cookie-settings { margin-top:1em;
+    li { margin-bottom: 1em; }
+    button.explain { font-family: $font-family; font-weight: bold; color:#6262eb; border-radius: 50%; border: 1px solid currentColor; margin-left: 0.5em; cursor: pointer; }
+    .info { padding-top:0.5em; padding-left: 4em; }
+  }
+
+}

@@ -1,0 +1,12 @@
+.fail-screen { @include position(fixed,0,0,0,0); background:#8d2626; color:#eee;
+
+  
+  .big-text { font-size:16.5vw; letter-spacing: 0.1em; text-transform: uppercase; font-weight: $medium; text-align: center; }
+  .text-box { @include inner(82ch); padding:2rem; background:rgba(0,0,0,0.85);
+    a { color:yellow; }
+    ul { list-style-type: disc; padding-left: 1em; margin-left: 1em; }
+  }
+  figure {
+    video { width:40ch; height:40ch; object-fit: cover; margin-left: auto; margin-right: auto; display:block; }
+  }
+}

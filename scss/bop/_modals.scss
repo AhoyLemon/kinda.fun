@@ -1,0 +1,19 @@
+.modal { @include position(fixed,0,0,0,0); display:flex; align-items: center; justify-content: center;
+
+  .cover-sheet { @include position(fixed,0,0,0,0); backdrop-filter: blur(2px); background:rgba(0,0,0,0.2);
+    @supports not (backdrop-filter:blur(3px)) { background:rgba(0,0,0,0.5); }
+  }
+  
+  .box { background:white; width:100%; max-width: 610px; padding:2rem; position: relative; }
+
+  .bottom { margin-top:2rem;
+    button { font-family: $headline; padding:0.5em 1.25em; border:none; cursor:pointer; margin-right: 0.5em;
+      &.primary { background:#3838e8; color:#eee; border:2px solid rgba(0,0,0,0.2);
+        &:hover, &:focus { background:saturate($color: #3838e8, $amount: 30%); }
+      }
+      &.secondary { border:2px solid rgba(0,0,0,0.2); background:#e6e6e6; color:#333;
+        &:hover, &:focus { background:#e4f7fb; }
+      }
+    }
+  }
+}
