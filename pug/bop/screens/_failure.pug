@@ -1,0 +1,12 @@
+transition(name="fade")
+  .fail-screen(v-if="showFailureScreen" @click="showFailureScreen = false")
+    .big-text You failed
+    .text-box
+      h2(v-html="failure.title")
+      .message(v-html="failure.message")
+      .also(v-if="failure.also")
+        figure(v-if="failure.also.showVideo")
+          video(width="600" height="400")
+        .list(v-if="failure.also.list")
+          ul
+            li(v-for="item in failure.also.list" v-text="item") 

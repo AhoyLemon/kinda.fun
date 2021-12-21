@@ -1,0 +1,9 @@
+section.current-challenge { padding:8rem 0;
+  form { @include inner(72ch); color:#232323; 
+    label { font-size:1.15rem; font-weight: $bold; letter-spacing: 0.03; }
+    input { display:block; width:100%; font-family: inherit; font-size:1.25rem; padding:0.5em 1.5em; border:1px solid rgba(0,0,0,0.5); text-transform: uppercase;
+      &:focus { border-color: rgba(152, 123, 181, 0.8); background-color:rgb(237 230 243); }
+    }
+  }
+
+}

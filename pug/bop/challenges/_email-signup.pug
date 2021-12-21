@@ -1,0 +1,20 @@
+transition(name="fade" appear)
+  .modal.email-modal(v-if="emailSignup.showModal")
+    .cover-sheet
+    transition(name="bounce" appear)
+      .box
+        .top
+          h2 Do you LOVE getting emails!?
+        .middle
+          p Well, I hope you do, because we love 
+            em sending 
+            | emails!
+          p Enter in your email address below and we'll subscribe you to a whole bunch of irrelevant emails. If you love the phrases "Black Friday" and "Cyber Monday", just wait 'til you read what our marketing department came up with. Get ready for Toot Toot Tuesday!
+          form(@submit.prevent="closeEmailModal('submit')")
+            .field
+              label Email Address
+              input(type="email" v-model="emailSignup.emailAddress" id="EmailAddress" required placeholder="Enter Your Address Right Now!")
+            .button-holder
+              button(type="submit") Get Deals!
+          .opt-out
+            a(@click="closeEmailModal('optOut')") No thanks, I hate emails because I am fat and stupid, and also I'm bad at sex probably

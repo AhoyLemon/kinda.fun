@@ -1,0 +1,32 @@
+transition(name="slide" enter-active-class="slideInUp" leave-active-class="slideOutDown" appear)
+  .gdpr-banner(v-if="gdpr.showBanner")
+    .inner
+      .headline
+        h2 We use cookies.
+      .text
+        p By clicking "Accept All cookies", you affirm that you're totally okay with being monitored to an extent best described as dystopian. We will harvest data from you without your consent and share it unencrypted with literal millions of unknown buyers, all for a fraction of a cent. Because your most sensitive information is worth $0.0006 to us.
+      .buttons
+        button.primary(@click="failPlayer(1)") Accept All cookies
+        button.secondary(@click="toggleCookieModal('open')") Customize Settings
+
+transition(name="fade")
+  .modal.gdpr-modal(v-if="gdpr.showModal")
+    .cover-sheet
+    transition(name="bounce")
+      .box(v-if="gdpr.showModalInside")
+        .top
+          h3 We respect your privacy.
+        .middle
+          p That's a thing that companies say right when they start to describe how little they actually respect your privacy. Let me be emphatically clear: We do not respect anything about you. Can you imagine the amount of concern that a slaughterhouse worker has for a hog that they're currently processing? You are that hog. Choose your settings, hog.
+          ul.cookie-settings
+            li(v-for="cookie in gdpr.cookies")
+              label.toggle
+                input(type="checkbox" v-model="cookie.allowed" :required="cookie.required" :disabled="cookie.required")
+                .track
+                  .circle
+                span.text {{cookie.label}}
+                button.explain(@click="cookie.showInfo = !cookie.showInfo") ? 
+              .info(v-html="cookie.info" v-if="cookie.showInfo")
+        .bottom
+          button.primary(@click="failPlayer(1)") Accept All Cookies
+          button.secondary(@click="confirmCookieSelection()") Confirm My Choices

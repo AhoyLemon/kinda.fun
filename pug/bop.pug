@@ -10,65 +10,64 @@ html(lang="en")
   body
     #app(v-cloak)
 
-      main(style="height:100vh; display:flex; align-items:center; justify-content:center;")
-        .inner
+      main.content
 
-          .timer(v-if="timer")
-            .value(v-html="computedTimerOutput")
+        header.site-header(v-if="gameStarted")
+          .site-title This Website Is Awful.
 
-          h1(v-text="h1" style="text-align:center") 
-          .row
-            button(@click="startRound('gdpr')") Toggle banner
-            button(@click="startRound('camera')") Request Camera
-            button(@click="startRound('microphone')") Request Mic
-            button(@click="startTimer()") Start Timer
-          
-
-      transition(name="slide" enter-active-class="slideInUp" leave-active-class="slideOutDown" appear)
-        .gdpr-banner(v-if="gdpr.showBanner")
+        .intro(v-if="!gameStarted")
           .inner
-            .headline
-              h2 We use cookies.
-            .text
-              p By clicking "Accept All cookies", you affirm that you're totally okay with being monitored to an extent best described as dystopian. We will harvest data from you without your consent and share it unencrypted with literal millions of unknown buyers, all for a fraction of a cent. Because your most sensitive information is worth $0.0006 to us.
-            .buttons
-              button.primary(@click="failPlayer(1)") Accept All cookies
-              button.secondary(@click="toggleCookieModal('open')") Customize Settings
+            h1 This website is awful.
+            p But the point of this game is to try to use it.
+            p You're going to see dozens of poorly written news articles, deceptive sponsored content, and aggressively terrible web design. You're probably already familiar with all of this: It's not The Web you want, but it's The Web you've been given.
+            p The big blue button below starts the game. When the game begins, you'll be asked a series of questions, all of which can be answered by one of the news articles or ads somewhere on the page.
+            p But again, this website is awful. And it will make things difficult.
+            .button-holder
+              button.start-game(@click="startGame()") Start Game
+            p(style="font-size:80%; margin-top:0.5em")
+              strong Note:
+              |  While this website will pretend to track you, it won't actually do anything unethical with your personal data. I can't say that about any other site you'll encounter.
 
-      transition(name="fade")
-        .modal.gdpr-modal(v-if="gdpr.showModal")
-          .cover-sheet(@click="toggleCookieModal('close')")
-          transition(name="bounce")
-            .box(v-if="gdpr.showModalInside")
-              .top
-                h3 We respect your privacy.
-              .middle
-                p That's a thing that companies say right when they start to describe how little they actually respect your privacy. Let me be emphatically clear: We do not respect anything about you. Can you imagine the amount of concern that a slaughterhouse worker has for a hog that they're currently processing? You are that hog. Choose your settings, hog.
-                ul.cookie-settings
-                  li(v-for="cookie in gdpr.cookies")
-                    label.toggle
-                      input(type="checkbox" v-model="cookie.allowed" :required="cookie.required" :disabled="cookie.required")
-                      .track
-                        .circle
-                      span.text {{cookie.label}}
-                      button.explain(@click="cookie.showInfo = !cookie.showInfo") ? 
-                    .info(v-html="cookie.info" v-if="cookie.showInfo")
-              .bottom
-                button.primary(@click="failPlayer(1)") Accept All Cookies
-                button.secondary(@click="confirmCookieSelection()") Confirm My Choices
-      
-      transition(name="fade")
-        .fail-screen(v-if="showFailureScreen" @click="showFailureScreen = false")
-          .big-text You failed
-          .text-box
-            h2(v-html="failure.title")
-            .message(v-html="failure.message")
-            .also(v-if="failure.also")
-              figure(v-if="failure.also.showVideo")
-                video(width="600" height="400")
-              .list(v-if="failure.also.list")
-                ul
-                  li(v-for="item in failure.also.list" v-text="item") 
+        section.current-challenge(v-if="gameStarted")
+          form(@submit.prevent)
+            .field
+              label.question(for="TheQuestion") What did Joe Manchin have for breakfast?
+              input(required id="TheQuestion" placeholder="The answer is somewhere on this website.")
+            .button-holder
+              button(type="submit") Answer
+        
+        .bullshit(v-if="gameStarted" style="text-align:center;")
+          button(@click="doBullshit('gdpr')") Toggle banner
+          button(@click="doBullshit('camera')") Request Camera
+          button(@click="doBullshit('microphone')") Request Mic
+          button(@click="doBullshit('emailSignup')") Collect Email
+          button(@click="doBullshit('facebook')") Involve Facebook
+          button(@click="startTimer()") Start Timer
 
+        .news-grid(v-if="gameStarted")
+          +group(1,'bounce')
+          
+          +group(2,'zoom')
+
+          +group(3,'rotate')
+
+          +group(4,'slideUp')
+
+          +group(5, 'lightspeed')
+
+          +group(6, 'fade')
+
+      footer.site-footer(v-if="gameStarted")
+        span this is the site footer.
+
+
+
+      // Challenges
+      include bop/challenges/_gdpr
+      include bop/challenges/_email-signup
+      include bop/challenges/_facebook
+
+      // Screens
+      include bop/screens/_failure
 
     include bop/_javascripts

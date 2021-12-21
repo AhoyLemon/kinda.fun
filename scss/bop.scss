@@ -17,9 +17,22 @@
 @import "bop/_timer";
 @import "bop/_modals";
 @import "bop/_toggles";
-@import "bop/_transitions";
+//@import "bop/_transitions";
 
-@import "bop/_failure";
+// SECTIONS
+@import "bop/sections/_header";
+@import "bop/sections/_intro";
+@import "bop/sections/_current-challenge";
+
+// CONTENT
+@import "bop/content/_news";
+
+// SCREENS
+@import "bop/screens/_failure";
 
 // CHALLENGES
-@import "bop/challenges/gdpr";
+@import "bop/challenges/_gdpr";
+@import "bop/challenges/_email-signup";
+@import "bop/challenges/_facebook";
+
+footer.site-footer { background:#333; color:white; padding:$gap; }

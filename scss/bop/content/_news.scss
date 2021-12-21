@@ -1,0 +1,97 @@
+main.content { display:grid; grid-template-columns: 1fr; overflow-x: hidden;
+
+  .challenge { min-height: 120px; }
+}
+
+.news-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:$gap; padding-top:$gap; padding-bottom:$gap;
+
+  .box { font-size:1.2rem; }
+  
+
+  // Group box layout (not individual styles)
+  .group1 { grid-column:span 2; display:grid; grid-template-columns: repeat(2, 1fr); gap:$gap;
+    .box { height:34ch;
+      &.big { grid-column: span 2; min-height:37vw; }
+    }    
+  }
+  .group2 { display:grid; grid-template-columns: 1fr; gap:$gap;
+    //.box { min-height: 18ch; }
+  }
+  .group3 { grid-column: span 3;
+    .box-container { display:flex; overflow-y: hidden; overflow-x: scroll;
+      &:last-child { margin-right:0; }
+    }
+  }
+  .group4 { display:grid; gap:$gap; grid-template-columns: 1fr; }
+  .group5 { display:grid; gap:($gap / 2); grid-template-columns: 1fr;}
+
+
+  .box {
+    .category { text-transform: uppercase; font-size:60%; padding:0.25em 1em; font-weight: $bold; }
+    figure { background-size:cover; background-position: center; background-repeat: no-repeat; }
+    .headline { font-family:$headline; }
+    time { font-size:72%; }
+  }
+
+
+  .group1 {
+    .box { position: relative; color:white;  display:flex; align-items: flex-end; justify-content: flex-start;
+      figure { @include position(absolute,0,0,0,0);
+        &:before { content:""; display:block; @include position(absolute,0,0,0,0); background:linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)); }
+      }
+      
+      .category { @include position(absolute,0,0); background:rgba(255,255,255,.85); color:#111; font-size:72%; }
+      .sponsored { @include position(absolute,0,0); background:rgba(255,255,255,.85); color:#262; font-size:72%; }
+      figcaption { position: relative; padding:0.25em 1em; }
+      .headline { font-size:1.82rem; }
+      &.big {
+        .headline { font-size:2.75vw; }
+      }
+    }
+  }
+
+  .group2 {
+    .box { display:grid; grid-template-columns: 35% 1fr; gap:10px; background:#fff; padding-right: 10px; align-items: flex-end;
+      figure { height: 100%; }
+      .headline { font-size:1.43rem; }
+      .category { background:rgba(0,0,0,0.8); color:#eee; display:inline-block; }
+    }
+  }
+
+  .group3 { 
+    .group-header { padding:0 $gap; font-family: $headline; @extend h2; }
+    .box-container { padding: $gap; }
+    .box { flex-basis: 21.5vw; min-width: 18vw;margin-right:$gap; flex-grow: 0; flex-shrink: 0; }
+    figure { width:100%; height:13vw; }
+  }
+
+  .group4 {
+    .box { background:white; box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
+      .category { padding-left: 0; }
+      &.big { padding:1rem;
+        figure { height:13vw; }
+      }
+      figcaption { padding-right: 10px; }
+
+      &:not(.big) { display: grid; grid-template-columns: 150px 1fr; gap:10px; }
+    }
+  }
+
+  .group5 { background:white;
+    .box { padding:10px; 
+      .headline { font-size:1.1rem; }
+    }
+  }
+
+  .group6 { 
+    .box { height:100%; position: relative; display: flex; align-items: center; justify-content: center;
+      figure { @include position(absolute,0,0,0,0); padding:2rem;
+        &:before { content:""; display:block; @include position(absolute,0,0,0,0); background:linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.6),rgba(0,0,0,0.1)); }
+      }
+      figcaption { color:white; position: relative; flex-basis: 100%; width:100%; text-align: center; padding:1rem; }
+      .headline { font-size:2.45rem; }
+      .category, .sponsored { @include position(absolute,null,0,0); background:rgba(255,255,255,.85); color:#111; font-size:72%; }
+      .sponsored { color:#262; }
+    }
+  }
+}

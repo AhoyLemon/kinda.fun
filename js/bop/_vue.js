@@ -6,6 +6,7 @@ var app = new Vue({
   el: '#app',
   data: {
     h1: 'Refuse it!',
+    gameStarted: false,
     timer: 0,
     timerFunction: undefined,
     gdpr: {
@@ -28,7 +29,7 @@ var app = new Vue({
         },
         {
           label: "Functional Cookies", 
-          info: `<p>This website uses arbitary code provided by hundreds of different companies, written by tens of thousands of different developers, none of whom we can personally vouch for, and we've never bothered to inspect the code they wrote. We would like to run that code on your computer.</p>`,
+          info: `<p>This website uses arbitary code provided by hundreds of different companies, written by tens of thousands of different developers, none of whom we can personally vouch for, and we've never bothered to inspect the code they wrote. We would like to run that code on your computer, pretty please.</p>`,
           showInfo: false,
           allowed: true,
         },
@@ -39,6 +40,43 @@ var app = new Vue({
           allowed: true,
         }
       ]
+    },
+
+    emailSignup: {
+      showModal: false,
+      emailAddress: ""
+    },
+
+    fb: {
+      showModal: false,
+    },
+
+    news: {
+
+      allNews: {},
+      allAds: {},
+      lastNewsIndex: 0,
+      lastAdIndex: 0,
+
+      adSaturation: 33,
+      group1: {
+        boxes: []
+      },
+      group2: {
+        boxes: []
+      },
+      group3: {
+        boxes: []
+      },
+      group4: {
+        boxes: []
+      },
+      group5: {
+        boxes: []
+      },
+      group6: {
+        boxes: []
+      }
     },
     
     showFailureScreen: false,
@@ -116,24 +154,28 @@ var app = new Vue({
       self.stopTimer();
     },
 
-    startRound(round) {
+    doBullshit(bullshit) {
       const self = this;
-      if (round == "gdpr") {
+      if (bullshit == "gdpr") {
         self.gdpr.showBanner = true;
         self.gdpr.cookies.forEach(cookie => {
           cookie.allowed = true;
         });
         soundFeedback.play(randomFrom(soundOptions.rejectThem));
-      } else if (round == "camera") {
+      } else if (bullshit == "camera") {
         soundFeedback.play(randomFrom(soundOptions.blockIt));
         self.requestPermission('camera');
-      } else if (round == "microphone") {
+      } else if (bullshit == "microphone") {
         soundFeedback.play(randomFrom(soundOptions.denyIt));
         self.requestPermission('microphone');
+      } else if (bullshit == "emailSignup") {
+        soundFeedback.play(randomFrom(soundOptions.declineIt));
+        self.emailSignup.showModal = true;
+      } else if (bullshit == "facebook") {
+        soundFeedback.play(randomFrom(soundOptions.denyIt));
+        self.fb.showModal = true;
       }
-
       self.startTimer();
-
     },
 
     confirmCookieSelection() {
@@ -159,7 +201,6 @@ var app = new Vue({
         self.gdpr.showBanner = false;
       }
     },
-
 
     requestPermission(what) {
       const self = this;
@@ -231,6 +272,168 @@ var app = new Vue({
       });
     },
 
+    closeEmailModal(result) {
+      const self = this;
+      if (result == "optOut") {
+        self.emailSignup.showModal = false;
+        self.congratulatePlayer(5);
+      } else if (result == "submit") {
+        self.emailSignup.showModal = false;
+        self.failPlayer(5);
+      }
+    },
+
+    resolveFacebook(result) {
+      const self = this;
+      if (result == "no thanks") {
+        self.congratulatePlayer(6);
+      } else if (result == "share") {
+        self.failPlayer(7);
+      } else if (result == "like") {
+        self.failPlayer(6);
+      }
+      self.fb.showModal = false;
+    },
+
+
+    populateNewsGrid() {
+      const self = this;
+      const newsGroups = [
+        {
+          k: 'group1',
+          count: 5,
+          bigOne: 1,
+          noAd: 1,
+        },
+        {
+          k: 'group2',
+          count: 6
+        },
+        {
+          k: 'group3',
+          count: 6
+        },
+        {
+          k: 'group4',
+          count: 6,
+          bigOne:2
+        },
+        {
+          k: 'group5',
+          count: 11,
+          bigOne: 4
+        },
+        {
+          k: 'group6',
+          count: 1,
+          bigOne: 1,
+          adSaturation:100
+        }
+        
+      ];
+
+      newsGroups.forEach(group => {
+        self.populateNewsGroup(group);
+      });
+
+      
+    },
+
+    populateNewsGroup(group) {
+      const self = this;
+      self.news[group.k].boxes = [];
+      let n = 0;
+      
+      while (n < group.count) {
+        n++;
+        
+
+
+        // is this news or an ad?
+        let box;
+        let boxType;
+        if (group.noAd && group.noAd == n) {
+          // This box CAN'T be an ad.
+          boxType = "news";
+        } else if (group.alwaysAd && group.alwaysAd == n) {
+          // This box MUST be an ad.
+          boxType = "ad";
+        } else {
+          let adSaturation;
+          if (group.adSaturation) {
+            adSaturation = group.adSaturation;
+          } else {
+            adSaturation = self.news.adSaturation;
+          }
+
+          const r = randomNumber(1,100);
+          if (r <= adSaturation) {
+            // This is an ad, due to ad saturation rules.
+            boxType = "ad";
+          } else {
+            // This is news, due to ad saturation rules.
+            boxType = "news";
+          }
+        }
+        if (boxType == "ad") {
+          box = Object.assign( {}, self.news.allAds[self.news.lastAdIndex]);
+          self.news.lastAdIndex++;
+          if (!self.news.allAds[self.news.lastAdIndex]) {
+            self.news.lastAdIndex = 0;
+          }
+          box.type = "ad";
+        } else if (boxType == "news") {
+          //box = Object.assign({},randomFrom(theNews));
+          box = Object.assign( {}, self.news.allNews[self.news.lastNewsIndex]);
+          self.news.lastNewsIndex++;
+          if (!self.news.allNews[self.news.lastNewsIndex]) {
+            self.news.lastNewsIndex = 0;
+          }
+          // box = Object.assign({},self.news.allAds[self.news.lastAdIndex]);
+          // self.news.lastAdIndex++;
+          // if (!self.news.allAds[self.news.lastAdIndex]) {
+          //   self.news.lastAdIndex = 0;
+          // }
+          box.type = "news";
+        }
+
+        const subtractDays = randomNumber(0,27);
+        box.dateStamp = moment().subtract(subtractDays,'days').format('L');
+
+        // Is this box BIG?
+        if (group.bigOne && group.bigOne == n) {
+          console.log(group.bigOne, box);
+          box.big = true;
+        }
+
+        self.news[group.k].boxes.push(box);
+      }
+    },
+
+    boxClasses(box) {
+      const self = this;
+      let c = "";
+      if (box.big) {
+        c += " big";
+      }
+      if (box.type) {
+        c += " "+box.type;
+      }
+      return c;
+    },
+
+    startGame() {
+      const self = this;
+      self.news.lastNewsIndex = 0;
+      self.news.lastAdIndex =  0;
+      self.news.allNews = Object.assign({}, shuffle(theNews));
+      self.news.allAds = Object.assign({}, shuffle(theAds));
+      self.populateNewsGrid();
+      self.gameStarted = true;
+      setTimeout(function() {
+        self.doBullshit('emailSignup');
+      },4433);
+    }
 
   },
 
@@ -238,9 +441,6 @@ var app = new Vue({
     computedTimerOutput() {
       const self = this;
       seconds = Math.trunc(self.timer);
-      // if (seconds < 10) {
-      //   seconds = "0" + seconds;
-      // }
       ms = parseInt((self.timer % 1) * 100);
       if (ms < 10) {
         ms = "0" + ms;
@@ -250,6 +450,7 @@ var app = new Vue({
   },
 
   mounted: function() {
+    const self = this;
   }
 
 });

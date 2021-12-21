@@ -1,4 +1,4 @@
-.timer { font-family: monospace; font-weight: 400; font-size:5vw; @include position(fixed,2rem,2rem); background:#222; color:lime; line-height: 0.8; letter-spacing: 0.1em; padding:0.25em;
+.timer { font-family: monospace; font-weight: 400; font-size:5vw; @include position(fixed,2rem,2rem); background:#222; color:lime; line-height: 0.8; letter-spacing: 0.1em; padding:0.25em; z-index: $z-timer;
   .s  { font-size:140%; }
   .ms { font-size:70%; }
 }

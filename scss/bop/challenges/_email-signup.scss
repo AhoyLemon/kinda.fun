@@ -1,0 +1,37 @@
+.email-modal {
+  form { @include inner(340px);
+    .field {
+      label { font-weight: $bold; padding-left: 20px; font-size:0.85rem; letter-spacing: 0.1em; text-transform: uppercase; }
+      input { display:block; width:100%; font-size:1.25rem; font-family: $headline; padding:0.25em 20px; background:#ffffde; border:1px solid rgba(0,0,0,0.3); }
+    }
+    .button-holder { padding-top:0.5rem;
+      button { cursor:pointer; border:none; display:block; padding:0.5rem 1.25rem; width:100%; font-family: $headline; background-image: linear-gradient(#F66, #903); color:white; font-size:1.5rem; transition: all 200ms ease; border-radius: 0.7rem;
+        text-shadow:
+            0 1px 0 #C03,
+            0 -1px 0 #F99,
+            0 6px 1px rgba(0,0,0,.1),
+            0 0 5px rgba(0,0,0,.1),
+            0 1px 3px rgba(0,0,0,.3),
+            0 3px 5px rgba(0,0,0,.2),
+            0 5px 10px rgba(0,0,0,.25),
+            0 10px 10px rgba(0,0,0,.2),
+            0 20px 20px rgba(0,0,0,.15);
+        box-shadow:
+            0 6px 1px -8px rgba(0,0,0,.1),
+            0 0 5px -8px rgba(0,0,0,.1),
+            0 1px 3px -8px rgba(0,0,0,.3),
+            0 3px 5px -8px rgba(0,0,0,.2),
+            0 5px 10px -8px rgba(0,0,0,.25),
+            0 10px 10px -8px rgba(0,0,0,.2),
+            0 20px 20px -8px rgba(0,0,0,.15),
+            inset 0 40px 0 -8px rgba(255,255,255, 0.1),
+            inset 0 3px 0 0px rgba(255,255,255, 0.138);
+      }
+    }
+  }
+  .opt-out { padding-top:2rem; text-align: center;
+    a { font-size:0.8rem; color:#3333e5; cursor: pointer;
+      &:hover, &:focus { text-decoration: underline; }
+    }
+  }
+}

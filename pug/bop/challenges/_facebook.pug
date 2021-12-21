@@ -1,0 +1,36 @@
+transition(name="flipX" appear)
+  .like-us(v-if="fb.showModal")
+    .top 
+      h2(style="font-size:28px") Like us on Facebook!
+    .middle
+      .fake-widget
+        figure.picbox(style="background-image:url(https://picsum.photos/340/200)")
+          .top-line
+            .icon-holder
+              img.icon(src="https://picsum.photos/50")
+            .name-and-likes
+              .name This Stupid Website
+              .likes 1,685,923 likes.
+          .buttons
+            .left
+              button(@click="resolveFacebook('like')")
+                img.icon(src="/svg/bop/facebook.svg")
+                span Like Page
+            .right
+              button(@click="resolveFacebook('share')")
+                img.icon(src="/svg/bop/share.svg")
+                span Share
+        .your-friends
+          .inside 
+            - var yourFriends = 6
+            span #{yourFriends} meaningless strangers that we call "your friends" like this.
+            .avatars
+              - var n = 0
+              while n < yourFriends
+                img(src="https://picsum.photos/30?index="+n)
+                - n++
+    .bottom
+      p The above is an indicator of how many other people like us on Facebook. It is fake. If this site was using the real widget provided by Meta, the widget itself would be spying on you right now.
+  
+    .no-thanks
+      button(@click="resolveFacebook('no thanks')") No thanks

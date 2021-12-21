@@ -1,0 +1,34 @@
+.like-us { @include position(fixed,null,0,0); max-width: 380px; padding:20px 40px 10px 40px; background:white; box-shadow: -9px -9px 30px rgba(0,0,0,0.1);
+  .fake-widget { border:1px solid rgba(0,0,0,0.1);
+    figure { color:white; background-size: cover; background-position: center; background-repeat: no-repeat; position: relative;
+      &:before { content:''; display:block; @include position(absolute,0,0,30%,0); background:linear-gradient(rgba(0,0,0,1), rgba(0,0,0,0)); }
+      .top-line { display:grid; gap:5px; grid-template-columns: 65px 1fr; position: relative; }
+      .icon-holder { text-align: center; padding-top:5px;
+        img { border:2px solid white; }
+      }
+      .name-and-likes { padding-top:9px;
+        .name { font-size:180%; line-height: 0.9em; }
+      }
+      .buttons { padding:40px 5px 8px 5px; display:grid; grid-template-columns: repeat(2,1fr); position: relative;
+        .right { text-align: right; }
+
+      }
+    }
+    
+    button { background:white; border:1px solid rgba(0,0,0,0.1); border-radius: 2px; padding:0.25em 1em; font-weight: $bold; font-family: $font-family; box-shadow: -1px 1px 2px rgba(0,0,0,0.2); cursor: pointer;
+      .icon { width:0.85rem; height: 0.85rem; vertical-align: baseline; margin-right: 3px; transform: translateY(2px); }
+      &:hover, &:focus { background:#f2f2ff; transform: scale(1.05); }
+    }
+    .your-friends { font-size:80%; background:#f6f7f8; padding:10px;
+      .inside { background:white; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); padding:5px; border-radius: 3px; }
+      .avatars {
+        img { margin-right: 4px; }
+      }
+    }
+  }
+  .bottom { font-size:0.8rem; margin-top:2em; }
+
+  .no-thanks { position: absolute; bottom:5px; left:5px; transform:translateX(-120%);
+    button { color:rgba(160,16,16,0.8); font-family: $font-family; border:1px solid currentColor; border-radius: 3px; }
+  }
+}
