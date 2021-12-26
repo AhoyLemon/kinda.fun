@@ -40,7 +40,7 @@ mixin group(num,effect)
 
   else
     transition-group(name=effect tag="div" class="group group"+num)
-      .box(v-for="(box, index) in news.group"+num+".boxes" :key="index" :class="boxClasses(box)")
+      .box(v-for="(box, index) in news.group"+num+".boxes" :key="index" :class="boxClasses(box)" @click="chooseArticle(box)")
         if num == 1 || num == 6
           figure.bg(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'")
           figcaption

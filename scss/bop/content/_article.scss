@@ -1,0 +1,16 @@
+article.current-article { @include position(fixed,0,0,0); width:100%; display:grid; grid-template-columns: 1fr 86ch;
+  .cover-sheet { backdrop-filter: blur(3px); background:rgba(0,0,0,0.3); @include position(absolute,0,0,0,0); }
+  .inner { background: #fff; position: relative;
+    button.close { @include position(absolute,1rem,null,null,1rem); }
+  }
+  .content { padding:4rem; max-height: 63vh; overflow-y: auto; position: relative; }
+
+
+  .author { margin-bottom: 1em; font-weight: $bold; font-size:140%; }
+
+  .offside-ad { display:flex; align-items: center; justify-content: center; position: relative;
+    img { position: relative; }
+  }
+
+
+}

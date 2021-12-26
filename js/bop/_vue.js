@@ -5,8 +5,7 @@ Vue.use(VueToast);
 var app = new Vue({
   el: '#app',
   data: {
-    h1: 'Refuse it!',
-    gameStarted: false,
+    gameStarted: true,
     timer: 0,
     timerFunction: undefined,
     gdpr: {
@@ -77,6 +76,9 @@ var app = new Vue({
       group6: {
         boxes: []
       }
+    },
+    currentArticle: {
+      visible: false
     },
     
     showFailureScreen: false,
@@ -298,40 +300,6 @@ var app = new Vue({
 
     populateNewsGrid() {
       const self = this;
-      const newsGroups = [
-        {
-          k: 'group1',
-          count: 5,
-          bigOne: 1,
-          noAd: 1,
-        },
-        {
-          k: 'group2',
-          count: 6
-        },
-        {
-          k: 'group3',
-          count: 6
-        },
-        {
-          k: 'group4',
-          count: 6,
-          bigOne:2
-        },
-        {
-          k: 'group5',
-          count: 11,
-          bigOne: 4
-        },
-        {
-          k: 'group6',
-          count: 1,
-          bigOne: 1,
-          adSaturation:100
-        }
-        
-      ];
-
       newsGroups.forEach(group => {
         self.populateNewsGroup(group);
       });
@@ -389,6 +357,10 @@ var app = new Vue({
           if (!self.news.allNews[self.news.lastNewsIndex]) {
             self.news.lastNewsIndex = 0;
           }
+          box.author = {
+            firstName: randomFrom(firstNames),
+            lastName: randomFrom(lastNames)
+          };
           // box = Object.assign({},self.news.allAds[self.news.lastAdIndex]);
           // self.news.lastAdIndex++;
           // if (!self.news.allAds[self.news.lastAdIndex]) {
@@ -422,6 +394,69 @@ var app = new Vue({
       return c;
     },
 
+    chooseArticle(article) {
+      const self = this;
+      console.log(article);
+      self.currentArticle = Object.assign({}, article);
+      self.currentArticle.visible = true;
+      self.currentArticle.paragraphs = []
+      const n = randomNumber(4,16);
+      let i = 0;
+      while (i < n) {
+        self.currentArticle.paragraphs.push(randomFrom(paragraphs));
+        i++;
+      }
+
+      if (self.currentArticle.nugget) {
+
+
+        // pick a random paragraph.
+        const pIndex = randomNumber(1,self.currentArticle.paragraphs.length);
+
+        if (self.currentArticle.nuggetPlacement == "replace") {
+          // Replace this paragraph with the nugget
+          self.currentArticle.paragraphs[pIndex] = self.currentArticle.nugget;
+        } else if (self.currentArticle.nuggetPlacement == "before") {
+          // Place the nugget at the beginning of this paragraph.
+          const theRest = self.currentArticle.paragraphs[pIndex];
+          self.currentArticle.paragraphs[pIndex] = self.currentArticle.nugget + " " + theRest;
+        } else {
+          
+          const chars = self.currentArticle.paragraphs[pIndex].length;
+          const minPossible = parseInt(chars * 0.2);
+          const maxPossible = parseInt(chars * 0.7);
+          const position = randomNumber(minPossible,maxPossible);
+
+          const newParagraph = [
+            self.currentArticle.paragraphs[pIndex].slice(0, position), 
+            self.currentArticle.nugget + " ", 
+            self.currentArticle.paragraphs[pIndex].slice(position)
+          ].join('');
+
+          self.currentArticle.paragraphs[pIndex] = newParagraph;
+
+          // TODO: The above works, but the resulting paragraph looks weird. Try to get it to jam this after a period. Or just force a period beforehand and capitalize the letter afterwards.
+
+        }
+
+        //alert(self.currentArticle.nugget);
+
+      }
+
+
+
+
+
+    },
+
+    closeArticle(article) {
+      const self = this;
+      //self.currentArticle.visible = false;
+      self.currentArticle = {};
+    },
+
+
+
     startGame() {
       const self = this;
       self.news.lastNewsIndex = 0;
@@ -430,9 +465,9 @@ var app = new Vue({
       self.news.allAds = Object.assign({}, shuffle(theAds));
       self.populateNewsGrid();
       self.gameStarted = true;
-      setTimeout(function() {
-        self.doBullshit('emailSignup');
-      },4433);
+      // setTimeout(function() {
+      //   self.doBullshit('emailSignup');
+      // },4433);
     }
 
   },
@@ -451,6 +486,7 @@ var app = new Vue({
 
   mounted: function() {
     const self = this;
+    self.startGame();
   }
 
 });

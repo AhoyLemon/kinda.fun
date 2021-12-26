@@ -57,10 +57,28 @@ html(lang="en")
 
           +group(6, 'fade')
 
+        article.current-article(v-if="currentArticle && currentArticle.visible == true")
+          .cover-sheet
+
+          .offside-ad
+            transition(name="bounce" appear)
+              img(src="https://placehold.co/600x400?text=A+Fuckin+Ad")
+
+          transition(name="slideRight" appear)
+            .inner
+              button.close(@click="closeArticle()") X
+              figure
+                img(:src="'img/bop/bg/' + currentArticle.img")
+              .content
+                h1(v-text="currentArticle.headline")
+                .author(v-if="currentArticle.author")
+                  | by {{currentArticle.author.firstName}} {{currentArticle.author.lastName}}
+                .paragraphs
+                  p(v-for="paragraph in currentArticle.paragraphs" v-html="paragraph")
+
+
       footer.site-footer(v-if="gameStarted")
         span this is the site footer.
-
-
 
       // Challenges
       include bop/challenges/_gdpr

@@ -1,7 +1,7 @@
 .modal { @include position(fixed,0,0,0,0); display:flex; align-items: center; justify-content: center;
 
-  .cover-sheet { @include position(fixed,0,0,0,0); backdrop-filter: blur(2px); background:rgba(0,0,0,0.2);
-    @supports not (backdrop-filter:blur(3px)) { background:rgba(0,0,0,0.5); }
+  .cover-sheet { @include position(fixed,0,0,0,0); backdrop-filter: blur(3px); background:rgba(0,0,0,0.3);
+    @supports not (backdrop-filter:blur(3px)) { background:rgba(0,0,0,0.6); }
   }
   
   .box { background:white; width:100%; max-width: 610px; padding:2rem; position: relative; box-shadow: 0 0 1.5rem rgba(0,0,0,0.4); }
