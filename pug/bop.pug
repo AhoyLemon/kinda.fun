@@ -74,7 +74,11 @@ html(lang="en")
                 .author(v-if="currentArticle.author")
                   | by {{currentArticle.author.firstName}} {{currentArticle.author.lastName}}
                 .paragraphs
-                  p(v-for="paragraph in currentArticle.paragraphs" v-html="paragraph")
+                  template(v-for="(paragraph, index) in currentArticle.paragraphs")
+                    span {{index}}
+                    figure(v-if="currentArticle.inlineAdVisible")
+                      img(src="https://placehold.co/600x400?text=Another+Fuckin+Ad")
+                    p(v-html="paragraph")
 
 
       footer.site-footer(v-if="gameStarted")

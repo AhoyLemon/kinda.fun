@@ -74,7 +74,9 @@ var app = new Vue({
       }
     },
     currentArticle: {
-      visible: false
+      visible: false,
+      showInlineAd: false,
+      adAfterParagraphNumber: 2
     },
     
     showFailureScreen: false,
@@ -452,7 +454,6 @@ var app = new Vue({
       const self = this;
       console.log(article);
       self.currentArticle = Object.assign({}, article);
-      self.currentArticle.visible = true;
       self.currentArticle.paragraphs = []
       const n = randomNumber(4,16);
       let i = 0;
@@ -462,7 +463,6 @@ var app = new Vue({
       }
 
       if (self.currentArticle.nugget) {
-
 
         // pick a random paragraph.
         const pIndex = randomNumber(1,self.currentArticle.paragraphs.length);
@@ -500,10 +500,20 @@ var app = new Vue({
         }
       }
 
+      self.currentArticle.inlineAdIndex = 2;
+      self.currentArticle.inlineAdVisible = false;
 
+      self.currentArticle.visible = true;
+      //self.generateAnArticleAd();
+    },
 
-
-
+    generateAnArticleAd() {
+      const self = this;
+      // setTimeout(function() {
+      //   self.currentArticle.inlineAdIndex = 1;
+      //   self.currentArticle.inlineAdVisible = true;
+      //   alert("ad should be visible at "+self.currentArticle.inlineAdIndex)
+      // },1600);
     },
 
     closeArticle(article) {

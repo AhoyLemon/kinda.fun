@@ -160,7 +160,8 @@ const theNews =  [
     nugget: "Bonn Scott was born in the small town of Forfar.",
     nuggetPlacement: "beginning",
     question: "Where was AC/DC singer Bonn Scott born?",
-    answer: "Forfar"
+    answer: "Forfar",
+    alternateAnswers: [ "a small town", "the small town of Forfar"]
   },
   {
     img: "ransomware.jpg",
