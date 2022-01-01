@@ -1,4 +1,4 @@
-- var pageTitle = null;
+- var pageTitle = "";
 include bop/_variables
 include bop/_mixins
 
@@ -29,10 +29,10 @@ html(lang="en")
               |  While this website will pretend to track you, it won't actually do anything unethical with your personal data. I can't say that about any other site you'll encounter.
 
         section.current-challenge(v-if="gameStarted")
-          form(@submit.prevent)
+          form(@submit.prevent="answerTheQuestion()" v-if="currentQuestion")
             .field
-              label.question(for="TheQuestion") What did Joe Manchin have for breakfast?
-              input(required id="TheQuestion" placeholder="The answer is somewhere on this website.")
+              label.question(for="TheQuestion") {{currentQuestion.question}}
+              input(required id="TheQuestion" v-model="myGuess" placeholder="The answer is somewhere on this website.")
             .button-holder
               button(type="submit") Answer
         

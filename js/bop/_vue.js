@@ -1,7 +1,3 @@
-//import SweetModal from 'sweet-modal-vue/src/plugin.js';
-
-Vue.use(VueToast);
-
 var app = new Vue({
   el: '#app',
   data: {
@@ -83,7 +79,13 @@ var app = new Vue({
     
     showFailureScreen: false,
     failStates: failStates,
-    failure: {}
+    failure: {},
+
+    currentQuestionIndex: 0,
+    currentQuestion: {},
+    myGuess: "",
+    allQuestions: [],
+    answeredQuestions: []
   },
 
   methods: {
@@ -142,14 +144,12 @@ var app = new Vue({
       const self = this;
       console.log("SUCCESS");
       if (roundCode) {
-        let instance = Vue.$toast.open(
-          {
-            message: `<p>${successMessages[roundCode].message}</p>`,
 
-            type: "success",
-            position: "bottom-right"
-          }
-        );
+        new PNotify({
+          title: "Success!",
+          text: `<p>${successMessages[roundCode].message}</p>`,
+          type: "success"
+        });
       }
       
       soundFeedback.play(randomFrom(soundOptions.success));
@@ -297,14 +297,14 @@ var app = new Vue({
       self.fb.showModal = false;
     },
 
-
     populateNewsGrid() {
       const self = this;
       newsGroups.forEach(group => {
         self.populateNewsGroup(group);
       });
 
-      
+      self.allQuestions = Object.assign([], shuffle(self.allQuestions));
+      self.askAQuestion();
     },
 
     populateNewsGroup(group) {
@@ -379,6 +379,60 @@ var app = new Vue({
         }
 
         self.news[group.k].boxes.push(box);
+
+
+        if (box.question && box.answer) {
+          self.allQuestions.push(box);
+        }
+
+
+      }
+    },
+
+    askAQuestion() {
+      const self = this;
+      self.currentQuestion = Object.assign({}, self.allQuestions[self.currentQuestionIndex]);
+      self.myGuess = "";
+    },
+
+    answerTheQuestion() {
+      const self = this;
+
+      let guess;
+      let answer;
+      let possibleAnswers = [];
+      guess = self.myGuess.trim().toUpperCase();
+      answer = self.currentQuestion.answer.trim().toUpperCase();
+
+      if (self.currentQuestion.alternateAnswers) {
+        self.currentQuestion.alternateAnswers.forEach(a => {
+          possibleAnswers.push(a.trim().toUpperCase());
+        })
+      }
+
+      if (guess == answer) {
+        new PNotify({
+          title: "Correct",
+          text: "You got 1 point.",
+          type: "success"
+        })
+
+        self.currentQuestionIndex++;
+        self.askAQuestion();
+      } else if ( possibleAnswers && possibleAnswers.includes(guess) ) {
+        new PNotify({
+          title: "Basically correct",
+          text: `<p>I was actually looking for ${answer}, but I guess that's close enough, thanks.</p>`,
+          type: "success"
+        })
+        self.currentQuestionIndex++;
+        self.askAQuestion();
+      } else {
+        new PNotify({
+          title: "No!",
+          text: `<p>That is not correct. You just lost a point. Also actually, the correct answer is <strong>${answer}</strong> if you want to cheat about it. Eventually this should count the number of incorrect answers and only let you bypass after like 2 or 3 attempts.</p>`,
+          type: "error"
+        })
       }
     },
 
@@ -412,35 +466,38 @@ var app = new Vue({
 
         // pick a random paragraph.
         const pIndex = randomNumber(1,self.currentArticle.paragraphs.length);
+        const formattedNugget = '<strong>'+self.currentArticle.nugget+'</strong>';
+
 
         if (self.currentArticle.nuggetPlacement == "replace") {
           // Replace this paragraph with the nugget
-          self.currentArticle.paragraphs[pIndex] = self.currentArticle.nugget;
-        } else if (self.currentArticle.nuggetPlacement == "before") {
+          self.currentArticle.paragraphs[pIndex] = formattedNugget;
+        } else if (self.currentArticle.nuggetPlacement == "beginning" || self.currentArticle.nuggetPlacement == "before") {
           // Place the nugget at the beginning of this paragraph.
           const theRest = self.currentArticle.paragraphs[pIndex];
-          self.currentArticle.paragraphs[pIndex] = self.currentArticle.nugget + " " + theRest;
+          self.currentArticle.paragraphs[pIndex] = formattedNugget + " " + theRest;
+        } else if (self.currentArticle.nuggetPlacement == "end" || self.currentArticle.nuggetPlacement == "after") {
+          // Place the nugget at the beginning of this paragraph.
+          const theRest = self.currentArticle.paragraphs[pIndex];
+          self.currentArticle.paragraphs[pIndex] = theRest + " " + formattedNugget;
         } else {
-          
-          const chars = self.currentArticle.paragraphs[pIndex].length;
-          const minPossible = parseInt(chars * 0.2);
-          const maxPossible = parseInt(chars * 0.7);
-          const position = randomNumber(minPossible,maxPossible);
-
-          const newParagraph = [
-            self.currentArticle.paragraphs[pIndex].slice(0, position), 
-            self.currentArticle.nugget + " ", 
-            self.currentArticle.paragraphs[pIndex].slice(position)
-          ].join('');
-
-          self.currentArticle.paragraphs[pIndex] = newParagraph;
-
-          // TODO: The above works, but the resulting paragraph looks weird. Try to get it to jam this after a period. Or just force a period beforehand and capitalize the letter afterwards.
+          // To put the nugget in the middle, generate a random number of sentences(2 to 4), then the nugget, then a random number of sentences (2 to 4)
+          const sentencesBefore = randomNumber(2,4);
+          const sentencesAfter = randomNumber(2,4);
+          let paragraphContent = ""
+          let i = 0;
+          while (i < sentencesBefore) {
+            paragraphContent += randomFrom(sentences) + " ";
+            i++;
+          }
+          paragraphContent += formattedNugget;
+          i = 0
+          while (i < sentencesAfter) {
+            paragraphContent += randomFrom(sentences) + " ";
+            i++;
+          }
 
         }
-
-        //alert(self.currentArticle.nugget);
-
       }
 
 
@@ -455,14 +512,12 @@ var app = new Vue({
       self.currentArticle = {};
     },
 
-
-
     startGame() {
       const self = this;
       self.news.lastNewsIndex = 0;
       self.news.lastAdIndex =  0;
-      self.news.allNews = Object.assign({}, shuffle(theNews));
-      self.news.allAds = Object.assign({}, shuffle(theAds));
+      self.news.allNews = Object.assign([], shuffle(theNews));
+      self.news.allAds = Object.assign([], shuffle(theAds));
       self.populateNewsGrid();
       self.gameStarted = true;
       // setTimeout(function() {
@@ -487,6 +542,20 @@ var app = new Vue({
   mounted: function() {
     const self = this;
     self.startGame();
+
+    // PNotify.info({
+    //   text: 'Notice me, senpai!'
+    // });
+    // PNotify.warn({
+    //   text: 'Notice me, senpai!'
+    // });
+
+    new PNotify({
+      title: "Hi there!",
+      text: `<p>Toasts work. Get ready to see a lot of these fuckin' things.</p>`,
+      type: "success"
+    });
+
   }
 
 });

@@ -6,7 +6,15 @@ main.content { display:grid; grid-template-columns: 1fr; overflow-x: hidden;
 .news-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:$gap; padding-top:$gap; padding-bottom:$gap;
 
   .box { font-size:1.2rem; }
-  
+  .headline {
+    a { cursor: pointer;
+      &:hover, &:focus { text-decoration: underline; }
+    }
+  }
+  .clickable { cursor: pointer; }
+  figure.clickable { transition:transform 0.5s ease;
+    &:hover { transform: scale(1.1); }
+  }
 
   // Group box layout (not individual styles)
   .group1 { grid-column:span 2; display:grid; grid-template-columns: repeat(2, 1fr); gap:$gap;
@@ -35,8 +43,8 @@ main.content { display:grid; grid-template-columns: 1fr; overflow-x: hidden;
 
 
   .group1 {
-    .box { position: relative; color:white;  display:flex; align-items: flex-end; justify-content: flex-start;
-      figure { @include position(absolute,0,0,0,0);
+    .box { position: relative; color:white;  display:flex; align-items: flex-end; justify-content: flex-start; overflow:hidden;
+      figure { @include position(absolute,0,0,0,0); transition: all 1s ease;
         &:before { content:""; display:block; @include position(absolute,0,0,0,0); background:linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)); }
       }
       
@@ -46,6 +54,10 @@ main.content { display:grid; grid-template-columns: 1fr; overflow-x: hidden;
       .headline { font-size:1.82rem; }
       &.big {
         .headline { font-size:2.75vw; }
+      }
+
+      &:hover { 
+        figure { transform:scale(1.2); }
       }
     }
   }

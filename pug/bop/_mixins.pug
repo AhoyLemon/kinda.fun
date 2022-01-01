@@ -33,59 +33,41 @@ mixin group(num,effect)
       .group-header More Important News
       transition-group(name=effect tag="div" class="box-container")
         .box(v-for="(box, index) in news.group"+num+".boxes" :key="index" :class="boxClasses(box)")
-          figure(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'")
+          figure.clickable(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'" @click="chooseArticle(box)")
           figcaption
-            .headline(v-if="box.headline" v-text="box.headline")
+            .headline(v-if="box.headline")
+              a(@click="chooseArticle(box)" v-text="box.headline")
             time.datestamp(v-if="box.dateStamp" v-text="box.dateStamp")
 
   else
     transition-group(name=effect tag="div" class="group group"+num)
-      .box(v-for="(box, index) in news.group"+num+".boxes" :key="index" :class="boxClasses(box)" @click="chooseArticle(box)")
+      .box(v-for="(box, index) in news.group"+num+".boxes" :key="index" :class="boxClasses(box)")
         if num == 1 || num == 6
           figure.bg(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'")
           figcaption
-            .headline(v-if="box.headline" v-text="box.headline")
+            .headline(v-if="box.headline")
+              a(@click="chooseArticle(box)" v-text="box.headline")
             time.datestamp(v-if="box.dateStamp && box.type != 'ad'" v-text="box.dateStamp")
           .category(v-if="box.category" v-text="box.category")
           .sponsored(v-else-if="box.type == 'ad'") Sponsored
         if num == 2
-          figure(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'")
+          figure.clickable(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'" @click="chooseArticle(box)")
           .right
             .category(v-if="box.category" v-text="box.category")
             .sponsored(v-else-if="box.type == 'ad'") Sponsored
-            .headline(v-if="box.headline" v-text="box.headline")
+            .headline(v-if="box.headline")
+              a(@click="chooseArticle(box)" v-text="box.headline") 
             time.datestamp(v-if="box.dateStamp" v-text="box.dateStamp")
         if num == 4
-          figure(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'")
+          figure.clickable(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'" @click="chooseArticle(box)")
           figcaption
             .category(v-if="box.category" v-text="box.category")
             .sponsored(v-else-if="box.type == 'ad'") Sponsored
-            .headline(v-if="box.headline" v-text="box.headline")
+            .headline(v-if="box.headline")
+              a(@click="chooseArticle(box)" v-text="box.headline")
         if num == 5
-          .headline(v-if="box.headline" v-text="box.headline")
+          .headline(v-if="box.headline")
+            a(@click="chooseArticle(box)" v-text="box.headline")
           div 
             time.datestamp(v-if="box.dateStamp" v-text="box.dateStamp")
             span.category(v-if="box.category" v-text="box.category")
-        //- if num == 6
-        //-   figure(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'")
-        //-   figcaption
-        //-     .headline(v-if="box.headline" v-text="box.headline")
-        //-     time.datestamp(v-if="box.dateStamp" v-text="box.dateStamp")
-        //-   .category(v-if="box.category" v-text="box.category")
-
-
-
-
-
-
-    //- .box(v-for="(box, index) in news.group"+num+".boxes" :key="index" :class="boxClasses(box)")
-    //-   if num != 2
-    //-     figure.bg(v-if="box.img" :style="'background-image:url(img/bop/bg/'+box.img+')'")
-    //-   else
-    //-     figure(v-if="box.img")
-    //-       img(:src="'img/bop/bg/'+box.img")
-
-    //-   figcaption
-    //-     .category(v-if="box.category" v-text="box.category")
-    //-     .headline(v-if="box.headline" v-text="box.headline")
-    //-     time.datestamp(v-if="box.dateStamp" v-text="box.dateStamp")

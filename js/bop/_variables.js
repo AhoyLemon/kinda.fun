@@ -105,7 +105,7 @@ const theNews =  [
     headline: "Country Music Legend Rhett Smurt turns 63",
     category: "birthday",
     nugget: "Rhett was born in Jerkwater, New Jersey.",
-    nuggetPlacement: "before",
+    nuggetPlacement: "beginning",
     question: "What state was Rhett Smurt born in?",
     answer: "New Jersey"
   },
@@ -123,7 +123,6 @@ const theNews =  [
     headline: "Are sugar gliders better than cats?",
     category: "nature",
     nugget: "My pet sugar glider is named Leonard.",
-    nuggetPlacement: "middle",
     question: "What is the name of the author's pet sugar glider?",
     answer: "Leonard"
   },
@@ -132,7 +131,7 @@ const theNews =  [
     headline: "Fun crafts using asbestos that'll keep your kids busy on a rainy day",
     category: "parenting",
     nugget: "Crocidolite (blue asbestos) was commonly used to insulate steam engines. But you could make a pair of cool sunglasses!",
-    nuggetPlacement: "before",
+    nuggetPlacement: "beginning",
     question: "What's another word for blue asbestos?", 
     answer: "crocidolite"
   },
@@ -140,50 +139,79 @@ const theNews =  [
     img: "weirdal.jpg",
     headline: "Every Weird Al film and television cameo, ranked",
     category: "heavy metal",
-    nugget: "2019 also saw the musical funnyman alongside a funny WOMAN named Rachel Bloom. Mister Yankovic played the role of Bernie in Bloom's show Crazy Ex-Girlfriend",
-    nuggetPlacement: "before",
-    question: "What was the name of Weird Al Yankovic's character in Crazy Ex-Girlfriend",
+    nugget: "2019 also saw the musical funnyman alongside a funny WOMAN named Rachel Bloom. Mister Yankovic played the role of Bernie in Bloom's show Crazy Ex-Girlfriend.",
+    nuggetPlacement: "beginning",
+    question: "What was the name of Weird Al Yankovic's character in Crazy Ex-Girlfriend?",
     answer: "Bernie"
   },
   {
     img: "donut.jpg",
     headline: "Did The Simpsons predict the newest Marvel franchise?",
-    category: "cinema"
+    category: "cinema",
+    nugget: "An episode in the 31st season featured Kevin Feige in the role of Chinnos. Chinnos is actually not known as a voice actor, but rather as the producer of over 70 Marvel films, such as Thor: Love and Thunder, Doctor Strange in the Multiverse of Madness, and Captain America: The Winter Soldier. Isn't it fun how all of these movies have colons? That's because they're all sequels of each other, which I think is just fabulous. They keep cranking these things out like six times a year, and I keep writing about them! It's kind of like mutual masturbation, except instead of an orgasm we just both experience sadness at what we do with our lives.",
+    nuggetPlacement: "replace",
+    question: "Who voiced the role of Chinnos on The Simpsons?",
+    answer: "Kevin Feige"
   },
   {
     img: "microphone.jpg",
     headline: "Every Singer in AC/DC, Ranked",
-    category: "heavy metal"
+    category: "heavy metal",
+    nugget: "Bonn Scott was born in the small town of Forfar.",
+    nuggetPlacement: "beginning",
+    question: "Where was AC/DC singer Bonn Scott born?",
+    answer: "Forfar"
   },
   {
     img: "ransomware.jpg",
     headline: "How To Rid Your PC of Toxins with Ransomware",
-    category: "computers"
+    category: "computers",
+    nugget: "According to a study conducted by Cloudwards, in 2021, 32% of all businesses and organizations hit by ransomware paid the ransom.",
+    nuggetPlacement: "end",
+    question: "What percent of organizations paid the ransomware?",
+    answer: "32%",
+    alternateAnswers: [ "32", "32 percent"]
   },
   {
     img: "tiktok.jpg",
     headline: "Why Your Children Won't Teach You The Dances They Learn On TikTok",
-    category: "youth"
+    category: "youth",
+    nugget: "The TikTok performer @rapunzaroo often will dance with her chickens.",
+    nuggetPlacement: "end",
+    question: "What animal does Tik Tok performer rapunzaroo work with?",
+    answer: "chicken",
+    alternateAnswers: [ "chickens" ]
   },
   {
     img: "manchin.jpg",
     headline: "What did Joe Manchin have for breakfast?",
-    category: "politics"
+    category: "politics",
+    nugget: "This morning Manchin had Froot Loops",
+    nuggetPlacement: "end",
+    question: "Okay, what did Joe Manchin have for breakfast this morning?",
+    answer: "Froot Loops"
   },
-  {
-    img: "bartender.jpg",
-    headline: "The 3 drinks that will convince a bartender you're not a total piece of shit",
-    category: "nightlife"
-  },
+  // {
+  //   img: "bartender.jpg",
+  //   headline: "The 3 drinks that will convince a bartender you're not a total piece of shit",
+  //   category: "nightlife"
+  // },
   {
     img: "mcconaughey.jpg",
     headline: "WATCH Matthew McConaughey sit on the couch and scratch his balls every once in a while",
-    category: "celebrities"
+    category: "celebrities",
+    nugget: "On Thursday I saw him do a crossword puzzle",
+    question: "What did Matthew McConaughey do on Thursday?",
+    answer: "a crossword puzzle",
+    alternateAnswers: ["puzzle", "crossword puzzle", "crossword"]
   },
   {
     img: "palin.jpg",
     headline: "Sarah Palin said something stupid again, so I guess we have to write about that.",
-    category: "celebrities"
+    category: "celebrities",
+    nugget: "She was all like “I'll get a vaccine over my dead body” and I'm all WTF that's crazy I can't believe you'd say that cause like, that's totally ironic and everything. Cause like, if you don't get vaccinated you die, and then you're saying “over my dead body” and I know that's an expression but it's also like, in this case, I think it's kind of ironic that she'd say that, you know? Her sweater was pink.",
+    question: "What color was Sarah Palin's sweater?",
+    answer: "pink"
   },
 ];
 
@@ -296,4 +324,25 @@ const paragraphs = [
   "Aliquam congue ligula elit, nec fringilla dolor tincidunt ac. Sed mi metus, scelerisque a luctus id, sodales eget nisi. Proin at ultricies nibh. In molestie quis ante non ullamcorper. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam euismod sit amet nibh vitae varius. Nam viverra, nisi in elementum aliquet, metus diam mattis eros, at lobortis augue lacus sit amet magna.",
   "Donec et semper nibh, facilisis finibus nibh. Pellentesque et metus nunc. Integer lectus leo, sodales eu pretium ac, ultricies vitae erat. Nunc sem odio, finibus eget sem non, pulvinar aliquet ligula. Mauris sit amet dolor non augue molestie tristique ac sed leo. Morbi viverra mollis eleifend. Donec malesuada elit est, vitae venenatis tellus interdum eu. Ut porttitor ex eu odio tempus, vel accumsan elit ultrices. Vivamus mauris mauris, scelerisque in elementum sed, consectetur quis velit. Aenean porttitor sollicitudin sodales. In hac habitasse platea dictumst. Donec ornare purus a tempor vestibulum.",
   "Donec neque diam, semper placerat suscipit nec, posuere bibendum magna. Praesent non est quam. Praesent vel risus non nulla molestie rhoncus. Nullam sed malesuada sapien. Cras venenatis nunc vitae porta tincidunt. Aliquam vitae semper massa. Quisque aliquet enim vel turpis molestie, in dictum est viverra. Vivamus ultrices vel arcu vitae pellentesque. In porttitor blandit mauris sed pulvinar. Aenean mollis orci eget nisl convallis luctus. Donec non facilisis mi."
+]
+const sentences = [
+  "Cras in tincidunt augue.",
+  "Sed congue congue molestie.",
+  "Donec quis venenatis velit, sed consequat lacus.",
+  "Quisque sodales porta porta.",
+  "Suspendisse sodales elit eu laoreet dapibus.",
+  "Fusce nec risus gravida velit scelerisque iaculis.",
+  "Nulla nibh nisi, volutpat sed risus ac, mattis fermentum odio.",
+  "Duis vitae tortor nibh. Vestibulum at tincidunt urna, sit amet efficitur mi.",
+  "Proin ultricies iaculis egestas.",
+  "Morbi pellentesque malesuada neque non iaculis.",
+  "Aenean mattis scelerisque ex sit amet blandit.",
+  "Ut pretium erat eu lorem accumsan, a cursus quam pulvinar.",
+  "Proin at justo semper, rhoncus massa at, pharetra turpis. Etiam scelerisque tincidunt congue.",
+  "Maecenas congue scelerisque vehicula.",
+  "Nulla posuere, dolor eu varius congue, turpis velit rutrum mauris, mollis viverra diam urna in sapien.",
+  "Maecenas vulputate egestas dolor, ut tincidunt est ullamcorper ac.",
+  "In nunc augue, volutpat eget nulla eu, bibendum gravida elit.",
+  "Duis sed luctus augue.",
+  "Donec vulputate imperdiet leo ac varius."
 ]

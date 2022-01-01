@@ -6,7 +6,8 @@
 @import "globals/_extends";
 
 // LIBRARIES (if any)
-//@import "libraries/animate";
+@import "libraries/PNotify";
+@import "bop/libraries/pnotify-custom";
 
 // SITE SPECIFIC
 @import "bop/_variables";

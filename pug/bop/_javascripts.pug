@@ -12,8 +12,35 @@
   script(src="js/libraries/moment.min.js")
   script(src="js/libraries/howler.min.js")
 
+
+  script(src="js/libraries/jquery.min.js")
   //- Vue Toast
   script(src="js/libraries/vue-toast-notification.min.js")
   link(href="css/libraries/vue-toast-notification.css" type="text/css" rel="stylesheet")
+
+  script(src="js/libraries/pnotify.custom.min.js")
+
+  script.
+    //------ Pnotify settings & defaults ----------------
+    PNotify.prototype.options.icon = false;
+    var stack_bottomright = {"dir1": "up", "dir2": "left", "firstpos1": 25, "firstpos2": 25};
+    PNotify.prototype.options.stack = stack_bottomright;
+    PNotify.prototype.options.addclass = "stack-bottomright";
+    PNotify.prototype.options.animate.animate = true;
+    PNotify.prototype.options.animate.in_class = 'bounceInDown',
+    PNotify.prototype.options.animate.out_class = 'zoomOutRight';
+    PNotify.prototype.options.width = "460px";
+    PNotify.prototype.options.delay = 14000;
+
+    PNotify.defaultStack = {
+      dir1: 'down',
+      dir2: 'left',
+      firstpos1: 25,
+      firstpos2: 25,
+      spacing1: 36,
+      spacing2: 36,
+      push: 'bottom',
+      context: document.body
+    }
 
   script(src="js/min/bop.min.js?updated="+lastUpdated)
