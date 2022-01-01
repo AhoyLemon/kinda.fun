@@ -1,16 +1,25 @@
+@keyframes slowLoadTheAd {
+  from { max-height: 1px; }
+  to   { max-height: 600px; }
+}
+
+
 article.current-article { @include position(fixed,0,0,0); width:100%; display:grid; grid-template-columns: 1fr 86ch;
   .cover-sheet { backdrop-filter: blur(3px); background:rgba(0,0,0,0.3); @include position(absolute,0,0,0,0); }
   .inner { background: #fff; position: relative;
-    button.close { @include position(absolute,1rem,null,null,1rem); }
+    button.close { @include position(absolute,1rem,null,null,1rem); border: 0.15em solid white; border-radius: 50%; width: 2em; height: 2em; font-size: 32px; background: transparent;color: white; cursor: pointer;
+      &:hover, &:focus { background: white; color:#222; }
+    }
   }
   .content { padding:4rem; max-height: 63vh; overflow-y: auto; position: relative; }
 
-
-  .author { margin-bottom: 1em; font-weight: $bold; font-size:140%; }
+  .author { margin-bottom: 0.5em; font-weight: $bold; font-size:140%; }
+  time { display:block; font-family: $headline; margin-bottom: 0.5em; }
 
   .offside-ad { display:flex; align-items: center; justify-content: center; position: relative;
     img { position: relative; }
   }
 
+  .another-paragraph { width:100%; object-fit: none; animation-name: slowLoadTheAd; animation-duration: 5s; animation-timing-function: ease-out; animation-iteration-count: 1; }
 
 }

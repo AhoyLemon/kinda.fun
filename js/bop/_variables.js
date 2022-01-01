@@ -293,7 +293,10 @@ const firstNames = [
   "Liam",
   "Squeaky",
   "Annie",
-  "Zora"
+  "Zora",
+  "Lyndon",
+  "Carlos",
+  "Trinity"
 ]
 
 const lastNames = [
@@ -302,7 +305,14 @@ const lastNames = [
   "Murderhornet",
   "Troublesome",
   "Plentysad",
-  "Strangeways"
+  "Strangeways",
+  "Dispeptic",
+  "Unfortunate",
+  "Posterchild",
+  "Priority",
+  "Recidivist",
+  "The Actual Human",
+  "Titmouse"
 ]
 
 const paragraphs = [

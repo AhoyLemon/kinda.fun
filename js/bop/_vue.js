@@ -453,8 +453,7 @@ var app = new Vue({
     chooseArticle(article) {
       const self = this;
       console.log(article);
-      self.currentArticle = Object.assign({}, article);
-      self.currentArticle.paragraphs = []
+      self.currentArticle = Object.assign({ adVisible:false, paragraphs:[] }, article);
       const n = randomNumber(4,16);
       let i = 0;
       while (i < n) {
@@ -496,24 +495,25 @@ var app = new Vue({
             paragraphContent += randomFrom(sentences) + " ";
             i++;
           }
-
+          self.currentArticle.paragraphs[pIndex] = paragraphContent;
         }
       }
 
-      self.currentArticle.inlineAdIndex = 2;
-      self.currentArticle.inlineAdVisible = false;
-
       self.currentArticle.visible = true;
-      //self.generateAnArticleAd();
+      self.insertAdIntoArticle();
     },
 
-    generateAnArticleAd() {
+    insertAdIntoArticle() {
       const self = this;
-      // setTimeout(function() {
-      //   self.currentArticle.inlineAdIndex = 1;
-      //   self.currentArticle.inlineAdVisible = true;
-      //   alert("ad should be visible at "+self.currentArticle.inlineAdIndex)
-      // },1600);
+      self.currentArticle.adIndex = -1;
+      setTimeout(() => {
+        self.currentArticle.adVisible = !self.currentArticle.adVisible;
+      }, 1500);
+
+      setTimeout(() => {
+        //const r = randomNumber(0, (self.currentArticle.paragraphs.length - 1));
+        self.currentArticle.paragraphs.splice(2,0,'<img src="https://placehold.co/600x600?text=Another+Fuckin+Ad" class="another-paragraph" alt="Here is something you will like" />');
+      }, 3500);
     },
 
     closeArticle(article) {
@@ -537,6 +537,12 @@ var app = new Vue({
 
   },
 
+  filters: {
+    formattedDate(value) {
+      return moment(value).format('LL')
+    }
+  },
+
   computed: {
     computedTimerOutput() {
       const self = this;
@@ -553,18 +559,11 @@ var app = new Vue({
     const self = this;
     self.startGame();
 
-    // PNotify.info({
-    //   text: 'Notice me, senpai!'
+    // new PNotify({
+    //   title: "Hi there!",
+    //   text: `<p>Toasts work. Get ready to see a lot of these fuckin' things.</p>`,
+    //   type: "success"
     // });
-    // PNotify.warn({
-    //   text: 'Notice me, senpai!'
-    // });
-
-    new PNotify({
-      title: "Hi there!",
-      text: `<p>Toasts work. Get ready to see a lot of these fuckin' things.</p>`,
-      type: "success"
-    });
 
   }
 

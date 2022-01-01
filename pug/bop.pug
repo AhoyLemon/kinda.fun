@@ -30,11 +30,13 @@ html(lang="en")
 
         section.current-challenge(v-if="gameStarted")
           form(@submit.prevent="answerTheQuestion()" v-if="currentQuestion")
+            label.question(for="TheQuestion") {{currentQuestion.question}}
             .field
-              label.question(for="TheQuestion") {{currentQuestion.question}}
-              input(required id="TheQuestion" v-model="myGuess" placeholder="The answer is somewhere on this website.")
-            .button-holder
+              .input-holder
+                input(required id="TheQuestion" v-model="myGuess" placeholder="The answer is somewhere on this website.")
               button(type="submit") Answer
+              //.button-holder
+                
         
         .bullshit(v-if="gameStarted" style="text-align:center;")
           button(@click="doBullshit('gdpr')") Toggle banner
@@ -44,7 +46,7 @@ html(lang="en")
           button(@click="doBullshit('facebook')") Involve Facebook
           button(@click="startTimer()") Start Timer
 
-        .news-grid(v-if="gameStarted")
+        .news-grid(v-if="gameStarted")  
           +group(1,'bounce')
           
           +group(2,'zoom')
@@ -57,29 +59,7 @@ html(lang="en")
 
           +group(6, 'fade')
 
-        article.current-article(v-if="currentArticle && currentArticle.visible == true")
-          .cover-sheet
-
-          .offside-ad
-            transition(name="bounce" appear)
-              img(src="https://placehold.co/600x400?text=A+Fuckin+Ad")
-
-          transition(name="slideRight" appear)
-            .inner
-              button.close(@click="closeArticle()") X
-              figure
-                img(:src="'img/bop/bg/' + currentArticle.img")
-              .content
-                h1(v-text="currentArticle.headline")
-                .author(v-if="currentArticle.author")
-                  | by {{currentArticle.author.firstName}} {{currentArticle.author.lastName}}
-                .paragraphs
-                  template(v-for="(paragraph, index) in currentArticle.paragraphs")
-                    span {{index}}
-                    figure(v-if="currentArticle.inlineAdVisible")
-                      img(src="https://placehold.co/600x400?text=Another+Fuckin+Ad")
-                    p(v-html="paragraph")
-
+        include bop/screens/_article
 
       footer.site-footer(v-if="gameStarted")
         span this is the site footer.

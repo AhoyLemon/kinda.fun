@@ -1,9 +1,13 @@
 section.current-challenge { padding:8rem ($gap * 2);
-  form { color:#232323;
-    label { font-size:1.15rem; font-weight: $bold; letter-spacing: 0.03; font-family: $headline; font-size:clamp(2rem,3.5vw,6rem) }
-    input { display:block; width:100%; font-family: inherit; font-size:3vw; padding:0.5em $gap; border:1px solid rgba(0,0,0,0.5); text-transform: uppercase;
+  form { color:#232323; @include inner(1280px);
+    label { font-size:1.15rem; font-weight: $bold; letter-spacing: 0.03; font-family: $headline; font-size:clamp(1.6rem,3.05rem,4rem); display:block; padding-bottom: 1em; text-align: center; }
+    input { display:block; width:100%; font-family: inherit; font-size:2rem; padding:0.5em $gap; border:1px solid rgba(0,0,0,0.5); text-transform: uppercase; line-height: 2;
       &:focus { border-color: rgba(152, 123, 181, 0.8); background-color:rgb(237 230 243); }
-      &::placeholder { text-transform: none; }
+      &::placeholder { text-transform: none; text-align: center; }
+    }
+    .field { display:grid; grid-template-columns: 1fr 160px; gap:10px;
+      .input-holder { }
+      button { background: #6464df; color:white; font-size:1.5em; font-family: inherit; }
     }
   }
 
