@@ -7,7 +7,7 @@
 article.current-article { @include position(fixed,0,0,0); width:100%; display:grid; grid-template-columns: 1fr 86ch;
   .cover-sheet { backdrop-filter: blur(3px); background:rgba(0,0,0,0.3); @include position(absolute,0,0,0,0); }
   .inner { background: #fff; position: relative;
-    button.close { @include position(absolute,1rem,null,null,1rem); border: 0.15em solid white; border-radius: 50%; width: 2em; height: 2em; font-size: 32px; background: transparent;color: white; cursor: pointer;
+    button.close { @include position(absolute,1rem,null,null,1rem); border: 0.15em solid white; border-radius: 50%; width: 2em; height: 2em; font-size: 32px; background: transparent;color: white; cursor: pointer; background:rgba(0,0,0,0.2);
       &:hover, &:focus { background: white; color:#222; }
     }
   }

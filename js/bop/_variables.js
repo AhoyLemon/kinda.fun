@@ -187,16 +187,11 @@ const theNews =  [
     img: "manchin.jpg",
     headline: "What did Joe Manchin have for breakfast?",
     category: "politics",
-    nugget: "This morning Manchin had Froot Loops",
+    nugget: "This morning Manchin had Froot Loops.",
     nuggetPlacement: "end",
     question: "Okay, what did Joe Manchin have for breakfast this morning?",
     answer: "Froot Loops"
   },
-  // {
-  //   img: "bartender.jpg",
-  //   headline: "The 3 drinks that will convince a bartender you're not a total piece of shit",
-  //   category: "nightlife"
-  // },
   {
     img: "mcconaughey.jpg",
     headline: "WATCH Matthew McConaughey sit on the couch and scratch his balls every once in a while",
@@ -211,9 +206,48 @@ const theNews =  [
     headline: "Sarah Palin said something stupid again, so I guess we have to write about that.",
     category: "celebrities",
     nugget: "She was all like “I'll get a vaccine over my dead body” and I'm all WTF that's crazy I can't believe you'd say that cause like, that's totally ironic and everything. Cause like, if you don't get vaccinated you die, and then you're saying “over my dead body” and I know that's an expression but it's also like, in this case, I think it's kind of ironic that she'd say that, you know? Her sweater was pink.",
+    nuggetPlacement: "replace",
     question: "What color was Sarah Palin's sweater?",
     answer: "pink"
   },
+  {
+    img: "yoga.jpg",
+    headline: "The 3 Yoga Techniques That Will Make Your Pelvic Floor Tighter Than a Steel Drum",
+    category: "health",
+    nugget: "Female yoga practicioners are known as yoginis.",
+    nuggetPlacement: "beginning",
+    question: "What is the word for female yoga practicioners?",
+    answer: "yogini",
+    alternateAnswers: ["yoginis"]
+  },
+  {
+    img: "spacechase.jpg",
+    headline: "THIS is the Sesame Street ride that will make you rethink everything you thought you knew about spaghetti!",
+    category: "religion",
+    nugget: "The ride opened in 2013.",
+    nuggetPlacement: "end",
+    question: "What year did the Sesame Street Spaghetti Space Chase open?",
+    answer: "2013"
+  },
+  {
+    img: "pearlearring.jpg",
+    headline: `How to fool your friends with a forgery of ANY classic painting that happens to be Johannes Vermeer's Girl with a Pearl Earring`,
+    category: "fine art",
+    nugget: `Vermeer painted The Milkmaid in 1658. I don't know how to forge that one.`,
+    nuggetPlacement: `end`,
+    question: `When did Johannes Vermeer paint The Milkmaid`,
+    answer: `1658`
+  },
+  {
+    img: "barefoot-sand.jpg",
+    headline: `4 GORGEOUS Beaches in Barbados That You'll Never Visit`,
+    category: `fine art`,
+    nugget: `Did you know Rihanna is from Barbados? Because she is. Rihanna! Rihanna, Rihanna, Rihanna! I'm hoping if I type that name enough times, I'll trick the SEO engines into thinking this is an article about Rihanna. Rihanna is from St. Michael, which is a city, not a beach. Holetown is the name of a beach, that's on the West coast.`,
+    nuggetPlacement: `replace`,
+    question: `On which coast of Barbados is Holetown?`,
+    answer: `west`,
+    alternateAnswers: ["west"]
+  }
 ];
 
 const theAds = [
@@ -248,6 +282,11 @@ const theAds = [
   {
     img: "toilet-paper.jpg",
     headline: "This is the ONLY toilet paper that your asshole can handle",
+    paragraphs: [
+      `I used to think that all toilet paper brands were basically the same, but now I realize that's just because I was the kind of scumfuck idiot who would use toilet paper brands like Scott, which to be clear is just the worst.`,
+      `Not only do I only use <strong>Charmin Ultra Gentle</strong> exclusively in my bathroom, but I must tell you that using any other brand is technically an act of masochism.`,
+      `I once used the bathroom at a friend's house, and she used Cottonelle. So I called the police on her.`
+    ]
   },
 ];
 
@@ -296,7 +335,8 @@ const firstNames = [
   "Zora",
   "Lyndon",
   "Carlos",
-  "Trinity"
+  "Trinity",
+  "Darby"
 ]
 
 const lastNames = [
@@ -312,7 +352,8 @@ const lastNames = [
   "Priority",
   "Recidivist",
   "The Actual Human",
-  "Titmouse"
+  "Titmouse",
+  "Flummox"
 ]
 
 const paragraphs = [

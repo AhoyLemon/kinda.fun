@@ -395,6 +395,7 @@ var app = new Vue({
       const self = this;
       self.currentQuestion = Object.assign({}, self.allQuestions[self.currentQuestionIndex]);
       self.myGuess = "";
+      document.getElementById("TheQuestion").focus();
     },
 
     answerTheQuestion() {
@@ -453,14 +454,20 @@ var app = new Vue({
     chooseArticle(article) {
       const self = this;
       console.log(article);
-      self.currentArticle = Object.assign({ adVisible:false, paragraphs:[] }, article);
-      const n = randomNumber(4,16);
-      let i = 0;
-      while (i < n) {
-        self.currentArticle.paragraphs.push(randomFrom(paragraphs));
-        i++;
+      self.currentArticle = Object.assign({ adVisible:false }, article);
+
+      if (!self.currentArticle.paragraphs) {
+        // Randomly populate some paragraphs this article.
+        self.currentArticle.paragraphs = [];
+        const n = randomNumber(4,16);
+        let i = 0;
+        while (i < n) {
+          self.currentArticle.paragraphs.push(randomFrom(paragraphs));
+          i++;
+        }
       }
 
+      // Let's find out if you have a nugget, and if so, put it in the article somewhere.
       if (self.currentArticle.nugget) {
 
         // pick a random paragraph.
@@ -489,7 +496,7 @@ var app = new Vue({
             paragraphContent += randomFrom(sentences) + " ";
             i++;
           }
-          paragraphContent += formattedNugget;
+          paragraphContent += formattedNugget + " ";
           i = 0
           while (i < sentencesAfter) {
             paragraphContent += randomFrom(sentences) + " ";
@@ -511,8 +518,8 @@ var app = new Vue({
       }, 1500);
 
       setTimeout(() => {
-        //const r = randomNumber(0, (self.currentArticle.paragraphs.length - 1));
-        self.currentArticle.paragraphs.splice(2,0,'<img src="https://placehold.co/600x600?text=Another+Fuckin+Ad" class="another-paragraph" alt="Here is something you will like" />');
+        const r = randomNumber(0, (self.currentArticle.paragraphs.length - 2));
+        self.currentArticle.paragraphs.splice(r,0,'<img src="https://placehold.co/600x600?text=Another+Fuckin+Ad" class="another-paragraph" alt="Here is something you will like" />');
       }, 3500);
     },
 

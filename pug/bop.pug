@@ -13,11 +13,11 @@ html(lang="en")
       main.content
 
         header.site-header(v-if="gameStarted")
-          .site-title This Website Is Awful.
+          .site-title= siteTitle
 
         .intro(v-if="!gameStarted")
           .inner
-            h1 This website is awful.
+            h1= siteTitle
             p But the point of this game is to try to use it.
             p You're going to see dozens of poorly written news articles, deceptive sponsored content, and aggressively terrible web design. You're probably already familiar with all of this: It's not The Web you want, but it's The Web you've been given.
             p The big blue button below starts the game. When the game begins, you'll be asked a series of questions, all of which can be answered by one of the news articles or ads somewhere on the page.
@@ -34,7 +34,7 @@ html(lang="en")
             .field
               .input-holder
                 input(required id="TheQuestion" v-model="myGuess" placeholder="The answer is somewhere on this website.")
-              button(type="submit") Answer
+              button(type="submit" :disabled="!myGuess") Answer
               //.button-holder
                 
         

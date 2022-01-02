@@ -1,4 +1,4 @@
-section.current-challenge { padding:8rem ($gap * 2);
+section.current-challenge { padding:12rem ($gap * 2);
   form { color:#232323; @include inner(1280px);
     label { font-size:1.15rem; font-weight: $bold; letter-spacing: 0.03; font-family: $headline; font-size:clamp(1.6rem,3.05rem,4rem); display:block; padding-bottom: 1em; text-align: center; }
     input { display:block; width:100%; font-family: inherit; font-size:2rem; padding:0.5em $gap; border:1px solid rgba(0,0,0,0.5); text-transform: uppercase; line-height: 2;
@@ -6,8 +6,12 @@ section.current-challenge { padding:8rem ($gap * 2);
       &::placeholder { text-transform: none; text-align: center; }
     }
     .field { display:grid; grid-template-columns: 1fr 160px; gap:10px;
-      .input-holder { }
-      button { background: #6464df; color:white; font-size:1.5em; font-family: inherit; }
+      button { opacity: 1; background: #d9d9f5; color:rgba(0,0,0,0.8); font-size:1.5em; font-family: inherit; border-top-right-radius: 1em; border-bottom-right-radius: 1em; border:1px solid rgba(0,0,0,0.5); transition: all 0.3s linear;
+        &:not(:disabled) { cursor: pointer;
+          &:hover, &:focus { background: #7272f5; color:#011a3a; }
+        }
+        &:disabled { opacity: 0.7; filter: grayscale(0.5); }
+      }
     }
   }
 
