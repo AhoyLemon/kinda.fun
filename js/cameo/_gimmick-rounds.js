@@ -1,6 +1,6 @@
 const gimmickRounds = {
   richards: {
-    name: "Oops! All Richards",
+    name: "Oops! All Richards!",
     desc: "I've got 12 Dicks, and all of them need values.",
     queue: [
 
@@ -278,7 +278,7 @@ const gimmickRounds = {
   },
 
   startrek: {
-    name: "It's a Star Trek Convention ",
+    name: "It's a Star Trek Convention 🖖 ",
     desc: "I just got a phone call, Picard is unavailable.",
     queue: [
 
