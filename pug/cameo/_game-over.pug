@@ -26,7 +26,7 @@ main.game-over(v-if="game.over")
     .score-grid
       dl
         dt Your Score
-        dd {{my.score}}
+        dd {{my.score.toLocaleString('en-US')}}
       dl
         dt Correct Guesses
         dd {{my.correctSorts}}
