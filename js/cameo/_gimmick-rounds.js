@@ -102,8 +102,8 @@ const gimmickRounds = {
       { name: "Penny Pax", desc:"The Art Of Cheating (2017)", slug:"pennypax", value:69 },
       { name: "Dolf Dietrich", desc:"Fire Island Fuck Boy (2017)", slug:"dolfdietrichxxx", value:25 },
       { name: "Lisa Ann", desc:"Who's Nailin Paylin  (2008)", slug:"thereallisaann", value:125 },
-
-      { name: "Zoey Monroe", desc:"Spin Class Ass 2 (2014)", slug:"zoeyssweettea", value:175 },
+      
+      { name: "Dakota Skye", desc:"Porn Actress", slug:"dakota_skye", value:240 },
       { name: "Nacho Vidal", desc:"Bimbo Bangers From Barcelona (1998)", slug:"nachovidal", value:76 },
       { name: "Lethal Lipps", desc:"Hella Butt (2007)", slug: "lethallipps___", value:100 },
 
@@ -124,8 +124,8 @@ const gimmickRounds = {
       { name: "Lisa Ann", desc:"Who's Nailin Paylin  (2008)", slug:"thereallisaann", value:125 },
       { name: "Nacho Vidal", desc:"Bimbo Bangers From Barcelona (1998)", slug:"nachovidal", value:76 },
       { name: "Ginger Lynn", desc:"New Wave Hookers (1985)", slug:"gingerlynn", value:50 },
-      { name: "Small Hands", desc:"Goth Anal Whores 2 (2018)", slug:"thesmallhands_", value:100 },
-      { name: "Roobi Royal", desc:"Chubby Fucked 2 (2016)", slug:"roobiroyal", value:300 },
+      { name: "Farrah Abraham", desc:"The Teen Mom From “Teen Mom” Who Did Porn", slug:"farrahabraham", value:95 },
+      { name: "Zoey Monroe", desc:"Spin Class Ass 2 (2014)", slug:"zoeyssweettea", value:175 },
     ]
   },
 
