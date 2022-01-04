@@ -67,6 +67,7 @@ var app = new Vue({
       rounds: [
         gimmickRounds.dogs,
         gimmickRounds.daddies,
+        gimmickRounds.startrek,
         gimmickRounds.topchef,
         gimmickRounds.wrestlers,
         gimmickRounds.porn,
