@@ -1,7 +1,7 @@
 .underbanner.hud(v-if="game.started && !game.over ")
     
     .score
-      div(v-if="my.score > 0") {{my.score}} Points
+      div(v-if="my.score > 0") {{my.score.toLocaleString('en-US')}} Points
       div(v-else) No Points
 
     .interface
