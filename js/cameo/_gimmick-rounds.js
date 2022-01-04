@@ -1,6 +1,6 @@
 const gimmickRounds = {
   richards: {
-    name: "Oops! All Richards",
+    name: "Oops! All Richards!",
     desc: "I've got 12 Dicks, and all of them need values.",
     queue: [
 
@@ -220,6 +220,40 @@ const gimmickRounds = {
     ]
   },
 
+  daddies: {
+    name: "Daddies",
+    desc: "This round is probably weirder than you're imagining",
+    queue: [
+      { name: "Big Daddy Kane", desc:"Rapper, Ain't No Half-Steppin'", slug: "bdkane", value:50 },
+      { name: "Trick Daddy", desc:"Rapper on the albums Thug Matrimony: Married to the Streets, www.thug.com, and Book of Thugs: Chapter AK Verse 47", slug: "trick", value:195 },
+      { name: "Mathew Knowles", desc:"Beyoncé's Dad", slug: "mathewknowles", value:40 },
+
+      { name: "Jacoby Shaddix", desc:"Singer, Papa Roach", slug: "jacobyshaddix", value:200 },
+      { name: "Scott Steiner", desc:"Wrestler, aka “Big Poppa Pump”", slug:"scottsteiner", value:100 },
+      { name: "LaVar Ball", desc:"Father of Basketball Players", slug:"lavarball", value:133 },
+
+      { name: "Dj Daddy K", desc:"French DJ", slug: "djdaddyk", value:50 },
+      { name: "FREAK DADDY", desc:"TikTok Creator", slug: "topfreakdaddy", value:15 },
+      { name: "Daddy Kindred", desc:"Soul Singer", slug: "kindredthefam", value:75 },
+      
+      { name: "Matt Anipen", desc:"voice of Daddy Shark in the song “Baby Shark”", slug: "matt_daddysharkanipen", value:30 },
+      { name: "DaddysJuiced", desc:"Skateboarder", slug: "daddysjuiced", value:20 },
+      { name: "Tom Papa", desc:"Comedian", slug:"tpops1", value:250 },
+    ],
+    finalRoundQueue: [
+      { name: "Daddy Long Neck", desc:"Instagram Influencer", slug:"damnlongneck", value:30 },
+      { name: "Papa Gut", desc:"TikTok  Influencer", slug: "papa_gut", value:20 },
+      { name: "Father Evil", desc:"does conventions", slug: "fatherevil", value:50 },
+      { name: "Father Time", desc:"has a cloak and an hourglass", slug: "fathertime", value:20 },
+      { name: "Father James Mitchell", desc:"Wrestling Manager, WCW & TNA", slug: "jamesmitchell", value:30 },
+      { name: "AmericanDad", desc:"Twitch Streamer", slug:"americandad", value:10 },
+      { name: "Somewhat Cool Dad", desc:"TikTok", slug:"somewhatcooldad", value:5 },
+      { name: "Mama Tits", desc:"Drag Queen", slug:"themamatits", value:25 },
+      { name: "Daddy Kindred", desc:"Soul Singer", slug: "kindredthefam", value:75 },
+      { name: "Big Daddy Kane", desc:"Rapper, Ain't No Half-Steppin'", slug: "bdkane", value:50 },
+    ]
+  },
+
   topchef: {
     name: "Top Chef Contestants",
     desc: "None of these people won the season they were first on.",
@@ -241,6 +275,42 @@ const gimmickRounds = {
       { name: "Nyesha Arrington", desc:"11th Place, Season 9 (Texas)", slug:"nyeshajoyce", value:500 },
     ],
     reuseQueueForFinal: true
+  },
+
+  startrek: {
+    name: "It's a Star Trek Convention 🖖 ",
+    desc: "I just got a phone call, Picard is unavailable.",
+    queue: [
+
+      { name: "Marina Sirtis", desc:"Troi on TNG", slug:"troi", value:200 },
+      { name: "John de Lancie", desc:"Q on TNG", slug:"q", value:150 },
+      { name: "Gates McFadden", desc:"Dr Crusher on TNG", slug:"crusher", value:180 },
+
+      { name: "Nana Visitor", desc:"Kira on DS9", slug:"nanav", value:75 },
+      { name: "Terry Farrell", desc:"Dax on DS9", slug:"terryfarrell", value:65 },
+      { name: "Phil Morris", desc:"Third Remata'Klan on DS9", slug:"philmorris_ds9", value:175 },
+    
+      { name: "Robert Duncan McNeill", desc:"Paris on Voyager", slug:"rmcneill", value:125 },
+      { name: "Tim Russ", desc:"Tuvok on Voyager", slug:"trvulcan", value:100 },
+      { name: "Robert Picardo", desc:"The Doctor on Voyager", slug:"robert_picardo", value:75 },
+
+      { name: "Doug Jones", desc:"Saru on Discovery", slug:"actordougjones", value:60 },
+      { name: "Emily Coutts", desc:"Keyla Detmer on Discovery", slug:"emilycoutts", value:50 },
+      { name: "Mary Chieffo", desc:"L'Rell on Discovery", slug:"marythechief", value:80 },
+    ],
+    reuseQueueForFinal: false,
+    finalRoundQueue: [
+      { name: "Brent Spiner", desc: "Data on TNG", slug:"brentspiner_data", value:299 },
+      { name: "Jonathan Frakes", desc:"Riker on TNG", slug: "riker", value:300 },
+      { name: "Brian Bonsall", desc:"Worf's son on TNG", slug:"mrbrianbonsall", value:65 },
+      { name: "Daniel Davis", desc:"Moriarty on TNG", slug:"danieldavis", value:40 },
+      { name: "Jeri Ryan", desc:"7 of 9 on Voyager", slug:"jeriryan", value:345 },
+      { name: "Saul Rubinek", desc:"Kivas Fajo on TNG", slug:"saulrubinek", value:175 },
+      { name: "Jonathan Del Arco", desc:"Hugh on TNG", slug:"jonathandelarco", value:79 },
+      { name: "Diane Louise Salinger", desc:"Lupaza on DS9", slug:"dianelouisesalinger", value:75 },
+      { name: "Tawny Newsome", desc:"Mariner on Lower Decks", slug:"tawnytawnitawnee", value:95 },
+      { name: "Evan Evagora", desc:"Elnor on Picard", slug:"evan.evagora", value:60 },
+    ]
   },
 
   standUps: {
