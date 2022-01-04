@@ -1,4 +1,4 @@
-main.title-screen { min-height: 99.9999vh;  color:#eee; display:grid; grid-template-rows: 1fr 75px;
+main.title-screen { min-height: 99.9999vh;  color:#eee; display:grid; 
 
   background: radial-gradient(#131015,#18072d);
 
@@ -10,7 +10,7 @@ main.title-screen { min-height: 99.9999vh;  color:#eee; display:grid; grid-templ
     }
   }
   .start-or-load { display:grid; grid-template-columns: 1fr 80px 1fr;
-    .start { text-align: right; }
+    .start { text-align: right;  }
     .or { text-align: center; line-height: 46px; font-size:24px; }
     .load { position: relative;
       
@@ -28,6 +28,21 @@ main.title-screen { min-height: 99.9999vh;  color:#eee; display:grid; grid-templ
       &.start-multi { color: #1cb3ef; border-color: #1cb3ef;
         &:hover, &:focus { background:#1cb3ef; color:#18072d; }
       }
+    }
+  }
+}
+
+
+@media (min-width:480px) {
+  main.title-screen { grid-template-rows: 1fr 120px;
+    .start-or-load { grid-template-columns: 1fr 80px 1fr; }
+  }
+}
+@media (max-width:479px) { 
+  main.title-screen { grid-template-rows: 1fr 20vw;
+    .start-or-load { grid-template-columns: 1fr 10vw 1fr;
+      .or { font-size:5vw; line-height: 2.5; }
+      button { font-size: 7vw; }
     }
   }
 }
