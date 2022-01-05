@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <link rel="preconnect" href="https://fonts.gstatic.com"/>
     <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
-    <link href="css/cameo.css?lastUpdated2022-00-04@13:08:46" type="text/css" rel="stylesheet"/>
+    <link href="css/cameo.css?lastUpdated2022-00-05@10:42:14" type="text/css" rel="stylesheet"/>
     <meta name="description" content="The Game of Celebrity Value"/>
-    <meta http-equiv="last-modified" content="2022-00-04@13:08:46"/>
+    <meta http-equiv="last-modified" content="2022-00-05@10:42:14"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/img/famous/apple-touch-icon.png"/>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/famous/favicon-32x32.png"/>
     <link rel="icon" type="image/png" sizes="16x16" href="/img/famous/favicon-16x16.png"/>
@@ -250,7 +250,47 @@
         </div>
       </main>
       <div class="email inbox off-screen" id="EmailFromPasha" v-if="!game.over &amp;&amp; computedGuessingPhase == 'newMail'">
-        <article>
+        <article v-if="computedGimmickName == 'Porno People'"> 
+          <p>
+             To: <strong>You</strong><br/>From: <strong>Pasha Hollywood</strong></p>
+          <hr/>
+          <p>Hey, it’s me! Influential movie tycoon Pasha Hollywood.</p>
+          <p>
+             You seem to be pretty good at this stupid game, so I got a favor to ask you…<br/>One of my lawyers told me that it's his birthday next week, and of course, I was like “Okay, why would I give a shit?” but then I realized he was probably telling me that for a reason. So, okay fine. Let's get some people to say happy birthday?</p>
+          <p>What kind of people? I think that's pretty obvious: The people who fuck on camera for money.</p>
+          <p>Here’s <strong>{{dollars(round.budget)}}</strong>. I’ll give you points for every porn actor you hire, but if you break the budget, there's no money for blow. No blow, no points. That’s the rules. I make the rules.</p>
+          <p>
+             xo,<br/>Pasha</p>
+        </article>
+        <article v-else-if="computedGimmickName == 'Nuthin But Dogs'"> 
+          <p>
+             To: <strong>You</strong><br/>From: <strong>Pasha Hollywood's Dog</strong></p>
+          <p>WOOF! WOOF WOOF WOOF! WOOF!</p>
+          <p>Arf arf arf! Arf arf (whine) (sustained whining noise) arf arf woof.</p>
+          <p>[the act of jumping up and running around in circles for no discernable reason.]</p>
+          <p>Bark Bark! &nbsp;<strong>{{dollars(round.budget)}} </strong> bark <strong>100 points </strong>woof woof woof. Woof!? (panting).</p>
+          <p>[the act of pressing nose into your thigh forcefully enough that you'll just end up petting]</p>
+          <p>
+             xo,<br/>Pasha's Dog</p>
+        </article>
+        <article v-else-if="computedGimmickName == 'Daddies'"> 
+          <p>
+             To: <strong>You</strong><br/>From: <strong>Pasha Hollywood</strong></p>
+          <hr/>
+          <p>Hey, it’s me! Influential movie tycoon Pasha Hollywood.</p>
+          <p>My daughter has been going on and on lately about my role as a “father figure”, whatever it is that means. Something about being stable and emotionally available? I'm not exactly sure, I tend not to listen.</p>
+          <p>Anyway, she said she needs a father figure in her life before storming out of the house, so I need you to find some. As many as you can. Here's <strong>{{dollars(round.budget)}}</strong>. I think it's her birthday.</p>
+        </article>
+        <article v-else-if="computedGimmickName == 'Its a Star Trek Convention'"> 
+          <p>
+             To: <strong>You</strong><br/>From: <strong>Pasha Hollywood</strong></p>
+          <hr/>
+          <p>Hey, it’s me! Influential movie tycoon Pasha Hollywood.</p>
+          <p>It's my daughter's birthday next week, and I remember she has strong opinions about Star Trek. She either really likes it or really hates it.</p>
+          <p> <i>Oh wait!</i> I remember now. She likes one of the Star Trek shows, but not the other ones. Like uhhhhh...... I think there's one with wrinkly aliens, and there's a bunch of prosthetic makeup. That's the one she likes, or hates. Whatever.</p>
+          <p>Anyway, here’s <strong>{{dollars(round.budget)}}</strong>. Get me some Star Trek people.</p>
+        </article>
+        <article v-else="v-else">
           <p>
              To: <strong>You</strong><br/>From: <strong>Pasha Hollywood</strong></p>
           <hr/>
@@ -261,12 +301,12 @@
           <p>Oh wait, maybe she’s turning 18? Anyway, don’t exceed the budget.</p>
           <p>
              xo,<br/>Pasha</p>
-          <div class="disclaimer">The content of this email is confidential and intended for the recipient specified in message only. It is strictly forbidden to share any part of this message with any third party, without a written consent of the sender. If you received this message by mistake, please reply to this message and follow with its deletion, so that we can ensure such a mistake does not occur in the future.</div>
+          <!--.disclaimer The content of this email is confidential and intended for the recipient specified in message only. It is strictly forbidden to share any part of this message with any third party, without a written consent of the sender. If you received this message by mistake, please reply to this message and follow with its deletion, so that we can ensure such a mistake does not occur in the future.-->
         </article>
       </div>
       <div class="underbanner hud" v-if="game.started &amp;&amp; !game.over ">
         <div class="score">
-          <div v-if="my.score &gt; 0">{{my.score}} Points</div>
+          <div v-if="my.score &gt; 0">{{my.score.toLocaleString('en-US')}} Points</div>
           <div v-else="v-else">No Points</div>
         </div>
         <div class="interface">
@@ -301,7 +341,17 @@
           <h1>Game Over</h1>
         </section>
         <section class="birthday-videos">
-          <div class="birthday-header">
+          <div class="birthday-header" v-if="computedGimmickName == 'Porno People'">
+            <h1 class="headline">Happy Birthday to one of Pasha's lawyers!</h1>
+          </div>
+          <div class="birthday-header" v-else-if="computedGimmickName == 'Its a Star Trek Convention'">
+            <h1 class="headline">qoSlIj DatIvjaj, Pasha's Daughter</h1>
+            <h2 class="subhead">	Qapla'!</h2>
+          </div>
+          <div class="birthday-header" v-else-if="computedGimmickName == 'Nuthin But Dogs'">
+            <h1 class="headline">Happy Birthday, Pasha's Dog!</h1>
+          </div>
+          <div class="birthday-header" v-else="v-else">
             <h1 class="headline">Happy Birthday, Pasha's Daughter</h1>
             <h2 class="subhead">Oops, you forgot to ask Pasha what his daughter's name is. Oh well!</h2>
           </div>
@@ -376,7 +426,7 @@
         var socket = io.connect();
         
       </script>
-      <script src="js/min/cameo.min.js?updated2022-00-04@13:08:46"></script>
+      <script src="js/min/cameo.min.js?updated2022-00-05@10:42:14"></script>
       <script type="text/javascript">
         var _paq = window._paq = window._paq || [];
           /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
