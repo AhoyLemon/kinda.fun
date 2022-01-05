@@ -1,5 +1,25 @@
 #EmailFromPasha.email.inbox.off-screen(v-if="!game.over && computedGuessingPhase == 'newMail'")
-  article
+  article(v-if="computedGimmickName == 'Porno People'") 
+    p 
+      | To: 
+      strong You
+      br
+      | From: 
+      strong Pasha Hollywood
+    hr
+    p Hey, it’s me! Influential movie tycoon Pasha Hollywood.
+    p 
+      |You seem to be pretty good at this stupid game, so I got a favor to ask you…
+      br
+      | My disgusting friend is turning 43, and I want to get celebrities to wish him a happy birthday. Which celebrities? People that fuck for money, that's all I care about.
+    p Here’s 
+      strong {{dollars(round.budget)}}
+      | . I’ll give you points for every celebrity you hire, but if you break the budget, no points. That’s the rules. I make the rules.
+    p 
+      | xo,
+      br  
+      | Pasha
+  article(v-else)
     p 
       | To: 
       strong You
@@ -15,7 +35,6 @@
     p Here’s 
       strong {{dollars(round.budget)}}
       | . I’ll give you points for every celebrity you hire, but if you break the budget, no points. That’s the rules. I make the rules.
-    //-p I guess I can give you a couple points for the money you have left over, but get my daughter those celebs.
     p Oh wait, maybe she’s turning 18? Anyway, don’t exceed the budget.
     p 
       | xo,

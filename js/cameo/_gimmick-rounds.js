@@ -67,7 +67,7 @@ const gimmickRounds = {
 
       { name: "George Lowe", desc:"Space Ghost", slug:"georgeloweofficial", value:100 },
       { name: "Boy George", desc:"Singer, Culture Club", slug: "boygeorge5", value:300 },
-      { name: "George Papadopoulos", desc:"Served Twelve Days In Prison Before Getting Pardoned", slug:"papadopoulos", value:250 },
+      { name: "Dean Malissa", desc:"George Washington Cosplayer", slug:"george_washington", value:250 }
     ],
     reuseQueueForFinal: true
   },
@@ -183,40 +183,6 @@ const gimmickRounds = {
       { name: "Aubrey Edwards", desc:"Referee, All Elite Wrestling", slug: "refaubrey", value:50 },
       { name: "Fred Ottman, aka “Tugboat Typhoon”", desc:"Wrestling Observer's “Worst Gimmick” (1993)", slug: "tugboatthomas", value:30 },
       { name: "Crazzy Steve", desc:"Not to be confused with Crazy Steve, who was a character on Nickelodeons “Drake & Josh” ", slug: "tna_crazzy_steve", value:50 },
-    ]
-  },
-
-  daddies: {
-    name: "Daddies",
-    desc: "This round is probably weirder than you're imagining",
-    queue: [
-      { name: "Big Daddy Kane", desc:"Rapper, Ain't No Half-Steppin'", slug: "bdkane", value:50 },
-      { name: "Trick Daddy", desc:"Rapper on the albums Thug Matrimony: Married to the Streets, www.thug.com, and Book of Thugs: Chapter AK Verse 47", slug: "trick", value:195 },
-      { name: "Mathew Knowles", desc:"Beyoncé's Dad", slug: "mathewknowles", value:40 },
-
-      { name: "Jacoby Shaddix", desc:"Singer, Papa Roach", slug: "jacobyshaddix", value:200 },
-      { name: "Scott Steiner", desc:"Wrestler, aka “Big Poppa Pump”", slug:"scottsteiner", value:100 },
-      { name: "LaVar Ball", desc:"Father of Basketball Players", slug:"lavarball", value:133 },
-
-      { name: "Dj Daddy K", desc:"French DJ", slug: "djdaddyk", value:50 },
-      { name: "FREAK DADDY", desc:"TikTok Creator", slug: "topfreakdaddy", value:15 },
-      { name: "Daddy Kindred", desc:"Soul Singer", slug: "kindredthefam", value:75 },
-      
-      { name: "Matt Anipen", desc:"voice of Daddy Shark in the song “Baby Shark”", slug: "matt_daddysharkanipen", value:30 },
-      { name: "DaddysJuiced", desc:"Skateboarder", slug: "daddysjuiced", value:20 },
-      { name: "Tom Papa", desc:"Comedian", slug:"tpops1", value:250 },
-    ],
-    finalRoundQueue: [
-      { name: "Daddy Long Neck", desc:"Instagram Influencer", slug:"damnlongneck", value:30 },
-      { name: "Papa Gut", desc:"TikTok  Influencer", slug: "papa_gut", value:20 },
-      { name: "Father Evil", desc:"does conventions", slug: "fatherevil", value:50 },
-      { name: "Father Time", desc:"has a cloak and an hourglass", slug: "fathertime", value:20 },
-      { name: "Father James Mitchell", desc:"Wrestling Manager, WCW & TNA", slug: "jamesmitchell", value:30 },
-      { name: "AmericanDad", desc:"Twitch Streamer", slug:"americandad", value:10 },
-      { name: "Somewhat Cool Dad", desc:"TikTok", slug:"somewhatcooldad", value:5 },
-      { name: "Mama Tits", desc:"Drag Queen", slug:"themamatits", value:25 },
-      { name: "Daddy Kindred", desc:"Soul Singer", slug: "kindredthefam", value:75 },
-      { name: "Big Daddy Kane", desc:"Rapper, Ain't No Half-Steppin'", slug: "bdkane", value:50 },
     ]
   },
 

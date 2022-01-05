@@ -732,7 +732,16 @@ var app = new Vue({
           rating: valuationRating
         };
       }
+    },
+    computedGimmickName() {
+      const self = this;
+      if (!self.gimmick || !self.gimmick.selected || !self.gimmick.selected.name) {
+        return null;
+      } else {
+        return self.gimmick.selected.name;
+      }
     }
+
   },
 
   mounted: function() {
