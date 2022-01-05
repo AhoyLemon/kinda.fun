@@ -745,7 +745,7 @@ var app = new Vue({
       if (!self.gimmick || !self.gimmick.selected || !self.gimmick.selected.name) {
         return null;
       } else {
-        return self.gimmick.selected.name;
+        return self.gimmick.selected.name.replace("'","").replace('🖖','').trim();
       }
     }
 
