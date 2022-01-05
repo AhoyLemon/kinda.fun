@@ -6,7 +6,9 @@ main.game-over(v-if="game.over")
 
   section.birthday-videos
 
-    .birthday-header
+    .birthday-header(v-if="computedGimmickName == 'Porno People'")
+      h1.headline Happy Birthday to Pasha's disgusting 43 year old friend!
+    .birthday-header(v-else)
       h1.headline Happy Birthday, Pasha's Daughter
       h2.subhead Oops, you forgot to ask Pasha what his daughter's name is. Oh well!
 
