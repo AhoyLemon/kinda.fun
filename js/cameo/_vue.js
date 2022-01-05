@@ -620,6 +620,13 @@ var app = new Vue({
 
     playTheGameOverAudio() {
       const self = this;
+
+      
+      if (self.computedGimmickName === "Porno People") {
+        // Simone isn't one of these.
+        birthdayHowls.splice(7,3);
+      }
+
       birthdayHowls = shuffle(birthdayHowls);
       birthdayHowls = birthdayHowls.filter(x => x !== undefined);
       let n = 0;
