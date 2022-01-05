@@ -33,7 +33,7 @@ main.game-over { background:#e4e72c; color:#121212; min-height: 100vh;
       h2 { font-size:22px; font-weight: 400; text-align: center; padding-top:$gap; }
     }
     .video-grid { display:grid; grid-template-columns: repeat( auto-fit, minmax(320px, 1fr) ); gap:$gap; padding:($gap * 2) $gap;
-      .video { position: relative;
+      .video { position: relative; max-width: 460px;
         figure { height:100%;}
         img { width:100%; height:320px; object-fit: cover; }
       }
