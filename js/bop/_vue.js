@@ -553,12 +553,25 @@ var app = new Vue({
   computed: {
     computedTimerOutput() {
       const self = this;
+      let minutes;
       seconds = Math.trunc(self.timer);
       ms = parseInt((self.timer % 1) * 100);
       if (ms < 10) {
         ms = "0" + ms;
       }
-      return `<span class="seconds">${seconds}</span><span class="ms">${ms}</span>`;
+      if (seconds > 59) {
+        minutes = Math.floor(seconds / 60);
+        seconds = seconds - (minutes * 60);
+        if (seconds < 10) {
+          seconds = "0" + seconds;
+        }
+      }
+      if (minutes) {
+        return `<span class="m">${minutes}</span><span class="s">${seconds}</span><span class="ms">${ms}</span>`;
+      } else {
+        return `<span class="s">${seconds}</span><span class="ms">${ms}</span>`;
+      }
+      
     }
   },
 
