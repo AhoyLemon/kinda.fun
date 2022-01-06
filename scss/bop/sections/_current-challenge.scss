@@ -10,7 +10,7 @@ section.current-challenge { padding:12rem ($gap * 2);
         &:not(:disabled) { cursor: pointer;
           &:hover, &:focus { background: #7272f5; color:#011a3a; }
         }
-        &:disabled { opacity: 0.7; filter: grayscale(0.5); }
+        &:disabled { opacity: 0.5; filter: grayscale(0.5); }
       }
     }
   }

@@ -235,7 +235,7 @@ const theNews =  [
     category: "fine art",
     nugget: `Vermeer painted The Milkmaid in 1658. I don't know how to forge that one.`,
     nuggetPlacement: `end`,
-    question: `When did Johannes Vermeer paint The Milkmaid`,
+    question: `When did Johannes Vermeer paint The Milkmaid?`,
     answer: `1658`
   },
   {

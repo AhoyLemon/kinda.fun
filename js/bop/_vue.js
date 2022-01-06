@@ -118,6 +118,7 @@ var app = new Vue({
       self.timerFunction = setInterval(()=> {
         self.timer += 0.013;
       }, 13);
+      
     },
 
     stopTimer() {
@@ -353,7 +354,6 @@ var app = new Vue({
           }
           box.type = "ad";
         } else if (boxType == "news") {
-          //box = Object.assign({},randomFrom(theNews));
           box = Object.assign( {}, self.news.allNews[self.news.lastNewsIndex]);
           self.news.lastNewsIndex++;
           if (!self.news.allNews[self.news.lastNewsIndex]) {
@@ -363,11 +363,6 @@ var app = new Vue({
             firstName: randomFrom(firstNames),
             lastName: randomFrom(lastNames)
           };
-          // box = Object.assign({},self.news.allAds[self.news.lastAdIndex]);
-          // self.news.lastAdIndex++;
-          // if (!self.news.allAds[self.news.lastAdIndex]) {
-          //   self.news.lastAdIndex = 0;
-          // }
           box.type = "news";
         }
 
@@ -414,11 +409,14 @@ var app = new Vue({
       }
 
       if (guess == answer) {
+
+        const timeTaken = self.timer.toFixed(2)
         new PNotify({
           title: "Correct",
-          text: "You got 1 point.",
+          text: `That took you ${timeTaken} seconds`,
           type: "success"
-        })
+        });
+        self.startTimer();
 
         self.currentQuestionIndex++;
         self.askAQuestion();
@@ -431,6 +429,7 @@ var app = new Vue({
         self.currentQuestionIndex++;
         self.askAQuestion();
       } else {
+        self.myGuess = "";
         new PNotify({
           title: "No!",
           text: `<p>That is not correct. You just lost a point. Also actually, the correct answer is <strong>${answer}</strong> if you want to cheat about it. Eventually this should count the number of incorrect answers and only let you bypass after like 2 or 3 attempts.</p>`,
@@ -537,6 +536,7 @@ var app = new Vue({
       self.news.allAds = Object.assign([], shuffle(theAds));
       self.populateNewsGrid();
       self.gameStarted = true;
+      self.startTimer();
       // setTimeout(function() {
       //   self.doBullshit('emailSignup');
       // },4433);

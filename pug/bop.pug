@@ -45,6 +45,7 @@ html(lang="en")
           button(@click="doBullshit('emailSignup')") Collect Email
           button(@click="doBullshit('facebook')") Involve Facebook
           button(@click="startTimer()") Start Timer
+          button(@click="stopTimer()") Stop Timer
 
         .news-grid(v-if="gameStarted")  
           +group(1,'bounce')
@@ -60,6 +61,10 @@ html(lang="en")
           +group(6, 'fade')
 
         include bop/screens/_article
+
+      transition(name="slideUp" leave-active-class="slideOutDown")
+        .timer(v-if="timer > 0")
+          .numbers(v-html="computedTimerOutput")
 
       footer.site-footer(v-if="gameStarted")
         span this is the site footer.
