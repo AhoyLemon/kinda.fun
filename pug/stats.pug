@@ -2,49 +2,49 @@ include global/_variables
 - var pageTitle = "Kinda Fun Stats";
 include stats/_mixins
 
-html
+html(lang="en")
   head
     title= pageTitle
     link(href="css/stats.css" type="text/css" rel="stylesheet")
     meta(name="viewport" content="width=device-width, initial-scale=1")
-body
-  #app(v-cloak)
+  body
+    #app(v-cloak)
 
-    .stats-screen
+      .stats-screen
 
-      include stats/_general
-      include stats/_aside
+        include stats/_general
+        include stats/_aside
 
-      main(v-if="ui.viewing != 'general'")
+        main(v-if="ui.viewing != 'general'")
 
-        section.loading.stats(v-if="ui.viewing == 'loading'")
-          .inside
-            img(src="svg/rings.svg")
-            h3 Loading data...
+          section.loading.stats(v-if="ui.viewing == 'loading'")
+            .inside
+              img(src="svg/rings.svg")
+              h3 Loading data...
 
-        include stats/_cameo
-        include stats/_invalid
-        include stats/_wrongest
-        include stats/_sisyphus
+          include stats/_cameo
+          include stats/_invalid
+          include stats/_wrongest
+          include stats/_sisyphus
 
-    if testing
-      link(rel="stylesheet" href="css/testing.css")
-      .testing-banner.wrongest
-        .inner Test Mode Is On
+      if testing
+        link(rel="stylesheet" href="css/testing.css")
+        .testing-banner.wrongest
+          .inner Test Mode Is On
 
-  .javascripts
-    if testing
-      script(src="js/libraries/vue.full.js")
-      script.
-        const testing = true;
-    else
-      script(src="js/libraries/vue.min.js")
-      script.
-        const testing = false;
-    
-    script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js")
+    .javascripts
+      if testing
+        script(src="js/libraries/vue.full.js")
+        script.
+          const testing = true;
+      else
+        script(src="js/libraries/vue.min.js")
+        script.
+          const testing = false;
+      
+      script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
+      script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js")
 
-    script(src="https://cdn.jsdelivr.net/npm/vue-good-table@2.15.3/dist/vue-good-table.min.js")
-    link(href="https://cdn.jsdelivr.net/npm/vue-good-table@2.12.2/dist/vue-good-table.css" rel="stylesheet")
-    script(src="js/min/stats.min.js")
+      script(src="https://cdn.jsdelivr.net/npm/vue-good-table@2.15.3/dist/vue-good-table.min.js")
+      link(href="https://cdn.jsdelivr.net/npm/vue-good-table@2.12.2/dist/vue-good-table.css" rel="stylesheet")
+      script(src="js/min/stats.min.js")

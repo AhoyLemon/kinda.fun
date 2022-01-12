@@ -1,20 +1,20 @@
 include wrongest/_variables
 include wrongest/_mixins
 
-html
+html(lang="en")
   include wrongest/_head
-body
+  body
 
-  #app(v-cloak)
-    include wrongest/_title-screen.pug
-    include wrongest/_pregame.pug
-    include wrongest/_player-list.pug
-    include wrongest/_presenting.pug
-    include wrongest/_voting.pug
-    include wrongest/_game-over.pug
-    if testing
-      link(rel="stylesheet" href="css/testing.css")
-      .testing-banner.wrongest
-        .inner Test Mode Is On
+    #app(v-cloak)
+      include wrongest/_title-screen.pug
+      include wrongest/_pregame.pug
+      include wrongest/_player-list.pug
+      include wrongest/_presenting.pug
+      include wrongest/_voting.pug
+      include wrongest/_game-over.pug
+      if testing
+        link(rel="stylesheet" href="css/testing.css")
+        .testing-banner.wrongest
+          .inner Test Mode Is On
 
-  include wrongest/_javascripts.pug
+    include wrongest/_javascripts.pug
