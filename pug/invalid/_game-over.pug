@@ -76,21 +76,21 @@ main.game-over(v-if="round.phase == 'GAME OVER'")
 
       .award(v-if="computedCheevos.bestCracker && computedCheevos.bestCracker.name != 'TIE'")
         figure.icon
-          img(src="svg/noun_punk_pig_227290.svg")
+          img(src="svg/noun_punk_pig_227290.svg" alt="cyberpunk pig")
         .award-name Supercracker
         .recipient {{computedCheevos.bestCracker.name}}
         .description Cracked {{computedCheevos.bestCracker.cracks}} passwords
 
       .award(v-if="computedCheevos.mostCracked && computedCheevos.mostCracked.name != 'TIE'")
         figure.icon
-          img(src="svg/doomed_pig.svg")
+          img(src="svg/doomed_pig.svg" alt="victim pig")
         .award-name Supervictim
         .recipient {{computedCheevos.mostCracked.name}}
         .description Password cracked {{computedCheevos.mostCracked.cracked}} times.
 
       .award(v-if="computedCheevos.mostSelfPwns && computedCheevos.mostSelfPwns.name != 'TIE'")
         figure.icon
-          img(src="svg/noun_derp_pig_227284.svg")
+          img(src="svg/noun_derp_pig_227284.svg" alt="derp pig")
         .award-name SELF-PWNED
         .recipient {{computedCheevos.mostSelfPwns.name}}
         .description Cracked their own password
@@ -99,7 +99,7 @@ main.game-over(v-if="round.phase == 'GAME OVER'")
     
       .award(v-if="computedCheevos.mostCrashes && computedCheevos.mostCrashes.name != 'TIE'")
         figure.icon
-          img(src="svg/noun_dead_pig_227289.svg")
+          img(src="svg/noun_dead_pig_227289.svg" alt="crash happy pig")
         .award-name CRASH HAPPY
         .recipient {{computedCheevos.mostCrashes.name}}
         .description Crashed the system
@@ -107,7 +107,7 @@ main.game-over(v-if="round.phase == 'GAME OVER'")
 
       .award(v-if="computedCheevos.mostAttempts && computedCheevos.mostAttempts.name != 'TIE'")
         figure.icon
-          img(src="svg/noun_suspicious_pig_227293.svg")
+          img(src="svg/noun_suspicious_pig_227293.svg" alt="quick finger pig")
         .award-name Quickie Fingers
         .recipient {{computedCheevos.mostAttempts.name}}
         .description Attempted {{computedCheevos.mostAttempts.passwordAttempts}} passwords
