@@ -40,7 +40,7 @@
             </div>
             <div class="game-choices">
               <div class="game" :class="{ active: (gameChoice == 'cameo'), inactive: (gameChoice &amp;&amp; gameChoice != 'cameo') }">
-                <figure class="logo" @click="gameChoice = 'cameo'"><img src="svg/comparatively-famous.svg"/></figure>
+                <figure class="logo" @click="gameChoice = 'cameo'"><img src="svg/comparatively-famous.svg" alt="Comparatively Famous logo"/></figure>
                 <figcaption>
                   <div class="slogan">The Game of Celebrity Value</div>
                   <div class="players-allowed">For 1 player.<br/>(but can be replayed with friends)</div>
@@ -63,7 +63,7 @@
                 </script>
               </div>
               <div class="game" :class="{ active: (gameChoice == 'invalid'), inactive: (gameChoice &amp;&amp; gameChoice != 'invalid') }">
-                <figure class="logo" @click="gameChoice = 'invalid'"><img src="svg/invalid-logo.svg"/></figure>
+                <figure class="logo" @click="gameChoice = 'invalid'"><img src="svg/invalid-logo.svg" alt="Invalid logo"/></figure>
                 <figcaption>
                   <div class="slogan">A trivia game of unnecessary suffering.</div>
                   <div class="players-allowed">For 2 or more players.<br/>(but best with 4 - 8)</div>
@@ -86,7 +86,7 @@
                 </script>
               </div>
               <div class="game" :class="{ active: (gameChoice == 'wrongest'), inactive: (gameChoice &amp;&amp; gameChoice != 'wrongest') }">
-                <figure class="logo" @click="gameChoice = 'wrongest'"><img src="svg/wrongest.svg"/></figure>
+                <figure class="logo" @click="gameChoice = 'wrongest'"><img src="svg/wrongest.svg" alt="The Wrongest Words logo"/></figure>
                 <figcaption>
                   <div class="slogan">You're going to defend some very stupid ideas.</div>
                   <div class="players-allowed">For 3 or more players.<br/>(but best with 5 - 10)</div>
@@ -109,7 +109,7 @@
                 </script>
               </div>
               <div class="game" :class="{ active: (gameChoice == 'sisyphus'), inactive: (gameChoice &amp;&amp; gameChoice != 'sisyphus') }">
-                <figure class="logo" @click="gameChoice = 'sisyphus'"><img src="svg/sisyphus/logo-simple.svg"/></figure>
+                <figure class="logo" @click="gameChoice = 'sisyphus'"><img src="svg/sisyphus/logo-simple.svg" alt="Sisyphus Clicker logo"/></figure>
                 <figcaption>
                   <div class="slogan">Push the rock uphill. Earn cheevos.</div>
                   <div class="players-allowed">For 1 player<br/>(1 very lonely player)</div>
@@ -158,7 +158,7 @@
       </script>
       <script src="/socket.io/socket.io.js"></script>
       <script>var socket = io.connect();</script>
-      <script src="js/min/start.min.js?updated2022-00-12@10:43:31"></script>
+      <script src="js/min/start.min.js?updated2022-00-12@10:55:09"></script>
       <script type="text/javascript">
         var _paq = window._paq = window._paq || [];
         /* tracker methods like "setCustomDimension" should be called before "trackPageView" */

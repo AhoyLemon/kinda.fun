@@ -99,11 +99,7 @@ main.employee-screen(v-if="my.role == 'employee' && (round.phase == 'choose rule
 
         .flying-pig(v-if="round.flyingPig.active")
           .speech(v-html="round.flyingPig.message")
-            //-p Have you tried 
-              strong RIVERDALE
-              | ? That's the school from Archie comics! It's also a popular WB show!
-            //-p 
-          img(src="img/flying-pig.png")
+          img(src="img/flying-pig.png" alt="flying pig")
       
 
   include _scores.pug
