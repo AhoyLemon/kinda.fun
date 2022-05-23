@@ -1,0 +1,10 @@
+.request-bullshit-cover(v-if="askingPermission.showPrompt")
+dialog.request-bullshit(v-if="askingPermission.showPrompt")
+  p 
+    strong.site-title kinda.fun 
+    | would like access to your 
+    span(v-text="askingPermission.what")
+    | .
+  .buttons
+    button.allow(@click="answerPermissionModal('allow',askingPermission.what)") Allow
+    button.deny(@click="answerPermissionModal('deny',askingPermission.what)")  Deny

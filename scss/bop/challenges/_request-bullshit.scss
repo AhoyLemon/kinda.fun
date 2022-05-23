@@ -1,0 +1,15 @@
+.request-bullshit-cover { @include position(fixed,0,0,0,0); background-color: rgba(0,0,0,0.35); backdrop-filter: blur(1px);  }
+
+
+
+
+.request-bullshit { @include position(fixed,1rem,null,null,1rem); padding:2rem; box-shadow: rgb(99 99 99 / 20%) 0px 2px 8px 0px; border-radius: 0.5rem; border: 1px solid rgba(0,0,0,0.15); display:block;
+  .buttons { text-align: right;
+    button { padding:0.25em 1em; margin-right:0.75em; border:1px solid rgba(0,0,0,0.03); border-radius: 0.25em; cursor: pointer; box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+      &.allow { background:#0066ff; color:$white; }
+      &.deny { background:#fff; }
+      &:last-child { margin-right:unset; }
+      &:hover, &:focus, &:active { box-shadow: rgba(0, 0, 0, 0.08) 0px 1px 3px 0px, rgba(27, 31, 35, 0.35) 0px 0px 0px 1px; }
+    }
+  }
+}

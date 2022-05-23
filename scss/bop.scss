@@ -1,40 +1,40 @@
 
 //GLOBALS, GET DEFAULTS
-@import "globals/_reset";
-@import "globals/_variables";
-@import "globals/_mixins";
-@import "globals/_extends";
+@import "globals/reset";
+@import "globals/variables";
+@import "globals/mixins";
+@import "globals/extends";
 
 // LIBRARIES (if any)
 @import "libraries/PNotify";
 @import "bop/libraries/pnotify-custom";
 
 // SITE SPECIFIC
-@import "bop/_variables";
-@import "bop/_z-index";
-@import "bop/_extends";
-@import "bop/_default";
+@import "bop/variables";
+@import "bop/z-index";
+@import "bop/extends";
+@import "bop/default";
 
-@import "bop/_timer";
-@import "bop/_modals";
-@import "bop/_toggles";
-//@import "bop/_transitions";
+@import "bop/timer";
+@import "bop/modals";
+@import "bop/toggles";
 
 // SECTIONS
-@import "bop/sections/_header";
-@import "bop/sections/_intro";
-@import "bop/sections/_current-challenge";
+@import "bop/sections/header";
+@import "bop/sections/intro";
+@import "bop/sections/current-challenge";
 
 // CONTENT
-@import "bop/content/_news";
-@import "bop/content/_article";  
+@import "bop/content/news";
+@import "bop/content/article";  
 
 // SCREENS
-@import "bop/screens/_failure";
+@import "bop/screens/failure";
 
 // CHALLENGES
-@import "bop/challenges/_gdpr";
-@import "bop/challenges/_email-signup";
-@import "bop/challenges/_facebook";
+@import "bop/challenges/gdpr";
+@import "bop/challenges/email-signup";
+@import "bop/challenges/facebook";
+@import "bop/challenges/request-bullshit";
 
 footer.site-footer { background:#333; color:white; padding:$gap; }

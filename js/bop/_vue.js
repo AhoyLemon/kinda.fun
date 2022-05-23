@@ -1,7 +1,7 @@
 var app = new Vue({
   el: '#app',
   data: {
-    gameStarted: true,
+    gameStarted: false,
     timer: 0,
     timerFunction: undefined,
     gdpr: {
@@ -44,6 +44,11 @@ var app = new Vue({
 
     fb: {
       showModal: false,
+    },
+
+    askingPermission: {
+      showPrompt: false,
+      what: null
     },
 
     news: {
@@ -271,10 +276,28 @@ var app = new Vue({
           // Looks like I was never able to ask for permission for this thing.
           // Gonna have to try something else...
           if (result.state == "denied") {
-            self.congratulatePlayer(roundCode);
+            self.askingPermission.what = what;
+            self.askingPermission.showPrompt = true;
           }
         }
       });
+    },
+
+    answerPermissionModal(answer, what) {
+      const self = this;
+      let roundCode;
+      if (what == "microphone") {
+        roundCode = 3;
+      } else if (what == "camera") {
+        roundCode = 4;
+      }
+      self.requestPermission(roundCode);
+      if (answer == "deny") {
+        self.congratulatePlayer(roundCode);
+      } else if (answer == "allow") {
+        self.failPlayer(roundCode);
+      }
+      self.askingPermission.showPrompt = false;
     },
 
     closeEmailModal(result) {
@@ -390,7 +413,9 @@ var app = new Vue({
       const self = this;
       self.currentQuestion = Object.assign({}, self.allQuestions[self.currentQuestionIndex]);
       self.myGuess = "";
-      document.getElementById("TheQuestion").focus();
+      if (document.getElementById("TheQuestion")) {
+        document.getElementById("TheQuestion").focus();
+      }
     },
 
     answerTheQuestion() {
@@ -577,7 +602,7 @@ var app = new Vue({
 
   mounted: function() {
     const self = this;
-    self.startGame();
+    //self.startGame();
 
     // new PNotify({
     //   title: "Hi there!",

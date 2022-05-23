@@ -11,7 +11,7 @@
     <link href="/css/bop.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta http-equiv="last-modified" content="2022-00-05@21:39:43">
+    <meta http-equiv="last-modified" content="2022-04-22@20:30:32">
   </head>
   <body>
     <div id="app" v-cloak>
@@ -29,7 +29,7 @@
             <div class="button-holder">
               <button class="start-game" @click="startGame()">Start Game</button>
             </div>
-            <p style="font-size:80%; margin-top:0.5em"><strong>Note:</strong> While this website will pretend to track you, it won't actually do anything unethical with your personal data. I can't say that about any other site you'll encounter.</p>
+            <p style="font-size:80%; margin-top:0.5em"><strong>Note:</strong> While <strong>this website will pretend to track you</strong>, it won't actually do anything unethical with your personal data. I can't say that about any other site you'll encounter.</p>
           </div>
         </div>
         <section class="current-challenge" v-if="gameStarted">
@@ -146,6 +146,14 @@
       </transition>
       <footer class="site-footer" v-if="gameStarted"><span>this is the site footer.</span></footer>
       <!-- Challenges-->
+      <div class="request-bullshit-cover" v-if="askingPermission.showPrompt"></div>
+      <dialog class="request-bullshit" v-if="askingPermission.showPrompt">
+        <p> <strong class="site-title">kinda.fun </strong>would like access to your <span v-text="askingPermission.what"></span>.</p>
+        <div class="buttons">
+          <button class="allow" @click="answerPermissionModal('allow',askingPermission.what)">Allow</button>
+          <button class="deny" @click="answerPermissionModal('deny',askingPermission.what)"> Deny</button>
+        </div>
+      </dialog>
       <transition name="slide" enter-active-class="slideInUp" leave-active-class="slideOutDown" appear>
         <div class="gdpr-banner" v-if="gdpr.showBanner">
           <div class="inner">
@@ -313,7 +321,7 @@
         }
         
       </script>
-      <script src="js/min/bop.min.js?updated=2022-00-05@21:39:43"></script>
+      <script src="js/min/bop.min.js?updated=2022-04-22@20:30:32"></script>
     </div>
   </body>
 </html>

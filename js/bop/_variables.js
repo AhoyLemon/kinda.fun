@@ -95,7 +95,13 @@ const successMessages = {
   },
   6: {
     message: "You dismissed our Facebook crap."
-  }
+  },
+  "camera": {
+    message: "FUCK SHIT BALLS TITS FUCKING COCKS"
+  },
+  "microphone": {
+    message: "FUCK SHIT BALLS TITS FUCKING COCKS"
+  },
 };
 
 
@@ -336,7 +342,8 @@ const firstNames = [
   "Lyndon",
   "Carlos",
   "Trinity",
-  "Darby"
+  "Darby",
+  "Scoopneck"
 ]
 
 const lastNames = [
@@ -351,9 +358,10 @@ const lastNames = [
   "Posterchild",
   "Priority",
   "Recidivist",
-  "The Actual Human",
+  "Actualhuman",
   "Titmouse",
-  "Flummox"
+  "Flummox",
+  "McGee"
 ]
 
 const paragraphs = [
