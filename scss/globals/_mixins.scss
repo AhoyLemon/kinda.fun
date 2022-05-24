@@ -113,6 +113,7 @@
 }
 
 @mixin inner($w:$max-width, $p:20px) {
+  width: 100%;
   max-width: $w;
   margin-left: auto;
   margin-right: auto;

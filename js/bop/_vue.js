@@ -4,6 +4,10 @@ var app = new Vue({
     gameStarted: false,
     timer: 0,
     timerFunction: undefined,
+    secondsElapsed: 0,
+
+    bullshitActive: false,
+
     gdpr: {
       showBanner: false,
       showModal: false,
@@ -122,7 +126,29 @@ var app = new Vue({
       self.timer = 0;
       self.timerFunction = setInterval(()=> {
         self.timer += 0.013;
+
+
+        const sE = Math.floor(self.timer);
+        if (sE > 2 && sE != self.secondsElapsed) {
+          const r = randomNumber(2,7);
+          if (r == 5) {
+            self.doBullshit(randomFrom(bullshitTypes));
+          } else {
+            console.log('no random challenge');
+          }
+          self.secondsElapsed = sE;
+        } else {
+          console.log('seconds have not changed');
+        }
+
+
+
+
+
       }, 13);
+
+      
+
       
     },
 
@@ -131,21 +157,18 @@ var app = new Vue({
       clearInterval(self.timerFunction);
       self.timerFunction = undefined;
       self.timer = 0;
+      self.secondsElapsed = 0;
     },
 
     failPlayer(reason,also) {
       const self = this;
       soundFeedback.play(randomFrom(soundOptions.failure));
-      self.failure = failStates[reason];
-      if (also) {
-        if (self.failure.also) {
-          self.failure.also = Object.assign(self.failure.also,also);
-        } else {
-          self.failure.also = also;
-        }
-      }
-      self.stopTimer();
-      self.showFailureScreen = true;
+      new PNotify({
+        title: `${failStates[reason].title}`,
+        text: `<p>${failStates[reason].message}</p>`,
+        type: "error"
+      });
+      self.bullshitActive = false;
     },
 
     congratulatePlayer(roundCode) {
@@ -161,31 +184,33 @@ var app = new Vue({
       }
       
       soundFeedback.play(randomFrom(soundOptions.success));
-      self.stopTimer();
+      self.bullshitActive = false;
     },
 
     doBullshit(bullshit) {
       const self = this;
-      if (bullshit == "gdpr") {
-        self.gdpr.showBanner = true;
-        self.gdpr.cookies.forEach(cookie => {
-          cookie.allowed = true;
-        });
-        soundFeedback.play(randomFrom(soundOptions.rejectThem));
-      } else if (bullshit == "camera") {
-        soundFeedback.play(randomFrom(soundOptions.blockIt));
-        self.requestPermission('camera');
-      } else if (bullshit == "microphone") {
-        soundFeedback.play(randomFrom(soundOptions.denyIt));
-        self.requestPermission('microphone');
-      } else if (bullshit == "emailSignup") {
-        soundFeedback.play(randomFrom(soundOptions.declineIt));
-        self.emailSignup.showModal = true;
-      } else if (bullshit == "facebook") {
-        soundFeedback.play(randomFrom(soundOptions.denyIt));
-        self.fb.showModal = true;
+      if (!self.bullshitActive) {
+        self.bullshitActive = true;
+        if (bullshit == "gdpr") {
+          self.gdpr.showBanner = true;
+          self.gdpr.cookies.forEach(cookie => {
+            cookie.allowed = true;
+          });
+          soundFeedback.play(randomFrom(soundOptions.rejectThem));
+        } else if (bullshit == "camera") {
+          soundFeedback.play(randomFrom(soundOptions.blockIt));
+          self.requestPermission('camera');
+        } else if (bullshit == "microphone") {
+          soundFeedback.play(randomFrom(soundOptions.denyIt));
+          self.requestPermission('microphone');
+        } else if (bullshit == "emailSignup") {
+          soundFeedback.play(randomFrom(soundOptions.declineIt));
+          self.emailSignup.showModal = true;
+        } else if (bullshit == "facebook") {
+          soundFeedback.play(randomFrom(soundOptions.denyIt));
+          self.fb.showModal = true;
+        }
       }
-      self.startTimer();
     },
 
     confirmCookieSelection() {
@@ -286,9 +311,9 @@ var app = new Vue({
     answerPermissionModal(answer, what) {
       const self = this;
       let roundCode;
-      if (what == "microphone") {
+      if (what == "camera") {
         roundCode = 3;
-      } else if (what == "camera") {
+      } else if (what == "microphone") {
         roundCode = 4;
       }
       self.requestPermission(roundCode);
@@ -561,11 +586,17 @@ var app = new Vue({
       self.news.allAds = Object.assign([], shuffle(theAds));
       self.populateNewsGrid();
       self.gameStarted = true;
-      self.startTimer();
       // setTimeout(function() {
       //   self.doBullshit('emailSignup');
       // },4433);
-    }
+    },
+
+    handleScroll() {
+      const self = this;
+      if (!self.timer || !self.timerFunction) {
+        self.startTimer();
+      }
+    },
 
   },
 
@@ -602,14 +633,28 @@ var app = new Vue({
 
   mounted: function() {
     const self = this;
+
+    window.onscroll = function(e) {
+      if (this.oldScroll < this.scrollY) {
+        // You are scrolling down!
+        self.handleScroll()
+      }
+      this.oldScroll = this.scrollY;
+    }
+
     //self.startGame();
 
     // new PNotify({
-    //   title: "Hi there!",
+    //   title: "Hi there!", 
     //   text: `<p>Toasts work. Get ready to see a lot of these fuckin' things.</p>`,
     //   type: "success"
     // });
 
-  }
+  },
+
+  // created() {
+  //   const self = this;
+  //   window.addEventListener("scroll", self.handleScroll);
+  // }
 
 });

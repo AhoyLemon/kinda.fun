@@ -11,14 +11,11 @@
     <link href="/css/bop.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta http-equiv="last-modified" content="2022-04-22@20:30:32">
+    <meta http-equiv="last-modified" content="2022-04-22@22:43:21">
   </head>
   <body>
     <div id="app" v-cloak>
       <main class="content">
-        <header class="site-header" v-if="gameStarted">
-          <div class="site-title">This website is a disaster.</div>
-        </header>
         <div class="intro" v-if="!gameStarted">
           <div class="inner">
             <h1>This website is a disaster.</h1>
@@ -32,18 +29,27 @@
             <p style="font-size:80%; margin-top:0.5em"><strong>Note:</strong> While <strong>this website will pretend to track you</strong>, it won't actually do anything unethical with your personal data. I can't say that about any other site you'll encounter.</p>
           </div>
         </div>
-        <section class="current-challenge" v-if="gameStarted">
-          <form @submit.prevent="answerTheQuestion()" v-if="currentQuestion">
-            <label class="question" for="TheQuestion">{{currentQuestion.question}}</label>
-            <div class="field">
-              <div class="input-holder">
-                <input required id="TheQuestion" v-model="myGuess" placeholder="The answer is somewhere on this website.">
+        <section class="current-challenge" v-show="gameStarted">
+          <form @submit.prevent="answerTheQuestion()">
+            <transition name="fadeDownBig">
+              <label class="question" for="TheQuestion" v-show="gameStarted">{{currentQuestion.question}}</label>
+            </transition>
+            <transition name="zoom">
+              <div class="field" v-show="gameStarted">
+                <div class="input-holder">
+                  <input required id="TheQuestion" v-model="myGuess" placeholder="The answer is somewhere on this website.">
+                </div>
+                <button type="submit" :disabled="!myGuess">Answer</button>
               </div>
-              <button type="submit" :disabled="!myGuess">Answer</button>
-              <!--.button-holder-->
-            </div>
+            </transition>
+            <transition name="fade">
+              <div class="scroll-down" v-if="gameStarted">(scroll down)</div>
+            </transition>
           </form>
         </section>
+        <header class="site-header" v-if="gameStarted">
+          <div class="site-title">This website is a disaster.</div>
+        </header>
         <div class="bullshit" v-if="gameStarted" style="text-align:center;">
           <button @click="doBullshit('gdpr')">Toggle banner</button>
           <button @click="doBullshit('camera')">Request Camera</button>
@@ -164,7 +170,7 @@
               <p>By clicking "Accept All cookies", you affirm that you're totally okay with being monitored to an extent best described as dystopian. We will harvest data from you without your consent and share it unencrypted with literal millions of unknown buyers, all for a fraction of a cent. Because your most sensitive information is worth $0.0006 to us.</p>
             </div>
             <div class="buttons">
-              <button class="primary" @click="failPlayer(1)">Accept All cookies</button>
+              <button class="primary" @click="gdpr.showBanner = false; failPlayer(1)">Accept All cookies</button>
               <button class="secondary" @click="toggleCookieModal('open')">Customize Settings</button>
             </div>
           </div>
@@ -194,7 +200,7 @@
                 </ul>
               </div>
               <div class="bottom">
-                <button class="primary" @click="failPlayer(1)">Accept All Cookies</button>
+                <button class="primary" @click="gdpr.showBanner = false; gdpr.showModal = false; failPlayer(1)">Accept All Cookies</button>
                 <button class="secondary" @click="confirmCookieSelection()">Confirm My Choices</button>
               </div>
             </div>
@@ -294,8 +300,6 @@
       <script src="js/libraries/moment.min.js"></script>
       <script src="js/libraries/howler.min.js"></script>
       <script src="js/libraries/jquery.min.js"></script>
-      <script src="js/libraries/vue-toast-notification.min.js"></script>
-      <link href="css/libraries/vue-toast-notification.css" type="text/css" rel="stylesheet">
       <script src="js/libraries/pnotify.custom.min.js"></script>
       <script>
         //------ Pnotify settings & defaults ----------------
@@ -321,7 +325,7 @@
         }
         
       </script>
-      <script src="js/min/bop.min.js?updated=2022-04-22@20:30:32"></script>
+      <script src="js/min/bop.min.js?updated=2022-04-22@22:43:21"></script>
     </div>
   </body>
 </html>

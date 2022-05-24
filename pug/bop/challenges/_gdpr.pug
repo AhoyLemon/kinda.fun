@@ -6,7 +6,7 @@ transition(name="slide" enter-active-class="slideInUp" leave-active-class="slide
       .text
         p By clicking "Accept All cookies", you affirm that you're totally okay with being monitored to an extent best described as dystopian. We will harvest data from you without your consent and share it unencrypted with literal millions of unknown buyers, all for a fraction of a cent. Because your most sensitive information is worth $0.0006 to us.
       .buttons
-        button.primary(@click="failPlayer(1)") Accept All cookies
+        button.primary(@click="gdpr.showBanner = false; failPlayer(1)") Accept All cookies
         button.secondary(@click="toggleCookieModal('open')") Customize Settings
 
 transition(name="fade")
@@ -28,5 +28,5 @@ transition(name="fade")
                 button.explain(@click="cookie.showInfo = !cookie.showInfo") ? 
               .info(v-html="cookie.info" v-if="cookie.showInfo")
         .bottom
-          button.primary(@click="failPlayer(1)") Accept All Cookies
+          button.primary(@click="gdpr.showBanner = false; gdpr.showModal = false; failPlayer(1)") Accept All Cookies
           button.secondary(@click="confirmCookieSelection()") Confirm My Choices

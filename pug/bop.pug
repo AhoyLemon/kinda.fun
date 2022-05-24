@@ -12,20 +12,12 @@ html(lang="en")
 
       main.content
 
-        header.site-header(v-if="gameStarted")
-          .site-title= siteTitle
-
         include bop/screens/_intro.pug
 
-        section.current-challenge(v-if="gameStarted")
-          form(@submit.prevent="answerTheQuestion()" v-if="currentQuestion")
-            label.question(for="TheQuestion") {{currentQuestion.question}}
-            .field
-              .input-holder
-                input(required id="TheQuestion" v-model="myGuess" placeholder="The answer is somewhere on this website.")
-              button(type="submit" :disabled="!myGuess") Answer
-              //.button-holder
-                
+        include bop/challenges/_question.pug
+
+        header.site-header(v-if="gameStarted")
+          .site-title= siteTitle
         
         .bullshit(v-if="gameStarted" style="text-align:center;")
           button(@click="doBullshit('gdpr')") Toggle banner

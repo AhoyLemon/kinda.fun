@@ -37,6 +37,14 @@ const soundOptions = {
   failure: ['failure1','failure2','failure3','failure4']
 };
 
+const bullshitTypes = [
+  "gdpr",
+  "camera",
+  "microphone",
+  "emailSignup",
+  "facebook"
+];
+
 const failStates = {
   1: {
     title: 'You accepted all cookies.',
@@ -95,13 +103,7 @@ const successMessages = {
   },
   6: {
     message: "You dismissed our Facebook crap."
-  },
-  "camera": {
-    message: "FUCK SHIT BALLS TITS FUCKING COCKS"
-  },
-  "microphone": {
-    message: "FUCK SHIT BALLS TITS FUCKING COCKS"
-  },
+  }
 };
 
 
