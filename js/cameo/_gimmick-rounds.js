@@ -103,13 +103,13 @@ const gimmickRounds = {
       { name: "Dolf Dietrich", desc:"Fire Island Fuck Boy (2017)", slug:"dolfdietrichxxx", value:25 },
       { name: "Lisa Ann", desc:"Who's Nailin Paylin  (2008)", slug:"thereallisaann", value:125 },
       
-      { name: "Dakota Skye", desc:"Porn Actress", slug:"dakota_skye", value:240 },
+      { name: "Dakota Skye", desc:"Alien Ass Party 3 (2014)", slug:"dakota_skye", value:240 },
       { name: "Nacho Vidal", desc:"Bimbo Bangers From Barcelona (1998)", slug:"nachovidal", value:76 },
       { name: "Lethal Lipps", desc:"Hella Butt (2007)", slug: "lethallipps___", value:100 },
 
       { name: "Dakota Charms", desc:"Brat Spanks Brats 2 (2019)", slug:"dakotacharmsxxx", value:400 },
       { name: "Ginger Lynn", desc:"New Wave Hookers (1985)", slug:"gingerlynn", value:50 },
-      { name: "Small Hands", desc:"Goth Anal Whores 2 (2018)", slug:"thesmallhands_", value:100 },
+      { name: "Small Hands", desc:"Cum On My Tattoo 7 (2017)", slug:"thesmallhands_", value:100 },
       
       { name: "Roobi Royal", desc:"Chubby Fucked 2 (2016)", slug:"roobiroyal", value:300 },
       { name: "Manuel Skye", desc:"Empty Those Balls (2020)", slug:"manuelskye", value:49 },
@@ -280,7 +280,7 @@ const gimmickRounds = {
   },
 
   standups: {
-    name: "Comedy Central Presents: The Stand Up Round",
+    name: "Comedy Central Presents: The Stand Up Rounds ",
     desc: "*Legal Disclaimer: This round actually has nothing to do with Comedy Central or its subsidiaries",
     queue: [
       
