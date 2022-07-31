@@ -279,32 +279,40 @@ const gimmickRounds = {
     ]
   },
 
-  standUps: {
-    name: "Stand Ups with Catch Phrases",
+  standups: {
+    name: "Comedy Central Presents: The Stand Up Round",
+    desc: "*Legal Disclaimer: This round actually has nothing to do with Comedy Central or its subsidiaries",
     queue: [
-      { name: "DC Young Fly", desc:"“Faawwkk You Mean”", slug:"dcyoungfly1", value:650 },
-      { name: "Bob Saget", desc:"“What's goin' on?”", slug:"dcyoungfly1", value:349 },
-      { name: "Andrew Dice Clay", desc:"“Ohhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh!”", slug:"dcyoungfly1", value:349 },
+      
+      { name: "Andrew Dice Clay", desc:null, slug:"diceman", value:349 },
+      { name: "Joe Piscopo", desc:null, slug:"joepiscopo", value:250 },
+      { name: "DC Young Fly", desc:null, slug:"dcyoungfly1", value:650 },
 
-      { name: "Jeff Ross", desc:"“[...] Bea Arthur's dick”", slug:"jeffross", value:300 },
-      { name: "Cedric The Entertainer", desc:"“”", slug:"4cedtheentertainer", value:250 },
-      { name: "Joe Piscopo", desc:"“You're from Joisey? I'm from Joisey!”", slug:"joepiscopo", value:250 },
+      { name: "Jeff Ross", desc:null, slug:"jeffross", value:300 },
+      { name: "Cedric The Entertainer", desc:null, slug:"4cedtheentertainer", value:250 },
+      { name: "Carrot Top", desc:null, slug:"carrottop", value:150 },
 
-      { name: "Aries Spears", desc:"“”", slug:"aries", value:225 },
-      { name: "Doug Benson", desc:"“Did you know that I smoke marijuana?”", slug:"dougbenson", value:150 },
-      { name: "Carrot Top", desc:"“”", slug:"carrottop", value:150 },
+      { name: "Brian Posehn", desc:null, slug:"brianposehn", value:75 },
+      { name: "Doug Benson", desc:null, slug:"dougbenson", value:29 },
+      { name: "Paul F. Tompkins", desc:null, slug:"paulftompkins", value:300 },
 
-      { name: "Bill Engvall", desc:"“Here's your sign.”", slug:"billengvall", value:150 },
-      { name: "Brian Posehn", desc:"“And another thing I hate about Nickelback is...”", slug:"brianposehn", value:75 },
-      { name: "The Sklar Brothers", desc:"“”", slug:"sklarbrothers", value:70 },
-
-      { name: "Henning Wehn", desc:"“I'm German!”", slug:"hwe", value:70 },
-      { name: "Godfrey", desc:"“”", slug:"godfreycomedian", value:70 },
-      { name: "Kenny Kramer", desc:"“I'm the guy that Larry David based Kramer off of, isn't that interesting?”", slug:"therealkramer", value:49 },
-
-      { name: "Todd Glass", desc:"“”", slug:"toddglass", value:45 },
-      { name: "Greg Proops", desc:"“”", slug:"gproops", value:40 },
-      { name: "Andy Kindler", desc:"“”", slug:"andykindler", value:40 },
+      { name: "Bill Engvall", desc:null, slug:"billengvall", value:150 },
+      { name: "Aries Spears", desc:null, slug:"aries", value:225 },
+      { name: "The Sklar Brothers", desc:null, slug:"sklarbrothers", value:70 }
+    ],
+    reuseQueueForFinal: false,
+    finalRoundQueue: [
+      { name: "Henning Wehn", desc:null, slug:"hwe", value:70 },
+      { name: "Godfrey", desc:null, slug:"godfreycomedian", value:70 },
+      // { name: "Kenny Kramer", desc:null, slug:"therealkramer", value:49 },
+      { name: "Brad Williams", desc:null, slug:"bradwilliamscomic", value:75 },
+      { name: "Todd Glass", desc:null, slug:"toddglass", value:45 },
+      { name: "Greg Proops", desc:null, slug:"gproops", value:40 },
+      { name: "Andy Kindler", desc:null, slug:"andykindler", value:40 },
+      { name: "Rachel Feinstein", desc:null, slug:"rachelfeinstein", value:40 },
+      { name: "Wendy Liebman", desc:null, slug:"wendyliebman", value:45 },
+      { name: "David Steinberg", desc:null, slug:"davidsteinberg", value:349 },
+      { name: "Tom Papa", desc:null, slug:"tpops1", value:250 },
     ]
 
   },

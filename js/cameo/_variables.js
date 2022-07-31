@@ -72,11 +72,3 @@ for (var i=1; i<37; i++) {
     volume: 0.9
   });
 }
-
-/*
-for (var i=0; i<birthdayMessageFiles.length; i++) {
-  birthdayHowls[i] = new Howl({
-    urls: [ audioSrc + 'birthdays/' + birthdayMessageFiles[i] + '.mp3']
-  });
-}
-*/
