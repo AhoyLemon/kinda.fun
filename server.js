@@ -2,15 +2,15 @@ var express = require('express');
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-var secrets = require('./secrets');
+//var secrets = require('./secrets');
 
 app.use(express.static('public'));
 
 //////////////////////////////////////////////
 // SQL DATABASE
 
-const jawsDBurl = (process.env.JAWSDB_CRIMSON_URL || secrets.devSQLurl);
-const liveDBurl = (process.env.JAWSDB_CRIMSON_URL || secrets.liveSQLurl);
+const jawsDBurl = process.env.JAWSDB_CRIMSON_URL;
+const liveDBurl = process.env.JAWSDB_CRIMSON_URL;
 console.log('DEV: '+jawsDBurl);
 console.log('LIVE: '+liveDBurl); 
 var mysql = require('mysql');
