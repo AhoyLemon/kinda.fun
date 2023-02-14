@@ -35,8 +35,11 @@ main.game-over(v-if="game.over")
         dt Your Score
         dd {{my.score.toLocaleString('en-US')}}
       dl
-        dt Correct Guesses
-        dd {{my.correctSorts}}
+        dt Correctly Sorted
+        dd
+          .word {{computedCorrectSortScore.pct}}
+          .number.small(v-if="computedCorrectSortScore.context" v-html="computedCorrectSortScore.context")
+
       dl(v-if="computedValuationSkill")
         dt Valuation Skill
         dd 

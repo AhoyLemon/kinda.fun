@@ -11,7 +11,7 @@ app.use(express.static('public'));
 
 const jawsDBurl = (process.env.JAWSDB_CRIMSON_URL || secrets.devSQLurl);
 const liveDBurl = (process.env.JAWSDB_CRIMSON_URL || secrets.liveSQLurl);
-console.log('SERVER: '+jawsDBurl);
+console.log('DEV: '+jawsDBurl);
 console.log('LIVE: '+liveDBurl); 
 var mysql = require('mysql');
 var connection = mysql.createConnection(jawsDBurl);
@@ -660,7 +660,6 @@ io.on('connection', (socket) => {
   socket.on('cameoSpecialGame', msg => {
     console.log("a player started a SPECIAL game of COMPARATIVELY FAMOUS");
     console.log("SPECIAL GAME: "+msg.gimmickName);
-    //DateStampInDatabase("allGamesLastPlayed",msg.gameName);
     addOneInDatabase("cameoGames","SpecialGamesStarted");
     incrementDatabase('cameoSpecialGames', msg.gimmickName);
   });
@@ -708,41 +707,19 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sisyphusRollback', msg => {
-    //console.log("The Rock rolled back downhill [UNLOGGED]");
     console.log("The Rock rolled back downhill");
     incrementDatabase('sisyphusCounts', "Rock Rolled Downhill");
   });
 
   socket.on('sisyphusEarnedCheevo', msg => {
-    // console.log("Cheevo Earned: " + msg.title + " [UNLOGGED]");
     console.log("Cheevo Earned: " + msg.title);
     logCheevoEarned(msg.title, msg.text, msg.points);
   });
 
   socket.on('sisyphusBoughtItem', msg => {
-    //console.log("Bought Item: " + msg.name + " [UNLOGGED]");
     console.log("Bought Item: " + msg.name);
     logSisyphusItemPurchase(msg.name,msg.desc,msg.price);
   });
-
-
-
-
-  //incrementDatabase('sisyphusCounts', "Rock Rolled Downhill");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -753,8 +730,6 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log("The socket "+socketID+ " disconnected.");
-
-    //io.emit('clientDisconnect', socketID);
   });
   
 });

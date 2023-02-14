@@ -18,6 +18,7 @@ var app = new Vue({
       score: 0,
       pointsEarnedInFinalRound: 0,
       correctSorts: 0,
+      incorrectSorts: 0,
       averageValuationOffset: 0,
       valuationOffBy: 0,
     },
@@ -204,12 +205,7 @@ var app = new Vue({
         lowerCeleb
       ];
 
-      console.log(celebs[0].name);
-      console.log(celebs[1].name);
-      console.log(celebs[2].name);
       celebs = shuffle(celebs);
-      
-      //self.showTheGuesses();
       return celebs;
       
     },
@@ -327,12 +323,8 @@ var app = new Vue({
         valueGuessed: self.ui.valueGuess
       });
 
-      sendEvent("Comparatively Famous", "Valuation", self.round.correctSide[self.round.guessValueIndex].name);
-
       self.round.valueGuessed = true;
       self.ui.itsTimeToGuessValue = false;
-
-
 
       if (self.round.number < settings.maxRounds) {
 
@@ -455,6 +447,7 @@ var app = new Vue({
             );
           } else {
             soundMiss.play();
+            self.my.incorrectSorts += 1;
           }
         }
       }, 1000);
@@ -483,7 +476,26 @@ var app = new Vue({
     },
 
     beginFinalRound() {
+
       const self = this;
+
+      //////////////////////////////////////////////////////////////
+      // First, let's put your last answers in history...
+      if (self.round.correctSide && self.round.correctSide.length > 0) {
+        self.round.correctSide.forEach((cameo,index) => {
+          let c = {
+            name: cameo.name,
+            correct: false
+          };
+          if (self.round.correctSide[index].slug == self.round.rightSide[index].slug) {
+            c.correct = true;
+          }
+          self.game.cameoHistory.push(c);
+        });
+      }
+
+      //////////////////////////////////////////////////////////////
+      // Okay, now let's set up the board for the final round.
       self.round.leftSide = self.game.availableToHire;
       self.round.rightSide = [];
       self.game.finalRound = true;
@@ -493,7 +505,6 @@ var app = new Vue({
       const self = this;
 
       let finalRoundCelebs;
-      //let celebs = [];
 
       if (self.gimmick.isSelected && self.gimmick.selected.queue && self.gimmick.selected.reuseQueueForFinal) {
         // If you're playing a gimmick round (and want to), you can reuse the queue in the final.
@@ -701,6 +712,31 @@ var app = new Vue({
         }
       }
     },
+    
+    computedCorrectSortScore() {
+      const self = this;
+      const total = self.my.correctSorts + self.my.incorrectSorts;
+      const part = self.my.correctSorts;
+
+      if (total && part) {
+        return {
+          pct: percentOf(total,part) + "%",
+          context: `(<strong>${part}</strong> of <strong>${total}</strong> correct)`
+        }
+      } else if (part == 0) {
+        return {
+          pct: 'None',
+          context: `(<strong>None</strong> of your <strong>${total}</strong> guesses were correct)`
+        }
+      } else {
+        return {
+          pct: null,
+          context: ``
+        }
+      }
+      
+    },
+
     computedValuationSkill() {
       const self = this;
 
