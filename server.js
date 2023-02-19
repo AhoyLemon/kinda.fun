@@ -2,20 +2,20 @@ var express = require('express');
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-//var secrets = require('./secrets');
+const secrets = require('./secrets');
 
 app.use(express.static('public'));
 
 //////////////////////////////////////////////
 // SQL DATABASE
 
-const jawsDBurl = process.env.JAWSDB_CRIMSON_URL;
-const liveDBurl = process.env.JAWSDB_CRIMSON_URL;
+const jawsDBurl = (process.env.JAWSDB_CRIMSON_URL || secrets.devSQLurl);
+const liveDBurl = (process.env.JAWSDB_CRIMSON_URL || secrets.liveSQLurl);
 console.log('DEV: '+jawsDBurl);
 console.log('LIVE: '+liveDBurl); 
-var mysql = require('mysql');
-var connection = mysql.createConnection(jawsDBurl);
-var liveConnection = mysql.createConnection(liveDBurl);
+const mysql = require('mysql');
+const connection = mysql.createConnection(jawsDBurl);
+const liveConnection = mysql.createConnection(liveDBurl);
 
 function addOneInDatabase(table,value) {
   const sql = 'UPDATE '+table+' SET icount = icount + 1 WHERE iname = ' + connection.escape(value) + ';';
