@@ -1,0 +1,53 @@
+// COLORS //////////////////////////////////////////////////////////////////////////////////
+$white: #efefef;
+$black: #212121;
+$blue: #4885ed;
+$red: #ee2a2a;
+$green: #17680f;
+$yellow:#e9eab9;
+$teal: #4e7f71;
+
+// COLOR PALETTE:
+// https://coolors.co/c71010-100108-662c91-e6c229-1a8fe3
+
+$red: #c71010;
+$black: #100108;
+$purple: #662c91;
+$yellow: #e6c229;
+$blue: #1a8fe3;
+$lemon-yellow: #e4e72c;
+$dirt: #101012;
+$pink: #E40066;
+
+
+
+  // COLOR UTILITIES
+  $body: $white;
+  $copy: $black;
+  $link: $blue;
+  $accent: $teal;
+  $focus: $yellow;
+
+  // BRAND COLORS /////////////////////////////////////////////////////////////////////////
+  $color-twitter: #55acee;
+  $color-github: #181616;
+  $color-facebook: #3B5998;
+
+// FONTS ////////////////////////////////////////////////////////////////////////////////
+$light:300;
+$medium:400;
+$bold:700;
+
+// FONT UTILITIES /////////////////////////////////////////////////////////////////////
+
+$redHatText: 'Red Hat Text', sans-serif;
+$jetBrainsMono: 'JetBrains Mono', monospace;
+
+$font-family: $redHatText;
+$monospaced: $jetBrainsMono;
+$headline: $font-family;
+
+// MEASUREMENTS //////////////////////////////////////////////////////////////////////
+$mobile-max: 767px;
+$desktop-min: 768px;
+$gap:20px;
