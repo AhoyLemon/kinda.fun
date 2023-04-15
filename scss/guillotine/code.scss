@@ -1,0 +1,18 @@
+// General structure adopted from Kitty Giraudel
+// https://sass-guidelin.es/#architecture
+
+// ABSRACTS are variables and mixins. (they should *never* add lines to the production CSS)
+@import "abstracts/variables"; 
+@import "abstracts/z-index";
+@import "abstracts/mixins";
+@import "abstracts/extends";
+
+// BASE is for things like global site styles and typography.
+@import "base/reset"; 
+@import "base/defaults"; 
+
+
+main.code-output { padding:20px; background:#212121; position: relative;
+  > button  { position: fixed; top:60px; right:40px; padding:0.5em 1em; cursor: pointer; }
+  pre { background:#212121; color:#efefef; font-weight: 625; font-size:14px; }
+}

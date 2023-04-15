@@ -122,8 +122,13 @@ app.get('/wrongest', (req, res) => {
 app.get('/cameo', (req, res) => {
   res.sendFile(__dirname + '/html/cameo.html');
 });
+
 app.get('/sisyphus', (req, res) => {
   res.sendFile(__dirname + '/html/sisyphus.html');
+});
+
+app.get('/guillotine', (req, res) => {
+  res.sendFile(__dirname + '/html/guillotine.html');
 });
 
 
