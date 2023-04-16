@@ -11,7 +11,7 @@
     <link href="css/guillotine.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta http-equiv="last-modified" content="2023-03-15@18:45:37">
+    <meta http-equiv="last-modified" content="2023-03-15@20:05:37">
   </head>
   <body>
     <div id="app" v-cloak> 
@@ -57,7 +57,7 @@
             <h2> <strong>{{gameRules.optionsPerDay}} billionaires</strong> have been brought before you.</h2>
             <h3>You may choose <strong>{{gameRules.choicesPerDay}}</strong> to <strong>send to the guillotine</strong>, generating wealth for your society.</h3>
             <div class="button-holder">
-              <button @click="gameStatus = 'playing'">Good luck.</button>
+              <button @click="startGame()">Good luck.</button>
             </div>
           </div>
         </header>
@@ -247,8 +247,10 @@
       <script>const testing = true;</script>
       <script src="js/libraries/moment.min.js"></script>
       <script src="js/libraries/howler.min.js"></script>
-      <script src="js/min/guillotine.min.js?updated2023-03-15@18:45:37"></script>
+      <script src="js/min/guillotine.min.js?updated2023-03-15@20:05:37"></script>
       <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+      <script src="/socket.io/socket.io.js"></script>
+      <script>var socket = io.connect();</script>
     </div>
   </body>
 </html>

@@ -8,7 +8,7 @@
 
       .game-choices
 
-        .game(:class="{ active: (gameChoice == 'guillotine'), inactive: (gameChoice && gameChoice != 'guillotine') }")
+        //-.game(:class="{ active: (gameChoice == 'guillotine'), inactive: (gameChoice && gameChoice != 'guillotine') }")
           figure.logo(@click="gameChoice = 'guillotine'")
             img(src="svg/no_more_billionaires.svg" alt="No More Billionaires! logo")
           figcaption

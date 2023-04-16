@@ -94,10 +94,30 @@ function logCheevoEarned(title,text,points) {
     if (err) throw err;
   });
 }
+
 function logSisyphusItemPurchase(name,desc,price) {
   const sql = `INSERT INTO sisyphusPurchases (iname, description, price, lastPurchase)
                 VALUES (${connection.escape(name)}, ${connection.escape(desc)}, ${connection.escape(price)}, NOW())
                 ON DUPLICATE KEY UPDATE icount = icount+1, lastPurchase = NOW()`;
+  connection.query(sql, function(err, rows, fields) {
+    if (err) throw err;
+  });
+}
+
+
+function logGuillotineHeadRemoval(name,value) {
+  const sql = `INSERT INTO guillotineHeads (iname, headValue, lastRemoved)
+                VALUES (${connection.escape(name)}, ${connection.escape(value)}, NOW())
+                ON DUPLICATE KEY UPDATE icount = icount+1, lastRemoved = NOW()`;
+  connection.query(sql, function(err, rows, fields) {
+    if (err) throw err;
+  });
+}
+
+
+function newGuillotinePlayerScore(wealthCreated,mostValuable) {
+  const sql = `INSERT INTO guillotinePlayerScores (wealthCreated, mostValuable, finishTime) 
+                VALUES (${connection.escape(wealthCreated)},${connection.escape(mostValuable)},NOW())`;
   connection.query(sql, function(err, rows, fields) {
     if (err) throw err;
   });
@@ -728,20 +748,32 @@ io.on('connection', (socket) => {
 
 
 
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  // NO MORE BILLIONAIRES sockets...
 
+  socket.on('guillotineStartGame', msg => {
+    console.log("a player started a game of NO MORE BILLIONAIRES");
+    DateStampInDatabase("allGamesLastPlayed", 'guillotine');
+  });
 
+  socket.on('guillotineRemovedHead', msg => {
+    console.log("Removed Head: " + msg.name+ " | ($"+msg.value+"B)");
+    logGuillotineHeadRemoval(msg.name, msg.value);
+  });
 
-
+  socket.on('guillotineFinishGame', msg => {
+    console.log("a player finished a game of NO MORE BILLIONAIRES");
+    newGuillotinePlayerScore(msg.wealthCreated, msg.mostValuable);
+  });
 
   socket.on('disconnect', () => {
     console.log("The socket "+socketID+ " disconnected.");
   });
   
 });
-
-
-
-
 
 
 
