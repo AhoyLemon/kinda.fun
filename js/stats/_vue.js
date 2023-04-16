@@ -4,6 +4,7 @@ var app = new Vue({
     return {
       stats: {
         general: {},
+        guillotine: {},
         cameo: {},
         invalid: {},
         wrongest: {},
@@ -262,6 +263,49 @@ var app = new Vue({
             type: "date",
             formatFn: this.formatDate
           } 
+        ],
+        guillotineHeads: [
+          {
+            label: "Name",
+            field: "iname",
+          },
+          {
+            label: "Value",
+            field: "headValue",
+            type:  "number",
+            formatFn: this.billionsOfDollars
+          },
+          {
+            label: "x",
+            field: "icount",
+            type:  "number",
+            formatFn: this.addCommas
+          },
+          {
+            label: "Last Removed",
+            field: "lastRemoved",
+            type: "date",
+            formatFn: this.formatDate
+          }
+        ],
+        guillotinePlayerScores: [
+          {
+            label: "Wealth Created",
+            field: "wealthCreated",
+            type:  "number",
+            formatFn: this.billionsOfDollars
+          },
+          {
+            label: "Most Valuable",
+            field: "mostValuable",
+            type:  "number"
+          },
+          {
+            label: "Finished",
+            field: "finishTime",
+            type: "date",
+            formatFn: this.formatDate
+          } 
         ]
       },
 
@@ -270,7 +314,8 @@ var app = new Vue({
         cameoLoaded: false,
         invalidLoaded: false,
         wrongestLoaded: false,
-        sisyphusLoaded: false
+        sisyphusLoaded: false,
+        guillotineLoaded: false
       }
     };
   },
@@ -458,6 +503,22 @@ var app = new Vue({
             self.ui.sisyphusLoaded = true;
             self.ui.viewing = "sisyphus";
           });
+      } else if (game == "guillotine") {
+        axios.get('/stats/guillotine/json')
+          .then(function (response) {
+            // handle success
+            self.stats.guillotine = response.data;
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          })
+          .then(function () {
+            console.log(self.stats.guillotine)
+            // alert('line 474');
+            self.ui.guillotineLoaded = true;
+            self.ui.viewing = "guillotine";
+          });
       }
 
       const newURL = window.location.origin + window.location.pathname + "?game="+game;
@@ -498,6 +559,20 @@ var app = new Vue({
 
       if (amount) {
         return formatter.format(amount);
+      } else {
+        return "-";
+      }
+    },
+    billionsOfDollars(amount) {
+      const dollars = Number((amount * 1000000000));
+      const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      });
+      if (amount) {
+        return formatter.format(dollars);
       } else {
         return "-";
       }
@@ -701,6 +776,22 @@ var app = new Vue({
         };
       }
     },
+
+    computedGuillotineAverageGameWealth() {
+
+      const self = this;
+      if (!self.stats.guillotine || !self.stats.guillotine.playerScores) {
+        return "0";
+      }
+      let gameCount = 0;
+      let combinedValue = 0;
+      self.stats.guillotine.playerScores.forEach((game) => {
+        gameCount++;
+        combinedValue += game.wealthCreated;
+      });
+      let a = (combinedValue / gameCount);
+      return self.billionsOfDollars(a);
+    }
 
   },
 

@@ -67,6 +67,11 @@ section.sisyphus { padding:($gap * 2) $gap $gap 0;
     display: grid; grid-template-columns: 1fr 1fr; gap:40px;
   }
 }
+section.guillotine { padding:20px;
+  .two-tables { 
+    display: grid; grid-template-columns: 3fr 2fr; gap:20px;
+  }
+}
 
 section.invalid { padding:($gap * 2) $gap $gap 0;
   

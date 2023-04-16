@@ -1,0 +1,38 @@
+section.guillotine.stats(v-if="ui.viewing == 'guillotine'")
+  figure
+    img(src="svg/no_more_billionaires.svg")
+
+  .stats-boxes
+
+    .box.big-number
+      .caption Games Started
+      .number(v-text="stats.guillotine.counts.gamesStarted")
+    .box.big-number
+      .caption Games Finished
+      .number(v-text="stats.guillotine.counts.gamesFinished")
+    .box.big-number(span="2")
+      .caption Avg Earnings
+      .number(v-text="computedGuillotineAverageGameWealth")
+
+
+  .two-tables
+
+    .good-table(v-if="ui.guillotineLoaded")
+      h2 Heads Removed
+      vue-good-table( v-if="stats.guillotine.heads && stats.guillotine.heads.length"
+                      :rows="stats.guillotine.heads"
+                      :columns="columns.guillotineHeads"
+                      theme="black-rhino"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'headValue', type: 'desc'} }"
+                      :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+    .good-table(v-if="ui.guillotineLoaded")
+      h2 Player Scores
+      vue-good-table( v-if="stats.guillotine.playerScores && stats.guillotine.playerScores.length"
+                      :rows="stats.guillotine.playerScores"
+                      :columns="columns.guillotinePlayerScores"
+                      theme="black-rhino"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'finishTime', type: 'desc'} }"
+                      :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")

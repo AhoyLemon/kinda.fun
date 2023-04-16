@@ -8,11 +8,11 @@
 
       .game-choices
 
-        //-.game(:class="{ active: (gameChoice == 'guillotine'), inactive: (gameChoice && gameChoice != 'guillotine') }")
+        .game(:class="{ active: (gameChoice == 'guillotine'), inactive: (gameChoice && gameChoice != 'guillotine') }")
           figure.logo(@click="gameChoice = 'guillotine'")
             img(src="svg/no_more_billionaires.svg" alt="No More Billionaires! logo")
           figcaption
-            .slogan We got the guillotine; you better run.
+            .slogan Generating Wealth with a Guillotine
             .players-allowed
               | For 1 player.
               br
@@ -21,15 +21,15 @@
             {
               "@context": "http://schema.org",
               "@type": "VideoGame",
-              "name": "Comparatively Famous",
+              "name": "NO MORE BILLIONAIRES",
               "url": "https://kinda.fun/guillotine",
-              "image": "https://kinda.fun/img/og-guillotine.png",
+              "image": "https://kinda.fun/img/og-guillotine.jpg",
               "playMode": "SinglePlayer",
               "applicationCategory": "browser game",
               "gamePlatform": "web browser",
               "operatingSystem": "web browser",
               "genre": "comedy",
-              "description": "We got the guillotine; you better run."
+              "description": "The game where you generate wealth through the use of a guillotine."
             }
 
         .game(:class="{ active: (gameChoice == 'cameo'), inactive: (gameChoice && gameChoice != 'cameo') }")
