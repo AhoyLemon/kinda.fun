@@ -222,7 +222,7 @@ var app = new Vue({
       self.saveToLocalStorage();
 
       const mvh = self.parseName(self.computedMostValuableToday.richestDead.name);
-      
+
       socket.emit('guillotineFinishGame', {
         wealthCreated: self.wealthCreated.today,
         mostValuable: mvh
@@ -274,7 +274,7 @@ var app = new Vue({
       
       const p = {
         playDate: self.history.lastPlay ?? Date.parse(new Date()),
-        weathCreatedToday: self.history.lastGameResults.wealthCreated,
+        weathCreatedToday: Number(self.history.lastGameResults.wealthCreated.toFixed(3))
       }
 
       let newURL = new URL(location.protocol + '//' + location.host + location.pathname);
