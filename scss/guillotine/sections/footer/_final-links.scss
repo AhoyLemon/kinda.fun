@@ -1,0 +1,10 @@
+section.final-links { background:$black; color:$white; padding-top:($gap * 4); padding-bottom: ($gap * 4);
+  .come-back-tomorrow { font-weight: 650; }
+  ul { padding-left: 1.5em;
+    li { list-style-type: disc; padding-left: 0.25em;
+      a { text-decoration: underline; text-decoration-thickness: 1px; color:$blue; transition:all 0.15s linear; cursor: pointer;
+        &:hover, &:focus { color:$lemon-yellow; text-decoration-thickness: 0.1em; }
+      }
+    }
+  }
+}

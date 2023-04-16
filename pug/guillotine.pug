@@ -1,0 +1,33 @@
+- const testing = true
+include guillotine/partials/_variables
+include guillotine/partials/_mixins
+- const pageURL = "/"
+
+doctype html
+html(lang="en")
+  
+  include guillotine/partials/_head.pug
+    
+  body
+    #app(v-cloak) 
+
+      
+      include guillotine/sections/_share-screen
+      include guillotine/sections/_title-screen
+
+      main
+        .inner
+          
+          include guillotine/sections/_choices
+          include guillotine/sections/_gallows
+          include guillotine/sections/_graves
+
+      footer.game-over(v-if="gameStatus == 'gameOver'")
+
+        include guillotine/sections/footer/_game-stats
+        include guillotine/sections/footer/_citations
+        include guillotine/sections/footer/_final-links
+        include guillotine/sections/footer/_game-by-lemon
+
+
+    include guillotine/partials/_javascripts 
