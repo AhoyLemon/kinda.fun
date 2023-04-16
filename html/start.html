@@ -40,6 +40,29 @@
               <h1>Choose a game.</h1>
             </div>
             <div class="game-choices">
+              <div class="game" :class="{ active: (gameChoice == 'guillotine'), inactive: (gameChoice &amp;&amp; gameChoice != 'guillotine') }">
+                <figure class="logo" @click="gameChoice = 'guillotine'"><img src="svg/no_more_billionaires.svg" alt="No More Billionaires! logo"/></figure>
+                <figcaption>
+                  <div class="slogan">Generating Wealth with a Guillotine</div>
+                  <div class="players-allowed">For 1 player.<br/>(with a new set of choices every day)</div>
+                </figcaption>
+                <script type="application/ld+json">
+                  {
+                    "@context": "http://schema.org",
+                    "@type": "VideoGame",
+                    "name": "NO MORE BILLIONAIRES",
+                    "url": "https://kinda.fun/guillotine",
+                    "image": "https://kinda.fun/img/og-guillotine.jpg",
+                    "playMode": "SinglePlayer",
+                    "applicationCategory": "browser game",
+                    "gamePlatform": "web browser",
+                    "operatingSystem": "web browser",
+                    "genre": "comedy",
+                    "description": "The game where you generate wealth through the use of a guillotine."
+                  }
+                  
+                </script>
+              </div>
               <div class="game" :class="{ active: (gameChoice == 'cameo'), inactive: (gameChoice &amp;&amp; gameChoice != 'cameo') }">
                 <figure class="logo" @click="gameChoice = 'cameo'"><img src="svg/comparatively-famous.svg" alt="Comparatively Famous logo"/></figure>
                 <figcaption>
@@ -159,7 +182,7 @@
       </script>
       <script src="/socket.io/socket.io.js"></script>
       <script>var socket = io.connect();</script>
-      <script src="js/min/start.min.js?updated2023-04-16T01:28:15.826Z"></script>
+      <script src="js/min/start.min.js?updated2023-04-16T02:01:10.576Z"></script>
       <script type="text/javascript">
         var _paq = window._paq = window._paq || [];
         /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
