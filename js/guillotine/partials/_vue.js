@@ -126,6 +126,7 @@ var app = new Vue({
       socket.emit('guillotineStartGame', {
         gameName: "guillotine"
       });
+      sendEvent("NO MORE BILLIONAIRES", "Game Started", "Fresh Game");
     },
 
     // Action Methods
@@ -199,6 +200,7 @@ var app = new Vue({
         name: self.parseName(person.name),
         value: person.netWorth
       });
+      sendEvent("NO MORE BILLIONAIRES", "Head Removed", self.parseName(person.name));
 
     },
 
@@ -227,6 +229,7 @@ var app = new Vue({
         wealthCreated: self.wealthCreated.today,
         mostValuable: mvh
       });
+      sendEvent("NO MORE BILLIONAIRES", "Final Score", self.wealthCreated.today);
 
       self.gameStatus = "gameOver";
       $('html, body').animate({scrollTop: '+=325px'}, 800);
@@ -282,6 +285,9 @@ var app = new Vue({
       newURL.searchParams.set('weathCreatedToday', p.weathCreatedToday);
       const cheapHash = self.generateCheapHash(p.playDate, p.weathCreatedToday);
       newURL.searchParams.set('hash', cheapHash);
+
+      sendEvent("NO MORE BILLIONAIRES", "Score Shared", p.weathCreatedToday);
+
       window.location.replace(newURL);
       return false;
     },
@@ -631,8 +637,10 @@ var app = new Vue({
 
       if (cheapHash == urlHash) {
         self.ui.shareScreen.display = true;
+        sendEvent("NO MORE BILLIONAIRES", "Share Loaded", self.ui.shareScreen.wealthCreatedToday);
       } else {
         console.warn("Hash check failed. I suspect you're trying to cheat.")
+        sendEvent("NO MORE BILLIONAIRES", "Cheater Flagged", self.ui.shareScreen.wealthCreatedToday);
         alert('please do not try to cheat, that makes it less fun.')
         window.history.replaceState({}, "new game", window.location.origin);
       }
