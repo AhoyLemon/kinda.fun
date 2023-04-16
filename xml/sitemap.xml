@@ -4,7 +4,7 @@
     <loc>https://kinda.fun</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
-    <lastmod>2023-04-16T15:38:08.044Z</lastmod>
+    <lastmod>2023-04-16T17:17:28.929Z</lastmod>
   </url>
   <url>
     <loc>https://kinda.fun/invalid</loc>
@@ -23,6 +23,11 @@
   </url>
   <url>
     <loc>https://kinda.fun/sisyphus</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://kinda.fun/guillotine</loc>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
