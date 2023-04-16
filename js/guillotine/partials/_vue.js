@@ -120,6 +120,13 @@ var app = new Vue({
 
     },
 
+    startGame() {
+      const self = this;
+      self.gameStatus = 'playing'
+      socket.emit('guillotineStartGame', {
+        gameName: "guillotine"
+      });
+    },
 
     // Action Methods
 
@@ -188,6 +195,11 @@ var app = new Vue({
         self.doEndGameActions();
       }
 
+      socket.emit('guillotineRemovedHead', {
+        name: self.parseName(person.name),
+        value: person.netWorth
+      });
+
     },
 
     doEndGameActions() {
@@ -208,6 +220,13 @@ var app = new Vue({
       self.history.lastGameResults.wealthCreated = self.wealthCreated.today;
       // Save things to localStorage.
       self.saveToLocalStorage();
+
+      const mvh = self.parseName(self.computedMostValuableToday.richestDead.name);
+      
+      socket.emit('guillotineFinishGame', {
+        wealthCreated: self.wealthCreated.today,
+        mostValuable: mvh
+      });
 
       self.gameStatus = "gameOver";
       $('html, body').animate({scrollTop: '+=325px'}, 800);
