@@ -2,8 +2,7 @@
 
   .wealth-created { padding:$gap; background-color: rgba($black,0.25);
     .label { font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color:$white; } 
-    .amount { font-family: $monospaced; word-break: break-all; font-weight: 515; letter-spacing: -0.085em; line-height: 0.95;
-      font-size:64px; color:white;
+    .amount { font-family: $monospaced; word-break: break-all; font-weight: 515; letter-spacing: -0.085em; line-height: 0.95; font-size:clamp(20px,11vw,64px); color:$white;
       sup { font-size:45%; display:inline-block; transform: translateY(-0.35em);
         &.dollar-sign { padding-right: 0.25em; }
         &.cents { padding-left: 0.25em;  letter-spacing: 0em; }

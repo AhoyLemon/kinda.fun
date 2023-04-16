@@ -1,5 +1,8 @@
 .share-screen(v-if="ui.shareScreen.display")
   .inner
+    .share-cta(v-if="computedDidYouAlreadyPlayToday")
+      span ↑ Share this URL and challenge your friends. ↑
+
     .stat-lead-in
       span On 
       span {{formatDate(ui.shareScreen.playDate)}} 
@@ -10,10 +13,6 @@
       .value(:digits="convertToBillion(ui.shareScreen.wealthCreatedToday).toString().length")
         span.big-number.dollars-today(v-html="formatDollars(ui.shareScreen.wealthCreatedToday,true)")
         sub.usd (USD)
-    //- .stat-lead-out
-    //-   span of wealth, by eliminating 
-    //-   strong {{gameRules.choicesPerDay}} 
-    //-   span billionaires.
     .stat.schools-funded(v-if="computedSchoolsFunded && computedSchoolsFunded.today")
       span.label (That's enough to fund 
       span.value {{formatNumber(computedSchoolsFunded.today)}}
@@ -21,7 +20,7 @@
       +stateSelector()
       span.label  for a year.)
 
-    .share-cta(v-if="computedDidYouAlreadyPlayToday")
-      span ↑ Share this URL and challenge your friends. ↑
     .play-cta(v-if="!computedDidYouAlreadyPlayToday")
       button(@click="playFromShare()") No More Billionaires.
+    .come-back-tomorrow(v-if="computedDidYouAlreadyPlayToday")
+      span Come back tomorrow for another {{gameRules.choicesPerDay}} choices.

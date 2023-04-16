@@ -11,7 +11,7 @@
     <link href="css/guillotine.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="The game where you generate wealth through the use of a guillotine.">
-    <meta http-equiv="last-modified" content="2023-03-15@20:45:22">
+    <meta http-equiv="last-modified" content="2023-04-16T15:43:09.117Z">
     <!-- Twitter-->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:creator" content="@AhoyLemon">
@@ -32,6 +32,7 @@
     <div id="app" v-cloak> 
       <div class="share-screen" v-if="ui.shareScreen.display">
         <div class="inner">
+          <div class="share-cta" v-if="computedDidYouAlreadyPlayToday"><span>↑ Share this URL and challenge your friends. ↑</span></div>
           <div class="stat-lead-in"><span>On </span><span>{{formatDate(ui.shareScreen.playDate)}} </span>
             <input v-if="computedDidYouAlreadyPlayToday" type="text" placeholder="Enter your name" @keyup="enterYourName()" v-model="ui.shareScreen.playerName"><strong v-else>{{ui.shareScreen.playerName}}</strong><span> created</span>
           </div>
@@ -45,10 +46,10 @@
               </template>
             </select><span class="label"> for a year.)</span>
           </div>
-          <div class="share-cta" v-if="computedDidYouAlreadyPlayToday"><span>↑ Share this URL and challenge your friends. ↑</span></div>
           <div class="play-cta" v-if="!computedDidYouAlreadyPlayToday">
             <button @click="playFromShare()">No More Billionaires.</button>
           </div>
+          <div class="come-back-tomorrow" v-if="computedDidYouAlreadyPlayToday"><span>Come back tomorrow for another {{gameRules.choicesPerDay}} choices.</span></div>
         </div>
       </div>
       <transition name="raise-curtain">
@@ -258,11 +259,14 @@
       </footer>
     </div>
     <div class="javascripts">
-      <script src="js/libraries/vue.full.js"></script>
-      <script>const testing = true;</script>
+      <script src="js/libraries/vue.min.js"></script>
+      <script>
+        const testing = false;
+        
+      </script>
       <script src="js/libraries/moment.min.js"></script>
       <script src="js/libraries/howler.min.js"></script>
-      <script src="js/min/guillotine.min.js?updated2023-03-15@20:45:22"></script>
+      <script src="js/min/guillotine.min.js?updated2023-04-16T15:43:09.117Z"></script>
       <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
       <script src="/socket.io/socket.io.js"></script>
       <script>var socket = io.connect();</script>

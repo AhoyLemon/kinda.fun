@@ -18,24 +18,24 @@
     <meta name="twitter:creator" content="@AhoyLemon"/>
     <meta name="twitter:title" content="The Wrongest Words"/>
     <meta name="twitter:description" content="You're going to defend some very stupid ideas."/>
-    <meta name="twitter:image" content="http://localhost:3000/img/og-wrongest.png"/>
-    <meta name="twitter:url" content="http://localhost:3000/wrongest"/>
+    <meta name="twitter:image" content="https://kinda.fun/img/og-wrongest.png"/>
+    <meta name="twitter:url" content="https://kinda.fun/wrongest"/>
     <!-- OpenGraph-->
     <meta property="og:title" content="The Wrongest Words"/>
     <meta property="og:type" content="website"/>
     <meta property="og:image:width" content="1200"/>
     <meta property="og:image:height" content="630"/>
     <meta property="og:description" content="You're going to defend some very stupid ideas."/>
-    <meta property="og:url" content="http://localhost:3000/wrongest"/>
-    <meta property="og:image" content="http://localhost:3000/img/og-wrongest.png"/>
+    <meta property="og:url" content="https://kinda.fun/wrongest"/>
+    <meta property="og:image" content="https://kinda.fun/img/og-wrongest.png"/>
     <meta property="og:email" content="lemon@kinda.fun"/>
     <script type="application/ld+json">
       {
         "@context": "http://schema.org",
         "@type": "VideoGame",
         "name": "The Wrongest Words",
-        "url": "http://localhost:3000/wrongest",
-        "image": "http://localhost:3000/img/invalid/og-wide.png",
+        "url": "https://kinda.fun/wrongest",
+        "image": "https://kinda.fun/img/invalid/og-wide.png",
         "playMode": "MultiPlayer",
         "applicationCategory": "browser game",
         "gamePlatform": "web browser",
@@ -70,19 +70,19 @@
         "screenshot": [
           {
             "@type": "ImageObject",
-            "url": "http://localhost:3000/img/wrongest/screenshots/1.png",
+            "url": "https://kinda.fun/img/wrongest/screenshots/1.png",
             "width": 980,
             "height": 780
           },
           {
             "@type": "ImageObject",
-            "url": "http://localhost:3000/img/wrongest/screenshots/2.png",
+            "url": "https://kinda.fun/img/wrongest/screenshots/2.png",
             "width": 980,
             "height": 780
           },
           {
             "@type": "ImageObject",
-            "url": "http://localhost:3000/img/wrongest/screenshots/3.jpg",
+            "url": "https://kinda.fun/img/wrongest/screenshots/3.jpg",
             "width": 980,
             "height": 780
           }
@@ -142,7 +142,7 @@
             <div class="content">
               <h2>There's nobody here.</h2>
               <p>Either you have the wrong room code, or your host hasn't entered their name yet.</p>
-              <p> <a href="http://localhost:3000/wrongest">Try again</a>?</p>
+              <p> <a href="https://kinda.fun/wrongest">Try again</a>?</p>
             </div>
           </div>
         </div>
@@ -332,16 +332,15 @@
             <p>Found a bug? Want to add your own lies to the game? <a href="https://github.com/AhoyLemon/kinda.fun/issues/new/choose">Submit an issue</a> on GitHub. </p>
           </div>
         </div>
-        <section class="final-links"><a href="https://github.com/AhoyLemon/invalid">GitHub Repo.</a><a href="http://localhost:3000/wrongest">Play Again.</a></section>
+        <section class="final-links"><a href="https://github.com/AhoyLemon/invalid">GitHub Repo.</a><a href="https://kinda.fun/wrongest">Play Again.</a></section>
       </main>
-      <link rel="stylesheet" href="css/testing.css"/>
-      <div class="testing-banner wrongest">
-        <div class="inner">Test Mode Is On</div>
-      </div>
     </div>
     <div class="javascripts">
-      <script src="js/libraries/vue.full.js"></script>
-      <script>const testing = true;</script>
+      <script src="js/libraries/vue.min.js"></script>
+      <script>
+        const testing = false;
+        
+      </script>
       <script src="js/libraries/howler.min.js"></script>
       <script src="js/libraries/vue-toast-notification.min.js"></script>
       <link href="css/libraries/vue-toast-notification.css" type="text/css" rel="stylesheet"/>
@@ -350,7 +349,7 @@
         var socket = io.connect();
         Vue.use(VueToast);
       </script>
-      <script src="js/min/wrongest.min.js?updated2023-04-16T04:27:37.924Z"></script>
+      <script src="js/min/wrongest.min.js?updated2023-04-16T15:38:08.195Z"></script>
       <script type="text/javascript">
         var _paq = window._paq = window._paq || [];
           /* tracker methods like "setCustomDimension" should be called before "trackPageView" */

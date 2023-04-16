@@ -12,7 +12,7 @@ section.stats {
 
     &.wealth-created {
       .value { line-height: 0.95; }
-      .dollars-today { font-size:115px; letter-spacing: -0.05em; text-shadow: 1px 1px 0.05em rgba($black,0.5);
+      .dollars-today { font-size:clamp(24px,10.15vw,115px); letter-spacing: -0.05em; text-shadow: 1px 1px 0.05em rgba($black,0.5);
         sup { font-size:45%; display:inline-block; transform: translateY(-0.35em); }
         .cents { padding-left:0.25em; letter-spacing: 0em; }
       }
