@@ -3,6 +3,17 @@ main.general-stats(v-if="ui.viewing == 'general'")
   .inside
 
     .game-summaries
+
+      .summary
+        figure
+          img(src="svg/no_more_billionaires.svg" @click="getData('guillotine')")
+        .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.guillotine")
+          .time-caption Last Game
+          .time-ago(v-text="formatTime(stats.general.lastPlayed.guillotine,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.lastPlayed.guillotine,'calendar')")
+        .button-holder
+          button(@click="getData('guillotine')") Details
+
       .summary
         figure
           img(src="svg/comparatively-famous.svg" @click="getData('cameo')")

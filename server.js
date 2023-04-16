@@ -330,6 +330,19 @@ app.get('/stats/sisyphus/json', (req, res) => {
   });
 });
 
+app.get('/stats/guillotine/json', (req, res) => {
+  let guillotineData =  {
+    heads: []
+  };
+  connection.query('SELECT * FROM guillotineHeads', function(err, results) {
+    if(err) throw err;
+    guillotineData.heads = results;
+  });
+
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(guillotineData));
+});
+
 
 io.on('connection', (socket) => {
 

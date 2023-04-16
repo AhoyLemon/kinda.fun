@@ -4,6 +4,7 @@ var app = new Vue({
     return {
       stats: {
         general: {},
+        guillotine: {},
         cameo: {},
         invalid: {},
         wrongest: {},
@@ -457,6 +458,19 @@ var app = new Vue({
             // always executed
             self.ui.sisyphusLoaded = true;
             self.ui.viewing = "sisyphus";
+          });
+      } else if (game == "guillotine") {
+        axios.get('/stats/guillotine/json')
+          .then(function (response) {
+            // handle success
+            self.stats.guillotine = response.data;
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          })
+          .then(function () {
+            alert('success');
           });
       }
 
