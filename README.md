@@ -1,6 +1,6 @@
 ![kinda.fun](https://kinda.fun/og-wide.png)
 
-There's currently four games here.
+There's currently five games here...
 
 ## Comparatively Famous
 [![Comparatively Famous Logo](https://kinda.fun/img/og-famous.png)](https://kinda.fun/cameo)
@@ -9,6 +9,11 @@ There's currently four games here.
 
 ## Invalid
 [![Invalid Logo](https://kinda.fun/img/invalid/og-wide.png)](https://kinda.fun/invalid)
+
+* [Invalid Wiki](https://github.com/AhoyLemon/kinda.fun/wiki/Invalid)
+
+## No More Billionaires
+[![Invalid Logo](https://kinda.fun/img/og-guillotine.jpg)](https://kinda.fun/guillotine)
 
 * [Invalid Wiki](https://github.com/AhoyLemon/kinda.fun/wiki/Invalid)
 
