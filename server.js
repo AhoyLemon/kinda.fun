@@ -320,7 +320,6 @@ app.get('/stats/sisyphus/json', (req, res) => {
     results.forEach((key) => {
       sisyphusData.counts[key.iname] = key.icount;
     });
-    //sisyphusData.counts = results;
   });
   connection.query('SELECT * FROM sisyphusPurchases;', function(err, results) {
     if(err) throw err;
@@ -332,15 +331,29 @@ app.get('/stats/sisyphus/json', (req, res) => {
 
 app.get('/stats/guillotine/json', (req, res) => {
   let guillotineData =  {
-    heads: []
+    counts: {},
+    heads: [],
+    playerScores: []
   };
+  connection.query('SELECT * FROM guillotineCounts;', function(err, results) {
+    if(err) throw err;
+    results.forEach((key) => {
+      guillotineData.counts[key.iname] = key.icount;
+    });
+  });
   connection.query('SELECT * FROM guillotineHeads', function(err, results) {
     if(err) throw err;
     guillotineData.heads = results;
+    // res.setHeader('Content-Type', 'application/json');
+    // res.send(JSON.stringify(guillotineData));
   });
-
-  res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(guillotineData));
+  connection.query('SELECT * FROM guillotinePlayerScores', function(err, results) {
+    if(err) throw err;
+    guillotineData.playerScores = results;
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(guillotineData));
+  });
+  
 });
 
 
@@ -770,6 +783,7 @@ io.on('connection', (socket) => {
   socket.on('guillotineStartGame', msg => {
     console.log("a player started a game of NO MORE BILLIONAIRES");
     DateStampInDatabase("allGamesLastPlayed", 'guillotine');
+    incrementDatabase('guillotineCounts', "gamesStarted");
   });
 
   socket.on('guillotineRemovedHead', msg => {
@@ -780,6 +794,7 @@ io.on('connection', (socket) => {
   socket.on('guillotineFinishGame', msg => {
     console.log("a player finished a game of NO MORE BILLIONAIRES");
     newGuillotinePlayerScore(msg.wealthCreated, msg.mostValuable);
+    incrementDatabase('guillotineCounts', "gamesFinished");
   });
 
   socket.on('disconnect', () => {

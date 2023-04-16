@@ -76,13 +76,19 @@
         </main>
         <aside class="general general-stats" v-if="ui.viewing != 'general'">
           <div class="inside">
+            <div class="summary" :class="{ active: (ui.viewing == 'guillotine') }">
+              <figure><img src="svg/no_more_billionaires.svg" @click="getData('guillotine')"/></figure>
+              <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.guillotine">
+                <div class="time-caption">Last Game</div>
+                <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.guillotine,'fromNow')"></div>
+              </div>
+            </div>
             <div class="summary" :class="{ active: (ui.viewing == 'cameo') }">
               <figure><img src="svg/comparatively-famous.svg" @click="getData('cameo')"/></figure>
               <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.cameo">
                 <div class="time-caption">Last Game</div>
                 <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')"></div>
               </div>
-              <div class="more-info"></div>
             </div>
             <div class="summary" :class="{ active: (ui.viewing == 'invalid'), inactive:(ui.viewing != 'invalid')  }">
               <figure><img src="svg/invalid-logo.svg" @click="getData('invalid')"/></figure>
@@ -111,6 +117,33 @@
           <section class="loading stats" v-if="ui.viewing == 'loading'">
             <div class="inside"><img src="svg/rings.svg"/>
               <h3>Loading data...</h3>
+            </div>
+          </section>
+          <section class="guillotine stats" v-if="ui.viewing == 'guillotine'">
+            <figure><img src="svg/no_more_billionaires.svg"/></figure>
+            <div class="stats-boxes">
+              <div class="box big-number">
+                <div class="caption">Games Started</div>
+                <div class="number" v-text="stats.guillotine.counts.gamesStarted"></div>
+              </div>
+              <div class="box big-number">
+                <div class="caption">Games Finished</div>
+                <div class="number" v-text="stats.guillotine.counts.gamesFinished"></div>
+              </div>
+              <div class="box big-number" span="2">
+                <div class="caption">Avg Earnings</div>
+                <div class="number" v-text="computedGuillotineAverageGameWealth"></div>
+              </div>
+            </div>
+            <div class="two-tables">
+              <div class="good-table" v-if="ui.guillotineLoaded">
+                <h2>Heads Removed</h2>
+                <vue-good-table v-if="stats.guillotine.heads &amp;&amp; stats.guillotine.heads.length" :rows="stats.guillotine.heads" :columns="columns.guillotineHeads" theme="black-rhino" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'headValue', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              </div>
+              <div class="good-table" v-if="ui.guillotineLoaded">
+                <h2>Player Scores</h2>
+                <vue-good-table v-if="stats.guillotine.playerScores &amp;&amp; stats.guillotine.playerScores.length" :rows="stats.guillotine.playerScores" :columns="columns.guillotinePlayerScores" theme="black-rhino" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'finishTime', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+              </div>
             </div>
           </section>
           <section class="famous stats" v-if="ui.viewing == 'cameo'">

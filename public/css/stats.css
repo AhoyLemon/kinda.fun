@@ -371,6 +371,17 @@ section.sisyphus .two-tables {
   gap: 40px;
 }
 
+section.guillotine {
+  padding: 20px;
+}
+section.guillotine .two-tables {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 3fr 20px 2fr;
+  grid-template-columns: 3fr 2fr;
+  gap: 20px;
+}
+
 section.invalid {
   padding: 80px 40px 40px 0;
 }
@@ -505,7 +516,6 @@ aside.general-stats img {
   max-width: 100%;
 }
 aside.general-stats .inside {
-  position: -webkit-sticky;
   position: sticky;
   top: 20px;
 }

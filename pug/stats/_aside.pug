@@ -2,13 +2,19 @@ aside.general.general-stats(v-if="ui.viewing != 'general'")
 
   .inside
 
+    .summary(:class="{ active: (ui.viewing == 'guillotine') }")
+      figure
+        img(src="svg/no_more_billionaires.svg" @click="getData('guillotine')")
+      .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.guillotine")
+        .time-caption Last Game
+        .time-ago(v-text="formatTime(stats.general.lastPlayed.guillotine,'fromNow')")
+
     .summary(:class="{ active: (ui.viewing == 'cameo') }")
       figure
         img(src="svg/comparatively-famous.svg" @click="getData('cameo')")
       .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
         .time-caption Last Game
         .time-ago(v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')")
-      .more-info
 
     .summary(:class="{ active: (ui.viewing == 'invalid'), inactive:(ui.viewing != 'invalid')  }")
       figure
