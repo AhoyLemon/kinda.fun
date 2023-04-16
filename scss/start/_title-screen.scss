@@ -64,7 +64,10 @@ html { overflow-x: hidden; }
 }
 @media (min-width:701px) {
   .title-screen { grid-template-rows: 1fr 105px;
-    .game-choices { display:grid; grid-template-columns: repeat(2,1fr); gap:40px; padding-left: 20px; padding-right: 20px; max-width: 888px; margin-left: auto; margin-right: auto; }
+    .game-choices { display:flex; flex-wrap:wrap; gap:40px; justify-content: space-evenly; // max-width: 888px; margin-left: auto; margin-right: auto;
+      .game { flex-basis: 44%; flex-shrink: 1; flex-grow: 0; }
+    }
+
     .create-or-join { 
       .options { display:grid; grid-template-columns: 1fr 60px 1fr; }
       button { font-size:36px; }

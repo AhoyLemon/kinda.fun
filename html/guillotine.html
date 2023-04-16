@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>No More Billionaires.</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@300..700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet">
+    <link href="css/guillotine.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta http-equiv="last-modified" content="2023-03-15@20:05:37">
+  </head>
+  <body>
+    <div id="app" v-cloak> 
+      <div class="share-screen" v-if="ui.shareScreen.display">
+        <div class="inner">
+          <div class="stat-lead-in"><span>On </span><span>{{formatDate(ui.shareScreen.playDate)}} </span>
+            <input v-if="computedDidYouAlreadyPlayToday" type="text" placeholder="Enter your name" @keyup="enterYourName()" v-model="ui.shareScreen.playerName"><strong v-else>{{ui.shareScreen.playerName}}</strong><span> created</span>
+          </div>
+          <div class="stat wealth-created today" v-if="ui.shareScreen.wealthCreatedToday &gt; 0">
+            <div class="value" :digits="convertToBillion(ui.shareScreen.wealthCreatedToday).toString().length"><span class="big-number dollars-today" v-html="formatDollars(ui.shareScreen.wealthCreatedToday,true)"></span><sub class="usd">(USD)</sub></div>
+          </div>
+          <div class="stat schools-funded" v-if="computedSchoolsFunded &amp;&amp; computedSchoolsFunded.today"><span class="label">(That's enough to fund </span><span class="value">{{formatNumber(computedSchoolsFunded.today)}}</span><span class="label"> public schools in </span>
+            <select class="state-selector" v-on="changeState()" v-model="ui.currentState">
+              <template v-for="(school, key) in data.stateSchools">
+                <option :value="school.state" :selected="school.state == ui.currentState">{{school.state}}</option>
+              </template>
+            </select><span class="label"> for a year.)</span>
+          </div>
+          <div class="share-cta" v-if="computedDidYouAlreadyPlayToday"><span>↑ Share this URL and challenge your friends. ↑</span></div>
+          <div class="play-cta" v-if="!computedDidYouAlreadyPlayToday">
+            <button @click="playFromShare()">No More Billionaires.</button>
+          </div>
+        </div>
+      </div>
+      <transition name="raise-curtain">
+        <header class="title-screen" v-if="gameStatus == 'titleScreen'">
+          <!-- Message if you've already played today.-->
+          <div class="inner" v-if="computedDidYouAlreadyPlayToday">
+            <h1><span>It is </span>
+              <time v-html="computedToday"></time>
+            </h1>
+            <template v-if="history.lastGameResults.wealthCreated">
+              <h3>You generated <strong>{{formatDollars(history.lastGameResults.wealthCreated,true,true)}} </strong> of wealth. Come back tomorrow to generate more.</h3>
+            </template>
+            <div class="button-holder">
+              <button @click="shareMyScores()">Share My Score</button>
+            </div>
+          </div>
+          <div class="inner" v-else>
+            <h1><span>It is </span>
+              <time v-html="computedToday"></time>
+            </h1>
+            <h2> <strong>{{gameRules.optionsPerDay}} billionaires</strong> have been brought before you.</h2>
+            <h3>You may choose <strong>{{gameRules.choicesPerDay}}</strong> to <strong>send to the guillotine</strong>, generating wealth for your society.</h3>
+            <div class="button-holder">
+              <button @click="startGame()">Good luck.</button>
+            </div>
+          </div>
+        </header>
+      </transition>
+      <main>
+        <div class="inner">
+          <section class="choices">
+            <header class="living-info">
+              <div class="mobile-warning"><strong>NOTE: </strong><span>This game works much better on bigger screens. Please try this on a computer.</span></div>
+              <!-- Billionaires Available-->
+              <div class="row available" v-if="computedRemainingRedistributions &gt; 0"><span class="count" v-text="currentBillionaires.length"></span><span class="label">billionaires available.</span></div>
+              <div class="row available" v-else><span class="count" v-text="currentBillionaires.length"></span><span class="label">billionaires remain.</span></div>
+              <!-- Choices Remaining-->
+              <div class="row choices" v-if="computedRemainingRedistributions &gt; 1"><span class="count" v-text="padNumber(computedRemainingRedistributions,2)"></span><span class="label">choices remaining.</span></div>
+              <div class="row choices" v-else-if="computedRemainingRedistributions == 1"><span class="count">One</span><span class="label">last choice remaining.</span></div>
+              <div class="row choices" v-else><span class="label">All choices made for today.</span></div>
+            </header>
+            <div class="grid-holder">
+              <div class="billionaire-grid">
+                <ul>
+                  <li v-for="(person, key) in sortThoseBillionaires(currentBillionaires)" :key="key">
+                    <button class="billionaire" status="alive" :disabled="ui.currentlyBusy || !computedRemainingRedistributions || computedRemainingRedistributions &lt; 1" @click="dropBlade(person, key)">
+                      <div class="info">
+                        <div class="flag"> 
+                          <template v-if="person.flag"><img :src="'svg/guillotine/flags/'+person.flag+'.svg'" :title="person.country"></template>
+                          <template v-else><span>?</span></template>
+                        </div>
+                        <div class="name"> 
+                          <template v-if="person.name != parseName(person.name)"><span :title="person.name">{{parseName(person.name)}}</span></template>
+                          <template v-else><span>{{parseName(person.name)}}</span></template>
+                        </div>
+                        <div class="source">{{person.source}}</div>
+                        <div class="wealth" v-if="ui.sortBy == 'highestWealth'"><sup>$</sup><strong>{{person.netWorth.toFixed(1)}}</strong><sub class="b">Billion</sub></div>
+                        <div class="industry icon" v-else-if="parseIndustryIcon(person.industry)"><img :src="'svg/guillotine/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry"></div>
+                        <div class="industry text" v-else-if="person.industry">{{person.industry}}</div>
+                      </div>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
+          <section class="gallows">
+            <div class="wealth-created" v-if="ui.wealthDisplay &gt; 0">
+              <div class="label">Wealth Created Today</div>
+              <div class="amount dollars" v-html="formatDollars(ui.wealthDisplay,true)"></div>
+            </div><figure class="g-wrapper">
+  <svg id="TheG" class="g" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-miterlimit:1.5" viewBox="0 0 1000 1000">
+    <g id="G_Shoulders" transform="matrix(0.635407,0,0,0.635407,441.61,648.014)">
+      <image id="G_Head" class="g-head" href="" height="200" width="200" />
+    </g>
+    
+    <g class="g-blade" id="G_Blade">
+      <path d="M422.006 223.263v147.93l173.748 94.899V223.961l-173.748-.698Z" style="fill:#dfe2e2" transform="translate(0 8.954)"/>
+      <path d="M422.006 223.263v147.93l173.748 94.899V223.961l-173.748-.698Zm4.166 4.184 165.416.664v230.958l-165.416-90.347V227.447Z" style="fill:#001742" transform="translate(0 8.954)"/>
+      <path d="m422.006 344.112 173.748 94.898V223.961l-173.748-.698v120.849Z" style="fill:#a7a7a7" transform="matrix(.95578 0 0 .95578 22.505 23.598)"/>
+      <path d="M477.129 302.811h-99.781V196.747h109.244c1.561-9.223 9.597-16.258 19.263-16.258 9.667 0 17.703 7.035 19.264 16.258h114.596v106.064H535.722c.122-1.087.185-2.194.185-3.315 0-16.271-13.21-29.481-29.482-29.481-16.271 0-29.481 13.21-29.481 29.481 0 1.121.063 2.228.185 3.315Z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:5.21px" transform="translate(0 -26.345)"/>
+    </g>
+    <g clas="g-structure" id="G_Structure">
+      <path d="M309.086 727.166h30.725v161.841h-30.725z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:6.74px;stroke-linejoin:round" transform="matrix(.6333 .40827 -.85465 1.32568 786.195 -401.574)"/>
+      <path d="M309.086 727.166h30.725v161.841h-30.725z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:6.74px;stroke-linejoin:round" transform="matrix(.63621 -.40371 .8451 1.33179 -175.074 -143.063)"/>
+      <path d="M461.148 712.418h-57.306V631.3H614.05v81.118h-59.578c.078-1.104.117-2.216.117-3.336 0-25.818-20.961-46.78-46.779-46.78-25.819 0-46.78 20.962-46.78 46.78 0 1.12.04 2.232.118 3.336Z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:7.5px;stroke-linejoin:round" transform="translate(-57.566 -78.132) scale(1.11114)"/>
+      <path d="M554.525 711.545h59.525v81.118H403.842v-81.118h57.252c1.283 24.675 21.724 44.316 46.716 44.316s45.433-19.641 46.715-44.316Z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:7.5px;stroke-linejoin:round" transform="translate(-57.566 -78.132) scale(1.11114)"/>
+      <path d="M352.38 168.145h47.101v588.756H352.38z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:8.33px;stroke-linejoin:round" transform="translate(-2)"/>
+      <path d="M352.38 168.145h47.101v588.756H352.38z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:8.33px;stroke-linejoin:round" transform="translate(263.158)"/>
+      <path d="M604.455 894.714h229.397v45.356H604.455z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:8.33px;stroke-linejoin:round" transform="translate(-423.905)"/>
+      <path d="M397.736 850.23h215.441v42.739H397.736zM604.455 894.714h229.397v45.356H604.455z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:8.33px;stroke-linejoin:round"/>
+      <path d="M352.38 168.145h47.101v588.756H352.38z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:11.49px;stroke-linejoin:round" transform="matrix(1 0 0 .22667 264.031 719.661)"/>
+      <path d="M352.38 168.145h47.101v588.756H352.38z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:11.49px;stroke-linejoin:round" transform="matrix(1 0 0 .22667 -2 719.661)"/>
+      <path d="M335.808 135h344.531v35.761H335.808z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:8.33px;stroke-linejoin:round"/>
+      <path d="M312.258 85.074a7.835 7.835 0 0 1-.014-.458c0-21.431 86.979-38.83 194.113-38.83S700.47 63.185 700.47 84.616c0 .351-.023.701-.069 1.047v50.21H312.258V85.074Z" style="fill:#ffb849;stroke:#1e1f2a;stroke-width:8.33px;stroke-linejoin:round"/>
+    </g>
+  </svg>
+</figure>
+          </section>
+          <section class="graves">
+            <div class="above-ground"></div>
+            <div class="below-ground">
+              <div class="grid-holder">
+                <div class="billionaire-grid">
+                  <transition-group name="bury-body" tag="ul">
+                    <li class="billionaire" status="dead" disabled v-for="(person, key) in formerBillionaires" :key="person.name">
+                      <div class="info">
+                        <div class="flag"> 
+                          <template v-if="person.flag"><img :src="'svg/guillotine/flags/'+person.flag+'.svg'"></template>
+                          <template v-else><span>?</span></template>
+                        </div>
+                        <div class="name"> <span>{{parseName(person.name)}}</span></div>
+                        <div class="source">{{person.source}}</div>
+                        <div class="wealth" v-if="person.netWorth &gt; 1"><sup>$</sup><strong>{{person.netWorth.toFixed(1)}}</strong><sub class="b">Billion</sub></div>
+                        <div class="industry icon" v-else-if="parseIndustryIcon(person.industry)"><img :src="'svg/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry"></div>
+                        <div class="industry text" v-else-if="person.industry">{{person.industry}}</div>
+                      </div>
+                    </li>
+                  </transition-group>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+      <footer class="game-over" v-if="gameStatus == 'gameOver'">
+        <!-- Today's Stats-->
+        <section class="stats">
+          <div class="inner">
+            <div class="stat-grid">
+              <!-- Wealth Created Today-->
+              <div class="stat wealth-created today" v-if="wealthCreated.today &gt; 0">
+                <div class="label you-created">You created </div>
+                <div class="value" :digits="convertToBillion(wealthCreated.today).toString().length"><span class="big-number dollars-today" v-html="formatDollars(wealthCreated.today,true)"></span><sub class="usd">(USD)</sub></div>
+                <div class="label right-align"> of wealth today.</div>
+              </div>
+              <div class="stat schools-funded" v-if="computedSchoolsFunded &amp;&amp; computedSchoolsFunded.today"><span class="label">That's enough to fund </span><span class="value">{{formatNumber(computedSchoolsFunded.today)}}</span><span class="label"> public schools in </span>
+                <select class="state-selector" v-on="changeState()" v-model="ui.currentState">
+                  <template v-for="(school, key) in data.stateSchools">
+                    <option :value="school.state" :selected="school.state == ui.currentState">{{school.state}}</option>
+                  </template>
+                </select><span class="label"> for a year.</span>
+              </div>
+              <div class="stat possible-wealth" v-if="computedWealthToday &amp;&amp; computedWealthToday.claimedPct "><span class="label">You liberated </span><span class="value">{{computedWealthToday.claimedPct}}<sup>%</sup></span><span class="label"> of the </span><span class="value" v-text="formatDollars(computedWealthToday.total,true,true,true)"></span><span class="label"> available today.</span></div>
+              <div class="stat mvp overall" v-if="computedMostValuableToday.richestTotal.name"><span class="label">The most valuable choice today was </span><span class="value">{{parseName(computedMostValuableToday.richestTotal.name)}}</span><span class="label escaped" v-if="computedMostValuableToday.richestTotal.name != computedMostValuableToday.richestDead.name"> ESCAPED!</span><span class="label captured" v-else>CAPTURED!</span></div>
+              <div class="stat mvp yours" v-if="computedMostValuableToday.richestDead.name &amp;&amp; (computedMostValuableToday.richestTotal.name != computedMostValuableToday.richestDead.name)"><span class="label">Your most valuable head belonged to </span><span class="value">{{parseName(computedMostValuableToday.richestDead.name)}}</span></div>
+            </div>
+          </div>
+        </section>
+        <!-- All Time Stats-->
+        <section class="stats" v-if="wealthCreated.allTime &amp;&amp; (wealthCreated.allTime &gt; wealthCreated.today)">
+          <div class="inner">
+            <div class="stat-grid">
+              <!-- Wealth Created All Time-->
+              <div class="stat wealth-created all-time">
+                <div class="label you-created">You created </div>
+                <div class="value" :digits="convertToBillion(wealthCreated.allTime).toString().length"><span class="big-number dollars-today" v-html="formatDollars(wealthCreated.allTime,true)"></span><sub class="usd">(USD)</sub></div>
+                <div class="label right-align"> in wealth since  
+                  <time datetime="history.firstPlay">{{formatDate(history.firstPlay)}}</time>.
+                </div>
+              </div>
+              <div class="stat schools-funded" v-if="computedSchoolsFunded.allTime"><span class="label">That's enough to fund </span><span class="value">{{formatNumber(computedSchoolsFunded.allTime)}}</span><span class="label"> public schools in </span>
+                <select class="state-selector" v-on="changeState()" v-model="ui.currentState">
+                  <template v-for="(school, key) in data.stateSchools">
+                    <option :value="school.state" :selected="school.state == ui.currentState">{{school.state}}</option>
+                  </template>
+                </select><span class="label"> for a year.</span>
+              </div>
+              <div class="stat mvp all-time" v-if="computedMostValuableAllTime.name"><span class="label">The most valuable person you've retired was  </span><span class="value">{{computedMostValuableAllTime.name}}</span><span class="value net-worth"> {{' ($'+computedMostValuableAllTime.netWorth+" B)"}}</span></div>
+            </div>
+          </div>
+        </section>
+        <section class="citations">
+          <div class="inner">
+            <div class="citations-header">Citations</div>
+            <ul class="citations-list">
+              <li class="cite"><a href="https://www.forbes.com/billionaires/" target="_blank">Forbes Billionaires 2022</a></li>
+              <li class="cite"><a href="https://educationdata.org/public-education-spending-statistics" target="_blank">U.S. Public Education Spending Statistics</a></li>
+              <li class="cite"><a href="https://www.forbes.com/billionaires/" target="_blank">Billionaires of 2022 CSV on Kaggle</a></li>
+              <li class="cite"><a href="https://www.publicschoolreview.com/average-school-size-stats/national-data" target="_blank">Average Public School Student Size (2023)</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="final-links">
+          <div class="inner">
+            <div class="come-back-tomorrow">
+              <p>Come back tommorow for your chance at another {{gameRules.optionsPerDay}} billionaires.</p>
+            </div>
+            <div class="meanwhile"><span>Meanwhile, you could...</span>
+              <ul>
+                <li><a @click="shareMyScores()">Share your scores.</a></li>
+                <li> <a href="https://kinda.fun">Play another game on kinda.fun</a></li>
+                <li><a href="https://www.oxfam.org/en">Donate to Oxfam</a></li>
+                <li> <a href="https://github.com/ahoyLemon/kinda.fun">Check out this project on GitHub.</a></li>
+                <li><a href="https://damn.dog">Play a few rounds of damn.dog</a></li>
+                <li><a href="https://bailproject.org/">Donate to The Bail Project</a></li>
+                <li><a href="https://partypartypartyparty.party">Party.</a></li>
+                <li><a href="https://thefpl.us">Listen to The F Plus.</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="game-by-lemon">
+          <div class="inner by-lemon-text"><a href="https://ahoylemon.xyz">
+              <h3>This game is <span class="by-lemon">by Lemon.</span></h3><img class="wedge" src="/svg/lemon.svg" alt="Lemon"></a></div>
+        </section>
+      </footer>
+    </div>
+    <div class="javascripts">
+      <script src="js/libraries/vue.full.js"></script>
+      <script>const testing = true;</script>
+      <script src="js/libraries/moment.min.js"></script>
+      <script src="js/libraries/howler.min.js"></script>
+      <script src="js/min/guillotine.min.js?updated2023-03-15@20:05:37"></script>
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+      <script src="/socket.io/socket.io.js"></script>
+      <script>var socket = io.connect();</script>
+    </div>
+  </body>
+</html>
