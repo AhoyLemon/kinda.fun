@@ -377,9 +377,9 @@ section.guillotine {
 section.guillotine .two-tables {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 3fr 20px 2fr;
+  -ms-grid-columns: 3fr 40px 2fr;
   grid-template-columns: 3fr 2fr;
-  gap: 20px;
+  gap: 40px;
 }
 
 section.invalid {
@@ -514,10 +514,6 @@ aside.general-stats {
 }
 aside.general-stats img {
   max-width: 100%;
-}
-aside.general-stats .inside {
-  position: sticky;
-  top: 20px;
 }
 aside.general-stats .summary {
   margin-bottom: 4rem;

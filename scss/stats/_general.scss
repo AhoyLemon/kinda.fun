@@ -36,7 +36,7 @@ main.general-stats { grid-column: span 2; min-height: 99vh; display: flex; align
 
 aside.general-stats { padding:100px $padding; font-family: $serif;
   img { max-width: 100%; }
-  .inside { position: sticky; top:20px; }
+  // .inside { position: sticky; top:20px; }
   .summary { margin-bottom: 4rem;
     figure { cursor: pointer; opacity: 0.5; margin-bottom: 1rem;
       &:hover { opacity: 1; }

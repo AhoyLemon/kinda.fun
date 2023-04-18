@@ -791,6 +791,20 @@ var app = new Vue({
       });
       let a = (combinedValue / gameCount);
       return self.billionsOfDollars(a);
+    },
+
+    computedGuillotineMostKilled() {
+      const self = this;
+      if (!self.stats.guillotine || !self.stats.guillotine.heads) {
+        return "-";
+      }
+
+      const maxObj = self.stats.guillotine.heads.reduce((accumulator, current) => {
+        return accumulator.icount > current.icount ? accumulator : current;
+      });
+
+      return maxObj;
+
     }
 
   },

@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <title>Kinda Fun Stats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&amp;display=swap" rel="stylesheet"/>
     <link href="css/stats.css" type="text/css" rel="stylesheet"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
   </head>
@@ -122,6 +123,11 @@
           <section class="guillotine stats" v-if="ui.viewing == 'guillotine'">
             <figure><img src="svg/no_more_billionaires.svg"/></figure>
             <div class="stats-boxes">
+              <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.cameo">
+                <div class="caption">Last Game</div>
+                <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.guillotine,'fromNow')"></div>
+                <div class="calendar" v-text="formatTime(stats.general.lastPlayed.guillotine,'calendar')"></div>
+              </div>
               <div class="box big-number">
                 <div class="caption">Games Started</div>
                 <div class="number" v-text="stats.guillotine.counts.gamesStarted"></div>
@@ -129,6 +135,15 @@
               <div class="box big-number">
                 <div class="caption">Games Finished</div>
                 <div class="number" v-text="stats.guillotine.counts.gamesFinished"></div>
+              </div>
+              <div class="box big-number">
+                <div class="caption">Scores Shared</div>
+                <div class="number" v-text="stats.guillotine.counts.scoresShared"></div>
+              </div>
+              <div class="box big-name" span="2" v-if="computedGuillotineMostKilled &amp;&amp; computedGuillotineMostKilled.iname">
+                <div class="caption">Most Frequently Killed</div>
+                <div class="name">{{computedGuillotineMostKilled.iname}}</div>
+                <div class="subtext">Sent to the guillotine  {{computedGuillotineMostKilled.icount}} times</div>
               </div>
               <div class="box big-number" span="2">
                 <div class="caption">Avg Earnings</div>
@@ -138,7 +153,7 @@
             <div class="two-tables">
               <div class="good-table" v-if="ui.guillotineLoaded">
                 <h2>Heads Removed</h2>
-                <vue-good-table v-if="stats.guillotine.heads &amp;&amp; stats.guillotine.heads.length" :rows="stats.guillotine.heads" :columns="columns.guillotineHeads" theme="black-rhino" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'headValue', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+                <vue-good-table v-if="stats.guillotine.heads &amp;&amp; stats.guillotine.heads.length" :rows="stats.guillotine.heads" :columns="columns.guillotineHeads" theme="black-rhino" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
               </div>
               <div class="good-table" v-if="ui.guillotineLoaded">
                 <h2>Player Scores</h2>
