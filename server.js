@@ -786,15 +786,26 @@ io.on('connection', (socket) => {
     incrementDatabase('guillotineCounts', "gamesStarted");
   });
 
-  socket.on('guillotineRemovedHead', msg => {
-    console.log("Removed Head: " + msg.name+ " | ($"+msg.value+"B)");
-    logGuillotineHeadRemoval(msg.name, msg.value);
-  });
-
   socket.on('guillotineFinishGame', msg => {
     console.log("a player finished a game of NO MORE BILLIONAIRES");
+    console.table(msg.trophies);
+    console.log("WEALTH CREATED: $"+msg.wealthCreated+"B");
     newGuillotinePlayerScore(msg.wealthCreated, msg.mostValuable);
     incrementDatabase('guillotineCounts', "gamesFinished");
+
+    msg.trophies.forEach((trophy,index) => {
+      logGuillotineHeadRemoval(trophy.name, trophy.netWorth);
+    });
+  });
+
+  socket.on('guillotineShareScore', msg => {
+    console.log("a player shared a score of NO MORE BILLIONAIRES");
+    incrementDatabase('guillotineCounts', "scoresShared");
+  });
+
+  socket.on('guillotineShareScore', msg => {
+    console.log("loaded a shared score of NO MORE BILLIONAIRES");
+    incrementDatabase('guillotineCounts', "scoresLoaded");
   });
 
   socket.on('disconnect', () => {

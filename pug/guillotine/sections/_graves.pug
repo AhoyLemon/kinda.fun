@@ -14,10 +14,10 @@ section.graves
               .name 
                 span {{parseName(person.name)}}
               .source {{person.source}}
-              .wealth(v-if="person.netWorth > 1")
+              .wealth(v-if="person.netWorth > 0")
                 sup $
                 strong {{person.netWorth.toFixed(1)}}
                 sub.b Billion
               .industry.icon(v-else-if="parseIndustryIcon(person.industry)")
-                img(:src="'svg/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry")
+                img(:src="'/svg/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry")
               .industry.text(v-else-if="person.industry") {{person.industry}}

@@ -11,7 +11,7 @@
     <link href="css/guillotine.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="The game where you generate wealth through the use of a guillotine.">
-    <meta http-equiv="last-modified" content="2023-04-16T16:41:40.894Z">
+    <meta http-equiv="last-modified" content="2023-04-18T15:33:52.815Z">
     <!-- Twitter-->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:creator" content="@AhoyLemon">
@@ -163,8 +163,8 @@
                         </div>
                         <div class="name"> <span>{{parseName(person.name)}}</span></div>
                         <div class="source">{{person.source}}</div>
-                        <div class="wealth" v-if="person.netWorth &gt; 1"><sup>$</sup><strong>{{person.netWorth.toFixed(1)}}</strong><sub class="b">Billion</sub></div>
-                        <div class="industry icon" v-else-if="parseIndustryIcon(person.industry)"><img :src="'svg/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry"></div>
+                        <div class="wealth" v-if="person.netWorth &gt; 0"><sup>$</sup><strong>{{person.netWorth.toFixed(1)}}</strong><sub class="b">Billion</sub></div>
+                        <div class="industry icon" v-else-if="parseIndustryIcon(person.industry)"><img :src="'/svg/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry"></div>
                         <div class="industry text" v-else-if="person.industry">{{person.industry}}</div>
                       </div>
                     </li>
@@ -266,7 +266,7 @@
       </script>
       <script src="js/libraries/moment.min.js"></script>
       <script src="js/libraries/howler.min.js"></script>
-      <script src="js/min/guillotine.min.js?updated2023-04-16T16:41:40.894Z"></script>
+      <script src="js/min/guillotine.min.js?updated2023-04-18T15:33:52.815Z"></script>
       <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
       <script src="/socket.io/socket.io.js"></script>
       <script>

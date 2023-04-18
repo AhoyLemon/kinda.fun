@@ -176,6 +176,9 @@ var app = new Vue({
       self.wealthCreated.today += additionalWealth;
       self.wealthCreated.allTime  += additionalWealth;
 
+      self.wealthCreated.today = Number(self.wealthCreated.today.toFixed(3))
+      self.wealthCreated.allTime = Number(self.wealthCreated.allTime.toFixed(3))
+
       const stopAddingDollars = function () {
         clearInterval(addMoreDollars);
       };
@@ -196,10 +199,6 @@ var app = new Vue({
         self.doEndGameActions();
       }
 
-      socket.emit('guillotineRemovedHead', {
-        name: self.parseName(person.name),
-        value: person.netWorth
-      });
       sendEvent("NO MORE BILLIONAIRES", "Head Removed", self.parseName(person.name));
 
     },
@@ -210,6 +209,7 @@ var app = new Vue({
       // Order the remaining billionaires by wealth.
       self.ui.sortBy = "highestWealth";
 
+      self.history.lastGameResults.trophies = []
       // Rack up your trophies
       for (fB of self.formerBillionaires) {
         const trophy = {
@@ -227,7 +227,8 @@ var app = new Vue({
 
       socket.emit('guillotineFinishGame', {
         wealthCreated: self.wealthCreated.today,
-        mostValuable: mvh
+        mostValuable: mvh,
+        trophies: self.history.lastGameResults.trophies
       });
       sendEvent("NO MORE BILLIONAIRES", "Final Score", self.wealthCreated.today);
 
@@ -287,6 +288,11 @@ var app = new Vue({
       newURL.searchParams.set('hash', cheapHash);
 
       sendEvent("NO MORE BILLIONAIRES", "Score Shared", p.weathCreatedToday);
+
+      socket.emit('guillotineShareScore', {
+        wealthCreated: p.weathCreatedToday,
+        playDate: p.playDate
+      });
 
       window.location.replace(newURL);
       return false;

@@ -263,6 +263,10 @@ var app = new Vue({
           return "LONGi Green Energy"
         case "Andreas Struengmann" || "Thomas Struengmann ":
           return ""
+        case "Dan Kurzius":
+          return " MailChimp"
+        case "Nari Genomal":
+          return " Jockey"
         case "":
           return ""
       }  
