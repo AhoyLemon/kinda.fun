@@ -266,7 +266,21 @@ var app = new Vue({
         case "Dan Kurzius":
           return " MailChimp"
         case "Nari Genomal":
-          return " Jockey"
+          return "Jockey"
+        case "Darwin Deason":
+          return "Xerox"
+        case "Betty Ang":
+          return "Monde Nissin"
+        case "Tony Ressler":
+          return "private equity, Atlanta Hawks"
+        case "Mat Ishbia" || "Justin Ishbia":
+          return "mortgages, Phoenix Suns"
+        case "Austin Russell":
+          return "autonomous car sensors"
+        case "William Foley, II.":
+          return "financial services, Vegas Golden Knights"
+        case "Murat Ulker":
+          return "Godiva, Jaffa Cakes, private equity"
         case "":
           return ""
       }  

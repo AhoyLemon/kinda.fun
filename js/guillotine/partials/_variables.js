@@ -2,12 +2,12 @@ const siteTitle = "No More Billionaires!";
 const siteURL = "https://kinda.fun/guillotine";
 
 const dropSound = new Howl({
-  src: ['audio/guillotine/drop01.mp3'],
+  src: ['/audio/guillotine/drop01.mp3'],
   volume: 1,
 })
 
 var sound = new Howl({
-  src: ['audio/guillotine/lastwords.mp3'],
+  src: ['/audio/guillotine/lastwords.mp3'],
   volume: 0.5,
   sprite: {
     '1':  [1173, 615],

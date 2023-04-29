@@ -8,10 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@300..700&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet">
-    <link href="css/guillotine.css" rel="stylesheet">
+    <link href="/css/guillotine.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="The game where you generate wealth through the use of a guillotine.">
-    <meta http-equiv="last-modified" content="2023-04-18T20:21:19.695Z">
+    <meta http-equiv="last-modified" content="2023-04-29T18:44:46.973Z">
     <!-- Twitter-->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:creator" content="@AhoyLemon">
@@ -98,7 +98,7 @@
                     <button class="billionaire" status="alive" :disabled="ui.currentlyBusy || !computedRemainingRedistributions || computedRemainingRedistributions &lt; 1" @click="dropBlade(person, key)">
                       <div class="info">
                         <div class="flag"> 
-                          <template v-if="person.flag"><img :src="'svg/guillotine/flags/'+person.flag+'.svg'" :title="person.country"></template>
+                          <template v-if="person.flag"><img :src="'/svg/guillotine/flags/'+person.flag+'.svg'" :title="person.country"></template>
                           <template v-else><span>?</span></template>
                         </div>
                         <div class="name"> 
@@ -107,7 +107,7 @@
                         </div>
                         <div class="source">{{person.source}}</div>
                         <div class="wealth" v-if="ui.sortBy == 'highestWealth'"><sup>$</sup><strong>{{person.netWorth.toFixed(1)}}</strong><sub class="b">Billion</sub></div>
-                        <div class="industry icon" v-else-if="parseIndustryIcon(person.industry)"><img :src="'svg/guillotine/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry"></div>
+                        <div class="industry icon" v-else-if="parseIndustryIcon(person.industry)"><img :src="'/svg/guillotine/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry"></div>
                         <div class="industry text" v-else-if="person.industry">{{person.industry}}</div>
                       </div>
                     </button>
@@ -259,14 +259,14 @@
       </footer>
     </div>
     <div class="javascripts">
-      <script src="js/libraries/vue.min.js"></script>
+      <script src="/js/libraries/vue.min.js"></script>
       <script>
         const testing = false;
         
       </script>
-      <script src="js/libraries/moment.min.js"></script>
-      <script src="js/libraries/howler.min.js"></script>
-      <script src="js/min/guillotine.min.js?updated2023-04-18T20:21:19.695Z"></script>
+      <script src="/js/libraries/moment.min.js"></script>
+      <script src="/js/libraries/howler.min.js"></script>
+      <script src="/js/min/guillotine.min.js?updated2023-04-29T18:44:46.973Z"></script>
       <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
       <script src="/socket.io/socket.io.js"></script>
       <script>

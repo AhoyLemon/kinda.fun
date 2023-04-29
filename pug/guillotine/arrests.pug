@@ -12,7 +12,7 @@ html(lang="en")
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet")
-    link(href="css/code.css" rel="stylesheet")
+    link(href="/css/guillotine.code.css" rel="stylesheet")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     meta(http-equiv="last-modified" content=lastUpdated)
     
@@ -24,11 +24,11 @@ html(lang="en")
         include partials/html/arrests.html
 
     .javascripts
-      script(src="js/libraries/vue.full.js")
+      script(src="/js/libraries/vue.full.js")
       script.
         const testing = true;
       script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js")
       link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/sunburst.min.css")
       script(src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js")
 
-      script(src="js/min/arrests.min.js?updated"+lastUpdated)
+      script(src="/js/min/guillotine.arrests.min.js?updated"+lastUpdated)

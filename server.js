@@ -150,6 +150,12 @@ app.get('/sisyphus', (req, res) => {
 app.get('/guillotine', (req, res) => {
   res.sendFile(__dirname + '/html/guillotine.html');
 });
+app.get('/guillotine/process', (req, res) => {
+  res.sendFile(__dirname + '/html/guillotine/process.html');
+});
+app.get('/guillotine/arrests', (req, res) => {
+  res.sendFile(__dirname + '/html/guillotine/arrests.html');
+});
 
 
 app.get('/sitemap.xml', (req, res) => {

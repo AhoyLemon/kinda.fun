@@ -1,4 +1,5 @@
-  const allBillionaires = [{
+  
+const allBillionaires = [{
   "rank": 1,
   "name": "Elon Musk",
   "netWorth": 219,
@@ -84,7 +85,7 @@
   "netWorth": 90,
   "country": "India",
   "flag": "in",
-  "source": "infrastructure, commodities",
+  "source": "Adani Group",
   "industry": "Diversified"
 },{
   "rank": 12,
@@ -100,7 +101,7 @@
   "netWorth": 81.2,
   "country": "Mexico",
   "flag": "mx",
-  "source": "América Móvil",
+  "source": "telecom",
   "industry": "Telecom"
 },{
   "rank": 14,
@@ -244,7 +245,7 @@
   "netWorth": 41.4,
   "country": "France",
   "flag": "fr",
-  "source": "shipping",
+  "source": "CMA CGM",
   "industry": "Logistics"
 },{
   "rank": 32,
@@ -252,7 +253,7 @@
   "netWorth": 40.4,
   "country": "France",
   "flag": "fr",
-  "source": "luxury goods",
+  "source": "Saint Laurent, Alexander McQueen, Gucci",
   "industry": "Fashion & Retail"
 },{
   "rank": 33,
@@ -276,7 +277,7 @@
   "netWorth": 36.8,
   "country": "Germany",
   "flag": "de",
-  "source": "Aldi",
+  "source": "supermarkets",
   "industry": "Fashion & Retail"
 },{
   "rank": 36,
@@ -324,7 +325,7 @@
   "netWorth": 31.7,
   "country": "United States",
   "flag": "us",
-  "source": "Mars",
+  "source": "Mars Candy & Pet Food",
   "industry": "Food & Beverage"
 },{
   "rank": 41,
@@ -332,7 +333,7 @@
   "netWorth": 31.7,
   "country": "United States",
   "flag": "us",
-  "source": "Mars",
+  "source": "candy, pet food",
   "industry": "Food & Beverage"
 },{
   "rank": 43,
@@ -356,7 +357,7 @@
   "netWorth": 30.8,
   "country": "Mexico",
   "flag": "mx",
-  "source": "mining",
+  "source": "Grupo México",
   "industry": "Metals & Mining"
 },{
   "rank": 46,
@@ -532,7 +533,7 @@
   "netWorth": 22.8,
   "country": "Chile",
   "flag": "cl",
-  "source": "Quiñenco",
+  "source": "mining",
   "industry": "Metals & Mining"
 },{
   "rank": 67,
@@ -580,7 +581,7 @@
   "netWorth": 21.8,
   "country": "United States",
   "flag": "us",
-  "source": "Hospital Corp. of America",
+  "source": "hospitals",
   "industry": "Healthcare"
 },{
   "rank": 74,
@@ -812,7 +813,7 @@
   "netWorth": 16.8,
   "country": "Switzerland",
   "flag": "ch",
-  "source": "MSC, MSC Cruises, Terminal Investment",
+  "source": "Shipping",
   "industry": "Logistics"
 },{
   "rank": 103,
@@ -932,7 +933,7 @@
   "netWorth": 15.4,
   "country": "Brazil",
   "flag": "br",
-  "source": "Anheuser-Busch InBev",
+  "source": "beer",
   "industry": "Food & Beverage"
 },{
   "rank": 117,
@@ -1268,7 +1269,7 @@
   "netWorth": 11.9,
   "country": "Germany",
   "flag": "de",
-  "source": "BioNTech",
+  "source": "",
   "industry": "Healthcare"
 },{
   "rank": 158,
@@ -1276,7 +1277,7 @@
   "netWorth": 11.9,
   "country": "Germany",
   "flag": "de",
-  "source": "BioNTech",
+  "source": "pharmaceuticals",
   "industry": "Healthcare"
 },{
   "rank": 161,
@@ -1604,7 +1605,7 @@
   "netWorth": 9.9,
   "country": "United States",
   "flag": "us",
-  "source": "banks, real estate",
+  "source": "Beal Financial Corporation",
   "industry": "Finance & Investments"
 },{
   "rank": 201,
@@ -1612,7 +1613,7 @@
   "netWorth": 9.9,
   "country": "United States",
   "flag": "us",
-  "source": "oil & gas, banking",
+  "source": "Kaiser-Francis Oil Company",
   "industry": "Energy"
 },{
   "rank": 201,
@@ -1620,7 +1621,7 @@
   "netWorth": 9.9,
   "country": "China",
   "flag": "cn",
-  "source": "financial information",
+  "source": "East Money Information",
   "industry": "Technology"
 },{
   "rank": 201,
@@ -1660,7 +1661,7 @@
   "netWorth": 9.8,
   "country": "India",
   "flag": "in",
-  "source": "software services",
+  "source": "Wipro",
   "industry": "Technology"
 },{
   "rank": 206,
@@ -1668,7 +1669,7 @@
   "netWorth": 9.8,
   "country": "Sweden",
   "flag": "se",
-  "source": "packaging",
+  "source": "TetraLaval Packaging",
   "industry": "Food & Beverage"
 },{
   "rank": 206,
@@ -1700,7 +1701,7 @@
   "netWorth": 9.7,
   "country": "United States",
   "flag": "us",
-  "source": "retail & gas stations",
+  "source": "Love's Travel Stops",
   "industry": "Fashion & Retail"
 },{
   "rank": 214,
@@ -1772,7 +1773,7 @@
   "netWorth": 9.2,
   "country": "United Kingdom",
   "flag": "gb",
-  "source": "vacuums",
+  "source": "Dyson",
   "industry": "Manufacturing"
 },{
   "rank": 223,
@@ -1788,7 +1789,7 @@
   "netWorth": 9.1,
   "country": "South Korea",
   "flag": "kr",
-  "source": "online services",
+  "source": "Kakao",
   "industry": "Technology"
 },{
   "rank": 223,
@@ -1868,7 +1869,7 @@
   "netWorth": 8.9,
   "country": "South Africa",
   "flag": "za",
-  "source": "luxury goods",
+  "source": "Compagnie Financiere Richemont",
   "industry": "Fashion & Retail"
 },{
   "rank": 235,
@@ -1876,7 +1877,7 @@
   "netWorth": 8.8,
   "country": "China",
   "flag": "cn",
-  "source": "real estate",
+  "source": "Evergrande Group",
   "industry": "Real Estate"
 },{
   "rank": 235,
@@ -1956,7 +1957,7 @@
   "netWorth": 8.7,
   "country": "South Africa",
   "flag": "za",
-  "source": "diamonds",
+  "source": "DeBeers",
   "industry": "Metals & Mining"
 },{
   "rank": 246,
@@ -1972,7 +1973,7 @@
   "netWorth": 8.6,
   "country": "United States",
   "flag": "us",
-  "source": "used cars",
+  "source": "Carvana",
   "industry": "Automotive"
 },{
   "rank": 246,
@@ -2012,7 +2013,7 @@
   "netWorth": 8.5,
   "country": "United States",
   "flag": "us",
-  "source": "self storage",
+  "source": "Public Storage",
   "industry": "Service"
 },{
   "rank": 251,
@@ -2020,7 +2021,7 @@
   "netWorth": 8.5,
   "country": "Brazil",
   "flag": "br",
-  "source": "beer",
+  "source": "Anheuser-Busch InBev",
   "industry": "Food & Beverage"
 },{
   "rank": 254,
@@ -2092,7 +2093,7 @@
   "netWorth": 8.4,
   "country": "Canada",
   "flag": "ca",
-  "source": "alcoholic beverages",
+  "source": "White Claw, Mike's Hard Lemonade",
   "industry": "Food & Beverage"
 },{
   "rank": 263,
@@ -2196,7 +2197,7 @@
   "netWorth": 8.1,
   "country": "United States",
   "flag": "us",
-  "source": "business software",
+  "source": "Salesforce",
   "industry": "Technology"
 },{
   "rank": 275,
@@ -2204,7 +2205,7 @@
   "netWorth": 8.1,
   "country": "Israel",
   "flag": "il",
-  "source": "online games",
+  "source": "Playrix",
   "industry": "Media & Entertainment"
 },{
   "rank": 275,
@@ -2228,7 +2229,7 @@
   "netWorth": 8.1,
   "country": "India",
   "flag": "in",
-  "source": "pharmaceuticals",
+  "source": "Divi's Laboratories",
   "industry": "Healthcare"
 },{
   "rank": 275,
@@ -2268,7 +2269,7 @@
   "netWorth": 8,
   "country": "United States",
   "flag": "us",
-  "source": "agriculture, water",
+  "source": "Fiji Water, POM Wonderful",
   "industry": "Food & Beverage"
 },{
   "rank": 284,
@@ -2284,7 +2285,7 @@
   "netWorth": 8,
   "country": "United States",
   "flag": "us",
-  "source": "online retail",
+  "source": "Fanatics",
   "industry": "Fashion & Retail"
 },{
   "rank": 284,
@@ -2308,7 +2309,7 @@
   "netWorth": 7.9,
   "country": "United States",
   "flag": "us",
-  "source": "Mars",
+  "source": "candy, pet food",
   "industry": "Food & Beverage"
 },{
   "rank": 288,
@@ -2316,7 +2317,7 @@
   "netWorth": 7.9,
   "country": "United States",
   "flag": "us",
-  "source": "Mars",
+  "source": "candy, pet food",
   "industry": "Food & Beverage"
 },{
   "rank": 288,
@@ -2324,7 +2325,7 @@
   "netWorth": 7.9,
   "country": "United States",
   "flag": "us",
-  "source": "Mars",
+  "source": "candy, pet food",
   "industry": "Food & Beverage"
 },{
   "rank": 288,
@@ -2332,7 +2333,7 @@
   "netWorth": 7.9,
   "country": "United States",
   "flag": "us",
-  "source": "Mars",
+  "source": "candy, pet food",
   "industry": "Food & Beverage"
 },{
   "rank": 288,
@@ -2420,7 +2421,7 @@
   "netWorth": 7.8,
   "country": "Taiwan",
   "flag": "tw",
-  "source": "food, beverages",
+  "source": "Want Want China",
   "industry": "Food & Beverage"
 },{
   "rank": 304,
@@ -2436,7 +2437,7 @@
   "netWorth": 7.7,
   "country": "India",
   "flag": "in",
-  "source": "paints",
+  "source": "Asian Paints",
   "industry": "Manufacturing"
 },{
   "rank": 304,
@@ -2580,7 +2581,7 @@
   "netWorth": 7.4,
   "country": "United States",
   "flag": "us",
-  "source": "video games",
+  "source": "Epic Games",
   "industry": "Media & Entertainment"
 },{
   "rank": 324,
@@ -2596,7 +2597,7 @@
   "netWorth": 7.3,
   "country": "United States",
   "flag": "us",
-  "source": "retail",
+  "source": "Hobby Lobby",
   "industry": "Fashion & Retail"
 },{
   "rank": 324,
@@ -2748,7 +2749,7 @@
   "netWorth": 7,
   "country": "United States",
   "flag": "us",
-  "source": "health IT",
+  "source": "Epic",
   "industry": "Technology"
 },{
   "rank": 343,
@@ -2844,7 +2845,7 @@
   "netWorth": 6.9,
   "country": "United States",
   "flag": "us",
-  "source": "apparel",
+  "source": "Ralph Lauren",
   "industry": "Fashion & Retail"
 },{
   "rank": 350,
@@ -2996,7 +2997,7 @@
   "netWorth": 6.6,
   "country": "United States",
   "flag": "us",
-  "source": "cryptocurrency",
+  "source": "Coinbase",
   "industry": "Finance & Investments"
 },{
   "rank": 375,
@@ -3132,7 +3133,7 @@
   "netWorth": 6.5,
   "country": "Australia",
   "flag": "au",
-  "source": "software",
+  "source": "Canva",
   "industry": "Technology"
 },{
   "rank": 386,
@@ -4500,7 +4501,7 @@
   "netWorth": 5,
   "country": "United States",
   "flag": "us",
-  "source": "email marketing",
+  "source": " MailChimp",
   "industry": "Technology"
 },{
   "rank": 552,
@@ -4636,7 +4637,7 @@
   "netWorth": 4.9,
   "country": "United States",
   "flag": "us",
-  "source": "mortgage lender★",
+  "source": "mortgages, Phoenix Suns",
   "industry": "Finance & Investments"
 },{
   "rank": 579,
@@ -4956,7 +4957,7 @@
   "netWorth": 4.7,
   "country": "Turkey",
   "flag": "tr",
-  "source": "food",
+  "source": "Godiva, Jaffa Cakes, private equity",
   "industry": "Food & Beverage"
 },{
   "rank": 601,
@@ -15100,7 +15101,7 @@
   "netWorth": 1.6,
   "country": "United States",
   "flag": "us",
-  "source": "sensors★",
+  "source": "autonomous car sensors",
   "industry": "Automotive"
 },{
   "rank": 1818,
@@ -16764,7 +16765,7 @@
   "netWorth": 1.4,
   "country": "United States",
   "flag": "us",
-  "source": "software",
+  "source": "Xerox",
   "industry": "Service"
 },{
   "rank": 2076,
@@ -16844,7 +16845,7 @@
   "netWorth": 1.4,
   "country": "United States",
   "flag": "us",
-  "source": "financial services★",
+  "source": "financial services, Vegas Golden Knights",
   "industry": "Finance & Investments"
 },{
   "rank": 2076,
@@ -17484,7 +17485,7 @@
   "netWorth": 1.4,
   "country": "United States",
   "flag": "us",
-  "source": "Regeneron",
+  "source": "pharmaceuticals",
   "industry": "Healthcare"
 },{
   "rank": 2076,
@@ -18604,7 +18605,7 @@
   "netWorth": 1.2,
   "country": "Philippines",
   "flag": "ph",
-  "source": "foods",
+  "source": "Monde Nissin",
   "industry": "Food & Beverage"
 },{
   "rank": 2324,
@@ -20772,7 +20773,7 @@
   "netWorth": 1,
   "country": "Philippines",
   "flag": "ph",
-  "source": "apparel",
+  "source": "Jockey",
   "industry": "Fashion & Retail"
 },{
   "rank": 2578,

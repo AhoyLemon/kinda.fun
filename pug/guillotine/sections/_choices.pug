@@ -28,7 +28,7 @@ section.choices
             .info
               .flag 
                 template(v-if="person.flag")
-                  img(:src="'svg/guillotine/flags/'+person.flag+'.svg'" :title="person.country")
+                  img(:src="'/svg/guillotine/flags/'+person.flag+'.svg'" :title="person.country")
                 template(v-else)
                   span ?
               .name 
@@ -42,5 +42,5 @@ section.choices
                 strong {{person.netWorth.toFixed(1)}}
                 sub.b Billion
               .industry.icon(v-else-if="parseIndustryIcon(person.industry)")
-                img(:src="'svg/guillotine/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry")
+                img(:src="'/svg/guillotine/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry")
               .industry.text(v-else-if="person.industry") {{person.industry}}
