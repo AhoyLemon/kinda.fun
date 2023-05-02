@@ -4557,7 +4557,7 @@ const allBillionaires = [{
   "netWorth": 5,
   "country": "United States",
   "flag": "us",
-  "source": "Facebook, investments",
+  "source": "PayPal, Facebook, Stripe",
   "industry": "Finance & Investments"
 },{
   "rank": 552,
@@ -6189,7 +6189,7 @@ const allBillionaires = [{
   "netWorth": 3.9,
   "country": "United States",
   "flag": "us",
-  "source": "real estate",
+  "source": "real estate, LA Clippers",
   "industry": "Real Estate"
 },{
   "rank": 764,
@@ -12029,7 +12029,7 @@ const allBillionaires = [{
   "netWorth": 2.1,
   "country": "China",
   "flag": "cn",
-  "source": "sports apparel",
+  "source": "Anta Sports",
   "industry": "Fashion & Retail"
 },{
   "rank": 1445,
@@ -14357,7 +14357,7 @@ const allBillionaires = [{
   "netWorth": 1.7,
   "country": "India",
   "flag": "in",
-  "source": "business software",
+  "source": "Zoho",
   "industry": "Technology"
 },{
   "rank": 1729,
@@ -15205,7 +15205,7 @@ const allBillionaires = [{
   "netWorth": 1.6,
   "country": "United States",
   "flag": "us",
-  "source": "education",
+  "source": "University of Phoenix",
   "industry": "Service"
 },{
   "rank": 1818,

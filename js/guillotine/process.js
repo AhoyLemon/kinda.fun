@@ -281,6 +281,16 @@ var app = new Vue({
           return "financial services, Vegas Golden Knights"
         case "Murat Ulker":
           return "Godiva, Jaffa Cakes, private equity"
+        case "Peter Sperling":
+          return "University of Phoenix"
+        case "Radha Vembu":
+          return "Zoho"
+        case "Wang Wenmo":
+          return "Anta Sports"
+        case "Peter Thiel":
+          return "PayPal, Facebook, Stripe"
+        case "Donald Sterling":
+          return "real estate, LA Clippers"
         case "":
           return ""
       }  
