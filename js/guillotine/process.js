@@ -27,13 +27,19 @@ var app = new Vue({
       const self = this;
       let output = {
         rank: parseInt(o.rank),
-        name: o.name.trim(),
+        name: o.name.trim() ?? null,
         netWorth: Number(self.parseBillions(o.netWorth)),
-        //age: Number(o.age ?? null),
-        country: o.country.trim(),
+        country: o.country.trim() ?? null,
         flag: self.parseFlag(o.country),
         source: this.parseSource(o.name,o.source),
-        industry: o.industry.trim()
+        industry: o.industry.trim() ?? null
+      }
+
+      if (o.manualAdd) {
+        output.manualAdd = o.manualAdd
+      }
+      if (o.specialSource) {
+        output.specialSource = o.specialSource
       }
       return output;
     },
@@ -472,6 +478,39 @@ var app = new Vue({
 
   computed: {
 
+  },
+
+  beforeMount() {
+
+    console.log("!BEFORE MOUNT!")
+
+    const self = this;
+    const charles = {
+      key: "2600",
+      rank: "1341",
+      name: "King Charles III",
+      netWorth: "$2.293 B",
+      age: "74",
+      country: "United Kingdom",
+      source: "jewels, paintings, horses, cars, stolen loot, total immunity from inheritance tax",
+      industry: "The Aristocracy",
+      manualAdd: true,
+      specialSource: "https://www.theguardian.com/uk-news/ng-interactive/2023/apr/20/revealed-king-charless-private-fortune-estimated-at-almost-2bn"
+    };
+    console.log(self.allBillionaires.length);
+    self.allBillionaires.push(charles);
+    console.log(self.allBillionaires.length);
+    // console.log(self.allBillionaires);
+
+    // self.allBillionaires.push(charles);
+    // self.allBillionaires.push(charles);
+
+
+    // self.allBillionaires.push(charles);
+    // self.allBillionaires.push(charles);
+    // self.allBillionaires.push(charles);
+    // self.allBillionaires.push(charles);
+    // self.allBillionaires.push(charles);
   },
 
   mounted: function() {
