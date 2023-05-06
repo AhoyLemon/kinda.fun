@@ -299,6 +299,10 @@ var app = new Vue({
           return "Moneysupermarket.com"
         case "Peter Kelly":
           return "Softcat"
+        case "Denise Coates":
+          return "Bet365"
+        case "Clive Calder":
+          return "Zomba Group, Jive Records"
         case "":
           return ""
       }  

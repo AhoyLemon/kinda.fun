@@ -3693,7 +3693,7 @@ const allBillionaires = [{
   "netWorth": 5.7,
   "country": "United Kingdom",
   "flag": "gb",
-  "source": "record label",
+  "source": "Zomba Group, Jive Records",
   "industry": "Media & Entertainment"
 },{
   "rank": 460,
@@ -4069,7 +4069,7 @@ const allBillionaires = [{
   "netWorth": 5.3,
   "country": "United Kingdom",
   "flag": "gb",
-  "source": "online gambling",
+  "source": "Bet365",
   "industry": "Gambling & Casinos"
 },{
   "rank": 509,
