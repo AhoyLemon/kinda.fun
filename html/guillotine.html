@@ -11,7 +11,7 @@
     <link href="/css/guillotine.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="The game where you generate wealth through the use of a guillotine.">
-    <meta http-equiv="last-modified" content="2023-04-29T18:44:46.973Z">
+    <meta http-equiv="last-modified" content="2023-05-06T03:05:59.297Z">
     <!-- Twitter-->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:creator" content="@AhoyLemon">
@@ -70,7 +70,8 @@
             <h1><span>It is </span>
               <time v-html="computedToday"></time>
             </h1>
-            <h2> <strong>{{gameRules.optionsPerDay}} billionaires</strong> have been brought before you.</h2>
+            <h2 v-if="computedToday == 'Saturday, May 6&lt;sup&gt;th&lt;/sup&gt;'">(the Coronation Day for Charles Philip Arthur George Mountbatten-Windsor as the Head of the Commonwealth of Nations)</h2>
+            <h2 v-else> <strong>{{gameRules.optionsPerDay}} billionaires</strong> have been brought before you.</h2>
             <h3>You may choose <strong>{{gameRules.choicesPerDay}}</strong> to <strong>send to the guillotine</strong>, generating wealth for your society.</h3>
             <div class="button-holder">
               <button @click="startGame()">Good luck.</button>
@@ -227,6 +228,7 @@
             <div class="citations-header">Citations</div>
             <ul class="citations-list">
               <li class="cite"><a href="https://www.forbes.com/billionaires/" target="_blank">Forbes Billionaires 2022</a></li>
+              <li class="cite" v-if="computedToday == 'Saturday, May 6&lt;sup&gt;th&lt;/sup&gt;'"><a href="https://www.theguardian.com/uk-news/ng-interactive/2023/apr/20/revealed-king-charless-private-fortune-estimated-at-almost-2bn" target="_blank">King Charles’s private fortune estimated at £1.8bn</a></li>
               <li class="cite"><a href="https://educationdata.org/public-education-spending-statistics" target="_blank">U.S. Public Education Spending Statistics</a></li>
               <li class="cite"><a href="https://www.forbes.com/billionaires/" target="_blank">Billionaires of 2022 CSV on Kaggle</a></li>
               <li class="cite"><a href="https://www.publicschoolreview.com/average-school-size-stats/national-data" target="_blank">Average Public School Student Size (2023)</a></li>
@@ -266,7 +268,7 @@
       </script>
       <script src="/js/libraries/moment.min.js"></script>
       <script src="/js/libraries/howler.min.js"></script>
-      <script src="/js/min/guillotine.min.js?updated2023-04-29T18:44:46.973Z"></script>
+      <script src="/js/min/guillotine.min.js?updated2023-05-06T03:05:59.297Z"></script>
       <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
       <script src="/socket.io/socket.io.js"></script>
       <script>

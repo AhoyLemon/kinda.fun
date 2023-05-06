@@ -7,7 +7,7 @@ const dropSound = new Howl({
 })
 
 var sound = new Howl({
-  src: ['/audio/guillotine/lastwords.mp3'],
+  src: ['/audio/guillotine/lastwords-2.mp3'],
   volume: 0.5,
   sprite: {
     '1':  [1173, 615],
@@ -27,6 +27,7 @@ var sound = new Howl({
     '15': [23341, 1749],
     '16': [25344, 1267],
     '17': [26864, 1293],
+    'Charles': [28542, 1513], // King Charles III
   },
   onend: function() {
     console.log('sound played')

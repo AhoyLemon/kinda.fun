@@ -24,7 +24,8 @@ transition(name="raise-curtain")
       h1
         span It is 
         time(v-html="computedToday")
-      h2  #[strong {{gameRules.optionsPerDay}} billionaires] have been brought before you.
+      h2(v-if="computedToday == 'Saturday, May 6<sup>th</sup>'") (the Coronation Day for Charles Philip Arthur George Mountbatten-Windsor as the Head of the Commonwealth of Nations)
+      h2(v-else)  #[strong {{gameRules.optionsPerDay}} billionaires] have been brought before you.
       h3 You may choose #[strong {{gameRules.choicesPerDay}}] to #[strong send to the guillotine], generating wealth for your society.
       .button-holder
         button(@click="startGame()") Good luck.

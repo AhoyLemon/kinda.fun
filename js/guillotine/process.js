@@ -291,6 +291,14 @@ var app = new Vue({
           return "PayPal, Facebook, Stripe"
         case "Donald Sterling":
           return "real estate, LA Clippers"
+        case "Andrey Andreev":
+          return "Bumble, Badoo"
+        case "Richard Desmond":
+          return "pornography, celebrity magazines"
+        case "Simon Nixon":
+          return "Moneysupermarket.com"
+        case "Peter Kelly":
+          return "Softcat"
         case "":
           return ""
       }  

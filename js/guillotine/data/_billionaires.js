@@ -12117,7 +12117,7 @@ const allBillionaires = [{
   "netWorth": 2,
   "country": "United Kingdom",
   "flag": "gb",
-  "source": "online dating",
+  "source": "Bumble, Badoo",
   "industry": "Technology"
 },{
   "rank": 1513,
@@ -17189,7 +17189,7 @@ const allBillionaires = [{
   "netWorth": 1.4,
   "country": "United Kingdom",
   "flag": "gb",
-  "source": "price comparison website",
+  "source": "Moneysupermarket.com",
   "industry": "Technology"
 },{
   "rank": 2076,
@@ -17725,7 +17725,7 @@ const allBillionaires = [{
   "netWorth": 1.3,
   "country": "United Kingdom",
   "flag": "gb",
-  "source": "publishing",
+  "source": "pornography, celebrity magazines",
   "industry": "Media & Entertainment"
 },{
   "rank": 2190,
@@ -20799,4 +20799,12 @@ const allBillionaires = [{
   "flag": "de",
   "source": "flavors and fragrances",
   "industry": "Food & Beverage"
+},{
+  "rank": 1645,
+  "name": "King Charles III",
+  "netWorth": 2.293,
+  "country": "Great Britain",
+  "flag": "gb",
+  "source": "jewels, paintings, horses, cars, stolen loot, total immunity from inheritance tax",
+  "industry": "The Aristocracy"
 }];

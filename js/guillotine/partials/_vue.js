@@ -82,7 +82,7 @@ var app = new Vue({
         }
       } 
       
-      if (!self.currentBillionaires || self.currentBillionaires.length < 10) {
+      if (!self.currentBillionaires || self.currentBillionaires.length < 5) {
         alert("I couldn't find enough warrants. Using backup option...")
         self.currentBillionaires = shuffle(allBillionaires).slice(0,self.gameRules.optionsPerDay);
       }
@@ -150,9 +150,15 @@ var app = new Vue({
 
       setTimeout(() => {
         $('#TheG').addClass('dropped');
+
         const p = Math.floor((Math.random() * 17) + 1).toString();
         setTimeout(() => {
-          sound.play(p);
+          if (person.name == 'King Charles III') {
+            sound.play('Charles')
+          } else {
+            sound.play(p);
+          }
+          
         }, "320");
         setTimeout(() => {
           $('#G_Head').attr('href', 'img/guillotine/heads/empty.png');
@@ -364,6 +370,8 @@ var app = new Vue({
           return "football"
         case "Construction & Engineering":
           return "construction"
+        case "The Aristocracy":
+          return "crown"
       }
     
 
@@ -575,26 +583,23 @@ var app = new Vue({
 
     computedToday() {
       const self = this;
-      const d = new Date();
-
-      const allMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]
-      const allWeekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-      const theWeekday = allWeekdays[d.getDay()];
-      const theMonth = allMonths[d.getMonth()];
-      const theDay = String(d.getUTCDate());
-      let daySuffix
+      const theDay = Number(moment().format('D'));
+      let daySuffix;
       switch (theDay) {
         case 1 || 21 || 31:
           daySuffix = "st";
           break
         case 2 || 22:
           daySuffix = "nd"
+          break
         case 3 || 23:
           daySuffix = "rd"
+          break
         default:
           daySuffix = "th"
+          break
       }
-      return `${theWeekday}, ${theMonth} ${theDay}<sup>${daySuffix}</sup>`;
+      return `${moment().format('dddd, MMMM D')}<sup>${daySuffix}</sup>`;
     },
 
     computedDidYouAlreadyPlayToday() {
@@ -629,7 +634,6 @@ var app = new Vue({
       const mm = self.padNumber(today.getDate() + 1,2);
       const dd = self.padNumber(today.getDate().toString(),2);
       const mmdd = String(mm+dd);
-
 
       self.ui.shareScreen.playDate = new Date(stamp);
       self.ui.shareScreen.wealthCreatedToday = Number(urlParams.get('weathCreatedToday'));

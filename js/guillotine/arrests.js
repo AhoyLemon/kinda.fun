@@ -19,8 +19,15 @@ var app = new Vue({
       let z = 0;
       while (z < 365) {
         const mmdd = moment('2023-01-01').add(z,'days').format('MMDD');
+
+
         const arrestsToday = self.arrestDailyBillionaires();
         let o = { date: mmdd, arrests: arrestsToday };
+
+        // Overwrite the list if it is Charles Day
+        if (mmdd == '0506') {
+          o = { date: mmdd, arrests: [ 2600, 2592, 2543, 2215, 2248, 2240, 2148, 2099, 2045, 2021, 1800, 1761, 1738, 1656, 1584, 1549, 1514, 2368, 1466, 1444], specialDay: "King Charles III Coronation" }
+        }
         self.arrestWarrants.push(o);
         self.yesterdaysArrests = [...arrestsToday];
         z++;
