@@ -773,7 +773,7 @@ const allBillionaires = [{
   "netWorth": 17.3,
   "country": "Russia",
   "flag": "ru",
-  "source": "metals",
+  "source": "Norilsk Nickel, Sochi Olymptics, friendship with Putin",
   "industry": "Metals & Mining"
 },{
   "rank": 98,
@@ -2397,7 +2397,7 @@ const allBillionaires = [{
   "netWorth": 7.8,
   "country": "Russia",
   "flag": "ru",
-  "source": "oil, banking, telecom",
+  "source": "Alfa Group",
   "industry": "Energy"
 },{
   "rank": 296,
@@ -2565,7 +2565,7 @@ const allBillionaires = [{
   "netWorth": 7.4,
   "country": "United States",
   "flag": "us",
-  "source": "cable television",
+  "source": "AT&T Broadband",
   "industry": "Media & Entertainment"
 },{
   "rank": 321,
@@ -2693,7 +2693,7 @@ const allBillionaires = [{
   "netWorth": 7.1,
   "country": "United States",
   "flag": "us",
-  "source": "Home Depot",
+  "source": "Home Depot, Atlanta Falcons",
   "industry": "Sports"
 },{
   "rank": 336,
@@ -5317,7 +5317,7 @@ const allBillionaires = [{
   "netWorth": 4.3,
   "country": "Russia",
   "flag": "ru",
-  "source": "oil, banking, telecom",
+  "source": "Alfa-Bank",
   "industry": "Finance & Investments"
 },{
   "rank": 665,
@@ -5781,7 +5781,7 @@ const allBillionaires = [{
   "netWorth": 4.1,
   "country": "Israel",
   "flag": "il",
-  "source": "telecom",
+  "source": "Vivendi",
   "industry": "Telecom"
 },{
   "rank": 709,
@@ -7181,7 +7181,7 @@ const allBillionaires = [{
   "netWorth": 3.4,
   "country": "Indonesia",
   "flag": "id",
-  "source": "banking",
+  "source": "Bank Jago",
   "industry": "Finance & Investments"
 },{
   "rank": 883,
@@ -8021,7 +8021,7 @@ const allBillionaires = [{
   "netWorth": 3.1,
   "country": "United States",
   "flag": "us",
-  "source": "TV network, investments",
+  "source": "Mighty Morphin Power Rangers",
   "industry": "Media & Entertainment"
 },{
   "rank": 984,
@@ -9597,7 +9597,7 @@ const allBillionaires = [{
   "netWorth": 2.6,
   "country": "France",
   "flag": "fr",
-  "source": "pharmaceuticals",
+  "source": "Ipsen",
   "industry": "Healthcare"
 },{
   "rank": 1196,
@@ -10893,7 +10893,7 @@ const allBillionaires = [{
   "netWorth": 2.3,
   "country": "United States",
   "flag": "us",
-  "source": "gas stations",
+  "source": "Pilot Flying J",
   "industry": "Fashion & Retail"
 },{
   "rank": 1341,
@@ -11237,7 +11237,7 @@ const allBillionaires = [{
   "netWorth": 2.2,
   "country": "United States",
   "flag": "us",
-  "source": "online marketplace",
+  "source": "OpenSea",
   "industry": "Technology"
 },{
   "rank": 1397,
@@ -11293,7 +11293,7 @@ const allBillionaires = [{
   "netWorth": 2.2,
   "country": "United States",
   "flag": "us",
-  "source": "storage facilities",
+  "source": "Public Storage",
   "industry": "Real Estate"
 },{
   "rank": 1397,
@@ -12461,7 +12461,7 @@ const allBillionaires = [{
   "netWorth": 2,
   "country": "United States",
   "flag": "us",
-  "source": "casinos, real estate",
+  "source": "Treasure Island, Circus Circus, Trump International",
   "industry": "Diversified"
 },{
   "rank": 1513,
@@ -12877,7 +12877,7 @@ const allBillionaires = [{
   "netWorth": 1.9,
   "country": "Georgia",
   "flag": "ge",
-  "source": "fintech",
+  "source": "Baring Vostock",
   "industry": "Finance & Investments"
 },{
   "rank": 1579,
@@ -13309,7 +13309,7 @@ const allBillionaires = [{
   "netWorth": 1.8,
   "country": "United States",
   "flag": "us",
-  "source": "Nascar, racing",
+  "source": "Nascar",
   "industry": "Sports"
 },{
   "rank": 1645,
@@ -13805,7 +13805,7 @@ const allBillionaires = [{
   "netWorth": 1.8,
   "country": "China",
   "flag": "cn",
-  "source": "coking",
+  "source": "coke and chemicals",
   "industry": "Manufacturing"
 },{
   "rank": 1645,
@@ -14877,7 +14877,7 @@ const allBillionaires = [{
   "netWorth": 1.6,
   "country": "China",
   "flag": "cn",
-  "source": "live streaming service",
+  "source": "YY.com",
   "industry": "Technology"
 },{
   "rank": 1818,
@@ -14885,7 +14885,7 @@ const allBillionaires = [{
   "netWorth": 1.6,
   "country": "China",
   "flag": "cn",
-  "source": "seed production",
+  "source": "Shandong Denghai Seeds",
   "industry": "Food & Beverage"
 },{
   "rank": 1818,
@@ -15509,7 +15509,7 @@ const allBillionaires = [{
   "netWorth": 1.5,
   "country": "Germany",
   "flag": "de",
-  "source": "medical technology",
+  "source": "B. Braun Melsungen",
   "industry": "Healthcare"
 },{
   "rank": 1929,
@@ -16493,7 +16493,7 @@ const allBillionaires = [{
   "netWorth": 1.5,
   "country": "China",
   "flag": "cn",
-  "source": "airline",
+  "source": "Juneyao Airlines",
   "industry": "Service"
 },{
   "rank": 1929,
@@ -16677,7 +16677,7 @@ const allBillionaires = [{
   "netWorth": 1.4,
   "country": "Canada",
   "flag": "ca",
-  "source": "messaging software",
+  "source": "Slack",
   "industry": "Technology"
 },{
   "rank": 2076,
@@ -17533,7 +17533,7 @@ const allBillionaires = [{
   "netWorth": 1.3,
   "country": "Norway",
   "flag": "no",
-  "source": "investments",
+  "source": "Ferd",
   "industry": "Diversified"
 },{
   "rank": 2190,
@@ -17925,7 +17925,7 @@ const allBillionaires = [{
   "netWorth": 1.3,
   "country": "United Kingdom",
   "flag": "gb",
-  "source": "I.T.",
+  "source": "Softcat",
   "industry": "Technology"
 },{
   "rank": 2190,
@@ -19165,7 +19165,7 @@ const allBillionaires = [{
   "netWorth": 1.2,
   "country": "South Korea",
   "flag": "kr",
-  "source": "online games",
+  "source": "WeMade Entertainment",
   "industry": "Media & Entertainment"
 },{
   "rank": 2324,
@@ -19261,7 +19261,7 @@ const allBillionaires = [{
   "netWorth": 1.2,
   "country": "Japan",
   "flag": "jp",
-  "source": "beverages",
+  "source": "Suntory",
   "industry": "Food & Beverage"
 },{
   "rank": 2324,
@@ -20181,7 +20181,7 @@ const allBillionaires = [{
   "netWorth": 1.1,
   "country": "United States",
   "flag": "us",
-  "source": "software",
+  "source": "Snowflake",
   "industry": "Technology"
 },{
   "rank": 2448,
@@ -20357,7 +20357,7 @@ const allBillionaires = [{
   "netWorth": 1.1,
   "country": "India",
   "flag": "in",
-  "source": "two-wheelers",
+  "source": "TVS Motor Company",
   "industry": "Automotive"
 },{
   "rank": 2448,
@@ -20800,11 +20800,13 @@ const allBillionaires = [{
   "source": "flavors and fragrances",
   "industry": "Food & Beverage"
 },{
-  "rank": 1645,
+  "rank": 1341,
   "name": "King Charles III",
   "netWorth": 2.293,
-  "country": "Great Britain",
+  "country": "United Kingdom",
   "flag": "gb",
   "source": "jewels, paintings, horses, cars, stolen loot, total immunity from inheritance tax",
-  "industry": "The Aristocracy"
+  "industry": "The Aristocracy",
+  "manualAdd": true,
+  "specialSource": "https://www.theguardian.com/uk-news/ng-interactive/2023/apr/20/revealed-king-charless-private-fortune-estimated-at-almost-2bn"
 }];

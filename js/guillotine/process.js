@@ -309,6 +309,60 @@ var app = new Vue({
           return "Bet365"
         case "Clive Calder":
           return "Zomba Group, Jive Records"
+        case "Stewart Butterfield":
+          return "Slack"
+        case "David Xueling Li":
+          return "YY.com"
+        case "Jerry Ng":
+          return "Bank Jago"
+        case "Bill Haslam":
+          return "Pilot Flying J"
+        case "Venu Srinivasan":
+          return "TVS Motor Company"
+        case "Katharina Andresen":
+          return "Ferd"
+        case "Henri Beaufour":
+          return "Ipsen"
+        case "Yang Xuegang":
+          return "coke and chemicals"
+        case "Li Denghai":
+          return "Shandong Denghai Seeds"
+        case "B. Wayne Hughes, Jr.":
+          return "Public Storage"
+        case "Vladimir Potanin":
+          return "Norilsk Nickel, Sochi Olymptics, friendship with Putin"
+        case "Arthur Blank":
+          return "Home Depot, Atlanta Falcons"
+        case "Pyotr Aven":
+          return "Alfa-Bank"
+        case "Nobutada Saji":
+          return "Suntory"
+        case "James France":
+          return "Nascar"
+        case "Sam Bankman-Fried":
+          return "(this list is from 2022 so this was his net worth before he was arrested)"
+        case "Phil Ruffin":
+          return "Treasure Island, Circus Circus, Trump International"
+        case "Park Kwan-ho":
+          return "WeMade Entertainment"
+        case "Devin Finzer":
+          return "OpenSea"
+        case "Bob Muglia":
+          return "Snowflake"
+        case "John Malone":
+          return "AT&T Broadband"
+        case "Eva Maria Braun-Luedicke":
+          return "B. Braun Melsungen"
+        case "Haim Saban":
+          return "Mighty Morphin Power Rangers"
+        case "Shaul Shani":
+          return "Vivendi"
+        case "Junjin Wang":
+          return "Juneyao Airlines"
+        case "German Khan" || "Mikhail Fridman" || "Alexei Kuzmichev":
+          return "Alfa Group"
+        case "Mikhail Lomtadze":
+          return "Baring Vostock"
         case "":
           return ""
       }  
