@@ -347,7 +347,7 @@ var app = new Vue({
           return "WeMade Entertainment"
         case "Devin Finzer":
           return "OpenSea"
-        case "Bob Muglia":
+        case "Bob Muglia" || "Benoit Dageville":
           return "Snowflake"
         case "John Malone":
           return "AT&T Broadband"
@@ -363,6 +363,10 @@ var app = new Vue({
           return "Alfa Group"
         case "Mikhail Lomtadze":
           return "Baring Vostock"
+        case "M.A. Yusuff Ali":
+          return "LuLu Group International"
+        case "Giuseppe Crippa":
+          return "Technoprobe"
         case "":
           return ""
       }  

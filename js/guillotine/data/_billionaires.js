@@ -4061,7 +4061,7 @@ const allBillionaires = [{
   "netWorth": 5.4,
   "country": "India",
   "flag": "in",
-  "source": "retail",
+  "source": "LuLu Group International",
   "industry": "Fashion & Retail"
 },{
   "rank": 509,
@@ -7653,7 +7653,7 @@ const allBillionaires = [{
   "netWorth": 3.2,
   "country": "Italy",
   "flag": "it",
-  "source": "microchip testing",
+  "source": "Technoprobe",
   "industry": "Manufacturing"
 },{
   "rank": 951,
