@@ -367,6 +367,18 @@ var app = new Vue({
           return "LuLu Group International"
         case "Giuseppe Crippa":
           return "Technoprobe"
+        case "Melanie Perkins":
+          return "Canva"
+        case "Klaus-Michael Kühne":
+          return "Kühne + Nagel Shipping"
+        case "Gopikishan Damani":
+          return "Avenue Supermart"
+        case "Romesh T. Wadhwani":
+          return "SymphonyAI"
+        case "Miuccia Prada" || "Alberto Prada" || "Marina Prada":
+          return "Prada"
+        case "Jed McCaleb":
+          return "Mt. Gox, Ripple"
         case "":
           return ""
       }  

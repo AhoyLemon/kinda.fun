@@ -1,4 +1,4 @@
-  
+
 const allBillionaires = [{
   "rank": 1,
   "name": "Elon Musk",
