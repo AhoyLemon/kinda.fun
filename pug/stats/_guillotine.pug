@@ -10,13 +10,13 @@ section.guillotine.stats(v-if="ui.viewing == 'guillotine'")
       .calendar(v-text="formatTime(stats.general.lastPlayed.guillotine,'calendar')")
     .box.big-number
       .caption Games Started
-      .number(v-text="stats.guillotine.counts.gamesStarted")
+      .number(v-text="addCommas(stats.guillotine.counts.gamesStarted)")
     .box.big-number
       .caption Games Finished
-      .number(v-text="stats.guillotine.counts.gamesFinished")
+      .number(v-text="addCommas(stats.guillotine.counts.gamesFinished)")
     .box.big-number
       .caption Scores Shared
-      .number(v-text="stats.guillotine.counts.scoresShared")
+      .number(v-text="addCommas(stats.guillotine.counts.scoresShared)")
     .box.big-name(span="2" v-if="computedGuillotineMostKilled && computedGuillotineMostKilled.iname")
       .caption Most Frequently Killed
       .name {{computedGuillotineMostKilled.iname}}

@@ -130,15 +130,15 @@
               </div>
               <div class="box big-number">
                 <div class="caption">Games Started</div>
-                <div class="number" v-text="stats.guillotine.counts.gamesStarted"></div>
+                <div class="number" v-text="addCommas(stats.guillotine.counts.gamesStarted)"></div>
               </div>
               <div class="box big-number">
                 <div class="caption">Games Finished</div>
-                <div class="number" v-text="stats.guillotine.counts.gamesFinished"></div>
+                <div class="number" v-text="addCommas(stats.guillotine.counts.gamesFinished)"></div>
               </div>
               <div class="box big-number">
                 <div class="caption">Scores Shared</div>
-                <div class="number" v-text="stats.guillotine.counts.scoresShared"></div>
+                <div class="number" v-text="addCommas(stats.guillotine.counts.scoresShared)"></div>
               </div>
               <div class="box big-name" span="2" v-if="computedGuillotineMostKilled &amp;&amp; computedGuillotineMostKilled.iname">
                 <div class="caption">Most Frequently Killed</div>
@@ -229,11 +229,11 @@
             <div class="stats-boxes">
               <div class="box big-number">
                 <div class="caption">Games Started</div>
-                <div class="number" v-text="stats.general.invalid.GamesStarted"></div>
+                <div class="number" v-text="addCommas(stats.general.invalid.GamesStarted)"></div>
               </div>
               <div class="box big-number">
                 <div class="caption">Rooms Created</div>
-                <div class="number" v-text="stats.general.invalid.RoomsCreated"></div>
+                <div class="number" v-text="addCommas(stats.general.invalid.RoomsCreated)"></div>
               </div>
               <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.invalid">
                 <div class="caption">Last Played</div>
@@ -246,7 +246,7 @@
               </div>
               <div class="box big-number">
                 <div class="caption">Server Crashes</div>
-                <div class="number percent" v-text="computedServerCrashes"></div>
+                <div class="number percent" v-text="addCommas(computedServerCrashes)"></div>
               </div>
               <div class="box big-number">
                 <div class="caption">Cracked Passwords</div>

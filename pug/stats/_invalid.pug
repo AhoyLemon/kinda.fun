@@ -6,10 +6,10 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
 
     .box.big-number
       .caption Games Started
-      .number(v-text="stats.general.invalid.GamesStarted")
+      .number(v-text="addCommas(stats.general.invalid.GamesStarted)")
     .box.big-number
       .caption Rooms Created
-      .number(v-text="stats.general.invalid.RoomsCreated")
+      .number(v-text="addCommas(stats.general.invalid.RoomsCreated)")
     .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.invalid")
       .caption Last Played
       .time-ago(v-text="formatTime(stats.general.lastPlayed.invalid,'fromNow')")
@@ -19,7 +19,7 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
       .number.percent(v-text="computedNaughtyPercentage + '%'")
     .box.big-number
       .caption Server Crashes
-      .number.percent(v-text="computedServerCrashes")
+      .number.percent(v-text="addCommas(computedServerCrashes)")
     .box.big-number
       .caption Cracked Passwords
       .number.percent(v-text="computedCrackedPasswordPercent + '%'")
