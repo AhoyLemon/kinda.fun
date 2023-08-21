@@ -1,0 +1,13 @@
+.javascripts
+  if testing
+    script(src="js/libraries/vue.full.js")
+    script.
+      const testing = true;
+      const canCheat = true;
+  else
+    script(src="js/libraries/vue.min.js")
+    script.
+      const testing = false;
+      const canCheat = false;
+
+  script(src="js/min/pretend.min.js")

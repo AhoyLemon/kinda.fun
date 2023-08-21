@@ -1,0 +1,133 @@
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Pretend World | You're at a part of celebrity impersonators...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Limelight|Merriweather:400,400i,900"/>
+    <link href="css/pretend.css?lastUpdated2023-08-21T22:24:29.953Z" type="text/css" rel="stylesheet"/>
+    <meta name="description" content="You're at a part of celebrity impersonators..."/>
+    <meta http-equiv="last-modified" content="2023-08-21T22:24:29.953Z"/>
+  </head>
+  <body>
+    <div id="app">
+      <button class="debug-toggle" :class="{on: debugMode == true, off: debugMode == false}" @click="debugMode = !debugMode">Debug</button>
+      <header class="debug" v-if="debugMode == true">
+        <div class="boxes">
+          <div class="box"><span class="label">round</span><span class="data">{{my.round}}</span></div>
+          <div class="box"><span class="label">score</span><span class="data">{{my.score}}</span></div>
+          <div class="box"><span class="label">mood</span><span class="data">{{my.mood}}</span></div>
+          <div class="box"><span class="label">warmUp</span><span class="data">{{warmUp}}</span></div>
+          <div class="box"><span class="label">dangerZone</span><span class="data">{{dangerZone}}</span></div>
+        </div>
+      </header>
+      <button class="sidebar-button" v-on:click="toggleDrawer" v-bind:class=" {active: sidebarVisible} " v-cloak="v-cloak" aria-label="Open Sidebar" v-if="my.round &gt; 2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <circle class="fill" cx="50.6" cy="49.7" r="42"></circle>
+          <path class="outline" d="M50 96C24.6 96 4 75.4 4 50S24.6 4 50 4s46 20.6 46 46-20.6 46-46 46zm0-86.2C27.8 9.8 9.8 27.8 9.8 50s18 40.3 40.2 40.3S90.3 72.2 90.3 50 72.2 9.8 50 9.8z"></path>
+          <path class="question-mark" d="M47.6 58.9c-.6-.7-.9-1.6-.9-2.8 0-2.4.4-4.3 1.3-5.9.9-1.6 2.1-3.3 3.8-5.2 1.2-1.4 2.2-2.6 2.7-3.6.6-.9.9-2 .9-3.2 0-1.3-.5-2.3-1.4-3.1-1-.7-2.3-1.1-3.9-1.1-1.5 0-2.9.3-4.1.9-1.3.6-3 1.5-5.1 2.8-1.3.7-2.4 1.1-3.3 1.1-1 0-1.8-.4-2.5-1.3s-1-1.9-1-3.1c0-.8.1-1.5.5-2.1.3-.6.8-1.1 1.4-1.6 2-1.6 4.4-2.9 7-3.8 2.7-.9 5.3-1.4 8-1.4 2.9 0 5.4.5 7.7 1.5s4.1 2.4 5.3 4.2c1.3 1.8 1.9 3.8 1.9 6 0 1.7-.3 3.3-1 4.7-.7 1.4-1.5 2.6-2.4 3.7-.9 1-2.2 2.3-3.7 3.8-1.8 1.6-3.1 3-4 4.1-.9 1.1-1.4 2.3-1.7 3.6-.2.9-.6 1.6-1.1 2-.6.5-1.3.7-2.1.7-1 .1-1.8-.2-2.3-.9zm-1.7 14.8c-1.1-1.1-1.7-2.6-1.7-4.3 0-1.7.6-3.1 1.7-4.3s2.5-1.7 4.2-1.7c1.7 0 3 .6 4.2 1.7 1.1 1.1 1.7 2.6 1.7 4.3 0 1.7-.6 3.1-1.7 4.3-1.1 1.1-2.5 1.7-4.2 1.7-1.7 0-3.1-.5-4.2-1.7z"></path>
+          <path class="x" d="M70.3 69c0 1.3-.5 2.4-1.5 3.3-1 .9-2.1 1.4-3.4 1.4-1.3 0-2.4-.6-3.4-1.7L49.6 56.9 37 72.1c-1 1.1-2.1 1.7-3.4 1.7-1.2 0-2.3-.5-3.3-1.4-1-.9-1.5-2.1-1.5-3.3 0-1.1.4-2.1 1.2-3L43.5 50l-13-15.8c-.8-1-1.3-2-1.3-3 0-1.3.5-2.4 1.5-3.3 1-.9 2.1-1.4 3.3-1.4 1.3 0 2.5.6 3.4 1.7l12.1 14.6 12-14.6c1-1.1 2.1-1.7 3.4-1.7 1.2 0 2.3.5 3.3 1.4 1 .9 1.5 2.1 1.5 3.3 0 1.1-.4 2.1-1.2 3l-13 15.6L69 65.9c.9 1 1.3 2 1.3 3.1z"></path>
+        </svg>
+      </button>
+      <div class="sidebar" v-bind:class=" {visible: sidebarVisible} ">
+        <ul>
+          <li><span class="label">This site is</span><span class="indent"><span>by </span><a href="https://ahoylemon.xyz" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'site by Lemon', 'https://ahoylemon.xyz')">Lemon</a></span></li>
+          <li><span class="label">With help from</span><span class="indent"><a href="https://twitter.com/AberrantWhimsy" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'Sanguinary Novel', 'https://twitter.com/AberrantWhimsy')">Sanguinary Novel</a></span></li>
+          <li><span class="label">There's more info in the</span><span class="indent"><a href="https://github.com/AhoyLemon/pretend.world" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'GitHub Repo', 'https://github.com/AhoyLemon/pretend.world')">GitHub repository</a></span></li>
+        </ul>
+      </div>
+      <main v-cloak="v-cloak">
+        <div class="screen special-screen" v-if="specialScreen.show" v-bind:class="specialScreen.type">
+          <figure :style="{ backgroundImage: 'url(' + specialScreen.pic + ')' }"><img :src="specialScreen.pic"/></figure>
+          <figcaption>
+            <div class="inner special-feedback">
+              <div class="status"> 
+                <h1 class="special-headline" v-text="specialScreen.headline"></h1>
+                <p v-html="specialScreen.message"></p>
+                <div class="game-over-holder" v-if="specialScreen.gameOver">
+                  <h2 :class="my.mood">GAME OVER</h2>
+                </div>
+                <div class="button-holder" v-else-if="specialScreen.type == 'cheese'">
+                  <button class="mission-start" @click="cheeseScreen('hide')" v-focus="v-focus"><span>Mission Start</span></button>
+                </div>
+              </div>
+            </div>
+          </figcaption>
+        </div>
+        <div class="screen qa-screen" v-else="v-else">
+          <figure class="celebrity-photo"><img :src="current.pic"/>
+            <div class="button-holder impersonator-website"><a class="button" v-if="phase == 'answer'" @click="visitImpersonatorWebsite()">impersonator website</a></div>
+          </figure>
+          <figcaption>
+            <div class="inner question" v-if="phase == 'question'">
+              <div class="status">
+                <h1 v-if="my.round == 1">
+                  <div class="medium-text">You're at a party of </div>
+                  <div class="big-text neutral">CELEBRITY IMPERSONATORS</div>
+                </h1>
+                <h1 v-else-if="warmUp == true">
+                  <div class="medium-text" v-text="headlineText[0]"></div>
+                  <div class="big-text neutral" v-text="headlineText[1]"></div>
+                </h1>
+                <h1 v-else="v-else">
+                  <div class="medium-text" v-text="headlineText[0]"></div>
+                  <div class="big-text" v-text="headlineText[1]" :class="my.mood"></div>
+                </h1>
+              </div>
+              <div class="cheese-feedback" v-if="feedback.showCheeseMessage &amp;&amp; my.correctGuesses &gt; 1">
+                <p v-html="feedback.cheeseMessage"></p>
+                <p>[ {{my.stepsToCheese}} steps remain ]</p>
+              </div>
+              <div class="mood-feedback" v-else="v-else">
+                <p v-html="feedback.moodMessage"></p>
+                <p class="danger-zone-paragraph" v-if="dangerZone == true" :class="my.mood">You are in danger of being kicked out of the party.</p>
+              </div>
+              <div class="question-wrapper">
+                <form @submit.prevent="checkName()" :disabled="guess.length &lt; 4">
+                  <label for="guess">Who is this supposed to be?</label>
+                  <input type="text" v-model="guess" placeholder="Type your guess here" name="guess"/>
+                  <button type="submit" :disabled="guess.length &lt; 4">Guess</button>
+                </form>
+              </div>
+            </div>
+            <div class="inner feedback" v-if="phase == 'answer'">
+              <h2 v-bind:class="feedback.headlineClass" v-text="feedback.headline"></h2>
+              <div class="answer-feedback">
+                <p v-html="feedback.answerMessage"></p>
+              </div>
+              <div class="mood-feedback" v-if="feedback.showCheeseMessage">
+                <p v-if="my.mood != my.previousMood" v-html="feedback.moodMessage" :class="my.mood"></p>
+                <p v-if="my.mood == my.previousMood" v-html="feedback.moodMessage"></p>
+                <p class="danger-zone-paragraph" v-if="dangerZone == true" :class="my.mood">You are in danger of being kicked out of the party.</p>
+              </div>
+              <div class="button-holder">
+                <button class="keep-mingling" @click="nextRound()" v-focus="v-focus">Keep Mingling</button>
+              </div>
+            </div>
+          </figcaption>
+        </div>
+      </main>
+      <aside class="banner animated bounceInDown" v-cloak="v-cloak" v-if="bannerVisible">
+        <div class="icon-holder"><img class="icon" src="svg/lemon.svg"/></div>
+        <div class="text-holder"><a class="text" href="https://ahoylemon.xyz" onclick="sendEvent('outside link', 'https://ahoylemon.xyz', 'banner')">This site is by Lemon.</a></div><a class="close" v-on:click="bannerVisible = false">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <circle class="fill" cx="50.6" cy="49.7" r="42"></circle>
+            <path class="outline" d="M50 96C24.6 96 4 75.4 4 50S24.6 4 50 4s46 20.6 46 46-20.6 46-46 46zm0-86.2C27.8 9.8 9.8 27.8 9.8 50s18 40.3 40.2 40.3S90.3 72.2 90.3 50 72.2 9.8 50 9.8z"></path>
+            <g class="close" id="HamburgerClose">
+              <path class="x" d="M70.3 69c0 1.3-.5 2.4-1.5 3.3-1 .9-2.1 1.4-3.4 1.4-1.3 0-2.4-.6-3.4-1.7L49.6 56.9 37 72.1c-1 1.1-2.1 1.7-3.4 1.7-1.2 0-2.3-.5-3.3-1.4-1-.9-1.5-2.1-1.5-3.3 0-1.1.4-2.1 1.2-3L43.5 50l-13-15.8c-.8-1-1.3-2-1.3-3 0-1.3.5-2.4 1.5-3.3 1-.9 2.1-1.4 3.3-1.4 1.3 0 2.5.6 3.4 1.7l12.1 14.6 12-14.6c1-1.1 2.1-1.7 3.4-1.7 1.2 0 2.3.5 3.3 1.4 1 .9 1.5 2.1 1.5 3.3 0 1.1-.4 2.1-1.2 3l-13 15.6L69 65.9c.9 1 1.3 2 1.3 3.1z"></path>
+            </g>
+          </svg></a>
+      </aside>
+    </div>
+    <div class="javascripts">
+      <script src="js/libraries/vue.full.js"></script>
+      <script>
+        const testing = true;
+        const canCheat = true;
+      </script>
+      <script src="js/min/pretend.min.js"></script>
+    </div>
+  </body>
+</html>

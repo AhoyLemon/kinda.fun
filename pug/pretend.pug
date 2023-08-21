@@ -1,0 +1,29 @@
+include pretend/_variables
+html(lang="en")
+  
+  include pretend/_head
+
+  body
+    #app
+      if testing == true
+        include pretend/_debug.pug
+      
+      include pretend/_sidebar.pug
+
+      main(v-cloak)
+
+        include pretend/_special-screen.pug
+
+        //- Q&A SCREENS
+        .screen.qa-screen(v-else)
+          figure.celebrity-photo
+            img(:src="current.pic")
+            .button-holder.impersonator-website
+              a.button(v-if="phase == 'answer'" @click="visitImpersonatorWebsite()") impersonator website
+          figcaption
+            include pretend/_question.pug
+            include pretend/_answer.pug
+      
+      include pretend/_banner.pug
+
+    include pretend/_javascripts.pug

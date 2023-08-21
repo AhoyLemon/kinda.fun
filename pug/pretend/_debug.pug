@@ -1,0 +1,25 @@
+button.debug-toggle(:class="{on: debugMode == true, off: debugMode == false}" @click="debugMode = !debugMode") Debug
+
+header.debug(v-if="debugMode == true")
+  .boxes
+    .box
+      span.label round
+      span.data {{my.round}}
+    //-.box
+      span.label points
+      span.data {{my.points}}
+    .box
+      span.label score
+      span.data {{my.score}}
+    .box
+      span.label mood
+      span.data {{my.mood}}
+    .box
+      span.label warmUp
+      span.data {{warmUp}}
+    .box
+      span.label dangerZone
+      span.data {{dangerZone}}
+    //-.box
+      span.label steps
+      span.data {{my.stepsToCheese}}

@@ -159,6 +159,10 @@ app.get('/guillotine/arrests', (req, res) => {
   res.sendFile(__dirname + '/html/guillotine/arrests.html');
 });
 
+app.get('/pretend', (req, res) => {
+  res.sendFile(__dirname + '/html/pretend.html');
+});
+
 app.get('/sitemap.xml', (req, res) => {
   res.contentType('application/xml');
   res.sendFile(__dirname + '/xml/sitemap.xml');
