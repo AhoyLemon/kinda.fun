@@ -144,7 +144,7 @@ var app = new Vue({
       }
     },
 
-    checkName: function() {
+    checkName() {
       let self = this;
       let correctGuess = false;
       if (self.guess.toLowerCase() == self.current.name.toLowerCase() || self.guess == 'xxxx') {
@@ -174,14 +174,31 @@ var app = new Vue({
         }
       }
 
+      if (self.my.round < 2) {
+        socket.emit('pretendGameStart', {
+          correctName:  self.current.name
+        });
+      }
+
       if (self.answer == 'correct') {
         self.my.points = self.my.points + 1;
         self.my.correctGuesses++;
+        socket.emit('pretendCorrectGuess', {
+          correctName:  self.current.name
+        });
       } else if (self.answer == 'close') {
         self.my.points = self.my.points + 0.7;
         self.my.correctGuesses++;
+        socket.emit('pretendCloseGuess', {
+          correctName: self.current.name,
+          guessedName: self.guess
+        });
       } else if (self.answer == 'wrong') {
-        self.my.points = self.my.points - 0.6;
+        self.my.points = self.my.points - 0.85;
+        socket.emit('pretendBadGuess', {
+          correctName: self.current.name,
+          guessedName: self.guess
+        });
       }
 
       sendEvent(self.answer, self.current.name, self.guess);
@@ -411,7 +428,7 @@ var app = new Vue({
         self.my.seenCheese = true;
         self.specialScreen.show = true;
         self.specialScreen.type = "cheese";
-        self.specialScreen.pic = 'img/cheeselog/desktop.jpg';
+        self.specialScreen.pic = 'img/pretend/cheeselog/desktop.jpg';
 
         self.specialScreen.headline = randomFrom(cheeseIntroHeadlines);
         self.specialScreen.message = randomFrom(cheeseIntroMessages);
@@ -469,6 +486,7 @@ var app = new Vue({
       sendEvent('Impersonator Website', self.current.name, self.current.url);
       window.open(self.current.url, '_blank', 'location=yes,height=600,width=960,scrollbars=yes,status=yes');
     },
+
     visitIllustratorWebsite() {
       let self = this;
       sendEvent('Illustrator Website', 'Sanguinary Novel', 'https://twitter.com/aberrantwhimsy');
