@@ -40,9 +40,9 @@ function capitalize(string) {
   words = string.split(" ");
   let output = "";
   for (let i = 0; i < words.length; i++) {
-    output += words[i][0].toUpperCase() + words[i].substr(1);
+    output += words[i][0].toUpperCase() + words[i].substr(1) + " ";
   }
-  return output;
+  return output.trim();
 }
 
 function bold(string) {

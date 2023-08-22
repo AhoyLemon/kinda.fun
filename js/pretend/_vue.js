@@ -281,7 +281,7 @@ var app = new Vue({
 
         let closeMessages = [
           [
-            capitalize(self.he) + ' is actually a ' +bold(self.current.name)+ ' impersonator,',
+            capitalize(self.he) + ' is actually a ' +bold(self.current.name)+ ' impersonator, ',
               [
                 'but '+self.he+' chalks up the mistake to you having a speech impediment, which you now have to pretend for the rest of the night',
                 'but '+self.he+' just assumes you&apos;e illiterate. To futher the ruse, you write down "HALO, NISE 2 MEET U :)" on a piece of paper.',
