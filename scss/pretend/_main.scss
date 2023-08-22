@@ -142,9 +142,11 @@ figcaption { font-family: $font; @include flex-center(); padding-left: 2em; padd
 @media screen and (min-width:$desktop-min) {
   .screen {
     .celebrity-photo {
-      img { width:100%; height:100%;object-fit: contain; object-position: center right; }
+      img { width:100%; height:100%; object-fit: contain; object-position: center right; }
     }
-    > figure { @include position(fixed,0,0,0,50%); background-position: center right; }
+    > figure { @include position(fixed,0,0,0,50%);
+      img { width:100%; height:100%; object-fit: contain; object-position: center right; }
+    }
     figcaption { @include position(fixed,0,50%,0,0); display:flex; align-items: center;
       .medium-text { font-size:2.8vw; }
       .big-text { font-size:4vw; }
@@ -170,8 +172,11 @@ figcaption { font-family: $font; @include flex-center(); padding-left: 2em; padd
     h1 { font-size:3vw; }
     h2 { font-size:3.5vw; }
     button { display: block; text-align: center; margin-left: auto; margin-right: auto; font-size:22px; }
-    figure {  width:100%; height:100%; object-fit: cover; object-position: center; }
+    figure { display:flex; align-items: center; left:20%;
+      img { width:100%; max-height: 99vh; object-fit: contain; object-position: center right; }
+    }
     &.win {
+      figure { left:20%; }
       figcaption { right:80%; bottom:0; left:0; 
         .status { width:99vh; }
         h1 { font-size:9vw; color:$veryGood; animation:youwintext 2s ease forwards; }
@@ -179,6 +184,19 @@ figcaption { font-family: $font; @include flex-center(); padding-left: 2em; padd
       // figure { background-position: center top; left:20%;  }
       .game-over-holder { display:none; }
     }
+    &.lose {
+      figure { left:30%; }
+      figcaption {
+        .inner { background-color:rgba($body,0.75); backdrop-filter: blur(2px); padding:1.5em; }
+      }
+    }
+    &.cheese {
+      figure { left:260px; }
+      figcaption { left:0; right:unset; width:100%; max-width:630px;
+        .inner { background-color:rgba($body,0.75); backdrop-filter: blur(2px); padding:1.5em; }
+      }
+    }
+
 
   }
 

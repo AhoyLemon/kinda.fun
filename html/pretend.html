@@ -7,23 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <link rel="preconnect" href="https://fonts.gstatic.com"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Limelight|Merriweather:400,400i,900"/>
-    <link href="css/pretend.css?lastUpdated2023-08-22T03:11:01.766Z" type="text/css" rel="stylesheet"/>
+    <link href="css/pretend.css?lastUpdated2023-08-22T03:55:00.372Z" type="text/css" rel="stylesheet"/>
     <meta name="description" content="You're at a part of celebrity impersonators..."/>
-    <meta http-equiv="last-modified" content="2023-08-22T03:11:01.766Z"/>
+    <meta http-equiv="last-modified" content="2023-08-22T03:55:00.372Z"/>
   </head>
   <body>
     <div id="app">
-      <button class="debug-toggle" :class="{on: debugMode == true, off: debugMode == false}" @click="debugMode = !debugMode">Debug</button>
-      <header class="debug" v-if="debugMode == true">
-        <div class="boxes">
-          <div class="box"><span class="label">round</span><span class="data">{{my.round}}</span></div>
-          <div class="box"><span class="label">score</span><span class="data">{{my.score}}</span></div>
-          <div class="box"><span class="label">mood</span><span class="data">{{my.mood}}</span></div>
-          <div class="box"><span class="label">warmUp</span><span class="data">{{warmUp}}</span></div>
-          <div class="box"><span class="label">dangerZone</span><span class="data">{{dangerZone}}</span></div>
-        </div>
-      </header>
-      <button class="sidebar-button" v-on:click="toggleDrawer" v-bind:class=" {active: sidebarVisible} " v-cloak="v-cloak" aria-label="Open Sidebar" v-if="my.round &gt; 2">
+      <button class="sidebar-button" v-on:click="toggleDrawer" v-bind:class=" {active: sidebarVisible} " v-cloak="v-cloak" aria-label="Open Sidebar" v-if="my.round &gt;= 2">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
           <circle class="fill" cx="50.6" cy="49.7" r="42"></circle>
           <path class="outline" d="M50 96C24.6 96 4 75.4 4 50S24.6 4 50 4s46 20.6 46 46-20.6 46-46 46zm0-86.2C27.8 9.8 9.8 27.8 9.8 50s18 40.3 40.2 40.3S90.3 72.2 90.3 50 72.2 9.8 50 9.8z"></path>
@@ -35,12 +25,12 @@
         <ul>
           <li><span class="label">This site is</span><span class="indent"><span>by </span><a href="https://ahoylemon.xyz" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'site by Lemon', 'https://ahoylemon.xyz')">Lemon</a></span></li>
           <li><span class="label">With help from</span><span class="indent"><a href="https://twitter.com/AberrantWhimsy" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'Sanguinary Novel', 'https://twitter.com/AberrantWhimsy')">Sanguinary Novel</a></span></li>
-          <li><span class="label">There's more info in the</span><span class="indent"><a href="https://github.com/AhoyLemon/pretend.world" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'GitHub Repo', 'https://github.com/AhoyLemon/pretend.world')">GitHub repository</a></span></li>
+          <li><span class="label">There's more info in the</span><span class="indent"><a href="https://github.com/AhoyLemon/pretend.world" target="_blank" rel="noopener" onclick="sendEvent('outside link', 'GitHub Repo', 'https://github.com/AhoyLemon/kinda.fun')">GitHub repository</a></span></li>
         </ul>
       </div>
       <main v-cloak="v-cloak">
         <div class="screen special-screen" v-if="specialScreen.show" v-bind:class="specialScreen.type">
-          <figure :style="{ backgroundImage: 'url(' + specialScreen.pic + ')' }"><img :src="specialScreen.pic"/></figure>
+          <figure><img :src="specialScreen.pic"/></figure>
           <figcaption>
             <div class="inner special-feedback">
               <div class="status"> 

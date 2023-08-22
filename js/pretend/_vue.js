@@ -214,11 +214,13 @@ var app = new Vue({
     generateAnswerFeedback() {
       let self = this;
       self.feedback.headlineClass = self.answer;
-
+      const yourGuess = capitalize(self.guess);
 
       // Generate the Answer Feedback
       if (self.answer == "correct") { 
         self.feedback.headline = randomFrom(correctHeadlines); 
+
+        
 
         let correctMessages = [
           [
@@ -287,15 +289,15 @@ var app = new Vue({
               ]
           ],
           [
-            "“"+self.guess+", right?” you ask.",
+            "“"+yourGuess+", right?” you ask.",
               [ 
                 self.he+" looks at you quizzically. “"+bold(self.current.name)+" actually.” “That's what I said. "+self.current.name+".” You confidently reply.",
-                "“Did you say "+self.current.name+" or "+self.guess+"?” "+self.he+" asks you. “Which is the right one?” you reply. “What?” "+self.he+" he asks. You then ask if "+self.he+" wants to see a magic trick, but do not perform one.",
+                "“Did you say "+self.current.name+" or "+yourGuess+"?” "+self.he+" asks you. “Which is the right one?” you reply. “What?” "+self.he+" he asks. You then ask if "+self.he+" wants to see a magic trick, but do not perform one.",
                 "“You mean "+self.current.name+"” he asks. You tell him that's what you meant."
               ]
           ],
           [
-            "“You kinda look like "+self.guess+".” you tell "+self.him+". ",
+            "“You kinda look like "+yourGuess+".” you tell "+self.him+". ",
               [ 
                 "“Kind of looking like "+bold(self.current.name)+" is kind of what I do!” he says. You laugh politely.",
                 capitalize(self.he) + " thanks you for saying so, and doesn't correct you by pronouncing it "+bold(self.current.name)+"."
@@ -308,7 +310,7 @@ var app = new Vue({
                 "realizing life is too short, "+self.he+" mutters “Sure.” and then pushes past you.",
                 "sighs, pinches the bridge of "+self.his+" nose, and just kind of stands there. After three minutes, you realize "+self.he+" has fallen asleep.",
                 "decides on chewing scenery. “"+self.guess+"!!??” "+self.he+" bellows, and then gives a perfomative sob with "+self.his+" face in the crook of "+self.his+" elbow. Nearby guests politely applaud.",
-                "hands you a business card that says “"+self.current.name+". (Not "+self.guess+")” and slinks away.",
+                "hands you a business card that says “"+self.current.name+". (Not "+yourGuess+")” and slinks away.",
                 "throws an arm around your shoulders and says “close enough!” As the heartbreak of halitosis sinks in, you realize it might be <i>too</i> close."
               ]
 
@@ -328,7 +330,7 @@ var app = new Vue({
                 "is super bummed",
                 "can not believe"
               ],
-                " you mistook " +self.him+" for "+self.guess+". ",
+                " you mistook " +self.him+" for "+yourGuess+". ",
                   [ 
                     "You apologize profusely and "+self.he+" seems placated.",
                     "You distract "+self.him+" by asking "+self.his+" workout routine.",
@@ -338,7 +340,7 @@ var app = new Vue({
                   ]
           ],
           [
-            "“"+self.guess+"!” you scream, and the "+bold(self.current.name)+" impersonator ",
+            "“"+yourGuess+"!” you scream, and the "+bold(self.current.name)+" impersonator ",
               [
                 "takes a wild punch at your nose, missing by a good foot.",
                 "spits directly into your mouth.",

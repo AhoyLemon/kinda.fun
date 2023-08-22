@@ -37,7 +37,12 @@ function stringInArray(s, a) {
 }
 
 function capitalize(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  words = string.split(" ");
+  let output = "";
+  for (let i = 0; i < words.length; i++) {
+    output += words[i][0].toUpperCase() + words[i].substr(1);
+  }
+  return output;
 }
 
 function bold(string) {
