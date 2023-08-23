@@ -67,6 +67,17 @@
                   <button @click="getData('sisyphus')">Details</button>
                 </div>
               </div>
+              <div class="summary" v-if="stats.general &amp;&amp; stats.general.lastPlayed">
+                <figure><img src="svg/pretend.svg" @click="getData('pretend')"/></figure>
+                <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.pretend">
+                  <div class="time-caption">Last Game</div>
+                  <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')"></div>
+                  <div class="calendar" v-text="formatTime(stats.general.lastPlayed.pretend,'calendar')"></div>
+                </div>
+                <div class="button-holder">
+                  <button @click="getData('pretend')">Details</button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="player-table"> 
@@ -112,6 +123,13 @@
                 <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.sisyphus,'fromNow')"></div>
               </div>
             </div>
+            <div class="summary" :class="{ active: (ui.viewing == 'pretend'), inactive: (ui.viewing != 'pretend') }">
+              <figure><img src="svg/pretend.svg" @click="getData('pretend')"/></figure>
+              <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.pretend">
+                <div class="time-caption">Last Game</div>
+                <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')"></div>
+              </div>
+            </div>
           </div>
         </aside>
         <main v-if="ui.viewing != 'general'">
@@ -123,7 +141,7 @@
           <section class="guillotine stats" v-if="ui.viewing == 'guillotine'">
             <figure><img src="svg/no_more_billionaires.svg"/></figure>
             <div class="stats-boxes">
-              <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.cameo">
+              <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.guillotine">
                 <div class="caption">Last Game</div>
                 <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.guillotine,'fromNow')"></div>
                 <div class="calendar" v-text="formatTime(stats.general.lastPlayed.guillotine,'calendar')"></div>
@@ -362,15 +380,61 @@
               </div>
             </div>
           </section>
+          <section class="pretend stats" v-if="ui.viewing == 'pretend'">
+            <figure><img src="svg/pretend.svg"/></figure>
+            <div class="pretend-split">
+              <div class="stats-boxes">
+                <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.pretend">
+                  <div class="caption">Last Game</div>
+                  <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')"></div>
+                  <div class="calendar" v-text="formatTime(stats.general.lastPlayed.pretend,'calendar')"></div>
+                </div>
+                <div class="box big-number">
+                  <div class="caption">Games Started</div>
+                  <div class="number" v-text="addCommas(stats.pretend.counts.gamesStarted)"></div>
+                </div>
+                <div class="box big-number">
+                  <div class="caption">Games Finished</div>
+                  <div class="number" v-text="addCommas(stats.pretend.counts.gamesFinished)"></div>
+                </div>
+                <div class="box big-number">
+                  <div class="caption">Games Won</div>
+                  <div class="number" v-text="addCommas(stats.pretend.counts.gamesWon)"></div>
+                </div>
+                <div class="box big-number">
+                  <div class="caption">Games Lost</div>
+                  <div class="number" v-text="addCommas(stats.pretend.counts.gamesLost)"></div>
+                </div>
+                <!--.box.big-name(span="2" v-if="computedGuillotineMostKilled && computedGuillotineMostKilled.iname")
+                .caption Most Frequently Killed
+                .name {{computedGuillotineMostKilled.iname}}
+                .subtext
+                  | Sent to the guillotine  {{computedGuillotineMostKilled.icount}} times
+                -->
+                <!--.box.big-number(span="2")
+                .caption Avg Earnings
+                .number(v-text="computedGuillotineAverageGameWealth")
+                
+                -->
+              </div>
+              <div class="table">
+                <div class="good-table" v-if="ui.pretendLoaded">
+                  <h2>Impersonator Guesses</h2>
+                  <vue-good-table v-if="stats.pretend.guesses" :rows="stats.pretend.guesses" :columns="columns.pretendGuesses" theme="black-rhino" :line-numbers="true" :sort-options="{ enabled: true, initialSortBy: { field: 'correctGuess', type: 'desc'} }" :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"></vue-good-table>
+                </div>
+              </div>
+            </div>
+          </section>
         </main>
+      </div>
+      <link rel="stylesheet" href="css/testing.css"/>
+      <div class="testing-banner wrongest">
+        <div class="inner">Test Mode Is On</div>
       </div>
     </div>
     <div class="javascripts">
-      <script src="js/libraries/vue.min.js"></script>
-      <script>
-        const testing = false;
-        
-      </script>
+      <script src="js/libraries/vue.full.js"></script>
+      <script>const testing = true;</script>
       <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/vue-good-table@2.15.3/dist/vue-good-table.min.js"></script>

@@ -104,6 +104,28 @@
               "description": "A trivia game of unnecessary suffering."
             }
 
+        .game(:class="{ active: (gameChoice == 'pretend'), inactive: (gameChoice && gameChoice != 'pretend') }")
+          figure.logo(@click="gameChoice = 'pretend'")
+            img(src="svg/pretend-world.svg" alt="Comparatively Famous logo")
+          figcaption
+            .slogan You are at a party of celebrity impersonators.
+            .players-allowed
+              | For 1 player.
+          script(type="application/ld+json").
+            {
+              "@context": "http://schema.org",
+              "@type": "VideoGame",
+              "name": "Pretend World",
+              "url": "https://kinda.fun/pretend",
+              "image": "https://kinda.fun/img/og-pretend.png",
+              "playMode": "SinglePlayer",
+              "applicationCategory": "browser game",
+              "gamePlatform": "web browser",
+              "operatingSystem": "web browser",
+              "genre": "comedy",
+              "description": "You are at a party of celebrity impersonators."
+            }
+
         .game(:class="{ active: (gameChoice == 'wrongest'), inactive: (gameChoice && gameChoice != 'wrongest') }")
           figure.logo(@click="gameChoice = 'wrongest'")
             img(src="svg/wrongest.svg" alt="The Wrongest Words logo")
@@ -129,7 +151,7 @@
             }
 
   .create-or-join(v-if="gameChoice")
-    .start-playing(v-if="gameChoice == 'cameo' || gameChoice == 'sisyphus' ||  gameChoice == 'guillotine'")
+    .start-playing(v-if="gameChoice == 'cameo' || gameChoice == 'sisyphus' ||  gameChoice == 'guillotine' || gameChoice == 'pretend' ")
       button(@click="startSinglePlayerGame()") Start Playing
     .options(v-else)
       .create

@@ -4,7 +4,7 @@ section.guillotine.stats(v-if="ui.viewing == 'guillotine'")
 
   .stats-boxes
 
-    .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
+    .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.guillotine")
       .caption Last Game
       .time-ago(v-text="formatTime(stats.general.lastPlayed.guillotine,'fromNow')")
       .calendar(v-text="formatTime(stats.general.lastPlayed.guillotine,'calendar')")

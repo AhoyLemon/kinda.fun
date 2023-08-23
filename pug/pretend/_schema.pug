@@ -1,0 +1,59 @@
+script(type="application/ld+json").
+  {
+    "@context": "http://schema.org",
+    "@type": "VideoGame",
+    "name": "#{pageTitle}",
+    "url": "#{pageURL}",
+    "image": "#{siteURL}/img/og-pretend.png",
+    "playMode": "SinglePlayer",
+    "applicationCategory": "browser game",
+    "gamePlatform": "web browser",
+    "operatingSystem": "web browser",
+    "genre": "comedy",
+    "description": "#{description}",
+    "inLanguage": "English",
+    "numberOfPlayers": 1,
+    "creator": {
+      "@type": "Person",
+      "name": "Lemon",
+      "url": "https://ahoylemon.xyz",
+      "email": "#{emailAddress}",
+      "sameAs": [
+        "https://thefpl.us/meet/lemon",
+        "https://twitter.com/AhoyLemon",
+        "https://mastodon.social/@ahoylemon"
+      ]
+    },
+    "offers": {
+      "@type": "Offer",
+      "description": "free",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "screenshot": [
+      {
+        "@type": "ImageObject",
+        "url": "#{siteURL}/img/pretend/screenshots/1.jpg",
+        "width": "1200",
+        "height": "650"
+      },
+      {
+        "@type": "ImageObject",
+        "url": "#{siteURL}/img/pretend/screenshots/2.jpg",
+        "width": "1200",
+        "height": "650"
+      },
+      {
+        "@type": "ImageObject",
+        "url": "#{siteURL}/img/pretend/screenshots/3.jpg",
+        "width": "980",
+        "height": "980"
+      },
+      {
+        "@type": "ImageObject",
+        "url": "#{siteURL}/img/pretend/screenshots/4.jpg",
+        "width": "980",
+        "height": "980"
+      }
+    ]
+  }

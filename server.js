@@ -123,6 +123,15 @@ function newGuillotinePlayerScore(wealthCreated,mostValuable) {
   });
 }
 
+function pretendGuessCelebrity(impersonator,column) {
+  const sql = `INSERT INTO pretendGuesses (iname, ${column})
+                VALUES (${connection.escape(impersonator)}, '1')
+                ON DUPLICATE KEY UPDATE ${column} = ${column}+1`;
+  connection.query(sql, function(err, rows, fields) {
+    if (err) throw err;
+  });
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 // Routing
@@ -157,6 +166,10 @@ app.get('/guillotine/process', (req, res) => {
 
 app.get('/guillotine/arrests', (req, res) => {
   res.sendFile(__dirname + '/html/guillotine/arrests.html');
+});
+
+app.get('/pretend', (req, res) => {
+  res.sendFile(__dirname + '/html/pretend.html');
 });
 
 app.get('/sitemap.xml', (req, res) => {
@@ -359,6 +372,27 @@ app.get('/stats/guillotine/json', (req, res) => {
     guillotineData.playerScores = results;
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(guillotineData));
+  });
+  
+});
+
+
+app.get('/stats/pretend/json', (req, res) => {
+  let pretendData =  {
+    counts: {},
+    guesses: []
+  };
+  connection.query('SELECT * FROM pretendCounts;', function(err, results) {
+    if(err) throw err;
+    results.forEach((key) => {
+      pretendData.counts[key.iname] = key.icount;
+    });
+  });
+  connection.query('SELECT * FROM pretendGuesses', function(err, results) {
+    if(err) throw err;
+    pretendData.guesses = results;
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(pretendData));
   });
   
 });
@@ -817,6 +851,46 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log("The socket "+socketID+ " disconnected.");
+  });
+
+
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  //PRETEND WORLD sockets...
+
+  socket.on('pretendGameStart', msg => {
+    console.log("a player started a game of PRETEND WORLD");
+    DateStampInDatabase("allGamesLastPlayed", 'pretend');
+    incrementDatabase('pretendCounts', "gamesStarted");
+  });
+
+  socket.on('pretendCorrectGuess', msg => {
+    console.log(`${msg.correctName} was guessed correctly.`);
+    pretendGuessCelebrity(msg.correctName,'correctGuess');
+  });
+
+  socket.on('pretendCloseGuess', msg => {
+    console.log(`${msg.correctName} was guessed closed enough`);
+    pretendGuessCelebrity(msg.correctName,'closeGuess');
+  });
+
+  socket.on('pretendBadGuess', msg => {
+    console.log(`${msg.correctName} was guessed badly`);
+    pretendGuessCelebrity(msg.correctName,'badGuess');
+  });
+
+  socket.on('pretendGameOver', msg => {
+    console.log("a player finished a game of PRETEND WORLD");
+    incrementDatabase('pretendCounts', "gamesFinished");
+    if (!msg || !msg.gameState) {
+      // error, do nothing
+    } else if (msg.gameState == "win") {
+      incrementDatabase('pretendCounts', "gamesWon");
+    } else if (msg.gameState == "lost") {
+      incrementDatabase('pretendCounts', "gamesLost");
+    }
   });
   
 });

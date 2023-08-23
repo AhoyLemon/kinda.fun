@@ -81,3 +81,10 @@ section.wrongest { padding:($gap * 2) $gap $gap 0;
   
 }
 
+section.pretend {
+  .pretend-split { display:grid; grid-template-columns:340px 1fr; gap:40px;
+    .stats-boxes { display:flex; align-items:flex-start; flex-direction: column; justify-content: flex-start; align-items: stretch; padding-top:100px; }
+    .table { padding-right:40px; }
+  }
+}
+

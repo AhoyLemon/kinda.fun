@@ -1,0 +1,20 @@
+//- SPECIAL SCREENS
+//- (Introduce Cheese, Game Over You Won, Game Over You Lost)
+.screen.special-screen(v-if="specialScreen.show" v-bind:class="specialScreen.type")
+  figure
+    img(:src="specialScreen.pic")
+    //-.button-holder.impersonator-website(v-if="specialScreen.gameOver")
+      a.button(@click="visitIllustratorWebsite()") illustrator website
+
+
+  figcaption
+    .inner.special-feedback
+      .status 
+        h1.special-headline(v-text="specialScreen.headline")
+        p(v-html="specialScreen.message")
+        
+        .game-over-holder(v-if="specialScreen.gameOver")
+          h2(:class="my.mood") GAME OVER
+        .button-holder(v-else-if="specialScreen.type == 'cheese'")
+          button.mission-start(@click="cheeseScreen('hide')" ref="missionstart")
+            span Mission Start
