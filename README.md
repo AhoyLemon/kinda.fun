@@ -1,6 +1,6 @@
 ![kinda.fun](https://kinda.fun/og-wide.png)
 
-There's currently five games here...
+There's currently six games here...
 
 ## Comparatively Famous
 [![Comparatively Famous](https://kinda.fun/img/og-famous.png)](https://kinda.fun/cameo)
@@ -22,3 +22,6 @@ There's currently five games here...
 
 ## Sisyphus Clicker
 [![Sisyphus Clicker](https://kinda.fun/img/sisyphus/og-wide.png)](https://kinda.fun/sisyphys)
+
+## Pretend World
+[![Pretend World](https://kinda.fun/img/og-pretend.png)](https://kinda.fun/pretend)
