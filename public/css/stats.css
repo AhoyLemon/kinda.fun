@@ -189,7 +189,6 @@ svg {
 }
 
 html {
-  background: -o-radial-gradient(#353535, #161616);
   background: radial-gradient(#353535, #161616);
   color: #eee;
 }
@@ -390,6 +389,36 @@ section.wrongest {
   padding: 80px 40px 40px 0;
 }
 
+section.pretend .pretend-split {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 340px 40px 1fr;
+  grid-template-columns: 340px 1fr;
+  gap: 40px;
+}
+section.pretend .pretend-split .stats-boxes {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  padding-top: 100px;
+}
+section.pretend .pretend-split .table {
+  padding-right: 40px;
+}
+
 main.general-stats {
   -ms-grid-column-span: 2;
   grid-column: span 2;
@@ -498,14 +527,12 @@ main.general-stats .good-table table.vgt-table .vgt-right-align {
 main.general-stats .good-table table.vgt-table .player-name-cell {
   max-width: 180px;
   overflow: hidden;
-  -o-text-overflow: ellipsis;
-     text-overflow: ellipsis;
+  text-overflow: ellipsis;
 }
 main.general-stats .good-table table.vgt-table .last-played-cell {
   max-width: 100px;
   overflow: hidden;
-  -o-text-overflow: ellipsis;
-     text-overflow: ellipsis;
+  text-overflow: ellipsis;
 }
 
 aside.general-stats {

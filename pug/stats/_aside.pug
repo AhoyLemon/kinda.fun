@@ -36,3 +36,10 @@ aside.general.general-stats(v-if="ui.viewing != 'general'")
       .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.sisyphus")
         .time-caption Last Game
         .time-ago(v-text="formatTime(stats.general.lastPlayed.sisyphus,'fromNow')")
+
+    .summary(:class="{ active: (ui.viewing == 'pretend'), inactive: (ui.viewing != 'pretend') }")
+      figure
+        img(src="svg/pretend.svg" @click="getData('pretend')")
+      .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.pretend")
+        .time-caption Last Game
+        .time-ago(v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')")

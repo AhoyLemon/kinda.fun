@@ -306,6 +306,32 @@ var app = new Vue({
             type: "date",
             formatFn: this.formatDate
           } 
+        ],
+        pretendGuesses: [
+          {
+            label: "Celebrity",
+            field: "iname",
+          },
+          {
+            label: "Correct %",
+            field: this.pretendCorrectPct,
+            type: "number"
+          },
+          {
+            label: "Exact",
+            field: "correctGuess",
+            type:  "number"
+          },
+          {
+            label: "Close",
+            field: "closeGuess",
+            type:  "number"
+          },
+          {
+            label: "Bad",
+            field: "badGuess",
+            type:  "number"
+          }
         ]
       },
 
@@ -315,7 +341,8 @@ var app = new Vue({
         invalidLoaded: false,
         wrongestLoaded: false,
         sisyphusLoaded: false,
-        guillotineLoaded: false
+        guillotineLoaded: false,
+        pretendLoaded: false
       }
     };
   },
@@ -519,6 +546,22 @@ var app = new Vue({
             self.ui.guillotineLoaded = true;
             self.ui.viewing = "guillotine";
           });
+      } else if (game == "pretend") {
+        axios.get('/stats/pretend/json')
+          .then(function (response) {
+            // handle success
+            self.stats.pretend = response.data;
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          })
+          .then(function () {
+            console.log(self.stats.pretend)
+            // alert('line 474');
+            self.ui.pretendLoaded = true;
+            self.ui.viewing = "pretend";
+          });
       }
 
       const newURL = window.location.origin + window.location.pathname + "?game="+game;
@@ -603,6 +646,16 @@ var app = new Vue({
     calculateSpend(rowObj) {
       const self = this;
       return this.addCommas(parseInt(rowObj.icount) * parseInt(rowObj.price));
+    },
+    pretendCorrectPct(rowObj) {
+      const total = (rowObj.correctGuess + rowObj.closeGuess + rowObj.badGuess)
+      let correct = rowObj.correctGuess;
+      if (rowObj.closeGuess && rowObj.closeGuess > 0) {
+        correct += (rowObj.closeGuess * 0.7);
+      }
+
+      return this.percentOf(total,correct) + "%";
+      
     }
 
   },
@@ -740,7 +793,6 @@ var app = new Vue({
         };
       }
     },
-
     computedSisyphusCheevos() {
       const self = this;
       if (!self.ui.sisyphusLoaded) {
@@ -758,7 +810,6 @@ var app = new Vue({
         };
       }
     },
-
     computedSisyphusPurchases() {
       const self = this;
       if (!self.ui.sisyphusLoaded) {
@@ -776,7 +827,6 @@ var app = new Vue({
         };
       }
     },
-
     computedGuillotineAverageGameWealth() {
 
       const self = this;
@@ -792,7 +842,6 @@ var app = new Vue({
       let a = (combinedValue / gameCount);
       return self.billionsOfDollars(a);
     },
-
     computedGuillotineMostKilled() {
       const self = this;
       if (!self.stats.guillotine || !self.stats.guillotine.heads) {

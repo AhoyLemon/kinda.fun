@@ -377,6 +377,27 @@ app.get('/stats/guillotine/json', (req, res) => {
 });
 
 
+app.get('/stats/pretend/json', (req, res) => {
+  let pretendData =  {
+    counts: {},
+    guesses: []
+  };
+  connection.query('SELECT * FROM pretendCounts;', function(err, results) {
+    if(err) throw err;
+    results.forEach((key) => {
+      pretendData.counts[key.iname] = key.icount;
+    });
+  });
+  connection.query('SELECT * FROM pretendGuesses', function(err, results) {
+    if(err) throw err;
+    pretendData.guesses = results;
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(pretendData));
+  });
+  
+});
+
+
 io.on('connection', (socket) => {
 
   const socketID = socket.id;
