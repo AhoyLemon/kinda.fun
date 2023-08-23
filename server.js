@@ -888,7 +888,7 @@ io.on('connection', (socket) => {
       // error, do nothing
     } else if (msg.gameState == "win") {
       incrementDatabase('pretendCounts', "gamesWon");
-    } else if (msg.gameState == "lost") {
+    } else if (msg.gameState == "lose") {
       incrementDatabase('pretendCounts', "gamesLost");
     }
   });
