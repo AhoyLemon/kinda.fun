@@ -16,5 +16,5 @@
         .game-over-holder(v-if="specialScreen.gameOver")
           h2(:class="my.mood") GAME OVER
         .button-holder(v-else-if="specialScreen.type == 'cheese'")
-          button.mission-start(@click="cheeseScreen('hide')" v-focus)
+          button.mission-start(@click="cheeseScreen('hide')" ref="missionstart")
             span Mission Start

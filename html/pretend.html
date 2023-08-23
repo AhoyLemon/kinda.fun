@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <link rel="preconnect" href="https://fonts.gstatic.com"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Limelight|Merriweather:400,400i,900"/>
-    <link href="css/pretend.css?lastUpdated2023-08-23T01:12:46.681Z" type="text/css" rel="stylesheet"/>
+    <link href="css/pretend.css?lastUpdated2023-08-23T20:50:48.335Z" type="text/css" rel="stylesheet"/>
     <meta name="description" content="You are at a part of celebrity impersonators..."/>
-    <meta http-equiv="last-modified" content="2023-08-23T01:12:46.681Z"/>
+    <meta http-equiv="last-modified" content="2023-08-23T20:50:48.335Z"/>
     <meta name="twitter:card" content="summary_large_image"/>
     <meta name="twitter:creator" content="@AhoyLemon"/>
     <meta name="twitter:title"/>
@@ -53,7 +53,7 @@
                   <h2 :class="my.mood">GAME OVER</h2>
                 </div>
                 <div class="button-holder" v-else-if="specialScreen.type == 'cheese'">
-                  <button class="mission-start" @click="cheeseScreen('hide')" v-focus="v-focus"><span>Mission Start</span></button>
+                  <button class="mission-start" @click="cheeseScreen('hide')" ref="missionstart"><span>Mission Start</span></button>
                 </div>
               </div>
             </div>
@@ -90,7 +90,7 @@
               <div class="question-wrapper">
                 <form @submit.prevent="checkName()" :disabled="guess.length &lt; 4">
                   <label for="guess">Who is this supposed to be?</label>
-                  <input type="text" v-model="guess" placeholder="Type your guess here" name="guess"/>
+                  <input type="text" ref="guess" v-model="guess" placeholder="Type your guess here"/>
                   <button type="submit" :disabled="guess.length &lt; 4">Guess</button>
                 </form>
               </div>
@@ -106,7 +106,7 @@
                 <p class="danger-zone-paragraph" v-if="dangerZone == true" :class="my.mood">You are in danger of being kicked out of the party.</p>
               </div>
               <div class="button-holder">
-                <button class="keep-mingling" @click="nextRound()" v-focus="v-focus">Keep Mingling</button>
+                <button class="keep-mingling" @click="nextRound()" ref="keepmingling">Keep Mingling</button>
               </div>
             </div>
           </figcaption>

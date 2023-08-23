@@ -1,6 +1,8 @@
 
 const picPath = "/img/pretend/impersonators/";
 const impersonators = [
+
+  // Classique Productions
   { 
     file: "adele-2.jpg",
     celebrity: "Adele",
@@ -754,6 +756,48 @@ const impersonators = [
     celebrity: "Celine Dion",
     sex: 'f',
     url: "http://www.lvimpersonators.com/profile/morgane-latouche"
+  },
+
+  // Scarlett Entertainment
+  {
+    file: "daniel-craig.jpg",
+    celebrity: "Daniel Craig",
+    sex: 'm',
+    url: "https://scarlettentertainment.com/us/acts/daniel-craig-lookalike-uk"
+  },
+  {
+    file: "morgan-freeman.jpg",
+    celebrity: "Morgan Freeman",
+    sex: 'm',
+    url: "https://scarlettentertainment.com/us/acts/morgan-freeman-lookalike-uk"
+  },
+  {
+    file: "robert-downey-jr.jpg",
+    celebrity: "Robert Downey Jr.",
+    variants: [ "Robert Downey", "Robert Downy Jr", "Robert Downey Jr" ],
+    sex: 'm',
+    url: "https://scarlettentertainment.com/us/acts/robert-downey-junior-lookalike"
+  },
+  {
+    file: "sean-connery.jpg",
+    celebrity: "Sean Connery",
+    variants: [ "Shawn Connery", "Shaun Connery", "Sean Connory" ],
+    sex: 'm',
+    url: "https://scarlettentertainment.com/us/acts/sean-connery-impersonator"
+  },
+  {
+    file: "sylvester-stallone.jpg",
+    celebrity: "Sylvester Stallone",
+    variants: [ "Sly Stallone", "Slyvester Stallone", "Stallone" ],
+    sex: 'm',
+    url: "https://scarlettentertainment.com/us/acts/sylvester-stallone-impersonator"
+  },
+  {
+    file: "will-smith.jpg",
+    celebrity: "Will Smith",
+    variants: [ "William Smith", "Fresh Prince" ],
+    sex: 'm',
+    url: "https://scarlettentertainment.com/us/acts/will-smith-lookalike"
   },
   
 ];

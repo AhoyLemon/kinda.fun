@@ -73,6 +73,7 @@ var app = new Vue({
         self.findImpersonator();
         self.generateHeadline();
         self.phase = 'question';
+        self.setFocus();
       }
 
       if (self.my.round == 5) {
@@ -81,6 +82,8 @@ var app = new Vue({
         self.bannerVisible = true;
       }
       
+      
+
     },
 
     generateHeadline() {
@@ -124,6 +127,7 @@ var app = new Vue({
       let self = this;
       if (self.my.seenCheese == false && self.my.stepsToCheese < settings.stepsToCheese) {
         self.cheeseScreen('show');
+        self.setFocus();
       } else if (self.dangerZone && self.my.previousMood == 'veryBad' && self.answer == 'wrong') {
         self.specialScreen.show = true;
         self.specialScreen.type = "lose";
@@ -386,6 +390,7 @@ var app = new Vue({
       }
 
       self.feedback.showAnswerMessage = true;
+      self.setFocus();
 
     },
 
@@ -498,6 +503,20 @@ var app = new Vue({
       let self = this;
       sendEvent('Illustrator Website', 'Sanguinary Novel', 'https://twitter.com/aberrantwhimsy');
       window.open('https://twitter.com/aberrantwhimsy', '_blank', 'location=yes,height=600,width=960,scrollbars=yes,status=yes');
+    },
+
+    setFocus() {
+      // Note, you need to add a ref="search" attribute to your input.
+      setTimeout(() => {
+        if (this.$refs.guess) {
+          this.$refs.guess.focus();
+        } else if (this.$refs.keepmingling) {
+          this.$refs.keepmingling.focus();
+        } else if (this.$refs.missionstart) {
+          this.$refs.missionstart.focus()
+        }
+      }, 500); 
+      
     }
     
   },
@@ -546,9 +565,6 @@ var app = new Vue({
 
   beforeMount: function() {
     this.nextRound();
-  },
-  afterMount: function() {
-    alert('yeah hi');
   }
 
 });

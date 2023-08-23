@@ -161,7 +161,9 @@ figcaption { font-family: $font; @include flex-center(); padding-left: 2em; padd
       .feedback {
         h2 { font-size: 4vw; }
         .button-holder { padding-top: 3em; }
-        button { font-size:1.5em; }
+        button { font-size:1.5em;
+          // &:focus { background:lime; }
+        }
       }
     }
 
