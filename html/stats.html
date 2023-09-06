@@ -149,10 +149,12 @@
               <div class="box big-number">
                 <div class="caption">Games Started</div>
                 <div class="number" v-text="addCommas(stats.guillotine.counts.gamesStarted)"></div>
+                <div class="sub-number">(<strong v-text="calculateAverage(stats.guillotine.counts.gamesStarted, dates.guillotine.dayCount)"></strong> games per day)</div>
               </div>
               <div class="box big-number">
                 <div class="caption">Games Finished</div>
                 <div class="number" v-text="addCommas(stats.guillotine.counts.gamesFinished)"></div>
+                <div class="sub-number">(<strong v-text="percentOf(stats.guillotine.counts.gamesStarted,stats.guillotine.counts.gamesFinished) + '%'"></strong> completion rate)</div>
               </div>
               <div class="box big-number">
                 <div class="caption">Scores Shared</div>
@@ -245,18 +247,19 @@
           <section class="invalid stats" v-if="ui.viewing == 'invalid'">
             <figure><img src="svg/invalid-logo.svg"/></figure>
             <div class="stats-boxes">
-              <div class="box big-number">
-                <div class="caption">Games Started</div>
-                <div class="number" v-text="addCommas(stats.general.invalid.GamesStarted)"></div>
+              <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.invalid">
+                <div class="caption">Last Played</div>
+                <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.invalid,'fromNow')"></div>
+                <div class="calendar" v-text="formatTime(stats.general.lastPlayed.invalid,'calendar')"></div>
               </div>
               <div class="box big-number">
                 <div class="caption">Rooms Created</div>
                 <div class="number" v-text="addCommas(stats.general.invalid.RoomsCreated)"></div>
               </div>
-              <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.invalid">
-                <div class="caption">Last Played</div>
-                <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.invalid,'fromNow')"></div>
-                <div class="calendar" v-text="formatTime(stats.general.lastPlayed.invalid,'calendar')"></div>
+              <div class="box big-number">
+                <div class="caption">Games Started</div>
+                <div class="number" v-text="addCommas(stats.general.invalid.GamesStarted)"></div>
+                <div class="sub-number">(<strong v-text="calculateAverage(stats.general.invalid.GamesStarted, dates.invalid.dayCount)"></strong> per day)</div>
               </div>
               <div class="box big-number">
                 <div class="caption">Naughty Mode</div>
@@ -269,6 +272,11 @@
               <div class="box big-number">
                 <div class="caption">Cracked Passwords</div>
                 <div class="number percent" v-text="computedCrackedPasswordPercent + '%'"></div>
+              </div>
+              <div class="box date" v-if="dates.invalid &amp;&amp; dates.invalid.launched">
+                <div class="caption">Launched</div>
+                <div class="time-ago" v-text="formatTime(dates.invalid.launched,'MMM D, YYYY')"></div>
+                <div class="calendar" v-text="formatTime(dates.invalid.launched,'fromNow')"></div>
               </div>
             </div>
             <div class="good-tables" v-if="ui.invalidLoaded">
@@ -305,18 +313,23 @@
           <section class="wrongest stats" v-if="ui.viewing == 'wrongest'">
             <figure><img src="svg/wrongest.svg"/></figure>
             <div class="stats-boxes">
-              <div class="box big-number">
-                <div class="caption">Games Started</div>
-                <div class="number" v-text="stats.general.wrongest.GamesStarted"></div>
-              </div>
-              <div class="box big-number">
-                <div class="caption">Rooms Created</div>
-                <div class="number" v-text="stats.general.wrongest.RoomsCreated"></div>
-              </div>
               <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.cameo">
                 <div class="caption">Last Game</div>
                 <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')"></div>
                 <div class="calendar" v-text="formatTime(stats.general.lastPlayed.wrongest,'calendar')"></div>
+              </div>
+              <div class="box big-number">
+                <div class="caption">Rooms Created</div>
+                <div class="number" v-text="addCommas(stats.general.wrongest.RoomsCreated)"></div>
+              </div>
+              <div class="box big-number">
+                <div class="caption">Games Started</div>
+                <div class="number" v-text="stats.general.wrongest.GamesStarted"></div>
+              </div>
+              <div class="box date" v-if="dates.wrongest &amp;&amp; dates.wrongest.launched">
+                <div class="caption">Launched</div>
+                <div class="time-ago" v-text="formatTime(dates.wrongest.launched,'MMM D, YYYY')"></div>
+                <div class="calendar" v-text="formatTime(dates.wrongest.launched,'fromNow')"></div>
               </div>
             </div>
             <div class="good-tables" v-if="ui.wrongestLoaded">
@@ -355,18 +368,22 @@
               <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusCheevos">
                 <div class="caption">Cheevos Earned</div>
                 <div class="number" v-text="addCommas(computedSisyphusCheevos.count)"></div>
+                <div class="sub-number">(<strong v-text="calculateAverage(computedSisyphusCheevos.count, dates.sisyphus.dayCount)"></strong> per day)</div>
               </div>
               <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusCheevos">
                 <div class="caption">Points Earned</div>
                 <div class="number" v-text="addCommas(computedSisyphusCheevos.points)"></div>
+                <div class="sub-number">(<strong v-text="calculateAverage(computedSisyphusCheevos.points, dates.sisyphus.dayCount)"></strong> per day)</div>
               </div>
               <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusPurchases">
                 <div class="caption">Purchases Made</div>
                 <div class="number" v-text="addCommas(computedSisyphusPurchases.count)"></div>
+                <div class="sub-number">(<strong v-text="calculateAverage(computedSisyphusPurchases.count, dates.sisyphus.dayCount)"></strong> per day)</div>
               </div>
               <div class="box big-number" v-if="stats.sisyphus &amp;&amp; computedSisyphusPurchases">
                 <div class="caption">Pushes Spent</div>
                 <div class="number" v-text="addCommas(computedSisyphusPurchases.spent)"></div>
+                <div class="sub-number">(<strong v-text="calculateAverage(computedSisyphusPurchases.spent, dates.sisyphus.dayCount)"></strong> per day)</div>
               </div>
             </div>
             <div class="two-tables">
@@ -392,30 +409,28 @@
                 <div class="box big-number">
                   <div class="caption">Games Started</div>
                   <div class="number" v-text="addCommas(stats.pretend.counts.gamesStarted)"></div>
+                  <div class="sub-number">(<strong v-text="calculateAverage(stats.pretend.counts.gamesStarted, dates.pretend.dayCount)"></strong> games per day)</div>
                 </div>
                 <div class="box big-number">
                   <div class="caption">Games Finished</div>
                   <div class="number" v-text="addCommas(stats.pretend.counts.gamesFinished)"></div>
+                  <div class="sub-number">(<strong v-text="percentOf(stats.pretend.counts.gamesStarted,stats.pretend.counts.gamesFinished) + '%'"></strong> completion rate)</div>
                 </div>
                 <div class="box big-number">
                   <div class="caption">Games Won</div>
                   <div class="number" v-text="addCommas(stats.pretend.counts.gamesWon)"></div>
+                  <div class="sub-number">(<strong v-text="percentOf(stats.pretend.counts.gamesFinished,stats.pretend.counts.gamesWon) + '%'"></strong> success rate)</div>
                 </div>
                 <div class="box big-number">
                   <div class="caption">Games Lost</div>
                   <div class="number" v-text="addCommas(stats.pretend.counts.gamesLost)"></div>
+                  <div class="sub-number">(<strong v-text="percentOf(stats.pretend.counts.gamesFinished,stats.pretend.counts.gamesLost) + '%'"></strong> failure rate)</div>
                 </div>
-                <!--.box.big-name(span="2" v-if="computedGuillotineMostKilled && computedGuillotineMostKilled.iname")
-                .caption Most Frequently Killed
-                .name {{computedGuillotineMostKilled.iname}}
-                .subtext
-                  | Sent to the guillotine  {{computedGuillotineMostKilled.icount}} times
-                -->
-                <!--.box.big-number(span="2")
-                .caption Avg Earnings
-                .number(v-text="computedGuillotineAverageGameWealth")
-                
-                -->
+                <div class="box date" v-if="dates.pretend.launched">
+                  <div class="caption">Game Launched</div>
+                  <div class="time-ago" v-text="formatTime(dates.pretend.launched,'MMM D, YYYY')"></div>
+                  <div class="calendar" v-text="formatTime(dates.pretend.launched,'fromNow')"></div>
+                </div>
               </div>
               <div class="table">
                 <div class="good-table" v-if="ui.pretendLoaded">

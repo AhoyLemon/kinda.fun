@@ -11,9 +11,17 @@ section.guillotine.stats(v-if="ui.viewing == 'guillotine'")
     .box.big-number
       .caption Games Started
       .number(v-text="addCommas(stats.guillotine.counts.gamesStarted)")
+      .sub-number
+        | (
+        strong(v-text="calculateAverage(stats.guillotine.counts.gamesStarted, dates.guillotine.dayCount)")
+        |  games per day)
     .box.big-number
       .caption Games Finished
       .number(v-text="addCommas(stats.guillotine.counts.gamesFinished)")
+      .sub-number
+        | (
+        strong(v-text="percentOf(stats.guillotine.counts.gamesStarted,stats.guillotine.counts.gamesFinished) + '%'")
+        |  completion rate)
     .box.big-number
       .caption Scores Shared
       .number(v-text="addCommas(stats.guillotine.counts.scoresShared)")

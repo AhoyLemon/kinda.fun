@@ -3,16 +3,21 @@ section.wrongest.stats(v-if="ui.viewing == 'wrongest'")
     img(src="svg/wrongest.svg")
 
   .stats-boxes
-    .box.big-number
-      .caption Games Started
-      .number(v-text="stats.general.wrongest.GamesStarted")
-    .box.big-number
-      .caption Rooms Created
-      .number(v-text="stats.general.wrongest.RoomsCreated")
     .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
       .caption Last Game
       .time-ago(v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')")
       .calendar(v-text="formatTime(stats.general.lastPlayed.wrongest,'calendar')")
+    .box.big-number
+      .caption Rooms Created
+      .number(v-text="addCommas(stats.general.wrongest.RoomsCreated)")
+    .box.big-number
+      .caption Games Started
+      .number(v-text="stats.general.wrongest.GamesStarted")
+    .box.date(v-if="dates.wrongest && dates.wrongest.launched")
+      .caption Launched
+      .time-ago(v-text="formatTime(dates.wrongest.launched,'MMM D, YYYY')")
+      .calendar(v-text="formatTime(dates.wrongest.launched,'fromNow')")
+    
   
   .good-tables(v-if="ui.wrongestLoaded")
 

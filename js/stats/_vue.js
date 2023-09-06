@@ -2,13 +2,43 @@ var app = new Vue({
   el: '#app',
   data() {
     return {
+
+      dates: {
+        today: null,
+        guillotine: {
+          launched: "2022-05-16",
+          dayCount: null
+        },
+        cameo: {
+          launched: "2021-02-16",
+          dayCount: null
+        },
+        invalid: {
+          launched: "2021-01-27",
+          dayCount: null
+        },
+        wrongest: {
+          launched: "2020-01-27",
+          dayCount: null
+        },
+        sisyphus: {
+          launched: "2021-09-21",
+          dayCount: null
+        },
+        pretend: {
+          launched: "2023-08-23",
+          dayCount:0
+        }
+      },
+
       stats: {
         general: {},
         guillotine: {},
         cameo: {},
         invalid: {},
         wrongest: {},
-        sisyphus: {}
+        sisyphus: {},
+        pretend: {}
       },
 
       columns: {
@@ -408,9 +438,11 @@ var app = new Vue({
                 celeb.marketForces = (celeb.averageValuation - celeb.actualValue);
               });
 
-              self.ui.cameoLoaded = true;
-              self.ui.viewing = "cameo";
             });
+
+            self.dates.cameo.dayCount = self.dates.today.diff(self.dates.cameo.launched, 'days');
+            self.ui.cameoLoaded = true;
+            self.ui.viewing = "cameo";
 
           });
 
@@ -492,10 +524,7 @@ var app = new Vue({
               }
             });
 
-
-
-
-
+            self.dates.invalid.dayCount = self.dates.today.diff(self.dates.invalid.launched, 'days');
             self.ui.invalidLoaded = true;
             self.ui.viewing = "invalid";
           });
@@ -511,7 +540,7 @@ var app = new Vue({
           })
           .then(function () {
             // always executed
-
+            self.dates.wrongest.dayCount = self.dates.today.diff(self.dates.wrongest.launched, 'days');
             self.ui.wrongestLoaded = true;
             self.ui.viewing = "wrongest";
           });
@@ -527,6 +556,7 @@ var app = new Vue({
           })
           .then(function () {
             // always executed
+            self.dates.sisyphus.dayCount = self.dates.today.diff(self.dates.sisyphus.launched, 'days');
             self.ui.sisyphusLoaded = true;
             self.ui.viewing = "sisyphus";
           });
@@ -541,8 +571,8 @@ var app = new Vue({
             console.log(error);
           })
           .then(function () {
-            console.log(self.stats.guillotine)
-            // alert('line 474');
+            //console.log(self.stats.guillotine)
+            self.dates.guillotine.dayCount = self.dates.today.diff(self.dates.guillotine.launched, 'days');
             self.ui.guillotineLoaded = true;
             self.ui.viewing = "guillotine";
           });
@@ -557,8 +587,8 @@ var app = new Vue({
             console.log(error);
           })
           .then(function () {
-            console.log(self.stats.pretend)
-            // alert('line 474');
+            //console.log(self.stats.pretend)
+            self.dates.pretend.dayCount = self.dates.today.diff(self.dates.pretend.launched, 'days');
             self.ui.pretendLoaded = true;
             self.ui.viewing = "pretend";
           });
@@ -592,6 +622,15 @@ var app = new Vue({
     percentOf(total,part) {
       return percentOf(total,part);
     },
+
+    calculateAverage(count,iterations) {
+      if (!count || !iterations) {
+        return "0"
+      }
+      const n = (count / iterations).toFixed(2);
+      return self.addCommas(n)
+    },
+
     dollars(amount) {
       const formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -860,11 +899,16 @@ var app = new Vue({
 
   mounted() {
     const self = this;
+
+    self.dates.today = moment();
+
     const loadedURL = new URL(window.location.href);
     if (loadedURL.searchParams.get('game')) {
       const self = this;
       self.getGameDataFromURL();
     }
+
+
   },
 
   created: function() {

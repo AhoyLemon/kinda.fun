@@ -379,6 +379,10 @@ var app = new Vue({
           return "Prada"
         case "Jed McCaleb":
           return "Mt. Gox, Ripple"
+        case "Sergey Dmitriev":
+          return "JetBrains"
+        case "Chen Xuahua":
+          return "Zhejiang Huayou Cobalt"
         case "":
           return ""
       }  

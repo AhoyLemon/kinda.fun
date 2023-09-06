@@ -4,16 +4,20 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
 
   .stats-boxes
 
-    .box.big-number
-      .caption Games Started
-      .number(v-text="addCommas(stats.general.invalid.GamesStarted)")
-    .box.big-number
-      .caption Rooms Created
-      .number(v-text="addCommas(stats.general.invalid.RoomsCreated)")
     .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.invalid")
       .caption Last Played
       .time-ago(v-text="formatTime(stats.general.lastPlayed.invalid,'fromNow')")
       .calendar(v-text="formatTime(stats.general.lastPlayed.invalid,'calendar')")
+    .box.big-number
+      .caption Rooms Created
+      .number(v-text="addCommas(stats.general.invalid.RoomsCreated)")
+    .box.big-number
+      .caption Games Started
+      .number(v-text="addCommas(stats.general.invalid.GamesStarted)")
+      .sub-number
+          | (
+          strong(v-text="calculateAverage(stats.general.invalid.GamesStarted, dates.invalid.dayCount)")
+          |  per day)
     .box.big-number
       .caption Naughty Mode
       .number.percent(v-text="computedNaughtyPercentage + '%'")
@@ -23,6 +27,10 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
     .box.big-number
       .caption Cracked Passwords
       .number.percent(v-text="computedCrackedPasswordPercent + '%'")
+    .box.date(v-if="dates.invalid && dates.invalid.launched")
+      .caption Launched
+      .time-ago(v-text="formatTime(dates.invalid.launched,'MMM D, YYYY')")
+      .calendar(v-text="formatTime(dates.invalid.launched,'fromNow')")
 
 
   .good-tables(v-if="ui.invalidLoaded")

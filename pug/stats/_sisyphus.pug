@@ -22,18 +22,34 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
     .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevos")
       .caption Cheevos Earned
       .number(v-text="addCommas(computedSisyphusCheevos.count)")
+      .sub-number
+          | (
+          strong(v-text="calculateAverage(computedSisyphusCheevos.count, dates.sisyphus.dayCount)")
+          |  per day)
 
     .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevos")
       .caption Points Earned
       .number(v-text="addCommas(computedSisyphusCheevos.points)")
+      .sub-number
+          | (
+          strong(v-text="calculateAverage(computedSisyphusCheevos.points, dates.sisyphus.dayCount)")
+          |  per day)
 
     .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchases")
       .caption Purchases Made
       .number(v-text="addCommas(computedSisyphusPurchases.count)")
+      .sub-number
+          | (
+          strong(v-text="calculateAverage(computedSisyphusPurchases.count, dates.sisyphus.dayCount)")
+          |  per day)
     
     .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchases")
       .caption Pushes Spent
       .number(v-text="addCommas(computedSisyphusPurchases.spent)")
+      .sub-number
+          | (
+          strong(v-text="calculateAverage(computedSisyphusPurchases.spent, dates.sisyphus.dayCount)")
+          |  per day)
 
   .two-tables
 
