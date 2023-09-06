@@ -56,7 +56,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
       
       .summary(v-if="stats.general && stats.general.lastPlayed")
         figure
-          img(src="svg/pretend.svg" @click="getData('pretend')")
+          img(src="svg/pretend-world.svg" @click="getData('pretend')")
         .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.pretend")
           .time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')")

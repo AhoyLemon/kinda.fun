@@ -68,7 +68,7 @@
                 </div>
               </div>
               <div class="summary" v-if="stats.general &amp;&amp; stats.general.lastPlayed">
-                <figure><img src="svg/pretend.svg" @click="getData('pretend')"/></figure>
+                <figure><img src="svg/pretend-world.svg" @click="getData('pretend')"/></figure>
                 <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.pretend">
                   <div class="time-caption">Last Game</div>
                   <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')"></div>
@@ -124,7 +124,7 @@
               </div>
             </div>
             <div class="summary" :class="{ active: (ui.viewing == 'pretend'), inactive: (ui.viewing != 'pretend') }">
-              <figure><img src="svg/pretend.svg" @click="getData('pretend')"/></figure>
+              <figure><img src="svg/pretend-world.svg" @click="getData('pretend')"/></figure>
               <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.pretend">
                 <div class="time-caption">Last Game</div>
                 <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')"></div>
@@ -398,7 +398,7 @@
             </div>
           </section>
           <section class="pretend stats" v-if="ui.viewing == 'pretend'">
-            <figure><img src="svg/pretend.svg"/></figure>
+            <figure><img src="svg/pretend-world.svg"/></figure>
             <div class="pretend-split">
               <div class="stats-boxes">
                 <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.pretend">
