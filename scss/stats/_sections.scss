@@ -6,7 +6,7 @@ section { font-size:20px; font-family: $serif;
   section.stats { margin-bottom: 3em; }
 
   .stats-boxes { display:grid; gap:$gap; grid-template-columns: repeat(4,1fr);
-    .box { backdrop-filter: invert(1); padding:$padding; color:#262626; box-shadow: 0 0 5px black; }
+    .box { backdrop-filter: invert(1); padding:$padding; color:#262626; box-shadow: 0 0 5px black; display:grid; }
     .caption { font-size:90%; text-transform: uppercase; font-weight: 600; }
     [span="2"] { grid-column: span 2; }
     [span="3"] { grid-column: span 3; }
@@ -19,9 +19,6 @@ section { font-size:20px; font-family: $serif;
     .big-name { 
       .name { font-size:210%; }
     }
-    .calendar, .subtext { font-size:90%; }
-
-
 
     &.with-table { grid-template-columns: 3fr 1fr;
       .boxes {  display:grid; gap:$gap; grid-template-columns: repeat(3,1fr); }
@@ -82,9 +79,11 @@ section.wrongest { padding:($gap * 2) $gap $gap 0;
 }
 
 section.pretend {
-  .pretend-split { display:grid; grid-template-columns:340px 1fr; gap:40px;
-    .stats-boxes { display:flex; align-items:flex-start; flex-direction: column; justify-content: flex-start; align-items: stretch; padding-top:100px; }
-    .table { padding-right:40px; }
+  .pretend-split { display:grid; grid-template-columns:1fr 1fr; gap:40px;
+    // .stats-boxes { display:flex; align-items:flex-start; flex-direction: column; justify-content: flex-start; align-items: stretch; padding-top:100px; }
+    .table { order:1; }
+    .stats-boxes { display:gap; grid-template-columns: repeat(2,1fr); gap:40px; padding-top: 100px; align-content: start; order:2; padding-right: 40px; }
+    
   }
 }
 

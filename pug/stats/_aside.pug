@@ -15,6 +15,20 @@ aside.general.general-stats(v-if="ui.viewing != 'general'")
       .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
         .time-caption Last Game
         .time-ago(v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')")
+    
+    .summary(:class="{ active: (ui.viewing == 'sisyphus'), inactive: (ui.viewing != 'sisyphus') }")
+      figure
+        img(src="svg/sisyphus/logo-simple.svg" @click="getData('sisyphus')")
+      .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.sisyphus")
+        .time-caption Last Game
+        .time-ago(v-text="formatTime(stats.general.lastPlayed.sisyphus,'fromNow')")
+    
+    .summary(:class="{ active: (ui.viewing == 'pretend'), inactive: (ui.viewing != 'pretend') }")
+      figure
+        img(src="svg/pretend-world.svg" @click="getData('pretend')")
+      .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.pretend")
+        .time-caption Last Game
+        .time-ago(v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')")
 
     .summary(:class="{ active: (ui.viewing == 'invalid'), inactive:(ui.viewing != 'invalid')  }")
       figure
@@ -29,17 +43,3 @@ aside.general.general-stats(v-if="ui.viewing != 'general'")
       .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.wrongest")
         .time-caption Last Game
         .time-ago(v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')")
-    
-    .summary(:class="{ active: (ui.viewing == 'sisyphus'), inactive: (ui.viewing != 'sisyphus') }")
-      figure
-        img(src="svg/sisyphus/logo-simple.svg" @click="getData('sisyphus')")
-      .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.sisyphus")
-        .time-caption Last Game
-        .time-ago(v-text="formatTime(stats.general.lastPlayed.sisyphus,'fromNow')")
-
-    .summary(:class="{ active: (ui.viewing == 'pretend'), inactive: (ui.viewing != 'pretend') }")
-      figure
-        img(src="svg/pretend-world.svg" @click="getData('pretend')")
-      .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.pretend")
-        .time-caption Last Game
-        .time-ago(v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')")

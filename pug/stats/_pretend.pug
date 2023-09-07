@@ -15,30 +15,26 @@ section.pretend.stats(v-if="ui.viewing == 'pretend'")
         .caption Games Started
         .number(v-text="addCommas(stats.pretend.counts.gamesStarted)")
         .sub-number
-          | (
           strong(v-text="calculateAverage(stats.pretend.counts.gamesStarted, dates.pretend.dayCount)")
-          |  games per day)
+          |  games per day
       .box.big-number
         .caption Games Finished
         .number(v-text="addCommas(stats.pretend.counts.gamesFinished)")
         .sub-number
-          | (
           strong(v-text="percentOf(stats.pretend.counts.gamesStarted,stats.pretend.counts.gamesFinished) + '%'")
-          |  completion rate)
+          |  completion rate
       .box.big-number
         .caption Games Won
         .number(v-text="addCommas(stats.pretend.counts.gamesWon)")
         .sub-number
-          | (
           strong(v-text="percentOf(stats.pretend.counts.gamesFinished,stats.pretend.counts.gamesWon) + '%'")
-          |  success rate)
+          |  success rate
       .box.big-number
         .caption Games Lost
         .number(v-text="addCommas(stats.pretend.counts.gamesLost)")
         .sub-number
-          | (
           strong(v-text="percentOf(stats.pretend.counts.gamesFinished,stats.pretend.counts.gamesLost) + '%'")
-          |  failure rate)
+          |  failure rate
       .box.date(v-if="dates.pretend.launched")
         .caption Game Launched
         .time-ago(v-text="formatTime(dates.pretend.launched,'MMM D, YYYY')")

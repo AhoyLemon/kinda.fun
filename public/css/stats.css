@@ -229,6 +229,8 @@ section .stats-boxes .box {
   color: #262626;
   -webkit-box-shadow: 0 0 5px black;
           box-shadow: 0 0 5px black;
+  display: -ms-grid;
+  display: grid;
 }
 section .stats-boxes .caption {
   font-size: 90%;
@@ -255,9 +257,6 @@ section .stats-boxes .time-ago {
 }
 section .stats-boxes .big-name .name {
   font-size: 210%;
-}
-section .stats-boxes .calendar, section .stats-boxes .subtext {
-  font-size: 90%;
 }
 section .stats-boxes.with-table {
   -ms-grid-columns: 3fr 1fr;
@@ -392,30 +391,26 @@ section.wrongest {
 section.pretend .pretend-split {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 340px 40px 1fr;
-  grid-template-columns: 340px 1fr;
+  -ms-grid-columns: 1fr 40px 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 40px;
 }
-section.pretend .pretend-split .stats-boxes {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: start;
-      -ms-flex-align: start;
-          align-items: flex-start;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
-  -webkit-box-align: stretch;
-      -ms-flex-align: stretch;
-          align-items: stretch;
-  padding-top: 100px;
-}
 section.pretend .pretend-split .table {
+  -webkit-box-ordinal-group: 2;
+      -ms-flex-order: 1;
+          order: 1;
+}
+section.pretend .pretend-split .stats-boxes {
+  display: gap;
+  -ms-grid-columns: 1fr 40px 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  padding-top: 100px;
+  -ms-flex-line-pack: start;
+      align-content: start;
+  -webkit-box-ordinal-group: 3;
+      -ms-flex-order: 2;
+          order: 2;
   padding-right: 40px;
 }
 
@@ -443,8 +438,8 @@ main.general-stats .game-summaries {
   display: -ms-grid;
   display: grid;
   gap: 80px;
-  -ms-grid-columns: 1fr 80px 1fr 80px 1fr 80px 1fr;
-  grid-template-columns: repeat(4, 1fr);
+  -ms-grid-columns: 1fr 80px 1fr 80px 1fr;
+  grid-template-columns: repeat(3, 1fr);
   margin-left: auto;
   margin-right: auto;
   width: 100%;
@@ -455,7 +450,6 @@ main.general-stats .game-summaries .summary {
   text-align: center;
 }
 main.general-stats .game-summaries figure {
-  height: 42%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -471,6 +465,7 @@ main.general-stats .game-summaries img {
   cursor: pointer;
   opacity: 0.8;
   max-width: 100%;
+  max-height: 120px;
 }
 main.general-stats .game-summaries img:hover, main.general-stats .game-summaries img:focus {
   opacity: 1;

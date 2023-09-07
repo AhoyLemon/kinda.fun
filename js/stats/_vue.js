@@ -622,7 +622,6 @@ var app = new Vue({
     percentOf(total,part) {
       return percentOf(total,part);
     },
-
     calculateAverage(count,iterations) {
       if (!count || !iterations) {
         return "0"
@@ -630,7 +629,6 @@ var app = new Vue({
       const n = (count / iterations).toFixed(2);
       return self.addCommas(n)
     },
-
     dollars(amount) {
       const formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -777,6 +775,61 @@ var app = new Vue({
       });
       return c;
     },
+    computedAveragePlayerCounts() {
+      const self = this;
+      let invalidAverage;
+      let invalidMostCommon;
+      let wrongestAverage;
+      let wrongestMostCommon;
+      let totalPlayers;
+      let totalGames;
+      let highestCount;
+
+      if (self.stats && self.stats.invalid && self.stats.invalid.playerCounts) {
+        totalPlayers = 0;
+        totalGames = 0;
+        highestCount = 0;
+        self.stats.invalid.playerCounts.forEach((element) => {
+          let players = element.iname.replace(/\D/g,'');
+          players = parseInt(players);
+          const count = element.icount;
+          totalPlayers += (players * count);
+          totalGames += element.icount;
+          if (count > highestCount) {
+            highestCount = count;
+            invalidMostCommon = element.iname;
+          }
+        });
+        invalidAverage = (totalPlayers / totalGames).toFixed(1);
+      }
+
+      if (self.stats && self.stats.wrongest && self.stats.wrongest.playerCounts) {
+        totalPlayers = 0;
+        totalGames = 0;
+        highestCount = 0;
+        self.stats.wrongest.playerCounts.forEach((element) => {
+          let players = element.iname.replace(/\D/g,'');
+          players = parseInt(players);
+          const count = element.icount;
+          totalPlayers += (players * count);
+          totalGames += element.icount;
+          if (count > highestCount) {
+            highestCount = count;
+            wrongestMostCommon = element.iname;
+          }
+        });
+        wrongestAverage = (totalPlayers / totalGames).toFixed(1);
+      }
+
+      return {
+        invalid: invalidAverage,
+        invalidMostCommon: invalidMostCommon,
+        wrongest: wrongestAverage,
+        wrongestMostCommon: wrongestMostCommon
+      }
+
+    },
+
     computedAvgMarketForces() {
       const self = this;
       if (!self.stats.cameo || !self.stats.cameo.celebs) {

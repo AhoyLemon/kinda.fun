@@ -1,0 +1,39 @@
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+
+jobs:
+  build_css:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source Git branch
+        uses: actions/checkout@v2
+        with:
+            ref: master
+            fetch-depth: 10
+            submodules: true
+
+      # - name: Remove sourcemapped CSS.
+      #   run: rm css -r
+      
+      # - name: Make a new production CSS directory
+      #   run: mkdir css
+
+      - name: Compile CSS from SCSS files
+        uses: gha-utilities/sass-build@v0.5.1
+        with:
+          source: |
+            scss/start.scss
+            scss/cameo.scss
+            scss/guillotine/site.scss
+          destination: |
+            public/css/start.css
+            public/css/cameo.css
+            public/css/guillotine.css
