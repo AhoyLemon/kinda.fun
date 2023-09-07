@@ -1,5 +1,8 @@
 ![kinda.fun](https://kinda.fun/og-wide.png)
 
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fahoylemon%2Fkinda.fun%2Fbadge%3Fref%3Dmain&style=for-the-badge)](https://actions-badge.atrox.dev/ahoylemon/kinda.fun/goto?ref=main)
+
+
 There's currently six games here...
 
 ## Comparatively Famous

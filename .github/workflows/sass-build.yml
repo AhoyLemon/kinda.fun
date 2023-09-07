@@ -5,6 +5,8 @@ on:
   pull_request:
     branches:
       - main
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   build_css:
@@ -48,6 +50,11 @@ jobs:
             public/css/pretend.css
             public/css/sisyphus.css
             public/css/wrongest.css
+
+      - name: 🗃️ commit changes to ${{ github.ref }}
+        uses: elstudio/actions-js-build/commit@v4
+        with:
+          commitMessage: generate minified css 
       
       - name: 🫠 This job's status is ${{ job.status }}.
         run: echo "🫠 This job's status is ${{ job.status }}."
