@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <link rel="preconnect" href="https://fonts.gstatic.com"/>
     <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;700&amp;family=Open+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
-    <link href="css/cameo.css?lastUpdated2023-09-06T20:43:26.480Z" type="text/css" rel="stylesheet"/>
+    <link href="css/cameo.css?lastUpdated2023-09-08T02:33:38.214Z" type="text/css" rel="stylesheet"/>
     <meta name="description" content="The Game of Celebrity Value"/>
-    <meta http-equiv="last-modified" content="2023-09-06T20:43:26.480Z"/>
+    <meta http-equiv="last-modified" content="2023-09-08T02:33:38.214Z"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/img/famous/apple-touch-icon.png"/>
     <link rel="icon" type="image/png" sizes="32x32" href="/img/famous/favicon-32x32.png"/>
     <link rel="icon" type="image/png" sizes="16x16" href="/img/famous/favicon-16x16.png"/>
@@ -288,6 +288,18 @@
           <p> <i>Oh wait!</i> I remember now. She likes one of the Star Trek shows, but not the other ones. Like uhhhhh...... I think there's one with wrinkly aliens, and there's a bunch of prosthetic makeup. That's the one she likes, or hates. Whatever.</p>
           <p>Anyway, here’s <strong>{{dollars(round.budget)}}</strong>. Get me some Star Trek people.</p>
         </article>
+        <article v-else-if="computedGimmickName == 'The Sopranos'"> 
+          <p>
+             To <strong>You</strong><br/>From: <strong>Pasha Hollywood</strong></p>
+          <hr/>
+          <p>Hey, it's me! Influential movie tycoon Pasha Hollywood.</p>
+          <p>My daughter has a birthday coming up, and like many young people her age, she is absolutely obsessed with the critically-acclaimed drama series from HBO. I forget which, but I remember it was the one with all the sex and violence, political intrigue and some of the characters talk in a made-up language.</p>
+          <p>Ah! <i>I remember now!</i> <strong>The Sopranos!</strong> She can't get enough of that show.</p>
+          <p>So, here’s the deal, I am too busy to even edit this very e-mail, let alone shop for my daughter’s birthday present. Here’s <strong>{{dollars(round.budget)}}</strong> as a budget. Buy as many Cameos from anyone who was in that show without breaking the budget. Stay under budget, and I’ll give you bonus points. Break the budget and you get nothing.</p>
+          <p>Oh, wait! She actually likes Game of Thrones. </p>
+          <p>Well, whatever… </p>
+          <p>This gift is mostly for me, anyway.</p>
+        </article>
         <article v-else="v-else">
           <p>
              To: <strong>You</strong><br/>From: <strong>Pasha Hollywood</strong></p>
@@ -427,7 +439,7 @@
         var socket = io.connect();
         
       </script>
-      <script src="js/min/cameo.min.js?updated2023-09-06T20:43:26.480Z"></script>
+      <script src="js/min/cameo.min.js?updated2023-09-08T02:33:38.214Z"></script>
       <script type="text/javascript">
         var _paq = window._paq = window._paq || [];
           /* tracker methods like "setCustomDimension" should be called before "trackPageView" */

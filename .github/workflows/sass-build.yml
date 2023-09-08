@@ -41,6 +41,7 @@ jobs:
             scss/pretend.scss
             scss/sisyphus.scss
             scss/wrongest.scss
+            scss/stats.scss
           destination: |
             public/css/start.css
             public/css/cameo.css
@@ -50,6 +51,7 @@ jobs:
             public/css/pretend.css
             public/css/sisyphus.css
             public/css/wrongest.css
+            public/css/stats.css
 
       - name: 🗃️ commit changes to ${{ github.ref }}
         uses: elstudio/actions-js-build/commit@v4

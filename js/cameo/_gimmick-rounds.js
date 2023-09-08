@@ -317,12 +317,67 @@ const gimmickRounds = {
 
   },
 
-
-  test: {
-    name: "TEST",
-    desc: "does my shit work.",
+  sopranos: {
+    name: "The Sopranos",
+    desc: "Woke up this morning, played this Cameo game. Mama always said this concept is kinda lame.",
     queue: [
-      { name: "", desc:"", slug:"", value:0 },
+      { name: "Vincent Curatola", desc:"Johnny Sack", slug:"vincentcuratola", value:125 },
+      { name: "Joey Pants", desc:"Ralphie Cifaretto", slug:"realjoeypants", value:159 },
+      { name: "Federico Castelluccio", desc:"Furio", slug:"federicocastelluccio", value:100 },
+
+      { name: "Ray Abruzzo", desc:"Little Carmine", slug:"realrayabruzzo", value:99 },
+      { name: "Tony Darrow", desc:"Larry Boy", slug:"tonydarrow3", value:150 },
+      { name: "Dan Grimaldi", desc:"Patsy Parisi / Philly Parisi", slug:"dgrimaldi", value:89 },
+
+      { name: "Aida Turturro", desc:"Janice", slug:"buddysmom", value:90 },
+      { name: "Joseph R. Gannascoli", desc:"Vito", slug:"jrg0215", value:199 },
+      { name: "David Proval", desc:"Richie", slug:"davidproval", value:100 },
+
+      { name: "Jason Cerbone", desc:"Jackie Jr.", slug:"jasoncer", value:75 },
+      { name: "Lillo Brancato", desc:"Matt Bevilaqua", slug:"lillobrancato", value:50 },
+      { name: "Matt Servitto", desc: "Agent Harris", slug:"mattservitto", value:40 },
+    ],
+    reuseQueueForFinal: false,
+    finalRoundQueue: [
+      { name: "Gigi", desc:"died on the toilet", slug:"jfiore", value:59 },
+      { name: "Georgie", desc:"Ralphie took his eye out", slug:"fingerlake", value:65 },
+      { name: "Burt", desc: "Silvio killed him", slug:"artiepasquale", value:60 },
+      { name: "Nicky?", desc:"I forget his last name, and he was never in the show, but he does a Tony Soprano impression that is absolute dogshit. Just the worst. But if you don't like that he'll do Pacino instead", slug:"nickypetito", value:60 },
+      { name: "Skip", desc: "passed over for a promotion", slug:"louislombardi", value:30 },
+      { name: "Stripper Nurse", desc:"not actually Jackie's nurse", slug:"bernadettepenotti", value:50 },
+      { name: "Chrissy's Wife Kelli", desc:"She's fine", slug:"carabuono", value:125 },
+      { name: "Annalisa", desc: "said all her brothers got murdered", slug:"sofiamilos_official", value:69 },
+      { name: "Jason", desc:"stole some power tools", slug:"williamdemeo", value:75 },
+      { name: "Mikey Grab Bag", desc:"Paulie & Chris shot him", slug:"alsapienza", value:75 },
     ]
-  }
+  },
+
+  // rappers: {
+  //   name: "Rappers",
+  //   desc: "",
+
+  //   queue: [
+  //     { name: "Vanilla Ice" },
+  //     { name: "Xzibit" },
+  //     { name: "RiFF RAFF" },
+
+  //     { name: "Lil Windex" },
+  //     { name: "Mike Jones" },
+  //     { name: "Ice T" },
+
+  //     { name: "Denny Blaze" },
+  //     { name: "Lady Leshurr" },
+  //     { name: "Tone Loc" },
+
+  //     { name: "Trick Daddy" },
+  //   ]
+  // },
+
+  // test: {
+  //   name: "TEST",
+  //   desc: "does my shit work.",
+  //   queue: [
+  //     { name: "", desc:"", slug:"", value:0 },
+  //   ]
+  // }
 };

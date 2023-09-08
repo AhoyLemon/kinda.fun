@@ -66,7 +66,7 @@ var app = new Vue({
     gimmick: {
       selectorVisible: false,
       rounds: [
-        
+        gimmickRounds.sopranos,
         gimmickRounds.dogs,
         gimmickRounds.daddies,
         gimmickRounds.startrek,
@@ -77,7 +77,7 @@ var app = new Vue({
         gimmickRounds.georges,
         gimmickRounds.metalheads,
         gimmickRounds.richards,
-        gimmickRounds.trumpworld
+        gimmickRounds.trumpworld,
       ],
       selected: {},
       selectedIndex: '',

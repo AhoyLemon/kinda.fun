@@ -182,7 +182,7 @@ const allValues = [
   { name: "KID from Kid N Play", desc:"Costar of House Party 1, 2 & 3", slug:"kidfromkidnplay", value:65  },
   { name: "Kato Kaelin", desc:"Stayed At OJ's House", slug:"kato", value:60 },
   { name: "Anthony Scaramucci", desc:"Former White House Communications Director", slug:"themooch", value:55 },
-  { name: "Rednex", desc:"The Band that did that “Cotton Eye Joe” song (the whole band)", slug:"georgewallace", value:50  },
+  { name: "Rednex", desc:"The Band that did that “Cotton Eye Joe” song (the whole band)", slug:"rednexofficial", value:50  },
   { name: "George Wallace", desc:"The Legendary Comedian (Not The Racist Senator)", slug:"georgewallace", value:50  },
   { name: "Horny Mike", desc:"Airbrushes Cars, Sometimes Wears A Bandana With Horns On It", slug:"hornymike", value:50  },
   { name: "Pearl Mackie", desc:"Bill on Doctor Who (2016 - 2017)", slug:"pearlmackie", value:50  },

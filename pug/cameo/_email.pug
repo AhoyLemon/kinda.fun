@@ -70,6 +70,20 @@
       strong {{dollars(round.budget)}}
       | . Get me some Star Trek people.
 
+  article(v-else-if="computedGimmickName == 'The Sopranos'") 
+    p 
+      | To #[strong You]
+      br
+      | From: #[strong Pasha Hollywood]
+    hr
+    p Hey, it's me! Influential movie tycoon Pasha Hollywood.
+    p My daughter has a birthday coming up, and like many young people her age, she is absolutely obsessed with the critically-acclaimed drama series from HBO. I forget which, but I remember it was the one with all the sex and violence, political intrigue and some of the characters talk in a made-up language.
+    p Ah! #[i I remember now!] #[strong The Sopranos!] She can't get enough of that show.
+    p So, here’s the deal, I am too busy to even edit this very e-mail, let alone shop for my daughter’s birthday present. Here’s #[strong {{dollars(round.budget)}}] as a budget. Buy as many Cameos from anyone who was in that show without breaking the budget. Stay under budget, and I’ll give you bonus points. Break the budget and you get nothing.
+    p Oh, wait! She actually likes Game of Thrones. 
+    p Well, whatever… 
+    p This gift is mostly for me, anyway.
+
   article(v-else)
     p 
       | To: 
