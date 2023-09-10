@@ -206,6 +206,7 @@ const allValues = [
   { name: "Kevin Allison", desc:"RISK! Podcast", slug:"thekevinallison", value:45 },
   { name: "Evan Antin", desc:"Veterinarian", slug:"dr.evanantin", value:45 },
   { name: "Mermaid Elle", desc:"Freelance Mermaid", slug:"mermaidelle", value:45 },
+  { name: "That Vegan Teacher", desc:"screams at people on TikTok for eating meat", slug: "thatveganteacher", value:40 },
   { name: "Mathew Knowles", desc:"Beyoncé's Dad", slug: "mathewknowles", value:40 },
   { name: "Sleazy P Martini", desc:"Manager, GWAR", slug:"sleazymartini", value:40 },
   { name: "Tay Zonday", desc:"Chocolate Rainmaker", slug:"tayzonday", value:40 },
