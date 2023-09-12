@@ -105,7 +105,7 @@ const allValues = [
   { name: "Island Boys", desc:"TikTok singers", slug:"islandboys", value:140  },
   { name: "Tom Arnold", desc:"Was briefly married to Roseanne", slug:"thetomarnold", value:139 },
   { name: "Penn Jillette", desc:"Penn & Teller", slug:"pennj", value:135  },
-  { name: "Jerry Springer", desc:"Former Mayor of Cincinnati", slug:"jerryspringer", value:135 },
+  //{ name: "Jerry Springer", desc:"Former Mayor of Cincinnati", slug:"jerryspringer", value:135 }, // dead
   { name: "Ernie Hudson", desc:"Winston in Ghostbusters", slug:"kirbyzook", value:135 },
 
   { name: "Violent J", desc:"Insane Clown Posse", slug:"violentj.icp", value:135  },

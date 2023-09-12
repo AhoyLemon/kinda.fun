@@ -352,6 +352,15 @@ const gimmickRounds = {
     ]
   },
 
+  // dead: {
+  //   name: "Dead Celebrities",
+  //   desc: "No, YOUR game is in bad taste, mother.",
+  //   queue: [
+  //     { name: "Jerry Springer", desc:"Former Mayor of Cincinnati", slug:"jerryspringer", value:135 },
+  //     { name: "Bob Saget", desc: "Danny on Full House", slug: "bobsagetofficial", value:350 }, // dead
+  //   ]
+  // },
+
   // rappers: {
   //   name: "Rappers",
   //   desc: "",
