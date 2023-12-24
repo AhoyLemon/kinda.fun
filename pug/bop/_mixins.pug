@@ -36,7 +36,7 @@ mixin group(num,effect)
           figure.clickable(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'" @click="chooseArticle(box)")
           figcaption
             .headline(v-if="box.headline")
-              a(@click="chooseArticle(box)" v-text="box.headline")
+              a(@click="chooseArticle(box)" v-text="parseHeadline(box.headline)")
             time.datestamp(v-if="box.dateStamp" v-text="box.dateStamp")
 
   else
@@ -46,7 +46,7 @@ mixin group(num,effect)
           figure.bg(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'")
           figcaption
             .headline(v-if="box.headline")
-              a(@click="chooseArticle(box)" v-text="box.headline")
+              a(@click="chooseArticle(box)" v-text="parseHeadline(box.headline)")
             time.datestamp(v-if="box.dateStamp && box.type != 'ad'" v-text="box.dateStamp")
           .category(v-if="box.category" v-text="box.category")
           .sponsored(v-else-if="box.type == 'ad'") Sponsored
@@ -56,7 +56,7 @@ mixin group(num,effect)
             .category(v-if="box.category" v-text="box.category")
             .sponsored(v-else-if="box.type == 'ad'") Sponsored
             .headline(v-if="box.headline")
-              a(@click="chooseArticle(box)" v-text="box.headline") 
+              a(@click="chooseArticle(box)" v-text="parseHeadline(box.headline)") 
             time.datestamp(v-if="box.dateStamp" v-text="box.dateStamp")
         if num == 4
           figure.clickable(v-if="box.img" :style="'background-image:url("+imgPath+"/'+box.img+')'" @click="chooseArticle(box)")
@@ -64,10 +64,10 @@ mixin group(num,effect)
             .category(v-if="box.category" v-text="box.category")
             .sponsored(v-else-if="box.type == 'ad'") Sponsored
             .headline(v-if="box.headline")
-              a(@click="chooseArticle(box)" v-text="box.headline")
+              a(@click="chooseArticle(box)" v-text="parseHeadline(box.headline)")
         if num == 5
           .headline(v-if="box.headline")
-            a(@click="chooseArticle(box)" v-text="box.headline")
+            a(@click="chooseArticle(box)" v-text="parseHeadline(box.headline)")
           div 
             time.datestamp(v-if="box.dateStamp" v-text="box.dateStamp")
             span.category(v-if="box.category" v-text="box.category")

@@ -255,7 +255,37 @@ const theNews =  [
     question: `On which coast of Barbados is Holetown?`,
     answer: `west`,
     alternateAnswers: ["west"]
-  }
+  },
+  {
+    img:"",
+    headline: "Man fatally stabbed in {YourLocation}.",
+    category: `fine art`,
+    nugget: `Did you know Rihanna is from Barbados? Because she is. Rihanna! Rihanna, Rihanna, Rihanna! I'm hoping if I type that name enough times, I'll trick the SEO engines into thinking this is an article about Rihanna. Rihanna is from St. Michael, which is a city, not a beach. Holetown is the name of a beach, that's on the West coast.`,
+    nuggetPlacement: `replace`,
+    question: `On which coast of Barbados is Holetown?`,
+    answer: `west`,
+    alternateAnswers: ["west"]
+  },
+  {
+    img:"",
+    headline: "Man fatally shot in {YourLocation}.",
+    category: `fine art`,
+    nugget: `Did you know Rihanna is from Barbados? Because she is. Rihanna! Rihanna, Rihanna, Rihanna! I'm hoping if I type that name enough times, I'll trick the SEO engines into thinking this is an article about Rihanna. Rihanna is from St. Michael, which is a city, not a beach. Holetown is the name of a beach, that's on the West coast.`,
+    nuggetPlacement: `replace`,
+    question: `On which coast of Barbados is Holetown?`,
+    answer: `west`,
+    alternateAnswers: ["west"]
+  },
+  {
+    img:"",
+    headline: "Man fatally jerked off in {YourLocation}.",
+    category: `fine art`,
+    nugget: `Did you know Rihanna is from Barbados? Because she is. Rihanna! Rihanna, Rihanna, Rihanna! I'm hoping if I type that name enough times, I'll trick the SEO engines into thinking this is an article about Rihanna. Rihanna is from St. Michael, which is a city, not a beach. Holetown is the name of a beach, that's on the West coast.`,
+    nuggetPlacement: `replace`,
+    question: `On which coast of Barbados is Holetown?`,
+    answer: `west`,
+    alternateAnswers: ["west"]
+  },
 ];
 
 const theAds = [

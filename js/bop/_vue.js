@@ -6,6 +6,16 @@ var app = new Vue({
     timerFunction: undefined,
     secondsElapsed: 0,
 
+    user: {
+      ip: null,
+      city: null,
+      country: null,
+      region: null,
+      timezone: null,
+      lat: null,
+      long: null
+    },
+
     bullshitActive: false,
 
     gdpr: {
@@ -100,6 +110,68 @@ var app = new Vue({
   },
 
   methods: {
+
+    getUserData() {
+      const self = this;
+      // Function to get user's IP address
+      function getUserIP(callback){
+        const fetchURL = `https://api64.ipify.org?format=json`;
+        fetch(fetchURL)
+          .then(response => response.json())
+          .then(data => {
+            callback(null, data.ip)
+          })
+          .catch(error => callback(error, null));
+      }
+
+      // Function to get user's city based on IP address using freegeoip.app
+      function getCityFromIP(ip, callback){
+        // const fetchURL = `https://freegeoip.app/json/${ip}`
+        const fetchURL = `https://ipinfo.io/${ip}?token=eba53e08885650`
+        alert(fetchURL);
+        fetch(fetchURL)
+          .then(response => response.json())
+          .then(data => callback(null, data))
+          .catch(error => callback(error, null));
+      }
+
+      // Main function to get user's city and save it as a variable
+      function getUserCity(){
+        
+        getUserIP((ipError, ipAddress) => {
+          if (ipError) {
+            console.error('Error getting IP address:', ipError);
+            return;
+          }
+          if (ipAddress) {
+            self.user.ip = ipAddress
+            getCityFromIP(ipAddress, (cityError, locationData) => {
+              if (cityError) {
+                console.error('Error getting city from IP:', cityError);
+                return;
+              }
+              if (locationData) {
+                self.user.city = locationData.city;
+                self.user.country = locationData.country;
+                self.user.ip = locationData.ip;
+                self.user.region = locationData.region;
+                self.user.timezone = locationData.timezone;
+                if (locationData.loc) {
+                  self.user.lat = locationData.loc.split(',')[0]
+                  self.user.long = locationData.loc.split(',')[1]
+                }
+                alert('check the Vue Devtools');
+              }
+            });
+          }
+
+        });
+      }
+
+      // Call the main function
+      getUserCity();
+    },
+
     toggleCookieModal(mode) {
       const self = this;
 
@@ -130,26 +202,22 @@ var app = new Vue({
 
         const sE = Math.floor(self.timer);
         if (sE > 2 && sE != self.secondsElapsed) {
-          const r = randomNumber(2,7);
+          const r = randomNumber(2,42);
           if (r == 5) {
             self.doBullshit(randomFrom(bullshitTypes));
           } else {
-            console.log('no random challenge');
+            if (testing) {
+              //console.log('no random challenge');
+            }
+            
           }
           self.secondsElapsed = sE;
         } else {
-          console.log('seconds have not changed');
+          if (testing) {
+            // console.log('seconds have not changed');
+          }
         }
-
-
-
-
-
       }, 13);
-
-      
-
-      
     },
 
     stopTimer() {
@@ -166,20 +234,22 @@ var app = new Vue({
       new PNotify({
         title: `${failStates[reason].title}`,
         text: `<p>${failStates[reason].message}</p>`,
-        type: "error"
+        type: "error",
+        delay: 8000
       });
       self.bullshitActive = false;
+      
     },
 
     congratulatePlayer(roundCode) {
       const self = this;
-      console.log("SUCCESS");
       if (roundCode) {
 
         new PNotify({
           title: "Success!",
           text: `<p>${successMessages[roundCode].message}</p>`,
-          type: "success"
+          type: "success",
+          delay: 2000
         });
       }
       
@@ -294,7 +364,9 @@ var app = new Vue({
             .catch(function(err) { 
               // You DECLINED access
               // I'm gonna congratulate you, depending on what I asked for.
-              console.log(err.name + ": " + err.message);
+              if (testing) {
+                console.log(err.name + ": " + err.message);
+              }
               self.congratulatePlayer(roundCode);
             });
         } else {
@@ -419,7 +491,6 @@ var app = new Vue({
 
         // Is this box BIG?
         if (group.bigOne && group.bigOne == n) {
-          console.log(group.bigOne, box);
           box.big = true;
         }
 
@@ -500,9 +571,21 @@ var app = new Vue({
       return c;
     },
 
+    parseHeadline(headline) {
+      const self = this;
+      if (self.user.city) {
+        return headline.replace('{YourLocation}',self.user.city);
+      } else {
+        return headline
+      }
+    },
+
     chooseArticle(article) {
       const self = this;
-      console.log(article);
+      if (testing) {
+        console.log(article);
+      }
+      
       self.currentArticle = Object.assign({ adVisible:false }, article);
 
       if (!self.currentArticle.paragraphs) {
@@ -580,6 +663,7 @@ var app = new Vue({
 
     startGame() {
       const self = this;
+      
       self.news.lastNewsIndex = 0;
       self.news.lastAdIndex =  0;
       self.news.allNews = Object.assign([], shuffle(theNews));
@@ -641,6 +725,7 @@ var app = new Vue({
       }
       this.oldScroll = this.scrollY;
     }
+    self.getUserData();
 
     //self.startGame();
 
