@@ -1,25 +1,24 @@
-- var pageTitle = "";
-include bop/_variables
-include bop/_mixins
+include disaster/_variables
+include disaster/_mixins
 
 doctype html
 html(lang="en")
   
-  include bop/_head.pug
+  include disaster/_head.pug
     
   body
     #app(v-cloak)
 
       main.content
 
-        include bop/screens/_intro.pug
+        include disaster/screens/_intro.pug
 
-        include bop/challenges/_question.pug
+        include disaster/challenges/_question.pug
 
         header.site-header(v-if="gameStarted")
           .site-title= siteTitle
         
-        .bullshit(v-if="gameStarted" style="text-align:center;")
+        //-.bullshit(v-if="gameStarted" style="text-align:center;")
           button(@click="doBullshit('gdpr')") Toggle banner
           button(@click="doBullshit('camera')") Request Camera
           button(@click="doBullshit('microphone')") Request Mic
@@ -41,22 +40,27 @@ html(lang="en")
 
           +group(6, 'fade')
 
-        include bop/screens/_article
+        include disaster/screens/_article
 
-      transition(name="slideUp" leave-active-class="slideOutDown")
-        .timer(v-if="timer > 0")
-          .numbers(v-html="computedTimerOutput")
+      .timer-and-score
+        transition(name="slideUp" leave-active-class="slideOutDown")
+          .timer(v-if="timer > 0")
+            .numbers(v-html="computedTimerOutput")
+        .score-holder(v-if="user.points")
+          .score 
+            strong {{formattedNumber(user.points)}}
+            span points
 
       footer.site-footer(v-if="gameStarted")
         span this is the site footer.
 
       // Challenges
-      include bop/challenges/_request-bullshit
-      include bop/challenges/_gdpr
-      include bop/challenges/_email-signup
-      include bop/challenges/_facebook
+      include disaster/challenges/_request-bullshit
+      include disaster/challenges/_gdpr
+      include disaster/challenges/_email-signup
+      include disaster/challenges/_facebook
 
       // Screens
-      include bop/screens/_failure
+      include disaster/screens/_failure
 
-    include bop/_javascripts
+    include disaster/_javascripts

@@ -125,9 +125,10 @@ app.get('/cameo', (req, res) => {
 app.get('/sisyphus', (req, res) => {
   res.sendFile(__dirname + '/html/sisyphus.html');
 });
-app.get('/bop', (req, res) => {
-  res.sendFile(__dirname + '/html/bop.html');
+app.get('/disaster', (req, res) => {
+  res.sendFile(__dirname + '/html/disaster.html');
 });
+
 
 
 app.get('/sitemap.xml', (req, res) => {

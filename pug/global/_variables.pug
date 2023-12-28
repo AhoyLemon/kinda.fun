@@ -1,14 +1,12 @@
 - const d = new Date()
 - const lastUpdated = d.getFullYear() + '-' + (d.getMonth()<10?'0':'') + d.getMonth() + '-' + (d.getDate()<10?'0':'') + d.getDate() + '@' + (d.getHours()<10?'0':'') + d.getHours() + ':' + (d.getMinutes()<10?'0':'') + d.getMinutes() + ':' + (d.getSeconds()<10?'0':'') + d.getSeconds()
 
-
-
 //- TOGGLE TEST MODE ON AND OFF
 - const testing = true
 //- THIS SHOULD BE FALSE WHEN PUSHING UP TO GITHUB
 
 
-- var siteURL
+- let siteURL
 if (testing == true)
   - siteURL = "http://localhost:3000"
 else

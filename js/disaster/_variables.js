@@ -1,6 +1,24 @@
 const siteURL = "";
 
 
+const points = {
+  forCorrectAnswer: 250,
+  forFirstWrongAnswer: -200,
+  forSecondWrongAnswer: -150,
+  forThirdWrongAnswer: -100,
+  maximumSeconds: 100,
+  bonusPerSecond: 2,
+}
+
+const correctAnswerTitleOptions = [
+  "Yes!",
+  "Correct!",
+  "That is correct!",
+  "Correct Answer!",
+  "That's right!",
+  "You are correct."
+];
+
 const audioSrc = "audio/bop/";
 const soundFeedback = new Howl({
   src: [ audioSrc + 'all.mp3' ],
@@ -50,41 +68,48 @@ const failStates = {
     title: 'You accepted all cookies.',
     message: `<p>The <a href="https://gdpr.eu/">GDPR</a> requires that any website with an audience inside the European Union must inform that audience about the website's tracking methods, and allow that audence to opt out of non-essential tracking methods with some sort of pronounced interface.</p>
               <p>It does <i>not</i>, however, demand that interface isn't shitty.</p>
-              <p>Many websites use so called "dark patterns" to encourage users to consent to more than they meant to</p>`
+              <p>Many websites use so called "dark patterns" to encourage users to consent to more than they meant to</p>`,
+    punishment: 40
   },
   2: {
     title: `You accepted unnecessary cookies.`,
     message: `<p>The <a href="https://gdpr.eu/">GDPR</a> requires that any website with an audience inside the European Union must inform that audience about the website's tracking methods, and allow that audence to opt out of non-essential tracking methods with some sort of pronounced interface.</p>
-              <p>However, the very concept of "essential" is vague and usually defined by the website itself.</p>`
+              <p>However, the very concept of "essential" is vague and usually defined by the website itself.</p>`,
+    punishment: 30
   },
   3: {
     title: `You gave me camera access.`,
     message: `<p>There are websites that would have legitimate reasons for getting access to your camera. This is not one of them.</p>`,
     also: {
       showVideo: true,
-    }
+    },
+    punishment: 50
   },
   4: {
     title: `You let me listen to you.`,
     message: `<p>I guess it's probable that you have an Alexa or a Google Home in your house listening to everything you say. Well, now so am I.</p>
               <p>Maybe we'll use your voice to train an AI robot how to better perform phone sex for a low cost, or maybe I'll just save everything itno a file called <code>StupidAssholeVoice.wav</code> - You'll never know for sure.`,
+    punishment: 40
   },
   5: {
     title:  `You gave me your email address.`,
     message: `<p><strong>Get ready for some spammin!</strong></p>
-              <p>And before you think "Oh, I gave a fake email address because I am very cunning", you should know that entering in any email address whatsoever means you gave consent to the mailing list. And it's not like I can't buy your address from somebody else.</p>`
+              <p>And before you think "Oh, I gave a fake email address because I am very cunning", you should know that entering in any email address whatsoever means you gave consent to the mailing list. And it's not like I can't buy your address from somebody else.</p>`,
+    punishment: 50
   },
   6: {
     title:   `You liked us on Facebook.`,
     message: `<p>This will allow Meta/Facebook to better merchandise what it knows about you with us.</p>
               <p>We won't be given your information straight away, but Facebook will continually encourage us to pay them money to leverage what it knows about you to help us sell our products to you.
-              <p>This will get expensive. I hope you're worth it.</p>`
+              <p>This will get expensive. I hope you're worth it.</p>`,
+    punishment: 75
   },
   7: {
     title:   `You shared this page on Facebook`,
     message: `<p>This will allow Meta/Facebook to better merchandise what it knows about you with us.</p>
               <p>Sharing our URL via Facebook effectively does just as much harm as liking us does, <strong>but</strong> as a website owner, I'd really like you to do that because I want other people to visit my website.</p>
-              <p>No matter how ethical I might pretend to be, I really would like it if you shared my websites on Facebook, pretty please.</p>`
+              <p>No matter how ethical I might pretend to be, I really would like it if you shared my websites on Facebook, pretty please.</p>`,
+    punishment: 75
   },
 };
 
@@ -257,34 +282,33 @@ const theNews =  [
     alternateAnswers: ["west"]
   },
   {
-    img:"",
+    img:"fake-person-1.jpg",
     headline: "Man fatally stabbed in {YourLocation}.",
-    category: `fine art`,
-    nugget: `Did you know Rihanna is from Barbados? Because she is. Rihanna! Rihanna, Rihanna, Rihanna! I'm hoping if I type that name enough times, I'll trick the SEO engines into thinking this is an article about Rihanna. Rihanna is from St. Michael, which is a city, not a beach. Holetown is the name of a beach, that's on the West coast.`,
-    nuggetPlacement: `replace`,
-    question: `On which coast of Barbados is Holetown?`,
-    answer: `west`,
-    alternateAnswers: ["west"]
+    category: `crime`,
+    nugget: `Earlick Paulson (known as "Duck" to his friends) `,
+    nuggetPlacement: `beginning`,
+    question: `What is the nickname of the man who was fatally stabbed?`,
+    answer: `duck`
   },
   {
-    img:"",
+    img:"fake-person-1.jpg",
     headline: "Man fatally shot in {YourLocation}.",
-    category: `fine art`,
-    nugget: `Did you know Rihanna is from Barbados? Because she is. Rihanna! Rihanna, Rihanna, Rihanna! I'm hoping if I type that name enough times, I'll trick the SEO engines into thinking this is an article about Rihanna. Rihanna is from St. Michael, which is a city, not a beach. Holetown is the name of a beach, that's on the West coast.`,
-    nuggetPlacement: `replace`,
-    question: `On which coast of Barbados is Holetown?`,
-    answer: `west`,
-    alternateAnswers: ["west"]
+    category: `crime`,
+    nugget: `Earlick Paulson (known as "E" to his friends) `,
+    nuggetPlacement: `beginning`,
+    question: `What is the nickname of the man who was fatally shot?`,
+    answer: `e`,
+    alternateAnswers: ['"e"']
   },
   {
-    img:"",
+    img:"fake-person-1.jpg",
     headline: "Man fatally jerked off in {YourLocation}.",
-    category: `fine art`,
-    nugget: `Did you know Rihanna is from Barbados? Because she is. Rihanna! Rihanna, Rihanna, Rihanna! I'm hoping if I type that name enough times, I'll trick the SEO engines into thinking this is an article about Rihanna. Rihanna is from St. Michael, which is a city, not a beach. Holetown is the name of a beach, that's on the West coast.`,
+    category: `crime`,
+    nugget: `Earlick Paulson has been known by a number of nicknames, such as "2 Hat Earl",  "Papa Quizmaster", and "Other Shrek" had his penis and life removed in a tragic but unavoidable handjob accident. This news outlet mistakenly reported his death as a homicide and will not retract that story because it's hard. UNLIKE THIS GUY! HA HA HA HA HA HA!`,
     nuggetPlacement: `replace`,
     question: `On which coast of Barbados is Holetown?`,
-    answer: `west`,
-    alternateAnswers: ["west"]
+    answer: `other shrek`,
+    alternateAnswers: ['"other shrek"', 'shrek', "2 hat earl", '"2 hat earl"', "two hat earl", "papa quizmaster", '"papa quizmaster"']
   },
 ];
 

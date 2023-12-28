@@ -11,7 +11,7 @@ article.current-article(v-if="currentArticle && currentArticle.visible == true")
       figure
         img(:src="'img/bop/bg/' + currentArticle.img")
       .content
-        h1(v-text="currentArticle.headline")
+        h1(v-text="parseHeadline(currentArticle.headline)")
         .author(v-if="currentArticle.author")
           | by {{currentArticle.author.firstName}} {{currentArticle.author.lastName}}
         time(v-if="currentArticle.dateStamp")

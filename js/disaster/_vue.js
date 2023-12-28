@@ -7,13 +7,21 @@ var app = new Vue({
     secondsElapsed: 0,
 
     user: {
+
+      // Location Stuff
       ip: null,
       city: null,
       country: null,
       region: null,
       timezone: null,
       lat: null,
-      long: null
+      long: null,
+
+      // Score Stuff
+      correctAnswers: 0,
+      wrongAnswers: 0,
+      wrongAnswersThisRound: 0,
+      points: 0
     },
 
     bullshitActive: false,
@@ -113,6 +121,21 @@ var app = new Vue({
 
     getUserData() {
       const self = this;
+
+      // Function to pull user data from local (if it exists)
+      function getLocalUserData() {
+        self.user.ip = localStorage.getItem("userIP")
+        self.user.city = localStorage.getItem("userCity")
+        self.user.country = localStorage.getItem('userCountry');
+        self.user.region = localStorage.getItem('userRegion');
+        self.user.timezone = localStorage.getItem('userTimezone');
+        self.user.lat = localStorage.getItem('userLat');
+        self.user.long = localStorage.getItem('userLat');
+        if (testing) {
+          console.info('user data pulled from local storage')
+        }
+      }
+
       // Function to get user's IP address
       function getUserIP(callback){
         const fetchURL = `https://api64.ipify.org?format=json`;
@@ -126,9 +149,7 @@ var app = new Vue({
 
       // Function to get user's city based on IP address using freegeoip.app
       function getCityFromIP(ip, callback){
-        // const fetchURL = `https://freegeoip.app/json/${ip}`
         const fetchURL = `https://ipinfo.io/${ip}?token=eba53e08885650`
-        alert(fetchURL);
         fetch(fetchURL)
           .then(response => response.json())
           .then(data => callback(null, data))
@@ -137,7 +158,6 @@ var app = new Vue({
 
       // Main function to get user's city and save it as a variable
       function getUserCity(){
-        
         getUserIP((ipError, ipAddress) => {
           if (ipError) {
             console.error('Error getting IP address:', ipError);
@@ -145,6 +165,8 @@ var app = new Vue({
           }
           if (ipAddress) {
             self.user.ip = ipAddress
+            localStorage.setItem('userIP', ipAddress)
+
             getCityFromIP(ipAddress, (cityError, locationData) => {
               if (cityError) {
                 console.error('Error getting city from IP:', cityError);
@@ -160,7 +182,16 @@ var app = new Vue({
                   self.user.lat = locationData.loc.split(',')[0]
                   self.user.long = locationData.loc.split(',')[1]
                 }
-                alert('check the Vue Devtools');
+
+                localStorage.setItem('userCity', self.user.city)
+                localStorage.setItem('userCountry', self.user.country)
+                localStorage.setItem('userRegion', self.user.region)
+                localStorage.setItem('userTimezone', self.user.timezone)
+                localStorage.setItem('userLat', self.user.lat)
+                localStorage.setItem('userLong', self.user.long)
+                if (testing) {
+                  console.info('user data pulled from ipinfo.io')
+                }
               }
             });
           }
@@ -169,7 +200,11 @@ var app = new Vue({
       }
 
       // Call the main function
-      getUserCity();
+      if (localStorage.getItem('userIP') && localStorage.getItem('userCity')) {
+        getLocalUserData()
+      } else {
+        getUserCity();
+      }
     },
 
     toggleCookieModal(mode) {
@@ -231,9 +266,15 @@ var app = new Vue({
     failPlayer(reason,also) {
       const self = this;
       soundFeedback.play(randomFrom(soundOptions.failure));
+      const notifyTitle = failStates[reason].title;
+      let notifyMessage = failStates[reason].message;
+      let fine = randomNumber(30,100);
+      notifyMessage += `<p>You have been fined ${fine} points.</p>`;
+      self.assignPoints('privacyFailure',(0 - fine))
+
       new PNotify({
-        title: `${failStates[reason].title}`,
-        text: `<p>${failStates[reason].message}</p>`,
+        title: notifyTitle,
+        text: notifyMessage,
         type: "error",
         delay: 8000
       });
@@ -507,16 +548,20 @@ var app = new Vue({
 
     askAQuestion() {
       const self = this;
-      self.currentQuestion = Object.assign({}, self.allQuestions[self.currentQuestionIndex]);
+      self.currentQuestion = {};
       self.myGuess = "";
-      if (document.getElementById("TheQuestion")) {
-        document.getElementById("TheQuestion").focus();
-      }
+      self.user.wrongAnswersThisRound = 0;
+
+      setTimeout(() => {
+        self.currentQuestion = Object.assign({}, self.allQuestions[self.currentQuestionIndex]);
+        if (document.getElementById("TheQuestion")) {
+          document.getElementById("TheQuestion").focus();
+        }
+      }, 200);
     },
 
     answerTheQuestion() {
       const self = this;
-
       let guess;
       let answer;
       let possibleAnswers = [];
@@ -529,34 +574,67 @@ var app = new Vue({
         })
       }
 
-      if (guess == answer) {
+      const secondsTaken = parseInt(self.timer)
+      if (guess == answer || (possibleAnswers && possibleAnswers.includes(guess)) ) {
+        self.user.correctAnswers += 1;
+        let additionalPoints = points.forCorrectAnswer;
+        let timeBonus = (points.maximumSeconds - secondsTaken) * points.bonusPerSecond;
+        if (isNaN(timeBonus) || timeBonus < 0) {
+          timeBonus = 0;
+        }
 
-        const timeTaken = self.timer.toFixed(2)
+        additionalPoints += timeBonus;
+        self.user.points += additionalPoints;
+        
         new PNotify({
-          title: "Correct",
-          text: `That took you ${timeTaken} seconds`,
+          title: randomFrom(correctAnswerTitleOptions),
+          text: `<strong>${additionalPoints} points</strong> (${secondsTaken} seconds)`,
           type: "success"
         });
-        self.startTimer();
 
-        self.currentQuestionIndex++;
-        self.askAQuestion();
-      } else if ( possibleAnswers && possibleAnswers.includes(guess) ) {
-        new PNotify({
-          title: "Basically correct",
-          text: `<p>I was actually looking for ${answer}, but I guess that's close enough, thanks.</p>`,
-          type: "success"
-        })
+        self.assignPoints("correctAnswer", additionalPoints);
+        self.startTimer();
         self.currentQuestionIndex++;
         self.askAQuestion();
       } else {
         self.myGuess = "";
-        new PNotify({
-          title: "No!",
-          text: `<p>That is not correct. You just lost a point. Also actually, the correct answer is <strong>${answer}</strong> if you want to cheat about it. Eventually this should count the number of incorrect answers and only let you bypass after like 2 or 3 attempts.</p>`,
-          type: "error"
-        })
+        self.user.wrongAnswers += 1;
+        self.user.wrongAnswersThisRound += 1;
+        if (self.user.wrongAnswersThisRound == 1) {
+          self.assignPoints("wrongAnswer", points.forFirstWrongAnswer)
+          new PNotify({
+            title: "No!",
+            text: `<p>That is not correct. You just <strong>lost ${(0 - points.forFirstWrongAnswer)} points</strong>. Again, the answer to the question is on this disaster of a website, keep looking.</p><p><strong>PS the answer is ${answer}</strong>.</p>`,
+            type: "error"
+          })
+        } else if (self.user.wrongAnswersThisRound == 2) {
+          self.assignPoints("wrongAnswer", points.forSecondWrongAnswer)
+          new PNotify({
+            title: "Still No!",
+            text: `<p>That's also incorrect, and now you <strong>lost ${(0 - points.forSecondWrongAnswer)} points</strong>. Look, I'll give you one more try. Don't Google it, the answer is on this disaster of a website.</p><p><strong>PS the answer is ${answer}</strong>.</p>`,
+            type: "error"
+          })
+        } else {
+          self.assignPoints("wrongAnswer", points.forThirdWrongAnswer)
+          new PNotify({
+            title: "Let's skip this one",
+            text: `<p>You know what? I don't think you're going to get this one. I'm just gonna subtract <strong>another ${(0 - points.forThirdWrongAnswer)} points</strong> from your score and we'll move on. .</p><p><strong>PS the answer is ${answer}</strong>.</p>`,
+            type: "error"
+          })
+          self.startTimer();
+          self.currentQuestionIndex++;
+          self.askAQuestion();
+        }
       }
+    },
+
+    assignPoints(whatHappened, adjustment) {
+      const self = this;
+    
+      if (adjustment) {
+        self.user.points += adjustment;
+      }
+
     },
 
     boxClasses(box) {
@@ -682,12 +760,16 @@ var app = new Vue({
       }
     },
 
+    formattedNumber(value) {
+      return value.toLocaleString()
+    }
+
   },
 
   filters: {
     formattedDate(value) {
       return moment(value).format('LL')
-    }
+    },
   },
 
   computed: {
@@ -727,19 +809,6 @@ var app = new Vue({
     }
     self.getUserData();
 
-    //self.startGame();
-
-    // new PNotify({
-    //   title: "Hi there!", 
-    //   text: `<p>Toasts work. Get ready to see a lot of these fuckin' things.</p>`,
-    //   type: "success"
-    // });
-
-  },
-
-  // created() {
-  //   const self = this;
-  //   window.addEventListener("scroll", self.handleScroll);
-  // }
+  }
 
 });

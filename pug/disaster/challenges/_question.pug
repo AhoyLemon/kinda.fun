@@ -1,11 +1,11 @@
 section.current-challenge(v-show="gameStarted")
   form(@submit.prevent="answerTheQuestion()")
     transition(name="fadeDownBig")
-      label.question(for="TheQuestion" v-show="gameStarted") {{currentQuestion.question}}
+      label.question(for="TheQuestion" v-show="currentQuestion.question") {{currentQuestion.question}}
     transition(name="zoom")
       .field(v-show="gameStarted")
         .input-holder
-          input(required id="TheQuestion" v-model="myGuess" placeholder="The answer is somewhere on this website.")
+          input(required id="TheQuestion" v-model="myGuess" autocomplete="off" placeholder="The answer is somewhere on this website.")
         button(type="submit" :disabled="!myGuess") Answer
     transition(name="fade")
       .scroll-down(v-if="gameStarted") (scroll down)

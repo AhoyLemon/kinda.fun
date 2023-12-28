@@ -1,7 +1,0 @@
-.timer { font-family: monospace; font-weight: 400; @include position(fixed,null,null,0,0); background:$black; color:$green; line-height: 0.8; letter-spacing: 0.1em; padding:0.25em 0.5em; z-index: $z-timer; border-top-right-radius: 1em;
-  font-size:clamp(36px,8vw,80px);
-
-  .m  { font-size:140%; }
-  .s  { font-size:100%; }
-  .ms { font-size:60%; }
-}

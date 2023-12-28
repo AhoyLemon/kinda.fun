@@ -31,7 +31,7 @@ main.content { display:grid; grid-template-columns: 1fr; overflow-x: hidden;
     }
   }
   .group4 { display:grid; gap:$gap; grid-template-columns: 1fr; }
-  .group5 { display:grid; gap:($gap / 2); grid-template-columns: 1fr;}
+  .group5 { display:grid; gap: calc($gap / 2); grid-template-columns: 1fr;}
 
 
   .box {
