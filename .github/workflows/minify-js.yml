@@ -1,0 +1,40 @@
+name: "Minify Workflow"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  minify_js:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚀 Job triggered by a ${{ github.event_name }}.
+        run: echo "🚀 Job triggered by a ${{ github.event_name }}."
+
+      - name: 🛒 Checkout source Git branch
+        uses: actions/checkout@v4
+        with:
+            ref: ${{ github.ref }}
+
+      - name: 🐁 minify css & html
+        uses: docker://devatherock/minify-js:3.0.0
+        with:
+          add_suffix: false     # Optional
+          inclusions: |-        # Optional
+            /public/css/*.css
+            /index/html
+            /html/*.html      
+      
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        name: "💾 Commit changes with minifications"
+        with:
+          commit_message: Minify source code
+          branch: ${{ github.ref }}
+
+      - name: 🫠 This job's status is ${{ job.status }}.
+        run: echo "🫠 This job's status is ${{ job.status }}."
