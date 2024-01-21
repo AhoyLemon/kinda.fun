@@ -57,8 +57,8 @@ jobs:
         with:
           add_suffix: false     # Optional
           inclusions: |-        # Optional
-            /index.html
-            /html/*.html 
+            ./index.html
+            ./html/*.html 
 
       - name: 🗃️ commit changes to ${{ github.ref }}
         uses: elstudio/actions-js-build/commit@v4
