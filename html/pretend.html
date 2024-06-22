@@ -7,22 +7,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <link rel="preconnect" href="https://fonts.gstatic.com"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Limelight|Merriweather:400,400i,900"/>
-    <link href="css/pretend.css?lastUpdated2023-09-08T02:33:38.648Z" type="text/css" rel="stylesheet"/>
+    <link href="css/pretend.css?lastUpdated2024-06-20T03:18:39.551Z" type="text/css" rel="stylesheet"/>
     <meta name="description" content="You are at a party of celebrity impersonators..."/>
-    <meta http-equiv="last-modified" content="2023-09-08T02:33:38.648Z"/>
+    <meta http-equiv="last-modified" content="2024-06-20T03:18:39.551Z"/>
     <meta name="twitter:card" content="summary_large_image"/>
     <meta name="twitter:creator" content="@AhoyLemon"/>
     <meta name="twitter:title" content="Pretend World"/>
     <meta name="twitter:description" content="You are at a party of celebrity impersonators..."/>
-    <meta name="twitter:image" content="https://kinda.fun/img/og-pretend.png"/>
-    <meta name="twitter:url" content="https://kinda.fun/pretend"/>
+    <meta name="twitter:image" content="http://localhost:3000/img/og-pretend.png"/>
+    <meta name="twitter:url" content="http://localhost:3000/pretend"/>
     <meta property="og:title" content="Pretend World"/>
     <meta property="og:type" content="website"/>
     <meta property="og:image:width" content="1200"/>
     <meta property="og:image:height" content="630"/>
     <meta property="og:description" content="You are at a party of celebrity impersonators..."/>
-    <meta property="og:image" content="https://kinda.fun/img/og-pretend.png"/>
-    <meta property="og:url" content="https://kinda.fun/pretend"/>
+    <meta property="og:image" content="http://localhost:3000/img/og-pretend.png"/>
+    <meta property="og:url" content="http://localhost:3000/pretend"/>
   </head>
   <body>
     <div id="app">
@@ -129,8 +129,8 @@
         "@context": "http://schema.org",
         "@type": "VideoGame",
         "name": "Pretend World",
-        "url": "https://kinda.fun/pretend",
-        "image": "https://kinda.fun/img/og-pretend.png",
+        "url": "http://localhost:3000/pretend",
+        "image": "http://localhost:3000/img/og-pretend.png",
         "playMode": "SinglePlayer",
         "applicationCategory": "browser game",
         "gamePlatform": "web browser",
@@ -159,25 +159,25 @@
         "screenshot": [
           {
             "@type": "ImageObject",
-            "url": "https://kinda.fun/img/pretend/screenshots/1.jpg",
+            "url": "http://localhost:3000/img/pretend/screenshots/1.jpg",
             "width": "1200",
             "height": "650"
           },
           {
             "@type": "ImageObject",
-            "url": "https://kinda.fun/img/pretend/screenshots/2.jpg",
+            "url": "http://localhost:3000/img/pretend/screenshots/2.jpg",
             "width": "1200",
             "height": "650"
           },
           {
             "@type": "ImageObject",
-            "url": "https://kinda.fun/img/pretend/screenshots/3.jpg",
+            "url": "http://localhost:3000/img/pretend/screenshots/3.jpg",
             "width": "980",
             "height": "980"
           },
           {
             "@type": "ImageObject",
-            "url": "https://kinda.fun/img/pretend/screenshots/4.jpg",
+            "url": "http://localhost:3000/img/pretend/screenshots/4.jpg",
             "width": "980",
             "height": "980"
           }
@@ -185,11 +185,10 @@
       }
     </script>
     <div class="javascripts">
-      <script src="js/libraries/vue.min.js"></script>
+      <script src="js/libraries/vue.full.js"></script>
       <script>
-        const testing = false;
-        const canCheat = false;
-        
+        const testing = true;
+        const canCheat = true;
       </script>
       <script src="/socket.io/socket.io.js"></script>
       <script>
