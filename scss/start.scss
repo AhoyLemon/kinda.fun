@@ -1,17 +1,13 @@
 
 //GLOBALS, GET DEFAULTS
-@import "globals/_reset";
-@import "globals/_variables";
-@import "globals/_mixins";
-@import "globals/_extends";
-
-// LIBRARIES (if any)
+@import "globals/reset";
+@import "globals/variables";
+@import "globals/mixins";
+@import "globals/extends";
 
 
-// SCREENS
-@import "start/_variables";
-@import "start/_default";
-@import "start/_title-screen";
-
-// OTHER PAGES
-
+@import "start/variables";
+@import "start/default";
+@import "start/transitions";
+@import "start/title-screen";
+@import "start/testing";
