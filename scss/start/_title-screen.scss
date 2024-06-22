@@ -1,5 +1,5 @@
 body { overflow-x: hidden;}
-.title-screen { min-height: 99.999dvh; display: grid; grid-template-columns: 1fr; grid-template-rows: 180px 190px 2fr;
+.title-screen { min-height: 99.999dvh; display: grid; grid-template-columns: 1fr; grid-template-rows: 180px 190px 1fr;
 
   .top { padding:40px; display: flex; align-items: center;
     h1 { font-size:clamp(20px,5vw,2.7rem); font-weight: 625; font-family: $serif;
@@ -69,13 +69,13 @@ body { overflow-x: hidden;}
   }
 }
 @media (max-width:739px) {
-  .title-screen { 
+  .title-screen { grid-template-rows: 120px 31vw 1fr;
     .game-grid { gap:10px; padding-left: 10px; padding-right: 10px;
-      .thing { flex-basis: 40dvw; } 
+      .thing { flex-basis: 42dvw; } 
     }
-    .bottom {
+    .bottom { padding:10px;
       .slogan { font-size:4.25vw; } 
-      .description { font-size: 12px;;}
+      .description { font-size: 12px; }
     }
   }
 }

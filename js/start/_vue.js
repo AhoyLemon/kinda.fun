@@ -21,7 +21,7 @@ var app = new Vue({
         slogan: "The game of relative celebrity value",
         description: `<p>This game will give you a list of celebrities, and then ask you to sort them by their listed value on <strong>Cameo</strong>.</p>`,
         url: "https://kinda.fun/cameo",
-        tags: ["game", "multiplayer", "celebrities", "trivia"],
+        tags: ["game", "single player", "celebrities", "trivia"],
       },
       greatsextips: {
         name: "Great Sex Tips!",
@@ -192,6 +192,7 @@ var app = new Vue({
         description: `<p>Using an incredibly long list of (made up) parody porn titles written over the years, this site provides the top 20 box office every day, really just as an excuse to giggle over the titles themselves.</p>`,
         url: "https://ahoylemon.github.io/jerking.online",
         tags: ["list", "new content every day"],
+        buttonText: "Start gigglin",
       },
       hamiltondoom: {
         name: "Hamilton -> DOOM",
@@ -202,6 +203,7 @@ var app = new Vue({
         description: `<p>This extension replaces all instances of "Hamilton" with "the video game DOOM".</p>`,
         url: "https://chromewebstore.google.com/detail/hamilton-%3E-doom/hkedheclgkcdkjabeklkiifpbhlnaknd?hl=en-US&gl=US",
         tags: ["tool"],
+        buttonText: "Install now",
       },
       dumbmen: {
         name: "dumb.men",
@@ -211,6 +213,7 @@ var app = new Vue({
         description: `<p>This joke worked <em>a lot better</em> before browsers disabled autoplaying music...</p>`,
         url: "https://ahoylemon.github.io/dumb.men",
         tags: ["celebrities"],
+        buttonText: "See men",
       },
       rickrossdaily: {
         name: "Rick Ross Daily",
@@ -220,6 +223,7 @@ var app = new Vue({
         description: `<p>A Mastodon bot to execute a very simple joke: Hey, what's Rick Ross doing today? Is it hustling?</p>`,
         url: "https://botsin.space/@rickross",
         tags: ["celebrities", "list"],
+        buttonText: "Hustlin?",
       },
     },
   },

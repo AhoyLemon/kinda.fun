@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://localhost:3000</loc>
+    <loc>https://kinda.fun</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
-    <lastmod>2024-06-20T03:18:39.157Z</lastmod>
+    <lastmod>2024-06-22T20:16:40.823Z</lastmod>
   </url>
   <url>
-    <loc>http://localhost:3000/invalid</loc>
+    <loc>https://kinda.fun/invalid</loc>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/wrongest</loc>
+    <loc>https://kinda.fun/wrongest</loc>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/cameo</loc>
+    <loc>https://kinda.fun/cameo</loc>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/sisyphus</loc>
+    <loc>https://kinda.fun/sisyphus</loc>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/guillotine</loc>
+    <loc>https://kinda.fun/guillotine</loc>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
