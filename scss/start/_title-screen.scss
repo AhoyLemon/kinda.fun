@@ -1,77 +1,81 @@
-html { overflow-x: hidden; }
-.title-screen { display:grid; min-height: 99vh;  font-family: 'Lora', serif;
-  .choice-holder { display:flex; align-items: center; justify-content: center;
-    .inner { width:100%; }
+body { overflow-x: hidden;}
+.title-screen { min-height: 99.999dvh; display: grid; grid-template-columns: 1fr; grid-template-rows: 180px 190px 1fr;
+
+  .top { padding:40px; display: flex; align-items: center;
+    h1 { font-size:clamp(20px,5vw,2.7rem); font-weight: 625; font-family: $serif;
+      strong { color:#e9e9a2; }
+    }
   }
-  h1 { font-size:32px; text-align: center; font-weight: 400; margin-bottom: 3em; }
-  
-  .game-choices {
-    .game { 
-      
-      figure { padding-bottom: 20px; cursor: pointer; transition:all 0.5s ease;
-        img { width:100%; max-width: 280px;}
+
+  .game-grid { display:flex; flex-wrap: nowrap; gap:40px; padding-left: 40px; padding-right: 40px;
+
+    overflow-x: scroll; width:100dvw; 
+    .thing { flex-basis: 250px; flex-grow: 0; flex-shrink: 0; padding-top:20px;
+      button { background: transparent; border:none; cursor: pointer; }
+      img { width:100%; transition: scale 0.3s ease; }
+      &.active { 
+        img { scale: 1.35; transition: all 0.9s ease; }
       }
-      .slogan { margin-bottom: 1em; font-style: italic; font-size:110%; }
-      .players-allowed { font-size:90%;}
-      figcaption { opacity: 0; transition:opacity 0.5s linear; } 
-      &.active {
-        figure { transform: scale(1.2); }
-        figcaption { opacity: 1; }
+      &.inactive { opacity: 0.6;
+        img { scale: 0.9; }
       }
-      &.inactive {
-        figure { transform: scale(0.8); opacity: 0.8; }
+    }
+    scrollbar-width: thin;
+    scrollbar-gutter: stable both-edges;
+    scrollbar-color: #692647 #e6e7dc;
+  }
+
+  .bottom { padding:40px; display: flex; align-items: center; justify-content: center; font-family: $serif;
+    .info { background-color: $white; color:$black; max-width: 68ch; position: relative; margin-left: auto; margin-right: auto; } 
+    button.close { position: absolute; top:10px; right:10px; font-size:1.25rem; width:1.5em; cursor: pointer; z-index: 3; }
+    .top-bar { background-color: $black; padding:10px 40px 10px 20px;
+      h2 { color:$white; }
+    }
+    .game-name { font-size:1.4rem }
+    .slogan { font-size:2.15rem; font-weight: 525; font-style: italic;
+      &:before { content: "“"; }
+      &:after  { content: "”"; }
+    }
+    .content { display: grid; gap:10px; padding:20px; color:$black; padding:20px; font-family: $serif; }
+    .description { line-height: 180%; }
+    .button-holder {
+      .button { display: inline-flex; padding:1em 1.5em; background:yellow; color:$black; font-weight: 900; border:0.1em solid currentColor; text-decoration: none; letter-spacing: 0.1em; transition: all 0.3s ease; box-shadow:-1px 1px 0 black;
+        &:hover, &:focus { transform: translate(10px,-10px); box-shadow:-10px 10px 0 black; }
+      }
+    }
+
+    display: grid; gap:20px;
+
+    .filter-options { display:flex; flex-wrap: wrap; gap:5px;
+      .show-all { flex-basis: 100%; }
+      button { flex-grow: 1; flex-shrink: 0; cursor: pointer;
+        background-color: #ccc; border:none; border-radius: 4px; padding:0.5em 1em;
+        .text { font-family: $serif; color:$black; font-weight: 725; }
+        .count { display:none; }
+        &.active {
+          background:yellow; 
+        }
       }
     }
   }
-  .game { text-align: center; }
+}
 
+@media (min-width:740px) {
+  .title-screen { 
+    .bottom { grid-template-columns: 1fr 240px;
 
-  .create-or-join { 
+    }
     
-    button { background:transparent; border:none; cursor: pointer; line-height: 95%; padding:10px; font-family: inherit; }
-    .start-playing {  text-align: center;
-      button {  color:desaturate(#9bf50c,50%);
-        &:hover, &:focus { color: #9bf50c; }
-      }
-    }
-    .create { text-align: right;
-      button {  color:#b39153; 
-        &:hover, &:focus { color: orange; }
-      }
-    }
-    .join { 
-      button { color:#6995a2;
-        &:hover, &:focus { color: $blue; }
-      }
-    }
   }
 }
-
-@media (max-width:700px) {
-  .title-screen {
-    .game-choices { display:grid; grid-template-columns: 1fr; margin-bottom: 20vw;
-      .game {
-        figure { width:100%; max-width: 225px; margin-left: auto; margin-right: auto; }
-      }
+@media (max-width:739px) {
+  .title-screen { grid-template-rows: 120px 31vw 1fr;
+    .game-grid { gap:10px; padding-left: 10px; padding-right: 10px;
+      .thing { flex-basis: 42dvw; } 
     }
-    .create-or-join { @include position(fixed,null,0,0,0); background:rgba(0,0,0,0.5); padding-top:0.5em; padding-bottom: 0.5em;
-      button, .or { font-size:5vw }
-      .options { text-align: center;
-        > * { display: inline-block; }
-      }
-    }
-  }
-}
-@media (min-width:701px) {
-  .title-screen { grid-template-rows: 1fr 105px;
-    .game-choices { display:flex; flex-wrap:wrap; gap:40px; justify-content: space-evenly; // max-width: 888px; margin-left: auto; margin-right: auto;
-      .game { flex-basis: 30%; flex-shrink: 1; flex-grow: 0; }
-    }
-
-    .create-or-join { 
-      .options { display:grid; grid-template-columns: 1fr 60px 1fr; }
-      button { font-size:36px; }
-      .or { line-height: 50px; font-size:20px; text-align: center; }
+    .bottom { padding:10px;
+      .slogan { font-size:4.25vw; } 
+      .description { font-size: 12px; }
     }
   }
 }

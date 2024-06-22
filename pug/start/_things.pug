@@ -1,0 +1,38 @@
+//- .game(:class="{ active: (gameChoice == 'guillotine'), inactive: (gameChoice && gameChoice != 'guillotine') }")
+//-   button.logo(@click="setActiveGame('guillotine')")
+//-     img(src="svg/no_more_billionaires.svg" alt="No More Billionaires! logo")
+//-   figcaption
+//-     .slogan Generating Wealth with a Guillotine
+//-     .players-allowed
+//-       | For 1 player.
+//-       br
+//-       | (with a new set of choices every day)
+//-   script(type="application/ld+json").
+//-     {
+//-       "@context": "http://schema.org",
+//-       "@type": "VideoGame",
+//-       "name": "NO MORE BILLIONAIRES",
+//-       "url": "https://kinda.fun/guillotine",
+//-       "image": "https://kinda.fun/img/og-guillotine.jpg",
+//-       "playMode": "SinglePlayer",
+//-       "applicationCategory": "browser game",
+//-       "gamePlatform": "web browser",
+//-       "operatingSystem": "web browser",
+//-       "genre": "comedy",
+//-       "description": "The game where you generate wealth through the use of a guillotine."
+//-     }
+
+-
+  const kindaFunGames = [
+    {
+      name: "NO MORE BILLIONAIRES",
+      slug: "guillotine",
+      logo: "billionaires.svg",
+      slogan: "Generating Wealth with a Guillotine",
+      players: 1,
+      morePlayerInfo: "(with a new set of choices every day)",
+      url: "https://kinda.fun/guillotine",
+      ogImage: "https://kinda.fun/img/og-guillotine.jpg",
+      description: "The game where you generate wealth through the use of a guillotine."
+    }
+  ]
