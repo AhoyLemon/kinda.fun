@@ -13,19 +13,18 @@ html(lang="en")
     meta(name="msvalidate.01" content="D3327FD7610C2D05D7D605EBCA288944")
   body
     #app
-      
+      if testing
+        link(rel="stylesheet" href="css/testing.css")
+        .testing-banner.start
+          .inner Test Mode Is On
 
       main.title-screen
 
         .top
           h1 So, here's some stuff that's #[strong kinda fun]....
 
-        transition-group(name="list" tag="div" id="GameGridTwo" class="game-grid")
+        transition-group(name="list" tag="div" id="GameGrid" class="game-grid")
 
-          
-            //- template(v-for="(thing, thingId) in computedThingsList")
-
-            //- <transition-group name="list" tag="p">
             .thing(
               v-for="(thing, thingId) in computedThingsList"
               :class="{ active: currentThing.slug === thing.slug,  inactive: (currentThing.slug && currentThing.slug !== thing.slug) }"
@@ -59,9 +58,6 @@ html(lang="en")
                 span.text {{tag.text}}
                 span.count {{tag.count}} 
 
-      if testing
-          link(rel="stylesheet" href="css/testing.css")
-          .testing-banner.start
-            .inner Test Mode Is On
+      
     
     include start/_javascripts

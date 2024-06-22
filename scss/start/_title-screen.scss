@@ -1,8 +1,8 @@
-
+body { overflow-x: hidden;}
 .title-screen { min-height: 99.999dvh; display: grid; grid-template-columns: 1fr; grid-template-rows: 180px 190px 2fr;
 
   .top { padding:40px; display: flex; align-items: center;
-    h1 { font-size:2.5rem; font-weight: 625; font-family: $serif;
+    h1 { font-size:clamp(20px,5vw,2.7rem); font-weight: 625; font-family: $serif;
       strong { color:#e9e9a2; }
     }
   }
@@ -39,9 +39,12 @@
     .content { display: grid; gap:10px; padding:20px; color:$black; padding:20px; font-family: $serif; }
     .description { line-height: 180%; }
     .button-holder {
-      .button { display: inline-flex; padding:1em 1.5em; background:yellow; color:$black; font-weight: 900; border:0.1em solid currentColor; text-decoration: none; }
+      .button { display: inline-flex; padding:1em 1.5em; background:yellow; color:$black; font-weight: 900; border:0.1em solid currentColor; text-decoration: none; letter-spacing: 0.1em; transition: all 0.3s ease; box-shadow:-1px 1px 0 black;
+        &:hover, &:focus { transform: translate(10px,-10px); box-shadow:-10px 10px 0 black; }
+      }
     }
-    display: grid; grid-template-columns: 1fr 240px; gap:20px;
+
+    display: grid; gap:20px;
 
     .filter-options { display:flex; flex-wrap: wrap; gap:5px;
       .show-all { flex-basis: 100%; }
@@ -56,6 +59,27 @@
     }
   }
 }
+
+@media (min-width:740px) {
+  .title-screen { 
+    .bottom { grid-template-columns: 1fr 240px;
+
+    }
+    
+  }
+}
+@media (max-width:739px) {
+  .title-screen { 
+    .game-grid { gap:10px; padding-left: 10px; padding-right: 10px;
+      .thing { flex-basis: 40dvw; } 
+    }
+    .bottom {
+      .slogan { font-size:4.25vw; } 
+      .description { font-size: 12px;;}
+    }
+  }
+}
+
 
 .fade-enter-active {
   transition: all 0.85s cubic-bezier(.36,.3,.7,1.53);
@@ -84,6 +108,10 @@
 }
 .list-move { 
   transition: transform 1s;
+}
+
+.testing-banner.start { font-family: $serif; font-size:13px; text-transform: uppercase; text-align: center; font-weight: 800;
+  background:yellow; color:black; padding:10px;
 }
 
 // html { overflow-x: hidden; }

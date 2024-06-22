@@ -11,6 +11,7 @@ var app = new Vue({
       buttonText: "",
     },
     currentFilter: "",
+    isListRandomized: false,
 
     thingData: {
       cameo: {
@@ -27,28 +28,49 @@ var app = new Vue({
         slug: "greatsextips",
         logo: "greatsextips.svg",
         slogan: "The only website that knows what your boyfriend likes.",
-        description: `<p>We took a corpus of over a hundred years of women's magazines, completely ignored it, and then wrote sentence fragments that made ourselves laugh.</p>`,
+        description: `<p>For over a hundred years women's magazines have published counterproductive sex advice. I think the computer can do better.</p>`,
         url: "https://ahoylemon.github.io/greatsex.tips",
-        tags: ["list", "lies", "tool"],
+        tags: ["list", "lies", "tool", "robot"],
+        buttonText: "Generate Tips",
       },
       guillotine: {
         name: "No More Billionaires",
         slug: "guillotine",
         logo: "nomorebillionaires.svg",
         slogan: "Generating wealth with a guillotine",
-        description: `<p>This is a single player game about funding public schools by executing the right billionaires. A new list of billionaires is generated every day!</p>`,
+        description: `<p>This is a single player game about funding public schools by executing the world's richest people. A new list of billionaires is generated every day!</p>`,
         url: "https://kinda.fun/guillotine",
         tags: ["game", "single player", "new content every day"],
+        buttonText: "Genearate wealth.",
       },
       sisyphus: {
         name: "Sisyphus Clicker",
         slug: "sisyphus",
         logo: "sisyphusclicker.svg",
-        slogan: "Life can be depressing. This game especially.",
+        slogan: "Life can be depressing. This game especially so.",
         description: `<p>This is a clicker-style game where you take on the role of sisyphus and push the rock uphill. <strong>You will never succeed.</strong> But at least you can earn achievements?</p>`,
         url: "https://kinda.fun/sisyphus",
         buttonText: "Suffer",
         tags: ["game", "single player", "clicker"],
+      },
+      damndog: {
+        name: "damn dog",
+        slug: "damndog",
+        logo: "damndog.svg",
+        slogan: "The wikiHow  illustration game",
+        description: `<p>There's a lot of strange how to guides on wikiHow, and a lot of strange illustrations to go with them. You'll be presented with one of hundreds of hand-curated illustrations, and then it's up to you to figure out what article it was from.</p>`,
+        url: "https://damn.dog",
+        buttonText: "",
+        tags: ["game", "single player", "guess"],
+      },
+      pretend: {
+        name: "Pretend World",
+        slug: "pretend",
+        logo: "pretendworld.svg",
+        slogan: "The game of bad impersonations and good cheese logs",
+        description: `<p>You find yourself at a cocktail party populated entirely with celebrity impersonators, and you see the perfect cheese log. To get to it, you must guess who is impersonating whom.</p>`,
+        url: "https://kinda.fun/pretend",
+        tags: ["game", "single player", "celebrities", "guess"],
       },
       invalid: {
         name: "Invalid",
@@ -61,15 +83,6 @@ var app = new Vue({
         isMultiplayer: true,
         tags: ["game", "multiplayer", "trivia", "guess"],
       },
-      pretend: {
-        name: "Pretend World",
-        slug: "pretend",
-        logo: "pretendworld.svg",
-        slogan: "The game of bad impersonations and good cheese logs",
-        description: `<p>You find yourself at a cocktail party populated entirely with celebrity impersonators, and you see the perfect cheese log. To get to it, you must guess who is impersonating whom.</p>`,
-        url: "https://kinda.fun/pretend",
-        tags: ["game", "single player", "celebrities", "guess"],
-      },
       wrongest: {
         name: "The Wrongest Words",
         slug: "wrongest",
@@ -80,21 +93,12 @@ var app = new Vue({
         isMultiplayer: true,
         tags: ["game", "multiplayer", "lies", "party"],
       },
-      damndog: {
-        name: "damn dog",
-        slug: "damndog",
-        logo: "damndog.svg",
-        slogan: "The wikiHow  illustration game",
-        description: `<p>There's a lot of strange how to guides on wikiHow, and a lot of strange illustrations to go with them. You'll be presented with one of hundreds of hand-curated illustrations, and then it's up to you to figure out what article it was from.</p>`,
-        url: "https://damn.dog",
-        buttonText: "",
-        tags: ["game", "single player", "guess"],
-      },
+
       idiotswin: {
         name: "Idiots win.",
         slug: "idiotswin",
         logo: "idiotswin.svg",
-        slogan: "The game where you search like an idiot.",
+        slogan: "The search game where you guess like an idiot.",
         description: `<p>Each round of idiots win will start with a preselected query, such as "how can I", and send that to Google for autocomplete suggestions. You then have to guess which is the #1 result.</p>`,
         url: "https://idiots.win",
         buttonText: "",
@@ -115,8 +119,8 @@ var app = new Vue({
         slug: "sane",
         logo: "sanescience.svg",
         slogan: "This mental health exam is gaslighting you.",
-        description: `<p>Want a sticker that certifies you're sane? <strong>Sure you do.</strong> Well then, all you have to do is answer a series of questions that have been intentionally designed to make you question your sanity.</p>`,
-        url: "https://partypartypartyparty.party",
+        description: `<p><strong>Want a sticker that certifies you as sane?</strong> Sure you do. Well then, all you have to do is answer a series of questions that have been intentionally designed to make you question your sanity.</p>`,
+        url: "https://sane.science",
         buttonText: "Take the test.",
         tags: ["test"],
       },
@@ -128,6 +132,7 @@ var app = new Vue({
         description: `<p>Are you in an argument with someone and you need some kind of chart to prove that you're right, but you don't actually want to do any research whatsoever? Use this tool to create a chart proving whatever you like.</p>`,
         url: "https://ahoylemon.github.io/verifiable.win",
         tags: ["tool", "chart"],
+        buttonText: "Generate a chart",
       },
       twounltd: {
         name: "2UNLTD",
@@ -137,6 +142,7 @@ var app = new Vue({
         description: `<p>This little webapp really wants to know: Are you <strong>ready for this</strong>? Because if you are, it will take the appropriate measures. But it will probably need to keep checking in.</p>`,
         url: "https://ahoylemon.github.io/2un.ltd",
         tags: ["tool", "party", "sounds"],
+        buttonText: "Are you ready for this?",
       },
       bg2cool: {
         name: "BG2COOL",
@@ -146,6 +152,7 @@ var app = new Vue({
         description: `<p>If you're tired of writing the same CSS properties over and over again, maybe it's time to try something tacky. You select the options, and BG2COOL will give you the CSS.</p>`,
         url: "https://ahoylemon.github.io/BG2COOL/",
         tags: ["tool", "web development"],
+        buttonText: "Make something cool.",
       },
       nicki: {
         name: "Is this Nicki Minaj?",
@@ -153,8 +160,9 @@ var app = new Vue({
         logo: "isthisnickiminaj.svg",
         slogan: "A true test of intelligence",
         description: `<p>There's a lot of people, places, and things in the world. Can <strong>you</strong> tell which of those things are Nicki Minaj?</p>`,
-        url: "https://ahoylemon.github.io/BG2COOL/",
+        url: "https://isthisnickiminaj.com",
         tags: ["test", "celebrities"],
+        buttonText: "Take the test.",
       },
       notpoutine: {
         name: "Not Poutine, FYI.",
@@ -162,26 +170,56 @@ var app = new Vue({
         logo: "notpoutine.svg",
         slogan: "A global archive of Poutine Crimes",
         description: `<p>Poutine is a dish with 3 rules: It must contain french fries, fresh cheese curds, and brown gravy.</p><p>This is an archive of things that call themselves poutine, but are not poutine.</p>`,
-        url: "https://ahoylemon.github.io/BG2COOL/",
+        url: "https://ahoylemon.github.io/notpoutine.fyi",
         tags: ["list"],
+        buttonText: "Witness crime",
       },
       frankwest: {
         name: "Frank West pronounces emoticons for you",
         slug: "frankwest",
         logo: "frankwest.svg",
-        slogan: "A global archive of Poutine Crimes",
+        slogan: "For me? Thanks Frank!",
         description: `<p>ᕕ( ᐛ )ᕗ</p>`,
         url: "https://ahoylemon.github.io/frankwest",
         tags: ["list", "sounds"],
+        buttonText: "O_o",
       },
       jerking: {
-        name: "Frank West pronounces emoticons for you",
+        name: "Jerking Online",
         slug: "jerking",
         logo: "jerkingonline.svg",
         slogan: "New parody porn titles every day",
         description: `<p>Using an incredibly long list of (made up) parody porn titles written over the years, this site provides the top 20 box office every day, really just as an excuse to giggle over the titles themselves.</p>`,
         url: "https://ahoylemon.github.io/jerking.online",
         tags: ["list", "new content every day"],
+      },
+      hamiltondoom: {
+        name: "Hamilton -> DOOM",
+        slug: "hamiltondoom",
+        logo: "hamiltondoom.svg",
+        slogan:
+          "You. 👏 Can't. 👏 Make. 👏 Me. 👏 Care. 👏 About. 👏 Hamilton. 👏",
+        description: `<p>This extension replaces all instances of "Hamilton" with "the video game DOOM".</p>`,
+        url: "https://chromewebstore.google.com/detail/hamilton-%3E-doom/hkedheclgkcdkjabeklkiifpbhlnaknd?hl=en-US&gl=US",
+        tags: ["tool"],
+      },
+      dumbmen: {
+        name: "dumb.men",
+        slug: "dumbmen",
+        logo: "dumbmen.svg",
+        slogan: "Hallelujah! It's Raining Dumb Men.",
+        description: `<p>This joke worked <em>a lot better</em> before browsers disabled autoplaying music...</p>`,
+        url: "https://ahoylemon.github.io/dumb.men",
+        tags: ["celebrities"],
+      },
+      rickrossdaily: {
+        name: "Rick Ross Daily",
+        slug: "rickrossdaily",
+        logo: "rickrossdaily.svg",
+        slogan: "Surely he can't be hustling every day...",
+        description: `<p>A Mastodon bot to execute a very simple joke: Hey, what's Rick Ross doing today? Is it hustling?</p>`,
+        url: "https://botsin.space/@rickross",
+        tags: ["celebrities", "list"],
       },
     },
   },
@@ -250,14 +288,21 @@ var app = new Vue({
     computedThingsList() {
       const self = this;
 
+      let theList;
       if (!self.currentFilter) {
         // If no currentTag is selected, return all things
-        return Object.values(self.thingData);
+        theList = Object.values(self.thingData);
+      } else {
+        theList = Object.values(self.thingData).filter((thing) =>
+          thing.tags.includes(self.currentFilter)
+        );
       }
 
-      return Object.values(self.thingData).filter((thing) =>
-        thing.tags.includes(self.currentFilter)
-      );
+      if (self.isListRandomized) {
+        theList = theList.sort(() => Math.random() - 0.5);
+      }
+
+      return theList;
     },
     computedTags() {
       const self = this;

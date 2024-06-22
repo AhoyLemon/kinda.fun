@@ -33,11 +33,15 @@
   </head>
   <body>
     <div id="app">
+      <link rel="stylesheet" href="css/testing.css"/>
+      <div class="testing-banner start">
+        <div class="inner">Test Mode Is On</div>
+      </div>
       <main class="title-screen">
         <div class="top">
           <h1>So, here's some stuff that's <strong>kinda fun</strong>....</h1>
         </div>
-        <transition-group class="game-grid" name="list" tag="div" id="GameGridTwo">
+        <transition-group class="game-grid" name="list" tag="div" id="GameGrid">
           <div class="thing" v-for="(thing, thingId) in computedThingsList" :class="{ active: currentThing.slug === thing.slug,  inactive: (currentThing.slug &amp;&amp; currentThing.slug !== thing.slug) }" :key="thing.slug">
             <button @click="selectGame(thing.slug)" :title="thing.name">
               <template v-if="thing.logo"><img class="logo" :src="`svg/games/${thing.logo}`" :alt="thing.name"/></template>
@@ -75,17 +79,13 @@
           </div>
         </div>
       </main>
-      <link rel="stylesheet" href="css/testing.css"/>
-      <div class="testing-banner start">
-        <div class="inner">Test Mode Is On</div>
-      </div>
     </div>
     <div class="javascripts">
       <script src="js/libraries/vue.full.js"></script>
       <script>const testing = true;</script>
       <script src="/socket.io/socket.io.js"></script>
       <script>var socket = io.connect();</script>
-      <script src="js/min/start.min.js?updated2024-06-21T22:16:26.091Z"></script>
+      <script src="js/min/start.min.js?updated2024-06-22T19:25:38.374Z"></script>
       <script type="text/javascript">
         var _paq = window._paq = window._paq || [];
         /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
