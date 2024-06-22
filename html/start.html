@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <title>Kinda fun.</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com"/>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&amp;display=swap" rel="stylesheet"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&amp;display=swap" rel="stylesheet"/>
     <link href="css/start.css" type="text/css" rel="stylesheet"/>
     <meta name="description" content="Here's some games and stuff that Lemon made. All of it is kinda fun!"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
@@ -35,7 +35,7 @@
     <div id="app">
       <main class="title-screen">
         <div class="top">
-          <h1>So, here's some stuff that's <strong>kinda fun</strong>....</h1>
+          <h1>So, here's some stuff that's kinda fun...</h1>
         </div>
         <transition-group class="game-grid" name="list" tag="div" id="GameGrid">
           <div class="thing" v-for="(thing, thingId) in computedThingsList" :class="{ active: currentThing.slug === thing.slug,  inactive: (currentThing.slug &amp;&amp; currentThing.slug !== thing.slug) }" :key="thing.slug">
@@ -84,7 +84,7 @@
       </script>
       <script src="/socket.io/socket.io.js"></script>
       <script>var socket = io.connect();</script>
-      <script src="js/min/start.min.js?updated2024-06-22T20:28:51.473Z"></script>
+      <script src="js/min/start.min.js?updated2024-06-22T20:32:50.906Z"></script>
       <script type="text/javascript">
         var _paq = window._paq = window._paq || [];
         /* tracker methods like "setCustomDimension" should be called before "trackPageView" */

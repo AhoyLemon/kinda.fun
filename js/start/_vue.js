@@ -50,7 +50,7 @@ var app = new Vue({
         slogan: "Life can be depressing. This game especially so.",
         description: `<p>This is a clicker-style game where you take on the role of sisyphus and push the rock uphill. <strong>You will never succeed.</strong> But at least you can earn achievements?</p>`,
         url: "https://kinda.fun/sisyphus",
-        buttonText: "Suffer",
+        buttonText: "Suffer.",
         tags: ["game", "single player", "clicker"],
       },
       damndog: {

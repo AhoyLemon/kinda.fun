@@ -2,9 +2,7 @@ body { overflow-x: hidden;}
 .title-screen { min-height: 99.999dvh; display: grid; grid-template-columns: 1fr; grid-template-rows: 180px 190px 1fr;
 
   .top { padding:40px; display: flex; align-items: center;
-    h1 { font-size:clamp(20px,5vw,2.7rem); font-weight: 625; font-family: $serif;
-      strong { color:#e9e9a2; }
-    }
+    h1 { font-size:clamp(20px,5vw,2.7rem); font-weight: 525; font-family: $serif; }
   }
 
   .game-grid { display:flex; flex-wrap: nowrap; gap:40px; padding-left: 40px; padding-right: 40px;
@@ -39,7 +37,7 @@ body { overflow-x: hidden;}
     .content { display: grid; gap:10px; padding:20px; color:$black; padding:20px; font-family: $serif; }
     .description { line-height: 180%; }
     .button-holder {
-      .button { display: inline-flex; padding:1em 1.5em; background:yellow; color:$black; font-weight: 900; border:0.1em solid currentColor; text-decoration: none; letter-spacing: 0.1em; transition: all 0.3s ease; box-shadow:-1px 1px 0 black;
+      .button { display: inline-flex; background:yellow; color:$black; border:0.1em solid currentColor; text-decoration: none; letter-spacing: 0.1em; transition: all 0.3s ease; box-shadow:-1px 1px 0 black; font-size: 1.3rem; padding: 0.5em 1em; font-weight: 815;
         &:hover, &:focus { transform: translate(10px,-10px); box-shadow:-10px 10px 0 black; }
       }
     }
@@ -50,11 +48,9 @@ body { overflow-x: hidden;}
       .show-all { flex-basis: 100%; }
       button { flex-grow: 1; flex-shrink: 0; cursor: pointer;
         background-color: #ccc; border:none; border-radius: 4px; padding:0.5em 1em;
-        .text { font-family: $serif; color:$black; font-weight: 725; }
+        .text { font-family: $serif; color:$black; font-weight: 815; }
         .count { display:none; }
-        &.active {
-          background:yellow; 
-        }
+        &.active { background:yellow;  }
       }
     }
   }

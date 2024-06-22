@@ -1,11 +1,12 @@
 include start/_variables
 
+
 html(lang="en")
   head
     title= siteTitle
-    link(rel="preconnect" href="https://fonts.gstatic.com")
-    link(href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&display=swap" rel="stylesheet")
-    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet")
     link(href="css/start.css" type="text/css" rel="stylesheet")
     meta(name="description" content=description)
     include start/_favicons.pug
@@ -21,7 +22,7 @@ html(lang="en")
       main.title-screen
 
         .top
-          h1 So, here's some stuff that's #[strong kinda fun]....
+          h1 So, here's some stuff that's kinda fun...
 
         transition-group(name="list" tag="div" id="GameGrid" class="game-grid")
 
