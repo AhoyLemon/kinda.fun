@@ -337,6 +337,9 @@ var app = new Vue({
 
       return tagArray;
     },
+    computedWidth() {
+      return window.innerHeight;
+    },
   },
 
   mounted: function () {

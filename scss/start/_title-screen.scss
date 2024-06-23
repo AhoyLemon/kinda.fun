@@ -1,4 +1,5 @@
-body { overflow-x: hidden;}
+html { width:100dvw; }
+body { overflow-x: hidden; width:100dvw; }
 .title-screen { min-height: 99.999dvh; display: grid; grid-template-columns: 1fr; grid-template-rows: 180px 190px 1fr;
 
   .top { padding:40px; display: flex; align-items: center;
@@ -23,7 +24,7 @@ body { overflow-x: hidden;}
     scrollbar-color: #692647 #e6e7dc;
   }
 
-  .bottom { padding:40px; display: flex; align-items: center; justify-content: center; font-family: $serif;
+  .bottom { padding:40px; align-items: center; justify-content: center; font-family: $serif; display:grid;
     .info { background-color: $white; color:$black; max-width: 68ch; position: relative; margin-left: auto; margin-right: auto; } 
     button.close { position: absolute; top:10px; right:10px; font-size:1.25rem; width:1.5em; cursor: pointer; z-index: 3; }
     .top-bar { background-color: $black; padding:10px 40px 10px 20px;
@@ -41,9 +42,7 @@ body { overflow-x: hidden;}
         &:hover, &:focus { transform: translate(10px,-10px); box-shadow:-10px 10px 0 black; }
       }
     }
-
-    display: grid; gap:20px;
-
+    
     .filter-options { display:flex; flex-wrap: wrap; gap:5px;
       .show-all { flex-basis: 100%; }
       button { flex-grow: 1; flex-shrink: 0; cursor: pointer;
@@ -58,18 +57,15 @@ body { overflow-x: hidden;}
 
 @media (min-width:740px) {
   .title-screen { 
-    .bottom { grid-template-columns: 1fr 240px;
-
-    }
-    
+    .bottom { grid-template-columns: 1fr 240px; gap:40px; }
   }
 }
-@media (max-width:739px) {
+@media screen and (max-width:740px) {
   .title-screen { grid-template-rows: 120px 31vw 1fr;
     .game-grid { gap:10px; padding-left: 10px; padding-right: 10px;
       .thing { flex-basis: 42dvw; } 
     }
-    .bottom { padding:10px;
+    .bottom { padding:10px; grid-template-columns: 1fr; gap:15px;
       .slogan { font-size:4.25vw; } 
       .description { font-size: 12px; }
     }

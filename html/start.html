@@ -2,6 +2,8 @@
 <html lang="en">
   <head>
     <title>Kinda fun.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&amp;display=swap" rel="stylesheet"/>
@@ -19,20 +21,24 @@
     <meta name="twitter:creator" content="@AhoyLemon"/>
     <meta name="twitter:title" content="Kinda fun."/>
     <meta name="twitter:description" content="Here's some games and stuff that Lemon made. All of it is kinda fun!"/>
-    <meta name="twitter:image" content="https://kinda.fun/og-square.png"/>
-    <meta name="twitter:url" content="https://kinda.fun"/>
+    <meta name="twitter:image" content="http://localhost:3000/og-square.png"/>
+    <meta name="twitter:url" content="http://localhost:3000"/>
     <meta property="og:title" content="Kinda fun."/>
     <meta property="og:type" content="website"/>
     <meta property="og:image:width" content="600"/>
     <meta property="og:image:height" content="600"/>
     <meta property="og:description" content="Here's some games and stuff that Lemon made. All of it is kinda fun!"/>
-    <meta property="og:url" content="https://kinda.fun"/>
-    <meta property="og:image" content="https://kinda.fun/og-square.png"/>
+    <meta property="og:url" content="http://localhost:3000"/>
+    <meta property="og:image" content="http://localhost:3000/og-square.png"/>
     <meta property="og:email" content="lemon@kinda.fun"/>
     <meta name="msvalidate.01" content="D3327FD7610C2D05D7D605EBCA288944"/>
   </head>
   <body>
     <div id="app">
+      <link rel="stylesheet" href="css/testing.css"/>
+      <div class="testing-banner start">
+        <div class="inner">Test Mode Is On {{computedWidth}}</div>
+      </div>
       <main class="title-screen">
         <div class="top">
           <h1>So, here's some stuff that's kinda fun...</h1>
@@ -77,14 +83,11 @@
       </main>
     </div>
     <div class="javascripts">
-      <script src="js/libraries/vue.min.js"></script>
-      <script>
-        const testing = false;
-        
-      </script>
+      <script src="js/libraries/vue.full.js"></script>
+      <script>const testing = true;</script>
       <script src="/socket.io/socket.io.js"></script>
       <script>var socket = io.connect();</script>
-      <script src="js/min/start.min.js?updated2024-06-22T20:32:50.906Z"></script>
+      <script src="js/min/start.min.js?updated2024-06-23T02:17:02.238Z"></script>
       <script type="text/javascript">
         var _paq = window._paq = window._paq || [];
         /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
