@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -24,7 +21,7 @@ jobs:
 
       - name: 🗑️ Remove sourcemapped CSS.
         run: rm public/css -r
-      
+
       - name: 🪄 make a new production CSS directory
         run: mkdir public/css
 
@@ -55,15 +52,15 @@ jobs:
       - name: 🤏 minify HTML
         uses: docker://devatherock/minify-js:3.0.0
         with:
-          add_suffix: false     # Optional
-          inclusions: |-        # Optional
+          add_suffix: false # Optional
+          inclusions: |- # Optional
             ./index.html
-            ./html/*.html 
+            ./html/*.html
 
       - name: 🗃️ commit changes to ${{ github.ref }}
         uses: elstudio/actions-js-build/commit@v4
         with:
-          commitMessage: generate minified css 
-      
+          commitMessage: generate minified css
+
       - name: 🫠 This job's status is ${{ job.status }}.
         run: echo "🫠 This job's status is ${{ job.status }}."
