@@ -5,10 +5,9 @@
     sendEvent,
     randomFrom,
     randomNumber,
-    addCommas,
     findKeyInArray,
     removeFromArrayByKey,
-  } from "./js/_functions";
+  } from "@/shared/js/_functions.js";
   import {
     keepPushingMessages,
     rockFellMessages,

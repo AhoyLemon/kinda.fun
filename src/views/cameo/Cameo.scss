@@ -1,12 +1,12 @@
 
 //GLOBALS, GET DEFAULTS
-@import "@/sharedStyles/globals/_reset";
-@import "@/sharedStyles/globals/_variables";
-@import "@/sharedStyles/globals/_mixins";
-@import "@/sharedStyles/globals/_extends";
+@import "@/shared/scss/globals/_reset";
+@import "@/shared/scss/globals/_variables";
+@import "@/shared/scss/globals/_mixins";
+@import "@/shared/scss/globals/_extends";
 
 // LIBRARIES (if any)
-@import "@/sharedStyles/libraries/animate";
+@import "@/shared/scss/libraries/animate";
 
 // SITE SPECIFIC
 @import "scss/_variables";

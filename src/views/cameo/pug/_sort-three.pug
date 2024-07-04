@@ -13,7 +13,7 @@ main.sort-three(v-if="game.started && !game.finalRound && !game.over")
 
       .cameo.list-group-item(v-for="(element, index) in round.leftSide" :key="index")
         figure
-          img(:src="'img/cameos/'+element.slug+'.jpg'")
+          img(:src="'/img/cameos/'+element.slug+'.jpg'")
         figcaption
           .name {{ element.name }}
           .desc(v-if="element.desc") {{element.desc}}

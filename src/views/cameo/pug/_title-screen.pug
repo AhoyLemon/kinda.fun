@@ -22,7 +22,7 @@ main.title-screen(v-if="!game.started")
       span or
 
     .load
-      button.start-multi(id="LoadGameButton" @click="loadGame()") Load Special
+      button.start-multi(id="LoadGameButton" @click="toggleGimmickSelector(true)") Play Special
 
   .select-gimmick-rounds.animate__animated.animate__fadeIn(v-if="gimmick.selectorVisible")
     form.animate__animated.animate__bounceInUp(@submit.prevent="startSinglePlayerGame()")
@@ -33,5 +33,5 @@ main.title-screen(v-if="!game.started")
           option(value="" disabled) -- Select A Special Game --
           option(v-for="(gimmickRound, index) in gimmick.rounds" :value="index") {{gimmickRound.name}}
       fieldset.button-holder
-        button(type="reset" @click="gimmick.selectorVisible = false") Cancel
+        button(type="reset" @click="toggleGimmickSelector(false)") Cancel
         button(type="submit" :disabled="!gimmick.selected || !gimmick.selected.name") Start Round
