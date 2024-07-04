@@ -1,0 +1,18 @@
+main
+
+  include pug/_sidebar.pug
+
+  .scene
+    
+    include pug/_scene.pug
+  
+    .pillar.one
+      img(src="@/assets/sisyphus/pillar-1.svg" alt="pillar")
+    .pillar.two
+      img(src="@/assets/sisyphus/pillar-2.svg" alt="pillar")
+    figcaption(v-if="ui.message")
+      .inner(v-text="ui.message")
+
+include pug/_store.pug
+include pug/_inventory.pug
+include pug/_counter.pug

@@ -1,0 +1,76 @@
+.javascripts
+  
+  
+
+
+  if testing
+    script(src="js/libraries/vue.full.js")
+    script.
+      const testing = true;
+  else
+    script(src="js/libraries/vue.min.js")
+    script.
+      const testing = false;
+
+  //- Howler.js
+  script(src="js/libraries/howler.min.js")
+
+  //- jQuery is necessary for PNotify.
+  script(src="https://code.jquery.com/jquery-3.2.1.min.js")
+  //- pNotify
+  script(src="js/libraries/pnotify.custom.min.js")
+  link(rel="stylesheet" href="css/libraries/pnotify.custom.min.css")
+  script.
+    //------ Pnotify settings & defaults ----------------
+    PNotify.prototype.options.icon = false;
+    var stack_bottomright = {"dir1": "up", "dir2": "left", "firstpos1": 25, "firstpos2": 25};
+    PNotify.prototype.options.stack = stack_bottomright;
+    PNotify.prototype.options.addclass = "stack-bottomright";
+    PNotify.prototype.options.animate.animate = true;
+    PNotify.prototype.options.animate.in_class = 'bounceInDown',
+    PNotify.prototype.options.animate.out_class = 'zoomOutRight';
+    PNotify.prototype.options.width = "460px";
+    PNotify.prototype.options.delay = 14000;
+
+    PNotify.defaultStack = {
+      dir1: 'down',
+      dir2: 'left',
+      firstpos1: 25,
+      firstpos2: 25,
+      spacing1: 36,
+      spacing2: 36,
+      push: 'bottom',
+      context: document.body
+    }
+
+  //- Socket.io
+  script(src="/socket.io/socket.io.js")
+  script.
+    var socket = io.connect();
+
+  //- Site JS
+  script(src="js/min/sisyphus.min.js")
+
+  // Matomo
+  script.
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+    var u="https://thefpl.us/analytics/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '3']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    })();
+  // End Matomo Code
+
+
+  //- TrackJS
+  script(src="https://cdn.trackjs.com/agent/v3/latest/t.js")
+  script.
+    TrackJS.install({
+      token: "9947e081831c42b8aeb3a5fb81a152c4",
+      application: "kindafun"
+    });

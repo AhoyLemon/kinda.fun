@@ -1,0 +1,10 @@
+.counters
+  .score-hud.counter.pushes(v-if="ui.totalScore > 4" v-cloak)
+    .label Pushes
+    .count(v-text="addCommas(ui.score)")
+
+  .score-hud.counter.gamerscore(v-if="computedGamerScore" v-cloak)
+    .label Score
+    .count
+      button(@click="remindMeOfMyCheevos()") {{computedGamerScore}}
+
