@@ -36,7 +36,7 @@ include _things.pug
 
         .game(:class="{ active: (gameChoice == 'cameo'), inactive: (gameChoice && gameChoice != 'cameo') }")
           button.logo(@click="setActiveGame('cameo')")
-            img(src="svg/comparatively-famous.svg" alt="Comparatively Famous logo")
+            img(src="/svg/games/comparativelyfamous.svg" alt="Comparatively Famous logo")
           figcaption
             .slogan The Game of Celebrity Value
             .players-allowed
@@ -84,7 +84,7 @@ include _things.pug
 
         .game(:class="{ active: (gameChoice == 'invalid'), inactive: (gameChoice && gameChoice != 'invalid') }")
           button.logo(@click="setActiveGame('invalid')")
-            img(src="svg/invalid-logo.svg" alt="Invalid logo")
+            img(src="/svg/games/invalid.svg" alt="Invalid logo")
           figcaption
             .slogan A trivia game of unnecessary suffering.
             .players-allowed
@@ -108,7 +108,7 @@ include _things.pug
 
         .game(:class="{ active: (gameChoice == 'pretend'), inactive: (gameChoice && gameChoice != 'pretend') }")
           button.logo(@click="setActiveGame('pretend')")
-            img(src="svg/pretend-world.svg" alt="Comparatively Famous logo")
+            img(src="/svg/games/pretendworld.svg" alt="Comparatively Famous logo")
           figcaption
             .slogan You are at a party of celebrity impersonators.
           script(type="application/ld+json").
@@ -128,7 +128,7 @@ include _things.pug
 
         .game(:class="{ active: (gameChoice == 'wrongest'), inactive: (gameChoice && gameChoice != 'wrongest') }")
           button.logo(@click="setActiveGame('wrongest')")
-            img(src="svg/wrongest.svg" alt="The Wrongest Words logo")
+            img(src="/svg/games/thewrongestwords.svg" alt="The Wrongest Words logo")
           figcaption
             .slogan You're going to defend some very stupid ideas.
             .players-allowed

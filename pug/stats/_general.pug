@@ -6,7 +6,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
       .summary
         figure
-          img(src="svg/no_more_billionaires.svg" @click="getData('guillotine')")
+          img(src="/svg/games/nomorebillionaires.svg" @click="getData('guillotine')")
         .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.guillotine")
           .time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.lastPlayed.guillotine,'fromNow')")
@@ -16,7 +16,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
       .summary
         figure
-          img(src="svg/comparatively-famous.svg" @click="getData('cameo')")
+          img(src="/svg/games/comparativelyfamous.svg" @click="getData('cameo')")
         .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
           .time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')")
@@ -26,7 +26,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
       .summary
         figure
-          img(src="svg/invalid-logo.svg" @click="getData('invalid')")
+          img(src="/svg/games/invalid.svg" @click="getData('invalid')")
         .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.invalid")
           .time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.lastPlayed.invalid,'fromNow')")
@@ -36,7 +36,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
       .summary(v-if="stats.general && stats.general.lastPlayed && stats.general.wrongest")
         figure
-          img(src="svg/wrongest.svg" @click="getData('wrongest')")
+          img(src="/svg/games/thewrongestwords.svg" @click="getData('wrongest')")
         .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.wrongest")
           .time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')")
@@ -56,7 +56,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
       
       .summary(v-if="stats.general && stats.general.lastPlayed")
         figure
-          img(src="svg/pretend-world.svg" @click="getData('pretend')")
+          img(src="/svg/games/pretendworld.svg" @click="getData('pretend')")
         .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.pretend")
           .time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')")

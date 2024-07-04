@@ -13,7 +13,7 @@
           <div class="inside">
             <div class="game-summaries">
               <div class="summary">
-                <figure><img src="svg/no_more_billionaires.svg" @click="getData('guillotine')"/></figure>
+                <figure><img src="/svg/games/nomorebillionaires.svg" @click="getData('guillotine')"/></figure>
                 <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.guillotine">
                   <div class="time-caption">Last Game</div>
                   <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.guillotine,'fromNow')"></div>
@@ -24,7 +24,7 @@
                 </div>
               </div>
               <div class="summary">
-                <figure><img src="svg/comparatively-famous.svg" @click="getData('cameo')"/></figure>
+                <figure><img src="/svg/games/comparativelyfamous.svg" @click="getData('cameo')"/></figure>
                 <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.cameo">
                   <div class="time-caption">Last Game</div>
                   <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')"></div>
@@ -35,7 +35,7 @@
                 </div>
               </div>
               <div class="summary">
-                <figure><img src="svg/invalid-logo.svg" @click="getData('invalid')"/></figure>
+                <figure><img src="/svg/games/invalid.svg" @click="getData('invalid')"/></figure>
                 <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.invalid">
                   <div class="time-caption">Last Game</div>
                   <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.invalid,'fromNow')"></div>
@@ -46,7 +46,7 @@
                 </div>
               </div>
               <div class="summary" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.wrongest">
-                <figure><img src="svg/wrongest.svg" @click="getData('wrongest')"/></figure>
+                <figure><img src="/svg/games/thewrongestwords.svg" @click="getData('wrongest')"/></figure>
                 <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.wrongest">
                   <div class="time-caption">Last Game</div>
                   <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')"></div>
@@ -68,7 +68,7 @@
                 </div>
               </div>
               <div class="summary" v-if="stats.general &amp;&amp; stats.general.lastPlayed">
-                <figure><img src="svg/pretend-world.svg" @click="getData('pretend')"/></figure>
+                <figure><img src="/svg/games/pretendworld.svg" @click="getData('pretend')"/></figure>
                 <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.pretend">
                   <div class="time-caption">Last Game</div>
                   <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')"></div>
@@ -89,14 +89,14 @@
         <aside class="general general-stats" v-if="ui.viewing != 'general'">
           <div class="inside">
             <div class="summary" :class="{ active: (ui.viewing == 'guillotine') }">
-              <figure><img src="svg/no_more_billionaires.svg" @click="getData('guillotine')"/></figure>
+              <figure><img src="/svg/games/nomorebillionaires.svg" @click="getData('guillotine')"/></figure>
               <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.guillotine">
                 <div class="time-caption">Last Game</div>
                 <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.guillotine,'fromNow')"></div>
               </div>
             </div>
             <div class="summary" :class="{ active: (ui.viewing == 'cameo') }">
-              <figure><img src="svg/comparatively-famous.svg" @click="getData('cameo')"/></figure>
+              <figure><img src="/svg/games/comparativelyfamous.svg" @click="getData('cameo')"/></figure>
               <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.cameo">
                 <div class="time-caption">Last Game</div>
                 <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')"></div>
@@ -110,21 +110,21 @@
               </div>
             </div>
             <div class="summary" :class="{ active: (ui.viewing == 'pretend'), inactive: (ui.viewing != 'pretend') }">
-              <figure><img src="svg/pretend-world.svg" @click="getData('pretend')"/></figure>
+              <figure><img src="/svg/games/pretendworld.svg" @click="getData('pretend')"/></figure>
               <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.pretend">
                 <div class="time-caption">Last Game</div>
                 <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')"></div>
               </div>
             </div>
             <div class="summary" :class="{ active: (ui.viewing == 'invalid'), inactive:(ui.viewing != 'invalid')  }">
-              <figure><img src="svg/invalid-logo.svg" @click="getData('invalid')"/></figure>
+              <figure><img src="/svg/games/invalid.svg" @click="getData('invalid')"/></figure>
               <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.invalid">
                 <div class="time-caption">Last Game</div>
                 <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.invalid,'fromNow')"></div>
               </div>
             </div>
             <div class="summary" :class="{ active: (ui.viewing == 'wrongest'), inactive: (ui.viewing != 'wrongest') }">
-              <figure><img src="svg/wrongest.svg" @click="getData('wrongest')"/></figure>
+              <figure><img src="/svg/games/thewrongestwords.svg" @click="getData('wrongest')"/></figure>
               <div class="last-played" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.wrongest">
                 <div class="time-caption">Last Game</div>
                 <div class="time-ago" v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')"></div>
@@ -139,7 +139,7 @@
             </div>
           </section>
           <section class="guillotine stats" v-if="ui.viewing == 'guillotine'">
-            <figure><img src="svg/no_more_billionaires.svg"/></figure>
+            <figure><img src="/svg/games/nomorebillionaires.svg"/></figure>
             <div class="stats-boxes">
               <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.guillotine">
                 <div class="caption">Last Game</div>
@@ -183,7 +183,7 @@
             </div>
           </section>
           <section class="famous stats" v-if="ui.viewing == 'cameo'">
-            <figure><img src="svg/comparatively-famous.svg"/></figure>
+            <figure><img src="/svg/games/comparativelyfamous.svg"/></figure>
             <div class="stats-boxes with-table">
               <div class="boxes">
                 <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.cameo">
@@ -254,7 +254,7 @@
             </div>
           </section>
           <section class="invalid stats" v-if="ui.viewing == 'invalid'">
-            <figure><img src="svg/invalid-logo.svg"/></figure>
+            <figure><img src="/svg/games/invalid.svg"/></figure>
             <div class="stats-boxes">
               <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.invalid">
                 <div class="caption">Last Played</div>
@@ -325,7 +325,7 @@
             </div>
           </section>
           <section class="wrongest stats" v-if="ui.viewing == 'wrongest'">
-            <figure><img src="svg/wrongest.svg"/></figure>
+            <figure><img src="/svg/games/thewrongestwords.svg"/></figure>
             <div class="stats-boxes">
               <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.cameo">
                 <div class="caption">Last Game</div>
@@ -418,7 +418,7 @@
             </div>
           </section>
           <section class="pretend stats" v-if="ui.viewing == 'pretend'">
-            <figure><img src="svg/pretend-world.svg"/></figure>
+            <figure><img src="/svg/games/pretendworld.svg"/></figure>
             <div class="pretend-split">
               <div class="stats-boxes">
                 <div class="box date" v-if="stats.general &amp;&amp; stats.general.lastPlayed &amp;&amp; stats.general.lastPlayed.pretend">
