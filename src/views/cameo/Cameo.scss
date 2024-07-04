@@ -1,0 +1,21 @@
+
+//GLOBALS, GET DEFAULTS
+@import "@/sharedStyles/globals/_reset";
+@import "@/sharedStyles/globals/_variables";
+@import "@/sharedStyles/globals/_mixins";
+@import "@/sharedStyles/globals/_extends";
+
+// LIBRARIES (if any)
+@import "@/sharedStyles/libraries/animate";
+
+// SITE SPECIFIC
+@import "scss/_variables";
+@import "scss/_defaults";
+@import "scss/_hud";
+
+// SCREENS
+@import "scss/_title-screen";
+@import "scss/_sort";
+@import "scss/_email";
+@import "scss/_final-round";
+@import "scss/_game-over";

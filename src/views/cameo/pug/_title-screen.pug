@@ -1,0 +1,37 @@
+main.title-screen(v-if="!game.started")
+
+  .splash
+    .inside 
+      .logo-holder
+        figure.logo
+          img(src="/svg/games/comparativelyfamous.svg" alt="Comparatively Famous logo")
+
+      .help-holder(v-if="!ui.watchingVideo")
+        p 
+          strong CAMEO
+          |  is a site where people can order videos from celebrities, at prices set by those celebrities.
+        p
+          strong THIS 
+          |  is a game about guessing those prices.
+
+  .start-or-load
+    .start
+      button.start-single(@click="startSinglePlayerGame()") Start Game
+    
+    .or
+      span or
+
+    .load
+      button.start-multi(id="LoadGameButton" @click="loadGame()") Load Special
+
+  .select-gimmick-rounds.animate__animated.animate__fadeIn(v-if="gimmick.selectorVisible")
+    form.animate__animated.animate__bounceInUp(@submit.prevent="startSinglePlayerGame()")
+      fieldset(v-if="gimmick.selected && gimmick.selected.desc")
+        div.gimmick-desc {{gimmick.selected.desc}}
+      fieldset
+        select(id="GimmickSelector" @change="selectGimmickRound($event)" v-model="gimmick.selectedIndex")
+          option(value="" disabled) -- Select A Special Game --
+          option(v-for="(gimmickRound, index) in gimmick.rounds" :value="index") {{gimmickRound.name}}
+      fieldset.button-holder
+        button(type="reset" @click="gimmick.selectorVisible = false") Cancel
+        button(type="submit" :disabled="!gimmick.selected || !gimmick.selected.name") Start Round

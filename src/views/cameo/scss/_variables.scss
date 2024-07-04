@@ -1,0 +1,27 @@
+$serif: 'Noto Serif JP', serif;
+$sans-serif: 'Open Sans', sans-serif;
+$displayFont: 'Big Shoulders Display', sans-serif;
+$font-family:$sans-serif;
+
+$gold: #bba31d;
+$silver: #96929c;
+$bronze:#a78757;
+$yellow:#e4e72c;
+$correct: #11a511;
+$incorrect: #a51111;
+$unranked: rgba(176, 114, 228, 0.5);
+
+$gap:40px;
+$padding:20px;
+
+@keyframes slapOntoScreen {
+  from { opacity: 0; transform: scale(2) translateY(-100%); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+
+// Z-INDEX
+$z-budget:7;
+$z-tooltip:8;
+$z-email:9;
+$z-hud: 10;

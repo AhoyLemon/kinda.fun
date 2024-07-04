@@ -1,0 +1,78 @@
+main.game-over(v-if="game.over")
+
+  section.headline
+    h1 Game Over
+    
+
+  section.birthday-videos
+
+    .birthday-header(v-if="computedGimmickName == 'Porno People'")
+      h1.headline Happy Birthday to one of Pasha's lawyers!
+    .birthday-header(v-else-if="computedGimmickName == 'Its a Star Trek Convention'")
+      h1.headline qoSlIj DatIvjaj, Pasha's Daughter
+      h2.subhead 	Qapla'!
+    .birthday-header(v-else-if="computedGimmickName == 'Nuthin But Dogs'")
+      h1.headline Happy Birthday, Pasha's Dog!
+    .birthday-header(v-else)
+      h1.headline Happy Birthday, Pasha's Daughter
+      h2.subhead Oops, you forgot to ask Pasha what his daughter's name is. Oh well!
+
+    .video-grid
+      .video(v-for="(element, index) in round.rightSide" :key="index")
+        figure
+          img(:src="'img/cameos/'+element.slug+'.jpg'")
+        .speech-bubble
+          span Happy Birthday!
+
+    .cost-stripe
+      span Total Cost: 
+      strong.cost {{dollars(round.spent)}}
+
+  section.scores.my-scores
+
+    .score-grid
+      dl
+        dt Your Score
+        dd {{my.score.toLocaleString('en-US')}}
+      dl
+        dt Correctly Sorted
+        dd
+          .word {{computedCorrectSortScore.pct}}
+          .number.small(v-if="computedCorrectSortScore.context" v-html="computedCorrectSortScore.context")
+
+      dl(v-if="computedValuationSkill")
+        dt Valuation Skill
+        dd 
+          .word {{computedValuationSkill.rating}}
+          .number.small(v-if="computedValuationSkill.number > 0") (Average Miss By 
+            strong {{dollars(computedValuationSkill.number)}}
+            | )
+      dl(v-if="my.pointsEarnedInFinalRound && my.pointsEarnedInFinalRound > 0")
+        dt Final Round Points
+        dd {{my.pointsEarnedInFinalRound}}
+      dl(v-else-if="my.pointsEarnedInFinalRound == 0")
+        dt Final Round 
+        dd BUSTED!
+      dl(v-if="round.spent < round.budget")
+        dt Money Left Over
+        dd {{dollars(round.budget - round.spent) }}
+      dl(v-if="round.spent > round.budget")
+        dt Over Budget By
+        dd {{dollars(Math.abs(round.budget - round.spent)) }}
+
+  .game-by-lemon
+    a(href="https://ahoylemon.xyz")
+      h3 This game is 
+        span by Lemon.
+      img(src="/svg/lemon.svg" alt="Lemon")
+    
+    .issue-prompt
+      p Have a suggestion? Found a bug? 
+        a(href="https://github.com/AhoyLemon/kinda.fun/issues/new/choose") Submit an issue
+        |  on GitHub. 
+  
+  section.final-links
+    a(href="https://github.com/AhoyLemon/kindafun") GitHub Repo.
+    a(href=pageURL) Play Again.
+    div.disclaimer
+      span Prices were accurate at the time when they were collected from the Cameo website. They may have changed since then.

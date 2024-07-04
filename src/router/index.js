@@ -23,6 +23,12 @@ const router = createRouter({
       alias: ["/sisyphus-clicker"],
       component: () => import("../views/sisyphus/Sisyphus.vue"),
     },
+    {
+      path: "/cameo",
+      name: "Comparatively Famous",
+      alias: ["/famous", "/comparatively-famous"],
+      component: () => import("../views/cameo/Cameo.vue"),
+    },
   ],
 });
 

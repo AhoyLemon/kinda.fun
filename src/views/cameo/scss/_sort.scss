@@ -1,0 +1,141 @@
+main.sort-three { background: #282828; background: radial-gradient(#131015,#18072d); }
+.three-to-compare { display:grid; grid-template-columns: repeat(2,1fr); gap:40px;
+  width:100%; max-width: 960px; margin-left: auto; margin-right: auto;
+
+  .list-group { padding:40px 20px; min-height: 99.9vh; position: relative;
+    background: rgba(255,255,255,0.25);
+    border-left:2px solid rgba(255,255,255,0.3);
+    border-right:2px solid rgba(255,255,255,0.3);
+    box-shadow: inset -2px 5px 20px rgba(15, 15, 15, 0.5);
+    .list-group-item { cursor: move;
+      &.sortable-chosen { cursor: grab; }
+      &.sortable-ghost { opacity: 0.6; }
+    }
+    &.no-move-cursor {
+      .list-group-item { cursor: default; }
+    }
+    .help-text { @include position(absolute,0,0,0,0); display:flex; align-items: center; justify-content: center; padding:20px; text-align: center;
+      .inside { opacity: 0.8; font-size: 28px; color:#e4e3e8; text-shadow: 0 0 8px rgba(0,0,0,0.65); }
+    }
+  }
+  .cameo { margin-bottom: 40px; user-select: none;
+    figure { margin-bottom: -100px; text-align: right; position: relative; 
+      img { width:140px; height: 140px; position: relative; z-index: 4; object-fit: cover; border:1px solid #111; border-radius: 14px; box-shadow: 0 0 3px rgba(0,0,0,0.4); }
+    }
+    figcaption { box-shadow: 0 0 10px rgba(0,0,0,0.8);
+      border-top:7px solid rgba(176, 114, 228, 0.5); border-right: 45px solid rgba(176, 114, 228, 0.5);
+      background-color: #f6f2f2; background-image: radial-gradient(#d9d9d9 0%, #f6f2f2 74%);
+      color:#262626; padding:20px 130px 10px 10px; margin-right: 20px; border-radius: 4px; position: relative;
+      .name { font-size:38px; font-weight:600; font-family: $displayFont;
+        &:after { content: ''; display: block; width: 1.5ch; height: 2px; background: rgba(109, 20, 191, 0.5); margin-top: 4px; margin-bottom: 8px; }
+      }
+      .desc { margin-top:5px; color:#161616; }
+    }
+  }
+
+  figcaption { min-height: 135px; }
+  .unranked { 
+    figcaption { padding-top:7px;  }
+  }
+  .ranked, .correct {
+    .value { font-size:28px; font-weight: 700; }
+    //figcaption {  }
+    .rank { @include position(absolute,null,10px,5px); font-size:18px; font-weight: 700; }
+    [rank="1"] { 
+      figcaption { border-color: $gold; } 
+      .rank, .value { color:$gold;  }
+      .name:after { background:$gold; }
+    }
+    [rank="2"] { 
+      figcaption { border-color: $silver; } 
+      .rank, .value { color:$silver; }
+      .name:after { background:$silver; }
+    }
+    [rank="3"] { 
+      figcaption { border-color: $bronze; } 
+      .rank, .value { color:$bronze; }
+      .name:after { background:$bronze; }
+    }   
+  }
+  .guessed { 
+    .colorized {
+      figcaption { transition:border-color 0.5s linear; }
+      .name { transition: color 0.5s linear; }
+      &.correct { 
+        figcaption { border-color:$correct; }
+        .name, .rank { color: $correct; }
+      }
+      &.incorrect { 
+        figcaption { border-color:$incorrect; }
+        .name, .rank { color: $incorrect; }
+      }
+    }
+    .cameo { opacity: 0.85; }
+  }
+  form.guess-value { margin-top:10px;
+    input { font-size:28px; font-weight: 700; width:5ch; background:transparent; color:currentColor; font-family: inherit; border:none; outline: none;
+      &:hover, &:focus { background:rgba(86, 153, 255, 0.1); }
+      &:hover { color:#5699ff;}
+    }
+    button { color:currentColor; background:transparent; border:none; padding:0; margin-left: -4px; cursor: pointer;
+      svg { width:24px; height:24px; transform: scale(1);
+        * { fill:currentColor; }
+      }
+      &:hover, &:focus { color:#5699ff; transform: scale(1.2); }
+    }
+    .arrow_box { position: absolute; margin-top:11px; max-width: 120px; font-size:12px; padding:6px; text-align: center; background: #5699ff; border: 1px solid #c2e1f5; color:#111; z-index: $z-tooltip;
+      &:before, &:after { bottom: 100%; left: 50%; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; }
+      &:after { border-color: rgba(86, 153, 255, 0); border-bottom-color: #5699ff; border-width: 7px; margin-left: -7px; }
+      &:before { border-color: rgba(194, 225, 245, 0); border-bottom-color: #c2e1f5; border-width: 8px; margin-left: -8px; }
+    }
+  }
+}
+
+
+
+.cameo {
+  &.off-table { opacity: 0; }
+}
+
+.v-toast.v-toast--bottom { padding-bottom: 3.2em;}
+.v-toast__text { 
+  h2 { font-family:$displayFont; font-size:38px; }
+  h4 { font-family:$displayFont; font-size:19px; }
+}
+
+@media (max-width:810px) {
+  .three-to-compare { gap:4px;
+    .list-group { padding:20px 10px; }
+  }
+}
+
+@media (max-width:720px) {
+  .three-to-compare .cameo figcaption .name { font-size:24px; }
+}
+
+@media (max-width:666px) {
+  .three-to-compare {
+    .list-group { padding-top:40px; }
+    .cameo {
+      figcaption { padding-right:70px; min-height: 105px; }
+      figure img { width:80px; height: 80px; } 
+    } 
+  }
+}
+
+@media (max-width:520px) {
+  .three-to-compare  {
+    .list-group { padding-top:20px; }
+    .cameo { margin-bottom: 20px;
+      figure { margin-bottom: -50px; text-align: center;
+        img { width:120px; height:120px; }
+      }
+      figcaption { margin-right: 0; padding:30px 20px 20px 10px;
+        border: 2px solid $unranked;
+        border-top-width: 30px;
+        .rank { bottom:unset; right:unset; top:-26px; left:6px; color:white !important; }
+      }
+    }
+
+  }
+}
