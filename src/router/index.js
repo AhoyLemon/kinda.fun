@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import { useHeadManager } from "@/server/useHeadManager.js";
+const { setHeadElements } = useHeadManager();
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,14 +24,55 @@ const router = createRouter({
       name: "Sisyphus Clicker",
       alias: ["/sisyphus-clicker"],
       component: () => import("../views/sisyphus/Sisyphus.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content: "Click on Sisyphus to push the rock up the mountain.",
+            },
+          },
+        ],
+      },
     },
     {
       path: "/cameo",
       name: "Comparatively Famous",
       alias: ["/famous", "/comparatively-famous"],
       component: () => import("../views/cameo/Cameo.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content: "The Game of Celebrity Value",
+            },
+          },
+        ],
+      },
     },
   ],
+});
+
+router.beforeEach((to, from, next) => {
+  document.title = to.name;
+  const headElements = to.meta.head || [];
+  setHeadElements(headElements);
+  next();
 });
 
 export default router;

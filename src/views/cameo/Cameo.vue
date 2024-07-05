@@ -1,6 +1,7 @@
 <script setup>
   import { reactive, computed } from "vue";
   import $ from "jquery";
+  import draggable from "vuedraggable";
 
   import { allValues } from "./js/_values.js";
   import { gimmickRounds } from "./js/_gimmick-rounds.js";
@@ -14,7 +15,28 @@
     removeFromArray,
     percentOf,
     sendEvent,
+    dollars,
   } from "@/shared/js/_functions.js";
+
+  // Sounds
+  import { Howl, Howler } from "howler";
+  import {
+    soundMiss,
+    soundCorrect,
+    soundPerfectValue,
+    soundCloseValue,
+    soundBadValue,
+    soundNewEmail,
+    soundUnderBudget,
+    soundOverBudget,
+    soundFutherOverBudget,
+    soundGameOverMusic,
+    birthdayHowls,
+  } from "./js/_sounds.js";
+
+  // socket.io
+  import { io } from "socket.io-client";
+  const socket = io.connect();
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
@@ -114,20 +136,20 @@
     game.started = true;
     startNextRound();
 
-    // socket.emit("cameoStartGame", {
-    //   gameName: gameName,
-    // });
-    // sendEvent("Comparatively Famous", "Game Started", "Fresh Game");
+    socket.emit("cameoStartGame", {
+      gameName: gameName,
+    });
+    sendEvent("Comparatively Famous", "Game Started", "Fresh Game");
     if (gimmick.isSelected && gimmick.selected.name) {
-      // sendEvent(
-      //   "Comparatively Famous",
-      //   "Special Game Started",
-      //   gimmick.selected.name,
-      // );
-      // socket.emit("cameoSpecialGame", {
-      //   gameName: gameName,
-      //   gimmickName: gimmick.selected.name,
-      // });
+      sendEvent(
+        "Comparatively Famous",
+        "Special Game Started",
+        gimmick.selected.name,
+      );
+      socket.emit("cameoSpecialGame", {
+        gameName: gameName,
+        gimmickName: gimmick.selected.name,
+      });
     }
   };
 
@@ -605,21 +627,23 @@
   const playTheGameOverAudio = () => {
     const self = this;
 
+    let happyBirthdays = [...birthdayHowls];
+
     if (computedGimmickName === "Porno People") {
       // Simone isn't one of these.
-      birthdayHowls.splice(7, 3);
+      happyBirthdays.splice(7, 3);
     }
 
-    birthdayHowls = shuffle(birthdayHowls);
-    birthdayHowls = birthdayHowls.filter((x) => x !== undefined);
+    happyBirthdays = shuffle(happyBirthdays);
+    happyBirthdays = happyBirthdays.filter((x) => x !== undefined);
     let n = 0;
     let i = round.rightSide.length;
-    soundgameOverMusic.play();
+    soundGameOverMusic.play();
 
     setTimeout(function () {
       var intervalId = window.setInterval(function () {
         if (n < i) {
-          birthdayHowls[n].play();
+          happyBirthdays[n].play();
           n++;
         } else {
           clearInterval(intervalId);

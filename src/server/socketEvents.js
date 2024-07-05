@@ -1,9 +1,18 @@
 import {
-  dateStampInDatabase,
+  addOneInDatabase,
   incrementDatabase,
   decrementDatabase,
+  incrementDatabaseWithChallenge,
+  addPlayerName,
+  dateStampInDatabase,
+  newCameoPlayerScore,
+  valuateCameo,
+  updateCameoStats,
   logCheevoEarned,
   logSisyphusItemPurchase,
+  logGuillotineHeadRemoval,
+  newGuillotinePlayerScore,
+  pretendGuessCelebrity,
 } from "./databaseFunctions.js";
 
 export const socketEvents = (io, socket) => {
@@ -25,6 +34,68 @@ export const socketEvents = (io, socket) => {
   ///////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////
+  // Comparatively Famous
+  socket.on("cameoStartGame", (msg) => {
+    dateStampInDatabase("allGamesLastPlayed", msg.gameName);
+    addOneInDatabase("cameoGames", "GamesStarted");
+    console.table([{ game: `COMPARATIVELY FAMOUS`, action: `Game Started` }]);
+  });
+
+  socket.on("cameoSpecialGame", (msg) => {
+    addOneInDatabase("cameoGames", "SpecialGamesStarted");
+    incrementDatabase("cameoSpecialGames", msg.gimmickName);
+    console.table([
+      {
+        game: `COMPARATIVELY FAMOUS`,
+        action: `Special Game`,
+        specialGame: msg.gimmickName,
+      },
+    ]);
+  });
+
+  socket.on("cameoValuationMade", (msg) => {
+    var cameoName = msg.celeb.name;
+    var actualValue = msg.celeb.value;
+    var playerValue = msg.valueGuessed;
+    valuateCameo(cameoName, actualValue, playerValue);
+    console.table([
+      {
+        game: `COMPARATIVELY FAMOUS`,
+        action: `Valuation`,
+        person: cameoName,
+        actualValue: actualValue,
+        playerValue: playerValue,
+      },
+    ]);
+  });
+
+  socket.on("cameoFinishGame", (msg) => {
+    console.log("a player finished a game of COMPARATIVELY FAMOUS");
+
+    addOneInDatabase("cameoGames", "GamesFinished");
+    newCameoPlayerScore(
+      msg.playerScore,
+      msg.correctSorts,
+      msg.averageValuationOffset,
+      msg.birthdayWishes.length,
+      msg.exceededBudget,
+    );
+
+    msg.cameoHistory.forEach((cameo, index) => {
+      if (cameo.correct) {
+        updateCameoStats(cameo.name, 1, 0);
+      } else {
+        updateCameoStats(cameo.name, -1, 0);
+      }
+    });
+
+    msg.birthdayWishes.forEach((cameo, index) => {
+      updateCameoStats(cameo.name, 0, 1);
+    });
+
+    console.table(msg.birthdayWishes);
+  });
+
   ///////////////////////////////////////////////////
   // Sisyphus Socket Actions
   socket.on("sisyphusMounted", (msg) => {

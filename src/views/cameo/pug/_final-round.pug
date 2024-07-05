@@ -2,42 +2,50 @@ main.final-round(v-if="game.started && game.finalRound")
 
   .casting-interface(v-if="!ui.cameosPaid")
 
-    draggable.list-group.unhired( :list="round.leftSide"
-                                      group="people"
-                                      :options="{ disabled : ui.hiringFinished }"
-                                      :class="{ 'no-move-cursor' : false }"
-                                      @start="isDragging = true"
-                                      @end="isDragging = false"
-                                      v-if="true"
-                                      )
 
-        .cameo.list-group-item(v-for="(element, index) in round.leftSide" :key="index")
+    // Unhired Birthday Options
+    draggable(
+      class="list-group unhired"
+      :list="round.leftSide"
+      :options="{ disabled : ui.hiringFinished }"
+      item-key="slug"
+      group="people"
+      @start="isDragging = true"
+      @end="isDragging = false"
+    )
+      template(#item="{element}")
+        .cameo.list-group-item
           figure
             img(:src="'img/cameos/'+element.slug+'.jpg'")
           figcaption
             .name {{ element.name }}
             .desc(v-if="element.desc") {{element.desc}}
 
-    draggable.list-group.hired( :list="round.rightSide"
-                                      group="people"
-                                      :options="{ disabled : ui.hiringFinished }"
-                                      :class="{ 'no-move-cursor' : ui.hiringFinished }"
-                                      @start="isDragging = true"
-                                      @end="isDragging = false"
-                                      v-if="true"
-                                      )
-        .cameo.list-group-item(v-for="(element, index) in round.rightSide" :key="index")
+
+    // People You've Hired
+    draggable(
+      class="list-group hired"
+      :list="round.rightSide"
+      :options="{ disabled : ui.hiringFinished }"
+      item-key="slug"
+      group="people"
+      @start="isDragging = true"
+      @end="isDragging = false"
+    )
+      template(#item="{element}")
+        .cameo.list-group-item
           figure
             img(:src="'img/cameos/'+element.slug+'.jpg'")
           figcaption
             .name {{ element.name }}
             .desc(v-if="!ui.hiringFinished && element.desc") {{element.desc}}
             .value.invisible(v-if="ui.hiringFinished") {{dollars(element.value)}}
+      
+      .help-text(v-if="round.rightSide.length < 1") 
+        .inside place all your hires here
 
-        .help-text(v-if="round.rightSide.length < 1") 
-          .inside place all your hires here
 
-
+    // Budget
     .budget-interface
       .box
         .label.your-budget Your Budget
