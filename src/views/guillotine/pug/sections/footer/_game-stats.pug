@@ -59,6 +59,7 @@ section.stats(v-if="player.wealthCreated.allTime && (player.wealthCreated.allTim
         span.label  for a year.
 
       .stat.mvp.all-time(v-if="computedMostValuableAllTime?.name")
-        span.label The most valuable person you've retired was  
         span.value {{computedMostValuableAllTime.name}}
+        span.label  made the biggest non-consenentual donation 
+        //- span.value {{computedMostValuableAllTime.name}}
         span.value.net-worth  {{' ($'+computedMostValuableAllTime.netWorth+" B)"}}
