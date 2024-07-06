@@ -25,6 +25,6 @@ mixin outsideLink(title,url)
   a.link(href=url target="_blank" noopener @click="trackLink('"+title+"', '"+url+"')")= title
 
 mixin stateSelector()
-  select.state-selector(v-on="changeState()" v-model="ui.currentState")
+  select.state-selector(v-model="ui.currentState")
     template(v-for="(school, key) in data.stateSchools")
       option(:value="school.state" :selected="school.state == ui.currentState") {{school.state}}

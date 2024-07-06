@@ -25,8 +25,8 @@
   import { dropSound, lastWords } from "./js/partials/_sounds.js";
 
   const gameStatus = ref("loading");
-  const currentBillionaires = ref([]);
-  const formerBillionaires = ref([]);
+  // const currentBillionaires = ref([]);
+  // const formerBillionaires = ref([]);
 
   const data = {
     allBillionaires: allBillionaires, // <-- Might not be necessary.
@@ -43,10 +43,10 @@
     allTime: 0,
   });
 
-  const wealthCreated = reactive({
-    today: 0,
-    allTime: 0,
-  });
+  // const wealthCreated = reactive({
+  //   today: 0,
+  //   allTime: 0,
+  // });
 
   const comparativeData = reactive({
     currentSchool: {},
@@ -151,7 +151,7 @@
     ) {
       redistributions.allTime =
         Number(localStorage.getItem("totalRedistributions")) ?? 0;
-      wealthCreated.allTime =
+      player.wealthCreated.allTime =
         Number(localStorage.getItem("totalWealthCreated")) ?? 0;
       history.firstPlay = Date.parse(localStorage.getItem("firstPlay")) ?? null;
       history.lastPlay = Date.parse(localStorage.getItem("lastPlay")) ?? null;
@@ -222,11 +222,13 @@
     todaysGame.formerBillionaires.push(person);
     redistributions.today++;
     redistributions.allTime++;
-    wealthCreated.today += additionalWealth;
-    wealthCreated.allTime += additionalWealth;
+    player.wealthCreated.today += additionalWealth;
+    player.wealthCreated.allTime += additionalWealth;
 
-    wealthCreated.today = Number(wealthCreated.today.toFixed(3));
-    wealthCreated.allTime = Number(wealthCreated.allTime.toFixed(3));
+    player.wealthCreated.today = Number(player.wealthCreated.today.toFixed(3));
+    player.wealthCreated.allTime = Number(
+      player.wealthCreated.allTime.toFixed(3),
+    );
 
     const stopAddingDollars = () => {
       clearInterval(addMoreDollars);
@@ -238,9 +240,9 @@
       );
       ui.wealthDisplay += dollarIncrease;
 
-      if (ui.wealthDisplay >= wealthCreated.today) {
+      if (ui.wealthDisplay >= player.wealthCreated.today) {
         stopAddingDollars();
-        ui.wealthDisplay = wealthCreated.today;
+        ui.wealthDisplay = player.wealthCreated.today;
         ui.currentlyBusy = false;
       }
     }, 20);
@@ -264,7 +266,7 @@
       history.trophies.push(trophy);
       history.lastGameResults.trophies.push(trophy);
     }
-    history.lastGameResults.wealthCreated = wealthCreated.today;
+    history.lastGameResults.wealthCreated = player.wealthCreated.today;
     saveToLocalStorage();
 
     // const mvh = parseName(computedMostValuableToday.richestDead.name);
@@ -273,7 +275,11 @@
     //   mostValuable: mvh,
     //   trophies: history.lastGameResults.trophies,
     // });
-    sendEvent("NO MORE BILLIONAIRES", "Final Score", wealthCreated.today);
+    sendEvent(
+      "NO MORE BILLIONAIRES",
+      "Final Score",
+      player.wealthCreated.today,
+    );
 
     gameStatus.value = "gameOver";
     $("html, body").animate({ scrollTop: "+=325px" }, 800);
@@ -283,7 +289,7 @@
     localStorage.setItem("totalRedistributions", redistributions.allTime);
     localStorage.setItem(
       "totalWealthCreated",
-      wealthCreated.allTime.toFixed(3),
+      player.wealthCreated.allTime.toFixed(3),
     );
     const rightNow = new Date();
     if (!localStorage.getItem("firstPlay")) {
@@ -543,9 +549,8 @@
   });
 
   const computedSchoolsFunded = computed(() => {
-    if (!wealthCreated || !wealthCreated.today) {
+    if (!player.wealthCreated || !player.wealthCreated.today) {
       if (ui.shareScreen.wealthCreatedToday) {
-        // console.log('line 427');
         const budgetToday = convertToBillion(ui.shareScreen.wealthCreatedToday);
         const costPerSchool = Number(
           comparativeData.currentSchool.perStudent *
@@ -563,7 +568,7 @@
         };
       }
     }
-    const budgetToday = convertToBillion(wealthCreated.today);
+    const budgetToday = convertToBillion(player.wealthCreated.today);
     const costPerSchool = Number(
       comparativeData.currentSchool.perStudent *
         comparativeData.currentSchool.perStudent,
@@ -571,10 +576,10 @@
     const schoolsFundedToday = Math.floor(budgetToday / costPerSchool);
 
     let schoolsFundedAllTime = 0;
-    if (wealthCreated.today == wealthCreated.allTime) {
+    if (player.wealthCreated.today == player.wealthCreated.allTime) {
       schoolsFundedAllTime = schoolsFundedToday;
-    } else if (wealthCreated.allTime) {
-      const budgetAllTime = convertToBillion(wealthCreated.allTime);
+    } else if (player.wealthCreated.allTime) {
+      const budgetAllTime = convertToBillion(player.wealthCreated.allTime);
       schoolsFundedAllTime = Math.floor(budgetAllTime / costPerSchool);
     }
 
