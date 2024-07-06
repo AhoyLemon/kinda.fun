@@ -1,0 +1,34 @@
+include partials/_variables
+include partials/_mixins
+
+doctype html
+html(lang="en")
+  
+  head
+    meta(charset="utf-8")
+    title Process #{siteTitle} Data
+    meta(http-equiv="X-UA-Compatible" content="IE=edge,chrome=1")
+
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet")
+    link(href="/css/guillotine.code.css" rel="stylesheet")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(http-equiv="last-modified" content=lastUpdated)
+    
+  body
+    #app(v-cloak)
+
+      main.code-output
+        button(@click="selectCode()") Select Code
+        include partials/html/process-output.html
+
+    .javascripts
+      script(src="/js/libraries/vue.full.js")
+      script.
+        const testing = true;
+      link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/sunburst.min.css")
+      script(src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js")
+      script(src="/js/libraries/howler.min.js")
+
+      script(src="/js/min/guillotine.process.min.js?updated"+lastUpdated)

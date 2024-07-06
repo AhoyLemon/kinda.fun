@@ -1,0 +1,31 @@
+transition(name="raise-curtain")
+  header.title-screen(v-if="gameStatus == 'titleScreen'")
+
+    // Message if you've already played today.
+    .inner(v-if="computedDidYouAlreadyPlayToday")
+      h1
+        span It is 
+        time(v-html="computedToday")
+      //-template(v-if="history.lastGameResults.trophies")
+        h2 You stand over the heads of
+          template(v-for="(trophy, key) in history.lastGameResults.trophies")
+            span(v-if="(key + 2) < history.lastGameResults.trophies.length") {{trophy.name}}, 
+            span(v-else-if="(key + 1) < history.lastGameResults.trophies.length") {{trophy.name}} 
+            span(v-else) and {{trophy.name}}
+      template(v-if="history.lastGameResults.wealthCreated")
+        h3 You generated 
+          strong {{formatDollars(history.lastGameResults.wealthCreated,true,true)}} 
+          |  of wealth. Come back tomorrow to generate more.
+
+      .button-holder
+        button(@click="shareMyScores()") Share My Score
+
+    .inner(v-else)
+      h1
+        span It is 
+        time(v-html="computedToday")
+      h2(v-if="computedToday == 'Saturday, May 6<sup>th</sup>'") (the Coronation Day for Charles Philip Arthur George Mountbatten-Windsor as the Head of the Commonwealth of Nations)
+      h2(v-else)  #[strong {{gameRules.optionsPerDay}} billionaires] have been brought before you.
+      h3 You may choose #[strong {{gameRules.choicesPerDay}}] to #[strong send to the guillotine], generating wealth for your society.
+      .button-holder
+        button(@click="startGame()") Good luck.

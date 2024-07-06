@@ -1,0 +1,14 @@
+section.gallows
+
+  .wealth-created(v-if="ui.wealthDisplay > 0")
+    .label Wealth Created Today
+    .amount.dollars(v-html="formatDollars(ui.wealthDisplay,true)")
+
+  include ../partials/html/g.html
+
+  //- .dropzone
+  //-   span Drag Billionaires Here
+
+  //- .scroll-hint(v-if="gameStatus == 'gameOver'")
+  //-   span.text Scroll Down
+  //-   span.arrow ↓

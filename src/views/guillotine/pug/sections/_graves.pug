@@ -1,0 +1,23 @@
+section.graves
+  .above-ground
+  .below-ground
+    .grid-holder
+      .billionaire-grid
+        transition-group(name="bury-body" tag="ul")
+          li.billionaire(status="dead" disabled v-for="(person, key) in formerBillionaires" :key="person.name")
+            .info
+              .flag 
+                template(v-if="person.flag")
+                  img(:src="'svg/guillotine/flags/'+person.flag+'.svg'")
+                template(v-else)
+                  span ?
+              .name 
+                span {{parseName(person.name)}}
+              .source {{person.source}}
+              .wealth(v-if="person.netWorth > 0")
+                sup $
+                strong {{person.netWorth.toFixed(1)}}
+                sub.b Billion
+              .industry.icon(v-else-if="parseIndustryIcon(person.industry)")
+                img(:src="'/svg/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry")
+              .industry.text(v-else-if="person.industry") {{person.industry}}

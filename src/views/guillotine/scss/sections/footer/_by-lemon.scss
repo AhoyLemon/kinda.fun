@@ -1,0 +1,12 @@
+section.game-by-lemon { background:$lemon-yellow; position: relative; padding-top:($gap * 3); padding-bottom: ($gap * 3); min-height: 99vh;
+  .by-lemon-text { padding-top:16vh; font-size:clamp(24px,7.5vw,82px); min-height: 35vw; }
+  a { text-decoration: none;
+    &:hover {
+      .by-lemon { color:$blue; }
+    }
+  }
+  h3 { color:$black; font-weight: 650; font-size:clamp(24px,7.5vw,82px); }
+  .wedge { width:40%; display: block;
+    position: absolute; bottom:($gap * 3); right:0;
+  }
+}

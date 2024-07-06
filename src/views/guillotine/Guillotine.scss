@@ -1,0 +1,44 @@
+// General structure adopted from Kitty Giraudel
+// https://sass-guidelin.es/#architecture
+
+// ABSRACTS are variables and mixins. (they should *never* add lines to the production CSS)
+@import "scss/abstracts/variables"; 
+@import "scss/abstracts/z-index";
+@import "scss/abstracts/mixins";
+@import "scss/abstracts/extends";
+
+// BASE is for things like global site styles and typography.
+@import "scss/base/reset"; 
+@import "scss/base/defaults"; 
+@import "scss/base/animations";
+
+// LIBRARIES is for third party Scss 
+@import "scss/libraries/animate.scss"; 
+
+// COMPONENTS is for stuff like buttons, cards, callouts, toasts, etc... Essentially - reusable rectangles.
+@import "scss/components/billionaire";
+@import "scss/components/_toast";
+
+// LAYOUT is for stuff like a grid system, topnav, footer, etc.
+@import "scss/layout/desktop";
+@import "scss/layout/footer";
+
+// SECTIONS is a stripe (like a hero section) - like a component, but bigger.
+@import "scss/sections/share-screen";
+
+@import "scss/sections/title-screen";
+
+@import "scss/sections/choices";
+@import "scss/sections/gallows";
+@import "scss/sections/graves";
+
+@import "scss/sections/footer/stats";
+@import "scss/sections/footer/citations";
+@import "scss/sections/footer/final-links";
+@import "scss/sections/footer/by-lemon";
+
+// PAGES is for any specific page template
+
+
+// FINALLY, we should have a place for things we still need to get to...
+@import "scss/todo/shame"; 

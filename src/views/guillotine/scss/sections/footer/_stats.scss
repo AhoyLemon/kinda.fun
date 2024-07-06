@@ -1,0 +1,24 @@
+section.stats {
+  .stat-grid { display:grid; grid-template-columns: 1fr; gap:($gap * 1.5); padding-top:($gap * 3); padding-bottom:($gap * 2); }
+  .stat { font-family: $font-family; font-weight: 325; 
+    .value { font-weight: 525; font-family: $monospaced;
+    }
+    .big-number { text-overflow: ellipsis; white-space: nowrap; }
+    .right-align { text-align: right; }
+
+    .state-selector { font-family: $font-family; background:transparent; font-size:0.82em; color:$black; padding:0.05em 0.85em; border-radius: 0.35em; margin-right: 0.35em; margin-left: 0.35em; max-width: 14ch; text-overflow: ellipsis; border:1px solid $black;
+      option { color:$black; font-size: 1rem; }
+    }
+
+    &.wealth-created {
+      .value { line-height: 0.95; }
+      .dollars-today { font-size:clamp(24px,10.15vw,115px); letter-spacing: -0.05em; text-shadow: 1px 1px 0.05em rgba($black,0.5);
+        sup { font-size:45%; display:inline-block; transform: translateY(-0.35em); }
+        .cents { padding-left:0.25em; letter-spacing: 0em; }
+      }
+      .usd { margin-left:-2.25em; display: inline-block; }
+    }
+    .captured { font-size:85%; margin-left: 0.5em; font-weight: 525; font-style:italic; }
+    .escaped { font-size:85%; margin-left: 0.5em; font-weight: 525; font-style:italic; }
+  }
+}

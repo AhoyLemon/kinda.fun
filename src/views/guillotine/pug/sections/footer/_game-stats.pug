@@ -1,0 +1,64 @@
+
+// Today's Stats
+section.stats
+  .inner
+    .stat-grid
+      // Wealth Created Today
+      .stat.wealth-created.today(v-if="wealthCreated.today > 0")
+        .label.you-created You created 
+        .value(:digits="convertToBillion(wealthCreated.today).toString().length")
+          span.big-number.dollars-today(v-html="formatDollars(wealthCreated.today,true)")
+          sub.usd (USD)
+        .label.right-align  of wealth today.
+
+      .stat.schools-funded(v-if="computedSchoolsFunded && computedSchoolsFunded.today")
+        span.label That's enough to fund 
+        span.value {{formatNumber(computedSchoolsFunded.today)}}
+        span.label  public schools in 
+        +stateSelector()
+        span.label  for a year.
+
+      .stat.possible-wealth(v-if="computedWealthToday && computedWealthToday.claimedPct ")
+        span.label You liberated 
+        span.value {{computedWealthToday.claimedPct}}#[sup %]
+        span.label  of the 
+        span.value(v-text="formatDollars(computedWealthToday.total,true,true,true)")
+        span.label  available today.
+
+      .stat.mvp.overall(v-if="computedMostValuableToday.richestTotal.name")
+        span.label The most valuable choice today was 
+        span.value {{parseName(computedMostValuableToday.richestTotal.name)}}
+        span.label.escaped(v-if="computedMostValuableToday.richestTotal.name != computedMostValuableToday.richestDead.name")  ESCAPED!
+        span.label.captured(v-else) CAPTURED!
+      
+      .stat.mvp.yours(v-if="computedMostValuableToday.richestDead.name && (computedMostValuableToday.richestTotal.name != computedMostValuableToday.richestDead.name)")
+        span.label Your most valuable head belonged to 
+        span.value {{parseName(computedMostValuableToday.richestDead.name)}}
+
+// All Time Stats
+section.stats(v-if="wealthCreated.allTime && (wealthCreated.allTime > wealthCreated.today)")
+
+  .inner
+  
+    .stat-grid
+      // Wealth Created All Time
+      .stat.wealth-created.all-time
+        .label.you-created You created 
+        .value(:digits="convertToBillion(wealthCreated.allTime).toString().length")
+          span.big-number.dollars-today(v-html="formatDollars(wealthCreated.allTime,true)")
+          sub.usd (USD)
+        .label.right-align  in wealth since  
+          time(datetime="history.firstPlay") {{formatDate(history.firstPlay)}}
+          | .
+
+      .stat.schools-funded(v-if="computedSchoolsFunded.allTime")
+        span.label That's enough to fund 
+        span.value {{formatNumber(computedSchoolsFunded.allTime)}}
+        span.label  public schools in 
+        +stateSelector() 
+        span.label  for a year.
+
+      .stat.mvp.all-time(v-if="computedMostValuableAllTime.name")
+        span.label The most valuable person you've retired was  
+        span.value {{computedMostValuableAllTime.name}}
+        span.value.net-worth  {{' ($'+computedMostValuableAllTime.netWorth+" B)"}}

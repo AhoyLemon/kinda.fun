@@ -1,0 +1,4 @@
+<pre><code class="hljs" id="CodeBlock">const allWarrants = {<template v-for="(warrant, key) in arrestWarrants">
+  <code>"{{warrant.date}}": <code v-html="'[' + warrant.arrests.toString() + ']'"></code><template v-if="key < (arrestWarrants.length - 1)">,</template></code></template>
+}</code>
+</pre>

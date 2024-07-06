@@ -1,0 +1,20 @@
+
+main {
+  .inner  { display:grid; 
+    @media (min-width:1270px) { grid-template-columns: 460px 1fr 460px; }
+    @media (min-width:1001px) and (max-width:1269px) { grid-template-columns: 360px 1fr 360px; }
+    @media (max-width:1000px) { grid-template-columns: 360px 1fr;
+      section.graves { display: none;}
+    }
+    @media (max-width:600px) { grid-template-columns: 1fr;
+      section.graves { display: none;}
+      section.gallows { @include position(fixed,0,0,0,0); pointer-events: none; background:transparent !important;
+        .wealth-created { background:rgba($black,0.85); }
+        .g-wrapper  { 
+          #TheG { transform-origin: bottom right; transform: scale(0.4); }
+        }
+      }
+      // footer.game-over { position: relative; z-index: $z-mobile-footer; }
+    }
+  }
+}

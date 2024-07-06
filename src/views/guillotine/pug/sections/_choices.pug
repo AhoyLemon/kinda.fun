@@ -1,0 +1,46 @@
+section.choices
+  header.living-info
+    .mobile-warning
+      strong NOTE: 
+      span This game works much better on bigger screens. Please try this on a computer.
+    // Billionaires Available
+    .row.available(v-if="computedRemainingRedistributions > 0")
+      span.count(v-text="currentBillionaires.length")
+      span.label billionaires available.
+    .row.available(v-else)
+      span.count(v-text="currentBillionaires.length")
+      span.label billionaires remain.
+    // Choices Remaining
+    .row.choices(v-if="computedRemainingRedistributions > 1")
+      span.count(v-text="padNumber(computedRemainingRedistributions,2)")
+      span.label choices remaining.
+    .row.choices(v-else-if="computedRemainingRedistributions == 1")
+      span.count One
+      span.label last choice remaining.
+    .row.choices(v-else)
+      span.label All choices made for today.
+
+  .grid-holder
+    .billionaire-grid
+      ul
+        li(v-for="(person, key) in sortThoseBillionaires(currentBillionaires)" :key="key")
+          button.billionaire(status="alive" :disabled="ui.currentlyBusy || !computedRemainingRedistributions || computedRemainingRedistributions < 1" @click="dropBlade(person, key)")
+            .info
+              .flag 
+                template(v-if="person.flag")
+                  img(:src="'/svg/guillotine/flags/'+person.flag+'.svg'" :title="person.country")
+                template(v-else)
+                  span ?
+              .name 
+                template(v-if="person.name != parseName(person.name)")
+                  span(:title="person.name") {{parseName(person.name)}}
+                template(v-else)
+                  span {{parseName(person.name)}}
+              .source {{person.source}}
+              .wealth(v-if="ui.sortBy == 'highestWealth'")
+                sup $
+                strong {{person.netWorth.toFixed(1)}}
+                sub.b Billion
+              .industry.icon(v-else-if="parseIndustryIcon(person.industry)")
+                img(:src="'/svg/guillotine/icons/'+parseIndustryIcon(person.industry)+'.svg'" :title="person.industry")
+              .industry.text(v-else-if="person.industry") {{person.industry}}

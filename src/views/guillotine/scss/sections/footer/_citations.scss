@@ -1,0 +1,9 @@
+section.citations { padding-bottom: ($gap * 4); 
+  .citations-header { font-size:1.25rem; font-weight: 625; letter-spacing: 0.15em; text-transform: uppercase;}
+  .citations-list { display:flex; flex-wrap: wrap; gap:$gap; padding-top:$gap; }
+  .cite { flex-basis: 45%; font-size:1rem; line-height: 125%; flex-grow: 1; flex-shrink: 1; min-width: 32ch;
+    a { color:currentColor; text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: rgba($black,0.75); font-weight: 525; transition: all 0.15s linear;
+      &:hover, &:focus { text-decoration-thickness: 3px; }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+//- include pug/sections/_share-screen
+include pug/sections/_title-screen
+include pug/partials/_mixins
+main
+  .inner
+    include pug/sections/_choices
+    include pug/sections/_gallows
+    include pug/sections/_graves
+
+footer.game-over(v-if="gameStatus == 'gameOver'")
+
+  include pug/sections/footer/_game-stats
+  include pug/sections/footer/_citations
+  include pug/sections/footer/_final-links
+  include pug/sections/footer/_game-by-lemon

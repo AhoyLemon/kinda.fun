@@ -65,6 +65,30 @@ const router = createRouter({
         ],
       },
     },
+    {
+      path: "/guillotine",
+      name: "No More Billionaires",
+      alias: ["/no-more-billionaires", "/billionaires"],
+      component: () => import("../views/guillotine/Guillotine.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content:
+                "The game where you generate wealth through the use of a guillotine.",
+            },
+          },
+        ],
+      },
+    },
   ],
 });
 

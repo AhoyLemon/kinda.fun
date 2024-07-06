@@ -1,0 +1,30 @@
+// USE THIS FILE for any code you had to write which you didn't feel great about
+// but you had to write it because of some sort of requirement.
+
+// The code can live in here, but by putting it in here, it's flagged as something that should be refactored
+// at some point in the future.
+
+// EXAMPLES
+.underpecified { 
+  a { color:red !important; }
+}
+
+#ThisDivDoesntHaveAClass { color: red; }
+
+.so {
+  .i {
+    .really {
+      .had {
+        .to {
+          .go.nuts {
+            .with.the {
+              .cascade[for] {
+                [this="rule"] { color:red; }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
