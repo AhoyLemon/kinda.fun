@@ -5,10 +5,10 @@ section.choices
       span This game works much better on bigger screens. Please try this on a computer.
     // Billionaires Available
     .row.available(v-if="computedRemainingRedistributions > 0")
-      span.count(v-text="currentBillionaires.length")
+      span.count(v-text="todaysGame.currentBillionaires.length")
       span.label billionaires available.
     .row.available(v-else)
-      span.count(v-text="currentBillionaires.length")
+      span.count(v-text="todaysGame.currentBillionaires.length")
       span.label billionaires remain.
     // Choices Remaining
     .row.choices(v-if="computedRemainingRedistributions > 1")
@@ -23,7 +23,7 @@ section.choices
   .grid-holder
     .billionaire-grid
       ul
-        li(v-for="(person, key) in sortThoseBillionaires(currentBillionaires)" :key="key")
+        li(v-for="(person, key) in sortThoseBillionaires(todaysGame.currentBillionaires)" :key="key")
           button.billionaire(status="alive" :disabled="ui.currentlyBusy || !computedRemainingRedistributions || computedRemainingRedistributions < 1" @click="dropBlade(person, key)")
             .info
               .flag 

@@ -19,6 +19,9 @@ transition(name="raise-curtain")
 
       .button-holder
         button(@click="shareMyScores()") Share My Score
+        template(v-if="todaysGame?.gameRules?.cheats")
+          | &nbsp; 
+          button(@click="startGame()") Cheat & Play Again
 
     .inner(v-else)
       h1
@@ -29,3 +32,4 @@ transition(name="raise-curtain")
       h3 You may choose #[strong {{gameRules.choicesPerDay}}] to #[strong send to the guillotine], generating wealth for your society.
       .button-holder
         button(@click="startGame()") Good luck.
+        

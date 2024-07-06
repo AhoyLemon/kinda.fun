@@ -80,6 +80,39 @@
     trophies: [],
   });
 
+  const todaysGame = reactive({
+    currentBillionaires: [],
+    formerBillionaires: [],
+    gameRules: {
+      optionsPerDay: 20,
+      choicesPerDay: 5,
+      cheats: {
+        active: true,
+        unlimitedPlay: true,
+      },
+    },
+  });
+
+  const player = reactive({
+    redistributions: {
+      today: 0,
+      allTime: 0,
+    },
+    wealthCreated: {
+      today: 0,
+      allTime: 0,
+    },
+    history: {
+      firstPlay: null,
+      lastPlay: null,
+      lastGameResults: {
+        wealthCreated: null,
+        trophies: [],
+      },
+      trophies: [],
+    },
+  });
+
   const loadInitialGameState = () => {
     comparativeData.currentSchool = randomFrom(schoolData);
     ui.currentState = comparativeData.currentSchool.state;
@@ -93,19 +126,22 @@
 
     if (allWarrants[mmdd]) {
       for (const w of allWarrants[mmdd]) {
-        currentBillionaires.value.push(allBillionaires[w]);
+        todaysGame.currentBillionaires.push(allBillionaires[w]);
       }
     }
 
-    if (!currentBillionaires.value || currentBillionaires.value.length < 5) {
+    if (
+      !todaysGame.currentBillionaires ||
+      todaysGame.currentBillionaires.length < 5
+    ) {
       alert("I couldn't find enough warrants. Using backup option...");
-      currentBillionaires.value = shuffle(allBillionaires).slice(
+      todaysGame.currentBillionaires = shuffle(allBillionaires).slice(
         0,
         gameRules.optionsPerDay,
       );
     }
 
-    shuffle(currentBillionaires.value);
+    shuffle(todaysGame.currentBillionaires);
 
     if (
       localStorage.getItem("totalRedistributions") &&
@@ -151,10 +187,10 @@
 
   const dropBlade = (person) => {
     ui.currentlyBusy = true;
-    const newList = currentBillionaires.value.filter(
+    const newList = todaysGame.currentBillionaires.filter(
       (value) => value.name != person.name,
     );
-    currentBillionaires.value = newList;
+    todaysGame.currentBillionaires = newList;
 
     dropSound.play();
 
@@ -183,7 +219,7 @@
 
   const decapitateBillionaire = (person) => {
     const additionalWealth = person.netWorth;
-    formerBillionaires.value.push(person);
+    todaysGame.formerBillionaires.push(person);
     redistributions.today++;
     redistributions.allTime++;
     wealthCreated.today += additionalWealth;
@@ -220,7 +256,7 @@
     ui.sortBy = "highestWealth";
 
     history.lastGameResults.trophies = [];
-    for (const fB of formerBillionaires.value) {
+    for (const fB of todaysGame.formerBillionaires) {
       const trophy = {
         name: parseName(fB.name),
         netWorth: fB.netWorth,
@@ -231,8 +267,7 @@
     history.lastGameResults.wealthCreated = wealthCreated.today;
     saveToLocalStorage();
 
-    const mvh = parseName(computedMostValuableToday().richestDead.name);
-
+    // const mvh = parseName(computedMostValuableToday.richestDead.name);
     // socket.emit("guillotineFinishGame", {
     //   wealthCreated: wealthCreated.today,
     //   mostValuable: mvh,
@@ -556,15 +591,15 @@
     let claimedPct = null;
     let total = 0;
 
-    for (wallet of currentBillionaires) {
+    todaysGame.currentBillionaires.forEach((wallet) => {
       stillAvailable += wallet.netWorth;
       total += wallet.netWorth;
-    }
+    });
 
-    for (wallet of formerBillionaires) {
+    todaysGame.formerBillionaires.forEach((wallet) => {
       claimed += wallet.netWorth;
       total += wallet.netWorth;
-    }
+    });
 
     if (stillAvailable && claimed) {
       stillAvailablePct = percentOf(total, stillAvailable);
@@ -572,7 +607,7 @@
     }
 
     return {
-      fullWallets: currentBillionaires.length,
+      fullWallets: todaysGame.currentBillionaires.length,
       stillAvailable: stillAvailable,
       stillAvailablePct: stillAvailablePct ?? null,
       claimed: claimed,
@@ -582,28 +617,32 @@
   });
 
   const computedMostValuableToday = computed(() => {
-    //const richestAlive = [...currentBillionaires.reduce((p, c) => p.netWorth > c.netWorth ? p : c)];
-
     let maxNetWorthAlive = 0;
     let richestAlive = {};
     let maxNetWorthDead = 0;
     let richestDead = {};
     let richestTotal = {};
 
-    if (currentBillionaires && currentBillionaires.length > 0) {
+    if (
+      todaysGame.currentBillionaires &&
+      todaysGame.currentBillionaires.length > 0
+    ) {
       maxNetWorthAlive = Math.max(
-        ...currentBillionaires.map(({ netWorth }) => netWorth),
+        ...todaysGame.currentBillionaires.map(({ netWorth }) => netWorth),
       );
-      richestAlive = currentBillionaires.find(
+      richestAlive = todaysGame.currentBillionaires.find(
         ({ netWorth }) => netWorth === maxNetWorthAlive,
       );
     }
 
-    if (formerBillionaires && formerBillionaires.length > 0) {
+    if (
+      todaysGame.formerBillionaires &&
+      todaysGame.formerBillionaires.length > 0
+    ) {
       maxNetWorthDead = Math.max(
-        ...formerBillionaires.map(({ netWorth }) => netWorth),
+        ...todaysGame.formerBillionaires.map(({ netWorth }) => netWorth),
       );
-      richestDead = formerBillionaires.find(
+      richestDead = todaysGame.formerBillionaires.find(
         ({ netWorth }) => netWorth === maxNetWorthDead,
       );
     }
@@ -625,6 +664,7 @@
 
   const computedMostValuableAllTime = computed(() => {
     let richestPerson = {};
+    let maxNetWorth = 0;
     if (history.trophies) {
       maxNetWorth = Math.max(
         ...history.trophies.map(({ netWorth }) => netWorth),

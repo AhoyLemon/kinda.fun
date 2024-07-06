@@ -25,7 +25,7 @@ section.stats
         span.value(v-text="formatDollars(computedWealthToday.total,true,true,true)")
         span.label  available today.
 
-      .stat.mvp.overall(v-if="computedMostValuableToday.richestTotal.name")
+      .stat.mvp.overall(v-if="computedMostValuableToday?.richestTotal?.name")
         span.label The most valuable choice today was 
         span.value {{parseName(computedMostValuableToday.richestTotal.name)}}
         span.label.escaped(v-if="computedMostValuableToday.richestTotal.name != computedMostValuableToday.richestDead.name")  ESCAPED!
@@ -58,7 +58,7 @@ section.stats(v-if="wealthCreated.allTime && (wealthCreated.allTime > wealthCrea
         +stateSelector() 
         span.label  for a year.
 
-      .stat.mvp.all-time(v-if="computedMostValuableAllTime.name")
+      .stat.mvp.all-time(v-if="computedMostValuableAllTime?.name")
         span.label The most valuable person you've retired was  
         span.value {{computedMostValuableAllTime.name}}
         span.value.net-worth  {{' ($'+computedMostValuableAllTime.netWorth+" B)"}}

@@ -4,7 +4,7 @@ section.graves
     .grid-holder
       .billionaire-grid
         transition-group(name="bury-body" tag="ul")
-          li.billionaire(status="dead" disabled v-for="(person, key) in formerBillionaires" :key="person.name")
+          li.billionaire(status="dead" disabled v-for="(person, key) in todaysGame.formerBillionaires" :key="person.name")
             .info
               .flag 
                 template(v-if="person.flag")
