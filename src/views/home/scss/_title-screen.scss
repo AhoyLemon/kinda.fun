@@ -1,0 +1,73 @@
+html { width:100dvw; }
+body { overflow-x: hidden; width:100dvw; }
+.title-screen { min-height: 99.999dvh; display: grid; grid-template-columns: 1fr; grid-template-rows: 180px 190px 1fr;
+
+  .top { padding:40px; display: flex; align-items: center;
+    h1 { font-size:clamp(20px,5vw,2.7rem); font-weight: 525; font-family: $serif; }
+  }
+
+  .game-grid { display:flex; flex-wrap: nowrap; gap:40px; padding-left: 40px; padding-right: 40px;
+
+    overflow-x: scroll; width:100dvw; 
+    .thing { flex-basis: 250px; flex-grow: 0; flex-shrink: 0; padding-top:20px;
+      button { background: transparent; border:none; cursor: pointer; }
+      img { width:100%; transition: scale 0.3s ease; }
+      &.active { 
+        img { scale: 1.35; transition: all 0.9s ease; }
+      }
+      &.inactive { opacity: 0.6;
+        img { scale: 0.9; }
+      }
+    }
+    scrollbar-width: thin;
+    scrollbar-gutter: stable both-edges;
+    scrollbar-color: #692647 #e6e7dc;
+  }
+
+  .bottom { padding:40px; align-items: center; justify-content: center; font-family: $serif; display:grid;
+    .info { background-color: $white; color:$black; max-width: 68ch; position: relative; margin-left: auto; margin-right: auto; } 
+    button.close { position: absolute; top:10px; right:10px; font-size:1.25rem; width:1.5em; cursor: pointer; z-index: 3; }
+    .top-bar { background-color: $black; padding:10px 40px 10px 20px;
+      h2 { color:$white; }
+    }
+    .game-name { font-size:1.4rem }
+    .slogan { font-size:2.15rem; font-weight: 525; font-style: italic;
+      &:before { content: "“"; }
+      &:after  { content: "”"; }
+    }
+    .content { display: grid; gap:10px; padding:20px; color:$black; padding:20px; font-family: $serif; }
+    .description { line-height: 180%; }
+    .button-holder {
+      .button { display: inline-flex; background:yellow; color:$black; border:0.1em solid currentColor; text-decoration: none; letter-spacing: 0.1em; transition: all 0.3s ease; box-shadow:-1px 1px 0 black; font-size: 1.3rem; padding: 0.5em 1em; font-weight: 815;
+        &:hover, &:focus { transform: translate(10px,-10px); box-shadow:-10px 10px 0 black; }
+      }
+    }
+    
+    .filter-options { display:flex; flex-wrap: wrap; gap:5px;
+      .show-all { flex-basis: 100%; }
+      button { flex-grow: 1; flex-shrink: 0; cursor: pointer;
+        background-color: #ccc; border:none; border-radius: 4px; padding:0.5em 1em;
+        .text { font-family: $serif; color:$black; font-weight: 815; }
+        .count { display:none; }
+        &.active { background:yellow;  }
+      }
+    }
+  }
+}
+
+@media (min-width:740px) {
+  .title-screen { 
+    .bottom { grid-template-columns: 1fr 240px; gap:40px; }
+  }
+}
+@media screen and (max-width:740px) {
+  .title-screen { grid-template-rows: 120px 31vw 1fr;
+    .game-grid { gap:10px; padding-left: 10px; padding-right: 10px;
+      .thing { flex-basis: 42dvw; } 
+    }
+    .bottom { padding:10px; grid-template-columns: 1fr; gap:15px;
+      .slogan { font-size:4.25vw; } 
+      .description { font-size: 12px; }
+    }
+  }
+}

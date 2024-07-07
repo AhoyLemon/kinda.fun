@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 import { useHeadManager } from "@/server/useHeadManager.js";
 const { setHeadElements } = useHeadManager();
 
@@ -8,16 +7,27 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "home",
-      component: HomeView,
-    },
-    {
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import("../views/AboutView.vue"),
+      name: "Kinda fun.",
+      alias: ["/home", "/start"],
+      component: () => import("../views/home/Home.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content:
+                "Here's some games and stuff that Lemon made. All of it is kinda fun!",
+            },
+          },
+        ],
+      },
     },
     {
       path: "/sisyphus",

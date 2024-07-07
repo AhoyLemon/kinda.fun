@@ -1,0 +1,12 @@
+//GLOBALS, GET DEFAULTS
+@import "@/shared/scss/globals/reset";
+@import "@/shared/scss/globals/variables";
+@import "@/shared/scss/globals/mixins";
+@import "@/shared/scss/globals/extends";
+
+
+@import "scss/variables";
+@import "scss/default";
+@import "scss/transitions";
+@import "scss/title-screen";
+@import "scss/testing";

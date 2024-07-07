@@ -1,10 +1,9 @@
-.bury-body-enter-active, .bury-body-leave-active {
-  transition: opacity .5s linear, transform 0.25s ease-in-out;
-}
-.bury-body-enter, .bury-body-leave-to /* .bury-body-leave-active below version 2.1.8 */ {
-  opacity: 0; transform: translateY(-120%);
-}
-
+// .bury-body-enter-active, .bury-body-leave-active {
+//   transition: opacity .5s linear, transform 0.25s ease-in-out;
+// }
+// .bury-body-enter, .bury-body-leave-to /* .bury-body-leave-active below version 2.1.8 */ {
+//   opacity: 0; transform: translateY(-120%);
+// }
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity 1s ease;
@@ -21,4 +20,21 @@
 .raise-curtain-enter-from, .raise-curtain-leave-to {
   // opacity: 0;
   transform: translateY(-101vh);
+}
+
+
+.living-billionaire-leave-active {
+  transition: all 0.8s ease;
+}
+.living-billionaire-leave-to {
+  opacity: 0.5;
+  transform: translateX(140%);
+}
+
+.bury-body-enter-active {
+  transition: all 0.8s ease;
+}
+.bury-body-enter-from {
+  opacity: 0;
+  transform: translateY(-100%);
 }

@@ -1,0 +1,39 @@
+main.title-screen
+
+  .top
+    h1 So, here's some stuff that's kinda fun...
+
+  transition-group(name="list" tag="div" id="GameGrid" class="game-grid")
+
+      .thing(
+        v-for="(thing, thingId) in computedThingsList"
+        :class="{ active: currentThing.slug === thing.slug,  inactive: (currentThing.slug && currentThing.slug !== thing.slug) }"
+        :key="thing.slug")
+        button(@click="selectGame(thing.slug)" :title="thing.name")
+          template(v-if="thing.logo")
+            img.logo(:src="`svg/games/${thing.logo}`" :alt="thing.name")
+
+  .bottom
+    .info-holder
+      transition(name="fade")
+        .info(v-cloak v-if="currentThing && currentThing.name")
+          button.close(@click="selectGame('')") x
+          .top-bar
+            h2.game-name {{currentThing.name}}
+          .content
+            template(v-if="currentThing.slogan")
+              h3.slogan {{currentThing.slogan}}
+            template(v-if="currentThing.description")
+              .description(v-html="currentThing.description")
+            template(v-if="currentThing.url")
+              .button-holder
+                a.play-game.button(:href="currentThing.url") {{ computedButtonText }}
+    
+    .filter-options
+      label Filter To:
+      button.show-all(@click="setFilterTo('all')" :class="{ 'active': !ui.currentFilter }") 
+        span.text Show All
+      template(v-for="tag in computedTags" :key="tag.text")
+        button(@click="setFilterTo(tag.text)" :class="{ active: (ui.currentFilter == tag.text) }")
+          span.text {{tag.text}}
+          span.count {{tag.count}} 

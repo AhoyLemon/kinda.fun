@@ -190,36 +190,37 @@
     const newList = todaysGame.currentBillionaires.filter(
       (value) => value.name != person.name,
     );
-    todaysGame.currentBillionaires = newList;
-
-    dropSound.play();
-
     setTimeout(() => {
-      $("#TheG").addClass("dropped");
+      dropSound.play();
 
-      const p = Math.floor(Math.random() * 17 + 1).toString();
       setTimeout(() => {
-        if (person.name == "King Charles III") {
-          lastWords.play("Charles");
-        } else {
-          lastWords.play(p);
-        }
-      }, "320");
-      setTimeout(() => {
-        $("#G_Head").attr("href", "img/guillotine/heads/empty.png");
-        $("#TheG").removeClass("dropped").addClass("raised");
-        decapitateBillionaire(person);
+        $("#TheG").addClass("dropped");
+
+        const p = Math.floor(Math.random() * 17 + 1).toString();
         setTimeout(() => {
-          $("#TheG").removeClass("raised");
-          ui.currentlyBusy = false;
+          if (person.name == "King Charles III") {
+            lastWords.play("Charles");
+          } else {
+            lastWords.play(p);
+          }
+        }, "320");
+        setTimeout(() => {
+          $("#G_Head").attr("href", "img/guillotine/heads/empty.png");
+          $("#TheG").removeClass("dropped").addClass("raised");
+          decapitateBillionaire(person);
+          setTimeout(() => {
+            $("#TheG").removeClass("raised");
+            ui.currentlyBusy = false;
+          }, "1000");
         }, "1000");
-      }, "1000");
-    }, "220");
+      }, "220");
+    }, 450);
+    todaysGame.currentBillionaires = newList;
   };
 
   const decapitateBillionaire = (person) => {
     const additionalWealth = person.netWorth;
-    todaysGame.formerBillionaires.push(person);
+    todaysGame.formerBillionaires.unshift(person);
     redistributions.today++;
     redistributions.allTime++;
     player.wealthCreated.today += additionalWealth;
@@ -563,6 +564,14 @@
         comparativeData.currentSchool.perStudent *
         comparativeData.currentSchool.averageStudents;
       schoolsFunded.allTime = Math.floor(budgetAllTime / costPerSchool);
+    }
+
+    if (player.wealthCreated?.today) {
+      const budgetToday = convertToBillion(player.wealthCreated.today);
+      const costPerSchool =
+        comparativeData.currentSchool.perStudent *
+        comparativeData.currentSchool.averageStudents;
+      schoolsFunded.today = Math.floor(budgetToday / costPerSchool);
     }
 
     // if (player.wealthCreated && player)
