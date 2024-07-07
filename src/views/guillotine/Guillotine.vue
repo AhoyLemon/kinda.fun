@@ -24,6 +24,10 @@
   import { Howl, Howler } from "howler";
   import { dropSound, lastWords } from "./js/partials/_sounds.js";
 
+  // socket.io
+  import { io } from "socket.io-client";
+  const socket = io.connect();
+
   const gameStatus = ref("loading");
   // const currentBillionaires = ref([]);
   // const formerBillionaires = ref([]);
@@ -70,15 +74,15 @@
     unlimitedPlay: true,
   };
 
-  const history = reactive({
-    firstPlay: null,
-    lastPlay: null,
-    lastGameResults: {
-      wealthCreated: null,
-      trophies: [],
-    },
-    trophies: [],
-  });
+  // const history = reactive({
+  //   firstPlay: null,
+  //   lastPlay: null,
+  //   lastGameResults: {
+  //     wealthCreated: null,
+  //     trophies: [],
+  //   },
+  //   trophies: [],
+  // });
 
   const todaysGame = reactive({
     currentBillionaires: [],
@@ -116,13 +120,7 @@
   const loadInitialGameState = () => {
     comparativeData.currentSchool = randomFrom(schoolData);
     ui.currentState = comparativeData.currentSchool.state;
-
-    // const mmdd = moment().format("MMDD");
     const mmdd = DateTime.now().toFormat("LLdd");
-
-    console.log(mmdd);
-    console.log("LOOK!");
-    console.log(allWarrants[mmdd]);
 
     if (allWarrants[mmdd]) {
       for (const w of allWarrants[mmdd]) {
@@ -153,23 +151,25 @@
         Number(localStorage.getItem("totalRedistributions")) ?? 0;
       player.wealthCreated.allTime =
         Number(localStorage.getItem("totalWealthCreated")) ?? 0;
-      history.firstPlay = Date.parse(localStorage.getItem("firstPlay")) ?? null;
-      history.lastPlay = Date.parse(localStorage.getItem("lastPlay")) ?? null;
+      player.history.firstPlay =
+        Date.parse(localStorage.getItem("firstPlay")) ?? null;
+      player.history.lastPlay =
+        Date.parse(localStorage.getItem("lastPlay")) ?? null;
 
       if (localStorage.getItem("trophyCase")) {
         const trophyString = localStorage.getItem("trophyCase");
         const trophyArray = JSON.parse(trophyString);
-        history.trophies = trophyArray;
+        player.history.trophies = trophyArray;
       }
     }
     if (
       localStorage.getItem("lastGameWealthCreated") &&
       localStorage.getItem("lastGameTrophies")
     ) {
-      history.lastGameResults.wealthCreated = Number(
+      player.history.lastGameResults.wealthCreated = Number(
         localStorage.getItem("lastGameWealthCreated"),
       );
-      history.lastGameResults.trophies = JSON.parse(
+      player.history.lastGameResults.trophies = JSON.parse(
         localStorage.getItem("lastGameTrophies"),
       );
     }
@@ -179,9 +179,9 @@
 
   const startGame = () => {
     gameStatus.value = "playing";
-    // socket.emit("guillotineStartGame", {
-    //   gameName: "guillotine",
-    // });
+    socket.emit("guillotineStartGame", {
+      gameName: "guillotine",
+    });
     sendEvent("NO MORE BILLIONAIRES", "Game Started", "Fresh Game");
   };
 
@@ -258,24 +258,29 @@
   const doEndGameActions = () => {
     ui.sortBy = "highestWealth";
 
-    history.lastGameResults.trophies = [];
+    player.history.lastGameResults.trophies = [];
     for (const fB of todaysGame.formerBillionaires) {
       const trophy = {
         name: parseName(fB.name),
         netWorth: fB.netWorth,
       };
-      history.trophies.push(trophy);
-      history.lastGameResults.trophies.push(trophy);
+      player.history.trophies.push(trophy);
+      player.history.lastGameResults.trophies.push(trophy);
     }
-    history.lastGameResults.wealthCreated = player.wealthCreated.today;
+    player.history.lastGameResults.wealthCreated = player.wealthCreated.today;
     saveToLocalStorage();
 
-    // const mvh = parseName(computedMostValuableToday.richestDead.name);
-    // socket.emit("guillotineFinishGame", {
-    //   wealthCreated: wealthCreated.today,
-    //   mostValuable: mvh,
-    //   trophies: history.lastGameResults.trophies,
-    // });
+    const richestDead = player.history.lastGameResults.trophies.reduce(
+      (prev, current) => {
+        return prev.netWorth > current.netWorth ? prev : current;
+      },
+      player.history.lastGameResults.trophies[0],
+    );
+    socket.emit("guillotineFinishGame", {
+      wealthCreated: player.wealthCreated.today,
+      mostValuable: richestDead.name,
+      trophies: player.history.lastGameResults.trophies,
+    });
     sendEvent(
       "NO MORE BILLIONAIRES",
       "Final Score",
@@ -298,21 +303,23 @@
     }
     localStorage.setItem("lastPlay", rightNow.toString());
 
-    if (history.trophies) {
-      const trophyCaseString = JSON.stringify(history.trophies);
+    if (player.history.trophies) {
+      const trophyCaseString = JSON.stringify(player.history.trophies);
       localStorage.setItem("trophyCase", trophyCaseString);
     }
 
     if (
-      history.lastGameResults &&
-      history.lastGameResults.wealthCreated &&
-      history.lastGameResults.trophies
+      player.history.lastGameResults &&
+      player.history.lastGameResults.wealthCreated &&
+      player.history.lastGameResults.trophies
     ) {
       localStorage.setItem(
         "lastGameWealthCreated",
-        history.lastGameResults.wealthCreated,
+        player.history.lastGameResults.wealthCreated,
       );
-      const lastGameTrophies = JSON.stringify(history.lastGameResults.trophies);
+      const lastGameTrophies = JSON.stringify(
+        player.history.lastGameResults.trophies,
+      );
       localStorage.setItem("lastGameTrophies", lastGameTrophies);
     }
   };
@@ -334,9 +341,9 @@
 
   const shareMyScores = () => {
     const p = {
-      playDate: history.lastPlay ?? Date.parse(new Date()),
+      playDate: player.history.lastPlay ?? Date.parse(new Date()),
       wealthCreatedToday: Number(
-        history.lastGameResults.wealthCreated.toFixed(3),
+        player.history.lastGameResults.wealthCreated.toFixed(3),
       ),
     };
 
@@ -350,10 +357,10 @@
 
     sendEvent("NO MORE BILLIONAIRES", "Score Shared", p.wealthCreatedToday);
 
-    // socket.emit("guillotineShareScore", {
-    //   wealthCreated: p.wealthCreatedToday,
-    //   playDate: p.playDate,
-    // });
+    socket.emit("guillotineShareScore", {
+      wealthCreated: p.wealthCreatedToday,
+      playDate: p.playDate,
+    });
 
     window.location.replace(newURL);
     return false;
@@ -386,11 +393,11 @@
         "Score Shared",
         ui.shareScreen.playerName,
       );
-      // socket.emit("guillotineEnterPlayerName", {
-      //   wealthCreated: ui.shareScreen.wealthCreatedToday,
-      //   playDate: ui.shareScreen.playDate,
-      //   playerName: ui.shareScreen.playerName,
-      // });
+      socket.emit("guillotineEnterPlayerName", {
+        wealthCreated: ui.shareScreen.wealthCreatedToday,
+        playDate: ui.shareScreen.playDate,
+        playerName: ui.shareScreen.playerName,
+      });
 
       window.location.replace(newURL);
     }
@@ -699,11 +706,11 @@
   const computedMostValuableAllTime = computed(() => {
     let richestPerson = {};
     let maxNetWorth = 0;
-    if (history.trophies) {
+    if (player.history.trophies) {
       maxNetWorth = Math.max(
-        ...history.trophies.map(({ netWorth }) => netWorth),
+        ...player.history.trophies.map(({ netWorth }) => netWorth),
       );
-      richestPerson = history.trophies.find(
+      richestPerson = player.history.trophies.find(
         ({ netWorth }) => netWorth === maxNetWorth,
       );
     }
@@ -734,9 +741,9 @@
 
   const computedDidYouAlreadyPlayToday = computed(() => {
     const today = new Date();
-    if (!history || !history.lastPlay) {
+    if (!player.history || !player.history.lastPlay) {
       return false;
-    } else if (formatDate(history.lastPlay) == formatDate(today)) {
+    } else if (formatDate(player.history.lastPlay) == formatDate(today)) {
       return true;
     } else {
       return false;

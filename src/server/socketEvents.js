@@ -139,4 +139,41 @@ export const socketEvents = (io, socket) => {
     ]);
   });
   ///////////////////////////////////////////////////
+
+  ///////////////////////////////////////////////////
+  // Sisyphus Socket Actions
+  socket.on("guillotineStartGame", (msg) => {
+    dateStampInDatabase("allGamesLastPlayed", "guillotine");
+    incrementDatabase("guillotineCounts", "gamesStarted");
+    console.table([{ game: `NO MORE BILLIONAIRES`, action: `Game Started` }]);
+  });
+
+  socket.on("guillotineShareScore", (msg) => {
+    incrementDatabase("guillotineCounts", "scoresShared");
+    console.table([{ game: `NO MORE BILLIONAIRES`, action: `Score Shared` }]);
+  });
+
+  socket.on("guillotineEnterPlayerName", (msg) => {
+    console.table([
+      {
+        game: `NO MORE BILLIONAIRES`,
+        action: `Player Name`,
+        playerName: msg.playerName,
+      },
+    ]);
+  });
+
+  socket.on("guillotineFinishGame", (msg) => {
+    console.log("a player finished a game of COMPARATIVELY FAMOUS");
+    console.table(msg.trophies);
+    console.log("WEALTH CREATED: $" + msg.wealthCreated + "B");
+    newGuillotinePlayerScore(msg.wealthCreated, msg.mostValuable);
+    incrementDatabase("guillotineCounts", "gamesFinished");
+
+    msg.trophies.forEach((trophy, index) => {
+      logGuillotineHeadRemoval(trophy.name, trophy.netWorth);
+    });
+  });
+
+  ///////////////////////////////////////////////////
 };

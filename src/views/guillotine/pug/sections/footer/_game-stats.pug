@@ -48,7 +48,7 @@ section.stats(v-if="player.wealthCreated.allTime && (player.wealthCreated.allTim
           span.big-number.dollars-today(v-html="formatDollars(player.wealthCreated.allTime,true)")
           sub.usd (USD)
         .label.right-align  in wealth since  
-          time(datetime="history.firstPlay") {{formatDate(history.firstPlay)}}
+          time(:datetime="player.history.firstPlay") {{formatDate(player.history.firstPlay)}}
           | .
 
       .stat.schools-funded(v-if="computedSchoolsFunded.allTime")

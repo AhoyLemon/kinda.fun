@@ -6,15 +6,9 @@ transition(name="raise-curtain")
       h1
         span It is 
         time(v-html="computedToday")
-      //-template(v-if="history.lastGameResults.trophies")
-        h2 You stand over the heads of
-          template(v-for="(trophy, key) in history.lastGameResults.trophies")
-            span(v-if="(key + 2) < history.lastGameResults.trophies.length") {{trophy.name}}, 
-            span(v-else-if="(key + 1) < history.lastGameResults.trophies.length") {{trophy.name}} 
-            span(v-else) and {{trophy.name}}
-      template(v-if="history.lastGameResults.wealthCreated")
+      template(v-if="player.history.lastGameResults.wealthCreated")
         h3 You generated 
-          strong {{formatDollars(history.lastGameResults.wealthCreated,true,true)}} 
+          strong {{formatDollars(player.history.lastGameResults.wealthCreated,true,true)}} 
           |  of wealth. Come back tomorrow to generate more.
 
       .button-holder
