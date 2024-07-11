@@ -1,0 +1,77 @@
+$serif: "Vollkorn", serif;
+$sans-serif: "Montserrat", sans-serif;
+$monospace: "Noto Sans Mono", monospace;
+
+$cardColor: #f4f4e0;
+$cardColorPlaying: #f2f2ba;
+$focusColor: #ffc107;
+
+
+.meeting-board { display: grid; grid-template-columns: 1fr 320px; min-height: 100dvh;
+
+}
+
+.instructions { color:white; 
+  h1 { font-size:3rem; }
+}
+
+.card-table { background-color: #333; padding:20px; display: grid; gap:20px;
+  .cards { display: grid; grid-template-columns: repeat( auto-fit, minmax(200px, 1fr) ); gap:20px;
+    .card { width:100%; background:$cardColor; border-radius: 8px;  aspect-ratio: 3 / 4; padding:10px; border:2px solid transparent;
+      appearance: none; --webkit-appearance:none;
+      display:grid; grid-template-rows: 32px 1fr;
+      // display:grid; grid-template-rows: 32px 1fr;
+      &:not([disabled]) { cursor: pointer; }
+      &[disabled] { cursor: no-drop; opacity: 1; color:#555; }
+      &.playing { transform: scale(1.15); box-shadow: 0 0 2rem black; background-color:$cardColorPlaying; transition: transform 1s ease, background-color 1s linear; }
+      &.played { color:gold; background:#111; border-color:gold; }
+    }
+    .points-holder { display: flex; align-items: flex-end; justify-content: flex-end; 
+      .points { border:2px; border-radius: 50%; width:32px; height:32px; line-height: 29px; text-align: center; font-family: $monospace; font-weight: 825;
+        border:0.125em solid currentColor;
+        background-color:#deddff; color:#001649;
+      }
+    }
+    .phrase-holder { display: flex; justify-content: center; align-items: center; min-height: calc(100% - 20px);}
+    blockquote { font-family: $serif; font-size:2rem; text-align: center; font-weight: 400; }
+  }
+}
+.card-players {
+  ul.players { display:grid; gap:20px; padding:20px; }
+  li.player { border: 1px solid #aaa; padding:10px; }
+  .player-name { font-family: $serif; font-size:1.5rem; }
+  .player-score { font-family: $monospace; font-size:1rem; text-align: right; }
+  ul.known-hand { display: flex; gap:10px;
+    li { width:1.5rem; height:1.5rem; border-radius: 50%; color:transparent; cursor: help;
+      &.unplayed { background:#aaa; }
+      &.played { background-color: green;}
+      &.stolen { background-color: red;}
+    }
+  }
+}
+
+.timer { display:grid; grid-template-columns: 120px 1fr; gap:40px; padding-top:2em; font-family: $sans-serif;
+  .seconds { font-family: $monospace; font-size:4rem; font-weight: 725; color:#fff; }
+  .progress-holder { display:flex; align-items: center;
+    .bar { width:100%; height:3rem; position: relative;
+      .fill { position: absolute; top:0; left:0; bottom:0; background:red; transition:width 1s linear; }
+    }
+  }
+  .stakes { grid-column: span 2; color:white; }
+}
+
+.guess { font-family: $sans-serif; color:white;
+  p { text-align: center;}
+  form { display:grid; width:100%; max-width: 400px; grid-template-columns: 1fr 80px; margin-left: auto; margin-right: auto; margin-top:1rem; margin-bottom: 1rem;
+    input { font-family: $serif; font-size:1.25rem; padding:0.5em 0.25em 0.5em 1.5em; padding-right: 0.5em; border-top-left-radius: 1.5rem; border-bottom-left-radius: 1.5rem; border:3px solid transparent; transition: all 0.3s linear;
+      &:focus { border-color:$focusColor; outline:none; color:darken($focusColor,35);
+        ~ button:not([disabled]) { border-color:$focusColor; }
+      }
+    }
+    button { border-top-right-radius: 1.5rem; border-bottom-right-radius: 1.5rem; font-family: $sans-serif; font-weight: 700; border:2px solid transparent; border-left:none; transition: all 0.3s linear; color:darken($focusColor,40);
+      &:not(disabled) { background-color: lighten($color: ($focusColor), $amount: 40);
+        &:hover, &:focus { background: $focusColor; color:white; cursor: pointer; transition: all 0.125s linear; }
+      }
+    }
+  }
+}

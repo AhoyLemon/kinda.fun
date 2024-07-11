@@ -1,0 +1,52 @@
+main.meeting-board
+  .card-table
+    ul.cards
+      li(v-for="card in you.hand")
+        button.card(:class="card.status" @click="playThisCard(card)" :disabled="you.isCurrentlyPlayingACard || card.status === 'played'")
+          .points-holder
+            .points(:point-value="card.points") {{card.points}}
+          .phrase-holder
+            blockquote {{card.phrase}}
+    
+    .guess
+      p Heard something suspicious? Type your guess here.
+      form(@submit.prevent="performGuess()")
+        input(placeholder="your guess..." required v-model="you.guess")
+        button(:disabled="!you.guess") 
+          span(v-if="you.guess") Got You
+          span(v-if="!you.guess") ?
+      p (You will lose {{badGuessPenalty}} points for an incorrect guess)
+    
+    .timer(v-if="you.isCurrentlyPlayingACard")
+      template(v-if="prettyTimerOutput")
+        .seconds-holder
+          .seconds(v-html="prettyTimerOutput")
+        .progress-holder
+          .bar
+            .fill(:style="{width: timerProgressPercent+'%' }")
+      .stakes(v-if="you.isCurrentlyPlayingACard && you.currentCard")
+        p You'll get #[strong {{you.currentCard.points}}] points if nobody calls you out for saying #[strong {{you.currentCard.phrase}}]
+
+  .card-players
+    ul.players
+
+      li.player.you
+        .player-name You
+        ul.known-hand
+          template(v-for="card in you.hand")
+            li.unplayed(v-if="card.status === 'unplayed'" v-tippy="`This card hasn't been played (as far as you know)`") up
+            li.played(v-else-if="card.status === 'played'" v-tippy="`This card been played and scored`") p
+            li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
+            li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
+        .player-score {{you.score}}
+        
+
+      li.player(v-for="player in game.players")
+        .player-name {{player.name}}
+        ul.known-hand
+          template(v-for="card in player.hand")
+            li.unplayed(v-if="card.status === 'unplayed'" v-tippy="`This card hasn't been played (yet)`") up
+            li.played(v-else-if="card.status === 'played'" v-tippy="`This card been played and scored`") p
+            li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
+            li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
+        .player-score {{player.score}}

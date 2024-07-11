@@ -38,7 +38,7 @@ export const allValues = [
   },
   {
     name: "George Foreman",
-    desc: "Has Five Sons Named George (And A Daughter Named Georgetta)",
+    desc: "Has five sons named George (and a daughter named Georgetta)",
     slug: "georgeforeman",
     value: 750,
   },
@@ -507,13 +507,13 @@ export const allValues = [
   },
   {
     name: "Ben Stein",
-    desc: "Said “Bueller?” in Ferris Bueller's Day Off",
+    desc: "Fan of Richard Nixon, said “Bueller?” in Ferris Bueller's Day Off",
     slug: "benstein99",
     value: 150,
   },
   {
     name: "Sir Mix-A-Lot",
-    desc: "Likes Big Butts",
+    desc: "Likes big butts, can't lie",
     slug: "therealsirmixalot",
     value: 150,
   },
@@ -792,7 +792,7 @@ export const allValues = [
   },
   {
     name: "Giorgio A. Tsoukalos",
-    desc: "History's Ancient Aliens",
+    desc: "History's “Ancient Aliens”",
     slug: "thealiensguy",
     value: 100,
   },
@@ -1158,7 +1158,12 @@ export const allValues = [
     slug: "catdrawingguy",
     value: 39,
   },
-  { name: "Les Gold", desc: "Hardcore Pawn", slug: "lesg", value: 35 },
+  {
+    name: "Les Gold",
+    desc: "pawn store owner, “Hardcore Pawn”",
+    slug: "lesg",
+    value: 35,
+  },
   {
     name: "Andy Kindler",
     desc: "Mort on Bob's Burgers",
@@ -1192,7 +1197,7 @@ export const allValues = [
   },
   {
     name: "Joe Arpaio",
-    desc: "Former Sheriff, Convicted of Criminal Contempt",
+    desc: "Former sheriff, convicted of criminal contempt",
     slug: "sheriffjoearpaio",
     value: 30,
   },

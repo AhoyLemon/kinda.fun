@@ -19,6 +19,7 @@
     "sass": "^1.77.6",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",
+    "vue-tippy": "^6.4.4",
     "vue-toastification": "^2.0.0-rc.5",
     "vuedraggable": "^4.1.0"
   },
@@ -26,6 +27,7 @@
     "@rushstack/eslint-patch": "^1.8.0",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vue/eslint-config-prettier": "^9.0.0",
+    "@vue/language-plugin-pug": "^2.0.26",
     "@vue/test-utils": "^2.4.6",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",

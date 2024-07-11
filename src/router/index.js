@@ -99,6 +99,29 @@ const router = createRouter({
         ],
       },
     },
+    {
+      path: "/slip",
+      name: "Let's Ruin This Meeting!",
+      alias: ["/meet", "/meeting"],
+      component: () => import("../views/meeting/Meeting.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content: "This game doesn't have a name yet",
+            },
+          },
+        ],
+      },
+    },
   ],
 });
 

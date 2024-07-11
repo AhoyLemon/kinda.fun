@@ -43,6 +43,13 @@ export function percentOf(total, part) {
     return Math.round((part * 100) / total);
   }
 }
+export function preceisePercentOf(total, part) {
+  if (total == 0 || part == 0) {
+    return 0;
+  } else {
+    return (part * 100) / total;
+  }
+}
 
 export function sendEvent(c, a, l, v) {
   console.log(
