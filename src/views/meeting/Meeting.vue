@@ -119,60 +119,10 @@
   const scoreThisCard = (card) => {
     you.currentCard = {};
     you.isCurrentlyPlayingACard = false;
-    toast.success(`${card.points} points for ${card.phrase}`);
     toast(
       {
         component: MyToast,
         props: {
-          title: card.phrase,
-          points: card.points,
-          message: `nobody caught you saying ${card.phrase}.`,
-        },
-      },
-      {
-        position: POSITION.BOTTOM_LEFT,
-        toastClassName: "blue",
-        icon: "trophy",
-        timeout: 0,
-      },
-    );
-    toast(
-      {
-        component: MyToast,
-        props: {
-          title: card.phrase,
-          points: card.points,
-          message: `nobody caught you saying ${card.phrase}.`,
-        },
-      },
-      {
-        position: POSITION.BOTTOM_LEFT,
-        toastClassName: "white",
-        icon: "trophy",
-        timeout: 0,
-      },
-    );
-    toast(
-      {
-        component: MyToast,
-        props: {
-          title: card.phrase,
-          points: card.points,
-          message: `nobody caught you saying ${card.phrase}.`,
-        },
-      },
-      {
-        position: POSITION.BOTTOM_LEFT,
-        toastClassName: "yellow",
-        icon: "trophy",
-        timeout: 0,
-      },
-    );
-    toast(
-      {
-        component: MyToast,
-        props: {
-          title: card.phrase,
           points: card.points,
           message: `nobody caught you saying ${card.phrase}.`,
         },
@@ -180,24 +130,8 @@
       {
         position: POSITION.BOTTOM_LEFT,
         toastClassName: "green",
-        icon: "trophy",
-        timeout: 0,
-      },
-    );
-    toast(
-      {
-        component: MyToast,
-        props: {
-          title: card.phrase,
-          points: card.points,
-          message: `nobody caught you saying ${card.phrase}.`,
-        },
-      },
-      {
-        position: POSITION.BOTTOM_LEFT,
-        toastClassName: "red",
-        icon: "trophy",
-        timeout: 0,
+        timeout: 8000,
+        icon: false,
       },
     );
     you.score += card.points;

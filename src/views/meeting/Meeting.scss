@@ -10,7 +10,7 @@ $focusColor: #ffc107;
 $blue: #574AE2;
 $cream: #F0F0C9;
 $yellow: #F2BB05;
-$green: #6E0E0A;
+$green: #4DAA57;
 $red: #6E0E0A;
 
 
@@ -49,10 +49,10 @@ $red: #6E0E0A;
   .player-name { font-family: $serif; font-size:1.5rem; }
   .player-score { font-family: $monospace; font-size:1rem; text-align: right; }
   ul.known-hand { display: flex; gap:10px;
-    li { width:1.5rem; height:1.5rem; border-radius: 50%; color:transparent; cursor: help;
-      &.unplayed { background:#aaa; }
-      &.played { background-color: green;}
-      &.stolen { background-color: red;}
+    li { width:1.5rem; height:1.5rem; border-radius: 50%; color:transparent; cursor: help; border:1px solid #999; box-shadow: -2px 2px 1px rgba(0,0,0,0.15);
+      &.unplayed { background:$yellow; }
+      &.played { background-color: $green;}
+      &.stolen { background-color: $red;}
     }
   }
 }
