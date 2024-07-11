@@ -18,6 +18,8 @@
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
   import "vue-toastification/dist/index.css";
+  import MyToast from "./vue/MyToast.vue";
+  import LemonToast from "./vue/LemonToast.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -117,7 +119,87 @@
   const scoreThisCard = (card) => {
     you.currentCard = {};
     you.isCurrentlyPlayingACard = false;
-    toast.info(`${card.points} points for ${card.phrase}`);
+    toast.success(`${card.points} points for ${card.phrase}`);
+    toast(
+      {
+        component: MyToast,
+        props: {
+          title: card.phrase,
+          points: card.points,
+          message: `nobody caught you saying ${card.phrase}.`,
+        },
+      },
+      {
+        position: POSITION.BOTTOM_LEFT,
+        toastClassName: "blue",
+        icon: "trophy",
+        timeout: 0,
+      },
+    );
+    toast(
+      {
+        component: MyToast,
+        props: {
+          title: card.phrase,
+          points: card.points,
+          message: `nobody caught you saying ${card.phrase}.`,
+        },
+      },
+      {
+        position: POSITION.BOTTOM_LEFT,
+        toastClassName: "white",
+        icon: "trophy",
+        timeout: 0,
+      },
+    );
+    toast(
+      {
+        component: MyToast,
+        props: {
+          title: card.phrase,
+          points: card.points,
+          message: `nobody caught you saying ${card.phrase}.`,
+        },
+      },
+      {
+        position: POSITION.BOTTOM_LEFT,
+        toastClassName: "yellow",
+        icon: "trophy",
+        timeout: 0,
+      },
+    );
+    toast(
+      {
+        component: MyToast,
+        props: {
+          title: card.phrase,
+          points: card.points,
+          message: `nobody caught you saying ${card.phrase}.`,
+        },
+      },
+      {
+        position: POSITION.BOTTOM_LEFT,
+        toastClassName: "green",
+        icon: "trophy",
+        timeout: 0,
+      },
+    );
+    toast(
+      {
+        component: MyToast,
+        props: {
+          title: card.phrase,
+          points: card.points,
+          message: `nobody caught you saying ${card.phrase}.`,
+        },
+      },
+      {
+        position: POSITION.BOTTOM_LEFT,
+        toastClassName: "red",
+        icon: "trophy",
+        timeout: 0,
+      },
+    );
     you.score += card.points;
     card.status = "played";
   };

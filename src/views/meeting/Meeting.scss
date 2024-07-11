@@ -7,6 +7,13 @@ $cardColorPlaying: #f2f2ba;
 $focusColor: #ffc107;
 
 
+$blue: #574AE2;
+$cream: #F0F0C9;
+$yellow: #F2BB05;
+$green: #6E0E0A;
+$red: #6E0E0A;
+
+
 .meeting-board { display: grid; grid-template-columns: 1fr 320px; min-height: 100dvh;
 
 }
@@ -54,7 +61,7 @@ $focusColor: #ffc107;
   .seconds { font-family: $monospace; font-size:4rem; font-weight: 725; color:#fff; }
   .progress-holder { display:flex; align-items: center;
     .bar { width:100%; height:3rem; position: relative;
-      .fill { position: absolute; top:0; left:0; bottom:0; background:red; transition:width 1s linear; }
+      .fill { position: absolute; top:0; left:0; bottom:0; background:red;  }
     }
   }
   .stakes { grid-column: span 2; color:white; }
