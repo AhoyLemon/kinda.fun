@@ -176,4 +176,15 @@ export const socketEvents = (io, socket) => {
   });
 
   ///////////////////////////////////////////////////
+  // Meeting
+  socket.on("createMeetingLobby", (msg) => {
+    console.table([
+      {
+        game: `Let's Ruin This Meeting!`,
+        roomCode: msg.roomCode,
+      },
+    ]);
+  });
+
+  //createMeetingLobby
 };

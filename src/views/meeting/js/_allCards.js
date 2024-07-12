@@ -1,8 +1,8 @@
 export const allCards = [
   // 5 Points
   {
-    phrase: `"bite the bullet"`,
-    points: 15,
+    phrase: `bite the bullet`,
+    points: 5,
   },
   /////////////
   //
@@ -30,7 +30,7 @@ export const allCards = [
     points: 10,
   },
   {
-    phrase: `"hot dog!"`,
+    phrase: `hot dog!`,
     points: 10,
   },
   {
@@ -43,7 +43,7 @@ export const allCards = [
   //
   // 15 Points
   {
-    phrase: `"push the envelope"`,
+    phrase: `push the envelope`,
     points: 15,
   },
   {
@@ -51,11 +51,11 @@ export const allCards = [
     points: 15,
   },
   {
-    phrase: `"thrown under the bus"`,
+    phrase: `thrown under the bus`,
     points: 15,
   },
   {
-    phrase: `"true out of the box thinking"`,
+    phrase: `true out of the box thinking`,
     points: 15,
   },
   {
@@ -63,19 +63,28 @@ export const allCards = [
     points: 15,
   },
   {
-    phrase: `"you can't get there from here"`,
+    phrase: `you can't get there from here`,
     points: 15,
   },
   {
-    phrase: `"haters gonna hate"`,
+    phrase: `haters gonna hate`,
     points: 15,
   },
   {
-    phrase: `"exactly six dollars"`,
+    phrase: `turkey leg`,
     points: 15,
   },
   {
-    phrase: `"what the world needs now is..."`,
+    phrase: `exactly six dollars`,
+    points: 15,
+    alternates: [`6 dollars`, `six dollars`, `exactly 6 dollars`],
+  },
+  {
+    phrase: `what the world needs now is...`,
+    points: 15,
+  },
+  {
+    phrase: `combo breaker`,
     points: 15,
   },
   /////////////

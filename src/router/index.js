@@ -109,7 +109,7 @@ const router = createRouter({
           {
             tag: "link",
             attrs: {
-              href: "https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap",
+              href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Noto+Sans+Mono:wght@100..900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap",
               rel: "stylesheet",
             },
           },

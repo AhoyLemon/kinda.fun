@@ -53,18 +53,28 @@ $red: #6E0E0A;
       &.unplayed { background:$yellow; }
       &.played { background-color: $green;}
       &.stolen { background-color: $red;}
+      &.playing { background-color: $blue;}
     }
   }
 }
 
-.timer { display:grid; grid-template-columns: 120px 1fr; gap:40px; padding-top:2em; font-family: $sans-serif;
-  .seconds { font-family: $monospace; font-size:4rem; font-weight: 725; color:#fff; }
-  .progress-holder { display:flex; align-items: center;
-    .bar { width:100%; height:3rem; position: relative;
-      .fill { position: absolute; top:0; left:0; bottom:0; background:red;  }
-    }
+.timer { 
+  //display:grid; grid-template-columns: 120px 1fr; gap:40px; padding-top:2em; font-family: $sans-serif;
+  // .seconds { font-family: $monospace; font-size:4rem; font-weight: 725; color:#fff; }
+  // .progress-holder { display:flex; align-items: center;
+  //   .bar { width:100%; height:3rem; position: relative;
+  //     .fill { position: absolute; top:0; left:0; bottom:0; background:red;  }
+  //   }
+  // }
+  // .stakes { grid-column: span 2; color:white; }
+  position: fixed; bottom:0; left:0; right:320px;
+  .bar { position: absolute; bottom:0; left:0; right: 0; height:32px; background-color: black;
+    .fill { position: absolute; top:0; left:0; bottom:0; background:$yellow; }
   }
-  .stakes { grid-column: span 2; color:white; }
+  .seconds-holder { position: absolute; bottom:32px; left:0; padding-left: 20px;
+    .seconds { color:$yellow; font-family: $monospace; font-size:2.5rem; font-weight: 725; }
+    .after-seconds { color:$cream; font-family: $sans-serif; font-size:1rem; padding-left:1em; }
+  }
 }
 
 .guess { font-family: $sans-serif; color:white;
@@ -82,3 +92,9 @@ $red: #6E0E0A;
     }
   }
 }
+
+
+
+
+//// PREGAME
+.pregame-lobby { background-color: #333; padding:20px; }
