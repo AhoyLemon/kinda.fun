@@ -4,6 +4,11 @@ export const allCards = [
     phrase: `bite the bullet`,
     points: 5,
   },
+  {
+    phrase: `Dunkin' donuts`,
+    points: 5,
+    alternates: ["dunkin", "dunkin'", "dunkin donuts"],
+  },
   /////////////
   //
   //

@@ -97,4 +97,22 @@ $red: #6E0E0A;
 
 
 //// PREGAME
-.pregame-lobby { background-color: #333; padding:20px; }
+.pregame-lobby { background-color: #333; padding:20px; display:flex; align-items: center; justify-content: center;
+
+  form { background:$cream; padding:20px; display: grid; gap:10px; font-family: $sans-serif;
+    fieldset { width:300px; position: relative; border:3px solid; background-color: rgba(255,255,255,0.75);
+      label { font-weight: 675; padding-left:1rem; padding-top:0.25rem; display: block; }
+      input { padding:0.4rem 1rem; width:100%; outline:none; font-family: $serif; font-weight: 850; font-size:1.25rem; border:none; background-color: transparent; }
+
+      &:has(input:focus) { background:white;
+        label { color:$blue; }
+        input { color:$blue; }
+        border-color: $blue;
+      }
+    }
+    button[type="submit"] { font-family: $sans-serif; padding:0.4rem 1rem; display: block; width:100%; font-size:1.15rem; font-weight: 800; cursor: pointer; border:2px solid rgba($blue,0.75); background-color:rgba($blue,0.15);
+      &:hover, &:focus { background:rgba($blue,0.75); color:white; }
+    }
+  }
+  
+}

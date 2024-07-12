@@ -3,10 +3,12 @@ main.meeting-board
 
   .pregame-lobby(v-if="!game.isGameStarted")
 
-    p fuck
-
-  
-
+    form(@submit.prevent="savePlayerInfo()")
+      fieldset
+        label(for="YourName" ) Your Name
+        input#YourName(type="text" v-model="you.nameInput" placeholder="What's your name, bitch?" autocomplete="off" data-1p-ignore)
+      .button-holder
+        button(type="submit" ) Save Name
 
   .card-table(v-if="game.isGameStarted")
     ul.cards
@@ -43,7 +45,9 @@ main.meeting-board
     ul.players
 
       li.player.you
-        .player-name You
+        .player-name
+          span(v-if="you.name") {{you.name}}
+          span(v-else) You
         ul.known-hand
           template(v-for="card in you.hand")
             li.unplayed(v-if="card.status === 'unplayed'" v-tippy="`This card hasn't been played (yet)`") up

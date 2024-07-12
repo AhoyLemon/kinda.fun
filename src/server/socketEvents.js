@@ -19,18 +19,63 @@ export const socketEvents = (io, socket) => {
   ///////////////////////////////////////////////////
   ///////////////////////////////////////////////////
   // General Socket Crap
-  console.log("socket.io - connection");
+  // console.log("⚡⚡⚡⚡⚡\nsocket.io - connection");
+
+  console.table([
+    {
+      server: "socket.io",
+      action: "connection",
+      id: socket.id,
+    },
+  ]);
+
+  io.to(socket.id).emit("getSocketID", socket.id);
+
   socket.on("disconnect", () => {
-    console.log(`socket.io - socket.id \`${socket.id}\` disconnected`);
-  });
-  socket.on("signin", () => {
-    console.log("socket.io - signin");
+    console.table([
+      {
+        server: "socket.io",
+        action: "disconnection",
+        id: socket.id,
+      },
+    ]);
   });
 
-  io.on("connection", (socket) => {
-    const socketID = socket.id;
-    io.to(socketID).emit("getSocketID", socketID);
+  socket.on("createRoom", (msg) => {
+    //io.emit('createRoom', msg);
+    console.log(msg.roomCode + " - created a room for " + msg.gameName);
+    socket.join(msg.roomCode);
+    console.log(msg.roomCode + " - join by creator");
+
+    // TODO: I need to figure out how to get a list of all clients in a room.
+    console.table([
+      {
+        game: msg.gameName,
+        action: "Room Created",
+        roomCode: msg.roomCode,
+      },
+    ]);
   });
+
+  socket.on("joinRoom", (msg) => {
+    console.log(msg.roomCode + " - guest joined");
+    socket.join(msg.roomCode);
+
+    // Broadcast a join message gloablly.
+    io.emit("joinRoom", msg);
+
+    // Request players from the host.
+    socket.to(msg.roomCode).emit("requestPlayers");
+
+    console.table([
+      {
+        game: msg.gameName,
+        action: "Room Joined",
+        roomCode: msg.roomCode,
+      },
+    ]);
+  });
+
   ///////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////
@@ -177,13 +222,23 @@ export const socketEvents = (io, socket) => {
 
   ///////////////////////////////////////////////////
   // Meeting
-  socket.on("createMeetingLobby", (msg) => {
+
+  socket.on("savePlayerInfo", (msg) => {
     console.table([
       {
-        game: `Let's Ruin This Meeting!`,
         roomCode: msg.roomCode,
+        game: msg.gameName,
+        socketID: msg.socketID,
+        playerName: msg.playerName,
       },
     ]);
+
+    io.in(msg.roomCode).emit("getPlayerInfo", {
+      roomCode: msg.roomCode,
+      game: msg.gameName,
+      socketID: msg.socketID,
+      playerName: msg.playerName,
+    });
   });
 
   //createMeetingLobby

@@ -27,6 +27,7 @@
   import { io } from "socket.io-client";
   const socket = io.connect();
 
+  const gameName = "Let's Ruin This Meeting!";
   const timeToScore = 10000;
   const badGuessPenalty = 4;
   const fakePlayerCount = 3;
@@ -38,8 +39,12 @@
     players: [],
   });
   const you = reactive({
+    socketID: "",
+    nameInput: "",
+    name: "",
     isRoomHost: false,
     hand: [],
+    isCurrentlyInGame: false,
     isCurrentlyPlayingACard: false,
     currentCard: {},
     score: 0,
@@ -48,6 +53,17 @@
   });
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
+
+  const savePlayerInfo = () => {
+    you.name = you.nameInput;
+
+    socket.emit("savePlayerInfo", {
+      roomCode: game.roomCode,
+      gameName: gameName,
+      socketID: you.socketID,
+      playerName: you.name,
+    });
+  };
 
   const generateFakePlayers = () => {
     while (game.players.length < fakePlayerCount) {
@@ -117,7 +133,6 @@
 
       if (timer.value <= 0) {
         clearInterval(interval); // Clear the interval when timer reaches 0
-        // alert("hi");
         scoreThisCard(card);
       }
     }, 10);
@@ -332,10 +347,26 @@
     }
     game.roomCode = makeID(4);
 
-    socket.emit("createMeetingLobby", {
+    socket.emit("createRoom", {
       roomCode: game.roomCode,
+      gameName: gameName,
     });
 
+    let url = new URL(
+      location.protocol + "//" + location.host + location.pathname,
+    );
+    url.searchParams.set("room", game.roomCode);
+    window.history.pushState({}, "", url);
+  };
+
+  const joinRoom = () => {
+    // Try to join a room with the entered code.
+    socket.emit("joinRoom", {
+      roomCode: game.roomCode,
+      gameName: gameName,
+    });
+
+    you.isCurrentlyPlayingACard = true;
     let url = new URL(
       location.protocol + "//" + location.host + location.pathname,
     );
@@ -365,10 +396,42 @@
     }
   });
 
+  // socket.on("requestPlayers", function (msg) {
+  //   console.log("The client wants players from me!");
+  //   if (you.isRoomHost) {
+  //     socket.emit("updatePlayers", {
+  //       roomCode: game.roomCode,
+  //       players: game.players,
+  //       gameStarted: game.isGameStarted,
+  //     });
+  //     console.log(
+  //       "I'm the host! I gave the room all the players I know about!",
+  //     );
+  //   } else {
+  //     console.warn("I'm not the host! I don't care about that.");
+  //   }
+  // });
+
+  socket.on("getSocketID", function (msg) {
+    console.info("Player socketID is " + msg);
+    you.socketID = msg;
+  });
+
+  socket.on("getPlayerInfo", function (msg) {
+    console.info("Somebody updated their player info");
+    console.table(msg);
+  });
+
   // game.players = [{"name":"Roger Stone","hand":[{"phrase":"\"true out of the box thinking\"","points":15,"status":"stolen"},{"phrase":"\"exactly six dollars\"","points":15,"status":"stolen"},{"phrase":"\"bite the bullet\"","points":15,"status":"unplayed"},{"phrase":"Sriracha","points":10,"status":"played"}],"score":10},{"name":"Ted DiBiase","hand":[{"phrase":"\"haters gonna hate\"","points":15,"status":"stolen"},{"phrase":"Sonia Sotomayor","points":30,"status":"unplayed"},{"phrase":"stickers","points":10,"status":"unplayed"},{"phrase":"1947","points":30,"status":"stolen"}],"score":0},{"name":"Kent “Toast” French","hand":[{"phrase":"stuffed animal","points":10,"status":"unplayed"},{"phrase":"Sufjan Stevens","points":30,"status":"unplayed"},{"phrase":"\"thrown under the bus\"","points":15,"status":"stolen"},{"phrase":"Alaska","points":10,"status":"unplayed"}],"score":0}]
 
   onMounted(() => {
-    createRoom();
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("create")) {
+      createRoom();
+    } else if (urlParams.has("room")) {
+      game.roomCode = urlParams.get("room").toUpperCase();
+      joinRoom();
+    }
 
     // game.deck = shuffle(allCards);
 
