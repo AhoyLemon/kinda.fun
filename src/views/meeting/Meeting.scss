@@ -7,6 +7,7 @@ $cardColorPlaying: #f2f2ba;
 $focusColor: #ffc107;
 
 
+$white: #efefef;
 $blue: #574AE2;
 $cream: #F0F0C9;
 $yellow: #F2BB05;
@@ -24,14 +25,16 @@ $red: #6E0E0A;
 
 .card-table { background-color: #333; padding:20px; display: grid; gap:20px;
   .cards { display: grid; grid-template-columns: repeat( auto-fit, minmax(200px, 1fr) ); gap:20px;
-    .card { width:100%; background:$cardColor; border-radius: 8px;  aspect-ratio: 3 / 4; padding:10px; border:2px solid transparent;
+    .card { width:100%; background:$cardColor; border-radius: 8px;  aspect-ratio: 3 / 2; padding:10px; border:2px solid transparent;
       appearance: none; --webkit-appearance:none;
       display:grid; grid-template-rows: 32px 1fr;
       // display:grid; grid-template-rows: 32px 1fr;
       &:not([disabled]) { cursor: pointer; }
       &[disabled] { cursor: no-drop; opacity: 1; color:#555; }
       &.playing { transform: scale(1.15); box-shadow: 0 0 2rem black; background-color:$cardColorPlaying; transition: transform 1s ease, background-color 1s linear; }
-      &.played { color:gold; background:#111; border-color:gold; }
+      // &.played { color:$yellow; background:#111; border-color:gold; }
+      &.played { background:lighten($yellow,20); color:darken($yellow,30) }
+      &.stolen { background:lighten($red,48); color:darken($red,5); }
     }
     .points-holder { display: flex; align-items: flex-end; justify-content: flex-end; 
       .points { border:2px; border-radius: 50%; width:32px; height:32px; line-height: 29px; text-align: center; font-family: $monospace; font-weight: 825;
@@ -101,8 +104,10 @@ $red: #6E0E0A;
 //// PREGAME
 .pregame-lobby { background-color: #333; padding:20px; display:flex; align-items: center; justify-content: center;
 
+  .panel { width:360px; display:grid; gap:20px; }
+
   form { background:$green; padding:20px; display: grid; gap:10px; font-family: $sans-serif;
-    fieldset { width:300px; position: relative; border:3px solid; background-color: rgba(255,255,255,0.75);
+    fieldset { position: relative; border:3px solid; background-color: rgba(255,255,255,0.75);
       label { font-weight: 675; padding-left:1rem; padding-top:0.25rem; display: block;
         &.required:after { content:'*'; color:$red; }
       }
@@ -114,13 +119,28 @@ $red: #6E0E0A;
         border-color: $blue;
       }
     }
-    button[type="submit"] { font-family: $sans-serif; padding:0.4rem 1rem; display: block; width:100%; font-size:1.15rem; font-weight: 800; cursor: pointer; border:2px solid rgba($blue,0.75); background-color:rgba($blue,0.15);
-      &:hover, &:focus { background:rgba($blue,0.75); color:white; }
+    button[type="submit"] { font-family: $sans-serif; padding:0.6rem 1rem; display: block; width:100%; font-size:1.15rem; font-weight: 725; cursor: pointer; border:2px solid rgba($white,0.75); background-color:rgba($white,0.15); color:rgba($white,0.95); transition: all 0.15s linear;
+      &:hover, &:focus { background:rgba($white,0.92); color:$green; }
+    }
+  }
+  button.start-game { background-color: $yellow; color:darken($yellow,35); font-family: $sans-serif; font-weight: 825; font-size:1.25rem; display: block; width: 100%; padding:0.75em 1em; border:2px solid rgba(0,0,0,.35); transition:all 0.3s linear;
+    &[disabled] { opacity: 0.5; color:darken($yellow,30);}
+    &:not([disabled]) { cursor: pointer;
+      &:hover, &:focus { background-color: lighten($yellow,40); color:darken($yellow,30); }
     }
   }
   
   .room-code { position: absolute; top:0; left:0; padding:20px;
-    .label { font-family: $sans-serif; color:white; }
+    .label { font-family: $sans-serif; color:$white; }
     .display { font-family: $monospace; font-size:3.5em; color:$yellow; font-weight: 800; line-height: 90%; }
+    .how-to-share { font-family: $sans-serif; color:$white; font-size:0.75rem; max-width: 160px; padding-top:0.5em; }
   }
+}
+
+.tippy-box {
+  &[data-theme="light"] { background:$cream; color:#222;
+    .tippy-arrow { color:$cream; }
+  }
+  .tippy-content { font-family: $sans-serif; font-weight: 525;}
+
 }

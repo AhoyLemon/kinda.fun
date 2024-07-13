@@ -256,5 +256,37 @@ export const socketEvents = (io, socket) => {
     });
   });
 
-  //createMeetingLobby
+  socket.on("sendPlayerList", (msg) => {
+    console.log("sendPlayerUpdates");
+    console.table(msg.players);
+    io.in(msg.roomCode).emit("receivePlayerList", {
+      roomCode: msg.roomCode,
+      from: msg.from,
+      players: msg.players,
+      isGameStarted: msg.isGameStarted,
+    });
+  });
+
+  socket.on("startTheGame", (msg) => {
+    console.log("startTheGame");
+
+    io.in(msg.roomCode).emit("receiveStartGameMessage", {
+      roomCode: msg.roomCode,
+      from: msg.from,
+      players: msg.players,
+    });
+  });
+
+  socket.on("sendPlayerUpdate", (msg) => {
+    console.log("sendPlayerUpdate");
+    io.in(msg.roomCode).emit("receivePlayerUpdate", {
+      roomCode: msg.roomCode,
+      from: msg.from,
+      socketID: msg.socketID,
+      score: msg.score,
+      scoredCard: msg.scoredCard,
+      stolenCard: msg.stolenCard,
+      toast: msg.toast,
+    });
+  });
 };

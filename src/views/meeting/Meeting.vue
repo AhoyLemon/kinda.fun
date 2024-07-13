@@ -27,32 +27,15 @@
   import { io } from "socket.io-client";
   const socket = io.connect();
 
-  const gameName = "Let's Ruin This Meeting!";
-  const timeToScore = 10000;
-  const badGuessPenalty = 4;
-  const fakePlayerCount = 3;
-  const cardsPerPlayer = 4; // Number of cards each player will get
-  const game = reactive({
-    roomCode: "",
-    isGameStarted: false,
-    deck: [],
-    players: [],
-  });
-  const you = reactive({
-    socketID: "",
-    nameInput: "",
-    jobTitleInput: "",
-    name: "",
-    jobTitle: "",
-    isHost: false,
-    hand: [],
-    isCurrentlyInGame: false,
-    isCurrentlyPlayingACard: false,
-    currentCard: {},
-    score: 0,
-    guess: "",
-    stolenCards: [],
-  });
+  import {
+    gameName,
+    timeToScore,
+    badGuessPenalty,
+    fakePlayerCount,
+    cardsPerPlayer,
+    game,
+    you,
+  } from "./js/_variables";
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
 
@@ -92,60 +75,89 @@
     });
   };
 
-  const generateFakePlayers = () => {
-    while (game.players.length < fakePlayerCount) {
-      const randomCelebrity = randomFrom(allValues);
+  // const generateFakePlayers = () => {
+  //   while (game.players.length < fakePlayerCount) {
+  //     const randomCelebrity = randomFrom(allValues);
 
-      let i = 0;
-      game.players.push({
-        id: randomNumber(1000, 10000),
-        name: randomCelebrity.name,
-        hand: [],
-        // knownHand: playerHand,
-        score: 0,
-      });
-    }
-  };
+  //     let i = 0;
+  //     game.players.push({
+  //       id: randomNumber(1000, 10000),
+  //       name: randomCelebrity.name,
+  //       hand: [],
+  //       // knownHand: playerHand,
+  //       score: 0,
+  //     });
+  //   }
 
-  const dealTheCards = () => {
-    const totalPlayers = game.players.length + 1; // Including you
+  // };
+
+  const shuffleUpAndDeal = () => {
+    game.deck = shuffle([...allCards]);
+
+    const totalPlayers = game.players.length;
     const totalCardsNeeded = totalPlayers * cardsPerPlayer;
-
     if (game.deck.length < totalCardsNeeded) {
       console.error("Not enough cards to deal");
+      alert("Not enough cards to deal");
       return;
-    }
-
-    // Deal cards to your hand
-    for (let i = 0; i < cardsPerPlayer; i++) {
-      let newCard = game.deck.shift(); // Remove the first card from the deck
-      newCard.status = "unplayed";
-      you.hand.push(newCard);
     }
 
     // // Deal cards to each player's hand
     game.players.forEach((player) => {
+      player.hand = [];
       for (let i = 0; i < cardsPerPlayer; i++) {
         let newCard = game.deck.shift(); // Remove the first card from the deck
         newCard.status = "unplayed";
-
-        // Fake some statuses for these cards....
-        const r = randomNumber(1, 10);
-        let cardStatus;
-        if (r < 6) {
-          cardStatus = "unplayed";
-        } else if (r < 8) {
-          cardStatus = "played";
-          player.score += newCard.points;
-          alert;
-        } else {
-          cardStatus = "stolen";
-        }
-        newCard.status = cardStatus;
         player.hand.push(newCard);
       }
     });
+
+    socket.emit("startTheGame", {
+      roomCode: game.roomCode,
+      from: you.socketID,
+      players: game.players,
+    });
   };
+
+  // const dealTheCards = () => {
+  //   const totalPlayers = game.players.length + 1; // Including you
+  //   const totalCardsNeeded = totalPlayers * cardsPerPlayer;
+
+  //   if (game.deck.length < totalCardsNeeded) {
+  //     console.error("Not enough cards to deal");
+  //     return;
+  //   }
+
+  //   // Deal cards to your hand
+  //   for (let i = 0; i < cardsPerPlayer; i++) {
+  //     let newCard = game.deck.shift(); // Remove the first card from the deck
+  //     newCard.status = "unplayed";
+  //     you.hand.push(newCard);
+  //   }
+
+  //   // // Deal cards to each player's hand
+  //   game.players.forEach((player) => {
+  //     for (let i = 0; i < cardsPerPlayer; i++) {
+  //       let newCard = game.deck.shift(); // Remove the first card from the deck
+  //       newCard.status = "unplayed";
+
+  //       // Fake some statuses for these cards....
+  //       const r = randomNumber(1, 10);
+  //       let cardStatus;
+  //       if (r < 6) {
+  //         cardStatus = "unplayed";
+  //       } else if (r < 8) {
+  //         cardStatus = "played";
+  //         player.score += newCard.points;
+  //         alert;
+  //       } else {
+  //         cardStatus = "stolen";
+  //       }
+  //       newCard.status = cardStatus;
+  //       player.hand.push(newCard);
+  //     }
+  //   });
+  // };
 
   const playThisCard = (card) => {
     you.currentCard = card;
@@ -183,8 +195,19 @@
         icon: false,
       },
     );
-    you.score += card.points;
+    findMe().score += card.points;
     card.status = "played";
+
+    socket.emit("sendPlayerUpdate", {
+      roomCode: game.roomCode,
+      from: you.socketID,
+      socketID: you.socketID,
+      score: findMe().score,
+      scoredCard: card,
+      toast: {
+        message: `${you.name} just scored a card and got ${card.points} points.`,
+      },
+    });
   };
 
   // const you = reactive({
@@ -217,9 +240,16 @@
     ) {
       const player = game.players[playerIndex];
       for (const card of player.hand) {
-        if (card.phrase.toLowerCase() === yourGuess) {
+        if (
+          card.phrase.toLowerCase() === yourGuess ||
+          (card.alternates &&
+            card.alternates.some((alt) => alt.toLowerCase() === yourGuess))
+        ) {
           actualPhrase = card.phrase;
-          if (card.status === "stolen") {
+          if (player.socketID === you.socketID) {
+            severelyPenalizeTerribleGuess(card);
+            matchFound = true;
+          } else if (card.status === "stolen") {
             stolenBy = card.stolenBy;
             matchFound = true;
           } else if (card.status === "played") {
@@ -231,11 +261,11 @@
               ...card,
               status: "stolen",
               playerIndex,
-              playerId: player.id,
+              socketID: player.socketID,
               playerName: player.name,
             };
             card.status = "stolen";
-            card.stolenBy = "Vladimir Fakename";
+            card.stolenBy = you.name;
             matchFound = true;
           }
           break;
@@ -252,12 +282,11 @@
           component: MyToast,
           props: {
             title: "Too Late!",
-            // points: match.points,
             message: `${actualPhrase ?? yourGuess} has already been stolen by ${stolenBy}.`,
           },
         },
         {
-          position: POSITION.BOTTOM_RIGHT,
+          position: POSITION.BOTTOM_LEFT,
           toastClassName: "yellow",
           timeout: 8000,
           icon: false,
@@ -274,47 +303,71 @@
           },
         },
         {
-          position: POSITION.BOTTOM_RIGHT,
+          position: POSITION.BOTTOM_LEFT,
           toastClassName: "yellow",
           timeout: 8000,
           icon: false,
         },
       );
-      you.guess = "";
+    } else if (!matchFound) {
+      penalizeBadGuess(yourGuess);
+    }
+    you.guess = "";
+  };
+
+  const findMe = () => {
+    const myPlayerObject = game.players.find(
+      (player) => player.socketID === you.socketID,
+    );
+    if (!myPlayerObject) {
+      return {
+        hand: [],
+        isHost: false,
+        name: "",
+        jobTitle: "",
+        score: "",
+        socketID: "",
+      };
     } else {
-      // Check through the user's own hand
-      for (const card of you.hand) {
-        if (card.phrase.toLowerCase() === yourGuess) {
-          severelyPenalizeTerribleGuess(card);
-          return;
-        }
-      }
-      penalizeBadGuess();
+      return myPlayerObject;
     }
   };
 
-  const penalizeBadGuess = () => {
-    you.score -= badGuessPenalty;
+  const penalizeBadGuess = (yourGuess) => {
+    const yourLoss = 0 - badGuessPenalty;
+    findMe().score -= badGuessPenalty;
     toast(
       {
         component: MyToast,
         props: {
           title: "Nope!",
-          points: 0 - badGuessPenalty,
+          points: yourLoss,
           message: `Nobody had ${you.guess}.`,
         },
       },
       {
-        position: POSITION.BOTTOM_RIGHT,
+        position: POSITION.BOTTOM_LEFT,
         toastClassName: "red",
         timeout: 8000,
         icon: false,
       },
     );
     you.guess = "";
+
+    socket.emit("sendPlayerUpdate", {
+      roomCode: game.roomCode,
+      from: you.socketID,
+      socketID: you.socketID,
+      score: findMe().score,
+      toast: {
+        message: `${findMe().name} lost ${badGuessPenalty} for a bad guess`,
+      },
+    });
   };
 
   const severelyPenalizeTerribleGuess = (card) => {
+    const yourLoss = 0 - card.points;
+    findMe().score -= card.points;
     toast(
       {
         component: MyToast,
@@ -325,13 +378,22 @@
         },
       },
       {
-        position: POSITION.BOTTOM_RIGHT,
+        position: POSITION.BOTTOM_LEFT,
         toastClassName: "red",
         timeout: 8000,
         icon: false,
       },
     );
     you.guess = "";
+    socket.emit("sendPlayerUpdate", {
+      roomCode: game.roomCode,
+      from: you.socketID,
+      socketID: you.socketID,
+      score: findMe().score,
+      toast: {
+        message: `${findMe().name} lost ${card.points} for trying to guess their own card`,
+      },
+    });
   };
 
   const rewardGoodGuess = (match) => {
@@ -351,17 +413,35 @@
         icon: false,
       },
     );
-    console.table(match);
-    you.score += match.points;
+    findMe().score += match.points;
     you.stolenCards.push({
       phrase: match.phrase,
+      points: match.points,
       stolenFrom: {
-        id: match.id,
-        name: match.playerName,
-        index: match.playerIndex,
+        playerName: match.playerName,
+        socketID: match.socketID,
       },
     });
-    you.guess = "";
+
+    socket.emit("sendPlayerUpdate", {
+      roomCode: game.roomCode,
+      from: you.socketID,
+      socketID: you.socketID,
+      score: findMe().score,
+      stolenCard: match,
+    });
+
+    // console.table(match);
+    // you.score += match.points;
+    // you.stolenCards.push({
+    //   phrase: match.phrase,
+    //   stolenFrom: {
+    //     id: match.id,
+    //     name: match.playerName,
+    //     index: match.playerIndex,
+    //   },
+    // });
+    // you.guess = "";
   };
 
   const createRoom = () => {
@@ -428,6 +508,18 @@
     }
   });
 
+  const computedPlayerHand = computed(() => {
+    // Loop through all the players in game.players
+    for (let player of game.players) {
+      // If player.socketID matches you.socketID, return the player.hand array
+      if (player.socketID === you.socketID) {
+        return player.hand;
+      }
+    }
+    // Return an empty array if no match is found
+    return [];
+  });
+
   socket.on("hostSelected", (hostSocketId) => {
     console.log(`Host selected: ${hostSocketId}`);
     if (socket.id === hostSocketId) {
@@ -442,8 +534,9 @@
 
   socket.on("receivePlayerList", (msg) => {
     console.log(`Receiving new player list from  ${msg.from}`);
-    console.table(msg.players);
+    // console.table(msg.players);
     game.players = msg.players;
+    game.isGameStarted = msg.isGameStarted;
   });
 
   socket.on("sendThePlayerListIfYouAreHost", (msg) => {
@@ -453,6 +546,7 @@
         roomCode: game.roomCode,
         from: you.socketID,
         players: game.players,
+        isGameStarted: game.isGameStarted,
       });
     }
   });
@@ -475,6 +569,102 @@
         from: you.socketID,
         players: game.players,
       });
+    }
+  });
+
+  socket.on("receiveStartGameMessage", (msg) => {
+    console.log(`Receiving new player list from  ${msg.from}`);
+    game.players = msg.players;
+    game.isGameStarted = true;
+  });
+
+  socket.on("receivePlayerUpdate", (msg) => {
+    console.log(`Receiving player update from ${msg.from}`);
+    if (you.socketID == msg.from) {
+      console.log("That's me. I'm ignoring it");
+      return;
+    }
+
+    // Find the player in game.players whose socketID matches msg.socketID
+    const player = game.players.find(
+      (player) => player.socketID === msg.socketID,
+    );
+    if (player) {
+      // Update the score if a new score came in the payload
+      if (msg.score || msg.score === 0) {
+        player.score = msg.score;
+        console.log(
+          `Updated score for player ${player.name} to ${player.score}`,
+        );
+      }
+
+      // Mark the card played if it has been scored on
+      if (msg.scoredCard) {
+        game.players.some((p) =>
+          p.hand.some((card) => {
+            if (card.phrase === msg.scoredCard.phrase) {
+              card.status = "played";
+              return true; // Exit the loop once a match is found
+            }
+          }),
+        );
+      }
+
+      // Mark the card stolen if somebody guessed it before it was scored.
+      if (msg.stolenCard) {
+        game.players.some((p) =>
+          p.hand.some((card) => {
+            if (card.phrase === msg.stolenCard.phrase) {
+              card.status = "stolen";
+              return true; // Exit the loop once a match is found
+            }
+          }),
+        );
+
+        // Is somebody stealing YOUR card!??
+        if (msg.stolenCard.phrase === you.currentCard.phrase) {
+          clearInterval(interval);
+          timer.value = 0;
+          you.currentCard = {};
+          you.isCurrentlyPlayingACard = false;
+        }
+
+        // Send a different toast, depending on if you were robbed or not.
+        if (msg.stolenCard.socketID === you.socketID) {
+          toast(
+            {
+              component: MyToast,
+              props: {
+                title: `You got robbed!`,
+                points: msg.stolenCard.points,
+                message: `${player.name} just scored your ${msg.stolenCard.phrase} card`,
+              },
+            },
+            {
+              position: POSITION.BOTTOM_RIGHT,
+              toastClassName: "red",
+              timeout: 8000,
+              icon: false,
+            },
+          );
+        } else {
+          toast(
+            `${player.name} just stole a card from ${msg.stolenCard.playerName} for ${msg.stolenCard.points}`,
+            {
+              timeout: 6000,
+            },
+          );
+        }
+      }
+
+      // Show a toast if the payload says so.
+      if (msg.toast && msg.toast.message) {
+        toast(msg.toast.message, {
+          timeout: 6000,
+        });
+      }
+    } else {
+      console.log("Player not found");
     }
   });
 
