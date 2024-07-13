@@ -3,10 +3,18 @@ main.meeting-board
 
   .pregame-lobby(v-if="!game.isGameStarted")
 
+    .room-code(v-if="game.roomCode")
+      .label your room code
+      .display {{game.roomCode}}
+      .how-to-share(v-if="game.players.length > 0") Share this URL to invite your friends to play.
+
     form(@submit.prevent="savePlayerInfo()")
       fieldset
-        label(for="YourName" ) Your Name
-        input#YourName(type="text" v-model="you.nameInput" placeholder="What's your name, bitch?" autocomplete="off" data-1p-ignore)
+        label.required(for="YourName") Your Name
+        input#YourName(type="text" v-model="you.nameInput" placeholder="" autocomplete="on" data-1p-ignore)
+      fieldset
+        label(for="YourJobTitle") Job Title
+        input#YourJobTitle(type="text" v-model="you.jobTitleInput" placeholder="ex: Cat Herder" autocomplete="on" data-1p-ignore)
       .button-holder
         button(type="submit" ) Save Name
 
@@ -44,10 +52,12 @@ main.meeting-board
   .card-players
     ul.players
 
-      li.player.you
+      //-li.player.you
         .player-name
           span(v-if="you.name") {{you.name}}
           span(v-else) You
+        .player-job(v-if="you.jobTitle")
+          span {{you.jobTitle}}
         ul.known-hand
           template(v-for="card in you.hand")
             li.unplayed(v-if="card.status === 'unplayed'" v-tippy="`This card hasn't been played (yet)`") up
@@ -55,15 +65,33 @@ main.meeting-board
             li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
             li.playing(v-else-if="card.status === 'playing'" v-tippy="`You're playing this card`") s
             li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
-        .player-score {{you.score}}
+        .player-score(v-if="game.isGameStarted") {{you.score}}
         
 
       li.player(v-for="player in game.players")
-        .player-name {{player.name}}
-        ul.known-hand
-          template(v-for="card in player.hand")
-            li.unplayed(v-if="card.status === 'unplayed'" v-tippy="`This card hasn't been played (as far as you know)`") up
-            li.played(v-else-if="card.status === 'played'" v-tippy="`This card been played and scored`") p
-            li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
-            li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
-        .player-score {{player.score}}
+
+        .host-icon(v-if="player.isHost")
+          span(v-tippy="`You are hosting this game`") 👑
+        template(v-if="player.socketID == you.socketID")
+          .player-name {{player.name}} (you)
+          .player-job(v-if="player.jobTitle")
+            span {{player.jobTitle}}
+          ul.known-hand
+            template(v-for="card in player.hand")
+              li.unplayed(v-if="card.status === 'unplayed'" v-tippy="`You haven't played this card`") up
+              li.played(v-else-if="card.status === 'played'" v-tippy="`You scored this card`") p
+              li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
+              li.playing(v-else-if="card.status === 'playing'" v-tippy="`You're playing this card`") s
+              li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
+          .player-score(v-if="game.isGameStarted") {{player.score}}
+        template(v-if="player.socketID != you.socketID")
+          .player-name {{player.name}}
+          .player-job(v-if="player.jobTitle")
+            span {{player.jobTitle}}
+          ul.known-hand
+            template(v-for="card in player.hand")
+              li.unplayed(v-if="card.status === 'unplayed' || card.status === 'playing'" v-tippy="`This card hasn't been played (as far as you know)`")
+              li.played(v-else-if="card.status === 'played'" v-tippy="`This card been played and scored`") p
+              li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
+              li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
+          .player-score(v-if="game.isGameStarted") {{player.score}}

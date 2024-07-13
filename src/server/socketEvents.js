@@ -29,7 +29,7 @@ export const socketEvents = (io, socket) => {
     },
   ]);
 
-  io.to(socket.id).emit("getSocketID", socket.id);
+  // io.to(socket.id).emit("getSocketID", socket.id);
 
   socket.on("disconnect", () => {
     console.table([
@@ -39,6 +39,7 @@ export const socketEvents = (io, socket) => {
         id: socket.id,
       },
     ]);
+    io.emit("handleDisconnectIfYouAreHost", socket.id);
   });
 
   socket.on("createRoom", (msg) => {
@@ -61,19 +62,33 @@ export const socketEvents = (io, socket) => {
     console.log(msg.roomCode + " - guest joined");
     socket.join(msg.roomCode);
 
-    // Broadcast a join message gloablly.
-    io.emit("joinRoom", msg);
+    console.log(`Socket ${socket.id} joined room ${msg.roomCode}`);
 
-    // Request players from the host.
-    socket.to(msg.roomCode).emit("requestPlayers");
+    // Get all sockets in the room
+    const clients = io.sockets.adapter.rooms.get(msg.roomCode);
 
-    console.table([
-      {
-        game: msg.gameName,
-        action: "Room Joined",
-        roomCode: msg.roomCode,
-      },
-    ]);
+    if (clients) {
+      // Convert Set to array and get the first client
+      const clientArray = Array.from(clients);
+      const hostSocketId = clientArray[0];
+
+      // Notify the entire room of the host's socketId
+      io.to(msg.roomCode).emit("hostSelected", hostSocketId);
+    }
+
+    // // Broadcast a join message gloablly.
+    // io.emit("joinRoom", msg);
+
+    // // Request players from the host.
+    // socket.to(msg.roomCode).emit("requestPlayers");
+
+    // console.table([
+    //   {
+    //     game: msg.gameName,
+    //     action: "Room Joined",
+    //     roomCode: msg.roomCode,
+    //   },
+    // ]);
   });
 
   ///////////////////////////////////////////////////
@@ -223,21 +238,21 @@ export const socketEvents = (io, socket) => {
   ///////////////////////////////////////////////////
   // Meeting
 
-  socket.on("savePlayerInfo", (msg) => {
-    console.table([
-      {
-        roomCode: msg.roomCode,
-        game: msg.gameName,
-        socketID: msg.socketID,
-        playerName: msg.playerName,
-      },
-    ]);
-
-    io.in(msg.roomCode).emit("getPlayerInfo", {
+  socket.on("sendPlayerList", (msg) => {
+    console.log("sendPlayerUpdates");
+    console.table(msg.players);
+    io.in(msg.roomCode).emit("receivePlayerList", {
       roomCode: msg.roomCode,
-      game: msg.gameName,
-      socketID: msg.socketID,
-      playerName: msg.playerName,
+      from: msg.from,
+      players: msg.players,
+    });
+  });
+
+  socket.on("askHostForPlayersList", (msg) => {
+    console.log("askHostForPlayersList");
+    io.in(msg.roomCode).emit("sendThePlayerListIfYouAreHost", {
+      roomCode: msg.roomCode,
+      from: msg.from,
     });
   });
 

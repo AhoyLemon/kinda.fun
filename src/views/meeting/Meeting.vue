@@ -41,8 +41,10 @@
   const you = reactive({
     socketID: "",
     nameInput: "",
+    jobTitleInput: "",
     name: "",
-    isRoomHost: false,
+    jobTitle: "",
+    isHost: false,
     hand: [],
     isCurrentlyInGame: false,
     isCurrentlyPlayingACard: false,
@@ -56,12 +58,37 @@
 
   const savePlayerInfo = () => {
     you.name = you.nameInput;
+    you.jobTitle = you.jobTitleInput;
 
-    socket.emit("savePlayerInfo", {
+    let playerFound = false;
+
+    // Loop through each player in game.players
+    for (let player of game.players) {
+      if (player.socketID === you.socketID) {
+        // Update player information if socketID matches
+        player.name = you.name;
+        player.jobTitle = you.jobTitle;
+        player.isHost = you.isHost;
+        playerFound = true;
+        break;
+      }
+    }
+
+    // If you.socketID isn't found in any of the players, add a new player
+    if (!playerFound) {
+      game.players.push({
+        name: you.name,
+        jobTitle: you.jobTitle,
+        socketID: you.socketID,
+        isHost: you.isHost,
+        score: 0,
+      });
+    }
+
+    socket.emit("sendPlayerList", {
       roomCode: game.roomCode,
-      gameName: gameName,
-      socketID: you.socketID,
-      playerName: you.name,
+      from: you.socketID,
+      players: game.players,
     });
   };
 
@@ -366,12 +393,17 @@
       gameName: gameName,
     });
 
-    you.isCurrentlyPlayingACard = true;
-    let url = new URL(
-      location.protocol + "//" + location.host + location.pathname,
-    );
-    url.searchParams.set("room", game.roomCode);
-    window.history.pushState({}, "", url);
+    socket.emit("askHostForPlayersList", {
+      roomCode: game.roomCode,
+      from: you.socketID,
+    });
+
+    // you.isCurrentlyPlayingACard = true;
+    // let url = new URL(
+    //   location.protocol + "//" + location.host + location.pathname,
+    // );
+    // url.searchParams.set("room", game.roomCode);
+    // window.history.pushState({}, "", url);
   };
 
   const prettyTimerOutput = computed(() => {
@@ -396,33 +428,55 @@
     }
   });
 
-  // socket.on("requestPlayers", function (msg) {
-  //   console.log("The client wants players from me!");
-  //   if (you.isRoomHost) {
-  //     socket.emit("updatePlayers", {
-  //       roomCode: game.roomCode,
-  //       players: game.players,
-  //       gameStarted: game.isGameStarted,
-  //     });
-  //     console.log(
-  //       "I'm the host! I gave the room all the players I know about!",
-  //     );
-  //   } else {
-  //     console.warn("I'm not the host! I don't care about that.");
-  //   }
-  // });
-
-  socket.on("getSocketID", function (msg) {
-    console.info("Player socketID is " + msg);
-    you.socketID = msg;
+  socket.on("hostSelected", (hostSocketId) => {
+    console.log(`Host selected: ${hostSocketId}`);
+    if (socket.id === hostSocketId) {
+      you.isHost = true;
+      console.log("You are the host!");
+    } else {
+      you.isHost = false;
+      console.log("You are not the host.");
+    }
+    // Add any additional logic for the host or non-host here
   });
 
-  socket.on("getPlayerInfo", function (msg) {
-    console.info("Somebody updated their player info");
-    console.table(msg);
+  socket.on("receivePlayerList", (msg) => {
+    console.log(`Receiving new player list from  ${msg.from}`);
+    console.table(msg.players);
+    game.players = msg.players;
   });
 
-  // game.players = [{"name":"Roger Stone","hand":[{"phrase":"\"true out of the box thinking\"","points":15,"status":"stolen"},{"phrase":"\"exactly six dollars\"","points":15,"status":"stolen"},{"phrase":"\"bite the bullet\"","points":15,"status":"unplayed"},{"phrase":"Sriracha","points":10,"status":"played"}],"score":10},{"name":"Ted DiBiase","hand":[{"phrase":"\"haters gonna hate\"","points":15,"status":"stolen"},{"phrase":"Sonia Sotomayor","points":30,"status":"unplayed"},{"phrase":"stickers","points":10,"status":"unplayed"},{"phrase":"1947","points":30,"status":"stolen"}],"score":0},{"name":"Kent “Toast” French","hand":[{"phrase":"stuffed animal","points":10,"status":"unplayed"},{"phrase":"Sufjan Stevens","points":30,"status":"unplayed"},{"phrase":"\"thrown under the bus\"","points":15,"status":"stolen"},{"phrase":"Alaska","points":10,"status":"unplayed"}],"score":0}]
+  socket.on("sendThePlayerListIfYouAreHost", (msg) => {
+    console.log(`Player List request from  ${msg.from}`);
+    if (you.isHost) {
+      socket.emit("sendPlayerList", {
+        roomCode: game.roomCode,
+        from: you.socketID,
+        players: game.players,
+      });
+    }
+  });
+
+  socket.on("handleDisconnectIfYouAreHost", (socketID) => {
+    console.log("SOMEBODY DISCONNECTED!");
+    if (you.isHost) {
+      console.log("And I'm the host");
+      // Find the index of the player with the matching socketID
+      const playerIndex = game.players.findIndex(
+        (player) => player.socketID === socketID,
+      );
+      if (playerIndex !== -1) {
+        console.log("I'm removing that player from the player list");
+        game.players.splice(playerIndex, 1);
+      }
+      console.log("And now I'm updating the other players.");
+      socket.emit("sendPlayerList", {
+        roomCode: game.roomCode,
+        from: you.socketID,
+        players: game.players,
+      });
+    }
+  });
 
   onMounted(() => {
     var urlParams = new URLSearchParams(window.location.search);
@@ -430,15 +484,12 @@
       createRoom();
     } else if (urlParams.has("room")) {
       game.roomCode = urlParams.get("room").toUpperCase();
-      joinRoom();
+      socket.on("connect", () => {
+        you.socketID = socket.id;
+        console.log(`Connected with socketId: ${socket.id}`);
+        joinRoom();
+      });
     }
-
-    // game.deck = shuffle(allCards);
-
-    /*
-    generateFakePlayers();
-    dealTheCards(); // Call the dealTheCards function here
-    */
   });
 </script>
 <template lang="pug" src="./Meeting.pug"></template>
