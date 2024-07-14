@@ -1,0 +1,7 @@
+$buttonColor: darken($blue,10%);
+%button { color:$white; background:$buttonColor; border:2px solid $buttonColor; font-family:$font; text-transform: uppercase; padding:0.25em 0.75em; cursor: pointer;
+  @media (min-width:$desktop-min) { transform:translate(0,0); box-shadow: 1px 1px 1px black;
+    &:hover, &:focus { box-shadow: 3px 3px 3px black; }
+    &:active { transform: translate(2px,2px); }
+  }
+}

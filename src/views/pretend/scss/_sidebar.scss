@@ -1,0 +1,77 @@
+$yellow: #e4dfbf;
+$sidebar: $yellow;
+.sidebar-button { background: transparent; border:none; color:$yellow; @include position(fixed,null,null,null,5px); z-index: $z-sidebar-button; outline: none; cursor:pointer;
+  svg {
+    * { transform-origin: center; fill:currentColor; }
+  }
+  
+  .fill { opacity: 0; }
+  .x { opacity: 0; transform: scale(0.1); }
+  .question-mark { transform-style: scale(1); }
+  &:hover {
+    svg {
+      .question-mark, .x { fill:$black; }
+      .fill { opacity: 1; }
+    }
+  }
+  &.active {
+    svg * { fill: $black; }
+    &:hover { 
+      .question-mark, .x { fill:$sidebar; }
+    }
+    .x { opacity: 1; transform: scale(1); }
+    .question-mark { opacity: 0; transform: scale(0.1); }
+  }
+}
+
+.sidebar { @include position(fixed,0,null,null,0); background: $sidebar; color:$black; width: 14em; padding:4.5rem 1rem 1rem 1rem; z-index: $z-sidebar; font-family:$font; 
+  ul { padding: 0; }
+  li { margin-bottom: 0.65em; list-style: none; }
+  .label { display: block; line-height: 145% }
+  .indent { display: block; padding-left: 1em; }
+  a { color:$red; text-decoration: none; cursor: pointer; 
+    &:hover { text-decoration: underline; }
+  }
+  .smaller { font-size:0.8em; }
+  transform: translateX(-102%); transition: all 0.3s ease;
+  &.visible { transform:translateX(0); }
+}
+
+.homescreen-help-holder { background-color:rgba($black,0.9); @include position(fixed,0,0,0,0); z-index:$z-favorite-box;
+  .homescreen-help { background:$white; color:$black; @include position(fixed,0,0); padding:1em; }
+  svg { fill:currentColor;
+    * { fill:currentColor; }
+  }
+  .help { text-align: right; line-height: 160%;
+    span { display: block; }
+    svg { width:0.8em; height: 0.8em; }
+  }
+  &.ios { top:auto; bottom:0; right: 0; left:0; width:100%; max-width: 100%;
+    .help { text-align: center; }
+  }
+  .button-holder { padding-top: 1em; text-align: center; }
+  
+  button { color:$blue; background-color:transparent; border:2px solid $blue; font-family:$font; padding:0.25em 1em; font-size:0.9rem;
+    &:hover { background:$blue; cursor: pointer; color:$white; }
+  }
+  
+}
+@media screen and (max-width:$mobile-max) {
+  .sidebar-button { top:5px;
+    svg { width:32px; height: 32px; }
+  }
+  .sidebar { font-size:14px; padding-top:50px; }
+}
+
+@media screen and (min-width:$desktop-min) {
+  .sidebar-button { top:15px;
+    svg { width:50px; height:50px; }
+  }
+  .sidebar { font-size:18px; padding-top:80px; }
+}
+
+
+
+@media all and (display-mode: standalone) {
+  #AddToHomeScreen { display: none; }
+}

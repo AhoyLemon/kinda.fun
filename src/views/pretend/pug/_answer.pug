@@ -1,0 +1,14 @@
+.inner.feedback(v-if="ui.phase == 'answer'")
+
+  h2(v-bind:class="feedback.headlineClass" v-text="feedback.headline")
+  
+  .answer-feedback
+    p(v-html="feedback.answerMessage")
+
+  .mood-feedback(v-if="feedback.showCheeseMessage")
+    p(v-if="my.mood != my.previousMood" v-html="feedback.moodMessage" :class="my.mood")
+    p(v-if="my.mood == my.previousMood" v-html="feedback.moodMessage")
+    p.danger-zone-paragraph(v-if="dangerZone == true" :class="my.mood") You are in danger of being kicked out of the party.
+
+  .button-holder
+    button.keep-mingling(@click="nextRound()" ref="keepmingling") Keep Mingling

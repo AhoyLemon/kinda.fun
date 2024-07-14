@@ -1,0 +1,17 @@
+//include pretend/_sidebar.pug
+
+main.pretend-world
+
+  include pug/_special-screen.pug
+
+  //- Q&A SCREENS
+  .screen.qa-screen(v-if="!specialScreen.show")
+    figure.celebrity-photo
+      img(:src="current.pic")
+      .button-holder.impersonator-website
+        a.button(v-if="ui.phase == 'answer'" @click="visitImpersonatorWebsite()") impersonator website
+    figcaption
+      include pug/_question.pug
+      include pug/_answer.pug 
+
+include pug/_banner.pug

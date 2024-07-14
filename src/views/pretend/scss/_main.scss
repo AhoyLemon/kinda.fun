@@ -1,0 +1,206 @@
+[v-cloak] { display: none !important; }
+
+//main { background:yellow; }
+html { background:$body; color:$white; }
+
+.screen {
+  > figure { background-size:contain; background-repeat: no-repeat;  }
+}
+
+figcaption { font-family: $font; @include flex-center(); padding-left: 2em; padding-right:2em;
+
+  p { line-height:$lineHeight; margin-bottom: 0.75em; display: block; margin-left: auto; margin-right: auto; max-width: 36em; }
+
+  h1 { text-align: center; margin-bottom: 3vh;
+    .medium-text { font-family: $font; font-weight: $medium; margin-bottom: 0.35em; }
+    .big-text { font-family:$headline; line-height: 90%; text-transform: uppercase; }
+  }
+
+  .question { 
+    form { display: block;
+      label  { margin-top: 1em; margin-bottom: 1em; font-weight: 300; font-style: italic; display:block; }
+      input { display: block; width:100%; padding: 0.3em 0.5em; font-family: $font; }
+      button { display: block; transition:opacity 0.3s linear; @extend %button; opacity: 1;
+        &:disabled { opacity: 0; }
+      }
+    }
+  }
+}
+
+.impersonator-website {
+  .button { @extend %button; text-transform: none; background: $white; color:darken($buttonColor, 25%); border:1px solid darken($buttonColor, 15%);
+    &:hover { background:$buttonColor; color:$yellow; }
+  }
+}
+
+
+.feedback {
+  h2 { font-family: $headline; margin-bottom: 0.35em; }
+  p { margin-bottom: 1em; display: block; max-width: 36em; line-height:$lineHeight; }
+  button { @extend %button; }
+}
+
+
+.special-screen {
+  .special-feedback {
+    h1 { text-transform: uppercase; color:$neutral; }
+    h2 { text-align: center; }
+    p { margin-bottom: 2em; }
+    button { @extend %button; background:#b0ee9a; border-color: #b0ee9a;
+      span { font-size:150%; font-weight: $bold; color:darken($black,7%); padding-left: 0.5em; padding-right:0.5em;  }
+    }
+  }
+
+  > figure { background-size:cover; }
+
+  &.cheese {
+    figure { background-position: center bottom; }
+  }
+  &.lose {
+    figure { background-position: center; }
+  }
+  &.win {
+    figure { transition:all 2s ease; }
+    figcaption { transition:all 2s ease; }
+  }
+  
+
+  .game-over { font-size:3.2vw; color:$veryBad; }
+}
+
+@keyframes youwintext {
+  from { transform: rotate(-90deg) translateY(-20vw) scale(0.3); }
+  to   { transform: rotate(-90deg) translateY(0) scale(1); }
+}
+
+
+.correct { color: $correct; }
+.close   { color: $yellow; }
+.wrong   { color: $red; }
+.veryGood   { color: $veryGood; }
+.prettyGood { color: $prettyGood; }
+.neutral    { color: $neutral; }
+.prettyBad  { color: $prettyBad; }
+.veryBad  { color: $veryBad; }
+
+
+@media screen and (max-width:$mobile-max) {
+  .screen {
+    &.qa-screen { display:grid;
+      > figure { order: 2;
+        img { width:100%; }
+      }
+      > figcaption { order: 1; }
+    }
+    > figure { background-position:center; }
+    figcaption { overflow-x: hidden; align-items: flex-start; padding-top: 1em; padding-bottom: 1.5em;
+      .medium-text { font-size:16px; }
+      .big-text { font-size:8.8vw; }
+      p { font-size:14px; }
+      .danger-zone-paragraph { @include position(fixed,null,0,0,0); background:$veryBad; margin: 0; color:darken($black,20%); padding: 0.25em 1em; text-align: center; font-size:3vw; font-weight: $bold; }
+
+
+      .question { @include flex-container();
+        > * { @include flex-item(100%); }
+        .question-wrapper { order: 1;
+          label { margin-top: 0; margin-bottom: 0.25em; padding-left: 0.5em; }
+          button { padding-left: 1em; padding-right: 1em; margin-bottom: 1em; font-size:16px; }
+        }
+        .mood-feedback, .cheese-feedback { order:2; }
+      }
+      
+      .feedback {
+        h2 { font-size:9vw; text-align: center; }
+      }
+
+    }
+    .impersonator-website { @include position(absolute,null,0,0,0); text-align: center;
+      .button { font-size:12px; }
+    }
+  }
+
+  .special-screen {
+    h1 { font-size:9vw; }
+    h2 { font-size:7vw; }
+    p { font-size:14px; }
+    button {
+      span { font-size:18px; }
+    }
+
+    &.win {
+      figure { bottom:20vw; }
+      figcaption { top:calc(100% - 19vw); padding: 0;
+        h1 { font-size:16vw; margin: 0; color:$veryGood; }
+        .game-over-holder, p { display: none; }
+      }
+    }
+
+  }
+
+}
+
+@media screen and (min-width:$desktop-min) {
+  .screen {
+    .celebrity-photo {
+      img { width:100%; height:100%; object-fit: contain; object-position: center right; }
+    }
+    > figure { @include position(fixed,0,0,0,50%);
+      img { width:100%; height:100%; object-fit: contain; object-position: center right; }
+    }
+    figcaption { @include position(fixed,0,50%,0,0); display:flex; align-items: center;
+      .medium-text { font-size:2.8vw; }
+      .big-text { font-size:4vw; }
+      h1 { text-align: center; }
+      h2 { text-align: center; }
+      p { font-size:18px; }
+      form { width:33vw; margin-left: auto; margin-right: auto; 
+        label { font-size:1.75vw; margin-bottom: 0.1em; padding-left: 0.5em; }
+        input { font-size:1.75vw; }
+        button { font-size:1.75vw; margin-left: auto; display: block; }
+      }
+      .feedback {
+        h2 { font-size: 4vw; }
+        .button-holder { padding-top: 3em; }
+        button { font-size:1.5em;
+          // &:focus { background:lime; }
+        }
+      }
+    }
+
+    .impersonator-website { @include position(absolute,null,0,2rem,0); }
+  }
+
+  .special-screen {
+    h1 { font-size:3vw; }
+    h2 { font-size:3.5vw; }
+    button { display: block; text-align: center; margin-left: auto; margin-right: auto; font-size:22px; }
+    figure { display:flex; align-items: center; left:20%;
+      img { width:100%; max-height: 99vh; object-fit: contain; object-position: center right; }
+    }
+    &.win {
+      figure { left:20%; }
+      figcaption { right:80%; bottom:0; left:0; 
+        .status { width:99vh; }
+        h1 { font-size:9vw; color:$veryGood; animation:youwintext 2s ease forwards; }
+      }
+      // figure { background-position: center top; left:20%;  }
+      .game-over-holder { display:none; }
+    }
+    &.lose {
+      figure { left:30%; }
+      figcaption {
+        .inner { background-color:rgba($body,0.75); backdrop-filter: blur(2px); padding:1.5em; }
+      }
+    }
+    &.cheese {
+      figure { left:260px; }
+      figcaption { left:0; right:unset; width:100%; max-width:630px;
+        .inner { background-color:rgba($body,0.75); backdrop-filter: blur(2px); padding:1.5em; }
+      }
+    }
+
+
+  }
+
+  .button-holder { text-align: center; }
+}

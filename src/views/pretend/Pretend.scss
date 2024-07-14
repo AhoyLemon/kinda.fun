@@ -1,0 +1,15 @@
+//GLOBALS, GET DEFAULTS
+@import "@/shared/scss/globals/reset";
+@import "@/shared/scss/globals/variables";
+@import "@/shared/scss/globals/mixins";
+@import "@/shared/scss/globals/extends";
+
+// SITE SPECIFIC
+@import "scss/_variables";
+@import "scss/_z-index";
+@import "scss/_extends";
+@import "scss/_main";
+@import "scss/_sidebar";
+@import "scss/_banner";
+
+@import "scss/_debug";

@@ -100,6 +100,29 @@ const router = createRouter({
       },
     },
     {
+      path: "/pretend",
+      name: "Pretend World",
+      alias: ["/pretend-world", "/impersonators"],
+      component: () => import("../views/pretend/Pretend.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=Limelight&family=Merriweather:ital,wght@0,400;0,900;1,400&display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content: "You are at a party of celebrity impersonators...",
+            },
+          },
+        ],
+      },
+    },
+    {
       path: "/slip",
       name: "Let's Ruin This Meeting!",
       alias: ["/meet", "/meeting"],

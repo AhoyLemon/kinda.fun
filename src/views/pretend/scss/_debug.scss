@@ -1,0 +1,28 @@
+.debug { @include position(fixed,0,50%,null,0); background:white; color:black; font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+  padding-left:54px; padding-bottom: 6px;
+  
+
+  .boxes { @include flex-container(); }
+  
+  .box { @include flex-item(20%); text-align: center;
+    span { display: block;
+      &.data { font-size:160%; line-height: 80%; }
+    }
+  }
+
+}
+
+.debug-toggle { @include position(absolute,0,null,null,0); cursor: pointer; padding: 13px 7px; z-index: 99; border:none; font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; font-size:1em;
+  &.on { background:green; }
+  &.off { background:red; }
+  &:hover { background:black; color:white; }
+
+}
+
+@media screen and (max-width:$mobile-max) {
+  .debug, .debug-toggle { display:none; }
+}
+
+@media screen and (max-width:$desktop-min) {
+  
+}

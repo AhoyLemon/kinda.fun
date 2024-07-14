@@ -1,0 +1,25 @@
+.inner.question(v-if="ui.phase == 'question'")
+  .status
+    h1(v-if="my.round == 1")
+      .medium-text You're at a party of 
+      .big-text.neutral CELEBRITY IMPERSONATORS
+    h1(v-else-if="warmUp == true")
+      .medium-text(v-text="ui.headlineText[0]")
+      .big-text.neutral(v-text="ui.headlineText[1]")
+    h1(v-else)
+      .medium-text(v-text="ui.headlineText[0]")
+      .big-text(v-text="ui.headlineText[1]" :class="my.mood")
+  
+  .cheese-feedback(v-if="feedback.showCheeseMessage && my.correctGuesses > 1")
+    p(v-html="feedback.cheeseMessage")
+    p [ {{my.stepsToCheese}} steps remain ]
+  
+  .mood-feedback(v-else)
+    p(v-html="feedback.moodMessage")
+    p.danger-zone-paragraph(v-if="dangerZone == true" :class="my.mood") You are in danger of being kicked out of the party.
+
+  .question-wrapper
+    form(@submit.prevent="checkName()" :disabled="ui.guess.length < 4")
+      label(for="guess") Who is this supposed to be?
+      input(type="text" ref="guess" v-model="ui.guess" placeholder="Type your guess here")
+      button(type="submit" :disabled="ui.guess.length < 4" ) Guess
