@@ -40,6 +40,10 @@
     wrongHeadlines,
   } from "./js/_variables";
 
+  // socket.io
+  import { io } from "socket.io-client";
+  const socket = io.connect();
+
   ///////////////////////////////////
   // Variables
 
@@ -164,9 +168,9 @@
       specialScreen.message =
         "Having experienced significant problems assessing the identities of the guests as well as what others at this party would consider socially acceptable, you are told to leave.<br/><br />An hour later, you find yourself at a Taco Bell getting sick on chaulpas, and tell a Larry The Cable Guy impersonator that he's your best friend. That is the saddest moment you've ever had.";
       specialScreen.gameOver = true;
-      // socket.emit("pretendGameOver", {
-      //   gameState: "lose",
-      // });
+      socket.emit("pretendGameOver", {
+        gameState: "lose",
+      });
       sendEvent("Game Over", "Lose", "Round " + my.round);
     } else if (my.stepsToCheese < 1) {
       specialScreen.show = true;
@@ -175,9 +179,9 @@
       specialScreen.headline = "You win!";
       specialScreen.message = "";
       specialScreen.gameOver = true;
-      // socket.emit("pretendGameOver", {
-      //   gameState: "win",
-      // });
+      socket.emit("pretendGameOver", {
+        gameState: "win",
+      });
       sendEvent("Game Over", "Win", "Round " + my.round);
     }
   };
@@ -214,30 +218,30 @@
     }
 
     if (my.round < 2) {
-      // socket.emit("pretendGameStart", {
-      //   correctName: currentName
-      // });
+      socket.emit("pretendGameStart", {
+        correctName: current.name,
+      });
     }
 
     if (ui.answer == "correct") {
       my.points = my.points + 1;
       my.correctGuesses++;
-      // socket.emit("pretendCorrectGuess", {
-      //   correctName: current.name,
-      // });
+      socket.emit("pretendCorrectGuess", {
+        correctName: current.name,
+      });
     } else if (ui.answer == "close") {
       my.points = my.points + 0.7;
       my.correctGuesses++;
-      // socket.emit("pretendCloseGuess", {
-      //   correctName: current.name,
-      //   guessedName: ui.guess,
-      // });
+      socket.emit("pretendCloseGuess", {
+        correctName: current.name,
+        guessedName: ui.guess,
+      });
     } else if (ui.answer == "wrong") {
       my.points = my.points - 0.85;
-      // socket.emit("pretendBadGuess", {
-      //   correctName: current.name,
-      //   guessedName: ui.guess,
-      // });
+      socket.emit("pretendBadGuess", {
+        correctName: current.name,
+        guessedName: ui.guess,
+      });
     }
 
     sendEvent(ui.answer, current.name, ui.guess);

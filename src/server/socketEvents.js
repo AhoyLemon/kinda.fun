@@ -201,7 +201,7 @@ export const socketEvents = (io, socket) => {
   ///////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////
-  // Sisyphus Socket Actions
+  // No More Billionaires Socket Actions
   socket.on("guillotineStartGame", (msg) => {
     dateStampInDatabase("allGamesLastPlayed", "guillotine");
     incrementDatabase("guillotineCounts", "gamesStarted");
@@ -235,8 +235,47 @@ export const socketEvents = (io, socket) => {
     });
   });
 
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  //PRETEND WORLD sockets...
+
+  socket.on("pretendGameStart", (msg) => {
+    console.log("a player started a game of PRETEND WORLD");
+    dateStampInDatabase("allGamesLastPlayed", "pretend");
+    incrementDatabase("pretendCounts", "gamesStarted");
+  });
+
+  socket.on("pretendCorrectGuess", (msg) => {
+    console.log(`${msg.correctName} was guessed correctly.`);
+    pretendGuessCelebrity(msg.correctName, "correctGuess");
+  });
+
+  socket.on("pretendCloseGuess", (msg) => {
+    console.log(`${msg.correctName} was guessed closed enough`);
+    pretendGuessCelebrity(msg.correctName, "closeGuess");
+  });
+
+  socket.on("pretendBadGuess", (msg) => {
+    console.log(`${msg.correctName} was guessed badly`);
+    pretendGuessCelebrity(msg.correctName, "badGuess");
+  });
+
+  socket.on("pretendGameOver", (msg) => {
+    console.log("a player finished a game of PRETEND WORLD");
+    incrementDatabase("pretendCounts", "gamesFinished");
+    if (!msg || !msg.gameState) {
+      // error, do nothing
+    } else if (msg.gameState == "win") {
+      incrementDatabase("pretendCounts", "gamesWon");
+    } else if (msg.gameState == "lose") {
+      incrementDatabase("pretendCounts", "gamesLost");
+    }
+  });
+
   ///////////////////////////////////////////////////
-  // Meeting
+  // Meeting Socket Actions
 
   socket.on("sendPlayerList", (msg) => {
     console.log("sendPlayerUpdates");
