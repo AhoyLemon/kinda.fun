@@ -3,6 +3,7 @@ import vitePluginSocketIO from "vite-plugin-socket-io";
 import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vueDevTools from "vite-plugin-vue-devtools";
+import Sitemap from "vite-plugin-sitemap";
 import { socketEvents } from "./src/server/socketEvents.js";
 
 // https://vitejs.dev/config/
@@ -38,7 +39,22 @@ export default defineConfig(({ mode }) => {
   // console.log("DEV: " + env.VITE_SOME_KEY);
 
   return {
-    plugins: [vue(), vueDevTools(), vitePluginSocketIO({ socketEvents })],
+    plugins: [
+      vue(),
+      vueDevTools(),
+      vitePluginSocketIO({ socketEvents }),
+      Sitemap({
+        hostname: "https://kinda.fun",
+        readable: true,
+        dynamicRoutes: [
+          "/sisyphus",
+          "/cameo",
+          "/guillotine",
+          "/pretend",
+          "/meeting",
+        ],
+      }),
+    ],
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),

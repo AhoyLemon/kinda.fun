@@ -6,6 +6,14 @@ if (process && process.env && process.env.JAWSDB_CRIMSON_URL) {
 } else if (process.env.NODE_ENV === "development") {
   const env = loadEnv("development", process.cwd(), "");
   theDatabase = env.VITE_DEV_DB;
+} else if (process.env.NODE_ENV === "production") {
+  const env = loadEnv("production", process.cwd(), "");
+  theDatabase = env.VITE_LIVE_DB;
+} else {
+  // FIX THIS!!!!!
+  const env = loadEnv("development", process.cwd(), "");
+  theDatabase = env.VITE_DEV_DB;
+  console.log("FALLBACK!");
 }
 const connection = mysql.createConnection(theDatabase);
 

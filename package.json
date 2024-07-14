@@ -36,6 +36,7 @@
     "prettier": "^3.2.5",
     "socket.io-client": "^4.7.5",
     "vite": "^5.3.1",
+    "vite-plugin-sitemap": "^0.6.2",
     "vite-plugin-socket-io": "^1.0.2",
     "vite-plugin-vue-devtools": "^7.3.1",
     "vitest": "^1.6.0"
