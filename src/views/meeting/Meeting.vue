@@ -19,11 +19,12 @@
   import Toast, { POSITION } from "vue-toastification";
   import "vue-toastification/dist/index.css";
   import MyToast from "./vue/MyToast.vue";
-  import LemonToast from "./vue/LemonToast.vue";
+  //import LemonToast from "./vue/LemonToast.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
   // socket.io
+  import { setupSocketHandlers } from "./js/_socketHandlers";
   import { io } from "socket.io-client";
   const socket = io.connect();
 
@@ -119,46 +120,6 @@
     });
   };
 
-  // const dealTheCards = () => {
-  //   const totalPlayers = game.players.length + 1; // Including you
-  //   const totalCardsNeeded = totalPlayers * cardsPerPlayer;
-
-  //   if (game.deck.length < totalCardsNeeded) {
-  //     console.error("Not enough cards to deal");
-  //     return;
-  //   }
-
-  //   // Deal cards to your hand
-  //   for (let i = 0; i < cardsPerPlayer; i++) {
-  //     let newCard = game.deck.shift(); // Remove the first card from the deck
-  //     newCard.status = "unplayed";
-  //     you.hand.push(newCard);
-  //   }
-
-  //   // // Deal cards to each player's hand
-  //   game.players.forEach((player) => {
-  //     for (let i = 0; i < cardsPerPlayer; i++) {
-  //       let newCard = game.deck.shift(); // Remove the first card from the deck
-  //       newCard.status = "unplayed";
-
-  //       // Fake some statuses for these cards....
-  //       const r = randomNumber(1, 10);
-  //       let cardStatus;
-  //       if (r < 6) {
-  //         cardStatus = "unplayed";
-  //       } else if (r < 8) {
-  //         cardStatus = "played";
-  //         player.score += newCard.points;
-  //         alert;
-  //       } else {
-  //         cardStatus = "stolen";
-  //       }
-  //       newCard.status = cardStatus;
-  //       player.hand.push(newCard);
-  //     }
-  //   });
-  // };
-
   const playThisCard = (card) => {
     you.currentCard = card;
     you.isCurrentlyPlayingACard = true;
@@ -185,7 +146,7 @@
         component: MyToast,
         props: {
           points: card.points,
-          message: `nobody caught you saying “${card.phrase}”.`,
+          message: `nobody caught you saying <strong>“${card.phrase}”</strong>.`,
         },
       },
       {
@@ -209,20 +170,6 @@
       },
     });
   };
-
-  // const you = reactive({
-  //   hand: [
-  //     { phrase: "stickers", points: 10, status: "unplayed" },
-  //     { phrase: "cold press coffee", points: 10, status: "unplayed" },
-  //     { phrase: '"haters gonna hate"', points: 15, status: "unplayed" },
-  //     { phrase: '"hot dog!"', points: 10, status: "unplayed" },
-  //   ],
-  //   isCurrentlyPlayingACard: false,
-  //   currentCard: {},
-  //   score: -8,
-  //   guess: "",
-  //   stolenCards: [],
-  // });
 
   const performGuess = () => {
     const yourGuess = you.guess.toLowerCase();
@@ -282,7 +229,7 @@
           component: MyToast,
           props: {
             title: "Too Late!",
-            message: `${actualPhrase ?? yourGuess} has already been stolen by ${stolenBy}.`,
+            message: `${actualPhrase ?? yourGuess} has already been stolen.`,
           },
         },
         {
@@ -299,7 +246,7 @@
           props: {
             title: "Too Late!",
             // points: match.points,
-            message: `${actualPhrase ?? yourGuess} has already been scored by ${alreadyScoredBy}.`,
+            message: `<strong>${actualPhrase ?? yourGuess}</strong> has already been scored.`,
           },
         },
         {
@@ -310,7 +257,7 @@
         },
       );
     } else if (!matchFound) {
-      penalizeBadGuess(yourGuess);
+      penalizeBadGuess(you.guess);
     }
     you.guess = "";
   };
@@ -342,7 +289,7 @@
         props: {
           title: "Nope!",
           points: yourLoss,
-          message: `Nobody had ${you.guess}.`,
+          message: `Nobody had <strong>${you.guess}</strong>.`,
         },
       },
       {
@@ -353,12 +300,23 @@
       },
     );
     you.guess = "";
-
+    game.badGuesses.push({
+      name: you.name,
+      guess: yourGuess,
+      penalty: you.yourLoss,
+      isOwnCard: true,
+    });
     socket.emit("sendPlayerUpdate", {
       roomCode: game.roomCode,
       from: you.socketID,
       socketID: you.socketID,
       score: findMe().score,
+      badGuess: {
+        name: you.name,
+        guess: yourGuess,
+        penalty: yourLoss,
+        isOwnCard: false,
+      },
       toast: {
         message: `${findMe().name} lost ${badGuessPenalty} for a bad guess`,
       },
@@ -374,7 +332,9 @@
         props: {
           title: "You idiot!",
           points: 0 - card.points,
-          message: `${card.phrase} was one of YOUR cards!!! I'm subtracting ${card.points} points from your score. Pay attention next time.`,
+          message: `<p><strong>${card.phrase} was one of YOUR cards!!!</strong></p>
+                    <p>I'm subtracting <strong>${card.points}</strong> points from your score.</p>
+                    <p>Pay attention next time.</p>`,
         },
       },
       {
@@ -385,11 +345,23 @@
       },
     );
     you.guess = "";
+    game.badGuesses.push({
+      name: you.name,
+      guess: yourGuess,
+      penalty: you.yourLoss,
+      isOwnCard: true,
+    });
     socket.emit("sendPlayerUpdate", {
       roomCode: game.roomCode,
       from: you.socketID,
       socketID: you.socketID,
       score: findMe().score,
+      badGuess: {
+        name: you.name,
+        guess: yourGuess,
+        penalty: yourLoss,
+        isOwnCard: true,
+      },
       toast: {
         message: `${findMe().name} lost ${card.points} for trying to guess their own card`,
       },
@@ -403,7 +375,7 @@
         props: {
           title: "Got 'em!",
           points: match.points,
-          message: `${match.playerName} had ${match.phrase}.`,
+          message: `${match.playerName} had <strong>${match.phrase}</strong>.`,
         },
       },
       {
@@ -430,18 +402,6 @@
       score: findMe().score,
       stolenCard: match,
     });
-
-    // console.table(match);
-    // you.score += match.points;
-    // you.stolenCards.push({
-    //   phrase: match.phrase,
-    //   stolenFrom: {
-    //     id: match.id,
-    //     name: match.playerName,
-    //     index: match.playerIndex,
-    //   },
-    // });
-    // you.guess = "";
   };
 
   const createRoom = () => {
@@ -520,62 +480,15 @@
     return [];
   });
 
-  socket.on("hostSelected", (hostSocketId) => {
-    console.log(`Host selected: ${hostSocketId}`);
-    if (socket.id === hostSocketId) {
-      you.isHost = true;
-      console.log("You are the host!");
+  const computedPlayerList = computed(() => {
+    if (!game || !game.players) {
+      return [];
+    } else if (!game.isGameStarted) {
+      return game.players;
     } else {
-      you.isHost = false;
-      console.log("You are not the host.");
+      // Sort players by score in descending order
+      return [...game.players].sort((a, b) => b.score - a.score);
     }
-    // Add any additional logic for the host or non-host here
-  });
-
-  socket.on("receivePlayerList", (msg) => {
-    console.log(`Receiving new player list from  ${msg.from}`);
-    // console.table(msg.players);
-    game.players = msg.players;
-    game.isGameStarted = msg.isGameStarted;
-  });
-
-  socket.on("sendThePlayerListIfYouAreHost", (msg) => {
-    console.log(`Player List request from  ${msg.from}`);
-    if (you.isHost) {
-      socket.emit("sendPlayerList", {
-        roomCode: game.roomCode,
-        from: you.socketID,
-        players: game.players,
-        isGameStarted: game.isGameStarted,
-      });
-    }
-  });
-
-  socket.on("handleDisconnectIfYouAreHost", (socketID) => {
-    console.log("SOMEBODY DISCONNECTED!");
-    if (you.isHost) {
-      console.log("And I'm the host");
-      // Find the index of the player with the matching socketID
-      const playerIndex = game.players.findIndex(
-        (player) => player.socketID === socketID,
-      );
-      if (playerIndex !== -1) {
-        console.log("I'm removing that player from the player list");
-        game.players.splice(playerIndex, 1);
-      }
-      console.log("And now I'm updating the other players.");
-      socket.emit("sendPlayerList", {
-        roomCode: game.roomCode,
-        from: you.socketID,
-        players: game.players,
-      });
-    }
-  });
-
-  socket.on("receiveStartGameMessage", (msg) => {
-    console.log(`Receiving new player list from  ${msg.from}`);
-    game.players = msg.players;
-    game.isGameStarted = true;
   });
 
   socket.on("receivePlayerUpdate", (msg) => {
@@ -637,7 +550,7 @@
               props: {
                 title: `You got robbed!`,
                 points: msg.stolenCard.points,
-                message: `${player.name} just scored your ${msg.stolenCard.phrase} card`,
+                message: `<strong>${player.name}</strong> just scored your ${msg.stolenCard.phrase} card`,
               },
             },
             {
@@ -655,6 +568,11 @@
             },
           );
         }
+      }
+
+      // Log bad guesses, for reference later in the game over screen
+      if (msg.badGuess && msg.badGuess.name) {
+        game.badGuesses.push(msg.badGuess);
       }
 
       // Show a toast if the payload says so.
@@ -680,6 +598,9 @@
         joinRoom();
       });
     }
+
+    // Initialize socket event handlers
+    setupSocketHandlers(socket);
   });
 </script>
 <template lang="pug" src="./Meeting.pug"></template>

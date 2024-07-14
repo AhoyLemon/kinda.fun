@@ -1,0 +1,12 @@
+.timer(v-if="you.isCurrentlyPlayingACard")
+  template(v-if="prettyTimerOutput")
+    .seconds-holder
+      span.seconds(v-html="prettyTimerOutput")
+      span.after-seconds seconds to score 
+        strong {{you.currentCard.points}} points.
+        
+    .progress-holder
+      .bar
+        .fill(:style="{width: timerProgressPercent+'%' }")
+  .stakes(v-if="you.isCurrentlyPlayingACard && you.currentCard")
+    p You'll get #[strong {{you.currentCard.points}}] points if nobody calls you out for saying #[strong {{you.currentCard.phrase}}]

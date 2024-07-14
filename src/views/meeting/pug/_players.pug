@@ -1,0 +1,92 @@
+.card-players
+
+  transition-group(name="list" tag="ul" id="PlayerList" class="players")
+    li.player( v-for="player in computedPlayerList" :key="player.socketID")
+
+      template(v-if="player.socketID == you.socketID")
+
+        // You are this player.
+        template(v-if="player.isHost")
+          .name-and-icon
+            .player-name {{player.name}} (you)
+            .host-icon
+              span(v-tippy="{ content:'you are the host', placement: 'left-start' }") 👑
+        template(v-if="!player.isHost")
+          .player-name {{player.name}} (you)
+
+        .player-job(v-if="player.jobTitle")
+          span {{player.jobTitle}}
+        ul.known-hand
+          template(v-for="card in player.hand")
+            li.unplayed(v-if="card.status === 'unplayed'" v-tippy="`You haven't played this card`") up
+            li.played(v-else-if="card.status === 'played'" v-tippy="`You scored this card`") p
+            li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`Someone stole this card`") s
+            li.playing(v-else-if="card.status === 'playing'" v-tippy="`You're playing this card`") s
+            li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
+        .player-score(v-if="game.isGameStarted") {{player.score}}
+
+      template(v-if="player.socketID != you.socketID")
+        // You are not this player.
+        template(v-if="player.isHost")
+          .name-and-icon
+            .player-name {{player.name}}
+            .host-icon
+              span(v-tippy="{ content:player.name+' is hosting this game', placement: 'left-start' }") 👑
+        template(v-if="!player.isHost")
+          .player-name {{player.name}}
+
+        .player-job(v-if="player.jobTitle")
+          span {{player.jobTitle}}
+        ul.known-hand
+          template(v-for="card in player.hand")
+            li.unplayed(v-if="card.status === 'unplayed' || card.status === 'playing'" v-tippy="`This card hasn't been played (as far as you know)`")
+            li.played(v-else-if="card.status === 'played'" v-tippy="`This card been played and scored`") p
+            li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
+            li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
+        .player-score(v-if="game.isGameStarted") {{player.score}}
+
+
+  //ul.players
+
+    li.player(v-for="player in game.players")
+      template(v-if="player.socketID == you.socketID")
+
+        // You are this player.
+        template(v-if="player.isHost")
+          .name-and-icon
+            .player-name {{player.name}} (you)
+            .host-icon
+              span(v-tippy="{ content:'you are the host', placement: 'left-start' }") 👑
+        template(v-if="!player.isHost")
+          .player-name {{player.name}} (you)
+
+        .player-job(v-if="player.jobTitle")
+          span {{player.jobTitle}}
+        ul.known-hand
+          template(v-for="card in player.hand")
+            li.unplayed(v-if="card.status === 'unplayed'" v-tippy="`You haven't played this card`") up
+            li.played(v-else-if="card.status === 'played'" v-tippy="`You scored this card`") p
+            li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`Someone stole this card`") s
+            li.playing(v-else-if="card.status === 'playing'" v-tippy="`You're playing this card`") s
+            li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
+        .player-score(v-if="game.isGameStarted") {{player.score}}
+
+      template(v-if="player.socketID != you.socketID")
+        // You are not this player.
+        template(v-if="player.isHost")
+          .name-and-icon
+            .player-name {{player.name}}
+            .host-icon
+              span(v-tippy="{ content:player.name+' is hosting this game', placement: 'left-start' }") 👑
+        template(v-if="!player.isHost")
+          .player-name {{player.name}}
+
+        .player-job(v-if="player.jobTitle")
+          span {{player.jobTitle}}
+        ul.known-hand
+          template(v-for="card in player.hand")
+            li.unplayed(v-if="card.status === 'unplayed' || card.status === 'playing'" v-tippy="`This card hasn't been played (as far as you know)`")
+            li.played(v-else-if="card.status === 'played'" v-tippy="`This card been played and scored`") p
+            li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
+            li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
+        .player-score(v-if="game.isGameStarted") {{player.score}}

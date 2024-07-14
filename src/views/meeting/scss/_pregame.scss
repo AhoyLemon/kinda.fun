@@ -1,0 +1,34 @@
+.pregame-lobby { background-color: #333; padding:20px; display:flex; align-items: center; justify-content: center;
+
+  .panel { width:360px; display:grid; gap:20px; }
+
+  form { background:$green; padding:20px; display: grid; gap:10px; font-family: $sans-serif;
+    fieldset { position: relative; border:3px solid; background-color: rgba(255,255,255,0.75);
+      label { font-weight: 675; padding-left:1rem; padding-top:0.25rem; display: block;
+        &.required:after { content:'*'; color:$red; }
+      }
+      input { padding:0.4rem 1rem; width:100%; outline:none; font-family: $serif; font-weight: 850; font-size:1.25rem; border:none; background-color: transparent; }
+
+      &:has(input:focus) { background:white;
+        label { color:$blue; }
+        input { color:$blue; }
+        border-color: $blue;
+      }
+    }
+    button[type="submit"] { font-family: $sans-serif; padding:0.6rem 1rem; display: block; width:100%; font-size:1.15rem; font-weight: 725; cursor: pointer; border:2px solid rgba($white,0.75); background-color:rgba($white,0.15); color:rgba($white,0.95); transition: all 0.15s linear;
+      &:hover, &:focus { background:rgba($white,0.92); color:$green; }
+    }
+  }
+  button.start-game { background-color: $yellow; color:darken($yellow,35); font-family: $sans-serif; font-weight: 825; font-size:1.25rem; display: block; width: 100%; padding:0.75em 1em; border:2px solid rgba(0,0,0,.35); transition:all 0.3s linear;
+    &[disabled] { opacity: 0.5; color:darken($yellow,30);}
+    &:not([disabled]) { cursor: pointer;
+      &:hover, &:focus { background-color: lighten($yellow,40); color:darken($yellow,30); }
+    }
+  }
+  
+  .room-code { position: absolute; top:0; left:0; padding:20px;
+    .label { font-family: $sans-serif; color:$white; }
+    .display { font-family: $monospace; font-size:3.5em; color:$yellow; font-weight: 800; line-height: 90%; }
+    .how-to-share { font-family: $sans-serif; color:$white; font-size:0.75rem; max-width: 160px; padding-top:0.5em; }
+  }
+}

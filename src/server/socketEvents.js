@@ -284,6 +284,7 @@ export const socketEvents = (io, socket) => {
       from: msg.from,
       socketID: msg.socketID,
       score: msg.score,
+      badGuess: msg.badGuess,
       scoredCard: msg.scoredCard,
       stolenCard: msg.stolenCard,
       toast: msg.toast,

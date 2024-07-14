@@ -1,0 +1,24 @@
+// FONTS
+$serif: "Vollkorn", serif;
+$sans-serif: "Montserrat", sans-serif;
+$monospace: "Noto Sans Mono", monospace;
+
+// COLORS
+$white: #efefef;
+$blue: #574AE2;
+$cream: #F0F0C9;
+$yellow: #F2BB05;
+$green: #4DAA57;
+$red: #6E0E0A;
+
+
+  // shades
+  $lightRed: lighten($red,48);
+  $darkRed: darken($red,5);
+  $lightGreen: lighten($green,30);
+  $darkGreen: darken($green,30);
+  $lightCream: saturate($cream,10);
+  $darkCream: darken($cream,85);
+
+// Measurements
+$playerListWidth: 290px;

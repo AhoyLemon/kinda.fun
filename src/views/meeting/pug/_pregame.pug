@@ -1,0 +1,24 @@
+.pregame-lobby(v-if="!game.isGameStarted")
+
+  .room-code(v-if="game.roomCode")
+    .label your room code
+    .display {{game.roomCode}}
+    .how-to-share(v-if="game.players.length > 0") Share this URL to invite your friends to play.
+  
+  .panel
+    form(@submit.prevent="savePlayerInfo()")
+      fieldset
+        label.required(for="YourName") Your Name
+        input#YourName(type="text" v-model="you.nameInput" placeholder="" autocomplete="on" data-1p-ignore)
+      fieldset
+        label(for="YourJobTitle") Make Up A Job Title
+        input#YourJobTitle(type="text" v-model="you.jobTitleInput" placeholder="ex: Cat Herder" autocomplete="on" data-1p-ignore)
+      .button-holder
+        button(type="submit") Save Name
+    
+    .button-holder(v-if="you.isHost && you.name")
+      template(v-if="game.players.length < 2")
+        span(v-tippy="{ content:'2 or more players required', delay: [100,450]}")
+          button.start-game(disabled) Start Game
+      template(v-if="game.players.length > 1")
+        button.start-game(@click="shuffleUpAndDeal()") Start Game

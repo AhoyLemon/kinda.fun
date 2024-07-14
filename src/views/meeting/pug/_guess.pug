@@ -1,0 +1,8 @@
+.guess
+  p Heard something suspicious during this meeting?
+  form(@submit.prevent="performGuess()")
+    input(placeholder="type your guess..." required v-model="you.guess")
+    button(:disabled="!you.guess") 
+      span(v-if="you.guess") Got You
+      span(v-if="!you.guess") ? 
+  //-p (You will lose {{badGuessPenalty}} points for an incorrect guess)

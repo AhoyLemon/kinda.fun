@@ -1,21 +1,9 @@
-$serif: "Vollkorn", serif;
-$sans-serif: "Montserrat", sans-serif;
-$monospace: "Noto Sans Mono", monospace;
-
-$cardColor: #f4f4e0;
-$cardColorPlaying: #f2f2ba;
 $focusColor: #ffc107;
 
-
-$white: #efefef;
-$blue: #574AE2;
-$cream: #F0F0C9;
-$yellow: #F2BB05;
-$green: #4DAA57;
-$red: #6E0E0A;
+@import "./scss/variables";
 
 
-.meeting-board { display: grid; grid-template-columns: 1fr 320px; min-height: 100dvh;
+.meeting-board { display: grid; grid-template-columns: 1fr $playerListWidth; min-height: 100dvh;
 
 }
 
@@ -23,56 +11,35 @@ $red: #6E0E0A;
   h1 { font-size:3rem; }
 }
 
-.card-table { background-color: #333; padding:20px; display: grid; gap:20px;
+.card-table { background-color: #333; padding:20px; display: flex; flex-direction: column; justify-content: space-between;
   .cards { display: grid; grid-template-columns: repeat( auto-fit, minmax(200px, 1fr) ); gap:20px;
-    .card { width:100%; background:$cardColor; border-radius: 8px;  aspect-ratio: 3 / 2; padding:10px; border:2px solid transparent;
-      appearance: none; --webkit-appearance:none;
-      display:grid; grid-template-rows: 32px 1fr;
-      // display:grid; grid-template-rows: 32px 1fr;
+    .card { appearance: none; width:100%; background:$white; border-radius: 8px; padding:10px; border:2px solid transparent; height:100%; display:grid; grid-template-rows: 32px 1fr;
+      .points { border:2px; border-radius: 50%; width:32px; height:32px; line-height: 30px; text-align: center; font-family: $monospace; font-weight: 825; border:0.125em solid; }
       &:not([disabled]) { cursor: pointer; }
-      &[disabled] { cursor: no-drop; opacity: 1; color:#555; }
-      &.playing { transform: scale(1.15); box-shadow: 0 0 2rem black; background-color:$cardColorPlaying; transition: transform 1s ease, background-color 1s linear; }
-      // &.played { color:$yellow; background:#111; border-color:gold; }
-      &.played { background:lighten($yellow,20); color:darken($yellow,30) }
-      &.stolen { background:lighten($red,48); color:darken($red,5); }
-    }
-    .points-holder { display: flex; align-items: flex-end; justify-content: flex-end; 
-      .points { border:2px; border-radius: 50%; width:32px; height:32px; line-height: 29px; text-align: center; font-family: $monospace; font-weight: 825;
-        border:0.125em solid currentColor;
-        background-color:#deddff; color:#001649;
+      &[disabled] { cursor: no-drop; opacity: 1; }
+      &.unplayed { background:$cream; color:$darkCream;
+        .points { color:$cream; background:$darkCream; }
+      }
+      &.playing { transform: scale(1.1); box-shadow: 0 0 2rem black; background-color:$lightCream; color:$darkCream; transition: transform 1s ease, background-color 1s linear;
+        .points { color: $lightCream; background:$darkCream; }
+      }
+      &.played { background:$lightGreen; color:$darkGreen; border-color:$green;
+        .points { color: $lightGreen; background:$darkGreen; }
+      }
+      &.stolen { background:$lightRed; color:$darkRed; border-color: $red;
+        .points { color: $lightRed; background:$darkRed; }
       }
     }
-    .phrase-holder { display: flex; justify-content: center; align-items: center; min-height: calc(100% - 20px);}
-    blockquote { font-family: $serif; font-size:2rem; text-align: center; font-weight: 400; }
-  }
-}
-.card-players {
-  ul.players { display:grid; gap:20px; padding:20px; }
-  li.player { border: 1px solid #aaa; padding:10px; }
-  .host-icon { float: right; margin-left: 10px; margin-right: 10px; cursor: help;}
-  .player-name { font-family: $serif; font-size:1.5rem; font-weight: 700; }
-  .player-job { font-family: $sans-serif; font-size:1rem; font-weight: 525; }
-  .player-score { font-family: $monospace; font-size:1rem; text-align: right; }
-  ul.known-hand { display: flex; gap:10px;
-    li { width:1.5rem; height:1.5rem; border-radius: 50%; color:transparent; cursor: help; border:1px solid #999; box-shadow: -2px 2px 1px rgba(0,0,0,0.15);
-      &.unplayed { background:$yellow; }
-      &.played { background-color: $green;}
-      &.stolen { background-color: $red;}
-      &.playing { background-color: $blue;}
+    .points-holder { display: flex; align-items: flex-end; justify-content: flex-end; 
     }
+    .phrase-holder { display: flex; justify-content: center; align-items: center; padding-bottom: 20px; height:100%; }
+    blockquote { font-family: $serif; font-weight: 500; font-size:2rem; text-align: center; }
   }
 }
 
-.timer { 
-  //display:grid; grid-template-columns: 120px 1fr; gap:40px; padding-top:2em; font-family: $sans-serif;
-  // .seconds { font-family: $monospace; font-size:4rem; font-weight: 725; color:#fff; }
-  // .progress-holder { display:flex; align-items: center;
-  //   .bar { width:100%; height:3rem; position: relative;
-  //     .fill { position: absolute; top:0; left:0; bottom:0; background:red;  }
-  //   }
-  // }
-  // .stakes { grid-column: span 2; color:white; }
-  position: fixed; bottom:0; left:0; right:320px;
+@import "scss/players";
+
+.timer { position: fixed; bottom:0; left:0; right:$playerListWidth;
   .bar { position: absolute; bottom:0; left:0; right: 0; height:32px; background-color: black;
     .fill { position: absolute; top:0; left:0; bottom:0; background:$yellow; }
   }
@@ -82,65 +49,73 @@ $red: #6E0E0A;
   }
 }
 
-.guess { font-family: $sans-serif; color:white;
-  p { text-align: center;}
-  form { display:grid; width:100%; max-width: 400px; grid-template-columns: 1fr 80px; margin-left: auto; margin-right: auto; margin-top:1rem; margin-bottom: 1rem;
-    input { font-family: $serif; font-size:1.25rem; padding:0.5em 0.25em 0.5em 1.5em; padding-right: 0.5em; border-top-left-radius: 1.5rem; border-bottom-left-radius: 1.5rem; border:3px solid transparent; transition: all 0.3s linear;
-      &:focus { border-color:$focusColor; outline:none; color:darken($focusColor,35);
-        ~ button:not([disabled]) { border-color:$focusColor; }
-      }
-    }
-    button { border-top-right-radius: 1.5rem; border-bottom-right-radius: 1.5rem; font-family: $sans-serif; font-weight: 700; border:2px solid transparent; border-left:none; transition: all 0.3s linear; color:darken($focusColor,40);
-      &:not(disabled) { background-color: lighten($color: ($focusColor), $amount: 40);
-        &:hover, &:focus { background: $focusColor; color:white; cursor: pointer; transition: all 0.125s linear; }
-      }
-    }
-  }
-}
+@import "scss/guess";
+@import "scss/pregame";
 
-
-
-
-//// PREGAME
-.pregame-lobby { background-color: #333; padding:20px; display:flex; align-items: center; justify-content: center;
-
-  .panel { width:360px; display:grid; gap:20px; }
-
-  form { background:$green; padding:20px; display: grid; gap:10px; font-family: $sans-serif;
-    fieldset { position: relative; border:3px solid; background-color: rgba(255,255,255,0.75);
-      label { font-weight: 675; padding-left:1rem; padding-top:0.25rem; display: block;
-        &.required:after { content:'*'; color:$red; }
-      }
-      input { padding:0.4rem 1rem; width:100%; outline:none; font-family: $serif; font-weight: 850; font-size:1.25rem; border:none; background-color: transparent; }
-
-      &:has(input:focus) { background:white;
-        label { color:$blue; }
-        input { color:$blue; }
-        border-color: $blue;
-      }
-    }
-    button[type="submit"] { font-family: $sans-serif; padding:0.6rem 1rem; display: block; width:100%; font-size:1.15rem; font-weight: 725; cursor: pointer; border:2px solid rgba($white,0.75); background-color:rgba($white,0.15); color:rgba($white,0.95); transition: all 0.15s linear;
-      &:hover, &:focus { background:rgba($white,0.92); color:$green; }
-    }
-  }
-  button.start-game { background-color: $yellow; color:darken($yellow,35); font-family: $sans-serif; font-weight: 825; font-size:1.25rem; display: block; width: 100%; padding:0.75em 1em; border:2px solid rgba(0,0,0,.35); transition:all 0.3s linear;
-    &[disabled] { opacity: 0.5; color:darken($yellow,30);}
-    &:not([disabled]) { cursor: pointer;
-      &:hover, &:focus { background-color: lighten($yellow,40); color:darken($yellow,30); }
-    }
-  }
-  
-  .room-code { position: absolute; top:0; left:0; padding:20px;
-    .label { font-family: $sans-serif; color:$white; }
-    .display { font-family: $monospace; font-size:3.5em; color:$yellow; font-weight: 800; line-height: 90%; }
-    .how-to-share { font-family: $sans-serif; color:$white; font-size:0.75rem; max-width: 160px; padding-top:0.5em; }
-  }
-}
-
-.tippy-box {
+.tippy-box { background:$white; color:#111;
+  .tippy-arrow { color:$white; }
   &[data-theme="light"] { background:$cream; color:#222;
     .tippy-arrow { color:$cream; }
   }
-  .tippy-content { font-family: $sans-serif; font-weight: 525;}
+  .tippy-content { font-family: $sans-serif; font-weight: 525; max-width: 160px}
 
+}
+
+@import "scss/animations";
+
+$lemonYellow: #e4e72c;
+$lemonBlack: #313131;
+
+main.game-over { min-height: 100dvh; background-color: $lemonYellow; color:$lemonBlack;
+  h1 { text-align: center; font-family: $monospace; text-transform: uppercase; font-size:12vw; letter-spacing: 0.2em; }
+
+  ol.player-results { display:grid; gap:40px; padding:20px;
+    li.player { background: $lemonBlack; padding:20px;
+      .score-and-name { display:flex; gap:20px;
+        .player-score { font-family: $monospace; font-size:4rem; line-height: 80%; font-weight: 825; color:$white; min-width:60px; text-align: right; }
+        .name-and-job { display:flex; align-items: center;
+          .text { display:grid; }
+        }
+        .player-name { font-family: $serif; font-weight: 625; color:$white; font-size:1.5rem; line-height: 90%;; }
+        .player-job { font-family: $sans-serif; font-weight: 700; color:$white; }
+      }
+      table {  font-family: $sans-serif; margin-top:10px; width:100%;
+        caption { color:$white; font-weight: 625; letter-spacing: 0.15em; }
+        thead { 
+          th { color:$white; font-weight: 725; font-size:0.875rem; padding: 10px 10px 0 10px; text-transform: uppercase;}
+        }
+        tbody { background:$white;
+          td { padding:5px 10px; border-bottom:2px solid $lemonBlack; border-right: 2px solid $lemonBlack; font-weight: 600;
+            &.phrase { font-weight: 825;}
+          }
+
+          tr.played {
+            td { background-color: $lightGreen; color:$darkGreen; }
+          }
+          tr.stolen {
+            td { background-color: $lightRed; color:$darkRed;
+              strong { font-weight: 900; }
+            }
+
+          }
+        }
+      }
+    }
+  }
+
+  h2 { text-align: center; font-family: $monospace; text-transform: uppercase; font-size:9vw; letter-spacing: 0.3em; }
+
+  ol.bad-guesses { display: grid; grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) ); gap:20px; padding:20px;
+    li.bad-guess { background: $white; color:$lemonBlack;
+      blockquote { border-left:1em solid #222; padding:10px;
+        .quote-text { font-family: $serif; margin-bottom: unset; font-size: 1.75em;
+          &:before { content:'“' }
+          &:after { content:'?”' }
+        }
+        cite { display: block; padding-left: 3em; font-family: $sans-serif;
+          &:before { content: '—'}
+        }
+      }
+    }
+  }
 }

@@ -31,9 +31,8 @@
         <div
           v-if="message"
           class="message"
-        >
-          {{ message }}
-        </div>
+          v-html="message"
+        ></div>
       </div>
     </div>
   </div>
@@ -60,19 +59,11 @@
   });
 </script>
 <style lang="scss" scoped>
-  $serif: "Vollkorn", serif;
-  $sans-serif: "Montserrat", sans-serif;
-  $monospace: "Noto Sans Mono", monospace;
+  @import "../scss/variables.scss";
 
   $cardColor: #f4f4e0;
   $cardColorPlaying: #f2f2ba;
   $focusColor: #ffc107;
-
-  $blue: #574ae2;
-  $cream: #f0f0c9;
-  $yellow: #f2bb05;
-  $green: #4daa57;
-  $red: #6e0e0a;
 
   .points-and-text {
     display: grid;
@@ -86,7 +77,7 @@
     .points {
       font-size: 1.25em;
       font-family: $monospace;
-      font-weight: 600;
+      font-weight: 825;
       // background: red;
       width: 60px;
       height: 60px;
@@ -127,6 +118,7 @@
   }
 </style>
 <style lang="scss">
+  @import "../scss/variables.scss";
   .Vue-Toastification__toast {
     &.blue {
       background: #574ae2;
@@ -138,10 +130,31 @@
       background: #f2bb05;
     }
     &.green {
-      background: #4daa57;
+      background: $green;
+      .points {
+        &.negative {
+          background-color: $darkGreen;
+          color: $lightGreen;
+        }
+        &.positive {
+          background-color: $lightGreen;
+          color: $darkGreen;
+        }
+      }
     }
     &.red {
-      background: #6e0e0a;
+      background: $red;
+      .points {
+        &.negative {
+          border-color: $darkRed;
+          background-color: rgba(0, 0, 0, 0.65);
+          color: $lightRed;
+        }
+        &.positive {
+          background-color: $lightRed;
+          color: $darkRed;
+        }
+      }
     }
 
     &.blue,
@@ -161,14 +174,5 @@
         background-color: rgba(0, 0, 0, 0.65);
       }
     }
-
-    // .trophy {
-    //   font-style: normal;
-    //   width: 36px;
-    //   font-size: 2em;
-    //   &:after {
-    //     content: "🏆";
-    //   }
-    // }
   }
 </style>

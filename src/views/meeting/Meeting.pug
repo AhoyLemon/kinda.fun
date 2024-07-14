@@ -1,111 +1,51 @@
 main.meeting-board
 
-
-  .pregame-lobby(v-if="!game.isGameStarted")
-
-    .room-code(v-if="game.roomCode")
-      .label your room code
-      .display {{game.roomCode}}
-      .how-to-share(v-if="game.players.length > 0") Share this URL to invite your friends to play.
-
-    
-    .panel
-      form(@submit.prevent="savePlayerInfo()")
-        fieldset
-          label.required(for="YourName") Your Name
-          input#YourName(type="text" v-model="you.nameInput" placeholder="" autocomplete="on" data-1p-ignore)
-        fieldset
-          label(for="YourJobTitle") Job Title
-          input#YourJobTitle(type="text" v-model="you.jobTitleInput" placeholder="ex: Cat Herder" autocomplete="on" data-1p-ignore)
-        .button-holder
-          button(type="submit") Save Name
-      
-      .button-holder(v-if="you.isHost && you.name")
-        template(v-if="game.players.length < 2")
-          span(v-tippy="{ theme:'light', content:'2 or more players required', delay: [100,300]}")
-            button.start-game(disabled) Start Game
-        template(v-if="game.players.length > 1")
-          button.start-game(@click="shuffleUpAndDeal()") Start Game
-      
+  include pug/_pregame.pug
 
   .card-table(v-if="game.isGameStarted")
-    ul.cards
-      li(v-for="card in computedPlayerHand")
-        button.card(
-            :class="card.status"
-            @click="playThisCard(card)"
-            :disabled="you.isCurrentlyPlayingACard || card.status === 'played' || card.status === 'stolen'"
-          )
-          .points-holder
-            .points(:point-value="card.points") {{card.points}}
-          .phrase-holder
-            blockquote {{card.phrase}}
     
-    .guess
-      p Heard something suspicious during this meeting?
-      form(@submit.prevent="performGuess()")
-        input(placeholder="type your guess..." required v-model="you.guess")
-        button(:disabled="!you.guess") 
-          span(v-if="you.guess") Got You
-          span(v-if="!you.guess") ?
-      p (You will lose {{badGuessPenalty}} points for an incorrect guess)
-    
-    .timer(v-if="you.isCurrentlyPlayingACard")
-      template(v-if="prettyTimerOutput")
-        .seconds-holder
-          span.seconds(v-html="prettyTimerOutput")
-          span.after-seconds seconds to score 
-            strong {{you.currentCard.points}} points.
-            
-        .progress-holder
-          .bar
-            .fill(:style="{width: timerProgressPercent+'%' }")
-      .stakes(v-if="you.isCurrentlyPlayingACard && you.currentCard")
-        p You'll get #[strong {{you.currentCard.points}}] points if nobody calls you out for saying #[strong {{you.currentCard.phrase}}]
+    include pug/_your-cards.pug
+    include pug/_guess.pug
+    include pug/_timer.pug
 
-  .card-players
-    ul.players
+  include pug/_players.pug
 
-      //-li.player.you
-        .player-name
-          span(v-if="you.name") {{you.name}}
-          span(v-else) You
-        .player-job(v-if="you.jobTitle")
-          span {{you.jobTitle}}
-        ul.known-hand
-          template(v-for="card in you.hand")
-            li.unplayed(v-if="card.status === 'unplayed'" v-tippy="`This card hasn't been played (yet)`") up
-            li.played(v-else-if="card.status === 'played'" v-tippy="`You got points for this card`") p
-            li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
-            li.playing(v-else-if="card.status === 'playing'" v-tippy="`You're playing this card`") s
-            li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
-        .player-score(v-if="game.isGameStarted") {{you.score}}
-        
+main.game-over
 
-      li.player(v-for="player in game.players")
+  h1 Game Over
 
-        .host-icon(v-if="player.isHost")
-          span(v-tippy="`You are hosting this game`") 👑
-        template(v-if="player.socketID == you.socketID")
-          .player-name {{player.name}} (you)
-          .player-job(v-if="player.jobTitle")
-            span {{player.jobTitle}}
-          ul.known-hand
-            template(v-for="card in player.hand")
-              li.unplayed(v-if="card.status === 'unplayed'" v-tippy="`You haven't played this card`") up
-              li.played(v-else-if="card.status === 'played'" v-tippy="`You scored this card`") p
-              li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
-              li.playing(v-else-if="card.status === 'playing'" v-tippy="`You're playing this card`") s
-              li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
-          .player-score(v-if="game.isGameStarted") {{player.score}}
-        template(v-if="player.socketID != you.socketID")
-          .player-name {{player.name}}
-          .player-job(v-if="player.jobTitle")
-            span {{player.jobTitle}}
-          ul.known-hand
-            template(v-for="card in player.hand")
-              li.unplayed(v-if="card.status === 'unplayed' || card.status === 'playing'" v-tippy="`This card hasn't been played (as far as you know)`")
-              li.played(v-else-if="card.status === 'played'" v-tippy="`This card been played and scored`") p
-              li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
-              li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
-          .player-score(v-if="game.isGameStarted") {{player.score}}
+  ol.player-results
+    li.player(v-for="player in computedPlayerList")
+      .score-and-name
+        .player-score {{player.score}}
+        .name-and-job
+          .text
+            .player-name {{player.name}}
+            .player-job(v-if="player.jobTitle")
+              span {{player.jobTitle}}
+
+      table
+        //-caption {{player.name}}'s cards
+        thead
+          tr
+            th phrase
+            th points
+            th wha happun?
+        tbody
+          tr(v-for="card in player.hand" :class="card.status")
+            td.phrase {{card.phrase}}
+            td.points {{card.points}}
+            td.status(:class="card.status")
+              template(v-if="card.status == 'stolen'")
+                span(v-if="card.stolenBy") stolen by #[strong {{card.stolenBy}}]
+                span(v-else) strong
+              template(v-else)
+                span {{card.status}}
+  
+  // Bad Guesses
+  h2(v-if="game.badGuesses && game.badGuesses.length > 0") Bad Guesses
+  ol.bad-guesses
+    li.bad-guess(v-for="badGuess in game.badGuesses")
+      blockquote
+        .quote-text {{badGuess.guess}}
+        cite(v-if="badGuess.name") {{badGuess.name}}
