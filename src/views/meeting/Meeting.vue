@@ -1,6 +1,6 @@
 <script setup>
   import { onMounted, reactive, ref, computed } from "vue";
-  import { allCards } from "./js/_allCards";
+  import { allCards } from "./js/_allCards.ts";
   import {
     randomNumber,
     randomFrom,
@@ -13,13 +13,11 @@
     // sendEvent,
     // dollars,
   } from "@/shared/js/_functions.js";
-  import { allValues } from "../cameo/js/_values.js";
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
   import "vue-toastification/dist/index.css";
   import MyToast from "./vue/MyToast.vue";
-  //import LemonToast from "./vue/LemonToast.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -32,7 +30,6 @@
     gameName,
     timeToScore,
     badGuessPenalty,
-    fakePlayerCount,
     cardsPerPlayer,
     game,
     you,
@@ -75,22 +72,6 @@
       players: game.players,
     });
   };
-
-  // const generateFakePlayers = () => {
-  //   while (game.players.length < fakePlayerCount) {
-  //     const randomCelebrity = randomFrom(allValues);
-
-  //     let i = 0;
-  //     game.players.push({
-  //       id: randomNumber(1000, 10000),
-  //       name: randomCelebrity.name,
-  //       hand: [],
-  //       // knownHand: playerHand,
-  //       score: 0,
-  //     });
-  //   }
-
-  // };
 
   const shuffleUpAndDeal = () => {
     game.deck = shuffle([...allCards]);
@@ -146,7 +127,7 @@
         component: MyToast,
         props: {
           points: card.points,
-          message: `nobody caught you saying <strong>“${card.phrase}”</strong>.`,
+          message: `Nobody called you out for saying “<strong>${card.phrase}</strong>”.`,
         },
       },
       {
@@ -172,7 +153,7 @@
   };
 
   const performGuess = () => {
-    const yourGuess = you.guess.toLowerCase();
+    const yourGuess = you.guess.toLowerCase().replace(/"/g, "");
     let match = null;
     let matchFound = false;
     let stolenBy = "";
@@ -188,13 +169,18 @@
       const player = game.players[playerIndex];
       for (const card of player.hand) {
         if (
+          // exact match
           card.phrase.toLowerCase() === yourGuess ||
+          // match in alternates
           (card.alternates &&
-            card.alternates.some((alt) => alt.toLowerCase() === yourGuess))
+            card.alternates.some((alt) => alt.toLowerCase() === yourGuess)) ||
+          // match in stringMatch
+          (card.stringMatch &&
+            yourGuess.includes(card.stringMatch.toLowerCase()))
         ) {
           actualPhrase = card.phrase;
           if (player.socketID === you.socketID) {
-            severelyPenalizeTerribleGuess(card);
+            severelyPenalizeTerribleGuess(card, you.guess);
             matchFound = true;
           } else if (card.status === "stolen") {
             stolenBy = card.stolenBy;
@@ -207,7 +193,7 @@
             match = {
               ...card,
               status: "stolen",
-              playerIndex,
+              stolenBy: you.name,
               socketID: player.socketID,
               playerName: player.name,
             };
@@ -229,7 +215,7 @@
           component: MyToast,
           props: {
             title: "Too Late!",
-            message: `${actualPhrase ?? yourGuess} has already been stolen.`,
+            message: `“${actualPhrase ?? yourGuess}” has already been stolen.`,
           },
         },
         {
@@ -246,7 +232,7 @@
           props: {
             title: "Too Late!",
             // points: match.points,
-            message: `<strong>${actualPhrase ?? yourGuess}</strong> has already been scored.`,
+            message: `“<strong>${actualPhrase ?? yourGuess}</strong>” has already been scored.`,
           },
         },
         {
@@ -289,7 +275,7 @@
         props: {
           title: "Nope!",
           points: yourLoss,
-          message: `Nobody had <strong>${you.guess}</strong>.`,
+          message: `Nobody had “<strong>${you.guess}</strong>”.`,
         },
       },
       {
@@ -304,7 +290,7 @@
       name: you.name,
       guess: yourGuess,
       penalty: you.yourLoss,
-      isOwnCard: true,
+      isOwnCard: false,
     });
     socket.emit("sendPlayerUpdate", {
       roomCode: game.roomCode,
@@ -323,7 +309,7 @@
     });
   };
 
-  const severelyPenalizeTerribleGuess = (card) => {
+  const severelyPenalizeTerribleGuess = (card, yourGuess) => {
     const yourLoss = 0 - card.points;
     findMe().score -= card.points;
     toast(
@@ -332,7 +318,7 @@
         props: {
           title: "You idiot!",
           points: 0 - card.points,
-          message: `<p><strong>${card.phrase} was one of YOUR cards!!!</strong></p>
+          message: `<p>“<strong>${card.phrase}</strong>” was one of YOUR cards!!!</p>
                     <p>I'm subtracting <strong>${card.points}</strong> points from your score.</p>
                     <p>Pay attention next time.</p>`,
         },
@@ -375,7 +361,7 @@
         props: {
           title: "Got 'em!",
           points: match.points,
-          message: `${match.playerName} had <strong>${match.phrase}</strong>.`,
+          message: `<strong>${match.playerName}</strong> had “<strong>${match.phrase}</strong>.”`,
         },
       },
       {
@@ -444,6 +430,16 @@
     // );
     // url.searchParams.set("room", game.roomCode);
     // window.history.pushState({}, "", url);
+  };
+
+  const endTheGame = () => {
+    socket.emit("endTheGame", {
+      roomCode: game.roomCode,
+      from: you.socketID,
+      gameName: gameName,
+      players: game.players,
+      badGuesses: game.badGuesses,
+    });
   };
 
   const prettyTimerOutput = computed(() => {
@@ -529,12 +525,14 @@
           p.hand.some((card) => {
             if (card.phrase === msg.stolenCard.phrase) {
               card.status = "stolen";
+              card.stolenBy = msg.stolenCard.stolenBy;
               return true; // Exit the loop once a match is found
             }
           }),
         );
 
-        // Is somebody stealing YOUR card!??
+        // Is somebody stealing YOUR active card!??
+        // If so, clear those timers.
         if (msg.stolenCard.phrase === you.currentCard.phrase) {
           clearInterval(interval);
           timer.value = 0;
@@ -550,7 +548,7 @@
               props: {
                 title: `You got robbed!`,
                 points: msg.stolenCard.points,
-                message: `<strong>${player.name}</strong> just scored your ${msg.stolenCard.phrase} card`,
+                message: `<strong>${player.name}</strong> just scored your “<strong>${msg.stolenCard.phrase}</strong>” card`,
               },
             },
             {
@@ -562,7 +560,7 @@
           );
         } else {
           toast(
-            `${player.name} just stole a card from ${msg.stolenCard.playerName} for ${msg.stolenCard.points}`,
+            `<strong>${player.name}</strong> just stole a card from <strong>${msg.stolenCard.playerName}</strong> for <strong>${msg.stolenCard.points}</strong> points`,
             {
               timeout: 6000,
             },

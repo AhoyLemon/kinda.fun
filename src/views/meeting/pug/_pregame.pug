@@ -14,11 +14,15 @@
         label(for="YourJobTitle") Make Up A Job Title
         input#YourJobTitle(type="text" v-model="you.jobTitleInput" placeholder="ex: Cat Herder" autocomplete="on" data-1p-ignore)
       .button-holder
-        button(type="submit") Save Name
+        button(type="submit")
+          span(v-if="!you.name") Sign In
+          span(v-if="you.name") Change Profile
     
     .button-holder(v-if="you.isHost && you.name")
       template(v-if="game.players.length < 2")
         span(v-tippy="{ content:'2 or more players required', delay: [100,450]}")
           button.start-game(disabled) Start Game
       template(v-if="game.players.length > 1")
-        button.start-game(@click="shuffleUpAndDeal()") Start Game
+        .start-game-wrapper
+          label When all players are ready...
+          button.start-game(@click="shuffleUpAndDeal()") Start The Game

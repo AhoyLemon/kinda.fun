@@ -8,6 +8,7 @@ export const cardsPerPlayer = 5; // Number of cards each player will get
 export const game = reactive({
   roomCode: "",
   isGameStarted: false,
+  isGameOver: false,
   deck: [],
   players: [],
   badGuesses: [],

@@ -33,7 +33,10 @@ $focusColor: #ffc107;
     .points-holder { display: flex; align-items: flex-end; justify-content: flex-end; 
     }
     .phrase-holder { display: flex; justify-content: center; align-items: center; padding-bottom: 20px; height:100%; }
-    blockquote { font-family: $serif; font-weight: 500; font-size:2rem; text-align: center; }
+    blockquote { font-family: $serif; font-weight: 500; font-size:2rem; text-align: center;
+      &:before { content:'“' }
+      &:after { content:'”' }
+    }
   }
 }
 
@@ -58,18 +61,18 @@ $focusColor: #ffc107;
     .tippy-arrow { color:$cream; }
   }
   .tippy-content { font-family: $sans-serif; font-weight: 525; max-width: 160px}
-
 }
 
 @import "scss/animations";
 
 $lemonYellow: #e4e72c;
 $lemonBlack: #313131;
+$lemonOrange: #e98741;
 
 main.game-over { min-height: 100dvh; background-color: $lemonYellow; color:$lemonBlack;
   h1 { text-align: center; font-family: $monospace; text-transform: uppercase; font-size:12vw; letter-spacing: 0.2em; }
 
-  ol.player-results { display:grid; gap:40px; padding:20px;
+  ol.player-results { display:grid; gap:40px; padding:20px; grid-template-columns: repeat( auto-fit, minmax(550px, 1fr) );
     li.player { background: $lemonBlack; padding:20px;
       .score-and-name { display:flex; gap:20px;
         .player-score { font-family: $monospace; font-size:4rem; line-height: 80%; font-weight: 825; color:$white; min-width:60px; text-align: right; }
@@ -79,7 +82,7 @@ main.game-over { min-height: 100dvh; background-color: $lemonYellow; color:$lemo
         .player-name { font-family: $serif; font-weight: 625; color:$white; font-size:1.5rem; line-height: 90%;; }
         .player-job { font-family: $sans-serif; font-weight: 700; color:$white; }
       }
-      table {  font-family: $sans-serif; margin-top:10px; width:100%;
+      table {  font-family: $sans-serif; margin-top:10px; width:100%; max-width: 600px;
         caption { color:$white; font-weight: 625; letter-spacing: 0.15em; }
         thead { 
           th { color:$white; font-weight: 725; font-size:0.875rem; padding: 10px 10px 0 10px; text-transform: uppercase;}
@@ -107,15 +110,27 @@ main.game-over { min-height: 100dvh; background-color: $lemonYellow; color:$lemo
 
   ol.bad-guesses { display: grid; grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) ); gap:20px; padding:20px;
     li.bad-guess { background: $white; color:$lemonBlack;
-      blockquote { border-left:1em solid #222; padding:10px;
-        .quote-text { font-family: $serif; margin-bottom: unset; font-size: 1.75em;
+      blockquote { border-left:0.5em solid #222; padding:10px 20px; font-family: $serif; font-size: 1.75em;
+        .quote-text {
           &:before { content:'“' }
           &:after { content:'?”' }
         }
-        cite { display: block; padding-left: 3em; font-family: $sans-serif;
+        // .quote-text-with-own-card
+        cite { display: block; padding-left: 3em; font-family: $sans-serif; font-size:1rem; font-weight: 700;
           &:before { content: '—'}
         }
       }
     }
   }
+
+  .game-by-lemon { padding:20dvh 20px 20px 20px;
+    a { color:currentColor; text-decoration: none; font-family: $serif; }
+    h3 { text-align: left; font-size:7vw; transition:color 0.15s linear; }
+    .image-holder { display: flex; align-items: center; justify-content: flex-end; }
+    .lemon { width:clamp(64px,50dvw, 300px); }
+    a:hover { color:$lemonOrange;
+      h3 { text-decoration: underline; text-decoration-thickness: 0.15em; text-underline-offset: 0.1em;}
+    }
+  }
+
 }

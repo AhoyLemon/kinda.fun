@@ -289,5 +289,29 @@ export const socketEvents = (io, socket) => {
       stolenCard: msg.stolenCard,
       toast: msg.toast,
     });
+    if (msg.badGuess) {
+      console.log("bad guess");
+      console.table(msg.badGuess);
+    }
+    if (msg.scoredCard) {
+      console.log("scored card");
+      console.table(msg.scoredCard);
+    }
+    if (msg.stolenCard) {
+      console.log("stolen card");
+      console.table(msg.stolenCard);
+    }
+  });
+
+  socket.on("endTheGame", (msg) => {
+    console.log("GAME OVER");
+    console.table(msg.players);
+    console.table(msg.badGuesses);
+    io.in(msg.roomCode).emit("receiveEndGameCommand", {
+      roomCode: msg.roomCode,
+      from: msg.from,
+      players: msg.players,
+      badGuesses: msg.badGuesses,
+    });
   });
 };

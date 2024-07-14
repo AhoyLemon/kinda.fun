@@ -5,7 +5,9 @@
   .name-and-icon { display: grid; grid-template-columns: 1fr 32px;
     .host-icon { margin-left: 10px; margin-right: 10px; cursor: help; padding-top:4px}
   }
-  .player-name { font-family: $serif; font-size:1.5rem; font-weight: 700; }
+  .player-name { font-family: $serif; font-size:1.5rem; font-weight: 700;
+    &.is-you { color:$yellow; }
+  }
   .player-job { font-family: $sans-serif; font-size:1rem; font-weight: 525; }
   .player-score { font-family: $monospace; font-size:1rem; text-align: right; }
   ul.known-hand { display: flex; gap:10px;
@@ -16,4 +18,14 @@
       &.playing { background-color: $blue;}
     }
   }
+
+  &.for-host { display:flex; flex-direction: column; justify-content: space-between; gap:40px;
+    .end-meeting { display: grid; gap:5px; padding:40px 20px 10px 20px;
+      label { font-size:0.75rem; color:$white; font-family: $sans-serif; text-align: center;}
+      button { background:transparent; border:2px solid $yellow; color:$yellow; padding:0.5em 1em; font-family: $sans-serif; font-size:0.875rem; cursor: pointer;
+        &:hover, &:focus { background-color: $yellow; color:#000; }
+      }
+    }
+  }
+  
 }

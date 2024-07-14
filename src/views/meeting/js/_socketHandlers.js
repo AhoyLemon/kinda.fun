@@ -67,4 +67,11 @@ export const setupSocketHandlers = (socket) => {
     game.players = msg.players;
     game.isGameStarted = true;
   });
+
+  socket.on("receiveEndGameCommand", (msg) => {
+    console.log(`An end game command from ${msg.from}`);
+    game.players = msg.players;
+    game.badGuesses = msg.badGuesses;
+    game.isGameOver = true;
+  });
 };

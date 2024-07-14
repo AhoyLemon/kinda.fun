@@ -1,4 +1,4 @@
-main.meeting-board
+main.meeting-board(v-if="!game.isGameOver")
 
   include pug/_pregame.pug
 
@@ -10,7 +10,7 @@ main.meeting-board
 
   include pug/_players.pug
 
-main.game-over
+main.game-over(v-if="game.isGameOver")
 
   h1 Game Over
 
@@ -25,12 +25,11 @@ main.game-over
               span {{player.jobTitle}}
 
       table
-        //-caption {{player.name}}'s cards
         thead
           tr
             th phrase
             th points
-            th wha happun?
+            th result
         tbody
           tr(v-for="card in player.hand" :class="card.status")
             td.phrase {{card.phrase}}
@@ -38,8 +37,8 @@ main.game-over
             td.status(:class="card.status")
               template(v-if="card.status == 'stolen'")
                 span(v-if="card.stolenBy") stolen by #[strong {{card.stolenBy}}]
-                span(v-else) strong
-              template(v-else)
+                span(v-else) stolen
+              template(v-else) 
                 span {{card.status}}
   
   // Bad Guesses
@@ -47,5 +46,17 @@ main.game-over
   ol.bad-guesses
     li.bad-guess(v-for="badGuess in game.badGuesses")
       blockquote
-        .quote-text {{badGuess.guess}}
-        cite(v-if="badGuess.name") {{badGuess.name}}
+        template(v-if="!badGuess.isOwnCard")
+          .quote-text {{badGuess.guess}}
+        template(v-if="badGuess.isOwnCard")
+          div “{{badGuess.guess}}?”
+          div(style="font-size:75%;") “Oh wait, no. That's one of mine, oops.”
+        cite(v-if="badGuess.name") 
+          span {{badGuess.name}} 
+  
+  section.game-by-lemon
+    a(href="https://ahoylemon.xyz")
+      h3 This game is 
+        span by Lemon.
+      .image-holder
+        img.lemon(src="/svg/lemon.svg" alt="Lemon")
