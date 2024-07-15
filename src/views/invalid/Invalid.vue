@@ -85,10 +85,10 @@
     game.roomCode = makeID(4);
 
     // Create a room with the randomly generated code.
-    socket.emit("createRoom", {
-      roomCode: game.roomCode,
-      gameName: game.gameName,
-    });
+    // socket.emit("createRoom", {
+    //   roomCode: game.roomCode,
+    //   gameName: game.gameName,
+    // });
 
     // Set your local variables.
     my.isRoomHost = true;
@@ -102,6 +102,13 @@
   };
 
   const joinRoom = () => {
+
+    let url = new URL(
+        location.protocol + "//" + location.host + location.pathname,
+      );
+      url.searchParams.set("room", game.roomCode);
+      window.history.pushState({}, "", url);
+
     // Try to join a room with the entered code.
     socket.emit("joinRoom", {
       roomCode: game.roomCode,
@@ -115,11 +122,6 @@
 
     game.currentlyInGame = true;
     round.phase = "pregame";
-    // let url = new URL(
-    //   location.protocol + "//" + location.host + location.pathname,
-    // );
-    // url.searchParams.set("room", game.roomCode);
-    // window.history.pushState({}, "", url);
   };
 
   /////// BEFORE GAME (game hasn't started yet)
@@ -1441,22 +1443,12 @@
     }
   });
 
-  // Someone created a room.
-  socket.on("createRoom", function (msg) {
-    // Don't do anything.
-  });
-
-  // Someone joined a room.
-  socket.on("joinRoom", function (msg) {
-    // Don't do anything.
-  });
-
   ////////////////////////////////////////////////////////////////
   // Everything below this line should ONLY be messages to the room.
 
   socket.on("requestPlayers", function (msg) {
     console.log("The client wants players from me!");
-    if (isRoomHost) {
+    if (my.isRoomHost) {
       socket.emit("updatePlayers", {
         roomCode: game.roomCode,
         players: game.players,
@@ -1472,7 +1464,7 @@
   socket.on("updatePlayers", function (msg) {
     console.log("THE PLAYERS HAVE BEEN UPDATED!!!!!!!!");
     game.players = msg.players;
-    gameStarted = msg.gameStarted;
+    game.gameStarted = msg.gameStarted;
 
     // NOTE: This bit may be unnecessary, but confirms & updates your own playerIndex every time the players get updated.
     game.players.forEach(function (p, index) {
@@ -1642,7 +1634,7 @@
       }
 
       // Okay, now define roles for everyone.
-      game.players.forEach(function (p, index) {
+      game.players.forEach(function (p) {
         p.role = "employee";
       });
       game.players[round.sysAdminIndex].role = "SysAdmin";
@@ -1676,7 +1668,7 @@
     console.log("GAME OVER ⚰️");
     //setGameOver();
     game.players[msg.playerIndex].passwordAttempts = msg.passwordAttempts;
-    if (isRoomHost) {
+    if (my.isRoomHost) {
       sendEvent("Invalid", "Game Over", game.roomCode);
     }
     document.title = "GAME OVER" + " | " + gameTitle;
@@ -1713,11 +1705,6 @@
       createRoom();
     } else if (urlParams.has("room")) {
       game.roomCode = urlParams.get("room").toUpperCase();
-      let url = new URL(
-        location.protocol + "//" + location.host + location.pathname,
-      );
-      url.searchParams.set("room", game.roomCode);
-      window.history.pushState({}, "", url);
       socket.on("connect", () => {
         console.log(`Connected with socketId: ${socket.id}`);
         my.socketID = socket.id;
