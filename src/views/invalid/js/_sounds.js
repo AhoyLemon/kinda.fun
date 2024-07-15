@@ -1,5 +1,6 @@
 const audioSrc = "audio/";
 
+import { Howl } from "howler";
 /////////////////////////////////
 // Lobby Sounds
 export const musicLobby = new Howl({
@@ -79,8 +80,4 @@ export const musicFinalRound = new Howl({
 
 export const soundFinalRoundOver = new Howl({
   src: [audioSrc + "invalid/crack-gong.mp3"],
-});
-
-export const soundGameOver = new Howl({
-  src: [audioSrc + "end-song.mp3"],
 });

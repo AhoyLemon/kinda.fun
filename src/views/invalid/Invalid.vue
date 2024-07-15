@@ -52,7 +52,6 @@
     soundTooSlow,
     musicFinalRound,
     soundFinalRoundOver,
-    soundGameOver,
   } from "./js/_sounds";
 
   ////////////// Toasts
@@ -1139,7 +1138,6 @@
     clearInterval(round.roundTimer);
     round.roundTimer = undefined;
     round.phase = "GAME OVER";
-    //soundGameOver.play();
     socket.emit("gameOver", {
       roomCode: game.roomCode,
       gameName: game.gameName,
