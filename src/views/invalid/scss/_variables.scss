@@ -1,0 +1,37 @@
+$gap: 40px;
+$padding: 20px;
+
+
+// Font shit
+$barlow: 'Barlow', sans-serif;
+$sans-serif: $barlow;
+$fira: 'Fira Code', monospace;
+$monospace: $fira;
+$lora: 'Lora', serif;
+$serif: $lora;
+
+$medium: 300;
+$bold: 500;
+
+
+// Colors
+$tiffany: #0abab5;
+$lime: #2EF429;
+$green: $lime;
+$pink: #ff0099;
+$purple: #791fc7;
+
+
+$adminOnly: #ffcc00;
+$adminError: $red;
+$adminPanelColor: rgba(1,12,1,1);
+$employeePanelColor: rgba(246,246,256,1);
+
+$adminActive: $green;
+$adminAccent: #ffcc00;
+
+
+
+$blue: $tiffany;
+
+$scorebard-width: 200px;

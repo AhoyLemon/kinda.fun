@@ -30,6 +30,28 @@ const router = createRouter({
       },
     },
     {
+      path: "/invalid",
+      name: "Invalid",
+      component: () => import("../views/invalid/Invalid.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=Barlow:wght@300;500&amp;family=Fira+Code:wght@300;600&amp;family=Lora:ital,wght@0,400;0,600;1,400&amp;display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content: "A trivia game of unnecessary suffering.",
+            },
+          },
+        ],
+      },
+    },
+    {
       path: "/sisyphus",
       name: "Sisyphus Clicker",
       alias: ["/sisyphus-clicker"],

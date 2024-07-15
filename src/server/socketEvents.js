@@ -29,8 +29,6 @@ export const socketEvents = (io, socket) => {
     },
   ]);
 
-  // io.to(socket.id).emit("getSocketID", socket.id);
-
   socket.on("disconnect", () => {
     console.table([
       {
@@ -43,19 +41,14 @@ export const socketEvents = (io, socket) => {
   });
 
   socket.on("createRoom", (msg) => {
-    //io.emit('createRoom', msg);
     console.log(msg.roomCode + " - created a room for " + msg.gameName);
     socket.join(msg.roomCode);
     console.log(msg.roomCode + " - join by creator");
-
-    // TODO: I need to figure out how to get a list of all clients in a room.
-    console.table([
-      {
-        game: msg.gameName,
-        action: "Room Created",
-        roomCode: msg.roomCode,
-      },
-    ]);
+    if (msg.gameName == "invalid") {
+      addOneInDatabase("invalidGames", "RoomsCreated");
+    } else if (msg.gameName == "wrongest") {
+      addOneInDatabase("wrongestGames", "RoomsCreated");
+    }
   });
 
   socket.on("joinRoom", (msg) => {
@@ -75,20 +68,6 @@ export const socketEvents = (io, socket) => {
       // Notify the entire room of the host's socketId
       io.to(msg.roomCode).emit("hostSelected", hostSocketId);
     }
-
-    // // Broadcast a join message gloablly.
-    // io.emit("joinRoom", msg);
-
-    // // Request players from the host.
-    // socket.to(msg.roomCode).emit("requestPlayers");
-
-    // console.table([
-    //   {
-    //     game: msg.gameName,
-    //     action: "Room Joined",
-    //     roomCode: msg.roomCode,
-    //   },
-    // ]);
   });
 
   ///////////////////////////////////////////////////
@@ -198,6 +177,7 @@ export const socketEvents = (io, socket) => {
       },
     ]);
   });
+
   ///////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////
@@ -309,11 +289,47 @@ export const socketEvents = (io, socket) => {
   socket.on("startTheGame", (msg) => {
     console.log("startTheGame");
 
-    io.in(msg.roomCode).emit("receiveStartGameMessage", {
-      roomCode: msg.roomCode,
-      from: msg.from,
-      players: msg.players,
-    });
+    if (msg.gameName == "invalid") {
+      io.in(msg.roomCode).emit("startTheGame", {
+        gameName: msg.gameName,
+        players: msg.players,
+        maxRounds: msg.maxRounds,
+        sysAdminIndex: msg.sysAdminIndex,
+        allowNaughty: msg.allowNaughty,
+      });
+
+      // // Save to Invalid Database...
+
+      // incrementDatabase("invalidPlayerCounts",playerCount+ " Players");
+
+      // if (msg.allowNaughty) {
+      //   addOneInDatabase("invalidGames","NaughtyModeOn");
+      // } else {
+      //   addOneInDatabase("invalidGames","NaughtyModeOff");
+      // }
+
+      // addOneInDatabase("invalidGames","GamesStarted");
+    } else if (msg.gameName == "wrongest") {
+      // io.in(msg.roomCode).emit('startTheGame', {
+      //   gameName: msg.gameName,
+      //   players: msg.players,
+      //   gameDeck: msg.gameDeck,
+      //   chosenDeckName: msg.chosenDeckName,
+      //   maxRounds: msg.maxRounds
+      // });
+      // Save to Wrongest Database...
+      // addOneInDatabase("wrongestGames","GamesStarted");
+      // incrementDatabase("wrongestPlayerCounts", playerCount+ " Players");
+      // if (msg.chosenDeckName) {
+      //   incrementDatabase("wrongestDecks", msg.chosenDeckName);
+      // }
+    } else {
+      io.in(msg.roomCode).emit("receiveStartGameMessage", {
+        roomCode: msg.roomCode,
+        from: msg.from,
+        players: msg.players,
+      });
+    }
   });
 
   socket.on("sendPlayerUpdate", (msg) => {
@@ -352,5 +368,153 @@ export const socketEvents = (io, socket) => {
       players: msg.players,
       badGuesses: msg.badGuesses,
     });
+  });
+
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  // INVALID sockets
+
+  // SysAdmin -> Employees
+  socket.on("invalidUpdatePasswordChallenge", (msg) => {
+    console.log(msg.roomCode + " - challenge is " + msg.challenge.name);
+    io.to(msg.roomCode).emit("invalidUpdatePasswordChallenge", {
+      challenge: msg.challenge,
+    });
+
+    incrementDatabase("invalidChallenges", msg.challenge.name);
+  });
+
+  // SysAdmin -> Employees
+  socket.on("invalidUpdatePasswordRules", (msg) => {
+    console.log(msg.roomCode + " - new rule");
+    console.table(msg.rules);
+    io.to(msg.roomCode).emit("invalidUpdatePasswordRules", {
+      rules: msg.rules,
+      shibboleth: msg.shibboleth,
+    });
+
+    if (msg.newRule.type) {
+      incrementDatabase("invalidRules", msg.newRule.type);
+
+      if (msg.newRule.type == "Ban A Letter" && msg.newRule.inputValue) {
+        incrementDatabase("invalidBannedLetters", msg.newRule.inputValue);
+      } else if (
+        msg.newRule.type == "Demand A Letter" &&
+        msg.newRule.inputValue
+      ) {
+        incrementDatabase("invalidDemandedLetters", msg.newRule.inputValue);
+      }
+    }
+  });
+
+  // SysAdmin -> Employees
+  socket.on("invalidSummonThePig", (msg) => {
+    console.log(msg.roomCode + " - The Flying Pig has been summoned!");
+    io.to(msg.roomCode).emit("invalidSummonThePig");
+  });
+
+  // SysAdmin -> Employees
+  socket.on("invalidUpdateBugs", (msg) => {
+    console.log(msg.roomCode + " - new bug");
+    console.table(msg.bugs);
+    io.to(msg.roomCode).emit("invalidUpdateBugs", {
+      bugs: msg.bugs,
+    });
+
+    if (msg.newBug) {
+      incrementDatabaseWithChallenge(
+        "invalidBugs",
+        msg.challengeName,
+        msg.newBug,
+      );
+    }
+  });
+
+  // SysAdmin -> ALL
+  socket.on("invalidStartGuessing", (msg) => {
+    console.log(msg.roomCode + " - start guessing");
+    io.in(msg.roomCode).emit("invalidStartGuessing", {
+      sysAdminIndex: msg.sysAdminIndex,
+    });
+  });
+
+  // An Employee -> Rest of Game
+  socket.on("invalidTriedPassword", (msg) => {
+    console.log(msg.roomCode + " - bad guess");
+    io.to(msg.roomCode).emit("invalidTriedPassword", {
+      playerIndex: msg.playerIndex,
+      pwAttempt: msg.pwAttempt,
+      attemptCount: msg.attemptCount,
+      result: msg.result,
+    });
+  });
+
+  // An Employee -> ALL
+  socket.on("invalidCrashedServer", (msg) => {
+    console.log(msg.roomCode + " - server crash!");
+    io.in(msg.roomCode).emit("invalidCrashedServer", {
+      playerIndex: msg.playerIndex,
+      pwAttempt: msg.pwAttempt,
+      attemptCount: msg.attemptCount,
+      result: msg.result,
+    });
+
+    if (msg.pwAttempt) {
+      incrementDatabaseWithChallenge(
+        "invalidCrashes",
+        msg.challengeName,
+        msg.pwAttempt,
+      );
+    }
+  });
+
+  // An Employee -> ALL
+  socket.on("invalidPasswordSuccess", (msg) => {
+    console.log(msg.roomCode + " - password success");
+    io.in(msg.roomCode).emit("invalidPasswordSuccess", {
+      playerIndex: msg.playerIndex,
+      pwAttempt: msg.pwAttempt,
+      attemptCount: msg.attemptCount,
+      playerScore: msg.playerScore,
+      result: msg.result,
+    });
+
+    if (msg.pwAttempt) {
+      incrementDatabaseWithChallenge(
+        "invalidSuccessfulPasswords",
+        msg.challengeName,
+        msg.pwAttempt,
+      );
+    }
+  });
+
+  // Any Player -> ALL
+  socket.on("invalidRoundOver", (msg) => {
+    console.log(msg.roomCode + " - round over");
+    io.in(msg.roomCode).emit("invalidRoundOver");
+  });
+
+  // SysAdmin -> ALL
+  socket.on("invalidStartNewRound", (msg) => {
+    console.log(msg.roomCode + " - new round started");
+    io.in(msg.roomCode).emit("invalidStartNewRound", {
+      playerIndex: msg.playerIndex,
+      players: msg.players,
+      summary: msg.summary,
+    });
+  });
+
+  // Any Player -> Rest of Game
+  socket.on("invalidPasswordCracked", (msg) => {
+    console.log(msg.roomCode + " - password cracked");
+    io.to(msg.roomCode).emit("invalidPasswordCracked", {
+      players: msg.players,
+      allEmployeePasswords: msg.allEmployeePasswords,
+      crackSummary: msg.crackSummary,
+    });
+
+    if (msg.crackSummary && msg.crackSummary.pw) {
+      incrementDatabase("invalidCracks", msg.crackSummary.pw);
+    }
   });
 };

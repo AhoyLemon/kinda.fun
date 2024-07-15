@@ -1,0 +1,157 @@
+main.employee-screen(v-if="my.role == 'employee' && (round.phase == 'choose rules' || round.phase == 'create password' || round.phase == 'crashed')")
+
+  .top-info
+    .name {{my.name}}
+    .job 
+      span Employee 
+      sup #
+      span {{my.employeeNumber}}
+    .round-number ROUND {{round.number}} / {{game.maxRounds}}
+    .attempts
+      span(v-if="my.passwordAttempts > 0") {{my.passwordAttempts}} tries
+    .score SCORE: {{game.players[my.playerIndex].score}}
+
+
+  .interface
+
+    .inside
+
+      // This tells you about criteria and status
+      .info
+        .content
+          ul
+            li(v-if="round.challenge && round.challenge.nameAsRule") {{round.challenge.nameAsRule}}
+            li(v-if="round.challenge && round.challenge.hint") 
+              strong HINT: 
+              |  {{round.challenge.hint}}
+            li(v-for="(rule,index) in round.rules") {{rule.message}}
+            li(v-if="round.challenge && round.challenge.nameAsRule") Passwords are case-insensitive
+            li(v-if="round.bugs && round.bugs.length > 0 ") 
+              span(v-if="round.bugs.length == 1") There is a system bug.
+              span(v-else) There are {{round.bugs.length}} system bugs.
+          
+          .stand-by(v-if="round.phase != 'create password' && !ui.roundOver")
+            p Your password rules are still being created by {{computedSysAdminName}}, your friendly and helpful System Administrator.
+
+      // This is where you put in the password, and get feedback about your password.
+
+      .entry
+        .content
+          h2.please-wait(v-if="round.phase != 'create password'") Please Wait
+          h2(v-else-if="ui.roundOver") This round is over.
+          h2(v-else-if="ui.passwordSucceeded") SUCCESS!
+          h2(v-else) Create Your Password.
+
+          
+          // IDEA: Show disabled forms if you can't enter yet.
+          // However, since the UX is better if the form is inserted in, we're going to swap disabled forms with active forms.
+
+          template(v-if="!ui.roundOver && !ui.passwordSucceeded")
+
+            template(v-if="computedShibbolethRequired || ui.shibboleth")
+              template(v-if="ui.roundOver || round.phase != 'create password' || !computedShibbolethRequired")
+                form.shibboleth-form.disabled
+                  fieldset
+                    input.uppercase.shibboleth(type="text" v-model="ui.shibboleth" disabled)
+                    label Type {{round.shibboleth}}
+                      sup.required *
+                  .disabled-reason(v-if="ui.roundOver || round.phase != 'create password'") Please wait for {{computedSysAdminName}} to finish creating password rules.
+              template(v-else)
+                // This is where the working Shibboleth form goes.
+                form.shibboleth-form(@submit.prevent="ui.shibboleth = ''" v-if="computedShibbolethRequired")
+                  fieldset
+                    label(for="ShibbolethInput") Type {{round.shibboleth}}
+                      sup.required *
+                    input.uppercase.shibboleth(type="text" v-model="ui.shibboleth")
+
+            template(v-if="ui.roundOver || round.phase != 'create password' || computedShibbolethRequired")
+              form.password-form.disabled
+                fieldset
+                  input.uppercase(type="text" v-model="ui.passwordAttempt" id="PasswordAttempt" autocomplete="off" required disabled)
+                  label(for="PasswordAttempt") Create A Password
+                    sup.required *
+                .button-holder
+                  button(type="submit" disabled) Submit
+                .disabled-reason(v-if="round.phase != 'create password'") Please wait for {{computedSysAdminName}} to finish creating password rules.
+                .disabled-reason(v-else-if="computedShibbolethRequired") You must type {{round.shibboleth}} first.
+            template(v-else)
+              // Okay, here's the working password form.
+              form.password-form(@submit.prevent="tryThisPassword(ui.passwordAttempt)")
+                fieldset
+                  input.uppercase(type="text" v-model="ui.passwordAttempt" id="PasswordAttempt" maxlength="25" @paste="onPaste" :class="{ 'error' : ui.passwordInputError }" autocomplete="off" required)
+                  label(for="PasswordAttempt") Create A Password
+                    sup.required *
+                .button-holder
+                  button(type="submit") Submit
+
+          .password-errors(v-if="ui.passwordAttemptErrors && ui.passwordAttemptErrors.length > 0")
+            .error(v-if="ui.passwordAttemptErrors.length == 1") {{ui.passwordAttemptErrors[0]}}
+            ul(v-if="ui.passwordAttemptErrors.length > 1")
+              li.error(v-for="(err,index) in ui.passwordAttemptErrors") {{err}}
+          
+          template(v-if="ui.passwordSucceeded && !ui.roundOver")
+            p You've set a password.
+            p Please stand by while your coworkers try to do the same.
+
+          div(v-if="ui.roundOver")
+            p(v-if="round.number == game.maxRounds") BigCorp Middle Management is pleased with all the passwords which have been provided. Management sincerely hopes nobody tries to hack any of the passwords given.
+            p(v-else) Your password(s) have been sent to BigCorp Middle Management, who finds them lacking. A new SysAdmin will be named to help create better passwords.
+
+        .flying-pig(v-if="round.flyingPig.active")
+          .speech(v-html="round.flyingPig.message")
+          img(src="/img/invalid/flying-pig.png" alt="flying pig")      
+
+  include _scores.pug
+
+  .hurry-timer(v-if="round.hurryTimer != undefined")
+    .time-left(v-if="round.hurryTime >= 10")
+      span.integer.double-digit {{parseInt(round.hurryTime)}}
+    .time-left(v-else-if="round.hurryTime < 10 && round.hurryTime > 0")
+      span.integer {{round.hurryTime.toFixed(1).split('.')[0]}}
+      | .
+      sup.decimal {{round.hurryTime.toFixed(1).split('.')[1]}}
+    .label(v-if="!ui.passwordSucceeded") Hurry Up
+
+  .crash-screen(v-if="round.phase == 'crashed'")
+    .inside
+      h1 Server error in '/' Application
+      p
+        strong Description: 
+        | An unhandled exception occured when 
+        strong {{round.crash.player.name}}
+        |  entered the password 
+        strong {{round.crash.word}}
+
+      p
+        strong Source Error
+      pre
+        code.
+          Line 109113:     protected isTheSiteCrashed(ooobject pwassword) {
+          Line 109114:       while (password != error) {
+          Line 109115:         destroyWebsite = false;
+          Line 109116:       }
+          Line 109117:     }
+
+      p
+        strong Password Entered
+      pre
+        code.
+          {{round.crash.word}}
+      
+      p
+        strong Employee Record
+      pre
+        code.
+          EMPloyeeNuumber:     {{round.crash.player.employeeNumber}}
+          EMpoyeeNAME:         {{round.crash.player.name}}
+      
+      p
+        strong Source File
+      pre
+        code.
+          D:\Code\Projects\BigCorp\Profiles\Scum\Auth\Processes\FuckItThisWillWorkForNow.aspx
+      
+      footer
+        strong Version Information:
+        br
+        code BigCorp Framework Version 4.00.1134.Release5-Final--Version2.TestBuild-5

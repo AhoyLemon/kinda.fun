@@ -1,0 +1,30 @@
+[v-cloak] { display: none !important; }
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.17rem; }
+h4 { font-size: 1.12rem; }
+h5 { font-size: .83rem; }
+h6 { font-size: .75rem; }
+h1, h2, h3, h4, h5 { margin-bottom: 1em;}
+
+body { background:$body; color:$copy; font-family:$font-family; }
+img { max-width: 100%; }
+
+
+.split-screens { display:grid; grid-template-columns: repeat(2,1fr); grid-template-rows: 1fr 120px; height:99.9vh;
+
+}
+
+p { margin-bottom: 1em; }
+ul {
+  li { margin-left: 2em; list-style-type: disc; margin-bottom: 0.5em; } 
+}
+
+svg {
+  path { fill:currentColor; }
+}
+.v-toast { font-family:$sans-serif;
+  h3 { font-size: 140%; margin-bottom: 0.5em;}
+  .v-toast__item { max-width: 320px; }
+}

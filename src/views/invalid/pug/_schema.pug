@@ -1,0 +1,59 @@
+script(type="application/ld+json").
+  {
+    "@context": "http://schema.org",
+    "@type": "VideoGame",
+    "name": "Invalid",
+    "url": "https://kinda.fun/invalid",
+    "image": "https://kinda.fun/img/og-invalid.png",
+    "playMode": "MultiPlayer",
+    "applicationCategory": "browser game",
+    "gamePlatform": "web browser",
+    "operatingSystem": "web browser",
+    "genre": "comedy",
+    "description": "#{description}",
+    "inLanguage": "English",
+    "numberOfPlayers": {
+      "minValue": 2,
+      "maxValue": 100
+    },
+    "aggregateRating": {
+      "ratingValue": 4.33333,
+      "ratingCount": 3
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "Lemon",
+      "url": "https://ahoylemon.xyz",
+      "email": "#{emailAddress}",
+      "sameAs": [
+        "https://thefpl.us/meet/lemon",
+        "https://twitter.com/AhoyLemon"
+      ]
+    },
+    "offers": {
+      "@type": "Offer",
+      "description": "free",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "screenshot": [
+      {
+        "@type": "ImageObject",
+        "url": "#{siteURL}/img/invalid/screenshots/1.jpg",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "@type": "ImageObject",
+        "url": "#{siteURL}/img/invalid/screenshots/2.jpg",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "@type": "ImageObject",
+        "url": "#{siteURL}/img/invalid/screenshots/3.jpg",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  }

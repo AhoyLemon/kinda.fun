@@ -1,0 +1,175 @@
+.admin-screen(v-if="my.role == 'SysAdmin' && (round.phase == 'choose rules' || round.phase == 'add bugs' || round.phase == 'create password' || round.phase == 'crashed')")
+
+  .top-info
+    .name {{my.name}}
+    .job SysAdmin
+    .rulebux {{my.rulebux}}
+      sup ƒ
+    .round-number ROUND {{round.number}} / {{game.maxRounds}}
+
+  .panels
+    .panel.challenge-select.focus(v-if="ui.challengeID == null")
+      .notched
+        p First, select your password challenge.
+        form(@submit.prevent="chooseAChallenge()")
+          fieldset
+            select(v-model="ui.challengeID" @change="chooseAChallenge()")
+              option(disabled selected)
+              option(v-for="option in round.possibleChallenges" :value="option.id") {{option.name}}
+            label Password Challenge
+          
+        //-button(type="submit") Choose
+
+    .panel.rules-summary(v-if="ui.challengeID != null && round.phase != 'crashed' && !ui.roundOver")
+      .notched
+        ul
+          li {{round.challenge.nameAsRule}}
+          li(v-if="round.challenge.hint") {{round.challenge.hint}}
+          li.admin-only There are {{round.possibleAnswerCount}} possible
+          li.admin-only Average password size is {{round.averageSize}} characters
+          li.admin-only There's an average of {{round.averageVowels}} vowels
+          li(v-for="(rule,index) in round.rules") {{rule.message}}
+          li Passwords are case-insensitive
+          li(v-if="round.bugs.length > 0") 
+            span(v-if="round.bugs.length == 1") There is a system bug.
+            span(v-else) There are {{round.bugs.length}} system bugs.
+          li.admin-only(v-for="(bug,index) in round.bugs") {{bug}} will cause a system crash.
+        p.admin-only Info in this color is for admin eyes only.
+
+    .panel.rules-panel(v-if="ui.challengeID != null && round.phase == 'choose rules'" :class="{focus: (!ui.currentRule.editing)}")
+      .notched
+        .add-a-rule
+          .desc
+            h2 Add a Password Rule
+            p You have 
+              strong.rulebux {{my.rulebux}}
+                sup ƒ
+              |  to spend
+          .rules
+            //-button.rule(v-for="(rule,index) in rules" @click="chooseRule(rule)")
+
+            +ruleButton('Demand A Letter', 5)
+            +ruleButton('Ban A Letter', 3)
+            +ruleButton('Shibboleth', 3, true)
+            +ruleButton('Flying Pig', 3, true)
+            +ruleButton('Set A Maximum', 2, true)
+            +ruleButton('Set A Minimum', 2, true)
+            +ruleButton('Peek At Answers', 2) 
+            +ruleButton('Limit Vowels', 1, true)
+            +ruleButton('Ban A Combo', 1)
+
+            //-button.rule(v-for="(rule,index) in rules" @click="chooseRule(rule)" :class="{ active: (rule.name == ui.currentRule.name), 'too-expensive': (rule.cost > my.rulebux) }" :disabled="ui.currentRule.editing || (rule.cost > my.rulebux)")
+              .name {{rule.name}}
+              .cost {{rule.cost}}
+                sup ƒ
+
+            button.finished(type="button" @click="round.phase = 'add bugs'" v-if="!ui.currentRule.editing") FINISH RULES
+              .tooltip
+                span Set rules and enter in {{my.rulebux + 1}} system bugs
+      
+    .panel.rule-details.focus(v-if="ui.currentRule.editing && (round.phase == 'choose rules')")
+      .notched
+        form.fieldset-and-button(v-if="ui.currentRule.name == 'Demand A Letter'" v-on:submit.prevent="saveRule(ui.currentRule)")
+          fieldset
+            label(for="DemandTheLetter") Demand the letter
+            select.letter(v-model="ui.currentRule.inputValue" id="DemandTheLetter" required)
+              option(disabled selected value="") ?
+              option(v-for="letter in round.demandableLetters" :value="letter") {{letter}}
+          button(type="submit") Set
+
+        form.fieldset-and-button(v-if="ui.currentRule.name == 'Ban A Letter'" v-on:submit.prevent="saveRule(ui.currentRule)")
+          fieldset
+            label(for="BanTheLetter") Ban the letter
+            input.uppercase(v-model="ui.currentRule.inputValue" type="text" id="BanTheLetter" maxlength="1" minlength="1" required  placeholder="?")
+          button(type="submit") Set
+
+        form.fieldset-and-button(v-if="ui.currentRule.name == 'Ban A Combo'" v-on:submit.prevent="saveRule(ui.currentRule)")
+          fieldset
+            label(for="FirstBannedLetter") Ban The Letter 
+            input.uppercase(v-model="ui.currentRule.inputValue" type="text"  id="FirstBannedLetter" maxlength="1" minlength="1" required)
+            label(for="SecondBannedLetter") from being used with 
+            input.uppercase(v-model="ui.currentRule.inputValueTwo" type="text" id="SecondBannedLetter"  maxlength="1" minlength="1" required)
+          button(type="submit") Set
+
+        form.fieldset-and-button(v-if="ui.currentRule.name == 'Shibboleth'" v-on:submit.prevent="saveRule(ui.currentRule)")
+          fieldset
+            span(style="font-size:16px") Before an employee can type a password
+            select(v-model="ui.currentRule.inputValue" required)
+              option(selected disabled value="") they must first type...
+              option LOVE
+              option SECRET
+              option(v-if="game.allowNaughty") SEX
+              option SWORDFISH
+              option QWERTY
+              option(v-if="game.allowNaughty") FUCKTHIS
+              option PASSWORD1
+          button(type="submit") Set
+
+    .panel.bug-setup.focus(v-if="round.phase == 'add bugs' && (!round.bugs || round.bugs.length < 1 || my.rulebux > 0)")
+      .notched
+        .first-bug-intro(v-if="!round.bugs || round.bugs.length < 1")
+          h2 Add a bug to the system.
+          p Enter a word to use as a bug.
+          p If a player tries to use that word as a password, the system will crash (and you earn points.)
+          p(v-if="(!round.bugs || round.bugs.length < 1 ) && my.rulebux < 1") FYI, next time you're SysAdmin, you can buy additional bugs for 1
+            sup ƒ
+            | .
+        .additional-bug(v-else-if="my.rulebux > 0")
+          p You may add {{my.rulebux}} additional bugs to the system
+        form.fieldset-and-button(v-on:submit.prevent="addBug()" v-if="!round.bugs || round.bugs.length < 1 || my.rulebux > 0")
+          fieldset 
+            label(for="BugPassword") Set a Bug on 
+            input.uppercase(type="text" id="BugPassword" v-model="ui.addBug"  autocomplete="off" maxlength="25" placeholder="PASSWORD")
+          button(type="Submit") Set
+
+    .panel.onboard-button(v-if="round.phase == 'add bugs' && !ui.addBug" :class="{focus: ((round.bugs && round.bugs.length > 0) && my.rulebux < 1)}")
+      .notched
+        button.onboard-employees(@click="onboardEmployees()") Onboard Employees
+  
+    .panel.attempt-console(v-if="round.phase == 'create password' || round.phase == 'crashed'" :class="{focus: (round.phase == 'create password')}")
+      .notched
+        h3(v-if="round.phase == 'create password'") Employees are trying to enter passwords...
+        .crash-notification(v-if="round.phase == 'crashed'")
+          h2 System Crash!
+          p Congratulations! 
+            strong {{round.crash.player.name}}
+            |  has crashed the system with the password 
+            strong {{round.crash.word}}
+
+          p You have earned 
+            strong 100
+            |  points
+        ol
+          li(v-for="a in round.attempts" :class="a.result")
+            template(v-if="a.result == 'failed'")
+              span.name {{game.players[a.playerIndex].name}}
+              |  tried 
+              span.pass {{a.pwAttempt}}
+            template(v-else-if="a.result == 'success'")
+              span.name {{game.players[a.playerIndex].name}}
+              |  guessed one correctly
+            template(v-else-if="a.result == 'crash'")
+              span.name {{game.players[a.playerIndex].name}}
+              |  crashed the server!
+
+    .panel.round-over(v-if="ui.roundOver" :class="{focus: ui.roundOver}")
+      .notched
+        h2 This round is over.
+        p(v-if="round.number == game.maxRounds") BigCorp Middle Management is pleased with all the passwords which have been provided. Management sincerely hopes nobody tries to hack any of the passwords given.
+        div(v-else)
+          p Middle management is unsatisfied with the passwords provided. A new SysAdmin will be named.
+          p BigCorp thanks you for your service! 🙂
+          p Now clean out your desk immediately.
+
+        p
+          button.start-next-round(type="button" @click="startNextRoundClicked()") Start Next Round
+
+  .admin-timer(v-if="round.adminTimer != undefined")
+    .label TIME LEFT
+    time
+      span.integer {{round.adminTimeLeft.toFixed(2).split('.')[0]}}
+      | .
+      sup.decimal {{round.adminTimeLeft.toFixed(2).split('.')[1]}}
+
+
+  include _scores.pug

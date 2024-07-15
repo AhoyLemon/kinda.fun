@@ -1,0 +1,28 @@
+
+//GLOBALS, GET DEFAULTS
+@import "@/shared/scss/globals/_reset";
+@import "@/shared/scss/globals/_variables";
+@import "@/shared/scss/globals/_mixins";
+@import "@/shared/scss/globals/_extends";
+
+// LIBRARIES (if any)
+
+// SITE SPECIFIC
+@import "scss/_variables";
+@import "scss/_z-index";
+@import "scss/_default";
+@import "scss/_scores";
+
+// SCREENS
+@import "scss/_pregame";
+@import "scss/_title-screen";
+@import "scss/_admin";
+@import "scss/_employee";
+@import "scss/_final";
+@import "scss/_game-over";
+
+// OTHER PAGES
+@import "scss/_article";
+
+
+input.uppercase { text-transform: uppercase; }
