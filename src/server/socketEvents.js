@@ -254,6 +254,7 @@ export const socketEvents = (io, socket) => {
     }
   });
 
+  ////////////////////////////////////////////////////
   ///////////////////////////////////////////////////
   // Meeting Socket Actions
 
@@ -310,13 +311,13 @@ export const socketEvents = (io, socket) => {
 
       // addOneInDatabase("invalidGames","GamesStarted");
     } else if (msg.gameName == "wrongest") {
-      // io.in(msg.roomCode).emit('startTheGame', {
-      //   gameName: msg.gameName,
-      //   players: msg.players,
-      //   gameDeck: msg.gameDeck,
-      //   chosenDeckName: msg.chosenDeckName,
-      //   maxRounds: msg.maxRounds
-      // });
+      io.in(msg.roomCode).emit("startTheGame", {
+        gameName: msg.gameName,
+        players: msg.players,
+        gameDeck: msg.gameDeck,
+        chosenDeckName: msg.chosenDeckName,
+        maxRounds: msg.maxRounds,
+      });
       // Save to Wrongest Database...
       // addOneInDatabase("wrongestGames","GamesStarted");
       // incrementDatabase("wrongestPlayerCounts", playerCount+ " Players");
@@ -516,5 +517,67 @@ export const socketEvents = (io, socket) => {
     if (msg.crackSummary && msg.crackSummary.pw) {
       incrementDatabase("invalidCracks", msg.crackSummary.pw);
     }
+  });
+
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  // THE WRONGEST WORDS sockets
+
+  socket.on("wrongestStartPresenting", (msg) => {
+    console.log(msg.roomCode + " - " + msg.activePlayerName + "'s turn begins");
+
+    io.in(msg.roomCode).emit("wrongestStartPresenting", {
+      activePlayerIndex: msg.activePlayerIndex,
+      activePlayerName: msg.activePlayerName,
+    });
+  });
+
+  socket.on("wrongestDonePresenting", (msg) => {
+    console.log(
+      msg.roomCode + " - " + msg.activePlayerName + " is done presenting",
+    );
+
+    io.in(msg.roomCode).emit("wrongestDonePresenting", {
+      activePlayerIndex: msg.activePlayerIndex,
+      activePlayerName: msg.activePlayerName,
+      activePlayerCard: msg.activePlayerCard,
+    });
+  });
+
+  socket.on("wrongestStartVoting", (msg) => {
+    console.log(msg.roomCode + " - voting started");
+    console.table(msg.cardsPresented);
+
+    io.in(msg.roomCode).emit("wrongestStartVoting", {
+      cardsPresented: msg.cardsPresented,
+    });
+  });
+
+  socket.on("invalidSubmitVotes", (msg) => {
+    console.log(msg.roomCode + " - votes sent by " + msg.votingPlayerName);
+
+    io.in(msg.roomCode).emit("invalidSubmitVotes", {
+      votingPlayerIndex: msg.votingPlayerIndex,
+      votingPlayerName: msg.votingPlayerName,
+      downVoteIndex: msg.downVoteIndex,
+      upVoteIndex: msg.upVoteIndex,
+    });
+
+    incrementDatabase("wrongestStatements", msg.upVoteCard);
+    decrementDatabase("wrongestStatements", msg.downVoteCard);
+  });
+
+  socket.on("wrongestStartNextRound", (msg) => {
+    console.log(msg.roomCode + " - round " + msg.roundNumber + " started.");
+
+    io.in(msg.roomCode).emit("wrongestStartNextRound", {
+      players: msg.players,
+      gameDeck: msg.gameDeck,
+      statementHistory: msg.statementHistory,
+      roundNumber: msg.roundNumber,
+    });
+    console.table(msg.players);
   });
 };

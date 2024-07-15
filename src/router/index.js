@@ -52,6 +52,28 @@ const router = createRouter({
       },
     },
     {
+      path: "/wrongest",
+      name: "The Wrongest Words",
+      component: () => import("../views/wrongest/Wrongest.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content: "You're going to defend some very stupid ideas.",
+            },
+          },
+        ],
+      },
+    },
+    {
       path: "/sisyphus",
       name: "Sisyphus Clicker",
       alias: ["/sisyphus-clicker"],

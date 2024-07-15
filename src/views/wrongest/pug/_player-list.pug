@@ -1,0 +1,23 @@
+main.player-list(v-if="game.gameStarted && round.phase == 'presenting' && !computedAmIPresenting")
+  .inside 
+    .players
+      .player(v-for="(player,index) in game.players" :class="{ 'is-you': (my.playerIndex == index),  'presenting': (round.activePlayerIndex == index && round.playerPresenting), 'already-went': (index <= round.activePlayerIndex), 'up-next': (((round.activePlayerIndex + 1) == index && !round.playerPresenting) || (index == 0) && (game.players.length == (round.activePlayerIndex + 1)) && !round.playerPresenting), 'is-dealer': round.dealerIndex == index }")
+        .countdown-holder(v-if="round.activePlayerIndex == index && round.playerPresenting")
+          +countdown("small dark")
+        .number(v-else) 
+          span {{index+1}}
+        .name {{player.name}}
+        .text(v-if="(my.playerIndex == index)")
+          blockquote(v-html="cardText(player.card)")
+        .dealer-chip(v-if="round.dealerIndex == index")
+          span.dealer-word DEALER
+        
+    .button-holder(v-if="computedCanIAdvanceTheGame")
+      button.deal-button(@click="dealCard()" v-if="game.players.length > (round.activePlayerIndex + 1)") Okay, I'm ready!
+      button.deal-button(@click="startVoting()" v-else) Vote!
+    .button-holder(v-else-if="my.playerIndex != 0 && (game.players.length <= (round.activePlayerIndex + 1))")
+      div 
+        span.player-name(v-text="game.players[0].name") 
+        |  can start the voting.
+        
+  include _round-indicator

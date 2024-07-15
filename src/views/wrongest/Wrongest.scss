@@ -1,0 +1,23 @@
+
+//GLOBALS, GET DEFAULTS
+@import "@/shared/scss/globals/_reset";
+@import "@/shared/scss/globals/_variables";
+@import "@/shared/scss/globals/_mixins";
+@import "@/shared/scss/globals/_extends";
+
+// LIBRARIES (if any)
+
+// SITE SPECIFIC
+@import "scss/_variables";
+@import "scss/_mixins";
+@import "scss/_default";
+@import "scss/_timer";
+@import "scss/_round-indicator";
+
+// SCREENS
+@import "scss/_title-screen";
+@import "scss/_pregame";
+@import "scss/_player-list";
+@import "scss/_presenting";
+@import "scss/_voting";
+@import "scss/_game-over";
