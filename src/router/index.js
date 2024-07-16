@@ -5,6 +5,7 @@ const { setHeadElements } = useHeadManager();
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // Home
     {
       path: "/",
       name: "Kinda fun.",
@@ -29,73 +30,7 @@ const router = createRouter({
         ],
       },
     },
-    {
-      path: "/invalid",
-      name: "Invalid",
-      component: () => import("../views/invalid/Invalid.vue"),
-      meta: {
-        head: [
-          {
-            tag: "link",
-            attrs: {
-              href: "https://fonts.googleapis.com/css2?family=Barlow:wght@300;500&amp;family=Fira+Code:wght@300;600&amp;family=Lora:ital,wght@0,400;0,600;1,400&amp;display=swap",
-              rel: "stylesheet",
-            },
-          },
-          {
-            tag: "meta",
-            attrs: {
-              content: "A trivia game of unnecessary suffering.",
-            },
-          },
-        ],
-      },
-    },
-    {
-      path: "/wrongest",
-      name: "The Wrongest Words",
-      component: () => import("../views/wrongest/Wrongest.vue"),
-      meta: {
-        head: [
-          {
-            tag: "link",
-            attrs: {
-              href: "https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap",
-              rel: "stylesheet",
-            },
-          },
-          {
-            tag: "meta",
-            attrs: {
-              content: "You're going to defend some very stupid ideas.",
-            },
-          },
-        ],
-      },
-    },
-    {
-      path: "/sisyphus",
-      name: "Sisyphus Clicker",
-      alias: ["/sisyphus-clicker"],
-      component: () => import("../views/sisyphus/Sisyphus.vue"),
-      meta: {
-        head: [
-          {
-            tag: "link",
-            attrs: {
-              href: "https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap",
-              rel: "stylesheet",
-            },
-          },
-          {
-            tag: "meta",
-            attrs: {
-              content: "Click on Sisyphus to push the rock up the mountain.",
-            },
-          },
-        ],
-      },
-    },
+    // Cameo
     {
       path: "/cameo",
       name: "Comparatively Famous",
@@ -119,6 +54,7 @@ const router = createRouter({
         ],
       },
     },
+    // guillotine
     {
       path: "/guillotine",
       name: "No More Billionaires",
@@ -143,6 +79,54 @@ const router = createRouter({
         ],
       },
     },
+    // invalid
+    {
+      path: "/invalid",
+      name: "Invalid",
+      component: () => import("../views/invalid/Invalid.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=Barlow:wght@300;500&amp;family=Fira+Code:wght@300;600&amp;family=Lora:ital,wght@0,400;0,600;1,400&amp;display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content: "A trivia game of unnecessary suffering.",
+            },
+          },
+        ],
+      },
+    },
+    // meeting
+    {
+      path: "/meeting",
+      name: "Let's Ruin This Meeting!",
+      alias: ["/meet", "/slip"],
+      component: () => import("../views/meeting/Meeting.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Noto+Sans+Mono:wght@100..900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content: "This game doesn't have a name yet",
+            },
+          },
+        ],
+      },
+    },
+    // pretend
     {
       path: "/pretend",
       name: "Pretend World",
@@ -166,24 +150,71 @@ const router = createRouter({
         ],
       },
     },
+    // sisyphus
     {
-      path: "/slip",
-      name: "Let's Ruin This Meeting!",
-      alias: ["/meet", "/meeting"],
-      component: () => import("../views/meeting/Meeting.vue"),
+      path: "/sisyphus",
+      name: "Sisyphus Clicker",
+      alias: ["/sisyphus-clicker"],
+      component: () => import("../views/sisyphus/Sisyphus.vue"),
       meta: {
         head: [
           {
             tag: "link",
             attrs: {
-              href: "https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Noto+Sans+Mono:wght@100..900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap",
+              href: "https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap",
               rel: "stylesheet",
             },
           },
           {
             tag: "meta",
             attrs: {
-              content: "This game doesn't have a name yet",
+              content: "Click on Sisyphus to push the rock up the mountain.",
+            },
+          },
+        ],
+      },
+    },
+    // wrongest
+    {
+      path: "/wrongest",
+      name: "The Wrongest Words",
+      component: () => import("../views/wrongest/Wrongest.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content: "You're going to defend some very stupid ideas.",
+            },
+          },
+        ],
+      },
+    },
+    // stats
+    {
+      path: "/stats",
+      name: "Kinda fun stats",
+      component: () => import("../views/stats/Stats.vue"),
+      meta: {
+        head: [
+          {
+            tag: "link",
+            attrs: {
+              href: "https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap",
+              rel: "stylesheet",
+            },
+          },
+          {
+            tag: "meta",
+            attrs: {
+              content: "let's look at some tables!",
             },
           },
         ],
