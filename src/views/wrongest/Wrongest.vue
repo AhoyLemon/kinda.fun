@@ -22,9 +22,6 @@
     settings,
     soundBeginTalking,
     soundPresentationOver,
-    resetRoundVariables,
-    resetUIVariables,
-    changeFavicon,
   } from "./js/_variables";
 
   //////// socket.io
@@ -56,6 +53,9 @@
     socketID: "",
     card: "",
     playerIndex: -1,
+
+    upVote: "",
+    downVote: "",
   });
   const round = reactive({
     phase: "",
@@ -288,44 +288,58 @@
     });
   };
 
-  const voteUp = (index) => {
-    ui.upVoteIndex = index;
-    console.log(`ui.upVoteIndex == ${ui.upVoteIndex}`);
-    if (ui.downVoteIndex === index) {
-      ui.downVoteIndex = -1;
+  const voteUp = (statement) => {
+    my.upVote = statement.card;
+    if (my.downVote === statement.card) {
+      my.downVote = "";
+    }
+  };
+  const voteDown = (statement) => {
+    my.downVote = statement.card;
+    if (my.upVote === statement.card) {
+      my.upVote = "";
     }
   };
 
-  const voteDown = (index) => {
-    console.log(`ui.downVoteIndex == ${ui.downVoteIndex}`);
-    ui.downVoteIndex = index;
-    if (ui.upVoteIndex === index) {
-      ui.upVoteIndex = -1;
-    }
-  };
+  // const voteDown = (index) => {
+  //   console.log(`ui.downVoteIndex == ${ui.downVoteIndex}`);
+  //   ui.downVoteIndex = index;
+  //   if (ui.upVoteIndex === index) {
+  //     ui.upVoteIndex = -1;
+  //   }
+  // };
 
   const submitVotes = () => {
-    socket.emit("invalidSubmitVotes", {
+    let upVoteIndex;
+    let downVoteIndex;
+    let upVoteCard = my.upVote;
+    let downVoteCard = my.downVote;
+
+    // Find the upVote and downVote cards and their indices
+    round.cardsPresented.forEach((card, index) => {
+      if (card.card === my.upVote) {
+        upVoteIndex = index;
+        upVoteCard = card.card;
+      }
+      if (card.card === my.downVote) {
+        downVoteIndex = index;
+        downVoteCard = card.card;
+      }
+    });
+
+    socket.emit("wrongestSubmitVotes", {
       roomCode: game.roomCode,
       votingPlayerIndex: my.playerIndex,
       votingPlayerName: my.name,
-      downVoteIndex: ui.downVoteIndex,
-      upVoteIndex: ui.upVoteIndex,
-      downVoteCard: round.cardsPresented[ui.downVoteIndex].card,
-      upVoteCard: round.cardsPresented[ui.upVoteIndex].card,
+      downVoteIndex: downVoteIndex,
+      upVoteIndex: upVoteIndex,
+      downVoteCard: downVoteCard,
+      upVoteCard: upVoteCard,
     });
 
     ui.iVoted = true;
-    sendEvent(
-      "The Wrongest Words",
-      "Downvote",
-      round.cardsPresented[ui.downVoteIndex].card,
-    );
-    sendEvent(
-      "The Wrongest Words",
-      "Upvote",
-      round.cardsPresented[ui.upVoteIndex].card,
-    );
+    sendEvent("The Wrongest Words", "Downvote", downVoteCard);
+    sendEvent("The Wrongest Words", "Upvote", upVoteCard);
   };
 
   const startNextRound = () => {
@@ -347,11 +361,10 @@
   const sendGameOver = () => {
     const s = game.statementHistory.concat(round.cardsPresented);
     game.statementHistory = s;
-    socket.emit("gameOver", {
+    socket.emit("wrongestGameOver", {
       roomCode: game.roomCode,
-      gameName: game.gameName,
       players: game.players,
-      gameDeck: game.gameDeck,
+      //gameDeck: game.gameDeck,
       statementHistory: game.statementHistory,
       roundNumber: round.number,
     });
@@ -413,6 +426,35 @@
       return txt.replace("{", "").replace("}", "");
     }
   };
+
+  function resetRoundVariables() {
+    round.phase = "presenting";
+    round.activePlayerIndex = -1;
+    round.dealerIndex = 0;
+    round.playerPresenting = false;
+    round.presentationTimer = undefined;
+    round.presentationTimeLeft = settings.timeToPresent;
+    round.cardsPresented = [];
+    round.votesSubmitted = 0;
+  }
+
+  function resetUIVariables() {
+    ui.upVote = "";
+    ui.downVote = "";
+    ui.iVoted = false;
+  }
+
+  function changeFavicon(src) {
+    var link = document.createElement("link"),
+      oldLink = document.getElementById("dynamic-favicon");
+    link.id = "dynamic-favicon";
+    link.rel = "shortcut icon";
+    link.href = src;
+    if (oldLink) {
+      document.head.removeChild(oldLink);
+    }
+    document.head.appendChild(link);
+  }
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
@@ -528,8 +570,11 @@
 
     return {
       wrongest: wrongestList,
+      wrongestCount: wrongestList.length,
       leastWrong: leastWrongList,
+      leastWrongCount: leastWrongList.length,
       all: sortedListAll,
+      allCount: sortedListAll.length,
     };
   });
 
@@ -625,7 +670,7 @@
     round.phase = "voting";
   });
 
-  socket.on("invalidSubmitVotes", function (msg) {
+  socket.on("wrongestSubmitVotes", function (msg) {
     const dI = game.voteHistory.push({
       downVoteIndex: msg.downVoteIndex,
       voterName: msg.votingPlayerName,
@@ -676,14 +721,13 @@
     }
   });
 
-  socket.on("gameOver", function (msg) {
+  socket.on("wrongestGameOver", function (msg) {
     game.players = msg.players;
     game.statementHistory = msg.statementHistory;
     resetRoundVariables();
     resetUIVariables();
     round.phase = "GAME OVER";
     game.gameOver = true;
-
     if (my.isRoomHost) {
       sendEvent("The Wrongest Words", "Game Over", game.roomCode);
     }
@@ -711,6 +755,29 @@
     } else if (urlParams.has("join")) {
       document.getElementById("EnterRoomCode").focus();
     }
+
+    // game.gameStarted = true;
+    // round.phase = "voting";
+    // round.cardsPresented = [
+    //   {
+    //     card: "Sweat is created by {small aphid-like creatues} that live inside your pores.",
+    //     playerIndex: 0,
+    //     playerName: "Lemon",
+    //     score: 0,
+    //   },
+    //   {
+    //     card: "If a rabbit {hears a D# note,} it will immediately attack any other rabbit it sees.",
+    //     playerIndex: 1,
+    //     playerName: "Butt",
+    //     score: 0,
+    //   },
+    //   {
+    //     card: "PCP was originally used as a {water substitute for American soldiers} in World War I.",
+    //     playerIndex: 2,
+    //     playerName: "dsadadas",
+    //     score: 0,
+    //   },
+    // ];
   });
 </script>
 <template lang="pug" src="./Wrongest.pug"></template>

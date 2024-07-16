@@ -259,8 +259,10 @@ export const socketEvents = (io, socket) => {
   // Meeting Socket Actions
 
   socket.on("sendPlayerList", (msg) => {
-    console.log("sendPlayerUpdates");
-    console.table(msg.players);
+    if (msg.players && msg.players.length > 0) {
+      console.log("sendPlayerList");
+      console.table(msg.players);
+    }
     io.in(msg.roomCode).emit("receivePlayerList", {
       roomCode: msg.roomCode,
       from: msg.from,
@@ -273,17 +275,6 @@ export const socketEvents = (io, socket) => {
     io.in(msg.roomCode).emit("sendThePlayerListIfYouAreHost", {
       roomCode: msg.roomCode,
       from: msg.from,
-    });
-  });
-
-  socket.on("sendPlayerList", (msg) => {
-    console.log("sendPlayerUpdates");
-    console.table(msg.players);
-    io.in(msg.roomCode).emit("receivePlayerList", {
-      roomCode: msg.roomCode,
-      from: msg.from,
-      players: msg.players,
-      isGameStarted: msg.isGameStarted,
     });
   });
 
@@ -555,10 +546,10 @@ export const socketEvents = (io, socket) => {
     });
   });
 
-  socket.on("invalidSubmitVotes", (msg) => {
+  socket.on("wrongestSubmitVotes", (msg) => {
     console.log(msg.roomCode + " - votes sent by " + msg.votingPlayerName);
 
-    io.in(msg.roomCode).emit("invalidSubmitVotes", {
+    io.in(msg.roomCode).emit("wrongestSubmitVotes", {
       votingPlayerIndex: msg.votingPlayerIndex,
       votingPlayerName: msg.votingPlayerName,
       downVoteIndex: msg.downVoteIndex,
@@ -575,6 +566,16 @@ export const socketEvents = (io, socket) => {
     io.in(msg.roomCode).emit("wrongestStartNextRound", {
       players: msg.players,
       gameDeck: msg.gameDeck,
+      statementHistory: msg.statementHistory,
+      roundNumber: msg.roundNumber,
+    });
+    console.table(msg.players);
+  });
+
+  socket.on("wrongestGameOver", (msg) => {
+    io.in(msg.roomCode).emit("wrongestGameOver", {
+      players: msg.players,
+      //gameDeck: msg.gameDeck,
       statementHistory: msg.statementHistory,
       roundNumber: msg.roundNumber,
     });

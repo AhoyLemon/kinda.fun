@@ -1,4 +1,4 @@
-main.game-over(v-if="gameOver")
+main.game-over(v-if="game.gameOver")
 
   section.headline
     h1 Game Over!
@@ -7,8 +7,8 @@ main.game-over(v-if="gameOver")
 
     h2 The Wrongest Words...
 
-    .statement-list.wrongest(:holds="computedStatementsByScore.wrongest.length")
-      .statement(v-for="(statement,index) in computedStatementsByScore.wrongest")
+    .statement-list.wrongest(:holds="computedStatementsByScore.wrongestCount")
+      .statement(v-for="statement in computedStatementsByScore.wrongest")
         .card
           blockquote(v-html="cardText(statement.card)")
           cite(v-text="statement.playerName")
@@ -17,8 +17,8 @@ main.game-over(v-if="gameOver")
 
     h2 The Least Wrong Words...
 
-    .statement-list.least-wrong(:holds="computedStatementsByScore.leastWrong.length")
-      .statement(v-for="(statement,index) in computedStatementsByScore.leastWrong")
+    .statement-list.least-wrong(:holds="computedStatementsByScore.leastWrongCount")
+      .statement(v-for="statement in computedStatementsByScore.leastWrong")
         .card
           blockquote(v-html="cardText(statement.card)")
           cite(v-text="statement.playerName")

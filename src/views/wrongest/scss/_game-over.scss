@@ -51,8 +51,9 @@ main.game-over { font-family: $font-family; background:#e4e72c; color:#121212; m
 
   section.statements {
     .statement-list { background:#111; padding:($gap * 2); margin-top:$gap; margin-bottom: ($gap * 3);
-      display:flex; flex-wrap:wrap; justify-content: space-evenly;
-      .statement { flex-basis: 440px; }
+      // display:flex; flex-wrap:wrap; justify-content: space-evenly;
+      display:flex; flex-wrap: wrap; gap:20px;
+      .statement { flex-basis: 420px; flex-grow: 1; flex-shrink: 1; }
     }
 
     .statement { background:white; padding:2rem 2rem 1rem 2rem; border-radius: 1rem; position: relative; }
