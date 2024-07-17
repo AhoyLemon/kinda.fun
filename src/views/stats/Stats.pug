@@ -1,1 +1,18 @@
-h1 kinda fun stats
+.stats-screen
+
+  include pug/_general
+  include pug/_aside
+
+  main(v-if="ui.viewing != 'general'")
+
+    section.loading.stats(v-if="ui.viewing == 'loading'")
+      .inside
+        img(src="/svg/stats/rings.svg")
+        h3 Loading data...
+
+    include pug/_guillotine
+    include pug/_cameo
+    include pug/_invalid
+    include pug/_wrongest 
+    include pug/_sisyphus
+    include pug/_pretend 

@@ -1,0 +1,111 @@
+section.famous.stats(v-if="ui.viewing == 'cameo'")
+  figure
+    img(src="/svg/games/comparativelyfamous.svg")
+
+  .stats-boxes.with-table
+
+    .boxes
+
+      .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
+        .caption Last Game
+        .time-ago(v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')")
+        .calendar(v-text="formatTime(stats.general.lastPlayed.cameo,'calendar')")
+
+      .box.big-number(v-if="stats.general.cameo && stats.general.cameo.GamesStarted > 0")
+        .caption Games Started
+        .number(v-text="addCommas(stats.general.cameo.GamesStarted)")
+        .sub-number
+          strong(v-text="calculateAverage(stats.general.cameo.GamesStarted, dates.cameo.dayCount)")
+          |  per day
+      
+      .box.big-number(v-if="stats.general.cameo && stats.general.cameo.GamesFinished > 0")
+        .caption Games Finished
+        .number(v-text="addCommas(stats.general.cameo.GamesFinished)")
+        .sub-number
+          strong(v-text="calculateAverage(stats.general.cameo.GamesFinished, dates.cameo.dayCount)")
+          |  per day (
+          strong(v-text="percentOf(stats.general.cameo.GamesStarted,stats.general.cameo.GamesFinished) + '%'")
+          | )
+        //-.sub-number
+          strong(v-text="addCommas(stats.general.cameo.GamesFinished)")
+          |  finished
+          | (
+          strong(v-text="percentOf(stats.general.cameo.GamesStarted,stats.general.cameo.GamesFinished) + '%'")
+          | )
+
+      .box.big-name
+        .caption Most Played Special
+        .name {{computedMostPopularCameoGame.name}}
+        .subtext played 
+          strong(v-text="computedMostPopularCameoGame.count")
+          |  times (
+          strong(v-text="computedMostPopularCameoGame.percent")
+          | %)
+
+      .box.big-number(v-if="computedCameoPlayerData.averagePoints != 0")
+        .caption Average Player Score
+        .number(v-text="computedCameoPlayerData.averagePoints")
+
+      .box.big-number(v-if="computedCameoPlayerData.correctSortPercent > 0")
+        .caption Average Correct Sorts
+        .number.percent(v-text="computedCameoPlayerData.correctSortPercent + '%'")
+
+      .box.big-number
+        .caption Avg Market Forces
+        .number(v-text="computedAvgMarketForces")
+
+      .box.big-number(v-if="computedCameoPlayerData.exceededBudgetPercent > 0")
+        .caption Blew Birthday Budget
+        .number.percent(v-text="computedCameoPlayerData.exceededBudgetPercent + '%'")
+      
+      .box.big-number(v-if="computedCameoPlayerData.averageBirthdayWishes > 0")
+        .caption Average Birthday Wishes
+        .number(v-text="computedCameoPlayerData.averageBirthdayWishes")
+      
+      .box.big-name(span="2" v-if="computedMostOvervaluedCeleb && computedMostOvervaluedCeleb.name")
+        .caption Most Overvalued 
+        .name {{computedMostOvervaluedCeleb.name}}
+        .subtext
+          | Overvalued by {{dollars(Math.abs(computedMostOvervaluedCeleb.marketForces))}}
+      
+      .box.date(v-if="dates.cameo.launched")
+        .caption Game Launched
+        .time-ago(v-text="formatTime(dates.cameo.launched,'MMM D, YYYY')")
+        .calendar(v-text="formatTime(dates.cameo.launched,'fromNow')")
+    
+    .good-table.games-table(v-if="ui.cameoLoaded")
+      h2 Special Games
+      vue-good-table( v-if="stats.cameo.specialGames && stats.cameo.specialGames.length"
+                      :rows="stats.cameo.specialGames"
+                      :columns="columns.cameoSpecialGames"
+                      theme="black-rhino"
+                      styleClass="vgt-table condensed"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
+                    )
+
+  .two-tables
+
+    .good-table.celeb-table(v-if="ui.cameoLoaded")
+      h2 Celebrity Performance
+      vue-good-table( v-if="stats.cameo.celebs && stats.cameo.celebs.length"
+                      :rows="stats.cameo.celebs"
+                      :columns="columns.celebs"
+                      theme="black-rhino"
+                      styleClass="vgt-table condensed"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'marketForces', type: 'desc'} }"
+                      :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"
+                      :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
+                    )
+
+    .good-table.player-table(v-if="ui.cameoLoaded")
+      h2 Player Performance
+      vue-good-table( v-if="stats.cameo.playerScores && stats.cameo.playerScores.length"
+                      :rows="stats.cameo.playerScores"
+                      :columns="columns.cameoPlayers"
+                      theme="black-rhino"
+                      styleClass="vgt-table condensed"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'finishTime', type: 'desc'} }"
+        :pagination-options="{ enabled: true, perPage: 31, position: 'top', perPageDropdown: [10, 31, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
