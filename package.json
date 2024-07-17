@@ -29,25 +29,25 @@
     "vue-router": "^4.3.3",
     "vue-tippy": "^6.4.4",
     "vue-toastification": "^2.0.0-rc.5",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "vite": "^5.3.1",
+    "vite-plugin-sitemap": "^0.6.2",
+    "vite-plugin-socket-io": "^1.0.2",
+    "vite-plugin-vue-devtools": "^7.3.1",
+    "socket.io-client": "^4.7.5",
+    "mysql": "^2.18.1",
+    "@vue/language-plugin-pug": "^2.0.26"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
-    "@vitejs/plugin-vue": "^5.0.5",
+    "vitest": "^1.6.0",
     "@vue/eslint-config-prettier": "^9.0.0",
-    "@vue/language-plugin-pug": "^2.0.26",
     "@vue/test-utils": "^2.4.6",
     "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",
     "jsdom": "^24.1.0",
-    "mysql": "^2.18.1",
-    "prettier": "^3.2.5",
-    "socket.io-client": "^4.7.5",
-    "vite": "^5.3.1",
-    "vite-plugin-sitemap": "^0.6.2",
-    "vite-plugin-socket-io": "^1.0.2",
-    "vite-plugin-vue-devtools": "^7.3.1",
-    "vitest": "^1.6.0"
+    "prettier": "^3.2.5"
   }
 }
