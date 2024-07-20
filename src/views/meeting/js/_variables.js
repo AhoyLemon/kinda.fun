@@ -7,6 +7,8 @@ export const fakePlayerCount = 3;
 export const cardsPerPlayer = 5; // Number of cards each player will get
 export const game = reactive({
   roomCode: "",
+  fb: null,
+  roomData: null,
   isGameStarted: false,
   isGameOver: false,
   deck: [],
@@ -14,6 +16,7 @@ export const game = reactive({
   badGuesses: [],
 });
 export const you = reactive({
+  playerID: "",
   socketID: "",
   nameInput: "",
   jobTitleInput: "",

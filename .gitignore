@@ -30,3 +30,4 @@ coverage
 *.tsbuildinfo
 .env.local
 .env.prod
+firebaseConfig.js

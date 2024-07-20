@@ -2,6 +2,12 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 
+// Firebase & VueFire things.
+import { VueFire } from "vuefire";
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "../firebaseConfig.js";
+const firebaseApp = initializeApp(firebaseConfig);
+
 // Tooltip
 import VueTippy from "vue-tippy";
 import "tippy.js/dist/tippy.css";
@@ -25,6 +31,11 @@ const app = createApp(App);
 
 app
   .use(router)
+  .use(VueFire, {
+    firebaseApp,
+    // add modules like VueFireAuth, ...
+    modules: [],
+  })
   .use(Toast, toastOptions)
   .use(VueTippy, toolTipOptions)
   .mount("#app");

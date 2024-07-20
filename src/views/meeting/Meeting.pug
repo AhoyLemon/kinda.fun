@@ -1,14 +1,21 @@
 main.meeting-board(v-if="!game.isGameOver")
 
-  include pug/_pregame.pug
+  //- div(v-for="player in gamePlayers" :key="player.id")
+  //-   h3 {{player.name}}
+  //-   ul
+  //-     li(v-for="card in player.hand" :key="card.id") {{card.phrase}}
+
+  include pug/_pregame.pug 
 
   .card-table(v-if="game.isGameStarted")
     
+
     include pug/_your-cards.pug
     include pug/_guess.pug
     include pug/_timer.pug
 
-  include pug/_players.pug
+  include pug/_players.pug 
+
 
 main.game-over(v-if="game.isGameOver")
 
@@ -40,12 +47,12 @@ main.game-over(v-if="game.isGameOver")
                 span(v-else) stolen
               template(v-else) 
                 span {{card.status}}
-  
+
   // Bad Guesses
   h2(v-if="game.badGuesses && game.badGuesses.length > 0") Bad Guesses
   ol.bad-guesses
     li.bad-guess(v-for="badGuess in game.badGuesses")
-      blockquote
+      blockquote 
         template(v-if="!badGuess.isOwnCard")
           .quote-text {{badGuess.guess}}
         template(v-if="badGuess.isOwnCard")
@@ -59,4 +66,4 @@ main.game-over(v-if="game.isGameOver")
       h3 This game is 
         span by Lemon.
       .image-holder
-        img.lemon(src="/svg/lemon.svg" alt="Lemon")
+        img.lemon(src="/svg/lemon.svg" alt="Lemon") 

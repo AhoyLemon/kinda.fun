@@ -18,7 +18,7 @@
           span(v-if="!you.name") Sign In
           span(v-if="you.name") Change Profile
     
-    .button-holder(v-if="you.isHost && you.name")
+    .button-holder(v-if="amITheHost && you.name")
       template(v-if="game.players.length < 2")
         span(v-tippy="{ content:'2 or more players required', delay: [100,450]}")
           button.start-game(disabled) Start Game
