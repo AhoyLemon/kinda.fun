@@ -21,11 +21,6 @@
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
-  // socket.io
-  import { setupSocketHandlers } from "./js/_socketHandlers";
-  import { io } from "socket.io-client";
-  const socket = io.connect();
-
   // Firebase & VueFire Stuff
   import {
     doc,
@@ -74,6 +69,9 @@
     });
 
     // Watching players collection for updates
+
+    const toastedCardIds = new Set();
+
     watch(
       () => playersCollection.value,
       async (newPlayers) => {
@@ -130,12 +128,17 @@
                       }
                     } else if (newCard.status === "played") {
                       if (cardHolderPlayerID !== you.playerID) {
-                        toast(
-                          `“${player.name}” just played a card for ${newCard.points}`,
-                          {
-                            timeout: 6000,
-                          },
-                        );
+                        // Check if the card ID has already triggered a toast
+                        if (!toastedCardIds.has(newCard.id)) {
+                          toast(
+                            `“${player.name}” just played a card for ${newCard.points} points.`,
+                            {
+                              timeout: 6000,
+                            },
+                          );
+                          // Add the card ID to the set
+                          toastedCardIds.add(newCard.id);
+                        }
                       }
                     }
                   }
@@ -155,6 +158,7 @@
 
     // Subscribe to activities collection for real-time updates
     const activitiesRef = collection(db, `rooms/${roomCode}/activities`);
+    game.badGuesses = useCollection(activitiesRef);
     onSnapshot(activitiesRef, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === "added") {
@@ -243,31 +247,6 @@
     }
     return result;
   };
-
-  // const savePlayerInfo = () => {
-  //   you.name = you.nameInput;
-  //   you.jobTitle = you.jobTitleInput;
-
-  //   let playerFound = false;
-
-  //   const newPlayer = {
-  //     name: you.name,
-  //     jobTitle: you.jobTitle,
-  //     score: 0,
-  //     hand: [
-  //       {
-  //         phrase: `I like things that are kinda fun.`,
-  //         points: 5,
-  //         alternates: [
-  //           "kinda.fun",
-  //           "things that are kinda.fun",
-  //           "i like things that are kinda.fun",
-  //         ],
-  //         stringMatch: "kinda fun",
-  //       }
-  //     ]
-  //   }
-  // };
 
   const savePlayerInfo = async () => {
     you.name = you.nameInput;
@@ -407,11 +386,14 @@
       },
     );
 
-    const playerRef = doc(`rooms/${game.roomCode}/players/${you.playerID}`);
+    const playerRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}`);
     updateDoc(playerRef, {
       score: increment(card.points),
     });
 
+    console.log(
+      `rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`,
+    );
     const cardRef = doc(
       db,
       `rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`,
@@ -502,24 +484,6 @@
       penalizeBadGuess(you.guess);
     }
     you.guess = "";
-  };
-
-  const findMe = () => {
-    const myPlayerObject = game.players.find(
-      (player) => player.socketID === you.socketID,
-    );
-    if (!myPlayerObject) {
-      return {
-        hand: [],
-        isHost: false,
-        name: "",
-        jobTitle: "",
-        score: "",
-        socketID: "",
-      };
-    } else {
-      return myPlayerObject;
-    }
   };
 
   const penalizeBadGuess = async (yourGuess) => {
@@ -631,24 +595,6 @@
       status: "stolen",
       stolenBy: you.name,
     });
-
-    // findMe().score += match.points;
-    // you.stolenCards.push({
-    //   phrase: match.phrase,
-    //   points: match.points,
-    //   stolenFrom: {
-    //     playerName: match.playerName,
-    //     socketID: match.socketID,
-    //   },
-    // });
-
-    // socket.emit("sendPlayerUpdate", {
-    //   roomCode: game.roomCode,
-    //   from: you.socketID,
-    //   socketID: you.socketID,
-    //   score: findMe().score,
-    //   stolenCard: match,
-    // });
   };
 
   const createRoom = async () => {
@@ -684,6 +630,12 @@
     game.roomCode = roomCode;
     console.log("Room created with code:", roomCode);
 
+    // Update the browser URL to the new meeting page
+    const protocol = window.location.protocol; // http: or https:
+    const host = window.location.host; // e.g., localhost:5173 or example.com
+    const newUrl = `${protocol}//${host}/meeting?room=${game.roomCode}`;
+    window.history.replaceState(null, "", newUrl);
+
     game.gameData = useDocument(doc(collection(db, "rooms"), game.roomCode));
     game.players = useCollection(
       collection(db, `rooms/${game.roomCode}/players`),
@@ -713,56 +665,10 @@
     game.players = useCollection(playersCollectionRef);
   };
 
-  // const joinRoom = () => {
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   const roomCode = urlParams.get("room");
-
-  //   if (!roomCode) {
-  //     console.error("Room code is missing in the URL");
-  //     return;
-  //   }
-
-  //   game.roomCode = roomCode.toUpperCase();
-  //   const roomRef = doc(db, "rooms", game.roomCode);
-
-  //   // Fetch room data
-  //   game.roomData = useDocument(roomRef);
-
-  //   // Fetch players
-  //   const playersCollectionRef = collection(
-  //     db,
-  //     `rooms/${game.roomCode}/players`,
-  //   );
-  //   const playersCollection = useCollection(playersCollectionRef);
-
-  //   // Set up a computed property to handle real-time updates for players
-  //   const playersWithHands = computed(() => {
-  //     return playersCollection.value.map((playerDoc) => {
-  //       const playerId = playerDoc.id;
-  //       const playerData = playerDoc.data();
-  //       const handCollection = fetchPlayerHand(playerId);
-
-  //       return {
-  //         id: playerId,
-  //         ...playerData,
-  //         hand: handCollection.value, // Use the reactive reference directly
-  //       };
-  //     });
-  //   });
-
-  //   // Watch the playersWithHands computed property and update game.players
-  //   watchEffect(() => {
-  //     game.players = playersWithHands.value;
-  //   });
-  // };
-
-  const endTheGame = () => {
-    socket.emit("endTheGame", {
-      roomCode: game.roomCode,
-      from: you.socketID,
-      gameName: gameName,
-      players: game.players,
-      badGuesses: game.badGuesses,
+  const endTheGame = async () => {
+    const roomRef = doc(db, `rooms/${game.roomCode}`);
+    await updateDoc(roomRef, {
+      isGameOver: true,
     });
   };
 
@@ -805,6 +711,15 @@
     return player ? player.hand || [] : [];
   });
 
+  const computedPlayerList = computed(() => {
+    if (!gamePlayers.value || gamePlayers.value.length === 0) {
+      return [];
+    }
+
+    // Clone and sort the players array by score in descending order
+    return [...gamePlayers.value].sort((a, b) => b.score - a.score);
+  });
+
   const amITheHost = computed(() => {
     // You are the host if the first player in the player list shares your playerID.
     // Structurally, this means you were the first one to enter your name.
@@ -812,103 +727,6 @@
       return game.players[0].playerID === you.playerID;
     }
     return false;
-  });
-
-  socket.on("receivePlayerUpdate", (msg) => {
-    console.log(`Receiving player update from ${msg.from}`);
-    if (you.socketID == msg.from) {
-      console.log("That's me. I'm ignoring it");
-      return;
-    }
-
-    // Find the player in game.players whose socketID matches msg.socketID
-    const player = game.players.find(
-      (player) => player.socketID === msg.socketID,
-    );
-    if (player) {
-      // Update the score if a new score came in the payload
-      if (msg.score || msg.score === 0) {
-        player.score = msg.score;
-        console.log(
-          `Updated score for player ${player.name} to ${player.score}`,
-        );
-      }
-
-      // Mark the card played if it has been scored on
-      if (msg.scoredCard) {
-        game.players.some((p) =>
-          p.hand.some((card) => {
-            if (card.phrase === msg.scoredCard.phrase) {
-              card.status = "played";
-              return true; // Exit the loop once a match is found
-            }
-          }),
-        );
-      }
-
-      // Mark the card stolen if somebody guessed it before it was scored.
-      if (msg.stolenCard) {
-        game.players.some((p) =>
-          p.hand.some((card) => {
-            if (card.phrase === msg.stolenCard.phrase) {
-              card.status = "stolen";
-              card.stolenBy = msg.stolenCard.stolenBy;
-              return true; // Exit the loop once a match is found
-            }
-          }),
-        );
-
-        // Is somebody stealing YOUR active card!??
-        // If so, clear those timers.
-        if (msg.stolenCard.phrase === you.currentCard.phrase) {
-          clearInterval(interval);
-          timer.value = 0;
-          you.currentCard = {};
-          you.isCurrentlyPlayingACard = false;
-        }
-
-        // Send a different toast, depending on if you were robbed or not.
-        if (msg.stolenCard.socketID === you.socketID) {
-          toast(
-            {
-              component: MyToast,
-              props: {
-                title: `You got robbed!`,
-                points: msg.stolenCard.points,
-                message: `<strong>${player.name}</strong> just scored your “<strong>${msg.stolenCard.phrase}</strong>” card`,
-              },
-            },
-            {
-              position: POSITION.BOTTOM_RIGHT,
-              toastClassName: "red",
-              timeout: 8000,
-              icon: false,
-            },
-          );
-        } else {
-          toast(
-            `<strong>${player.name}</strong> just stole a card from <strong>${msg.stolenCard.playerName}</strong> for <strong>${msg.stolenCard.points}</strong> points`,
-            {
-              timeout: 6000,
-            },
-          );
-        }
-      }
-
-      // Log bad guesses, for reference later in the game over screen
-      if (msg.badGuess && msg.badGuess.name) {
-        game.badGuesses.push(msg.badGuess);
-      }
-
-      // Show a toast if the payload says so.
-      if (msg.toast && msg.toast.message) {
-        toast(msg.toast.message, {
-          timeout: 6000,
-        });
-      }
-    } else {
-      console.log("Player not found");
-    }
   });
 
   onMounted(() => {
@@ -927,10 +745,6 @@
     } else if (urlParams.has("room")) {
       joinRoom();
     }
-
-    setTimeout(() => setRoomCode("ZCNT"), 2000); // Replace 'ZCNT' with your dynamic room code
-
-    // setupSocketHandlers(socket);
   });
 </script>
 <template lang="pug" src="./Meeting.pug"></template>

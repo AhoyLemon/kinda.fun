@@ -110,7 +110,7 @@ main.game-over { min-height: 100dvh; background-color: $lemonYellow; color:$lemo
 
   ol.bad-guesses { display: grid; grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) ); gap:20px; padding:20px;
     li.bad-guess { background: $white; color:$lemonBlack;
-      blockquote { border-left:0.5em solid #222; padding:10px 20px; font-family: $serif; font-size: 1.75em;
+      blockquote { border-left:0.5em solid #222; padding:10px 20px; font-family: $serif; font-size: 1.75em; height: 100%;
         .quote-text {
           &:before { content:'“' }
           &:after { content:'?”' }

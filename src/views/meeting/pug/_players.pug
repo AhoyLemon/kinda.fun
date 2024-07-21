@@ -1,7 +1,7 @@
 .card-players(:class="{ 'for-host': amITheHost }")
 
   transition-group(name="list" tag="ul" id="PlayerList" class="players")
-    li.player(v-for="player in gamePlayers" :key="player.playerID")
+    li.player(v-for="player in computedPlayerList" :key="player.playerID")
 
       template(v-if="player.playerID == you.playerID")
 
@@ -16,7 +16,7 @@
 
         .player-job(v-if="player.jobTitle")
           span {{player.jobTitle}}
-        ul.known-hand
+        ul.known-hand(v-if="game.isGameStarted")
           template(v-for="card in player.hand")
             li.unplayed(v-if="card.status === 'unplayed'" v-tippy="`You haven't played this card`") up
             li.played(v-else-if="card.status === 'played'" v-tippy="`You scored this card`") p
@@ -37,7 +37,7 @@
 
         .player-job(v-if="player.jobTitle")
           span {{player.jobTitle}}
-        ul.known-hand
+        ul.known-hand(v-if="game.isGameStarted")
           template(v-for="card in player.hand")
             li.unplayed(v-if="card.status === 'unplayed' || card.status === 'playing'" v-tippy="`This card hasn't been played (as far as you know)`")
             li.played(v-else-if="card.status === 'played'" v-tippy="`This card been played and scored`") p

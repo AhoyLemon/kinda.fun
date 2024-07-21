@@ -34,4 +34,12 @@
     .display { font-family: $monospace; font-size:3.5em; color:$yellow; font-weight: 800; line-height: 90%; }
     .how-to-share { font-family: $sans-serif; color:$white; font-size:0.75rem; max-width: 160px; padding-top:0.5em; }
   }
+
+  .lobby-error { width:460px; background-color: $lightRed; color:$darkRed; padding:20px; font-family: $sans-serif;
+    h2 { font-size:3rem; font-family: $serif;  }
+    p { line-height: 200%; margin-bottom: 1em;}
+    button { border: 1px solid $darkRed; padding:0.75rem 1rem; font-size: 1rem; cursor: pointer; background-color: $lightRed; color:$darkRed; font-family: $sans-serif;
+      &:hover { background-color: $darkRed; color:$lightRed; }
+    }
+  }
 }
