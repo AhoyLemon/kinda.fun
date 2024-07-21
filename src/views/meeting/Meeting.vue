@@ -68,33 +68,80 @@
       doc(collection(db, "rooms"), roomCode),
       "players",
     );
-    // console.log("Players collection reference:", playersRef);
 
     const { data: playersCollection } = useCollection(playersRef, {
       wait: true,
     });
 
+    // Watching players collection for updates
     watch(
       () => playersCollection.value,
       async (newPlayers) => {
-        // console.log("New players:", newPlayers);
-
         if (newPlayers) {
           for (const player of newPlayers) {
+            const cardHolderPlayerID = player.id;
             if (player.hand === undefined) {
               const handRef = collection(doc(playersRef, player.id), "hand");
-              // console.log("Hand collection reference:", handRef);
               const handSnapshot = await getDocs(handRef);
               player.hand = handSnapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
               }));
+
               // Subscribe to the player's hand collection for real-time updates
               onSnapshot(handRef, (snapshot) => {
-                player.hand = snapshot.docs.map((doc) => ({
+                const newHand = snapshot.docs.map((doc) => ({
                   id: doc.id,
                   ...doc.data(),
                 }));
+
+                newHand.forEach((newCard) => {
+                  const oldCard = player.hand.find(
+                    (card) => card.id === newCard.id,
+                  );
+                  if (oldCard && oldCard.status !== newCard.status) {
+                    if (newCard.status === "stolen") {
+                      if (newCard.stolenBy !== you.name) {
+                        if (cardHolderPlayerID === you.playerID) {
+                          toast(
+                            {
+                              component: MyToast,
+                              props: {
+                                title: `You got robbed!`,
+                                points: newCard.points,
+                                message: `<strong>${newCard.stolenBy}</strong> just scored your “<strong>${newCard.phrase}</strong>” card`,
+                              },
+                            },
+                            {
+                              position: POSITION.BOTTOM_RIGHT,
+                              toastClassName: "red",
+                              timeout: 8000,
+                              icon: false,
+                            },
+                          );
+                        } else {
+                          toast(
+                            `“${newCard.stolenBy}” just stole a ${newCard.points} card from ${player.name}`,
+                            {
+                              timeout: 6000,
+                            },
+                          );
+                        }
+                      }
+                    } else if (newCard.status === "played") {
+                      if (cardHolderPlayerID !== you.playerID) {
+                        toast(
+                          `“${player.name}” just played a card for ${newCard.points}`,
+                          {
+                            timeout: 6000,
+                          },
+                        );
+                      }
+                    }
+                  }
+                });
+
+                player.hand = newHand;
               });
             }
           }
@@ -105,6 +152,37 @@
       },
       { immediate: true, deep: true },
     );
+
+    // Subscribe to activities collection for real-time updates
+    const activitiesRef = collection(db, `rooms/${roomCode}/activities`);
+    onSnapshot(activitiesRef, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          const newActivity = change.doc.data();
+
+          if (newActivity.playerID !== you.playerID) {
+            if (newActivity.activityType === "badGuess") {
+              if (newActivity.isOwnCard) {
+                toast(
+                  `${newActivity.name} just lost ${Math.abs(newActivity.penalty)} points for a terrible guess.`,
+                  {
+                    timeout: 6000,
+                  },
+                );
+              } else {
+                toast(
+                  `${newActivity.name} just lost ${Math.abs(newActivity.penalty)} points for a bad guess.`,
+                  {
+                    timeout: 6000,
+                  },
+                );
+              }
+            }
+            // Add additional activity types and corresponding toasts as needed
+          }
+        }
+      });
+    });
   }
 
   async function subscribeToGameStatus(roomCode) {
@@ -143,6 +221,7 @@
     game,
     you,
   } from "./js/_variables";
+  import { playerID } from "../invalid/js/_variables.js";
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
 
@@ -418,172 +497,8 @@
         },
       );
     } else if (isThatPhraseYours) {
-      severelyPenalizeTerribleGuess(match);
+      severelyPenalizeTerribleGuess(match, you.guess);
     } else {
-      penalizeBadGuess(you.guess);
-    }
-    you.guess = "";
-  };
-
-  // const performGuess = () => {
-  //   const yourGuess = you.guess.toLowerCase().replace(/"/g, "");
-
-  //   let isThatPhraseYours = false;
-  //   let isAlreadyPlayed = false;
-  //   let isAlreadyStolen = false;
-  //   let isSuccess = true;
-
-  //   let match = {}
-
-  //   // loop thru every player in gamePlayers
-  //   // loop thru every card in the hand of each player
-  //   // Try to find a match in one of the following ways...
-  //   // 1. if the lowercase of card.phrase is equal to yourGuess (that's an exact match)
-  //   // 2. card.alternates is an optional array. if the lowercase of any of those is equal to your guess, that's an alt match
-  //   // 3. card.stringMatch is an optional string. If the text of yourGuess contains the full text of card.stringText, that's a partial match
-
-  //   // If you find a match, define match as the card you just found.
-  //   // Then....
-  //   // 1. Check the player's playerID against you.playerID. If those are a match, set isThatPhraseYours = true;
-  //   // 2. Check to see if the card status is marked to played. If it is, set isAlreadyPlayed = true
-  //   // 3. Check to see if the card status is set to to stolen. If it is, set isAlreadyStolen = true;
-  //   // 4. If none of the above, set isSuccess true.
-
-  //   if (isSuccess === true) {
-  //     rewardGoodGuess(match);
-  //   } else if (isAlreadyPlayed) {
-  //     toast(
-  //       {
-  //         component: MyToast,
-  //         props: {
-  //           title: "Too Late!",
-  //           // points: match.points,
-  //           message: `“<strong>${match.phrase}</strong>” has already been scored.`,
-  //         },
-  //       },
-  //       {
-  //         position: POSITION.BOTTOM_LEFT,
-  //         toastClassName: "yellow",
-  //         timeout: 8000,
-  //         icon: false,
-  //       },
-  //     );
-  //   } else if (isAlreadyStolen) {
-  //     toast(
-  //       {
-  //         component: MyToast,
-  //         props: {
-  //           title: "Too Late!",
-  //           message: `“${actualPhrase ?? yourGuess}” has already been stolen.`,
-  //         },
-  //       },
-  //       {
-  //         position: POSITION.BOTTOM_LEFT,
-  //         toastClassName: "yellow",
-  //         timeout: 8000,
-  //         icon: false,
-  //       },
-  //     );
-  //   } else if (isThatPhraseYours) {
-  //     severelyPenalizeTerribleGuess(match);
-  //   } else {
-  //     penalizeBadGuess(you.guess);
-  //   }
-  // }
-
-  const performGuessOld = () => {
-    const yourGuess = you.guess.toLowerCase().replace(/"/g, "");
-    let match = null;
-    let matchFound = false;
-    let stolenBy = "";
-    let alreadyScoredBy = "";
-    let actualPhrase = "";
-
-    isThatPhraseYours = false;
-
-    // Go through every player's hand in game.players
-    for (
-      let playerIndex = 0;
-      playerIndex < game.players.length;
-      playerIndex++
-    ) {
-      const player = gamePlayers[playerIndex];
-      for (const card of player.hand) {
-        if (
-          // exact match
-          card.phrase.toLowerCase() === yourGuess ||
-          // match in alternates
-          (card.alternates &&
-            card.alternates.some((alt) => alt.toLowerCase() === yourGuess)) ||
-          // match in stringMatch
-          (card.stringMatch &&
-            yourGuess.includes(card.stringMatch.toLowerCase()))
-        ) {
-          actualPhrase = card.phrase;
-          if (player.socketID === you.socketID) {
-            severelyPenalizeTerribleGuess(card, you.guess);
-            matchFound = true;
-          } else if (card.status === "stolen") {
-            stolenBy = card.stolenBy;
-            matchFound = true;
-          } else if (card.status === "played") {
-            alreadyScoredBy = player.name;
-            matchFound = true;
-          } else {
-            // Create an object called match with the card, playerIndex, and player.name
-            match = {
-              ...card,
-              status: "stolen",
-              stolenBy: you.name,
-              socketID: player.socketID,
-              playerName: player.name,
-            };
-            card.status = "stolen";
-            card.stolenBy = you.name;
-            matchFound = true;
-          }
-          break;
-        }
-      }
-      if (match) break; // Exit the loop early if a match is found
-    }
-
-    if (matchFound && match) {
-      rewardGoodGuess(match);
-    } else if (stolenBy) {
-      toast(
-        {
-          component: MyToast,
-          props: {
-            title: "Too Late!",
-            message: `“${actualPhrase ?? yourGuess}” has already been stolen.`,
-          },
-        },
-        {
-          position: POSITION.BOTTOM_LEFT,
-          toastClassName: "yellow",
-          timeout: 8000,
-          icon: false,
-        },
-      );
-    } else if (alreadyScoredBy) {
-      toast(
-        {
-          component: MyToast,
-          props: {
-            title: "Too Late!",
-            // points: match.points,
-            message: `“<strong>${actualPhrase ?? yourGuess}</strong>” has already been scored.`,
-          },
-        },
-        {
-          position: POSITION.BOTTOM_LEFT,
-          toastClassName: "yellow",
-          timeout: 8000,
-          icon: false,
-        },
-      );
-    } else if (!matchFound) {
       penalizeBadGuess(you.guess);
     }
     you.guess = "";
@@ -607,9 +522,8 @@
     }
   };
 
-  const penalizeBadGuess = (yourGuess) => {
+  const penalizeBadGuess = async (yourGuess) => {
     const yourLoss = 0 - badGuessPenalty;
-    findMe().score -= badGuessPenalty;
     toast(
       {
         component: MyToast,
@@ -626,33 +540,28 @@
         icon: false,
       },
     );
-    you.guess = "";
-    game.badGuesses.push({
-      name: you.name,
+
+    const playerRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}`);
+    updateDoc(playerRef, {
+      score: increment(yourLoss),
+    });
+
+    const newActivity = {
+      activityType: "badGuess",
       guess: yourGuess,
-      penalty: you.yourLoss,
+      penalty: yourLoss,
+      name: you.name,
+      playerID: you.playerID,
       isOwnCard: false,
-    });
-    socket.emit("sendPlayerUpdate", {
-      roomCode: game.roomCode,
-      from: you.socketID,
-      socketID: you.socketID,
-      score: findMe().score,
-      badGuess: {
-        name: you.name,
-        guess: yourGuess,
-        penalty: yourLoss,
-        isOwnCard: false,
-      },
-      toast: {
-        message: `${findMe().name} lost ${badGuessPenalty} for a bad guess`,
-      },
-    });
+      timestamp: serverTimestamp(),
+    };
+
+    const activitiesRef = collection(db, `rooms/${game.roomCode}/activities`);
+    await addDoc(activitiesRef, newActivity);
   };
 
-  const severelyPenalizeTerribleGuess = (card, yourGuess) => {
+  const severelyPenalizeTerribleGuess = async (card, yourGuess) => {
     const yourLoss = 0 - card.points;
-    findMe().score -= card.points;
     toast(
       {
         component: MyToast,
@@ -671,28 +580,23 @@
         icon: false,
       },
     );
-    you.guess = "";
-    game.badGuesses.push({
-      name: you.name,
+
+    const playerRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}`);
+    updateDoc(playerRef, {
+      score: increment(yourLoss),
+    });
+
+    const newActivity = {
+      activityType: "badGuess",
       guess: yourGuess,
-      penalty: you.yourLoss,
+      penalty: yourLoss,
+      name: you.name,
+      playerID: you.playerID,
       isOwnCard: true,
-    });
-    socket.emit("sendPlayerUpdate", {
-      roomCode: game.roomCode,
-      from: you.socketID,
-      socketID: you.socketID,
-      score: findMe().score,
-      badGuess: {
-        name: you.name,
-        guess: yourGuess,
-        penalty: yourLoss,
-        isOwnCard: true,
-      },
-      toast: {
-        message: `${findMe().name} lost ${card.points} for trying to guess their own card`,
-      },
-    });
+      timestamp: serverTimestamp(),
+    };
+    const activitiesRef = collection(db, `rooms/${game.roomCode}/activities`);
+    await addDoc(activitiesRef, newActivity);
   };
 
   const rewardGoodGuess = (match, cardHolder) => {
@@ -725,6 +629,7 @@
     );
     updateDoc(cardRef, {
       status: "stolen",
+      stolenBy: you.name,
     });
 
     // findMe().score += match.points;
@@ -1008,11 +913,13 @@
 
   onMounted(() => {
     let playerID = localStorage.getItem("kindaFunPlayerID");
+    let playerName = localStorage.getItem("kindaFunPlayerName");
     if (!playerID) {
       playerID = generateUniqueID();
       localStorage.setItem("kindaFunPlayerID", playerID);
     }
     you.playerID = playerID;
+    you.name = playerName;
 
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("create")) {
