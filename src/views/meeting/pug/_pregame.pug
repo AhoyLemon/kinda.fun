@@ -28,7 +28,7 @@
             label When all players are ready...
             button.start-game(@click="shuffleUpAndDeal()") Start The Game
   
-  //-template(v-if="!game.roomData")
+  template(v-if="game.isFailedToGetRoomData")
     .lobby-error
       h2 There is no room.
       p A room at #[strong {{game.roomCode}}] could not be found.

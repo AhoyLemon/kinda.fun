@@ -12,22 +12,7 @@ export const allCards: Card[] = [
     points: 5,
     stringMatch: "bullet",
   },
-  {
-    phrase: `I like things that are kinda fun.`,
-    points: 5,
-    alternates: [
-      "kinda.fun",
-      "things that are kinda.fun",
-      "i like things that are kinda.fun",
-    ],
-    stringMatch: "kinda fun",
-  },
-  {
-    phrase: `Dunkin' Donuts`,
-    points: 5,
-    alternates: ["donuts"],
-    stringMatch: "dunkin",
-  },
+
   {
     phrase: `We'll have to circle back on that one.`,
     points: 5,
@@ -53,11 +38,31 @@ export const allCards: Card[] = [
   //
   // 10 Points
   {
+    phrase: `Dunkin' Donuts`,
+    points: 10,
+    alternates: ["donuts"],
+    stringMatch: "dunkin",
+  },
+  {
+    phrase: `I like things that are kinda fun.`,
+    points: 5,
+    alternates: [
+      "kinda.fun",
+      "things that are kinda.fun",
+      "i like things that are kinda.fun",
+    ],
+    stringMatch: "kinda fun",
+  },
+  {
     phrase: `a forty pound alligator`,
     points: 10,
     stringMatch: "alligator",
   },
-
+  {
+    phrase: `They should have sent a poet!`,
+    points: 10,
+    stringMatch: "alligator",
+  },
   {
     phrase: `Who wants stickers?`,
     points: 10,
@@ -204,7 +209,13 @@ export const allCards: Card[] = [
     stringMatch: "smoke pot",
   },
   {
-    phrase: `1947`,
+    phrase: `the year 1947`,
     points: 30,
+    stringMatch: "1947",
+  },
+  {
+    phrase: `I for one welcome our new ant overlords`,
+    points: 30,
+    stringMatch: "ant overlords",
   },
 ];

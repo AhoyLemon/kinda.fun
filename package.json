@@ -1,8 +1,9 @@
 {
-  "name": "kindafun-vite",
-  "version": "0.0.0",
+  "name": "kinda-fun",
+  "version": "2.0.1",
   "private": true,
   "type": "module",
+  "description": "Games made by Lemon.",
   "scripts": {
     "dev": "vite",
     "dev:client": "vite",

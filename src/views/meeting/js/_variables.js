@@ -1,12 +1,12 @@
 import { reactive, ref } from "vue";
 
 export const gameName = "Let's Ruin This Meeting!";
-export const timeToScore = 10000;
+export const timeToScore = 10000; // 10 seconds
 export const badGuessPenalty = 4;
-export const fakePlayerCount = 3;
 export const cardsPerPlayer = 5; // Number of cards each player will get
 export const game = reactive({
   roomCode: "",
+  isFailedToGetRoomData: false,
   fb: null,
   roomData: null,
   isGameStarted: false,
@@ -17,7 +17,6 @@ export const game = reactive({
 });
 export const you = reactive({
   playerID: "",
-  socketID: "",
   nameInput: "",
   jobTitleInput: "",
   name: "",

@@ -34,9 +34,17 @@
     birthdayHowls,
   } from "./js/_sounds.js";
 
-  // socket.io
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  // Firebase & VueFire Stuff
+  import {
+    doc,
+    increment,
+    serverTimestamp,
+    updateDoc,
+    runTransaction,
+  } from "firebase/firestore";
+  import { useFirestore, useCollection, useDocument } from "vuefire";
+  const db = useFirestore();
+  const statsRef = doc(db, `stats/cameo`);
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
@@ -126,7 +134,8 @@
   ///////////////////////////////////////////////
   ///////////////////////////////////////////////
   // Functions
-  const startSinglePlayerGame = () => {
+
+  const startSinglePlayerGame = async () => {
     game.mode = "singleplayer";
 
     generateGameCelebrities();
@@ -134,20 +143,40 @@
     game.started = true;
     startNextRound();
 
-    socket.emit("cameoStartGame", {
-      gameName: gameName,
+    await updateDoc(statsRef, {
+      gamesStarted: increment(1),
+      lastGameStarted: serverTimestamp(),
     });
+
     sendEvent("Comparatively Famous", "Game Started", "Fresh Game");
+
     if (gimmick.isSelected && gimmick.selected.name) {
+      const gimmickRef = doc(
+        db,
+        `stats/cameo/specialGames/${gimmick.selected.name}`,
+      );
+
+      await runTransaction(db, async (transaction) => {
+        const gimmickDoc = await transaction.get(gimmickRef);
+
+        if (!gimmickDoc.exists()) {
+          transaction.set(gimmickRef, {
+            startedCount: 1,
+            lastStarted: serverTimestamp(),
+          });
+        } else {
+          transaction.update(gimmickRef, {
+            startedCount: increment(1),
+            lastStarted: serverTimestamp(),
+          });
+        }
+      });
+
       sendEvent(
         "Comparatively Famous",
         "Special Game Started",
         gimmick.selected.name,
       );
-      socket.emit("cameoSpecialGame", {
-        gameName: gameName,
-        gimmickName: gimmick.selected.name,
-      });
     }
   };
 
@@ -298,7 +327,7 @@
     }, 1500);
   };
 
-  const submitCameoValueGuess = () => {
+  const submitCameoValueGuess = async () => {
     const self = this;
     const n = round.guessValueIndex;
     let offBy = Math.abs(
@@ -332,11 +361,42 @@
       soundBadValue.play();
     }
 
-    socket.emit("cameoValuationMade", {
-      gameName: gameName,
-      celeb: round.correctSide[round.guessValueIndex],
-      valueGuessed: ui.valueGuess,
-    });
+    const celebToLog = round.correctSide[round.guessValueIndex];
+    const celebName = celebToLog.name;
+    const celebValue = celebToLog.value;
+    const valuationRef = doc(db, `stats/cameo/celebs/${celebName}`);
+
+    try {
+      await runTransaction(db, async (transaction) => {
+        const valuationDoc = await transaction.get(valuationRef);
+
+        if (!valuationDoc.exists()) {
+          transaction.set(valuationRef, {
+            name: celebName,
+            actualValue: celebValue,
+            valuationCount: 1,
+            averagePlayerValue: ui.valueGuess,
+            lastValuation: serverTimestamp(),
+          });
+        } else {
+          const valuationData = valuationDoc.data();
+          const newValuationCount = valuationData.valuationCount + 1;
+          const newAveragePlayerValue =
+            (valuationData.averagePlayerValue * valuationData.valuationCount +
+              ui.valueGuess) /
+            newValuationCount;
+
+          transaction.update(valuationRef, {
+            actualValue: celebValue,
+            valuationCount: newValuationCount,
+            averagePlayerValue: newAveragePlayerValue,
+            lastValuation: serverTimestamp(),
+          });
+        }
+      });
+    } catch (e) {
+      console.error("Transaction failed: ", e);
+    }
 
     round.valueGuessed = true;
     ui.itsTimeToGuessValue = false;
@@ -552,15 +612,7 @@
           exceededBudget = "NO";
         }
 
-        socket.emit("cameoFinishGame", {
-          gameName: gameName,
-          cameoHistory: game.cameoHistory,
-          playerScore: my.score,
-          correctSorts: my.correctSorts,
-          averageValuationOffset: computedValuationSkill.number,
-          birthdayWishes: round.rightSide,
-          exceededBudget: exceededBudget,
-        });
+        saveGameOverData(game.cameoHistory, round.rightSide, exceededBudget);
 
         sendEvent("Comparatively Famous", "Game Finished", my.score);
 
@@ -573,6 +625,95 @@
         showHirePrice();
       }
     }, 3000);
+  };
+
+  // const saveGameOverData = (cameoHistory, birthdayWishes, isBudgetExceeded) => {
+  //   // in /stats/cameo ...
+  //   // 1. increment gamesFinsihed by 1
+  //   // 2. setGameLastFinished to serverTimestamp()
+  //   // 3. if isBudgetExceeded is true, increment timesBudgetExceeded by 1
+
+  //   // for each in cameoHistory...
+  //   // 1. create `/stats/cameo/celebs/${cameo.name}` if it doesn't exist
+  //   // 2. if cameo.correct is true, add 1 to sortScore
+  //   // 3. but if cameo.correct is true, subtract 1 from sortScore
+
+  //   // for each in birthdayWishes...
+  //   // 1. create `/stats/cameo/celebs/${birthdayWish.name}` if it doesn't exist
+  //   // 2. add 1 to birthdayWishCount
+
+  // }
+
+  const saveGameOverData = async (
+    cameoHistory,
+    birthdayWishes,
+    isBudgetExceeded,
+  ) => {
+    try {
+      // Update the main stats document
+      await runTransaction(db, async (transaction) => {
+        const statsDoc = await transaction.get(statsRef);
+
+        if (!statsDoc.exists()) {
+          throw new Error("Stats document does not exist!");
+        }
+
+        const updates = {
+          gamesFinished: increment(1),
+          lastGameFinished: serverTimestamp(),
+        };
+
+        if (isBudgetExceeded === "YES") {
+          updates.timesBudgetExceeded = increment(1);
+        }
+
+        transaction.update(statsRef, updates);
+      });
+
+      // Update cameoHistory
+      for (const cameo of cameoHistory) {
+        const cameoRef = doc(db, `stats/cameo/celebs/${cameo.name}`);
+        await runTransaction(db, async (transaction) => {
+          const cameoDoc = await transaction.get(cameoRef);
+
+          if (!cameoDoc.exists()) {
+            transaction.set(cameoRef, {
+              name: cameo.name,
+              sortScore: cameo.correct ? 1 : -1,
+            });
+          } else {
+            const currentSortScore = cameoDoc.data().sortScore || 0;
+            transaction.update(cameoRef, {
+              sortScore: cameo.correct ? increment(1) : increment(-1),
+            });
+          }
+        });
+      }
+
+      // Update birthdayWishes
+      for (const birthdayWish of birthdayWishes) {
+        const birthdayWishRef = doc(
+          db,
+          `stats/cameo/celebs/${birthdayWish.name}`,
+        );
+        await runTransaction(db, async (transaction) => {
+          const birthdayWishDoc = await transaction.get(birthdayWishRef);
+
+          if (!birthdayWishDoc.exists()) {
+            transaction.set(birthdayWishRef, {
+              name: birthdayWish.name,
+              birthdayWishCount: 1,
+            });
+          } else {
+            transaction.update(birthdayWishRef, {
+              birthdayWishCount: increment(1),
+            });
+          }
+        });
+      }
+    } catch (e) {
+      console.error("Transaction failed: ", e);
+    }
   };
 
   const showHirePrice = () => {

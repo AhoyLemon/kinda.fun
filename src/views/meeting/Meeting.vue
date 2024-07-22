@@ -101,6 +101,9 @@
                     if (newCard.status === "stolen") {
                       if (newCard.stolenBy !== you.name) {
                         if (cardHolderPlayerID === you.playerID) {
+                          // Your card was stolen.
+                          timer.value = 0;
+                          clearInterval(interval);
                           toast(
                             {
                               component: MyToast,
@@ -204,6 +207,7 @@
           game.isGameOver = data.isGameOver ?? false;
         } else {
           console.error("Game document does not exist.");
+          game.isFailedToGetRoomData = true;
         }
       },
       (error) => {
@@ -361,6 +365,7 @@
       timer.value -= 10; // Decrease timer by 10 milliseconds
 
       if (timer.value <= 0) {
+        timer.value = 0;
         clearInterval(interval); // Clear the interval when timer reaches 0
         scoreThisCard(card);
       }
@@ -598,6 +603,7 @@
   };
 
   const createRoom = async () => {
+    game.isFailedToGetRoomData = false;
     // Generate a room code
     function makeID(digits) {
       let text = "";
@@ -635,11 +641,7 @@
     const host = window.location.host; // e.g., localhost:5173 or example.com
     const newUrl = `${protocol}//${host}/meeting?room=${game.roomCode}`;
     window.history.replaceState(null, "", newUrl);
-
-    game.gameData = useDocument(doc(collection(db, "rooms"), game.roomCode));
-    game.players = useCollection(
-      collection(db, `rooms/${game.roomCode}/players`),
-    );
+    joinRoom();
   };
 
   const joinRoom = () => {
@@ -648,6 +650,7 @@
 
     if (!roomCode) {
       console.error("Room code is missing in the URL");
+      game.isFailedToGetRoomData = true;
       return;
     }
 
