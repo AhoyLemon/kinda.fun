@@ -17,6 +17,7 @@ export const game = reactive({
 });
 export const you = reactive({
   playerID: "",
+  roomCodeInput: "",
   nameInput: "",
   jobTitleInput: "",
   name: "",

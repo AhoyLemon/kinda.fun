@@ -668,6 +668,15 @@
     game.players = useCollection(playersCollectionRef);
   };
 
+  const joinRoomByInput = () => {
+    game.roomCode = you.roomCodeInput.toUpperCase();
+    const protocol = window.location.protocol; // http: or https:
+    const host = window.location.host; // e.g., localhost:5173 or example.com
+    const newUrl = `${protocol}//${host}/meeting?room=${game.roomCode}`;
+    window.history.replaceState(null, "", newUrl);
+    joinRoom();
+  };
+
   const endTheGame = async () => {
     const roomRef = doc(db, `rooms/${game.roomCode}`);
     await updateDoc(roomRef, {
