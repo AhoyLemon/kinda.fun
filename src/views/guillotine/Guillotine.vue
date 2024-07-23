@@ -24,13 +24,19 @@
   import { Howl, Howler } from "howler";
   import { dropSound, lastWords } from "./js/partials/_sounds.js";
 
-  // socket.io
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  // Firebase & VueFire Stuff
+  import {
+    doc,
+    increment,
+    serverTimestamp,
+    updateDoc,
+    runTransaction,
+  } from "firebase/firestore";
+  import { useFirestore, useCollection, useDocument } from "vuefire";
+  const db = useFirestore();
+  const statsRef = doc(db, `stats/guillotine`);
 
   const gameStatus = ref("loading");
-  // const currentBillionaires = ref([]);
-  // const formerBillionaires = ref([]);
 
   const data = {
     allBillionaires: allBillionaires, // <-- Might not be necessary.
@@ -177,10 +183,11 @@
     gameStatus.value = "titleScreen";
   };
 
-  const startGame = () => {
+  const startGame = async () => {
     gameStatus.value = "playing";
-    socket.emit("guillotineStartGame", {
-      gameName: "guillotine",
+    await updateDoc(statsRef, {
+      gamesStarted: increment(1),
+      lastGameStarted: serverTimestamp(),
     });
     sendEvent("NO MORE BILLIONAIRES", "Game Started", "Fresh Game");
   };
@@ -276,11 +283,10 @@
       },
       player.history.lastGameResults.trophies[0],
     );
-    socket.emit("guillotineFinishGame", {
-      wealthCreated: player.wealthCreated.today,
-      mostValuable: richestDead.name,
-      trophies: player.history.lastGameResults.trophies,
-    });
+    saveGameOverData(
+      player.wealthCreated.today,
+      player.history.lastGameResults.trophies,
+    );
     sendEvent(
       "NO MORE BILLIONAIRES",
       "Final Score",
@@ -290,6 +296,71 @@
     gameStatus.value = "gameOver";
     $("html, body").animate({ scrollTop: "+=325px" }, 800);
   };
+
+  const saveGameOverData = async (wealthCreated, trophies) => {
+    if (!wealthCreated || !trophies) {
+      return;
+    }
+
+    try {
+      // Update the main stats document
+      await runTransaction(db, async (transaction) => {
+        const statsDoc = await transaction.get(statsRef);
+
+        if (!statsDoc.exists()) {
+          throw new Error("Stats document does not exist!");
+        }
+
+        const updates = {
+          gamesFinished: increment(1),
+          gameLastFinished: serverTimestamp(),
+          wealthCreated: increment(wealthCreated),
+        };
+
+        transaction.update(statsRef, updates);
+      });
+
+      // Update trophies
+      for (const trophy of trophies) {
+        const trophyRef = doc(db, `stats/guillotine/heads/${trophy.name}`);
+        await runTransaction(db, async (transaction) => {
+          const trophyDoc = await transaction.get(trophyRef);
+
+          if (!trophyDoc.exists()) {
+            transaction.set(trophyRef, {
+              name: trophy.name,
+              netWorth: trophy.netWorth,
+              headCount: 1,
+              lastRemoved: serverTimestamp(),
+            });
+          } else {
+            transaction.update(trophyRef, {
+              netWorth: trophy.netWorth,
+              headCount: increment(1),
+              lastRemoved: serverTimestamp(),
+            });
+          }
+        });
+      }
+    } catch (e) {
+      console.error("Transaction failed: ", e);
+    }
+  };
+
+  // const statsRef = doc(db, `stats/guillotine`);
+  // const saveGameOverData = async (wealthCreated, mostValuable, trophies) => {
+  //   // in /stats/guillotine ...
+  //   // 1. increment gamesFinsihed by 1
+  //   // 2. setGameLastFinished to serverTimestamp()
+  //   // 3. increment wealthCreated by wealthcreated
+
+  //   // for each trophy in trophies
+  //   // 1. create `/stats/guillotine/heads/${trophy.name}` if it doesn't exist
+  //   // 2. set the name to trophy.name
+  //   // 3. set the netWorth to trophy.netWorth
+  //   // 4. increment the headcount by 1.
+  //   // 4. set lastRemoved to serverTimeStamp
+  // };
 
   const saveToLocalStorage = () => {
     localStorage.setItem("totalRedistributions", redistributions.allTime);
@@ -354,16 +425,17 @@
     newURL.searchParams.set("wealthCreatedToday", p.wealthCreatedToday);
     const cheapHash = generateCheapHash(p.playDate, p.wealthCreatedToday);
     newURL.searchParams.set("hash", cheapHash);
-
     sendEvent("NO MORE BILLIONAIRES", "Score Shared", p.wealthCreatedToday);
-
-    socket.emit("guillotineShareScore", {
-      wealthCreated: p.wealthCreatedToday,
-      playDate: p.playDate,
-    });
-
-    window.location.replace(newURL);
+    logTheScoreSharing();
+    window.history.replaceState(null, "", newURL);
     return false;
+  };
+
+  const logTheScoreSharing = async () => {
+    await updateDoc(statsRef, {
+      scoresShared: increment(1),
+      lastGameStarted: serverTimestamp(),
+    });
   };
 
   const playFromShare = () => {
@@ -393,11 +465,6 @@
         "Score Shared",
         ui.shareScreen.playerName,
       );
-      socket.emit("guillotineEnterPlayerName", {
-        wealthCreated: ui.shareScreen.wealthCreatedToday,
-        playDate: ui.shareScreen.playDate,
-        playerName: ui.shareScreen.playerName,
-      });
 
       window.location.replace(newURL);
     }

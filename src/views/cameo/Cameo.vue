@@ -627,23 +627,6 @@
     }, 3000);
   };
 
-  // const saveGameOverData = (cameoHistory, birthdayWishes, isBudgetExceeded) => {
-  //   // in /stats/cameo ...
-  //   // 1. increment gamesFinsihed by 1
-  //   // 2. setGameLastFinished to serverTimestamp()
-  //   // 3. if isBudgetExceeded is true, increment timesBudgetExceeded by 1
-
-  //   // for each in cameoHistory...
-  //   // 1. create `/stats/cameo/celebs/${cameo.name}` if it doesn't exist
-  //   // 2. if cameo.correct is true, add 1 to sortScore
-  //   // 3. but if cameo.correct is true, subtract 1 from sortScore
-
-  //   // for each in birthdayWishes...
-  //   // 1. create `/stats/cameo/celebs/${birthdayWish.name}` if it doesn't exist
-  //   // 2. add 1 to birthdayWishCount
-
-  // }
-
   const saveGameOverData = async (
     cameoHistory,
     birthdayWishes,
