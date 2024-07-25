@@ -7,6 +7,8 @@
     randomNumber,
     findKeyInArray,
     removeFromArrayByKey,
+    percentOf,
+    addCommas,
   } from "@/shared/js/_functions.js";
   import {
     keepPushingMessages,
@@ -15,9 +17,17 @@
   } from "./js/_messages";
   import { storeItems } from "./js/_store";
 
-  // socket.io
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  // Firebase & VueFire Stuff
+  import {
+    doc,
+    increment,
+    serverTimestamp,
+    updateDoc,
+    runTransaction,
+  } from "firebase/firestore";
+  import { useFirestore, useCollection, useDocument } from "vuefire";
+  const db = useFirestore();
+  const statsRef = doc(db, `stats/sisyphus`);
 
   // Sounds
   import { Howl, Howler } from "howler";
@@ -112,9 +122,7 @@
     // Actions taken on specific clicks
     switch (ui.totalClicks) {
       case 1:
-        socket.emit("sisyphusFirstClick", {
-          gameName: ui.gameName,
-        });
+        logFirstClick();
         break;
       case 212:
         const byLemonJingle = new Audio("audio/bylemon.mp3");
@@ -217,10 +225,7 @@
         }, 2000);
 
         sendEvent("Rollback", ui.r.rollbacks + " time(s)");
-
-        socket.emit("sisyphusRollback", {
-          gameName: ui.gameName,
-        });
+        logRollback();
 
         // Rollback Cheevos
         switch (ui.r.rollbacks) {
@@ -381,12 +386,7 @@
     }
 
     // Log this Cheevo in the database.
-    socket.emit("sisyphusEarnedCheevo", {
-      gameName: ui.gameName,
-      title: title,
-      text: text,
-      points: points,
-    });
+    logCheevo({ name: title, points: points });
   };
 
   const toggleSidebar = () => {
@@ -418,13 +418,7 @@
       purchaseSound.play();
 
       sendEvent("item purchase", item.name, item.price);
-      socket.emit("sisyphusBoughtItem", {
-        gameName: ui.gameName,
-        id: item.id,
-        name: item.name,
-        desc: item.desc,
-        price: item.price,
-      });
+      logPurchase(item);
 
       if (ui.inventory.length == 1) {
         getCheevo("Shopping In Hades!", "First item purchased.", 10);
@@ -626,8 +620,61 @@
     item.showDesc = !item.showDesc;
   };
 
+  ////////////////////////////////
+  // Firebase functions
+  const logFirstClick = async () => {
+    await updateDoc(statsRef, {
+      firstClick: increment(1),
+      lastGameStarted: serverTimestamp(),
+    });
+  };
+
+  const logRollback = async () => {
+    await updateDoc(statsRef, {
+      rollbackCount: increment(1),
+    });
+  };
+
+  const logCheevo = async (cheevo) => {
+    const cheevoName = cheevo.name;
+    const cheevoRef = doc(db, `stats/sisyphus/cheevos/${cheevoName}`);
+    await runTransaction(db, async (transaction) => {
+      const cheevoDoc = await transaction.get(cheevoRef);
+      if (!cheevoDoc.exists()) {
+        transaction.set(cheevoRef, {
+          name: cheevoName,
+          pointValue: cheevo.points,
+          earnedCount: 1,
+        });
+      } else {
+        transaction.update(cheevoRef, {
+          earnedCount: increment(1),
+        });
+      }
+    });
+  };
+
+  const logPurchase = async (purchase) => {
+    const purchaseName = purchase.name;
+    const purchaseRef = doc(db, `stats/sisyphus/purchases/${purchaseName}`);
+    await runTransaction(db, async (transaction) => {
+      const purchaseDoc = await transaction.get(purchaseRef);
+      if (!purchaseDoc.exists()) {
+        transaction.set(purchaseRef, {
+          name: purchaseName,
+          price: purchase.price,
+          timesBought: 1,
+        });
+      } else {
+        transaction.update(purchaseRef, {
+          timesBought: increment(1),
+        });
+      }
+    });
+  };
+
   ///////////////////////////////
-  // Functions
+  // Computeds
   const rockLeft = computed(() => {
     return `calc(${ui.s.width}% + ${ui.r.left}%)`;
   });
@@ -667,9 +714,7 @@
   });
 
   onMounted(() => {
-    socket.emit("sisyphusMounted", {
-      gameName: ui.gameName,
-    });
+    // nothing!
   });
 </script>
 <template lang="pug" src="./Sisyphus.pug"></template>
