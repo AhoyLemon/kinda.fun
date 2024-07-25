@@ -40,9 +40,17 @@
     wrongHeadlines,
   } from "./js/_variables";
 
-  // socket.io
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  // Firebase & VueFire Stuff
+  import {
+    doc,
+    increment,
+    serverTimestamp,
+    updateDoc,
+    runTransaction,
+  } from "firebase/firestore";
+  import { useFirestore, useCollection, useDocument } from "vuefire";
+  const db = useFirestore();
+  const statsRef = doc(db, `stats/pretend`);
 
   ///////////////////////////////////
   // Variables
@@ -168,9 +176,7 @@
       specialScreen.message =
         "Having experienced significant problems assessing the identities of the guests as well as what others at this party would consider socially acceptable, you are told to leave.<br/><br />An hour later, you find yourself at a Taco Bell getting sick on chaulpas, and tell a Larry The Cable Guy impersonator that he's your best friend. That is the saddest moment you've ever had.";
       specialScreen.gameOver = true;
-      socket.emit("pretendGameOver", {
-        gameState: "lose",
-      });
+      logGameOver("lose");
       sendEvent("Game Over", "Lose", "Round " + my.round);
     } else if (my.stepsToCheese < 1) {
       specialScreen.show = true;
@@ -179,9 +185,7 @@
       specialScreen.headline = "You win!";
       specialScreen.message = "";
       specialScreen.gameOver = true;
-      socket.emit("pretendGameOver", {
-        gameState: "win",
-      });
+      logGameOver("win");
       sendEvent("Game Over", "Win", "Round " + my.round);
     }
   };
@@ -218,35 +222,80 @@
     }
 
     if (my.round < 2) {
-      socket.emit("pretendGameStart", {
-        correctName: current.name,
-      });
+      logNewGame();
     }
 
     if (ui.answer == "correct") {
       my.points = my.points + 1;
       my.correctGuesses++;
-      socket.emit("pretendCorrectGuess", {
-        correctName: current.name,
-      });
+      logPretendGuess(current, "correct");
     } else if (ui.answer == "close") {
       my.points = my.points + 0.7;
       my.correctGuesses++;
-      socket.emit("pretendCloseGuess", {
-        correctName: current.name,
-        guessedName: ui.guess,
-      });
+      logPretendGuess(current, "close");
     } else if (ui.answer == "wrong") {
       my.points = my.points - 0.85;
-      socket.emit("pretendBadGuess", {
-        correctName: current.name,
-        guessedName: ui.guess,
-      });
+      logPretendGuess(current, "bad");
     }
 
     sendEvent(ui.answer, current.name, ui.guess);
     generateFeedback();
     ui.phase = "answer";
+  };
+
+  const logNewGame = async () => {
+    await updateDoc(statsRef, {
+      gamesStarted: increment(1),
+      lastGameStarted: serverTimestamp(),
+    });
+  };
+
+  const logPretendGuess = async (pretender, guess) => {
+    const pretendName = pretender.name;
+    const pretendRef = doc(db, `stats/pretend/impersonators/${pretendName}`);
+
+    const isCorrect = guess === "correct";
+    const isClose = guess === "close";
+    const isBad = guess === "bad";
+
+    await runTransaction(db, async (transaction) => {
+      const pretendDoc = await transaction.get(pretendRef);
+      if (!pretendDoc.exists()) {
+        transaction.set(pretendRef, {
+          name: pretendName,
+          correctGuessCount: isCorrect ? 1 : 0,
+          closeGuessCount: isClose ? 1 : 0,
+          badGuessCount: isBad ? 1 : 0,
+        });
+      } else {
+        const updateData = {};
+        if (isCorrect) {
+          updateData.correctGuessCount = increment(1);
+        } else if (isClose) {
+          updateData.closeGuessCount = increment(1);
+        } else if (isBad) {
+          updateData.badGuessCount = increment(1);
+        }
+        transaction.update(pretendRef, updateData);
+      }
+    });
+  };
+
+  const logGameOver = async (gameStatus) => {
+    let incrementGamesWon = 0;
+    let incrementGamesLost = 0;
+    if (gameStatus === "win") {
+      incrementGamesWon = 1;
+    }
+    if (gameStatus === "lose") {
+      incrementGamesLost = 1;
+    }
+    await updateDoc(statsRef, {
+      gamesFinishd: increment(1),
+      lastGameFinished: serverTimestamp(),
+      gamesWon: increment(incrementGamesWon),
+      gamesLost: increment(incrementGamesLost),
+    });
   };
 
   const generateAnswerFeedback = () => {
