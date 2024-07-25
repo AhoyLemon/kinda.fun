@@ -1,5 +1,6 @@
 <script setup>
   import { ref, reactive, onMounted, computed } from "vue";
+  const baseURL = `${window.location.protocol}//${window.location.host}`;
   const currentThing = reactive({
     slug: "",
     name: "",
@@ -24,8 +25,18 @@
       logo: "comparativelyfamous.svg",
       slogan: "The game of relative celebrity value",
       description: `<p>This game will give you a list of celebrities, and then ask you to sort them by their listed value on <strong>Cameo</strong>.</p>`,
-      url: "https://kinda.fun/cameo",
+      url: `${baseURL}/cameo`,
       tags: ["game", "single player", "celebrities", "trivia"],
+    },
+    meeting: {
+      name: "This Meeting Has Points",
+      slug: "meeting",
+      logo: "thismeetinghaspoints.svg",
+      slogan: "So now you have a reason to actually pay attention.",
+      description: `<p>This is a multiplayer game meant to be played while having a meeting about something else. <strong>Gather 2 to 6 people</strong> to slip their cards into conversation, while you try to catch them doing that very thing.</p>`,
+      url: `${baseURL}/meeting`,
+      tags: ["game", "multiplayer", "guess"],
+      buttonText: "Let's huddle up and discuss.",
     },
     greatsextips: {
       name: "Great Sex Tips!",
@@ -43,7 +54,7 @@
       logo: "nomorebillionaires.svg",
       slogan: "Generating wealth with a guillotine",
       description: `<p>This is a single player game about funding public schools by executing the world's richest people. A new list of billionaires is generated every day!</p>`,
-      url: "https://kinda.fun/guillotine",
+      url: `${baseURL}/guillotine`,
       tags: ["game", "single player", "new content every day"],
       buttonText: "Genearate wealth.",
     },
@@ -53,7 +64,7 @@
       logo: "sisyphusclicker.svg",
       slogan: "Life can be depressing. This game especially so.",
       description: `<p>This is a clicker-style game where you take on the role of sisyphus and push the rock uphill. <strong>You will never succeed.</strong> But at least you can earn achievements?</p>`,
-      url: "https://kinda.fun/sisyphus",
+      url: `${baseURL}/sisyphus`,
       buttonText: "Suffer.",
       tags: ["game", "single player", "clicker"],
     },
@@ -73,7 +84,7 @@
       logo: "pretendworld.svg",
       slogan: "The game of bad impersonations and good cheese logs",
       description: `<p>You find yourself at a cocktail party populated entirely with celebrity impersonators, and you see the perfect cheese log. To get to it, you must guess who is impersonating whom.</p>`,
-      url: "https://kinda.fun/pretend",
+      url: `${baseURL}/pretend`,
       tags: ["game", "single player", "celebrities", "guess"],
     },
     invalid: {
@@ -82,7 +93,7 @@
       logo: "invalid.svg",
       slogan: "A trivia game of unnecessary suffering.",
       description: `<p>This is a multiplayer competitive triva game <strong>(best with 4-8 players)</strong> where all players are working at the same company, and all they want to do is create a password. The SysAdmin's job is to make their life difficult.</p>`,
-      url: "https://kinda.fun/invalid",
+      url: `${baseURL}/invalid`,
       buttonText: "",
       isMultiplayer: true,
       tags: ["game", "multiplayer", "trivia", "guess"],
@@ -93,7 +104,7 @@
       logo: "thewrongestwords.svg",
       slogan: "The game where you defend some very stupid ideas.",
       description: `<p>Gather together a group of <strong>5 - 10 players</strong> and get ready to talk nonsense. You'll get a card with an untrue statement on it, and it's your job to convince you're friends your statement is the least wrong.</p>`,
-      url: "https://kinda.fun/wrongest",
+      url: `${baseURL}/wrongest`,
       isMultiplayer: true,
       tags: ["game", "multiplayer", "lies", "party"],
     },

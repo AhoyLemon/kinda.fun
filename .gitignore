@@ -32,3 +32,4 @@ coverage
 .env.prod
 firebaseConfig.js
 .firebase/*.cache
+/.firebase

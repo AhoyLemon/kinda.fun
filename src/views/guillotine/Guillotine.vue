@@ -647,48 +647,6 @@
         comparativeData.currentSchool.averageStudents;
       schoolsFunded.today = Math.floor(budgetToday / costPerSchool);
     }
-
-    // if (player.wealthCreated && player)
-
-    // if (!player.wealthCreated || !player.wealthCreated.today) {
-    //   if (ui.shareScreen.wealthCreatedToday) {
-    //     const budgetToday = convertToBillion(ui.shareScreen.wealthCreatedToday);
-    //     const costPerSchool = Number(
-    //       comparativeData.currentSchool.perStudent *
-    //         comparativeData.currentSchool.perStudent,
-    //     );
-    //     const schoolsFundedToday = Math.floor(budgetToday / costPerSchool);
-    //     return {
-    //       today: schoolsFundedToday,
-    //       allTime: 0,
-    //     };
-    //   } else {
-    //     return {
-    //       today: 0,
-    //       allTime: 0,
-    //     };
-    //   }
-    // }
-    // const budgetToday = convertToBillion(player.wealthCreated.today);
-    // const costPerSchool = Number(
-    //   comparativeData.currentSchool.perStudent *
-    //     comparativeData.currentSchool.perStudent,
-    // );
-    // const schoolsFundedToday = Math.floor(budgetToday / costPerSchool);
-
-    // let schoolsFundedAllTime = 0;
-    // if (player.wealthCreated.today == player.wealthCreated.allTime) {
-    //   schoolsFundedAllTime = schoolsFundedToday;
-    // } else if (player.wealthCreated.allTime) {
-    //   const budgetAllTime = convertToBillion(player.wealthCreated.allTime);
-    //   schoolsFundedAllTime = Math.floor(budgetAllTime / costPerSchool);
-    // }
-
-    // return {
-    //   today: schoolsFundedToday,
-    //   allTime: schoolsFundedAllTime,
-    // };
-
     return schoolsFunded;
   });
 

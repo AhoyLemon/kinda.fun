@@ -2,33 +2,8 @@ $focusColor: #ffc107;
 
 @import "./scss/variables";
 
-
-main.title-screen { background-color: #121212; color:$white; min-height: 100dvh; display:flex; align-items: center; justify-content: center;
-  .inside { display:grid; gap:20px; font-family: $sans-serif; }
-  h1 { font-size:3vw; font-family: $serif; }
-
-  .create-or-join { display:flex; align-items: stretch; gap:18px; justify-content: center;
-    button.create { font-family: $sans-serif; font-weight: 800; border:0.1em solid $yellow; color:$yellow; font-size:1rem; padding:1em; background-color: rgba($yellow,0.025); cursor: pointer;
-      &:hover, &:focus { background:$yellow; color:#111; }
-    }
-    .or { display: inline-flex; align-self: center; font-weight: 750; }
-    form { display:inline-flex; }
-    fieldset { position: relative;
-      label { position: absolute; top:5px; left:10px; font-size: 12px; }
-      &:has(input:focus) { 
-        label { color: $yellow; }
-        input { border-color: $yellow; outline: none; }
-      }
-    }
-    input.room-code-input { font-family: $sans-serif; font-weight: 800; padding:10px 0 0 6px; text-transform: uppercase;font-size:2.5rem; width:3.5em; background:black; border:2px solid black; color:$yellow;
-      &:focus { border-color: $yellow; outline: none;}
-    }
-    button.submit { border-radius: 0; border:none; font-weight: 700; background:$yellow;
-      &:disabled { opacity: 0.25; color:$yellow; background:black; }
-    }
-  }
-}
-
+@import "./scss/title-screen";
+@import "./scss/pregame";
 
 .meeting-board { display: grid; grid-template-columns: 1fr $playerListWidth; min-height: 100dvh;
 
@@ -38,36 +13,8 @@ main.title-screen { background-color: #121212; color:$white; min-height: 100dvh;
   h1 { font-size:3rem; }
 }
 
-.card-table { background-color: #333; padding:20px; display: flex; flex-direction: column; justify-content: space-between;
-  .cards { display: grid; grid-template-columns: repeat( auto-fit, minmax(200px, 1fr) ); gap:20px;
-    .card { appearance: none; width:100%; background:$white; border-radius: 8px; padding:10px; border:2px solid transparent; height:100%; display:grid; grid-template-rows: 32px 1fr;
-      .points { border:2px; border-radius: 50%; width:32px; height:32px; line-height: 30px; text-align: center; font-family: $monospace; font-weight: 825; border:0.125em solid; }
-      &:not([disabled]) { cursor: pointer; }
-      &[disabled] { cursor: no-drop; opacity: 1; }
-      &.unplayed { background:$cream; color:$darkCream;
-        .points { color:$cream; background:$darkCream; }
-      }
-      &.playing { transform: scale(1.1); box-shadow: 0 0 2rem black; background-color:$lightCream; color:$darkCream; transition: transform 1s ease, background-color 1s linear;
-        .points { color: $lightCream; background:$darkCream; }
-      }
-      &.played { background:$lightGreen; color:$darkGreen; border-color:$green;
-        .points { color: $lightGreen; background:$darkGreen; }
-      }
-      &.stolen { background:$lightRed; color:$darkRed; border-color: $red;
-        .points { color: $lightRed; background:$darkRed; }
-      }
-    }
-    .points-holder { display: flex; align-items: flex-end; justify-content: flex-end; 
-    }
-    .phrase-holder { display: flex; justify-content: center; align-items: center; padding-bottom: 20px; height:100%; }
-    blockquote { font-family: $serif; font-weight: 500; font-size:2rem; text-align: center;
-      &:before { content:'“' }
-      &:after { content:'”' }
-    }
-  }
-}
-
-@import "scss/players";
+@import "./scss/players";
+@import "./scss/cards";
 
 .timer { position: fixed; bottom:0; left:0; right:$playerListWidth;
   .bar { position: absolute; bottom:0; left:0; right: 0; height:32px; background-color: black;
@@ -79,8 +26,8 @@ main.title-screen { background-color: #121212; color:$white; min-height: 100dvh;
   }
 }
 
-@import "scss/guess";
-@import "scss/pregame";
+@import "./scss/guess";
+
 
 .tippy-box { background:$white; color:#111;
   .tippy-arrow { color:$white; }
@@ -90,6 +37,6 @@ main.title-screen { background-color: #121212; color:$white; min-height: 100dvh;
   .tippy-content { font-family: $sans-serif; font-weight: 525; max-width: 160px}
 }
 
-@import "scss/animations";
+@import "./scss/animations";
 
-@import "scss/game-over";
+@import "./scss/game-over";

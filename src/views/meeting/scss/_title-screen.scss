@@ -1,0 +1,25 @@
+main.title-screen { background-color: #121212; color:$white; min-height: 100dvh; display:flex; align-items: center; justify-content: center;
+  .inside { display:grid; gap:10dvh; font-family: $sans-serif; }
+  // h1 { font-size:3vw; font-family: $serif; }
+  .logo { height:50vh; }
+  .create-or-join { display:flex; align-items: stretch; gap:18px; justify-content: center;
+    button.create { font-family: $sans-serif; font-weight: 800; border:0.1em solid $yellow; color:$yellow; font-size:1.5rem; padding:1em; background-color: rgba($yellow,0.025); cursor: pointer;
+      &:hover, &:focus { background:$yellow; color:#111; }
+    }
+    .or { display: inline-flex; align-self: center; font-weight: 750; }
+    form { display:inline-flex; }
+    fieldset { position: relative;
+      label { position: absolute; top:5px; left:10px; font-size: 12px; }
+      &:has(input:focus) { 
+        label { color: $yellow; }
+        input { border-color: $yellow; outline: none; }
+      }
+    }
+    input.room-code-input { font-family: $sans-serif; font-weight: 800; padding:10px 0 0 6px; text-transform: uppercase;font-size:3.5rem; width:3.5em; background:black; border:2px solid black; color:$yellow;
+      &:focus { border-color: $yellow; outline: none;}
+    }
+    button.submit { border-radius: 0; border:none; font-weight: 700; background:$yellow;
+      &:disabled { opacity: 0.25; color:$yellow; background:black; }
+    }
+  }
+}

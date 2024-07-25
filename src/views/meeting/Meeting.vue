@@ -42,6 +42,7 @@
   // Initialize Firestore
   const db = useFirestore();
   const gamePlayers = ref([]);
+  const statsRef = doc(db, `stats/meeting`);
 
   watch(
     () => game.roomCode,
@@ -254,13 +255,10 @@
 
   const savePlayerInfo = async () => {
     you.name = you.nameInput;
+    localStorage.save;
     you.jobTitle = you.jobTitleInput;
 
-    const newPlayer = {
-      name: you.name,
-      jobTitle: you.jobTitle,
-      score: 0,
-    };
+    localStorage.setItem("kindaFunPlayerName", you.name);
 
     const playersCollection = collection(db, "rooms", game.roomCode, "players");
     const playerQuery = query(
@@ -343,7 +341,10 @@
     await updateDoc(roomRef, {
       isGameStarted: true,
     });
-
+    await updateDoc(statsRef, {
+      gamesStarted: increment(1),
+      lastGameStarted: serverTimestamp(),
+    });
     // set game.roomData.isGameStarted to true
   };
 
@@ -625,7 +626,8 @@
 
     // Room does not exist, create the new room document
     const newRoom = {
-      roomId: roomCode,
+      gameSlug: "meeting",
+      roomCode: roomCode,
       isGameStarted: false,
       isGameOver: false,
       roomCreatorID: you.playerID,
@@ -681,6 +683,11 @@
     const roomRef = doc(db, `rooms/${game.roomCode}`);
     await updateDoc(roomRef, {
       isGameOver: true,
+    });
+
+    await updateDoc(statsRef, {
+      gamesFinished: increment(1),
+      lastGameFinished: serverTimestamp(),
     });
   };
 
@@ -747,6 +754,9 @@
     if (!playerID) {
       playerID = generateUniqueID();
       localStorage.setItem("kindaFunPlayerID", playerID);
+    }
+    if (playerName) {
+      you.nameInput = playerName;
     }
     you.playerID = playerID;
     you.name = playerName;
