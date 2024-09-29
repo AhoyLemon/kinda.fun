@@ -129,6 +129,7 @@ export const game = reactive({
   currentlyInGame: false,
   isGameStarted: false,
   isFailedToGetRoomData: false,
+  roomCreatorID: "",
   roomCode: "",
   gameName: "invalid",
 

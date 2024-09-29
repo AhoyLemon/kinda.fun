@@ -1,4 +1,3 @@
-//- .pregame(v-if="game.currentlyInGame && round.phase == 'pregame'")
 .pregame(v-if="game.roomCode")
 
   .room-code
@@ -14,7 +13,7 @@
       figcaption
         button(@click="stopWatchingVideo()") Okay, close this video.
 
-  .game-started(v-if="game.gameStarted")
+  .game-started(v-if="game.isGameStarted")
     .inside
       .content
         h2 The game has already started.

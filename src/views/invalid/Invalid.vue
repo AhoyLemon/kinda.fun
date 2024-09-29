@@ -92,7 +92,7 @@
 
   // Initialize Firestore
   const db = useFirestore();
-  const statsRef = doc(db, `stats/meeting`);
+  const statsRef = doc(db, `stats/invalid`);
 
   // Firebase Subscription Watch
   watch(
@@ -101,6 +101,7 @@
       if (newRoomCode) {
         try {
           await subscribeToRoom(newRoomCode);
+          await subscribeToGameStatus(newRoomCode);
         } catch (error) {
           console.error("Error subscribing to room:", error);
         }
@@ -123,6 +124,29 @@
       }));
       game.players = updatedPlayers;
     });
+  }
+
+  async function subscribeToGameStatus(roomCode) {
+    const gameRef = doc(collection(db, "rooms"), roomCode);
+    console.log("Game document reference:", gameRef);
+
+    onSnapshot(
+      gameRef,
+      (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const data = docSnapshot.data();
+          game.isGameStarted = data.isGameStarted ?? false;
+          game.roomCreatorID = data.roomCreatorID ?? "";
+          game.isGameOver = data.isGameOver ?? false;
+        } else {
+          console.error("Game document does not exist.");
+          game.isFailedToGetRoomData = true;
+        }
+      },
+      (error) => {
+        console.error("Error subscribing to game status:", error);
+      },
+    );
   }
 
   /////////////////////////////////////////////////////////
@@ -164,6 +188,7 @@
     const newRoom = {
       gameSlug: game.gameName,
       roomCode: roomCode,
+      roomCreatorID: my.playerID,
       isGameStarted: game.isGameStarted,
       allowNaughty: game.allowNaughty,
       maxRounds: game.maxRounds,
@@ -359,7 +384,7 @@
     });
   };
 
-  const startTheGame = () => {
+  const startTheGame = async () => {
     // Assign the host as SysAdmin, all other players are employees
     game.players.forEach(function (player, index) {
       if (player.isRoomHost) {
@@ -379,13 +404,15 @@
       game.maxRounds = game.players.length;
     }
 
-    socket.emit("startTheGame", {
-      roomCode: game.roomCode,
-      gameName: game.gameName,
-      players: game.players,
-      maxRounds: game.maxRounds,
-      sysAdminIndex: my.playerIndex,
-      allowNaughty: game.allowNaughty,
+    alert(game.roomCode);
+
+    const roomRef = doc(db, `rooms/${game.roomCode}`);
+    await updateDoc(roomRef, {
+      isGameStarted: true,
+    });
+    await updateDoc(statsRef, {
+      gamesStarted: increment(1),
+      lastGameStarted: serverTimestamp(),
     });
 
     sendEvent("Invalid", "Game Started", game.roomCode);
@@ -1298,12 +1325,16 @@
   };
 
   const computedAmIHost = computed(() => {
-    if (!game.players || !game.players[0]) {
-      return false;
-    } else if (game.players[0].playerID === my.playerID) {
-      return true;
+    const roomCreatorExists = game.players.some(
+      (player) => player.id === game.roomCreatorID,
+    );
+
+    if (roomCreatorExists) {
+      console.log(1335);
+      return my.playerID === game.roomCreatorID;
     } else {
-      return false;
+      // Check if my.player is the first player in the players array
+      return game.players.length > 0 && game.players[0].id === my.playerID;
     }
   });
 
@@ -1530,26 +1561,6 @@
   /////////////////////////////////////////////////////////
   // Sockets  (I can't easily move these into a file without annoying refactor)
 
-  socket.on("startTheGame", function (msg) {
-    musicLobby.stop();
-    ui.musicPlaying = false;
-
-    game.players = msg.players;
-    my.role = msg.players[my.playerIndex].role;
-    round.phase = "choose rules";
-    game.gameStarted = true;
-    round.number = 1;
-    game.maxRounds = msg.maxRounds;
-    round.sysAdminIndex = msg.sysAdminIndex;
-    game.allowNaughty = msg.allowNaughty;
-    if (my.role == "SysAdmin") {
-      definePossibleChallenges();
-      document.title = my.role + " | " + gameTitle;
-    } else {
-      document.title = my.name + " | " + gameTitle;
-    }
-  });
-
   // Inform the player of their own socketID
   socket.on("hostSelected", (hostSocketId) => {
     console.log(`Host selected: ${hostSocketId}`);
@@ -1574,7 +1585,7 @@
         roomCode: game.roomCode,
         from: my.socketID,
         players: game.players,
-        isGameStarted: game.gameStarted,
+        isGameStarted: game.isGameStarted,
       });
     }
   });
@@ -1585,7 +1596,7 @@
     console.warn("The socket " + msg + " disconnected.");
 
     // TODO: See if that socketID is in your game. Remove them if so.
-    if (!game.gameStarted) {
+    if (!game.isGameStarted) {
       game.players.forEach(function (p, index) {
         if (p.socketID == msg) {
           game.players.splice(index, 1);
@@ -1603,7 +1614,7 @@
       socket.emit("updatePlayers", {
         roomCode: game.roomCode,
         players: game.players,
-        gameStarted: game.gameStarted,
+        gameStarted: game.isGameStarted,
       });
       console.log(
         "I'm the host! I gave the room all the players I know about!",
@@ -1615,7 +1626,7 @@
   socket.on("updatePlayers", function (msg) {
     console.log("THE PLAYERS HAVE BEEN UPDATED!!!!!!!!");
     game.players = msg.players;
-    game.gameStarted = msg.gameStarted;
+    game.isGameStarted = msg.gameStarted;
 
     // NOTE: This bit may be unnecessary, but confirms & updates your own playerIndex every time the players get updated.
     game.players.forEach(function (p, index) {
