@@ -5,6 +5,7 @@ import vue from "@vitejs/plugin-vue";
 import vueDevTools from "vite-plugin-vue-devtools";
 import Sitemap from "vite-plugin-sitemap";
 // import { socketEvents } from "./src/server/socketEvents.js";
+import VueRouter from "unplugin-vue-router/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -36,6 +37,9 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
+      VueRouter({
+        /* options */
+      }),
       vue(),
       vueDevTools(),
       // vitePluginSocketIO({ socketEvents }),

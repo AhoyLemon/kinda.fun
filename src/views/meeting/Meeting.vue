@@ -121,6 +121,8 @@
                               icon: false,
                             },
                           );
+                          you.currentCard = {};
+                          you.isCurrentlyPlayingACard = false;
                         } else {
                           toast(
                             `“${newCard.stolenBy}” just stole a ${newCard.points} card from ${player.name}`,

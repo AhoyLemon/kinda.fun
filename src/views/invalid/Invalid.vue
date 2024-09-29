@@ -2,7 +2,13 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // IMPORTS
-  import { reactive, computed, onMounted, getCurrentInstance } from "vue"; // Import reactive from Vue 3
+  import {
+    reactive,
+    computed,
+    onMounted,
+    getCurrentInstance,
+    watch,
+  } from "vue"; // Import reactive from Vue 3
   import {
     randomNumber,
     randomFrom,
@@ -66,61 +72,137 @@
   import { io } from "socket.io-client";
   const socket = io.connect();
 
+  // Firebase & VueFire Stuff
+  import {
+    doc,
+    increment,
+    serverTimestamp,
+    Timestamp,
+    addDoc,
+    getDoc,
+    getDocs,
+    setDoc,
+    updateDoc,
+    collection,
+    query,
+    where,
+    onSnapshot,
+  } from "firebase/firestore";
+  import { useFirestore, useCollection, useDocument } from "vuefire";
+
+  // Initialize Firestore
+  const db = useFirestore();
+  const statsRef = doc(db, `stats/meeting`);
+
+  // Firebase Subscription Watch
+  watch(
+    () => game.roomCode,
+    async (newRoomCode) => {
+      if (newRoomCode) {
+        try {
+          await subscribeToRoom(newRoomCode);
+        } catch (error) {
+          console.error("Error subscribing to room:", error);
+        }
+      }
+    },
+    { immediate: true },
+  );
+
+  async function subscribeToRoom(roomCode) {
+    const playersRef = collection(
+      doc(collection(db, "rooms"), roomCode),
+      "players",
+    );
+
+    // Use onSnapshot to keep game.players in sync with the playersRef
+    onSnapshot(playersRef, (snapshot) => {
+      const updatedPlayers = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      game.players = updatedPlayers;
+    });
+  }
+
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Functions
 
-  const createRoom = () => {
+  const generateUniqueID = () => {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < 12; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+
+  const createRoom = async () => {
+    game.isFailedToGetRoomData = false;
+    // Generate a room code
     function makeID(digits) {
       let text = "";
       const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
       for (let i = 0; i < digits; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
-
       return text;
     }
+    const roomCode = makeID(4);
+    const roomRef = doc(db, "rooms", roomCode);
 
-    game.roomCode = makeID(4);
+    // Check if the room already exists
+    const roomSnapshot = await getDoc(roomRef);
+    if (roomSnapshot.exists()) {
+      alert("ERROR: room already exists");
+      console.error("Room already exists");
+      return;
+    }
 
-    // Create a room with the randomly generated code.
-    // socket.emit("createRoom", {
-    //   roomCode: game.roomCode,
-    //   gameName: game.gameName,
-    // });
-
-    // Set your local variables.
-    my.isRoomHost = true;
-    game.currentlyInGame = true;
-    round.phase = "pregame";
-    let url = new URL(
-      location.protocol + "//" + location.host + location.pathname,
-    );
-    url.searchParams.set("room", game.roomCode);
-    window.history.pushState({}, "", url);
+    // Room does not exist, create the new room document
+    const newRoom = {
+      gameSlug: game.gameName,
+      roomCode: roomCode,
+      isGameStarted: game.isGameStarted,
+      allowNaughty: game.allowNaughty,
+      maxRounds: game.maxRounds,
+      createdAt: serverTimestamp(),
+      ttl: serverTimestamp(),
+    };
+    await setDoc(roomRef, newRoom);
+    game.roomCode = roomCode;
+    console.log("Room created with code:", roomCode);
+    // Update the browser URL to the new meeting page
+    const protocol = window.location.protocol; // http: or https:
+    const host = window.location.host; // e.g., localhost:5173 or example.com
+    const newUrl = `${protocol}//${host}/invalid?room=${game.roomCode}`;
+    window.history.replaceState(null, "", newUrl);
+    joinRoom();
   };
 
   const joinRoom = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomCode = urlParams.get("room");
 
-    let url = new URL(
-        location.protocol + "//" + location.host + location.pathname,
-      );
-      url.searchParams.set("room", game.roomCode);
-      window.history.pushState({}, "", url);
+    if (!roomCode) {
+      console.error("Room code is missing in the URL");
+      game.isFailedToGetRoomData = true;
+      return;
+    }
 
-    // Try to join a room with the entered code.
-    socket.emit("joinRoom", {
-      roomCode: game.roomCode,
-      gameName: game.gameName,
-    });
+    game.roomCode = roomCode.toUpperCase();
+    const roomRef = doc(db, "rooms", game.roomCode);
 
-    socket.emit("askHostForPlayersList", {
-      roomCode: game.roomCode,
-      from: my.socketID,
-    });
+    // Fetch room data
+    game.roomData = useDocument(roomRef);
 
-    game.currentlyInGame = true;
-    round.phase = "pregame";
+    // Fetch players
+    const playersCollectionRef = collection(
+      db,
+      `rooms/${game.roomCode}/players`,
+    );
+    game.players = useCollection(playersCollectionRef);
   };
 
   /////// BEFORE GAME (game hasn't started yet)
@@ -155,6 +237,67 @@
     } else {
       musicLobby.volume(0.6);
       musicFinalRound.volume(0.75);
+    }
+  };
+
+  const savePlayerInfo = async () => {
+    my.name = ui.nameInput.toUpperCase();
+    ui.appliedForJob = true;
+
+    localStorage.setItem("kindaFunPlayerName", my.name);
+
+    const playersCollection = collection(db, "rooms", game.roomCode, "players");
+    const playerQuery = query(
+      playersCollection,
+      where("playerID", "==", my.playerID),
+    );
+    const querySnapshot = await getDocs(playerQuery);
+
+    let playerFound = false;
+    let isHost = false;
+
+    // Check if there are existing players and if any of them are hosts
+    const allPlayersSnapshot = await getDocs(playersCollection);
+    if (allPlayersSnapshot.empty) {
+      isHost = true; // No other players in the room, this player will be the host
+    } else {
+      const hostExists = allPlayersSnapshot.docs.some(
+        (doc) => doc.data().isHost,
+      );
+      if (!hostExists) {
+        isHost = true; // No host exists among the existing players, this player will be the host
+      }
+    }
+
+    if (!querySnapshot.empty) {
+      // Update the existing player document
+      querySnapshot.forEach(async (docSnapshot) => {
+        const playerRef = doc(
+          db,
+          "rooms",
+          game.roomCode,
+          "players",
+          docSnapshot.id,
+        );
+        await updateDoc(playerRef, {
+          name: my.name,
+          isHost: isHost,
+        });
+        playerFound = true;
+      });
+    }
+
+    if (!playerFound) {
+      const newPlayer = {
+        name: my.name,
+        employeeNumber: my.employeeNumber,
+        playerID: my.playerID,
+        score: 0,
+        passwordAttempts: 0,
+        isHost: isHost,
+      };
+      const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
+      await setDoc(playerRef, { ...newPlayer, playerID: my.playerID });
     }
   };
 
@@ -1154,6 +1297,16 @@
     return u;
   };
 
+  const computedAmIHost = computed(() => {
+    if (!game.players || !game.players[0]) {
+      return false;
+    } else if (game.players[0].playerID === my.playerID) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
   // const uncrackedPasswords = () => {
 
   //   // Go through all of game.allEmployeePasswords
@@ -1698,16 +1851,29 @@
   // Mounted
 
   onMounted(() => {
+    let playerID = localStorage.getItem("kindaFunPlayerID");
+    let playerName = localStorage.getItem("kindaFunPlayerName");
+    if (!playerID) {
+      playerID = generateUniqueID();
+      localStorage.setItem("kindaFunPlayerID", playerID);
+    }
+    if (playerName) {
+      my.name = playerName;
+      ui.nameInput = playerName;
+    }
+    my.playerID = playerID;
+
     let urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("create")) {
       createRoom();
     } else if (urlParams.has("room")) {
-      game.roomCode = urlParams.get("room").toUpperCase();
-      socket.on("connect", () => {
-        console.log(`Connected with socketId: ${socket.id}`);
-        my.socketID = socket.id;
-        joinRoom();
-      });
+      joinRoom();
+      // game.roomCode = urlParams.get("room").toUpperCase();
+      // socket.on("connect", () => {
+      //   console.log(`Connected with socketId: ${socket.id}`);
+      //   my.socketID = socket.id;
+
+      // });
     } else if (urlParams.has("join")) {
       document.getElementById("EnterRoomCode").focus();
     }
