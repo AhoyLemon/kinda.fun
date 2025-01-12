@@ -185,12 +185,12 @@ var app = new Vue({
         buttonText: "O_o",
       },
       jerking: {
-        name: "Jerking Online",
+        name: "Jerking ",
         slug: "jerking",
-        logo: "jerkingonline.svg",
+        logo: "jerking.svg",
         slogan: "New parody porn titles every day",
         description: `<p>Using an incredibly long list of (made up) parody porn titles written over the years, this site provides the top 20 box office every day, really just as an excuse to giggle over the titles themselves.</p>`,
-        url: "https://ahoylemon.github.io/jerking.online",
+        url: "https://jerking.ahoylemon.xyz",
         tags: ["list", "new content every day"],
         buttonText: "Start gigglin",
       },
@@ -298,7 +298,7 @@ var app = new Vue({
         theList = Object.values(self.thingData);
       } else {
         theList = Object.values(self.thingData).filter((thing) =>
-          thing.tags.includes(self.currentFilter)
+          thing.tags.includes(self.currentFilter),
         );
       }
 
