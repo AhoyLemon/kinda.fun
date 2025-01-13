@@ -134,15 +134,15 @@ var app = new Vue({
         tags: ["tool", "chart"],
         buttonText: "Generate a chart",
       },
-      twounltd: {
-        name: "2UNLTD",
-        slug: "twounltd",
-        logo: "2unltd.svg",
-        slogan: "y'all ready for this?",
-        description: `<p>This little webapp really wants to know: Are you <strong>ready for this</strong>? Because if you are, it will take the appropriate measures. But it will probably need to keep checking in.</p>`,
-        url: "https://ahoylemon.github.io/2un.ltd",
+      ready: {
+        name: "Are you ready for this?",
+        slug: "ready",
+        logo: "ready.svg",
+        slogan: "formerly 2un.ltd",
+        description: `<p>This little webapp really wants to know: <strong>Are you ready for this</strong>? Because if you are, it will take the appropriate measures. But it will probably need to keep checking in.</p>`,
+        url: "https://ready.ahoylemon.xyz",
         tags: ["tool", "party", "sounds"],
-        buttonText: "Are you ready for this?",
+        buttonText: "Check your readiness",
       },
       bg2cool: {
         name: "BG2COOL",
@@ -185,7 +185,7 @@ var app = new Vue({
         buttonText: "O_o",
       },
       jerking: {
-        name: "Jerking ",
+        name: "Jerking",
         slug: "jerking",
         logo: "jerking.svg",
         slogan: "New parody porn titles every day",
