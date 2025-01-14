@@ -165,14 +165,14 @@ var app = new Vue({
         buttonText: "Take the test.",
       },
       notpoutine: {
-        name: "Not Poutine, FYI.",
+        name: "That's Not Poutine.",
         slug: "notpoutine",
         logo: "notpoutine.svg",
         slogan: "A global archive of Poutine Crimes",
         description: `<p>Poutine is a dish with 3 rules: It must contain french fries, fresh cheese curds, and brown gravy.</p><p>This is an archive of things that call themselves poutine, but are not poutine.</p>`,
-        url: "https://ahoylemon.github.io/notpoutine.fyi",
+        url: "https://notpoutine.ahoylemon.xyz",
         tags: ["list"],
-        buttonText: "Witness crime",
+        buttonText: "Witness crimes!",
       },
       frankwest: {
         name: "Frank West pronounces emoticons for you",
