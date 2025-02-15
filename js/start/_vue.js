@@ -1,4 +1,4 @@
-var app = new Vue({
+const app = new Vue({
   el: "#app",
   data: {
     currentThing: {
@@ -29,7 +29,7 @@ var app = new Vue({
         logo: "greatsextips.svg",
         slogan: "The only website that knows what your boyfriend likes.",
         description: `<p>For over a hundred years women's magazines have published counterproductive sex advice. I think the computer can do better.</p>`,
-        url: "https://ahoylemon.github.io/greatsex.tips",
+        url: "https://sextips.ahoylemon.xyz",
         tags: ["list", "lies", "tool", "robot"],
         buttonText: "Generate Tips",
       },
