@@ -186,7 +186,7 @@ const router = createRouter({
     // meeting
     {
       path: "/meeting",
-      name: "Let's Ruin This Meeting!",
+      name: "This Meeting Has Points",
       alias: ["/meet", "/slip"],
       component: () => import("../views/meeting/Meeting.vue"),
       meta: {
