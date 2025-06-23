@@ -1,0 +1,85 @@
+include ../../shared/pug/_variables.pug
+- const name = "The Wrongest Words"
+- const desc = "You're going to defend some very stupid ideas."
+
+doctype html
+html(lang="en")
+  head
+    include ../../shared/pug/_meta.pug
+
+    // Fonts & CSS
+    link(rel="preconnect" href="https://fonts.gstatic.com")
+    link(href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;600&amp;display=swap" rel="stylesheet")
+    link(href=baseUrl + "/css/wrongest.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+
+    // Favicon
+    link(rel="apple-touch-icon" sizes="180x180" href="/img/wrongest/apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href="/img/wrongest/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href="/img/wrongest/favicon-16x16.png")
+    link(rel="shortcut icon" href="/img/wrongest/favicon.ico")
+    meta(name="msapplication-TileColor" content="#ef507a")
+    meta(name="theme-color" content="#ef507a")
+
+    // OpenGraph
+    meta(property="og:title" content=name)
+    meta(property="og:type" content="website")
+    meta(property="og:image:width" content="1200")
+    meta(property="og:image:height" content="630")
+    meta(property="og:description" content=desc)
+    meta(property="og:url" content=baseUrl +"/wrongest")
+    meta(property="og:image" content=baseUrl +"/img/og-wrongest.png")
+    meta(property="og:email" content=email) 
+
+    script(type="application/ld+json").
+      {
+        "@context": "http://schema.org",
+        "@type": "VideoGame",
+        "name": "#{name}",
+        "url": "#{baseUrl}/wrongest",
+        "image": "#{baseUrl}/img/invalid/og-wide.png",
+        "playMode": "MultiPlayer",
+        "applicationCategory": "browser game",
+        "gamePlatform": "web browser",
+        "operatingSystem": "web browser",
+        "genre": "comedy",
+        "description": "#{desc}",
+        "inLanguage": "English",
+        "numberOfPlayers": {
+          "minValue": 3,
+          "maxValue": 20
+        },
+        "aggregateRating": {
+          "ratingValue": 4.33333,
+          "ratingCount": 3
+        },
+        "creator": !{creatorSchema},
+        "offers": {
+          "@type": "Offer",
+          "description": "free",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "screenshot": [
+          {
+          "@type": "ImageObject",
+          "url": "https://kinda.fun/img/wrongest/screenshots/1.png",
+          "width": 980,
+          "height": 780
+          },
+          {
+          "@type": "ImageObject",
+          "url": "https://kinda.fun/img/wrongest/screenshots/2.png",
+          "width": 980,
+          "height": 780
+          },
+          {
+          "@type": "ImageObject",
+          "url": "https://kinda.fun/img/wrongest/screenshots/3.jpg",
+          "width": 980,
+          "height": 780
+          }
+        ]
+      }
+  body
+    #app
+    script(type="module" src="/src/main.js")

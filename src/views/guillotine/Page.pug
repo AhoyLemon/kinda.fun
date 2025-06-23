@@ -1,0 +1,35 @@
+include ../../shared/pug/_variables.pug
+- const name = "Comparatively Famous"
+- const desc = "The Game of Celebrity Value"
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    
+    // Basic Meta
+    title #{name} | #{desc}
+    meta(name="description" content=desc)
+    meta(http-equiv="last-modified" content=lastUpdated)
+
+    // Fonts & CSS
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@300..700&display=swap" rel="stylesheet")
+    link(href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet")
+    link(href=baseUrl + "/css/guillotine.css?lastUpdated=" + lastUpdated rel="stylesheet")
+
+    // OpenGraph
+    meta(property="og:title" content=name)
+    meta(property="og:type" content="website")
+    meta(property="og:image:width" content="1200")
+    meta(property="og:image:height" content="630")
+    meta(property="og:description" content=desc)
+    meta(property="og:image" content=baseUrl + "/img/og-guillotine.jpg")
+    meta(property="og:url" content=baseUrl + "/guillotine")
+    link(rel="canonical" href=baseUrl + "/guillotine")
+    
+  body
+    #app
+    script(type="module" src="/src/main.js")

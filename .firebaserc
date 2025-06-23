@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "kinda-fun"
+  },
+  "targets": {
+    "kinda-fun": {
+      "hosting": {
+        "kinda-fun": [
+          "default"
+        ]
+      }
+    }
   }
 }

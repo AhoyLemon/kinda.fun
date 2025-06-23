@@ -1,0 +1,37 @@
+include ../../shared/pug/_variables.pug
+- const name = "Kinda fun."
+- const desc = "Here's some games and stuff that Lemon made. All of it is kinda fun!"
+
+
+doctype html
+html(lang="en")
+  head
+    include ../../shared/pug/_meta.pug
+
+    // Fonts & CSS
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin")
+    link(href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet")
+    link(href="css/start.css" type="text/css" rel="stylesheet")
+    
+    // Favicons
+    link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png")
+    link(rel="mask-icon" href="/safari-pinned-tab.svg" color="#e5e828")
+    meta(name="msapplication-TileColor" content="#e5e828")
+    meta(name="theme-color" content="#e5e828")
+
+    // OpenGraph
+    meta(property="og:title" content=name)
+    meta(property="og:type" content="website")
+    meta(property="og:image:width" content="600")
+    meta(property="og:image:height" content="600")
+    meta(property="og:description" content=desc)
+    meta(property="og:url" content=baseUrl)
+    meta(property="og:image" content=baseUrl + "/og-square.png")
+    meta(property="og:email" content=email)
+    meta(name="msvalidate.01" content="D3327FD7610C2D05D7D605EBCA288944")
+  body
+    #app
+    script(type="module" src="/src/main.js")

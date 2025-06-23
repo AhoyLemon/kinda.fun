@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "kinda-fun",
     "public": "dist",
     "ignore": [],
     "rewrites": [

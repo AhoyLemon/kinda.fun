@@ -6,17 +6,7 @@
   import { allValues } from "./js/_values.js";
   import { gimmickRounds } from "./js/_gimmick-rounds.js";
   import { settings } from "./js/_settings.js";
-  import {
-    randomNumber,
-    randomFrom,
-    shuffle,
-    addCommas,
-    findInArray,
-    removeFromArray,
-    percentOf,
-    sendEvent,
-    dollars,
-  } from "@/shared/js/_functions.js";
+  import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
 
   // Sounds
   import { Howl, Howler } from "howler";
@@ -35,13 +25,7 @@
   } from "./js/_sounds.js";
 
   // Firebase & VueFire Stuff
-  import {
-    doc,
-    increment,
-    serverTimestamp,
-    updateDoc,
-    runTransaction,
-  } from "firebase/firestore";
+  import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
   import { useFirestore, useCollection, useDocument } from "vuefire";
   const db = useFirestore();
   const statsRef = doc(db, `stats/cameo`);
@@ -131,6 +115,8 @@
     isSelected: false,
   });
 
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : (import.meta.env.SSR && import.meta.env.VITE_BASE_URL) || "http://localhost:5173";
+
   ///////////////////////////////////////////////
   ///////////////////////////////////////////////
   // Functions
@@ -151,10 +137,7 @@
     sendEvent("Comparatively Famous", "Game Started", "Fresh Game");
 
     if (gimmick.isSelected && gimmick.selected.name) {
-      const gimmickRef = doc(
-        db,
-        `stats/cameo/specialGames/${gimmick.selected.name}`,
-      );
+      const gimmickRef = doc(db, `stats/cameo/specialGames/${gimmick.selected.name}`);
 
       await runTransaction(db, async (transaction) => {
         const gimmickDoc = await transaction.get(gimmickRef);
@@ -172,11 +155,7 @@
         }
       });
 
-      sendEvent(
-        "Comparatively Famous",
-        "Special Game Started",
-        gimmick.selected.name,
-      );
+      sendEvent("Comparatively Famous", "Special Game Started", gimmick.selected.name);
     }
   };
 
@@ -200,11 +179,7 @@
 
       // Check if any of them are duplicates. If none of them are, do stuff
       // (otherwise, this'll just loop again.)
-      if (
-        !isThisADuplicate(roundCelebs[0]) &&
-        !isThisADuplicate(roundCelebs[1]) &&
-        !isThisADuplicate(roundCelebs[2])
-      ) {
+      if (!isThisADuplicate(roundCelebs[0]) && !isThisADuplicate(roundCelebs[1]) && !isThisADuplicate(roundCelebs[2])) {
         roundCelebs.forEach((cameo) => {
           game.cameoQueue.push(cameo);
         });
@@ -238,9 +213,7 @@
 
   const returnThreeNewCelebs = () => {
     // Find the middle celeb.
-    let possibleMiddles = allCelebs.filter(
-      (celeb) => celeb.value < 750 && celeb.value > 21,
-    );
+    let possibleMiddles = allCelebs.filter((celeb) => celeb.value < 750 && celeb.value > 21);
     let middleCeleb = randomFrom(possibleMiddles);
     let middleValue = middleCeleb.value;
 
@@ -317,9 +290,7 @@
     var intervalId = window.setInterval(function () {
       if (ui.animateCameoIndex > round.correctSide.length) {
         clearInterval(intervalId);
-        $(".list-group.correct .cameo").removeClass(
-          "animate__animated animate__backInUp",
-        );
+        $(".list-group.correct .cameo").removeClass("animate__animated animate__backInUp");
         ui.itsTimeToGuessValue = true;
       } else {
         showAnAnswerCard();
@@ -330,9 +301,7 @@
   const submitCameoValueGuess = async () => {
     const self = this;
     const n = round.guessValueIndex;
-    let offBy = Math.abs(
-      ui.valueGuess - round.correctSide[round.guessValueIndex].value,
-    );
+    let offBy = Math.abs(ui.valueGuess - round.correctSide[round.guessValueIndex].value);
 
     if (round.correctSide[n].value == ui.valueGuess) {
       my.score += 250;
@@ -381,10 +350,7 @@
         } else {
           const valuationData = valuationDoc.data();
           const newValuationCount = valuationData.valuationCount + 1;
-          const newAveragePlayerValue =
-            (valuationData.averagePlayerValue * valuationData.valuationCount +
-              ui.valueGuess) /
-            newValuationCount;
+          const newAveragePlayerValue = (valuationData.averagePlayerValue * valuationData.valuationCount + ui.valueGuess) / newValuationCount;
 
           transaction.update(valuationRef, {
             actualValue: celebValue,
@@ -477,9 +443,7 @@
       .removeClass("off-table")
       .addClass("animate__animated animate__backInUp");
     setTimeout(function () {
-      $(
-        ".list-group.unranked .cameo:nth-child(" + ui.animateCameoIndex + ")",
-      ).removeClass("animate__animated animate__bounceInUp");
+      $(".list-group.unranked .cameo:nth-child(" + ui.animateCameoIndex + ")").removeClass("animate__animated animate__bounceInUp");
     }, 1000);
   };
 
@@ -492,11 +456,7 @@
       .addClass("animate__animated animate__jackInTheBox");
 
     setTimeout(function () {
-      $(
-        ".list-group.guessed.ranked .cameo:nth-child(" +
-          ui.animateCameoIndex +
-          ")",
-      ).addClass("colorized");
+      $(".list-group.guessed.ranked .cameo:nth-child(" + ui.animateCameoIndex + ")").addClass("colorized");
       if (round.rightSide[n] && round.correctSide[n]) {
         if (round.rightSide[n].slug == round.correctSide[n].slug) {
           my.score += 100;
@@ -558,18 +518,10 @@
 
     let finalRoundCelebs;
 
-    if (
-      gimmick.isSelected &&
-      gimmick.selected.queue &&
-      gimmick.selected.reuseQueueForFinal
-    ) {
+    if (gimmick.isSelected && gimmick.selected.queue && gimmick.selected.reuseQueueForFinal) {
       // If you're playing a gimmick round (and want to), you can reuse the queue in the final.
       finalRoundCelebs = [...gimmick.selected.queue];
-    } else if (
-      gimmick.isSelected &&
-      gimmick.selected.queue &&
-      gimmick.selected.finalRoundQueue
-    ) {
+    } else if (gimmick.isSelected && gimmick.selected.queue && gimmick.selected.finalRoundQueue) {
       // Or, if you're playing a special round and you have a specific final round queue, use that.
       finalRoundCelebs = [...gimmick.selected.finalRoundQueue];
     } else {
@@ -627,11 +579,7 @@
     }, 3000);
   };
 
-  const saveGameOverData = async (
-    cameoHistory,
-    birthdayWishes,
-    isBudgetExceeded,
-  ) => {
+  const saveGameOverData = async (cameoHistory, birthdayWishes, isBudgetExceeded) => {
     try {
       // Update the main stats document
       await runTransaction(db, async (transaction) => {
@@ -675,10 +623,7 @@
 
       // Update birthdayWishes
       for (const birthdayWish of birthdayWishes) {
-        const birthdayWishRef = doc(
-          db,
-          `stats/cameo/celebs/${birthdayWish.name}`,
-        );
+        const birthdayWishRef = doc(db, `stats/cameo/celebs/${birthdayWish.name}`);
         await runTransaction(db, async (transaction) => {
           const birthdayWishDoc = await transaction.get(birthdayWishRef);
 
@@ -735,13 +680,9 @@
     }, 1000);
 
     setTimeout(function () {
-      $(
-        ".list-group.hired .cameo:nth-child(" + ui.countingHireIndex + ")",
-      ).addClass("animate__animated animate__backOutUp");
+      $(".list-group.hired .cameo:nth-child(" + ui.countingHireIndex + ")").addClass("animate__animated animate__backOutUp");
       setTimeout(function () {
-        $(
-          ".list-group.hired .cameo:nth-child(" + ui.countingHireIndex + ")",
-        ).addClass("display-none");
+        $(".list-group.hired .cameo:nth-child(" + ui.countingHireIndex + ")").addClass("display-none");
       }, 450);
     }, 2000);
   };
