@@ -9,7 +9,7 @@
     "dev:client": "vite",
     "dev:server": "concurrently --prefix none \"vite\" \"node src/server/express.js\" || (exit 0)",
     "build:pages": "node build-pages.js",
-    "build": "npm run build:pages && vite build",
+    "build": "vite build && npm run build:pages",
     "preview": "vite preview",
     "test:unit": "vitest",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",

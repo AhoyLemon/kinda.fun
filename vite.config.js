@@ -91,7 +91,8 @@ export default defineConfig(({ mode }) => {
               } else if (process.env.VITE_BASE_URL) {
                 baseUrl = process.env.VITE_BASE_URL.replace(/\/$/, "");
               } else {
-                baseUrl = "https://kinda.fun";
+                //baseUrl = "https://kinda.fun";
+                baseUrl = "https://kinda-fun.web.app";
               }
 
               // Generate JSON-LD schema.org script

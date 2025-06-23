@@ -6,7 +6,11 @@ include ../../shared/pug/_variables.pug
 doctype html
 html(lang="en")
   head
-    include ../../shared/pug/_meta.pug
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title #{name}
+    meta(name="description" content=desc)
+    meta(http-equiv="last-modified" content=lastUpdated)
 
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.googleapis.com")
@@ -29,7 +33,7 @@ html(lang="en")
     meta(property="og:image:height" content="600")
     meta(property="og:description" content=desc)
     meta(property="og:url" content=baseUrl)
-    meta(property="og:image" content=baseUrl + "/og-square.png")
+    meta(property="og:image" content=baseUrl + "/img/og-square.png")
     meta(property="og:email" content=email)
     meta(name="msvalidate.01" content="D3327FD7610C2D05D7D605EBCA288944")
   body
