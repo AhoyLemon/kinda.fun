@@ -64,8 +64,11 @@ const filteredPages = arg
 
 for (const page of filteredPages) {
   if (fs.existsSync(page.src)) {
+    // Render the Pug template to HTML with build-time variables
     let html = pug.renderFile(page.src, { lastUpdated, baseUrl });
-    // Use capitalized chunk base for asset matching
+
+    // --- DIST OUTPUT: inject built asset chunk tags, remove dev script ---
+    // 1. Determine the chunk base name for this page (e.g., 'Cameo' for 'cameo.html')
     const pageBase = page.name.replace(/\.html$/, "");
     const chunkBase = pageBase.charAt(0).toUpperCase() + pageBase.slice(1);
     const assetsDir = path.join(__dirname, "dist", "assets");
@@ -75,9 +78,9 @@ for (const page of filteredPages) {
     let mainCss = "";
     if (fs.existsSync(assetsDir)) {
       const files = fs.readdirSync(assetsDir);
-      // Find JS and CSS files matching the chunk base (case-insensitive)
-      const jsChunk = files.find((f) => new RegExp(`^${chunkBase}(-[\w\d]+)?\\.js$`, "i").test(f));
-      const cssChunk = files.find((f) => new RegExp(`^${chunkBase}(-[\w\d]+)?\\.css$`, "i").test(f));
+      // 2. Try to find a JS and CSS chunk matching this page (case-insensitive)
+      const jsChunk = files.find((f) => new RegExp(`^${chunkBase}(-[\\w\\d]+)?\\.js$`, "i").test(f));
+      const cssChunk = files.find((f) => new RegExp(`^${chunkBase}(-[\\w\\d]+)?\\.css$`, "i").test(f));
       if (jsChunk) {
         chunkTags += `<script type=\"module\" src=\"/assets/${jsChunk}\"></script>\n`;
         foundChunk = true;
@@ -86,20 +89,29 @@ for (const page of filteredPages) {
         chunkTags = `<link rel=\"stylesheet\" href=\"/assets/${cssChunk}\">\n` + chunkTags;
         foundChunk = true;
       }
-      // Always find main index js/css for fallback
+      // 3. Always find main index js/css for fallback if no page-specific chunk
       mainJs = files.find((f) => /^index(-[\w\d]+)?\.js$/i.test(f));
       mainCss = files.find((f) => /^index(-[\w\d]+)?\.css$/i.test(f));
     }
-    // Fallback to main index assets if no chunk found
+    // 4. Fallback to main index assets if no chunk found
     if (!foundChunk) {
       if (mainCss) chunkTags += `<link rel=\"stylesheet\" href=\"/assets/${mainCss}\">\n`;
       if (mainJs) chunkTags += `<script type=\"module\" src=\"/assets/${mainJs}\"></script>\n`;
     }
-    // Remove any existing <script type="module" src="/src/main.js"></script> from html
-    html = html.replace(/<script type="module" src="\/src\/main.js"><\/script>/g, "");
-    // Inject tags before </head>
-    html = html.replace(/<\/head>/i, chunkTags + "\n</head>");
-    fs.writeFileSync(page.out, html, "utf8");
+    // 5. Remove the dev script from the HTML (for production)
+    let distHtml = html.replace(/<script type="module" src="\/src\/main.js"><\/script>/g, "");
+    // 6. Inject the built asset tags before </head>
+    distHtml = distHtml.replace(/<\/head>/i, chunkTags + "\n</head>");
+    // 7. Write the transformed HTML to dist/{filename}.html
+    fs.writeFileSync(page.out, distHtml, "utf8");
+
+    // --- ROOT OUTPUT: write original HTML for local dev/file access ---
+    // 1. No asset injection, keep the dev script as-is
+    // 2. Write the unmodified HTML to {filename}.html in the project root
+    const rootOut = path.join(__dirname, page.name);
+    fs.writeFileSync(rootOut, html, "utf8");
+
+    // Log the build result
     console.log(`Built ${page.name} with lastUpdated=${lastUpdated} and baseUrl=${baseUrl}`);
   } else {
     console.warn(`Source not found: ${page.src}`);
