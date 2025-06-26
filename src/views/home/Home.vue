@@ -212,15 +212,14 @@
       name: "Hamilton -> DOOM",
       slug: "hamiltondoom",
       logo: "hamiltondoom.svg",
-      slogan:
-        "You. 👏 Can't. 👏 Make. 👏 Me. 👏 Care. 👏 About. 👏 Hamilton. 👏",
+      slogan: "You. 👏 Can't. 👏 Make. 👏 Me. 👏 Care. 👏 About. 👏 Hamilton. 👏",
       description: `<p>This extension replaces all instances of "Hamilton" with "the video game DOOM".</p>`,
       url: "https://chromewebstore.google.com/detail/hamilton-%3E-doom/hkedheclgkcdkjabeklkiifpbhlnaknd?hl=en-US&gl=US",
       tags: ["tool"],
       buttonText: "Install now",
     },
     dumbmen: {
-      name: "dumb.men",
+      name: "Dumb Men.",
       slug: "dumbmen",
       logo: "dumbmen.svg",
       slogan: "Hallelujah! It's Raining Dumb Men.",
@@ -229,16 +228,16 @@
       tags: ["celebrities"],
       buttonText: "See men",
     },
-    rickrossdaily: {
-      name: "Rick Ross Daily",
-      slug: "rickrossdaily",
-      logo: "rickrossdaily.svg",
-      slogan: "Surely he can't be hustling every day...",
-      description: `<p>A Mastodon bot to execute a very simple joke: Hey, what's Rick Ross doing today? Is it hustling?</p>`,
-      url: "https://botsin.space/@rickross",
-      tags: ["celebrities", "list"],
-      buttonText: "Hustlin?",
-    },
+    // rickrossdaily: {
+    //   name: "Rick Ross Daily",
+    //   slug: "rickrossdaily",
+    //   logo: "rickrossdaily.svg",
+    //   slogan: "Surely he can't be hustling every day...",
+    //   description: `<p>A Mastodon bot to execute a very simple joke: Hey, what's Rick Ross doing today? Is it hustling?</p>`,
+    //   url: "https://botsin.space/@rickross",
+    //   tags: ["celebrities", "list"],
+    //   buttonText: "Hustlin?",
+    // },
   };
 
   const resetGameState = () => {
@@ -295,9 +294,7 @@
       // If no currentTag is selected, return all things
       theList = Object.values(thingData);
     } else {
-      theList = Object.values(thingData).filter((thing) =>
-        thing.tags.includes(ui.currentFilter),
-      );
+      theList = Object.values(thingData).filter((thing) => thing.tags.includes(ui.currentFilter));
     }
 
     if (ui.isListRandomized) {
