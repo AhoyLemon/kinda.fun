@@ -7,6 +7,7 @@ import { VueFire } from "vuefire";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "../firebaseConfig.js";
 const firebaseApp = initializeApp(firebaseConfig);
+import { auth } from "./firebase";
 
 // Tooltip
 import VueTippy from "vue-tippy";

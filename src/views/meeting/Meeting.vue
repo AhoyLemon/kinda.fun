@@ -38,6 +38,7 @@
     onSnapshot,
   } from "firebase/firestore";
   import { useFirestore, useCollection, useDocument } from "vuefire";
+  import { getAuth, onAuthStateChanged } from "firebase/auth";
 
   // Initialize Firestore
   const db = useFirestore();
@@ -742,12 +743,8 @@
   });
 
   const amITheHost = computed(() => {
-    // You are the host if the first player in the player list shares your playerID.
-    // Structurally, this means you were the first one to enter your name.
-    if (game.players && game.players.length > 0) {
-      return game.players[0].playerID === you.playerID;
-    }
-    return false;
+    // You are the host if your playerID matches the roomCreatorID stored in the room document.
+    return game.roomCreatorID === you.playerID;
   });
 
   onMounted(() => {
@@ -764,11 +761,18 @@
     you.name = playerName;
 
     var urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("create")) {
-      createRoom();
-    } else if (urlParams.has("room")) {
-      joinRoom();
-    }
+
+    // Wait for Firebase Auth to be ready before accessing Firestore
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if (urlParams.has("create")) {
+          createRoom();
+        } else if (urlParams.has("room")) {
+          joinRoom();
+        }
+      }
+    });
   });
 </script>
 <template lang="pug" src="./Meeting.pug"></template>
