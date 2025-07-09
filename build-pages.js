@@ -54,6 +54,11 @@ const pages = [
     out: path.join(__dirname, "dist", "stats.html"),
     name: "stats.html",
   },
+  {
+    src: path.join(__dirname, "src", "views", "home", "Page.pug"),
+    out: path.join(__dirname, "dist", "home.html"),
+    name: "home.html",
+  },
 ];
 
 const arg = process.argv[2];
@@ -99,7 +104,7 @@ for (const page of filteredPages) {
       if (mainCss) chunkTags += `<link rel=\"stylesheet\" href=\"/assets/${mainCss}\">\n`;
       if (mainJs) chunkTags += `<script type=\"module\" src=\"/assets/${mainJs}\"></script>\n`;
     }
-    // Remove any existing <script type=\"module\" src=\"/src/main.js\"></script> from html
+    // Remove any existing <script type=\"module\" src=\"\/src\/main.js\"><\/script> from html
     let distHtml = html.replace(/<script type=\"module\" src=\"\/src\/main.js\"><\/script>/g, "");
     // Inject tags before </head>
     distHtml = distHtml.replace(/<\/head>/i, chunkTags + "\n</head>");

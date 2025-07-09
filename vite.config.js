@@ -59,7 +59,40 @@ export default defineConfig(({ mode }) => {
           sisyphus: resolve(__dirname, "src/entries/sisyphus.js"),
           stats: resolve(__dirname, "src/entries/stats.js"),
           wrongest: resolve(__dirname, "src/entries/wrongest.js"),
+          home: resolve(__dirname, "src/entries/home.js"),
         },
+      },
+    },
+    server: {
+      middlewareMode: false,
+      setupMiddlewares(middlewares) {
+        middlewares.use((req, res, next) => {
+          // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
+          const mpaPages = [
+            "cameo",
+            "guillotine",
+            "invalid",
+            "meeting",
+            "pretend",
+            "sisyphus",
+            "stats",
+            "wrongest",
+            "home",
+          ];
+          const url = req.url.split("?")[0];
+          // If the URL is exactly "/", rewrite to /home.html
+          if (url === "/") {
+            req.url = "/home.html";
+          } else {
+            // If the URL is exactly "/slug", rewrite to "/slug.html"
+            const match = url.match(/^\/(\w+)\/?$/);
+            if (match && mpaPages.includes(match[1])) {
+              req.url = `/${match[1]}.html`;
+            }
+          }
+          next();
+        });
+        return middlewares;
       },
     },
   };
