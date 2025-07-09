@@ -881,7 +881,7 @@ export const gimmickRounds = {
   },
 
   startrek: {
-    name: "It's a Star Trek Convention 🖖 ",
+    name: "It's a Star Trek Convention 🖖",
     desc: "I just got a phone call, Picard is unavailable.",
     queue: [
       { name: "Marina Sirtis", desc: "Troi on TNG", slug: "troi", value: 200 },

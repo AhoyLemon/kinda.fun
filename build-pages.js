@@ -2,12 +2,12 @@ import pug from "pug";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import beautify from "js-beautify";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-//const baseUrl = process.argv[3] || process.env.BASE_URL || "https://kinda.fun";
-const baseUrl = process.argv[3] || process.env.BASE_URL || "https://kinda-fun.web.app";
+const baseUrl = process.argv[3] || process.env.BASE_URL || "https://kinda.fun";
 const lastUpdated = new Date().toISOString();
 
 // Ensure dist directory exists
@@ -65,9 +65,13 @@ const filteredPages = arg
 for (const page of filteredPages) {
   if (fs.existsSync(page.src)) {
     let html = pug.renderFile(page.src, { lastUpdated, baseUrl });
-    // Use capitalized chunk base for asset matching
+    // Write pretty, unmodified HTML to the project root
+    const prettyHtml = beautify.html(html, { indent_size: 2, wrap_line_length: 120 });
+    fs.writeFileSync(path.join(__dirname, page.name), prettyHtml, "utf8");
+
+    // Now mutate/inject assets for dist output only
     const pageBase = page.name.replace(/\.html$/, "");
-    const chunkBase = pageBase.charAt(0).toUpperCase() + pageBase.slice(1);
+    const capitalizedBase = pageBase.charAt(0).toUpperCase() + pageBase.slice(1);
     const assetsDir = path.join(__dirname, "dist", "assets");
     let chunkTags = "";
     let foundChunk = false;
@@ -75,15 +79,15 @@ for (const page of filteredPages) {
     let mainCss = "";
     if (fs.existsSync(assetsDir)) {
       const files = fs.readdirSync(assetsDir);
-      // Find JS and CSS files matching the chunk base (case-insensitive)
-      const jsChunk = files.find((f) => new RegExp(`^${chunkBase}(-[\w\d]+)?\\.js$`, "i").test(f));
-      const cssChunk = files.find((f) => new RegExp(`^${chunkBase}(-[\w\d]+)?\\.css$`, "i").test(f));
-      if (jsChunk) {
-        chunkTags += `<script type=\"module\" src=\"/assets/${jsChunk}\"></script>\n`;
+      // Try capitalized first, then lowercase
+      const jsChunk = files.find((f) => new RegExp(`^(${capitalizedBase}|${pageBase})(-[\\w\\d]+)?\\.js$`, "i").test(f));
+      const cssChunk = files.find((f) => new RegExp(`^(${capitalizedBase}|${pageBase})(-[\\w\\d]+)?\\.css$`, "i").test(f));
+      if (cssChunk) {
+        chunkTags += `<link rel=\"stylesheet\" href=\"/assets/${cssChunk}\">\n`;
         foundChunk = true;
       }
-      if (cssChunk) {
-        chunkTags = `<link rel=\"stylesheet\" href=\"/assets/${cssChunk}\">\n` + chunkTags;
+      if (jsChunk) {
+        chunkTags += `<script type=\"module\" src=\"/assets/${jsChunk}\"></script>\n`;
         foundChunk = true;
       }
       // Always find main index js/css for fallback
@@ -95,11 +99,11 @@ for (const page of filteredPages) {
       if (mainCss) chunkTags += `<link rel=\"stylesheet\" href=\"/assets/${mainCss}\">\n`;
       if (mainJs) chunkTags += `<script type=\"module\" src=\"/assets/${mainJs}\"></script>\n`;
     }
-    // Remove any existing <script type="module" src="/src/main.js"></script> from html
-    html = html.replace(/<script type="module" src="\/src\/main.js"><\/script>/g, "");
+    // Remove any existing <script type=\"module\" src=\"/src/main.js\"></script> from html
+    let distHtml = html.replace(/<script type=\"module\" src=\"\/src\/main.js\"><\/script>/g, "");
     // Inject tags before </head>
-    html = html.replace(/<\/head>/i, chunkTags + "\n</head>");
-    fs.writeFileSync(page.out, html, "utf8");
+    distHtml = distHtml.replace(/<\/head>/i, chunkTags + "\n</head>");
+    fs.writeFileSync(page.out, distHtml, "utf8");
     console.log(`Built ${page.name} with lastUpdated=${lastUpdated} and baseUrl=${baseUrl}`);
   } else {
     console.warn(`Source not found: ${page.src}`);

@@ -21,7 +21,7 @@ export const allCards: Card[] = [
   {
     phrase: `That's a total game changer!`,
     points: 5,
-    alternates: ["total game-changer"],
+    alternates: ["game-changer"],
     stringMatch: "game changer",
   },
   {
@@ -40,17 +40,13 @@ export const allCards: Card[] = [
   {
     phrase: `Dunkin' Donuts`,
     points: 10,
-    alternates: ["donuts"],
+    alternates: ["donuts", "dunkin'"],
     stringMatch: "dunkin",
   },
   {
     phrase: `I like things that are kinda fun.`,
     points: 5,
-    alternates: [
-      "kinda.fun",
-      "things that are kinda.fun",
-      "i like things that are kinda.fun",
-    ],
+    alternates: ["kinda.fun", "things that are kinda.fun", "i like things that are kinda.fun"],
     stringMatch: "kinda fun",
   },
   {
@@ -61,7 +57,7 @@ export const allCards: Card[] = [
   {
     phrase: `They should have sent a poet!`,
     points: 10,
-    stringMatch: "alligator",
+    stringMatch: "sent a poet",
   },
   {
     phrase: `Who wants stickers?`,
@@ -107,6 +103,8 @@ export const allCards: Card[] = [
   {
     phrase: `the flyover states`,
     points: 10,
+    alternates: ["fly-over"],
+    stringMatch: "flyover",
   },
   /////////////
   //

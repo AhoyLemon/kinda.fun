@@ -38,7 +38,6 @@
     onSnapshot,
   } from "firebase/firestore";
   import { useFirestore, useCollection, useDocument } from "vuefire";
-  import { getAuth, onAuthStateChanged } from "firebase/auth";
 
   // Initialize Firestore
   const db = useFirestore();
@@ -61,10 +60,7 @@
   );
 
   async function subscribeToRoom(roomCode) {
-    const playersRef = collection(
-      doc(collection(db, "rooms"), roomCode),
-      "players",
-    );
+    const playersRef = collection(doc(collection(db, "rooms"), roomCode), "players");
 
     const { data: playersCollection } = useCollection(playersRef, {
       wait: true,
@@ -96,9 +92,7 @@
                 }));
 
                 newHand.forEach((newCard) => {
-                  const oldCard = player.hand.find(
-                    (card) => card.id === newCard.id,
-                  );
+                  const oldCard = player.hand.find((card) => card.id === newCard.id);
                   if (oldCard && oldCard.status !== newCard.status) {
                     if (newCard.status === "stolen") {
                       if (newCard.stolenBy !== you.name) {
@@ -125,24 +119,18 @@
                           you.currentCard = {};
                           you.isCurrentlyPlayingACard = false;
                         } else {
-                          toast(
-                            `“${newCard.stolenBy}” just stole a ${newCard.points} card from ${player.name}`,
-                            {
-                              timeout: 6000,
-                            },
-                          );
+                          toast(`“${newCard.stolenBy}” just stole a ${newCard.points} card from ${player.name}`, {
+                            timeout: 6000,
+                          });
                         }
                       }
                     } else if (newCard.status === "played") {
                       if (cardHolderPlayerID !== you.playerID) {
                         // Check if the card ID has already triggered a toast
                         if (!toastedCardIds.has(newCard.id)) {
-                          toast(
-                            `“${player.name}” just played a card for ${newCard.points} points.`,
-                            {
-                              timeout: 6000,
-                            },
-                          );
+                          toast(`“${player.name}” just played a card for ${newCard.points} points.`, {
+                            timeout: 6000,
+                          });
                           // Add the card ID to the set
                           toastedCardIds.add(newCard.id);
                         }
@@ -174,19 +162,13 @@
           if (newActivity.playerID !== you.playerID) {
             if (newActivity.activityType === "badGuess") {
               if (newActivity.isOwnCard) {
-                toast(
-                  `${newActivity.name} just lost ${Math.abs(newActivity.penalty)} points for a terrible guess.`,
-                  {
-                    timeout: 6000,
-                  },
-                );
+                toast(`${newActivity.name} just lost ${Math.abs(newActivity.penalty)} points for a terrible guess.`, {
+                  timeout: 6000,
+                });
               } else {
-                toast(
-                  `${newActivity.name} just lost ${Math.abs(newActivity.penalty)} points for a bad guess.`,
-                  {
-                    timeout: 6000,
-                  },
-                );
+                toast(`${newActivity.name} just lost ${Math.abs(newActivity.penalty)} points for a bad guess.`, {
+                  timeout: 6000,
+                });
               }
             }
             // Add additional activity types and corresponding toasts as needed
@@ -225,21 +207,13 @@
     game.roomCode = newRoomCode;
   }
 
-  import {
-    gameName,
-    timeToScore,
-    badGuessPenalty,
-    cardsPerPlayer,
-    game,
-    you,
-  } from "./js/_variables";
+  import { gameName, timeToScore, badGuessPenalty, cardsPerPlayer, game, you } from "./js/_variables";
   import { playerID } from "../invalid/js/_variables.js";
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
 
   const generateUniqueID = () => {
-    const chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let result = "";
     for (let i = 0; i < 12; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -264,10 +238,7 @@
     localStorage.setItem("kindaFunPlayerName", you.name);
 
     const playersCollection = collection(db, "rooms", game.roomCode, "players");
-    const playerQuery = query(
-      playersCollection,
-      where("playerID", "==", you.playerID),
-    );
+    const playerQuery = query(playersCollection, where("playerID", "==", you.playerID));
     const querySnapshot = await getDocs(playerQuery);
 
     let playerFound = false;
@@ -275,13 +246,7 @@
     if (!querySnapshot.empty) {
       // Update the existing player document
       querySnapshot.forEach(async (docSnapshot) => {
-        const playerRef = doc(
-          db,
-          "rooms",
-          game.roomCode,
-          "players",
-          docSnapshot.id,
-        );
+        const playerRef = doc(db, "rooms", game.roomCode, "players", docSnapshot.id);
         await updateDoc(playerRef, {
           name: newPlayer.name,
           jobTitle: newPlayer.jobTitle,
@@ -298,13 +263,7 @@
       };
 
       // Create a new player document with an empty hand collection
-      const playerRef = doc(
-        db,
-        "rooms",
-        game.roomCode,
-        "players",
-        you.playerID,
-      );
+      const playerRef = doc(db, "rooms", game.roomCode, "players", you.playerID);
       await setDoc(playerRef, { ...newPlayer, playerID: you.playerID });
     }
   };
@@ -329,10 +288,7 @@
         playerHand.push(newCard);
       }
       // Create a collection called hand for this player, and add the documents defined in playerHand.
-      const handCollectionRef = collection(
-        db,
-        `rooms/${game.roomCode}/players/${player.playerID}/hand`,
-      );
+      const handCollectionRef = collection(db, `rooms/${game.roomCode}/players/${player.playerID}/hand`);
       for (const card of playerHand) {
         const cardDocRef = doc(handCollectionRef);
         await setDoc(cardDocRef, card);
@@ -357,10 +313,7 @@
     if (interval) {
       clearInterval(interval); // Clear any existing interval
     }
-    const cardRef = doc(
-      db,
-      `rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`,
-    );
+    const cardRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`);
     updateDoc(cardRef, {
       status: "playing",
     });
@@ -400,13 +353,8 @@
       score: increment(card.points),
     });
 
-    console.log(
-      `rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`,
-    );
-    const cardRef = doc(
-      db,
-      `rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`,
-    );
+    console.log(`rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`);
+    const cardRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`);
     updateDoc(cardRef, {
       status: "played",
     });
@@ -427,12 +375,8 @@
     outerLoop: for (const player of gamePlayers.value) {
       for (const card of player.hand) {
         const isExactMatch = card.phrase.toLowerCase() === yourGuess;
-        const isAltMatch =
-          card.alternates &&
-          card.alternates.some((alt) => alt.toLowerCase() === yourGuess);
-        const isStringMatch =
-          card.stringMatch &&
-          yourGuess.includes(card.stringMatch.toLowerCase());
+        const isAltMatch = card.alternates && card.alternates.some((alt) => alt.toLowerCase() === yourGuess);
+        const isStringMatch = card.stringMatch && yourGuess.includes(card.stringMatch.toLowerCase());
 
         if (isExactMatch || isAltMatch || isStringMatch) {
           match = { ...card };
@@ -596,10 +540,7 @@
       score: increment(match.points),
     });
 
-    const cardRef = doc(
-      db,
-      `rooms/${game.roomCode}/players/${cardHolder.playerID}/hand/${match.id}`,
-    );
+    const cardRef = doc(db, `rooms/${game.roomCode}/players/${cardHolder.playerID}/hand/${match.id}`);
     updateDoc(cardRef, {
       status: "stolen",
       stolenBy: you.name,
@@ -612,8 +553,7 @@
     function makeID(digits) {
       let text = "";
       const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      for (let i = 0; i < digits; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      for (let i = 0; i < digits; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
     }
     const roomCode = makeID(4);
@@ -666,10 +606,7 @@
     game.roomData = useDocument(roomRef);
 
     // Fetch players
-    const playersCollectionRef = collection(
-      db,
-      `rooms/${game.roomCode}/players`,
-    );
+    const playersCollectionRef = collection(db, `rooms/${game.roomCode}/players`);
     game.players = useCollection(playersCollectionRef);
   };
 
@@ -725,9 +662,7 @@
 
   const computedPlayerHand = computed(() => {
     // Find the player whose playerID matches you.playerID
-    const player = gamePlayers.value.find(
-      (player) => player.id === you.playerID,
-    );
+    const player = gamePlayers.value.find((player) => player.id === you.playerID);
 
     // Return the player's hand if found, otherwise return an empty array
     return player ? player.hand || [] : [];
@@ -761,18 +696,11 @@
     you.name = playerName;
 
     var urlParams = new URLSearchParams(window.location.search);
-
-    // Wait for Firebase Auth to be ready before accessing Firestore
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        if (urlParams.has("create")) {
-          createRoom();
-        } else if (urlParams.has("room")) {
-          joinRoom();
-        }
-      }
-    });
+    if (urlParams.has("create")) {
+      createRoom();
+    } else if (urlParams.has("room")) {
+      joinRoom();
+    }
   });
 </script>
 <template lang="pug" src="./Meeting.pug"></template>

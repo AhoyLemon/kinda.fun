@@ -22,7 +22,6 @@
     "howler": "^2.2.4",
     "luxon": "^3.4.4",
     "vue": "^3.4.29",
-    "vue-router": "^4.3.3",
     "vue-tippy": "^6.4.4",
     "vue-toastification": "^2.0.0-rc.5",
     "vuedraggable": "^4.1.0",
