@@ -18,7 +18,7 @@ html(lang="en")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@300..700&display=swap" rel="stylesheet")
     link(href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet")
-    link(href=baseUrl + "/css/guillotine.css?lastUpdated=" + lastUpdated rel="stylesheet")
+    link(href="/guillotine.css?lastUpdated=" + lastUpdated rel="stylesheet")
 
     // OpenGraph
     meta(property="og:title" content=name)
@@ -32,4 +32,4 @@ html(lang="en")
     
   body
     #app
-    script(type="module" src="/src/main.js")
+    script(type="module" src="/src/entries/guillotine.js")

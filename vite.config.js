@@ -61,6 +61,11 @@ export default defineConfig(({ mode }) => {
           wrongest: resolve(__dirname, "src/entries/wrongest.js"),
           home: resolve(__dirname, "src/entries/home.js"),
         },
+        output: {
+          entryFileNames: "[name].js",
+          chunkFileNames: "[name].js",
+          assetFileNames: "[name][extname]",
+        },
       },
     },
     server: {
@@ -68,17 +73,7 @@ export default defineConfig(({ mode }) => {
       setupMiddlewares(middlewares) {
         middlewares.use((req, res, next) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
-          const mpaPages = [
-            "cameo",
-            "guillotine",
-            "invalid",
-            "meeting",
-            "pretend",
-            "sisyphus",
-            "stats",
-            "wrongest",
-            "home",
-          ];
+          const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home"];
           const url = req.url.split("?")[0];
           // If the URL is exactly "/", rewrite to /home.html
           if (url === "/") {

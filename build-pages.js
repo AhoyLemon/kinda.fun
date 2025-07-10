@@ -73,41 +73,11 @@ for (const page of filteredPages) {
     // Write pretty, unmodified HTML to the project root
     const prettyHtml = beautify.html(html, { indent_size: 2, wrap_line_length: 120 });
     fs.writeFileSync(path.join(__dirname, page.name), prettyHtml, "utf8");
-
-    // Now mutate/inject assets for dist output only
-    const pageBase = page.name.replace(/\.html$/, "");
-    const capitalizedBase = pageBase.charAt(0).toUpperCase() + pageBase.slice(1);
-    const assetsDir = path.join(__dirname, "dist", "assets");
-    let chunkTags = "";
-    let foundChunk = false;
-    let mainJs = "";
-    let mainCss = "";
-    if (fs.existsSync(assetsDir)) {
-      const files = fs.readdirSync(assetsDir);
-      // Try capitalized first, then lowercase
-      const jsChunk = files.find((f) => new RegExp(`^(${capitalizedBase}|${pageBase})(-[\\w\\d]+)?\\.js$`, "i").test(f));
-      const cssChunk = files.find((f) => new RegExp(`^(${capitalizedBase}|${pageBase})(-[\\w\\d]+)?\\.css$`, "i").test(f));
-      if (cssChunk) {
-        chunkTags += `<link rel=\"stylesheet\" href=\"/assets/${cssChunk}\">\n`;
-        foundChunk = true;
-      }
-      if (jsChunk) {
-        chunkTags += `<script type=\"module\" src=\"/assets/${jsChunk}\"></script>\n`;
-        foundChunk = true;
-      }
-      // Always find main index js/css for fallback
-      mainJs = files.find((f) => /^index(-[\w\d]+)?\.js$/i.test(f));
-      mainCss = files.find((f) => /^index(-[\w\d]+)?\.css$/i.test(f));
-    }
-    // Fallback to main index assets if no chunk found
-    if (!foundChunk) {
-      if (mainCss) chunkTags += `<link rel=\"stylesheet\" href=\"/assets/${mainCss}\">\n`;
-      if (mainJs) chunkTags += `<script type=\"module\" src=\"/assets/${mainJs}\"></script>\n`;
-    }
-    // Remove any existing <script type=\"module\" src=\"\/src\/main.js\"><\/script> from html
-    let distHtml = html.replace(/<script type=\"module\" src=\"\/src\/main.js\"><\/script>/g, "");
-    // Inject tags before </head>
-    distHtml = distHtml.replace(/<\/head>/i, chunkTags + "\n</head>");
+    // Write the same HTML to dist (with script src replaced for production)
+    let distHtml = prettyHtml.replace(
+      new RegExp(`<script type=\"module\" src=\"/src/entries/([a-zA-Z0-9_-]+)\\.js\"></script>`, "g"),
+      (match, p1) => `<script type=\"module\" src=\"/${p1}.js\"></script>`,
+    );
     fs.writeFileSync(page.out, distHtml, "utf8");
     console.log(`Built ${page.name} with lastUpdated=${lastUpdated} and baseUrl=${baseUrl}`);
   } else {

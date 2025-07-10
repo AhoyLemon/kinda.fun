@@ -10,8 +10,7 @@ html(lang="en")
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.gstatic.com")
     link(href="https://fonts.googleapis.com/css?family=Limelight|Merriweather:400,400i,900" rel="stylesheet")
-    link(href=baseUrl + "/css/pretend.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
-
+    link(href="/pretend.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
 
     // OpenGraph
     meta(property="og:title" content=name)
@@ -25,4 +24,4 @@ html(lang="en")
 
   body
     #app
-    script(type="module" src="/src/main.js")
+    script(type="module" src="/src/entries/pretend.js")

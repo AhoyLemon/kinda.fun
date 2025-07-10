@@ -10,7 +10,7 @@ html(lang="en")
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.gstatic.com")
     link(href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Noto+Sans+Mono:wght@100..900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet")
-    link(href=baseUrl + "/css/meeting.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+    link(href="/meeting.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
 
     // OpenGraph
     meta(property="og:title" content=name)
@@ -24,4 +24,4 @@ html(lang="en")
 
   body
     #app
-    script(type="module" src="/src/main.js")
+    script(type="module" src="/src/entries/meeting.js")

@@ -6,5 +6,7 @@
   .score-hud.counter.gamerscore(v-if="computedGamerScore" v-cloak)
     .label Score
     .count
-      button(@click="remindMeOfMyCheevos()") {{computedGamerScore}}
-
+      button(
+        @click="remindMeOfMyCheevos()"
+        title="Remind me of the cheevos I've earned"
+      ) {{computedGamerScore}}

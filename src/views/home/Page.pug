@@ -2,7 +2,6 @@ include ../../shared/pug/_variables.pug
 - const name = "Kinda fun."
 - const desc = "Here's some games and stuff that Lemon made. All of it is kinda fun!"
 
-
 doctype html
 html(lang="en")
   head
@@ -16,7 +15,7 @@ html(lang="en")
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin")
     link(href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet")
-    link(href="css/start.css" type="text/css" rel="stylesheet")
+    link(href="/home.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
     
     // Favicons
     link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
@@ -38,4 +37,4 @@ html(lang="en")
     meta(name="msvalidate.01" content="D3327FD7610C2D05D7D605EBCA288944")
   body
     #app
-    script(type="module" src="/src/main.js")
+    script(type="module" src="/src/entries/home.js")

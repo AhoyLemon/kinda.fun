@@ -1,13 +1,11 @@
 $focusColor: #ffc107;
-
+@import "@/shared/scss/globals/reset";
 @import "./scss/variables";
 
 @import "./scss/title-screen";
 @import "./scss/pregame";
 
-.meeting-board { display: grid; grid-template-columns: 1fr $playerListWidth; min-height: 100dvh;
-
-}
+.meeting-board { display: grid; grid-template-columns: 1fr $playerListWidth; min-height: 100dvh; }
 
 .instructions { color:white; 
   h1 { font-size:3rem; }
