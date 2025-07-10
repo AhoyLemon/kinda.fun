@@ -17,8 +17,8 @@
           input#YourJobTitle(type="text" v-model="you.jobTitleInput" placeholder="ex: Cat Herder" autocomplete="on" data-1p-ignore)
         .button-holder
           button(type="submit")
-            span(v-if="!you.name") Sign In
-            span(v-if="you.name") Change Profile
+            span(v-if="amISignedIn") Change Profile
+            span(v-else) Sign In
       
       .button-holder(v-if="amITheHost && you.name")
         template(v-if="game.players.length < 2")

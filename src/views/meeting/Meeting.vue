@@ -1,18 +1,7 @@
 <script setup>
   import { onMounted, reactive, ref, computed, watchEffect, watch } from "vue";
   import { allCards } from "./js/_allCards.ts";
-  import {
-    randomNumber,
-    randomFrom,
-    shuffle,
-    preceisePercentOf,
-    // percentOf,
-    // addCommas,
-    // findInArray,
-    // removeFromArray,
-    // sendEvent,
-    // dollars,
-  } from "@/shared/js/_functions.js";
+  import { randomNumber, randomFrom, shuffle, preceisePercentOf } from "@/shared/js/_functions.js";
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
@@ -26,13 +15,13 @@
     doc,
     increment,
     serverTimestamp,
-    Timestamp,
     addDoc,
     getDoc,
     getDocs,
     setDoc,
     updateDoc,
     collection,
+    runTransaction,
     query,
     where,
     onSnapshot,
@@ -295,7 +284,6 @@
       }
     }
 
-    // Set game.roomData.isGameStarted to true
     const roomRef = doc(db, `rooms/${game.roomCode}`);
     await updateDoc(roomRef, {
       isGameStarted: true,
@@ -304,7 +292,6 @@
       gamesStarted: increment(1),
       lastGameStarted: serverTimestamp(),
     });
-    // set game.roomData.isGameStarted to true
   };
 
   const playThisCard = (card) => {
@@ -327,6 +314,44 @@
         scoreThisCard(card);
       }
     }, 10);
+  };
+
+  const logCardScore = async (card) => {
+    const cardName = card.phrase;
+    const cardRef = doc(db, `/stats/meeting/cards/${cardName}`);
+    await runTransaction(db, async (transaction) => {
+      const cardSnapshot = await transaction.get(cardRef);
+      if (cardSnapshot.exists()) {
+        transaction.update(cardRef, {
+          timesScored: increment(1),
+          lastPlayed: serverTimestamp(),
+        });
+      } else {
+        transaction.set(cardRef, {
+          timesScored: 1,
+          lastPlayed: serverTimestamp(),
+        });
+      }
+    });
+  };
+
+  const logCardTheft = async (card) => {
+    const cardName = card.phrase;
+    const cardRef = doc(db, `/stats/meeting/cards/${cardName}`);
+    await runTransaction(db, async (transaction) => {
+      const cardSnapshot = await transaction.get(cardRef);
+      if (cardSnapshot.exists()) {
+        transaction.update(cardRef, {
+          timesStolen: increment(1),
+          lastPlayed: serverTimestamp(),
+        });
+      } else {
+        transaction.set(cardRef, {
+          timesStolen: 1,
+          lastPlayed: serverTimestamp(),
+        });
+      }
+    });
   };
 
   const scoreThisCard = (card) => {
@@ -353,11 +378,12 @@
       score: increment(card.points),
     });
 
-    console.log(`rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`);
     const cardRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`);
     updateDoc(cardRef, {
       status: "played",
     });
+
+    logCardScore(card);
   };
 
   const performGuess = () => {
@@ -534,7 +560,7 @@
       },
     );
 
-    console.log(`rooms/${game.roomCode}/players/${you.playerID}`);
+    //console.log(`rooms/${game.roomCode}/players/${you.playerID}`);
     const playerRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}`);
     updateDoc(playerRef, {
       score: increment(match.points),
@@ -545,6 +571,8 @@
       status: "stolen",
       stolenBy: you.name,
     });
+
+    logCardTheft(match);
   };
 
   const createRoom = async () => {
@@ -632,11 +660,26 @@
   };
 
   const isThisPlayerTheHost = (p) => {
-    if (game.players && game.players.length > 0) {
-      return game.players[0].playerID === p.playerID;
+    // This player is the host if their playerID matches the roomCreatorID
+    return game.roomCreatorID === p.playerID;
+  };
+
+  const amITheHost = computed(() => {
+    // You are the host if your playerID matches the roomCreatorID stored in the room document.
+    return game.roomCreatorID === you.playerID;
+  });
+
+  const amISignedIn = computed(() => {
+    const playerID = String(you.playerID);
+    const list = Array.isArray(gamePlayers.value) ? gamePlayers.value : [];
+    for (const p of list) {
+      const player = p._custom?.value || p;
+      if (String(player.playerID) === playerID || String(player.id) === playerID) {
+        return true;
+      }
     }
     return false;
-  };
+  });
 
   const prettyTimerOutput = computed(() => {
     if (!timer || timer.value < 3) {
@@ -675,11 +718,6 @@
 
     // Clone and sort the players array by score in descending order
     return [...gamePlayers.value].sort((a, b) => b.score - a.score);
-  });
-
-  const amITheHost = computed(() => {
-    // You are the host if your playerID matches the roomCreatorID stored in the room document.
-    return game.roomCreatorID === you.playerID;
   });
 
   onMounted(() => {
