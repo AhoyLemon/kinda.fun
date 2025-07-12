@@ -227,6 +227,11 @@
         formatFn: (val) => (val ? `“${val}”` : ""),
       },
       {
+        label: "Value",
+        field: "pointValue",
+        type: "number",
+      },
+      {
         label: "Played",
         field: "timesPlayed",
         type: "number",
