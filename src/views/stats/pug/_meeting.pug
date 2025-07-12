@@ -1,0 +1,81 @@
+section.pretend.stats(v-if="ui.viewing == 'meeting'")
+  figure
+    img(src="/svg/games/thismeetinghaspoints.svg")
+
+
+  .pretend-split
+  
+    .stats-boxes
+
+      .box.date(v-if="stats.meeting && stats.meeting.lastGameStarted")
+        .caption Last Game
+        .time-ago(v-text="formatTime(stats.meeting.lastGameStarted,'fromNow')")
+        .calendar(v-text="formatTime(stats.meeting.lastGameStarted,'calendar')")
+      .box.date(v-if="dates.pretend.launched")
+        .caption Game Launched
+        .time-ago(v-text="formatTime(dates.meeting.launched,'MMM D, YYYY')")
+        .calendar(v-text="formatTime(dates.meeting.launched,'fromNow')")
+      .box.big-number(v-if="stats.meeting && stats.meeting.gamesStarted")
+        .caption Games Started
+        .number(v-text="addCommas(stats.meeting.gamesStarted)")
+        .sub-number
+          strong(v-text="calculateAverage(stats.meeting.gamesStarted, dates.meeting.dayCount)")
+          |  games per day
+      .box.big-number(v-if="stats.meeting && stats.meeting.gamesFinished")
+        .caption Games Finished
+        .number(v-text="addCommas(stats.meeting.gamesFinished)")
+        .sub-number
+          strong(v-text="percentOf(stats.meeting.gamesStarted, stats.meeting.gamesFinished) + '%'")
+          |  completion rate
+      .box.big-number(v-if="stats.meeting && stats.meeting.badGuesses")
+        .caption Bad Guesses
+        .number(v-text="addCommas(stats.meeting.badGuesses)")
+        .sub-number
+          | avg 
+          strong(v-text="calculateAverage(stats.meeting.badGuesses, stats.meeting.gamesStarted)")
+          |  per game
+      //-.box.big-number(v-if="stats.meeting && stats.meeting.gamesWon")
+        .caption Games Won
+        .number(v-text="addCommas(stats.meeting.gamesWon)")
+        .sub-number
+          strong(v-text="percentOf(stats.meeting.gamesFinished,stats.meeting.gamesWon) + '%'")
+          |  success rate
+      //-.box.big-number(v-if="stats.meeting && stats.meeting.gamesLost")
+        .caption Games Lost
+        .number(v-text="addCommas(stats.meeting.gamesLost)")
+        .sub-number
+          strong(v-text="percentOf(stats.meeting.gamesFinished,stats.meeting.gamesLost) + '%'")
+          |  failure rate
+
+      //-.box.big-number(v-if="computedPretend && computedPretend.badGuessPercent")
+        .caption Bad Guesses
+        .number 
+          | {{computedPretend.badGuessPercent}}%
+          
+        .sub-number
+          strong {{computedPretend.exactGuessPercent}}%
+          |  exact / 
+          strong {{computedPretend.closeGuessPercent}}%
+          |  close
+
+      //-.box.big-name(span="2" v-if="computedPretend && computedPretend.bestImpersonator")
+        .caption Best Impersonator
+        .name {{computedPretend.bestImpersonator.name}}
+        .subtext
+          | {{computedPretend.bestImpersonator.correctPercent}}% correct guesses
+      //-.box.big-name(span="2" v-if="computedPretend && computedPretend.worstImpersonator")
+          .caption Worst Impersonator
+          .name {{computedPretend.worstImpersonator.name}}
+          .subtext
+            | {{computedPretend.worstImpersonator.correctPercent}}% correct guesses
+
+    .table
+      .good-table(v-if="ui.meetingLoaded")
+        h2 Cards
+        vue-good-table( v-if="stats.meeting.cards"
+                        :rows="stats.meeting.cards"
+                        :columns="columns.meetingCards"
+                        theme="black-rhino"
+                        :line-numbers="true"
+                        :sort-options="{ enabled: true, initialSortBy: { field: 'timesPlayed', type: 'desc'} }"
+                        :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")

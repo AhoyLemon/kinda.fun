@@ -6,38 +6,32 @@ section.famous.stats(v-if="ui.viewing == 'cameo'")
 
     .boxes
 
-      .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
+      .box.date(v-if="stats.cameo && stats.cameo.lastGameStarted")
         .caption Last Game
-        .time-ago(v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')")
-        .calendar(v-text="formatTime(stats.general.lastPlayed.cameo,'calendar')")
+        .time-ago(v-text="formatTime(stats.cameo.lastGameStarted,'fromNow')")
+        .calendar(v-text="formatTime(stats.cameo.lastGameStarted,'calendar')")
 
-      .box.big-number(v-if="stats.general.cameo && stats.general.cameo.GamesStarted > 0")
+      .box.big-number(v-if="stats.cameo && stats.cameo.gamesStarted > 0")
         .caption Games Started
-        .number(v-text="addCommas(stats.general.cameo.GamesStarted)")
+        .number(v-text="addCommas(stats.cameo.gamesStarted)")
         .sub-number
-          strong(v-text="calculateAverage(stats.general.cameo.GamesStarted, dates.cameo.dayCount)")
+          strong(v-text="calculateAverage(stats.cameo.gamesStarted, dates.cameo.dayCount)")
           |  per day
       
-      .box.big-number(v-if="stats.general.cameo && stats.general.cameo.GamesFinished > 0")
+      .box.big-number(v-if="stats.cameo && stats.cameo.gamesFinished > 0")
         .caption Games Finished
-        .number(v-text="addCommas(stats.general.cameo.GamesFinished)")
+        .number(v-text="addCommas(stats.cameo.gamesFinished)")
         .sub-number
-          strong(v-text="calculateAverage(stats.general.cameo.GamesFinished, dates.cameo.dayCount)")
+          strong(v-text="calculateAverage(stats.cameo.gamesFinished, dates.cameo.dayCount)")
           |  per day (
-          strong(v-text="percentOf(stats.general.cameo.GamesStarted,stats.general.cameo.GamesFinished) + '%'")
-          | )
-        //-.sub-number
-          strong(v-text="addCommas(stats.general.cameo.GamesFinished)")
-          |  finished
-          | (
-          strong(v-text="percentOf(stats.general.cameo.GamesStarted,stats.general.cameo.GamesFinished) + '%'")
+          strong(v-text="percentOf(stats.cameo.gamesStarted, stats.cameo.gamesFinished) + '%'")
           | )
 
       .box.big-name
         .caption Most Played Special
         .name {{computedMostPopularCameoGame.name}}
         .subtext played 
-          strong(v-text="computedMostPopularCameoGame.count")
+          strong(v-text="computedMostPopularCameoGame.startedCount")
           |  times (
           strong(v-text="computedMostPopularCameoGame.percent")
           | %)
@@ -81,12 +75,12 @@ section.famous.stats(v-if="ui.viewing == 'cameo'")
                       theme="black-rhino"
                       styleClass="vgt-table condensed"
                       :line-numbers="true"
-                      :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'startedCount', type: 'desc'} }"
                     )
 
-  .two-tables
+  .performance-table-wrapper
 
-    .good-table.celeb-table(v-if="ui.cameoLoaded")
+    .good-table.celeb-table(v-if="stats.cameo.celebs")
       h2 Celebrity Performance
       vue-good-table( v-if="stats.cameo.celebs && stats.cameo.celebs.length"
                       :rows="stats.cameo.celebs"
@@ -95,11 +89,11 @@ section.famous.stats(v-if="ui.viewing == 'cameo'")
                       styleClass="vgt-table condensed"
                       :line-numbers="true"
                       :sort-options="{ enabled: true, initialSortBy: {field: 'marketForces', type: 'desc'} }"
-                      :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"
+                      :pagination-options="{ enabled: true, perPage: 50, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"
                       :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
                     )
 
-    .good-table.player-table(v-if="ui.cameoLoaded")
+    //-.good-table.player-table(v-if="ui.cameoLoaded")
       h2 Player Performance
       vue-good-table( v-if="stats.cameo.playerScores && stats.cameo.playerScores.length"
                       :rows="stats.cameo.playerScores"

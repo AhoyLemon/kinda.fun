@@ -6,65 +6,96 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
       .summary
         figure
-          img(src="/svg/games/nomorebillionaires.svg" @click="getData('guillotine')")
-        .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.guillotine")
-          .time-caption Last Game
-          .time-ago(v-text="formatTime(stats.general.lastPlayed.guillotine,'fromNow')")
-          .calendar(v-text="formatTime(stats.general.lastPlayed.guillotine,'calendar')")
-        .button-holder
-          button(@click="getData('guillotine')") Details
-
-      .summary
-        figure
           img(src="/svg/games/comparativelyfamous.svg" @click="getData('cameo')")
-        .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
-          .time-caption Last Game
-          .time-ago(v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')")
-          .calendar(v-text="formatTime(stats.general.lastPlayed.cameo,'calendar')")
+        .last-played(v-if="stats.general && stats.general.cameoLastPlayed")
+          //.time-caption Last Game
+          .time-ago(v-text="formatTime(stats.general.cameoLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.cameoLastPlayed,'calendar')")
         .button-holder
           button(@click="getData('cameo')") Details
 
       .summary
         figure
+          img(src="/svg/games/nomorebillionaires.svg" @click="getData('guillotine')")
+        .last-played(v-if="stats.general && stats.general.guillotineLastPlayed")
+          //.time-caption Last Game
+          .time-ago(v-text="formatTime(stats.general.guillotineLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.guillotineLastPlayed,'calendar')")
+        .button-holder
+          button(@click="getData('guillotine')") Details
+
+      .summary
+        figure
+          img(src="/svg/games/thismeetinghaspoints.svg" @click="getData('meeting')")
+        .last-played(v-if="stats.general && stats.general.meetingLastPlayed")
+          //.time-caption Last Game
+          .time-ago(v-text="formatTime(stats.general.meetingLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.meetingLastPlayed,'calendar')")
+        .button-holder
+          button(@click="getData('meeting')") Details
+          
+      .summary
+        figure
+          img(src="/svg/games/pretendworld.svg" @click="getData('pretend')")
+        .last-played(v-if="stats.general && stats.general.pretendLastPlayed")
+          //.time-caption Last Game
+          .time-ago(v-text="formatTime(stats.general.pretendLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.pretendLastPlayed,'calendar')")
+        .button-holder
+          button(@click="getData('pretend')") Details
+      
+      .summary
+        figure
+          img(src="/svg/sisyphus/logo-simple.svg" @click="getData('sisyphus')")
+        .last-played(v-if="stats.general && stats.general.sisyphusLastPlayed")
+          //.time-caption Last Game
+          .time-ago(v-text="formatTime(stats.general.sisyphusLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.sisyphusLastPlayed,'calendar')")
+        .button-holder
+          button(@click="getData('sisyphus')") Details
+      
+
+      //-.summary
+        figure
           img(src="/svg/games/invalid.svg" @click="getData('invalid')")
-        .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.invalid")
+        //.last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.invalid")
           .time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.lastPlayed.invalid,'fromNow')")
           .calendar(v-text="formatTime(stats.general.lastPlayed.invalid,'calendar')")
-        .button-holder
+        //.button-holder
           button(@click="getData('invalid')") Details
 
-      .summary(v-if="stats.general && stats.general.lastPlayed && stats.general.wrongest")
+      //-.summary(v-if="stats.general && stats.general.lastPlayed && stats.general.wrongest")
         figure
           img(src="/svg/games/thewrongestwords.svg" @click="getData('wrongest')")
-        .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.wrongest")
+        //.last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.wrongest")
           .time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')")
           .calendar(v-text="formatTime(stats.general.lastPlayed.wrongest,'calendar')")
-        .button-holder
+        //.button-holder
           button(@click="getData('wrongest')") Details
 
       .summary(v-if="stats.general && stats.general.lastPlayed")
         figure
           img(src="/svg/sisyphus/logo-simple.svg" @click="getData('sisyphus')")
-        .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.sisyphus")
+        //.last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.sisyphus")
           .time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.lastPlayed.sisyphus,'fromNow')")
           .calendar(v-text="formatTime(stats.general.lastPlayed.sisyphus,'calendar')")
-        .button-holder
+        //.button-holder
           button(@click="getData('sisyphus')") Details
       
       .summary(v-if="stats.general && stats.general.lastPlayed")
         figure
           img(src="/svg/games/pretendworld.svg" @click="getData('pretend')")
-        .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.pretend")
+        //.last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.pretend")
           .time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')")
           .calendar(v-text="formatTime(stats.general.lastPlayed.pretend,'calendar')")
-        .button-holder
+        //.button-holder
           button(@click="getData('pretend')") Details
 
   .player-table 
-    .good-table.player-table(v-if="stats.general.playerNames")
+    //.good-table.player-table(v-if="stats.general.playerNames")
       vue-good-table(:rows="stats.general.playerNames" :columns="columns.playerNames" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
         :pagination-options="{ enabled: true, perPage: 20, position: 'top', perPageDropdown: [10, 20, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")

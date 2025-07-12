@@ -2,7 +2,7 @@ main.general-stats { grid-column: span 2; min-height: 99vh; display: flex; align
   .inside { width:100%; }
   .game-summaries { display:grid; gap:($gap * 2); grid-template-columns: repeat(3, 1fr ); margin-left: auto; margin-right: auto;  width:100%; padding-left: 20px; padding-right: 20px;
     .summary { text-align: center; }
-    figure { display: flex; align-items: center; justify-content: center; margin-bottom: 25px; }
+    figure { display: flex; align-items: center; justify-content: center; margin-bottom: 25px;  }
     img { cursor: pointer; opacity: 0.8; max-width: 100%; max-height: 120px;
       &:hover, &:focus { opacity: 1; }
     }
@@ -15,7 +15,6 @@ main.general-stats { grid-column: span 2; min-height: 99vh; display: flex; align
     }
   }
   display:grid; grid-template-columns: 1fr 340px; gap:$gap;
-
 
   .player-table { max-height: 99.999vh; overflow-y: auto;}
   .good-table {
@@ -33,9 +32,9 @@ main.general-stats { grid-column: span 2; min-height: 99vh; display: flex; align
 
 aside.general-stats { padding:100px $padding; font-family: $serif;
   img { max-width: 100%; }
-  // .inside { position: sticky; top:20px; }
-  .summary { margin-bottom: 4rem;
-    figure { cursor: pointer; opacity: 0.5; margin-bottom: 1rem;
+  .inside { display: flex; flex-direction: column; gap:3rem; position: sticky; top:5px; }
+  .summary {
+    figure { cursor: pointer; opacity: 0.5; margin:0;
       &:hover { opacity: 1; }
     }
     &.active figure { cursor: default; opacity: 1; }

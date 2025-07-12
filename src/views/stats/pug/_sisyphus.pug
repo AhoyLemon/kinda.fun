@@ -4,47 +4,47 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
 
   .stats-boxes
 
-    .box.big-number(v-if="stats.sisyphus && stats.sisyphus.counts && stats.sisyphus.counts['First Click']" span="2")
+    .box.big-number(v-if="stats.sisyphus" span="2")
       .caption Cursed Persons
-      .number(v-text="addCommas(stats.sisyphus.counts['First Click'])")
+      .number(v-text="addCommas(stats.sisyphus.firstClick)")
       .subtext damned souls have logged their first click.
   
-    .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
+    .box.date(v-if="stats.sisyphus && stats.sisyphus.lastGameStarted")
       .caption Last Damnation
-      .time-ago(v-text="formatTime(stats.general.lastPlayed.cameo,'fromNow')")
-      .calendar(v-text="formatTime(stats.general.lastPlayed.cameo,'calendar')")
+      .time-ago(v-text="formatTime(stats.sisyphus.lastGameStarted,'fromNow')")
+      .calendar(v-text="formatTime(stats.sisyphus.lastGameStarted,'calendar')")
 
-    .box.big-number(v-if="stats.sisyphus && stats.sisyphus.counts && stats.sisyphus.counts['First Click']")
+    .box.big-number(v-if="stats.sisyphus && stats.sisyphus.rollbackCount")
       .caption The Rock Has Rolled Downhill
-      .number(v-text="addCommas(stats.sisyphus.counts['Rock Rolled Downhill'])")
+      .number(v-text="addCommas(stats.sisyphus.rollbackCount)")
       .subtext times
 
-    .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevos")
+    .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevos && computedSisyphusCheevos.totalCheevos")
       .caption Cheevos Earned
-      .number(v-text="addCommas(computedSisyphusCheevos.count)")
+      .number(v-text="addCommas(computedSisyphusCheevos.totalCheevos)")
       .sub-number
-        strong(v-text="calculateAverage(computedSisyphusCheevos.count, dates.sisyphus.dayCount)")
+        strong(v-text="calculateAverage(computedSisyphusCheevos.totalCheevos, dates.sisyphus.dayCount)")
         |  per day
 
-    .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevos")
+    .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevos && computedSisyphusCheevos.totalPoints")
       .caption Points Earned
-      .number(v-text="addCommas(computedSisyphusCheevos.points)")
+      .number(v-text="addCommas(computedSisyphusCheevos.totalPoints)")
       .sub-number
-          strong(v-text="calculateAverage(computedSisyphusCheevos.points, dates.sisyphus.dayCount)")
+          strong(v-text="calculateAverage(computedSisyphusCheevos.totalPoints, dates.sisyphus.dayCount)")
           |  per day
 
-    .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchases")
+    .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchases && computedSisyphusPurchases.totalNumber")
       .caption Purchases Made
-      .number(v-text="addCommas(computedSisyphusPurchases.count)")
+      .number(v-text="addCommas(computedSisyphusPurchases.totalNumber)")
       .sub-number
-          strong(v-text="calculateAverage(computedSisyphusPurchases.count, dates.sisyphus.dayCount)")
+          strong(v-text="calculateAverage(computedSisyphusPurchases.totalNumber, dates.sisyphus.dayCount)")
           |  per day
     
-    .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchases")
+    .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchases && computedSisyphusPurchases.totalCost")
       .caption Pushes Spent
-      .number(v-text="addCommas(computedSisyphusPurchases.spent)")
+      .number(v-text="addCommas(computedSisyphusPurchases.totalCost)")
       .sub-number
-          strong(v-text="calculateAverage(computedSisyphusPurchases.spent, dates.sisyphus.dayCount)")
+          strong(v-text="calculateAverage(computedSisyphusPurchases.totalCost, dates.sisyphus.dayCount)")
           |  per day
 
   .two-tables
@@ -56,7 +56,7 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
                       :columns="columns.sisyphusCheevos"
                       theme="black-rhino"
                       :line-numbers="true"
-                      :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'earnedCount', type: 'desc'} }"
                       :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
 
     .good-table.player-table(v-if="ui.sisyphusLoaded")
@@ -66,5 +66,5 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
                       :columns="columns.sisyphusPurchases"
                       theme="black-rhino"
                       :line-numbers="true"
-                      :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'timesBought', type: 'desc'} }"
                       :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")

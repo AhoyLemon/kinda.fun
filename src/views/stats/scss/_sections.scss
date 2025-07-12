@@ -54,8 +54,8 @@ section.loading { padding:($gap * 2) $gap $gap 0; min-height: 99vh; display: fle
 }
 
 section.famous { padding:($gap * 2) $gap $gap 0;
-  .two-tables { 
-    display: grid; grid-template-columns: 3fr 2fr; gap:20px;
+  .performance-table-wrapper { 
+    display: grid; grid-template-columns: 3fr 1fr; gap:20px;
   }
 }
 section.sisyphus { padding:($gap * 2) $gap $gap 0;
@@ -65,6 +65,11 @@ section.sisyphus { padding:($gap * 2) $gap $gap 0;
   }
 }
 section.guillotine { padding:20px;
+  .table-and-stats { display: grid; grid-template-columns: 3fr 2fr; gap:40px;
+    .good-table { padding-top: 0; }
+    .stats-boxes-wrapper { order: 2; }
+    .stats-boxes { grid-template-columns: repeat(2,1fr);}
+  }
   .two-tables { 
     display: grid; grid-template-columns: 3fr 2fr; gap:40px;
   }
@@ -82,7 +87,8 @@ section.pretend {
   .pretend-split { display:grid; grid-template-columns:1fr 1fr; gap:40px;
     // .stats-boxes { display:flex; align-items:flex-start; flex-direction: column; justify-content: flex-start; align-items: stretch; padding-top:100px; }
     .table { order:1; }
-    .stats-boxes { display:gap; grid-template-columns: repeat(2,1fr); gap:40px; padding-top: 100px; align-content: start; order:2; padding-right: 40px; }
+    .good-table { padding-top:0; }
+    .stats-boxes { grid-template-columns: repeat(2,1fr); gap:40px; align-content: start; order:2; padding-right: 40px; }
     
   }
 }

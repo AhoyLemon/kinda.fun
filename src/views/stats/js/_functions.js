@@ -2,15 +2,13 @@ import { timeZoneOffset } from "./_variables";
 import moment from "moment";
 export const formatDate = (d) => {
   if (d) {
-    return moment(d)
-      .subtract(timeZoneOffset, "minutes")
-      .format("MMM Do @ h:ss a");
+    return moment(d).subtract(timeZoneOffset, "minutes").format("MMM Do @ h:ss a");
   } else {
     return moment(d).subtract(timeZoneOffset, "minutes");
   }
 };
 
-export const billionsOfDollars = (amount) => {
+export const billionsOfDollars = (amount, isTruncationRequested) => {
   const dollars = Number(amount * 1000000000);
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -18,7 +16,13 @@ export const billionsOfDollars = (amount) => {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });
-  if (amount) {
+  if (amount && isTruncationRequested) {
+    if (amount > 1000) {
+      return formatter.format(amount / 1000) + " trillion";
+    } else {
+      return formatter.format(amount) + " billion";
+    }
+  } else if (amount) {
     return formatter.format(dollars);
   } else {
     return "-";
