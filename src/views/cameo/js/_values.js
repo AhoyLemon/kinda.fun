@@ -189,12 +189,6 @@ export const allValues = [
     value: 350,
   },
   {
-    name: "Jackie Mason",
-    desc: "Rabbi Hyman Krustofski on The Simpsons",
-    slug: "jackiemason",
-    value: 350,
-  },
-  {
     name: "Insane Clown Posse",
     desc: "Unaware of how magnets work",
     slug: "icp",
@@ -224,7 +218,6 @@ export const allValues = [
     slug: "dolphlundgren",
     value: 350,
   },
-  // { name: "Bob Saget", desc: "Danny on Full House", slug: "bobsagetofficial", value:350 }, // dead
   {
     name: "Engelbert Humperdinck",
     desc: "Singer, “Spanish Eyes”",
@@ -330,6 +323,12 @@ export const allValues = [
     value: 275,
   },
   { name: "deadmau5", desc: "Canadian DJ", slug: "deadmau5", value: 269 },
+  {
+    name: "A.J. & Big Justice",
+    desc: "They say “we're Costco guys” on TikTok",
+    slug: "ajandbigjustice",
+    value: 250,
+  },
   {
     name: "George Papadopoulos",
     desc: "Served Twelve Days In Prison Before Getting Pardoned",
@@ -464,15 +463,15 @@ export const allValues = [
     value: 200,
   },
   {
-    name: "Punxsutawney Phil",
-    desc: "World Famous Groundhog",
-    slug: "punxsyphil",
+    name: "Martin Kove",
+    desc: "The bad guy in Karate Kid",
+    slug: "martinkove",
     value: 199,
   },
   {
-    name: "Coolio",
-    desc: "Cowrote Gangsta's Paradise",
-    slug: "therealcoolio",
+    name: "Punxsutawney Phil",
+    desc: "World Famous Groundhog",
+    slug: "punxsyphil",
     value: 199,
   },
   {
@@ -486,12 +485,6 @@ export const allValues = [
     desc: "The Guy on High Maintenance",
     slug: "bathroomremodel",
     value: 175,
-  },
-  {
-    name: "Meat Loaf",
-    desc: "Contestant, The Celebrity Apprentice",
-    slug: "meatloaf",
-    value: 170,
   },
   {
     name: "Redman",
@@ -533,12 +526,6 @@ export const allValues = [
     name: "Jon Lovitz",
     desc: "“Yeah, That's The Ticket”, SNL",
     slug: "jonlovitz",
-    value: 150,
-  },
-  {
-    name: "Gilbert Gottfried",
-    desc: "Iago in Aladdin",
-    slug: "gilbertgottfried",
     value: 150,
   },
   {
@@ -590,7 +577,6 @@ export const allValues = [
     value: 139,
   },
   { name: "Penn Jillette", desc: "Penn & Teller", slug: "pennj", value: 135 },
-  //{ name: "Jerry Springer", desc:"Former Mayor of Cincinnati", slug:"jerryspringer", value:135 }, // dead
   {
     name: "Ernie Hudson",
     desc: "Winston in Ghostbusters",
@@ -710,12 +696,7 @@ export const allValues = [
     value: 100,
   },
   { name: "SISQÓ", desc: "wants to see your thong", slug: "sisqo", value: 100 },
-  {
-    name: "George Lowe",
-    desc: "Space Ghost",
-    slug: "georgeloweofficial",
-    value: 100,
-  },
+
   {
     name: "Nigel Farage",
     desc: "Caused Brexit, Pretty Much",
@@ -1285,5 +1266,50 @@ export const allValues = [
     desc: "Also known as #greenshirtguy",
     slug: "alex_kack",
     value: 10,
+  },
+];
+
+export const deadCelebrities = [
+  {
+    name: "George Lowe",
+    desc: "Space Ghost",
+    slug: "georgeloweofficial",
+    value: 100,
+  },
+  {
+    name: "Bob Saget",
+    desc: "Danny on Full House",
+    slug: "bobsagetofficial",
+    value: 350,
+  },
+  {
+    name: "Coolio",
+    desc: "Cowrote Gangsta's Paradise",
+    slug: "therealcoolio",
+    value: 199,
+  },
+  {
+    name: "Jerry Springer",
+    desc: "Former Mayor of Cincinnati",
+    slug: "jerryspringer",
+    value: 135,
+  },
+  {
+    name: "Jackie Mason",
+    desc: "Rabbi Hyman Krustofski on The Simpsons",
+    slug: "jackiemason",
+    value: 350,
+  },
+  {
+    name: "Gilbert Gottfried",
+    desc: "Iago in Aladdin",
+    slug: "gilbertgottfried",
+    value: 150,
+  },
+  {
+    name: "Meat Loaf",
+    desc: "Contestant, The Celebrity Apprentice",
+    slug: "meatloaf",
+    value: 170,
   },
 ];

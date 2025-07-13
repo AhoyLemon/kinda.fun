@@ -49,7 +49,6 @@
     "pug-cli": "^1.0.0-alpha6",
     "sass": "^1.77.6",
     "socket.io-client": "^4.7.5",
-    "unplugin-vue-router": "^0.10.1",
     "vite": "^5.3.1",
     "vite-plugin-sitemap": "^0.6.2",
     "vite-plugin-socket-io": "^1.0.2",
