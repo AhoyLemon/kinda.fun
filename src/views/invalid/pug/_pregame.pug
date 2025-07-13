@@ -13,7 +13,16 @@
       figcaption
         button(@click="stopWatchingVideo()") Okay, close this video.
 
-  .game-started(v-if="game.isGameStarted")
+  .error-box(v-if="1 == 1")
+    .inside 
+      .content
+        h2 Invalid multiplayer is currently broken. 
+        p I'm working on it, but there's things that need fixing. So multiplayer doesn't work right in this game for right now. 
+        p But there's a bunch of 
+          a(href="https://kinda.fun") different games
+          |  that you can play instead.
+
+  .game-started(v-else-if="game.isGameStarted")
     .inside
       .content
         h2 The game has already started.
