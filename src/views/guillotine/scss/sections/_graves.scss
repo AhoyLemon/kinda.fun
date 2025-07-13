@@ -1,9 +1,28 @@
-section.graves { display:grid; grid-template-rows: 2fr 1fr; height:100vh;
-  .above-ground { background-color:#6D8432; background-image: url(../img/guillotine/dirt-with-gradient.jpg); background-position: center bottom; background-size: cover; }
-  .below-ground { background-color:$dirt; max-height: 80vh; }
-  .grid-holder { height:100%; overflow-y: scroll; overflow-x: hidden; padding:$gap ($gap * 1.5); 
-    .billionaire-grid { 
-      ul { display:grid; grid-template-columns: 1fr; gap:$gap; }
+section.graves {
+  display: grid;
+  grid-template-rows: 2fr 1fr;
+  height: 100vh;
+  .above-ground {
+    background-color: #6d8432;
+    background-image: url("/img/guillotine/dirt-with-gradient.jpg");
+    background-position: center bottom;
+    background-size: cover;
+  }
+  .below-ground {
+    background-color: $dirt;
+    max-height: 80vh;
+  }
+  .grid-holder {
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: $gap ($gap * 1.5);
+    .billionaire-grid {
+      ul {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: $gap;
+      }
     }
   }
 }
