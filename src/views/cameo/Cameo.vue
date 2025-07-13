@@ -6,17 +6,7 @@
   import { allValues } from "./js/_values.js";
   import { gimmickRounds } from "./js/_gimmick-rounds.js";
   import { settings } from "./js/_settings.js";
-  import {
-    randomNumber,
-    randomFrom,
-    shuffle,
-    addCommas,
-    findInArray,
-    removeFromArray,
-    percentOf,
-    sendEvent,
-    dollars,
-  } from "@/shared/js/_functions.js";
+  import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
 
   // Sounds
   import { Howl, Howler } from "howler";
@@ -34,9 +24,11 @@
     birthdayHowls,
   } from "./js/_sounds.js";
 
-  // socket.io
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  // Firebase & VueFire Stuff
+  import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
+  import { useFirestore, useCollection, useDocument } from "vuefire";
+  const db = useFirestore();
+  const statsRef = doc(db, `stats/cameo`);
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
@@ -123,10 +115,13 @@
     isSelected: false,
   });
 
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : (import.meta.env.SSR && import.meta.env.VITE_BASE_URL) || "http://localhost:5173";
+
   ///////////////////////////////////////////////
   ///////////////////////////////////////////////
   // Functions
-  const startSinglePlayerGame = () => {
+
+  const startSinglePlayerGame = async () => {
     game.mode = "singleplayer";
 
     generateGameCelebrities();
@@ -134,20 +129,33 @@
     game.started = true;
     startNextRound();
 
-    socket.emit("cameoStartGame", {
-      gameName: gameName,
+    await updateDoc(statsRef, {
+      gamesStarted: increment(1),
+      lastGameStarted: serverTimestamp(),
     });
+
     sendEvent("Comparatively Famous", "Game Started", "Fresh Game");
+
     if (gimmick.isSelected && gimmick.selected.name) {
-      sendEvent(
-        "Comparatively Famous",
-        "Special Game Started",
-        gimmick.selected.name,
-      );
-      socket.emit("cameoSpecialGame", {
-        gameName: gameName,
-        gimmickName: gimmick.selected.name,
+      const gimmickRef = doc(db, `stats/cameo/specialGames/${gimmick.selected.name}`);
+
+      await runTransaction(db, async (transaction) => {
+        const gimmickDoc = await transaction.get(gimmickRef);
+
+        if (!gimmickDoc.exists()) {
+          transaction.set(gimmickRef, {
+            startedCount: 1,
+            lastStarted: serverTimestamp(),
+          });
+        } else {
+          transaction.update(gimmickRef, {
+            startedCount: increment(1),
+            lastStarted: serverTimestamp(),
+          });
+        }
       });
+
+      sendEvent("Comparatively Famous", "Special Game Started", gimmick.selected.name);
     }
   };
 
@@ -171,11 +179,7 @@
 
       // Check if any of them are duplicates. If none of them are, do stuff
       // (otherwise, this'll just loop again.)
-      if (
-        !isThisADuplicate(roundCelebs[0]) &&
-        !isThisADuplicate(roundCelebs[1]) &&
-        !isThisADuplicate(roundCelebs[2])
-      ) {
+      if (!isThisADuplicate(roundCelebs[0]) && !isThisADuplicate(roundCelebs[1]) && !isThisADuplicate(roundCelebs[2])) {
         roundCelebs.forEach((cameo) => {
           game.cameoQueue.push(cameo);
         });
@@ -209,9 +213,7 @@
 
   const returnThreeNewCelebs = () => {
     // Find the middle celeb.
-    let possibleMiddles = allCelebs.filter(
-      (celeb) => celeb.value < 750 && celeb.value > 21,
-    );
+    let possibleMiddles = allCelebs.filter((celeb) => celeb.value < 750 && celeb.value > 21);
     let middleCeleb = randomFrom(possibleMiddles);
     let middleValue = middleCeleb.value;
 
@@ -288,9 +290,7 @@
     var intervalId = window.setInterval(function () {
       if (ui.animateCameoIndex > round.correctSide.length) {
         clearInterval(intervalId);
-        $(".list-group.correct .cameo").removeClass(
-          "animate__animated animate__backInUp",
-        );
+        $(".list-group.correct .cameo").removeClass("animate__animated animate__backInUp");
         ui.itsTimeToGuessValue = true;
       } else {
         showAnAnswerCard();
@@ -298,12 +298,10 @@
     }, 1500);
   };
 
-  const submitCameoValueGuess = () => {
+  const submitCameoValueGuess = async () => {
     const self = this;
     const n = round.guessValueIndex;
-    let offBy = Math.abs(
-      ui.valueGuess - round.correctSide[round.guessValueIndex].value,
-    );
+    let offBy = Math.abs(ui.valueGuess - round.correctSide[round.guessValueIndex].value);
 
     if (round.correctSide[n].value == ui.valueGuess) {
       my.score += 250;
@@ -332,11 +330,39 @@
       soundBadValue.play();
     }
 
-    socket.emit("cameoValuationMade", {
-      gameName: gameName,
-      celeb: round.correctSide[round.guessValueIndex],
-      valueGuessed: ui.valueGuess,
-    });
+    const celebToLog = round.correctSide[round.guessValueIndex];
+    const celebName = celebToLog.name;
+    const celebValue = celebToLog.value;
+    const valuationRef = doc(db, `stats/cameo/celebs/${celebName}`);
+
+    try {
+      await runTransaction(db, async (transaction) => {
+        const valuationDoc = await transaction.get(valuationRef);
+
+        if (!valuationDoc.exists()) {
+          transaction.set(valuationRef, {
+            name: celebName,
+            actualValue: celebValue,
+            valuationCount: 1,
+            averagePlayerValue: ui.valueGuess,
+            lastValuation: serverTimestamp(),
+          });
+        } else {
+          const valuationData = valuationDoc.data();
+          const newValuationCount = valuationData.valuationCount + 1;
+          const newAveragePlayerValue = (valuationData.averagePlayerValue * valuationData.valuationCount + ui.valueGuess) / newValuationCount;
+
+          transaction.update(valuationRef, {
+            actualValue: celebValue,
+            valuationCount: newValuationCount,
+            averagePlayerValue: newAveragePlayerValue,
+            lastValuation: serverTimestamp(),
+          });
+        }
+      });
+    } catch (e) {
+      console.error("Transaction failed: ", e);
+    }
 
     round.valueGuessed = true;
     ui.itsTimeToGuessValue = false;
@@ -417,9 +443,7 @@
       .removeClass("off-table")
       .addClass("animate__animated animate__backInUp");
     setTimeout(function () {
-      $(
-        ".list-group.unranked .cameo:nth-child(" + ui.animateCameoIndex + ")",
-      ).removeClass("animate__animated animate__bounceInUp");
+      $(".list-group.unranked .cameo:nth-child(" + ui.animateCameoIndex + ")").removeClass("animate__animated animate__bounceInUp");
     }, 1000);
   };
 
@@ -432,11 +456,7 @@
       .addClass("animate__animated animate__jackInTheBox");
 
     setTimeout(function () {
-      $(
-        ".list-group.guessed.ranked .cameo:nth-child(" +
-          ui.animateCameoIndex +
-          ")",
-      ).addClass("colorized");
+      $(".list-group.guessed.ranked .cameo:nth-child(" + ui.animateCameoIndex + ")").addClass("colorized");
       if (round.rightSide[n] && round.correctSide[n]) {
         if (round.rightSide[n].slug == round.correctSide[n].slug) {
           my.score += 100;
@@ -498,18 +518,10 @@
 
     let finalRoundCelebs;
 
-    if (
-      gimmick.isSelected &&
-      gimmick.selected.queue &&
-      gimmick.selected.reuseQueueForFinal
-    ) {
+    if (gimmick.isSelected && gimmick.selected.queue && gimmick.selected.reuseQueueForFinal) {
       // If you're playing a gimmick round (and want to), you can reuse the queue in the final.
       finalRoundCelebs = [...gimmick.selected.queue];
-    } else if (
-      gimmick.isSelected &&
-      gimmick.selected.queue &&
-      gimmick.selected.finalRoundQueue
-    ) {
+    } else if (gimmick.isSelected && gimmick.selected.queue && gimmick.selected.finalRoundQueue) {
       // Or, if you're playing a special round and you have a specific final round queue, use that.
       finalRoundCelebs = [...gimmick.selected.finalRoundQueue];
     } else {
@@ -552,15 +564,7 @@
           exceededBudget = "NO";
         }
 
-        socket.emit("cameoFinishGame", {
-          gameName: gameName,
-          cameoHistory: game.cameoHistory,
-          playerScore: my.score,
-          correctSorts: my.correctSorts,
-          averageValuationOffset: computedValuationSkill.number,
-          birthdayWishes: round.rightSide,
-          exceededBudget: exceededBudget,
-        });
+        saveGameOverData(game.cameoHistory, round.rightSide, exceededBudget);
 
         sendEvent("Comparatively Famous", "Game Finished", my.score);
 
@@ -573,6 +577,71 @@
         showHirePrice();
       }
     }, 3000);
+  };
+
+  const saveGameOverData = async (cameoHistory, birthdayWishes, isBudgetExceeded) => {
+    try {
+      // Update the main stats document
+      await runTransaction(db, async (transaction) => {
+        const statsDoc = await transaction.get(statsRef);
+
+        if (!statsDoc.exists()) {
+          throw new Error("Stats document does not exist!");
+        }
+
+        const updates = {
+          gamesFinished: increment(1),
+          lastGameFinished: serverTimestamp(),
+        };
+
+        if (isBudgetExceeded === "YES") {
+          updates.timesBudgetExceeded = increment(1);
+        }
+
+        transaction.update(statsRef, updates);
+      });
+
+      // Update cameoHistory
+      for (const cameo of cameoHistory) {
+        const cameoRef = doc(db, `stats/cameo/celebs/${cameo.name}`);
+        await runTransaction(db, async (transaction) => {
+          const cameoDoc = await transaction.get(cameoRef);
+
+          if (!cameoDoc.exists()) {
+            transaction.set(cameoRef, {
+              name: cameo.name,
+              sortScore: cameo.correct ? 1 : -1,
+            });
+          } else {
+            const currentSortScore = cameoDoc.data().sortScore || 0;
+            transaction.update(cameoRef, {
+              sortScore: cameo.correct ? increment(1) : increment(-1),
+            });
+          }
+        });
+      }
+
+      // Update birthdayWishes
+      for (const birthdayWish of birthdayWishes) {
+        const birthdayWishRef = doc(db, `stats/cameo/celebs/${birthdayWish.name}`);
+        await runTransaction(db, async (transaction) => {
+          const birthdayWishDoc = await transaction.get(birthdayWishRef);
+
+          if (!birthdayWishDoc.exists()) {
+            transaction.set(birthdayWishRef, {
+              name: birthdayWish.name,
+              birthdayWishCount: 1,
+            });
+          } else {
+            transaction.update(birthdayWishRef, {
+              birthdayWishCount: increment(1),
+            });
+          }
+        });
+      }
+    } catch (e) {
+      console.error("Transaction failed: ", e);
+    }
   };
 
   const showHirePrice = () => {
@@ -611,13 +680,9 @@
     }, 1000);
 
     setTimeout(function () {
-      $(
-        ".list-group.hired .cameo:nth-child(" + ui.countingHireIndex + ")",
-      ).addClass("animate__animated animate__backOutUp");
+      $(".list-group.hired .cameo:nth-child(" + ui.countingHireIndex + ")").addClass("animate__animated animate__backOutUp");
       setTimeout(function () {
-        $(
-          ".list-group.hired .cameo:nth-child(" + ui.countingHireIndex + ")",
-        ).addClass("display-none");
+        $(".list-group.hired .cameo:nth-child(" + ui.countingHireIndex + ")").addClass("display-none");
       }, 450);
     }, 2000);
   };

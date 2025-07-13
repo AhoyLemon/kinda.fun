@@ -1,6 +1,45 @@
 $notifyRadius: 3rem;
 $notifyIconSize: 60px;
 
+.Vue-Toastification__toast {
+  
+  &.cheevo-toast {
+    background-color: $yellow;
+    color:$black;
+  }
+
+  .cheevo-toast-text {
+    display: grid;
+    grid-template-columns: 1fr 40px;
+    max-width: 330px;
+  }
+  .title { 
+    font-family: $font;
+    display: flex;
+    align-items: center;
+  }
+  .points-holder { text-align: center; }
+  .points { 
+    background:$black;
+    color:$yellow;
+    display:inline-flex;
+    width:2.25rem; height:2.25rem; border-radius: 50%;
+    padding-bottom: .1em;
+    align-items: center;
+    justify-content: center;
+    font-weight: 750;
+    font-family: $headline;
+    font-size:1.5em;
+    &.negative-points {
+      background-color: $red;
+    }
+  }
+  .message { font-style: italic; grid-column: span 2; }
+  .Vue-Toastification__close-button {
+    color:$black;
+  }
+}
+
 // .ui-pnotify { 
 //   .brighttheme.ui-pnotify-container { padding-left:100px; background:#414042;  border-radius: $notifyRadius; border:2px solid rgba(#121212,0.5); min-height: 5.7rem !important;
 //     &:before { content: " "; width:$notifyIconSize; height:$notifyIconSize; @include position(absolute,1rem,null,null,1rem); background-image:url(../svg/sisyphus/trophy.svg);background-size:contain; background-repeat: no-repeat; background-position: center; }

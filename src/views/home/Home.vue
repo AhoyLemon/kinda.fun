@@ -1,5 +1,6 @@
 <script setup>
   import { ref, reactive, onMounted, computed } from "vue";
+  const baseURL = `${window.location.protocol}//${window.location.host}`;
   const currentThing = reactive({
     slug: "",
     name: "",
@@ -24,8 +25,18 @@
       logo: "comparativelyfamous.svg",
       slogan: "The game of relative celebrity value",
       description: `<p>This game will give you a list of celebrities, and then ask you to sort them by their listed value on <strong>Cameo</strong>.</p>`,
-      url: "https://kinda.fun/cameo",
+      url: `${baseURL}/cameo`,
       tags: ["game", "single player", "celebrities", "trivia"],
+    },
+    meeting: {
+      name: "This Meeting Has Points",
+      slug: "meeting",
+      logo: "thismeetinghaspoints.svg",
+      slogan: "So now you have a reason to actually pay attention.",
+      description: `<p>This is a multiplayer game meant to be played while having a meeting about something else. <strong>Gather 2 to 6 people</strong> to slip their cards into conversation, while you try to catch them doing that very thing.</p>`,
+      url: `${baseURL}/meeting`,
+      tags: ["game", "multiplayer", "guess"],
+      buttonText: "Let's huddle up and discuss.",
     },
     greatsextips: {
       name: "Great Sex Tips!",
@@ -43,7 +54,7 @@
       logo: "nomorebillionaires.svg",
       slogan: "Generating wealth with a guillotine",
       description: `<p>This is a single player game about funding public schools by executing the world's richest people. A new list of billionaires is generated every day!</p>`,
-      url: "https://kinda.fun/guillotine",
+      url: `${baseURL}/guillotine`,
       tags: ["game", "single player", "new content every day"],
       buttonText: "Genearate wealth.",
     },
@@ -53,7 +64,7 @@
       logo: "sisyphusclicker.svg",
       slogan: "Life can be depressing. This game especially so.",
       description: `<p>This is a clicker-style game where you take on the role of sisyphus and push the rock uphill. <strong>You will never succeed.</strong> But at least you can earn achievements?</p>`,
-      url: "https://kinda.fun/sisyphus",
+      url: `${baseURL}/sisyphus`,
       buttonText: "Suffer.",
       tags: ["game", "single player", "clicker"],
     },
@@ -73,27 +84,27 @@
       logo: "pretendworld.svg",
       slogan: "The game of bad impersonations and good cheese logs",
       description: `<p>You find yourself at a cocktail party populated entirely with celebrity impersonators, and you see the perfect cheese log. To get to it, you must guess who is impersonating whom.</p>`,
-      url: "https://kinda.fun/pretend",
+      url: `${baseURL}/pretend`,
       tags: ["game", "single player", "celebrities", "guess"],
     },
-    invalid: {
-      name: "Invalid",
-      slug: "invalid",
-      logo: "invalid.svg",
-      slogan: "A trivia game of unnecessary suffering.",
-      description: `<p>This is a multiplayer competitive triva game <strong>(best with 4-8 players)</strong> where all players are working at the same company, and all they want to do is create a password. The SysAdmin's job is to make their life difficult.</p>`,
-      url: "https://kinda.fun/invalid",
-      buttonText: "",
-      isMultiplayer: true,
-      tags: ["game", "multiplayer", "trivia", "guess"],
-    },
+    // invalid: {
+    //   name: "Invalid",
+    //   slug: "invalid",
+    //   logo: "invalid.svg",
+    //   slogan: "A trivia game of unnecessary suffering.",
+    //   description: `<p>This is a multiplayer competitive triva game <strong>(best with 4-8 players)</strong> where all players are working at the same company, and all they want to do is create a password. The SysAdmin's job is to make their life difficult.</p>`,
+    //   url: `${baseURL}/invalid`,
+    //   buttonText: "",
+    //   isMultiplayer: true,
+    //   tags: ["game", "multiplayer", "trivia", "guess"],
+    // },
     wrongest: {
       name: "The Wrongest Words",
       slug: "wrongest",
       logo: "thewrongestwords.svg",
       slogan: "The game where you defend some very stupid ideas.",
       description: `<p>Gather together a group of <strong>5 - 10 players</strong> and get ready to talk nonsense. You'll get a card with an untrue statement on it, and it's your job to convince you're friends your statement is the least wrong.</p>`,
-      url: "https://kinda.fun/wrongest",
+      url: `${baseURL}/wrongest`,
       isMultiplayer: true,
       tags: ["game", "multiplayer", "lies", "party"],
     },
@@ -138,14 +149,14 @@
       buttonText: "Generate a chart",
     },
     twounltd: {
-      name: "2UNLTD",
+      name: "formerly known as 2un.ltd",
       slug: "twounltd",
       logo: "2unltd.svg",
-      slogan: "y'all ready for this?",
+      slogan: "Are you ready for this?",
       description: `<p>This little webapp really wants to know: Are you <strong>ready for this</strong>? Because if you are, it will take the appropriate measures. But it will probably need to keep checking in.</p>`,
-      url: "https://ahoylemon.github.io/2un.ltd",
+      url: "https://ready.ahoylemon.xyz",
       tags: ["tool", "party", "sounds"],
-      buttonText: "Are you ready for this?",
+      buttonText: "I hope you're ready.",
     },
     bg2cool: {
       name: "BG2COOL",
@@ -173,7 +184,7 @@
       logo: "notpoutine.svg",
       slogan: "A global archive of Poutine Crimes",
       description: `<p>Poutine is a dish with 3 rules: It must contain french fries, fresh cheese curds, and brown gravy.</p><p>This is an archive of things that call themselves poutine, but are not poutine.</p>`,
-      url: "https://ahoylemon.github.io/notpoutine.fyi",
+      url: "https://notpoutine.ahoylemon.xyz",
       tags: ["list"],
       buttonText: "Witness crime",
     },
@@ -183,7 +194,7 @@
       logo: "frankwest.svg",
       slogan: "For me? Thanks Frank!",
       description: `<p>ᕕ( ᐛ )ᕗ</p>`,
-      url: "https://ahoylemon.github.io/frankwest",
+      url: "https://8u.ahoylemon.xyz",
       tags: ["list", "sounds"],
       buttonText: "O_o",
     },
@@ -193,7 +204,7 @@
       logo: "jerkingonline.svg",
       slogan: "New parody porn titles every day",
       description: `<p>Using an incredibly long list of (made up) parody porn titles written over the years, this site provides the top 20 box office every day, really just as an excuse to giggle over the titles themselves.</p>`,
-      url: "https://ahoylemon.github.io/jerking.online",
+      url: "https://jerking.ahoylemon.xyz",
       tags: ["list", "new content every day"],
       buttonText: "Start gigglin",
     },
@@ -201,15 +212,14 @@
       name: "Hamilton -> DOOM",
       slug: "hamiltondoom",
       logo: "hamiltondoom.svg",
-      slogan:
-        "You. 👏 Can't. 👏 Make. 👏 Me. 👏 Care. 👏 About. 👏 Hamilton. 👏",
+      slogan: "You. 👏 Can't. 👏 Make. 👏 Me. 👏 Care. 👏 About. 👏 Hamilton. 👏",
       description: `<p>This extension replaces all instances of "Hamilton" with "the video game DOOM".</p>`,
       url: "https://chromewebstore.google.com/detail/hamilton-%3E-doom/hkedheclgkcdkjabeklkiifpbhlnaknd?hl=en-US&gl=US",
       tags: ["tool"],
       buttonText: "Install now",
     },
     dumbmen: {
-      name: "dumb.men",
+      name: "Dumb Men.",
       slug: "dumbmen",
       logo: "dumbmen.svg",
       slogan: "Hallelujah! It's Raining Dumb Men.",
@@ -218,16 +228,16 @@
       tags: ["celebrities"],
       buttonText: "See men",
     },
-    rickrossdaily: {
-      name: "Rick Ross Daily",
-      slug: "rickrossdaily",
-      logo: "rickrossdaily.svg",
-      slogan: "Surely he can't be hustling every day...",
-      description: `<p>A Mastodon bot to execute a very simple joke: Hey, what's Rick Ross doing today? Is it hustling?</p>`,
-      url: "https://botsin.space/@rickross",
-      tags: ["celebrities", "list"],
-      buttonText: "Hustlin?",
-    },
+    // rickrossdaily: {
+    //   name: "Rick Ross Daily",
+    //   slug: "rickrossdaily",
+    //   logo: "rickrossdaily.svg",
+    //   slogan: "Surely he can't be hustling every day...",
+    //   description: `<p>A Mastodon bot to execute a very simple joke: Hey, what's Rick Ross doing today? Is it hustling?</p>`,
+    //   url: "https://botsin.space/@rickross",
+    //   tags: ["celebrities", "list"],
+    //   buttonText: "Hustlin?",
+    // },
   };
 
   const resetGameState = () => {
@@ -284,9 +294,7 @@
       // If no currentTag is selected, return all things
       theList = Object.values(thingData);
     } else {
-      theList = Object.values(thingData).filter((thing) =>
-        thing.tags.includes(ui.currentFilter),
-      );
+      theList = Object.values(thingData).filter((thing) => thing.tags.includes(ui.currentFilter));
     }
 
     if (ui.isListRandomized) {

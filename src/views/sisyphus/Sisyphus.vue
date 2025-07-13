@@ -1,34 +1,19 @@
 <script setup>
   import { reactive, computed, onMounted } from "vue";
   import { begin, sDefaults, rDefaults } from "./js/_variables";
-  import {
-    sendEvent,
-    randomFrom,
-    randomNumber,
-    findKeyInArray,
-    removeFromArrayByKey,
-  } from "@/shared/js/_functions.js";
-  import {
-    keepPushingMessages,
-    rockFellMessages,
-    retreatMessages,
-  } from "./js/_messages";
+  import { sendEvent, randomFrom, randomNumber, findKeyInArray, removeFromArrayByKey, percentOf, addCommas } from "@/shared/js/_functions.js";
+  import { keepPushingMessages, rockFellMessages, retreatMessages } from "./js/_messages";
   import { storeItems } from "./js/_store";
 
-  // socket.io
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  // Firebase & VueFire Stuff
+  import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
+  import { useFirestore, useCollection, useDocument } from "vuefire";
+  const db = useFirestore();
+  const statsRef = doc(db, `stats/sisyphus`);
 
   // Sounds
   import { Howl, Howler } from "howler";
-  import {
-    uphillMusic,
-    downhillMusic,
-    cheevoSound,
-    purchaseSound,
-    dignityGot,
-    dignityLost,
-  } from "./js/_sounds";
+  import { uphillMusic, downhillMusic, cheevoSound, purchaseSound, dignityGot, dignityLost } from "./js/_sounds";
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
@@ -87,11 +72,7 @@
     if (ui.boughtDignity) {
       ui.boughtDignity = false;
       ui.inventory = [];
-      getCheevo(
-        "Dignity Retaken!",
-        "I was thinking that would make you stop clicking, but apparently not. Have five points I guess.",
-        5,
-      );
+      getCheevo("Dignity Retaken!", "I was thinking that would make you stop clicking, but apparently not. Have five points I guess.", 5);
       dignityLost.play();
       ui.store.push({
         id: 7,
@@ -112,9 +93,7 @@
     // Actions taken on specific clicks
     switch (ui.totalClicks) {
       case 1:
-        socket.emit("sisyphusFirstClick", {
-          gameName: ui.gameName,
-        });
+        logFirstClick();
         break;
       case 212:
         const byLemonJingle = new Audio("audio/bylemon.mp3");
@@ -143,18 +122,10 @@
         );
         break;
       case 1400:
-        getCheevo(
-          "-100 Points",
-          "I think you have too many points. You've just lost a hundred of them.",
-          -100,
-        );
+        getCheevo("-100 Points", "I think you have too many points. You've just lost a hundred of them.", -100);
         break;
       case 1000:
-        getCheevo(
-          "4 Digits of Clicks",
-          "You've now clicked on Sisyphus 1,000 times. That might be too many times.",
-          25,
-        );
+        getCheevo("4 Digits of Clicks", "You've now clicked on Sisyphus 1,000 times. That might be too many times.", 25);
         break;
 
       case 10000:
@@ -217,33 +188,18 @@
         }, 2000);
 
         sendEvent("Rollback", ui.r.rollbacks + " time(s)");
-
-        socket.emit("sisyphusRollback", {
-          gameName: ui.gameName,
-        });
+        logRollback();
 
         // Rollback Cheevos
         switch (ui.r.rollbacks) {
           case 3:
-            getCheevo(
-              "The Anti-Turkey",
-              "Three gutterballs! Clearly you should keep bowling.",
-              10,
-            );
+            getCheevo("The Anti-Turkey", "Three gutterballs! Clearly you should keep bowling.", 10);
             break;
           case 7:
-            getCheevo(
-              "Still Failing!",
-              "It's rolled back 7 times now, but don't let that stop you.",
-              15,
-            );
+            getCheevo("Still Failing!", "It's rolled back 7 times now, but don't let that stop you.", 15);
             break;
           case 13:
-            getCheevo(
-              "13 Rollbacks",
-              "Hey, I know the rock has rolled back down the hill 13 times. Next time tho....",
-              15,
-            );
+            getCheevo("13 Rollbacks", "Hey, I know the rock has rolled back down the hill 13 times. Next time tho....", 15);
             break;
           case 25:
             getCheevo("25 Rollbacks", "You're enjoying this, aren't you?", 10);
@@ -255,11 +211,7 @@
       // 🏆 Pushing rock cheevos
       switch (ui.totalScore) {
         case 100:
-          getCheevo(
-            "Making Progress",
-            "You have pushed the rock uphill 100 times. Congratulations!",
-            6,
-          );
+          getCheevo("Making Progress", "You have pushed the rock uphill 100 times. Congratulations!", 6);
           break;
         case 300:
           getCheevo(
@@ -269,11 +221,7 @@
           );
           break;
         case 414:
-          getCheevo(
-            "Keep Pushing That Rock!",
-            "To help motivate you, I'm subtracting 40 points from your score.",
-            40,
-          );
+          getCheevo("Keep Pushing That Rock!", "To help motivate you, I'm subtracting 40 points from your score.", 40);
       }
     } else if (ui.s.retreating == true) {
       //////////////////////////////////////////////////////////////
@@ -364,33 +312,65 @@
     // give cheevos based on cheevos!
     if (ui.cheevos == 2) {
       setTimeout(function () {
-        getCheevo(
-          "And Here Is A Third!",
-          "You've had two achivements, so here is a third achievement for getting those.",
-          12,
-        );
+        getCheevo("And Here Is A Third!", "You've had two achivements, so here is a third achievement for getting those.", 12);
       }, 1500);
     } else if (ui.cheevos == 7) {
       setTimeout(function () {
-        getCheevo(
-          "You Cannot Have 7",
-          "7 is considered a lucky number, so now you have 8 achievements.",
-          3,
-        );
+        getCheevo("You Cannot Have 7", "7 is considered a lucky number, so now you have 8 achievements.", 3);
       }, 1500);
     }
 
     // Log this Cheevo in the database.
-    socket.emit("sisyphusEarnedCheevo", {
-      gameName: ui.gameName,
-      title: title,
-      text: text,
-      points: points,
+    logCheevo({ name: title, points: points });
+  };
+
+  const remindMeOfMyCheevos = () => {
+    ui.cheevos.forEach((cheevo, i) => {
+      setTimeout(() => {
+        toast(
+          {
+            component: MyToast,
+            props: {
+              title: cheevo.title,
+              points: cheevo.points,
+              message: cheevo.text,
+              customClass: "cheevo-toast-text",
+            },
+          },
+          {
+            position: POSITION.BOTTOM_LEFT,
+            toastClassName: "cheevo-toast",
+            icon: "trophy",
+            timeout: 4000,
+          },
+        );
+      }, i * 720); // 400ms delay between each toast
     });
   };
 
   const toggleSidebar = () => {
     ui.isSidebarVisible = !ui.isSidebarVisible;
+    if (ui.isSidebarVisible) {
+      // award cheevo if you don't have it already.
+      const alreadyEarned = ui.cheevos.some((c) => c.title === "Drawer Opener");
+      if (!alreadyEarned) {
+        getCheevo("Drawer Opener", "What does that question mark mean? Well now you know!", 8);
+      }
+      ui.drawerOpenedCount++;
+      if (ui.drawerOpenedCount == 5) {
+        getCheevo("Habitual Drawer Opener", "How many times are you gonna click on that question mark?", 10);
+      } else if (ui.drawerOpenedCount == 9) {
+        getCheevo("Obsessive Drawer Opener", "Okay! You definitely know what happens when you click that question mark.", 13);
+      } else if (ui.drawerOpenedCount == 12) {
+        getCheevo("Problematic Drawer Opener", "Stop clicking that question mark.", 1);
+      } else if (ui.drawerOpenedCount == 15) {
+        getCheevo("Bad Listening Drawer Opener", "God damn it, stop it.", -15);
+      } else if (ui.drawerOpenedCount == 18) {
+        getCheevo("Massochistic Drawer Opener", "Okay fine, I'll take more points away from you", -10);
+      } else if (ui.drawerOpenedCount == 23) {
+        getCheevo("Ceaseless Drawer Opener", "Were you expecting more achievements? Because this isn't one.", 0);
+      }
+    }
   };
 
   const toggleDrawer = (d) => {
@@ -398,6 +378,21 @@
       ui.visibleDrawer = null;
     } else {
       ui.visibleDrawer = d;
+    }
+  };
+
+  const openOutsideLink = (linkTitle, linkUrl) => {
+    alert(linkTitle);
+    setTimeout(() => {
+      window.open(linkUrl, "_blank");
+    }, 220);
+    if (linkTitle == "Lemon") {
+      const alreadyEarned = ui.cheevos.some((c) => c.title === "Lemon Clicker");
+      if (!alreadyEarned) {
+        setTimeout(() => {
+          getCheevo("Lemon Clicker", "Welcome back! How did you enjoy Lemon's website?", 18);
+        }, 9600);
+      }
     }
   };
 
@@ -418,13 +413,7 @@
       purchaseSound.play();
 
       sendEvent("item purchase", item.name, item.price);
-      socket.emit("sisyphusBoughtItem", {
-        gameName: ui.gameName,
-        id: item.id,
-        name: item.name,
-        desc: item.desc,
-        price: item.price,
-      });
+      logPurchase(item);
 
       if (ui.inventory.length == 1) {
         getCheevo("Shopping In Hades!", "First item purchased.", 10);
@@ -436,18 +425,10 @@
           getCheevo("Worth It!", "That was some very expensive peach tea.", 2);
           break;
         case 19:
-          getCheevo(
-            "Self Bondage",
-            "I wonder if this game gets easier if you're in chains?",
-            9,
-          );
+          getCheevo("Self Bondage", "I wonder if this game gets easier if you're in chains?", 9);
           break;
         case 20:
-          getCheevo(
-            "How Refreshing!",
-            "Mmmmm, that's some effervescent water!",
-            4,
-          );
+          getCheevo("How Refreshing!", "Mmmmm, that's some effervescent water!", 4);
           break;
 
         case 7:
@@ -626,8 +607,66 @@
     item.showDesc = !item.showDesc;
   };
 
+  ////////////////////////////////
+  // Firebase functions
+  const logFirstClick = async () => {
+    await updateDoc(statsRef, {
+      firstClick: increment(1),
+      lastGameStarted: serverTimestamp(),
+    });
+  };
+
+  const logRollback = async () => {
+    await updateDoc(statsRef, {
+      rollbackCount: increment(1),
+    });
+  };
+
+  const logCheevo = async (cheevo) => {
+    const cheevoName = cheevo.name;
+    const cheevoRef = doc(db, `stats/sisyphus/cheevos/${cheevoName}`);
+    await runTransaction(db, async (transaction) => {
+      const cheevoDoc = await transaction.get(cheevoRef);
+      const now = new Date().toISOString();
+      if (!cheevoDoc.exists()) {
+        transaction.set(cheevoRef, {
+          name: cheevoName,
+          pointValue: cheevo.points,
+          earnedCount: 1,
+          lastEarned: serverTimestamp(),
+        });
+      } else {
+        transaction.update(cheevoRef, {
+          earnedCount: increment(1),
+          lastEarned: serverTimestamp(),
+        });
+      }
+    });
+  };
+
+  const logPurchase = async (purchase) => {
+    const purchaseName = purchase.name;
+    const purchaseRef = doc(db, `stats/sisyphus/purchases/${purchaseName}`);
+    await runTransaction(db, async (transaction) => {
+      const purchaseDoc = await transaction.get(purchaseRef);
+      if (!purchaseDoc.exists()) {
+        transaction.set(purchaseRef, {
+          name: purchaseName,
+          price: purchase.price,
+          timesBought: 1,
+          lastPurchased: serverTimestamp(),
+        });
+      } else {
+        transaction.update(purchaseRef, {
+          timesBought: increment(1),
+          lastPurchased: serverTimestamp(),
+        });
+      }
+    });
+  };
+
   ///////////////////////////////
-  // Functions
+  // Computeds
   const rockLeft = computed(() => {
     return `calc(${ui.s.width}% + ${ui.r.left}%)`;
   });
@@ -667,9 +706,7 @@
   });
 
   onMounted(() => {
-    socket.emit("sisyphusMounted", {
-      gameName: ui.gameName,
-    });
+    // nothing!
   });
 </script>
 <template lang="pug" src="./Sisyphus.pug"></template>

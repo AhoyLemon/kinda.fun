@@ -1,0 +1,12 @@
+// Title Screen
+main.title-screen
+  .inside 
+    img.logo(src="/svg/games/thismeetinghaspoints.svg" alt="This Meeting Has Points")
+    .create-or-join
+      button.create(type="button" @click="createRoom()") Create A Room
+      span.or or
+      form(@submit.prevent="joinRoomByInput()")
+        fieldset
+          label(for="RoomCodeInput") Enter Room Code
+          input.room-code-input#RoomCodeInput(type="text" v-model="you.roomCodeInput" autocapitalize="true" autocomplete="off" required minlength="4" maxlength="4")
+        button.submit(type="submit" v-if="you.roomCodeInput && you.roomCodeInput?.length > 3") JOIN

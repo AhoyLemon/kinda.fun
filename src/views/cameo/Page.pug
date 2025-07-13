@@ -1,0 +1,96 @@
+include ../../shared/pug/_variables.pug
+- const name = "Comparatively Famous"
+- const desc = "The Game of Celebrity Value"
+
+doctype html
+html(lang="en")
+  head
+    include ../../shared/pug/_meta.pug
+
+    // Fonts & CSS
+    link(rel="preconnect" href="https://fonts.gstatic.com")
+    link(href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet")
+    link(href="/cameo.css?lastUpdated=" + lastUpdated rel="stylesheet")
+
+    // Favicon
+    link(rel="apple-touch-icon" sizes="180x180" href=baseUrl+"/img/famous/apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href=baseUrl+"/img/famous/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href=baseUrl+"/img/famous/favicon-16x16.png")
+    link(rel="shortcut icon" href=baseUrl+"/img/famous/favicon.ico")
+    link(rel="mask-icon" href=baseUrl+"/img/famous/safari-pinned-tab.svg" color="#1cb3ef")
+    meta(name="msapplication-TileColor" content="#3b1666")
+    meta(name="theme-color" content="#3b1666")
+
+    // OpenGraph
+    meta(property="og:title" content=name)
+    meta(property="og:type" content="website")
+    meta(property="og:image:width" content="1200")
+    meta(property="og:image:height" content="630")
+    meta(property="og:description" content=desc)
+    meta(property="og:url" content=baseUrl +"/cameo")
+    meta(property="og:image" content=baseUrl +"/img/og-famous.png")
+    meta(property="og:email" content=email) 
+
+    // Schema
+    script(type="application/ld+json").
+      {
+        "@context": "http://schema.org",
+        "@type": "VideoGame",
+        "name": "#{name}",
+        "url": "#{baseUrl}/cameo",
+        "image": "#{baseUrl}/img/og-famous.png",
+        "playMode": "SinglePlayer",
+        "applicationCategory": "browser game",
+        "gamePlatform": "web browser",
+        "operatingSystem": "web browser",
+        "genre": "comedy",
+        "description": "#{desc}",
+        "inLanguage": "English",
+        "numberOfPlayers": 1,
+        "aggregateRating": {
+          "ratingValue": 5,
+          "ratingCount": 12
+        },
+        "creator": !{creatorSchema},
+        "offers": {
+          "@type": "Offer",
+          "description": "free",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "screenshot": [
+          {
+            "@type": "ImageObject",
+            "url": "#{baseUrl}/img/famous/screenshots/title-screen.jpg",
+            "width": 1270,
+            "height": 760
+          },
+          {
+            "@type": "ImageObject",
+            "url": "#{baseUrl}/img/famous/screenshots/sort-three.jpg",
+            "width": 1270,
+            "height": 760
+          },
+          {
+            "@type": "ImageObject",
+            "url": "#{baseUrl}/img/famous/screenshots/sort-midway.jpg",
+            "width": 1270,
+            "height": 760
+          },
+          {
+            "@type": "ImageObject",
+            "url": "#{baseUrl}/img/famous/screenshots/valuate.jpg",
+            "width": 1270,
+            "height": 760
+          },
+          {
+            "@type": "ImageObject",
+            "url": "https://kinda.fun/img/famous/screenshots/final-round.jpg",
+            "width": 1270,
+            "height": 760 
+          }
+        ]
+      }
+  body
+    #app
+    script(type="module" src="/src/entries/cameo.js")

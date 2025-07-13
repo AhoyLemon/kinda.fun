@@ -881,7 +881,7 @@ export const gimmickRounds = {
   },
 
   startrek: {
-    name: "It's a Star Trek Convention 🖖 ",
+    name: "It's a Star Trek Convention 🖖",
     desc: "I just got a phone call, Picard is unavailable.",
     queue: [
       { name: "Marina Sirtis", desc: "Troi on TNG", slug: "troi", value: 200 },
@@ -1011,7 +1011,7 @@ export const gimmickRounds = {
   },
 
   standups: {
-    name: "Comedy Central Presents: The Stand Up Rounds ",
+    name: "Comedy Central Presents: The Stand Up Rounds",
     desc: "*Legal Disclaimer: This round actually has nothing to do with Comedy Central or its subsidiaries",
     queue: [
       { name: "Andrew Dice Clay", desc: null, slug: "diceman", value: 349 },

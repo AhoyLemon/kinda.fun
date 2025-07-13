@@ -1,0 +1,30 @@
+include ../../shared/pug/_variables.pug
+- const name = "Kinda Fun Stats"
+- const desc = "Let's see what people are playing."
+
+doctype html
+html(lang="en")
+  head
+
+    // Fonts & CSS
+    link(rel="preconnect" href="https://fonts.gstatic.com")
+    link(href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&display=swap" rel="stylesheet")
+    link(href="/stats.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+
+    // Favicons
+    link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png")
+    link(rel="mask-icon" href="/safari-pinned-tab.svg" color="#e5e828")
+    meta(name="msapplication-TileColor" content="#e5e828")
+    meta(name="theme-color" content="#e5e828")
+
+    // OpenGraph
+    meta(property="og:title" content=name)
+    meta(property="og:type" content="website")
+    meta(property="og:description" content=desc)
+    meta(property="og:url" content=baseUrl +"/stats")
+    meta(property="og:email" content=email) 
+  body 
+    #app
+    script(type="module" src="/src/entries/stats.js")

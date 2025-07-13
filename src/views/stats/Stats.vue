@@ -2,18 +2,17 @@
   import { reactive, computed, onMounted, onBeforeMount } from "vue";
   // import { DateTime } from "luxon";
   import { timeZoneOffset, jsonURL } from "./js/_variables";
-  import {
-    formatDate,
-    dollars,
-    billionsOfDollars,
-    exceededBudgetOutput,
-    formatStatement,
-  } from "./js/_functions";
+  import { formatDate, dollars, billionsOfDollars, exceededBudgetOutput, formatStatement } from "./js/_functions";
   import { addCommas, percentOf } from "@/shared/js/_functions";
   import axios from "axios";
   import moment from "moment";
   import "vue-good-table-next/dist/vue-good-table-next.css";
   import { VueGoodTable } from "vue-good-table-next";
+  import { getDatabase, ref, get } from "firebase/database";
+  import { initializeApp } from "firebase/app";
+  import { firebaseConfig } from "../../../firebaseConfig";
+  import { useFirestore } from "vuefire";
+  import { collection, getDocs } from "firebase/firestore";
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
@@ -45,6 +44,10 @@
       launched: "2023-08-23",
       dayCount: 0,
     },
+    meeting: {
+      launched: "2025-07-09",
+      dayCount: 0,
+    },
   });
 
   const stats = reactive({
@@ -55,31 +58,43 @@
     wrongest: {},
     sisyphus: {},
     pretend: {},
+    meeting: {},
   });
 
   const columns = reactive({
-    playerNames: [
+    // NO MORE BILLIONAIRES table columns
+    guillotineHeads: [
       {
-        label: "Player Name",
-        field: "iname",
-        tdClass: "player-name-cell",
+        label: "Name",
+        field: "name",
+        tdClass: "font-bold",
       },
       {
-        label: "Played",
-        field: "icount",
+        label: "Worth",
+        field: "netWorth",
         type: "number",
+        formatFn: billionsOfDollars,
       },
       {
-        label: "Last Played",
-        field: "lastPlayed",
-        tdClass: "last-played-cell",
-        //width: "100px"
+        label: "x",
+        field: "headCount",
+        type: "number",
+        formatFn: addCommas,
+      },
+      {
+        label: "Last Removed",
+        field: "lastRemoved",
+        // type: "date",
+        formatFn: formatDate,
       },
     ],
+
+    // COMPARATIVELY FAMOUS table columns
     celebs: [
       {
         label: "Name",
-        field: "cameoName",
+        field: "name",
+        tdClass: "font-bold",
       },
       {
         label: "Actual Value",
@@ -89,7 +104,7 @@
       },
       {
         label: "Avg Value",
-        field: "averageValuation",
+        field: "averagePlayerValue",
         type: "decimal",
         formatFn: dollars,
       },
@@ -106,50 +121,134 @@
       },
       {
         label: "Birthdays",
-        field: "birthdayWishes",
+        field: "birthdayWishCount",
         type: "number",
-      },
-    ],
-    cameoPlayers: [
-      {
-        label: "Score",
-        field: "playerScore",
-        type: "number",
-      },
-      {
-        label: "Sorts",
-        field: "correctSorts",
-        type: "number",
-      },
-      {
-        label: "Value Offset",
-        field: "averageValuationOffset",
-        type: "number",
-        formatFn: dollars,
-      },
-      {
-        label: "Blew Budget",
-        field: "exceededBudget",
-        formatFn: exceededBudgetOutput,
-      },
-      {
-        label: "Finished",
-        field: "finishTime",
-        // type: "date",
-        formatFn: formatDate,
       },
     ],
     cameoSpecialGames: [
       {
         label: "Game",
-        field: "iname",
+        field: "name",
+        tdClass: "font-bold",
       },
       {
         label: "Played",
-        field: "icount",
+        field: "startedCount",
         type: "number",
       },
     ],
+
+    // SISYPHUS CLICKER table columns
+    sisyphusCheevos: [
+      {
+        label: "Name",
+        field: "name",
+        tdClass: "font-bold",
+      },
+      {
+        label: "Points",
+        field: "pointValue",
+        type: "number",
+      },
+      {
+        label: "Earned",
+        field: "earnedCount",
+        type: "number",
+        formatFn: addCommas,
+      },
+      {
+        label: "Last Earned",
+        field: "lastEarned",
+        // type: "date",
+        formatFn: formatDate,
+      },
+    ],
+    sisyphusPurchases: [
+      {
+        label: "Name",
+        field: "name",
+        tdClass: "font-bold",
+      },
+      {
+        label: "Price",
+        field: "price",
+        type: "number",
+      },
+      {
+        label: "Bought",
+        field: "timesBought",
+        type: "number",
+        formatFn: addCommas,
+      },
+      {
+        label: "Last Purchase",
+        field: "lastPurchased",
+        type: "date",
+        formatFn: formatDate,
+      },
+    ],
+
+    // PRETEND WORLD table columns
+    pretendGuesses: [
+      {
+        label: "Celebrity",
+        field: "name",
+        tdClass: "font-bold",
+      },
+      {
+        label: "Correct %",
+        field: "correctPercent",
+        type: "number",
+        formatFn: (val) => (val !== undefined && val !== null ? val + "%" : "0%"),
+      },
+      {
+        label: "Exact",
+        field: "correctGuessCount",
+        type: "number",
+      },
+      {
+        label: "Close",
+        field: "closeGuessCount",
+        type: "number",
+      },
+      {
+        label: "Bad",
+        field: "badGuessCount",
+        type: "number",
+      },
+    ],
+
+    // THIS MEETING HAS POINTS table columns
+    meetingCards: [
+      {
+        label: "Phrase",
+        field: "phrase",
+        tdClass: "font-bold",
+        formatFn: (val) => (val ? `“${val}”` : ""),
+      },
+      {
+        label: "Value",
+        field: "pointValue",
+        type: "number",
+      },
+      {
+        label: "Played",
+        field: "timesPlayed",
+        type: "number",
+      },
+      {
+        label: "Scored",
+        field: "timesScored",
+        type: "number",
+      },
+      {
+        label: "Stolen",
+        field: "timesStolen",
+        type: "number",
+      },
+    ],
+
+    // INVALID
     bugs: [
       {
         label: "Bug",
@@ -235,6 +334,8 @@
         type: "number",
       },
     ],
+
+    // WRONGEST WORDS
     wrongestStatements: [
       {
         label: "Statement",
@@ -258,126 +359,6 @@
         type: "number",
       },
     ],
-    sisyphusCheevos: [
-      {
-        label: "Name",
-        field: "iname",
-      },
-      {
-        label: "Points",
-        field: "pointValue",
-        type: "number",
-      },
-      {
-        label: "Earned",
-        field: "icount",
-        type: "number",
-        formatFn: addCommas,
-      },
-      {
-        label: "Last Earned",
-        field: "lastEarned",
-        // type: "date",
-        formatFn: formatDate,
-      },
-    ],
-    sisyphusPurchases: [
-      {
-        label: "Name",
-        field: "iname",
-      },
-      {
-        label: "Price",
-        field: "price",
-        type: "number",
-      },
-      {
-        label: "Earned",
-        field: "icount",
-        type: "number",
-        formatFn: addCommas,
-      },
-      // {
-      //   label: "Total Spent",
-      //   // field: calculateSpend,
-      //   type: "number",
-      // },
-      {
-        label: "Last Purchase",
-        field: "lastPurchase",
-        type: "date",
-        formatFn: formatDate,
-      },
-    ],
-    guillotineHeads: [
-      {
-        label: "Name",
-        field: "iname",
-      },
-      {
-        label: "Value",
-        field: "headValue",
-        type: "number",
-        formatFn: billionsOfDollars,
-      },
-      {
-        label: "x",
-        field: "icount",
-        type: "number",
-        formatFn: addCommas,
-      },
-      {
-        label: "Last Removed",
-        field: "lastRemoved",
-        // type: "date",
-        formatFn: formatDate,
-      },
-    ],
-    guillotinePlayerScores: [
-      {
-        label: "Wealth Created",
-        field: "wealthCreated",
-        type: "number",
-        formatFn: billionsOfDollars,
-      },
-      {
-        label: "Most Valuable",
-        field: "mostValuable",
-        type: "number",
-      },
-      {
-        label: "Finished",
-        field: "finishTime",
-        // type: "date",
-        formatFn: formatDate,
-      },
-    ],
-    pretendGuesses: [
-      {
-        label: "Celebrity",
-        field: "iname",
-      },
-      {
-        label: "Correct %",
-        // field: pretendCorrectPct,
-        type: "number",
-      },
-      {
-        label: "Exact",
-        field: "correctGuess",
-        type: "number",
-      },
-      {
-        label: "Close",
-        field: "closeGuess",
-        type: "number",
-      },
-      {
-        label: "Bad",
-        field: "badGuess",
-        type: "number",
-      },
-    ],
   });
 
   const ui = reactive({
@@ -388,276 +369,277 @@
     sisyphusLoaded: false,
     guillotineLoaded: false,
     pretendLoaded: false,
+    meetingLoaded: false,
   });
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const firestoreDb = useFirestore();
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Functions
 
-  const getData = (game) => {
+  // Helper to load Firestore stats for a game
+  function convertTimestamp(ts) {
+    if (ts && typeof ts === "object" && typeof ts.seconds === "number") {
+      return new Date(ts.seconds * 1000 + Math.floor(ts.nanoseconds / 1e6));
+    }
+    return ts;
+  }
+
+  /**
+   * Loads Firestore stats for a game, normalizing timestamp fields and subcollections.
+   * @param {string} game - The game name (e.g. "cameo", "sisyphus", ...)
+   * @param {object} options - {
+   *   mainDocTimestamps: [fieldName, ...],
+   *   subcollections: {
+   *     [subcollectionName]: {
+   *       process: (data) => data, // optional per-item processor
+   *       timestampFields: [fieldName, ...] // optional per-item timestamp fields
+   *     }
+   *   }
+   * }
+   */
+  async function loadFirestoreStats(game, options) {
+    const { doc, getDoc, collection, getDocs } = await import("firebase/firestore");
+    // Get the main doc
+    const mainDocSnap = await getDoc(doc(firestoreDb, "stats", game));
+    if (mainDocSnap.exists()) {
+      const mainData = mainDocSnap.data();
+      // Convert timestamps
+      if (options.mainDocTimestamps) {
+        options.mainDocTimestamps.forEach((field) => {
+          if (mainData[field]) mainData[field] = convertTimestamp(mainData[field]);
+        });
+      }
+      Object.assign(stats[game], mainData);
+    }
+    // Load subcollections
+    if (options.subcollections) {
+      for (const [sub, subOpts] of Object.entries(options.subcollections)) {
+        const snap = await getDocs(collection(firestoreDb, `stats/${game}/${sub}`));
+        stats[game][sub] = snap.docs.map((doc) => {
+          let data = doc.data();
+          // Convert per-item timestamps
+          if (subOpts.timestampFields) {
+            subOpts.timestampFields.forEach((field) => {
+              if (data[field]) data[field] = convertTimestamp(data[field]);
+            });
+          }
+          // Custom processor
+          if (subOpts.process) data = subOpts.process(data);
+          return data;
+        });
+      }
+    }
+  }
+
+  const getData = async (game) => {
     ui.viewing = "loading";
 
-    if (game == "cameo") {
-      axios
-        .get(`${jsonURL}/stats/cameo/json`)
-        .then(function (response) {
-          // handle success
-          stats.cameo = response.data;
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          // always executed
-
-          stats.cameo.celebScores.forEach((celeb) => {
-            if (celeb.cameoName) {
-              stats.cameo.celebs.push({
-                cameoName: celeb.cameoName,
-                actualValue: 0,
-                sortScore: celeb.sortScore,
-                birthdayWishes: celeb.birthdayWishes,
-                valuations: 0,
-                totalValuation: 0,
-                averageValuation: 0,
-                marketForces: 0,
-              });
-            }
-          });
-
-          stats.cameo.valuations.forEach((celeb) => {
-            let m = stats.cameo.celebs.find(
-              (element) => element.cameoName == celeb.cameoName,
-            );
-            if (m) {
-              //console.log('match for '+celeb.cameoName);
-
-              if (
-                celeb.actualValue &&
-                celeb.playerValue &&
-                celeb.playerValue < 2000
-              ) {
-                if (m.actualValue == 0) {
-                  m.actualValue = celeb.actualValue;
-                  m.totalValuation = celeb.playerValue;
-                  m.valuations = 1;
-                  m.averageValuation = m.totalValuation;
-                } else if (m.actualValue) {
-                  m.totalValuation += celeb.playerValue;
-                  m.valuations += 1;
-                  m.averageValuation = m.totalValuation / m.valuations;
-                }
-              }
-            } else {
-              //console.log('NO MATCH FOR '+celeb.cameoName);
-            }
-
-            stats.cameo.celebs.forEach((celeb) => {
-              celeb.marketForces = celeb.averageValuation - celeb.actualValue;
-            });
-          });
-
-          dates.cameo.dayCount = dates.today.diff(dates.cameo.launched, "days");
-          ui.cameoLoaded = true;
-          ui.viewing = "cameo";
-        });
-    } else if (game == "invalid") {
-      axios
-        .get(`${jsonURL}/stats/invalid/json`)
-        .then(function (response) {
-          // handle success
-          stats.invalid = response.data;
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          // always executed
-
-          stats.invalid.successfulPasswords.forEach((pw) => {
-            if (pw.iname) {
-              stats.invalid.passwords.push({
-                password: pw.iname,
-                challenge: pw.challenge,
-                used: pw.icount,
-                cracked: 0,
-                crashed: 0,
-              });
-            }
-          });
-
-          stats.invalid.cracks.forEach((pw) => {
-            let m = stats.invalid.passwords.find(
-              (element) => element.iname == pw.password,
-            );
-            if (m) {
-              m.cracked = pw.icount;
-            } else {
-              stats.invalid.passwords.push({
-                password: pw.iname,
-                challenge: "",
-                used: 0,
-                cracked: pw.icount,
-                crashed: 0,
-              });
-            }
-          });
-
-          stats.invalid.crashes.forEach((pw) => {
-            let m = stats.invalid.passwords.find(
-              (element) => element.iname == pw.password,
-            );
-            if (m) {
-              m.crashed = pw.icount;
-            } else {
-              stats.invalid.passwords.push({
-                password: pw.iname,
-                challenge: "",
-                used: 0,
-                cracked: 0,
-                crashed: pw.icount,
-              });
-            }
-          });
-
-          stats.invalid.demandedLetters.forEach((l) => {
-            if (l.iname) {
-              stats.invalid.letters.push({
-                letter: l.iname,
-                demanded: l.icount,
-                banned: 0,
-              });
-            }
-          });
-
-          stats.invalid.bannedLetters.forEach((l) => {
-            let m = stats.invalid.letters.find(
-              (element) => element.letter == l.iname,
-            );
-            if (m) {
-              m.banned = l.icount;
-            } else {
-              stats.invalid.letters.push({
-                letter: l.iname,
-                demanded: 0,
-                banned: l.icount,
-              });
-            }
-          });
-
-          dates.invalid.dayCount = dates.today.diff(
-            dates.invalid.launched,
-            "days",
-          );
-          ui.invalidLoaded = true;
-          ui.viewing = "invalid";
-        });
-    } else if (game == "wrongest") {
-      axios
-        .get(`${jsonURL}/stats/wrongest/json`)
-        .then(function (response) {
-          // handle success
-          stats.wrongest = response.data;
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          // always executed
-          dates.wrongest.dayCount = dates.today.diff(
-            dates.wrongest.launched,
-            "days",
-          );
-          ui.wrongestLoaded = true;
-          ui.viewing = "wrongest";
-        });
-    } else if (game == "sisyphus") {
-      axios
-        .get(`${jsonURL}/stats/sisyphus/json`)
-        .then(function (response) {
-          // handle success
-          stats.sisyphus = response.data;
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          // always executed
-          dates.sisyphus.dayCount = dates.today.diff(
-            dates.sisyphus.launched,
-            "days",
-          );
-          ui.sisyphusLoaded = true;
-          ui.viewing = "sisyphus";
-        });
-    } else if (game == "guillotine") {
-      axios
-        .get(`${jsonURL}/stats/guillotine/json`)
-        .then(function (response) {
-          // handle success
-          stats.guillotine = response.data;
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          //console.log(stats.guillotine)
-          dates.guillotine.dayCount = dates.today.diff(
-            dates.guillotine.launched,
-            "days",
-          );
-          ui.guillotineLoaded = true;
-          ui.viewing = "guillotine";
-        });
-    } else if (game == "pretend") {
-      axios
-        .get(`${jsonURL}/stats/pretend/json`)
-        .then(function (response) {
-          // handle success
-          stats.pretend = response.data;
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
-        .then(function () {
-          //console.log(stats.pretend)
-          dates.pretend.dayCount = dates.today.diff(
-            dates.pretend.launched,
-            "days",
-          );
-          ui.pretendLoaded = true;
-          ui.viewing = "pretend";
-        });
+    let errorOccurred = false;
+    if (game == "general") {
+      try {
+        const { doc, getDoc } = await import("firebase/firestore");
+        // Cameo
+        const cameoSnap = await getDoc(doc(firestoreDb, "stats", "cameo"));
+        if (cameoSnap.exists()) {
+          const cameoData = cameoSnap.data();
+          stats.general.cameoGamesStarted = cameoData.gamesStarted || 0;
+          stats.general.cameoLastPlayed = cameoData.lastGameStarted ? convertTimestamp(cameoData.lastGameStarted) : null;
+        }
+        // Guillotine
+        const guillotineSnap = await getDoc(doc(firestoreDb, "stats", "guillotine"));
+        if (guillotineSnap.exists()) {
+          const guillotineData = guillotineSnap.data();
+          stats.general.guillotineGamesStarted = guillotineData.gamesStarted || 0;
+          stats.general.guillotineLastPlayed = guillotineData.lastGameStarted ? convertTimestamp(guillotineData.lastGameStarted) : null;
+        }
+        // Meeting
+        const meetingSnap = await getDoc(doc(firestoreDb, "stats", "meeting"));
+        if (meetingSnap.exists()) {
+          const meetingData = meetingSnap.data();
+          stats.general.meetingGamesStarted = meetingData.gamesStarted || 0;
+          stats.general.meetingLastPlayed = meetingData.lastGameStarted ? convertTimestamp(meetingData.lastGameStarted) : null;
+        }
+        // Pretend
+        const pretendSnap = await getDoc(doc(firestoreDb, "stats", "pretend"));
+        if (pretendSnap.exists()) {
+          const pretendData = pretendSnap.data();
+          stats.general.pretendGamesStarted = pretendData.gamesStarted || 0;
+          stats.general.pretendLastPlayed = pretendData.lastGameStarted ? convertTimestamp(pretendData.lastGameStarted) : null;
+        }
+        // Sisyphus (no gamesStarted, use firstClick)
+        const sisyphusSnap = await getDoc(doc(firestoreDb, "stats", "sisyphus"));
+        if (sisyphusSnap.exists()) {
+          const sisyphusData = sisyphusSnap.data();
+          stats.general.sisyphusFirstClick = sisyphusData.firstClick || 0;
+          stats.general.sisyphusLastPlayed = sisyphusData.lastGameStarted ? convertTimestamp(sisyphusData.lastGameStarted) : null;
+        }
+        ui.viewing = "general";
+      } catch (e) {
+        // fallback: clear fields
+        stats.general.cameoGamesStarted = 0;
+        stats.general.cameoLastPlayed = null;
+        stats.general.guillotineGamesStarted = 0;
+        stats.general.guillotineLastPlayed = null;
+        stats.general.meetingGamesStarted = 0;
+        stats.general.meetingLastPlayed = null;
+        stats.general.pretendGamesStarted = 0;
+        stats.general.pretendLastPlayed = null;
+        stats.general.sisyphusFirstClick = null;
+        console.error("Error loading general stats from Firestore:", e);
+      }
     }
 
-    const newURL =
-      window.location.origin + window.location.pathname + "?game=" + game;
+    if (game == "cameo") {
+      try {
+        await loadFirestoreStats("cameo", {
+          mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
+          subcollections: {
+            celebs: {
+              process: (data) => {
+                if (typeof data.actualValue === "number" && typeof data.averagePlayerValue === "number") {
+                  data.marketForces = data.averagePlayerValue - data.actualValue;
+                }
+                return data;
+              },
+            },
+            specialGames: {},
+          },
+        });
+        dates.cameo.dayCount = dates.today.diff(dates.cameo.launched, "days");
+        ui.cameoLoaded = true;
+        ui.viewing = "cameo";
+      } catch (e) {
+        stats.cameo.celebs = [];
+        stats.cameo.specialGames = [];
+        errorOccurred = true;
+        console.error("Error loading cameo stats from Firestore:", e);
+      }
+    } else if (game == "sisyphus") {
+      try {
+        await loadFirestoreStats("sisyphus", {
+          mainDocTimestamps: ["firstClick", "lastGameStarted"],
+          subcollections: {
+            cheevos: {
+              timestampFields: ["lastEarned"],
+              process: (data) => {
+                data.icount = typeof data.icount === "number" ? data.icount : 0;
+                data.pointValue = typeof data.pointValue === "number" ? data.pointValue : 0;
+                return data;
+              },
+            },
+            purchases: {
+              timestampFields: ["lastPurchased"],
+              process: (data) => {
+                data.icount = typeof data.icount === "number" ? data.icount : 0;
+                data.price = typeof data.price === "number" ? data.price : 0;
+                return data;
+              },
+            },
+          },
+        });
+        dates.sisyphus.dayCount = dates.today.diff(dates.sisyphus.launched, "days");
+        ui.sisyphusLoaded = true;
+        ui.viewing = "sisyphus";
+      } catch (e) {
+        stats.sisyphus.cheevos = [];
+        stats.sisyphus.purchases = [];
+        errorOccurred = true;
+        console.error("Error loading sisyphus stats from Firestore:", e);
+      }
+    } else if (game == "guillotine") {
+      try {
+        await loadFirestoreStats("guillotine", {
+          mainDocTimestamps: ["lastGameStarted", "gameLastFinished"],
+          subcollections: {
+            heads: {
+              timestampFields: ["lastRemoved"],
+            },
+          },
+        });
+        dates.guillotine.dayCount = dates.today.diff(dates.guillotine.launched, "days");
+        ui.guillotineLoaded = true;
+        ui.viewing = "guillotine";
+      } catch (e) {
+        stats.guillotine.heads = [];
+        errorOccurred = true;
+        console.error("Error loading guillotine stats from Firestore:", e);
+      }
+    } else if (game == "pretend") {
+      try {
+        await loadFirestoreStats("pretend", {
+          mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
+          subcollections: {
+            impersonators: {
+              process: (data) => {
+                const correct = typeof data.correctGuessCount === "number" ? data.correctGuessCount : 0;
+                const close = typeof data.closeGuessCount === "number" ? data.closeGuessCount : 0;
+                const bad = typeof data.badGuessCount === "number" ? data.badGuessCount : 0;
+                const total = correct + close + bad;
+                data.correctPercent = total > 0 ? (((correct + close) / total) * 100).toFixed(1) : "0.0";
+                return data;
+              },
+            },
+          },
+        });
+        dates.pretend.dayCount = dates.today.diff(dates.pretend.launched, "days");
+        ui.pretendLoaded = true;
+        ui.viewing = "pretend";
+      } catch (e) {
+        stats.pretend.impersonators = [];
+        errorOccurred = true;
+        console.error("Error loading pretend stats from Firestore:", e);
+      }
+    } else if (game == "meeting") {
+      try {
+        await loadFirestoreStats("meeting", {
+          mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
+          subcollections: {
+            cards: {},
+            players: {},
+            jobTitles: {},
+          },
+        });
+        dates.meeting.dayCount = dates.today.diff(dates.meeting.launched, "days");
+        ui.meetingLoaded = true;
+        ui.viewing = "meeting";
+      } catch (e) {
+        if (!stats.meeting) stats.meeting = {};
+        stats.meeting.cards = [];
+        stats.meeting.players = [];
+        stats.meeting.jobTitles = [];
+        errorOccurred = true;
+        console.error("Error loading meeting stats from Firestore:", e);
+      }
+    }
 
+    // Always update URL and title, even if error occurred
+    const newURL = window.location.origin + window.location.pathname + "?game=" + game;
     history.pushState({ game: game }, game + " | Kinda Fun Stats", newURL);
     document.title = game + " | Kinda Fun Stats";
+
+    if (errorOccurred) {
+      // Optionally, show a user-friendly error message or set a UI flag
+      console.warn(`Stats for '${game}' could not be loaded. Check Firestore or network.`);
+    }
   };
 
   const formatTime = (stamp, format) => {
     if (format == "fromNow") {
-      return moment(stamp).subtract(timeZoneOffset, "minutes").fromNow();
+      return moment(stamp).fromNow();
     } else if (format == "calendar") {
       if (moment(stamp).diff(moment(), "days") > -7) {
-        return moment(stamp).subtract("6", "hours").calendar();
+        return moment(stamp).calendar();
       } else {
-        return moment(stamp)
-          .subtract(timeZoneOffset, "minutes")
-          .format("MMM Do @ LT");
+        return moment(stamp).format("MMM Do @ LT");
       }
     } else if (format) {
-      return moment(stamp).subtract(timeZoneOffset, "minutes").format(format);
+      return moment(stamp).format(format);
     } else {
-      return moment(stamp).subtract(timeZoneOffset, "minutes").format("LLLL");
+      return moment(stamp).format("LLLL");
     }
   };
 
@@ -730,18 +712,10 @@
     cameoObject.averagePoints = parseInt(totalPoints / playerCount);
     cameoObject.averagePoints = addCommas(cameoObject.averagePoints);
     cameoObject.averageCorrectSorts = parseInt(totalCorrectSorts / playerCount);
-    cameoObject.averageBirthdayWishes = parseInt(
-      totalBirthdayWishes / playerCount,
-    );
+    cameoObject.averageBirthdayWishes = parseInt(totalBirthdayWishes / playerCount);
 
-    cameoObject.exceededBudgetPercent = percentOf(
-      cameoObject.observedBudget + cameoObject.exceededBudget,
-      cameoObject.exceededBudget,
-    );
-    cameoObject.correctSortPercent = percentOf(
-      12,
-      cameoObject.averageCorrectSorts,
-    );
+    cameoObject.exceededBudgetPercent = percentOf(cameoObject.observedBudget + cameoObject.exceededBudget, cameoObject.exceededBudget);
+    cameoObject.correctSortPercent = percentOf(12, cameoObject.averageCorrectSorts);
 
     return cameoObject;
   });
@@ -749,34 +723,19 @@
   const computedNaughtyPercentage = computed(() => {
     const self = this;
 
-    if (
-      !stats.general ||
-      !stats.general.invalid ||
-      !stats.general.invalid.NaughtyModeOn
-    ) {
+    if (!stats.general || !stats.general.invalid || !stats.general.invalid.NaughtyModeOn) {
       return "0";
     }
 
-    return percentOf(
-      stats.general.invalid.NaughtyModeOn +
-        stats.general.invalid.NaughtyModeOff,
-      stats.general.invalid.NaughtyModeOn,
-    );
+    return percentOf(stats.general.invalid.NaughtyModeOn + stats.general.invalid.NaughtyModeOff, stats.general.invalid.NaughtyModeOn);
   });
 
   const computedCrackedPasswordPercent = computed(() => {
-    if (
-      !stats.invalid ||
-      !stats.invalid.successfulPasswords ||
-      !stats.invalid.cracks
-    ) {
+    if (!stats.invalid || !stats.invalid.successfulPasswords || !stats.invalid.cracks) {
       return "0";
     }
 
-    return percentOf(
-      stats.invalid.successfulPasswords.length,
-      stats.invalid.cracks.length,
-    );
+    return percentOf(stats.invalid.successfulPasswords.length, stats.invalid.cracks.length);
   });
 
   const computedServerCrashes = computed(() => {
@@ -846,153 +805,163 @@
   });
 
   const computedAvgMarketForces = computed(() => {
-    const self = this;
-    if (!stats.cameo || !stats.cameo.celebs) {
-      return "0";
-    }
-    let cCount = 0;
-    let cCombined = 0;
-    stats.cameo.celebs.forEach((celeb) => {
-      cCount++;
-      cCombined += celeb.marketForces;
-    });
-    let a = cCombined / cCount;
-    return dollars(a);
+    if (!stats.cameo.celebs || !stats.cameo.celebs.length) return dollars(0);
+    // Only include celebs with a valid, finite number for marketForces
+    const filtered = stats.cameo.celebs.filter((celeb) => typeof celeb.marketForces === "number" && isFinite(celeb.marketForces));
+    if (!filtered.length) return dollars(0);
+    const total = filtered.reduce((sum, celeb) => sum + celeb.marketForces, 0);
+    return dollars(total / filtered.length);
   });
 
   const computedMostPopularCameoGame = computed(() => {
-    const self = this;
-    if (!ui.cameoLoaded || !stats.cameo.specialGames) {
+    if (!stats.cameo || !stats.cameo.specialGames || !stats.cameo.specialGames.length) {
       return null;
-    } else if (stats.cameo.specialGames) {
-      let mostPlayedGame = "TIE!";
-      let playCount = 0;
-      let totalPlayCount = 0;
-      stats.cameo.specialGames.forEach((g) => {
-        if (g.icount > playCount) {
-          mostPlayedGame = g.iname;
-          playCount = g.icount;
-          totalPlayCount += g.icount;
-        }
-      });
-      return {
-        name: mostPlayedGame,
-        count: playCount,
-        percent: percentOf(totalPlayCount, playCount),
-      };
     }
+    const total = stats.cameo.specialGames.reduce((sum, game) => sum + (game.startedCount || 0), 0);
+    const mostPopular = stats.cameo.specialGames.reduce((max, game) => {
+      return (game.startedCount || 0) > (max.startedCount || 0) ? game : max;
+    }, stats.cameo.specialGames[0]);
+    return {
+      ...mostPopular,
+      percent: total ? (((mostPopular.startedCount || 0) / total) * 100).toFixed(1) : "0",
+    };
   });
 
   const computedMostOvervaluedCeleb = computed(() => {
-    const self = this;
-    if (!ui.cameoLoaded || !stats.cameo.celebs) {
-      return null;
-    } else if (stats.cameo.celebs) {
-      let lowestValue = 100;
-      let mostOvervalued = "";
-      stats.cameo.celebs.forEach((celeb) => {
-        if (celeb.marketForces < lowestValue) {
-          lowestValue = celeb.marketForces;
-          mostOvervalued = celeb.cameoName;
-        }
-      });
-      return {
-        name: mostOvervalued,
-        marketForces: lowestValue,
-      };
-    }
+    if (!stats.cameo.celebs || !stats.cameo.celebs.length) return null;
+    // Only consider celebs with a valid, finite marketForces number
+    const filtered = stats.cameo.celebs.filter((celeb) => typeof celeb.marketForces === "number" && isFinite(celeb.marketForces));
+    if (!filtered.length) return null;
+    return filtered.reduce((min, celeb) => (celeb.marketForces < min.marketForces ? celeb : min));
   });
 
   const computedSisyphusCheevos = computed(() => {
-    const self = this;
-    if (!ui.sisyphusLoaded) {
-      return null;
-    } else {
-      let count = 0;
-      let points = 0;
-      stats.sisyphus.cheevos.forEach((cheevo) => {
-        count += cheevo.icount;
-        points += cheevo.icount * cheevo.pointValue;
-      });
-      return {
-        count: count,
-        points: points,
-      };
+    if (!stats.sisyphus.cheevos) {
+      return { totalCheevos: 0, totalPoints: 0 };
     }
+    let totalCheevos = 0;
+    let totalPoints = 0;
+    stats.sisyphus.cheevos.forEach((cheevo) => {
+      const earned = typeof cheevo.earnedCount === "number" ? cheevo.earnedCount : 0;
+      const points = typeof cheevo.pointValue === "number" ? cheevo.pointValue : 0;
+      totalCheevos += earned;
+      totalPoints += earned * points;
+    });
+    return { totalCheevos, totalPoints };
   });
 
   const computedSisyphusPurchases = computed(() => {
-    const self = this;
-    if (!ui.sisyphusLoaded) {
-      return null;
-    } else {
-      let count = 0;
-      let spent = 0;
-      stats.sisyphus.purchases.forEach((purchase) => {
-        count += purchase.icount;
-        spent += purchase.icount * purchase.price;
-      });
+    if (!stats.sisyphus.purchases) {
+      return { totalNumber: 0, totalCost: 0 };
+    }
+    let totalNumber = 0;
+    let totalCost = 0;
+    stats.sisyphus.purchases.forEach((purchase) => {
+      const timesBought = typeof purchase.timesBought === "number" ? purchase.timesBought : 0;
+      const price = typeof purchase.price === "number" ? purchase.price : 0;
+      totalNumber += timesBought;
+      totalCost += timesBought * price;
+    });
+    return { totalNumber, totalCost };
+  });
+
+  const computedPretend = computed(() => {
+    const impersonators = stats.pretend.impersonators || [];
+    if (!impersonators.length) {
       return {
-        count: count,
-        spent: spent,
+        bestImpersonator: null,
+        worstImpersonator: null,
+        badGuessPercent: 0,
+        closeGuessPercent: 0,
+        exactGuessPercent: 0,
       };
     }
+
+    // Find best and worst impersonators by correctPercent
+    let bestImpersonator = null;
+    let worstImpersonator = null;
+    let maxPercent = -Infinity;
+    let minPercent = Infinity;
+
+    let totalBad = 0;
+    let totalClose = 0;
+    let totalCorrect = 0;
+
+    impersonators.forEach((imp) => {
+      const correct = typeof imp.correctGuessCount === "number" ? imp.correctGuessCount : 0;
+      const close = typeof imp.closeGuessCount === "number" ? imp.closeGuessCount : 0;
+      const bad = typeof imp.badGuessCount === "number" ? imp.badGuessCount : 0;
+      const percent = typeof imp.correctPercent === "number" ? imp.correctPercent : parseFloat(imp.correctPercent) || 0;
+      totalBad += bad;
+      totalClose += close;
+      totalCorrect += correct;
+      if (percent > maxPercent) {
+        maxPercent = percent;
+        bestImpersonator = imp;
+      }
+      if (percent > 0 && percent < minPercent) {
+        minPercent = percent;
+        worstImpersonator = imp;
+      }
+    });
+
+    const totalGuesses = totalBad + totalClose + totalCorrect;
+    const badGuessPercent = totalGuesses > 0 ? ((totalBad / totalGuesses) * 100).toFixed(1) : 0;
+    const closeGuessPercent = totalGuesses > 0 ? ((totalClose / totalGuesses) * 100).toFixed(1) : 0;
+    const exactGuessPercent = totalGuesses > 0 ? ((totalCorrect / totalGuesses) * 100).toFixed(1) : 0;
+
+    return {
+      bestImpersonator,
+      worstImpersonator,
+      badGuessPercent: Number(badGuessPercent),
+      closeGuessPercent: Number(closeGuessPercent),
+      exactGuessPercent: Number(exactGuessPercent),
+    };
   });
 
-  const computedGuillotineAverageGameWealth = computed(() => {
-    const self = this;
-    if (!stats.guillotine || !stats.guillotine.playerScores) {
-      return "0";
+  const computedGuillotine = computed(() => {
+    const heads = stats.guillotine.heads || [];
+    if (!heads.length) {
+      return {
+        mostExecuted: null,
+        moneyLiberated: 0,
+        averageHeadValue: 0,
+      };
     }
-    let gameCount = 0;
-    let combinedValue = 0;
-    stats.guillotine.playerScores.forEach((game) => {
-      gameCount++;
-      combinedValue += game.wealthCreated;
+    let mostExecuted = null;
+    let maxCount = -Infinity;
+    let moneyLiberated = 0;
+    let totalHeadCount = 0;
+    heads.forEach((head) => {
+      const count = typeof head.headCount === "number" ? head.headCount : 0;
+      const worth = typeof head.netWorth === "number" ? head.netWorth : 0;
+      if (count > maxCount) {
+        maxCount = count;
+        mostExecuted = head;
+      }
+      moneyLiberated += worth * count;
+      totalHeadCount += count;
     });
-    let a = combinedValue / gameCount;
-    return billionsOfDollars(a);
-  });
-
-  const computedGuillotineMostKilled = computed(() => {
-    const self = this;
-    if (!stats.guillotine || !stats.guillotine.heads) {
-      return "-";
-    }
-
-    const maxObj = stats.guillotine.heads.reduce((accumulator, current) => {
-      return accumulator.icount > current.icount ? accumulator : current;
-    });
-
-    return maxObj;
+    const averageHeadValue = totalHeadCount > 0 ? +(moneyLiberated / totalHeadCount).toFixed(2) : 0;
+    return {
+      mostExecuted,
+      moneyLiberated: +moneyLiberated.toFixed(2),
+      averageHeadValue,
+      totalHeads: totalHeadCount,
+    };
   });
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Mounted
 
-  onBeforeMount(() => {
-    axios
-      .get(`${jsonURL}/stats/general/json`)
-      .then(function (response) {
-        // handle success
-        stats.general = response.data;
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      })
-      .then(function () {
-        // always executed
-        ui.viewing = "general";
-      });
-  });
-
   onMounted(() => {
     dates.today = moment();
     const loadedURL = new URL(window.location.href);
     if (loadedURL.searchParams.get("game")) {
       getGameDataFromURL();
+    } else {
+      getData("general");
     }
   });
 </script>

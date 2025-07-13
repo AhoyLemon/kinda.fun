@@ -1,0 +1,31 @@
+.card-table { background-color: #333; padding:20px; display: flex; flex-direction: column; justify-content: space-between;
+  .cards { display: grid; grid-template-columns: repeat( auto-fit, minmax(200px, 1fr) ); gap:20px;
+    .card { appearance: none; width:100%; background:$white; border-radius: 8px; padding:10px; border:2px solid transparent; height:100%; display:grid; grid-template-rows: 32px 1fr;
+      .points { border:2px; border-radius: 50%; width:32px; height:32px; line-height: 30px; text-align: center; font-family: $monospace; font-weight: 825; border:0.125em solid; }
+      &:not([disabled]) { cursor: pointer; }
+      &[disabled] { cursor: no-drop; opacity: 1; }
+      &.unplayed { background:$cream; color:$darkCream;
+        .points { color:$cream; background:$darkCream; }
+      }
+      &.playing { transform: scale(1.1); box-shadow: 0 0 2rem black; background-color:$lightCream; color:$darkCream; transition: transform 1s ease, background-color 1s linear;
+        .points { color: $lightCream; background:$darkCream; }
+      }
+      &.played { background:$lightGreen; color:$darkGreen; border-color:$green;
+        .points { color: $lightGreen; background:$darkGreen; }
+      }
+      &.stolen { background:$lightRed; color:$darkRed; border-color: $red;
+        .points { color: $lightRed; background:$darkRed; }
+      }
+    }
+    .points-holder { display: flex; align-items: flex-end; justify-content: flex-end; 
+    }
+    .phrase-holder { display: flex; justify-content: center; align-items: center; padding-bottom: 20px; height:100%; }
+    blockquote { font-family: $serif; font-weight: 500; font-size:2rem; text-align: center;
+      &:before { content:'“' }
+      &:after { content:'”' }
+    }
+  }
+}
+.card-explainer {
+  color:$white; text-align: center; font-family: $sans-serif; font-size:1.25em;
+}

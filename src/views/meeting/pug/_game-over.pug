@@ -1,0 +1,51 @@
+main.game-over(v-if="game.isGameOver")
+
+  h1 Game Over
+
+  ol.player-results
+    li.player(v-for="player in computedPlayerList")
+      .score-and-name
+        .player-score {{player.score}}
+        .name-and-job
+          .text
+            .player-name {{player.name}}
+            .player-job(v-if="player.jobTitle")
+              span {{player.jobTitle}}
+
+      table
+        thead
+          tr
+            th phrase
+            th points
+            th result
+        tbody
+          tr(v-for="card in player.hand" :class="card.status")
+            td.phrase {{card.phrase}}
+            td.points {{card.points}}
+            td.status(:class="card.status")
+              template(v-if="card.status == 'stolen'")
+                span(v-if="card.stolenBy") stolen by #[strong {{card.stolenBy}}]
+                span(v-else) stolen
+              template(v-else) 
+                span {{card.status}}
+
+  // Bad Guesses
+  template(v-if="game.badGuesses && game.badGuesses.length > 0")
+    h2 Bad Guesses
+    ol.bad-guesses
+      li.bad-guess(v-for="badGuess in game.badGuesses")
+        blockquote
+          template(v-if="!badGuess.isOwnCard")
+            .quote-text {{badGuess.guess}}
+          template(v-if="badGuess.isOwnCard")
+            div “{{badGuess.guess}}?”
+            div(style="font-size:75%;") “Oh wait, no. That's one of mine, oops.”
+          cite(v-if="badGuess.name") 
+            span {{badGuess.name}}
+  
+  section.game-by-lemon
+    a(href="https://ahoylemon.xyz")
+      h3 This game is 
+        span by Lemon.
+      .image-holder
+        img.lemon(src="/svg/lemon.svg" alt="Lemon") 

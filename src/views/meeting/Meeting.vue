@@ -1,18 +1,7 @@
 <script setup>
-  import { onMounted, reactive, ref, computed } from "vue";
+  import { onMounted, reactive, ref, computed, watchEffect, watch } from "vue";
   import { allCards } from "./js/_allCards.ts";
-  import {
-    randomNumber,
-    randomFrom,
-    shuffle,
-    preceisePercentOf,
-    // percentOf,
-    // addCommas,
-    // findInArray,
-    // removeFromArray,
-    // sendEvent,
-    // dollars,
-  } from "@/shared/js/_functions.js";
+  import { randomNumber, randomFrom, shuffle, preceisePercentOf } from "@/shared/js/_functions.js";
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
@@ -21,59 +10,314 @@
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
-  // socket.io
-  import { setupSocketHandlers } from "./js/_socketHandlers";
-  import { io } from "socket.io-client";
-  const socket = io.connect();
-
+  // Firebase & VueFire Stuff
   import {
-    gameName,
-    timeToScore,
-    badGuessPenalty,
-    cardsPerPlayer,
-    game,
-    you,
-  } from "./js/_variables";
+    doc,
+    increment,
+    serverTimestamp,
+    addDoc,
+    getDoc,
+    getDocs,
+    setDoc,
+    updateDoc,
+    collection,
+    runTransaction,
+    query,
+    where,
+    onSnapshot,
+    Timestamp, // <-- add this import
+  } from "firebase/firestore";
+  import { useFirestore, useCollection, useDocument } from "vuefire";
+
+  // Initialize Firestore
+  const db = useFirestore();
+  const gamePlayers = ref([]);
+  const statsRef = doc(db, `stats/meeting`);
+
+  watch(
+    () => game.roomCode,
+    async (newRoomCode) => {
+      if (newRoomCode) {
+        try {
+          await subscribeToRoom(newRoomCode);
+          await subscribeToGameStatus(newRoomCode);
+        } catch (error) {
+          console.error("Error subscribing to room:", error);
+        }
+      }
+    },
+    { immediate: true },
+  );
+
+  async function subscribeToRoom(roomCode) {
+    const playersRef = collection(doc(collection(db, "rooms"), roomCode), "players");
+
+    const { data: playersCollection } = useCollection(playersRef, {
+      wait: true,
+    });
+
+    // Watching players collection for updates
+
+    let lastRobbedToastTime = 0; // Debounce for 'You got robbed!' toast
+    const toastedCardIds = new Set();
+
+    watch(
+      () => playersCollection.value,
+      async (newPlayers) => {
+        if (newPlayers) {
+          for (const player of newPlayers) {
+            const cardHolderPlayerID = player.id;
+            if (player.hand === undefined) {
+              const handRef = collection(doc(playersRef, player.id), "hand");
+              const handSnapshot = await getDocs(handRef);
+              player.hand = handSnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+              }));
+
+              // Subscribe to the player's hand collection for real-time updates
+              onSnapshot(handRef, (snapshot) => {
+                const newHand = snapshot.docs.map((doc) => ({
+                  id: doc.id,
+                  ...doc.data(),
+                }));
+
+                newHand.forEach((newCard) => {
+                  const oldCard = player.hand.find((card) => card.id === newCard.id);
+                  if (oldCard && oldCard.status !== newCard.status) {
+                    if (newCard.status === "stolen") {
+                      if (newCard.stolenBy !== you.name) {
+                        if (cardHolderPlayerID === you.playerID) {
+                          // Debounce: prevent duplicate 'You got robbed!' toasts within 500ms
+                          const now = Date.now();
+                          if (now - lastRobbedToastTime > 500) {
+                            timer.value = 0;
+                            clearInterval(interval);
+                            toast(
+                              {
+                                component: MyToast,
+                                props: {
+                                  title: `You got robbed!`,
+                                  points: newCard.points,
+                                  message: `<strong>${newCard.stolenBy}</strong> just scored your “<strong>${newCard.phrase}</strong>” card`,
+                                },
+                              },
+                              {
+                                position: POSITION.BOTTOM_RIGHT,
+                                toastClassName: "red",
+                                timeout: 8000,
+                                icon: false,
+                              },
+                            );
+                            lastRobbedToastTime = now;
+                          }
+                          you.currentCard = {};
+                          you.isCurrentlyPlayingACard = false;
+                        } else {
+                          toast(`“${newCard.stolenBy}” just stole a ${newCard.points} card from ${player.name}`, {
+                            timeout: 6000,
+                          });
+                        }
+                      }
+                    } else if (newCard.status === "played") {
+                      if (cardHolderPlayerID !== you.playerID) {
+                        // Check if the card ID has already triggered a toast
+                        if (!toastedCardIds.has(newCard.id)) {
+                          toast(`“${player.name}” just played a card for ${newCard.points} points.`, {
+                            timeout: 6000,
+                          });
+                          // Add the card ID to the set
+                          toastedCardIds.add(newCard.id);
+                        }
+                      }
+                    }
+                  }
+                });
+
+                player.hand = newHand;
+              });
+            }
+          }
+          gamePlayers.value = newPlayers;
+        } else {
+          gamePlayers.value = [];
+        }
+      },
+      { immediate: true, deep: true },
+    );
+
+    // Subscribe to activities collection for real-time updates
+    const activitiesRef = collection(db, `rooms/${roomCode}/activities`);
+    game.badGuesses = useCollection(activitiesRef);
+    onSnapshot(activitiesRef, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          const newActivity = change.doc.data();
+
+          if (newActivity.playerID !== you.playerID) {
+            if (newActivity.activityType === "badGuess") {
+              if (newActivity.isOwnCard) {
+                toast(`${newActivity.name} just lost ${Math.abs(newActivity.penalty)} points for a terrible guess.`, {
+                  timeout: 6000,
+                });
+              } else {
+                toast(`${newActivity.name} just lost ${Math.abs(newActivity.penalty)} points for a bad guess.`, {
+                  timeout: 6000,
+                });
+              }
+            }
+            // Add additional activity types and corresponding toasts as needed
+          }
+        }
+      });
+    });
+  }
+
+  async function subscribeToGameStatus(roomCode) {
+    const gameRef = doc(collection(db, "rooms"), roomCode);
+    console.log("Game document reference:", gameRef);
+
+    onSnapshot(
+      gameRef,
+      (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const data = docSnapshot.data();
+          // console.log("Game status update:", data);
+          game.isGameStarted = data.isGameStarted ?? false;
+          game.roomCreatorID = data.roomCreatorID ?? "";
+          game.isGameOver = data.isGameOver ?? false;
+        } else {
+          console.error("Game document does not exist.");
+          game.isFailedToGetRoomData = true;
+        }
+      },
+      (error) => {
+        console.error("Error subscribing to game status:", error);
+      },
+    );
+  }
+
+  // Example function to set roomCode
+  function setRoomCode(newRoomCode) {
+    game.roomCode = newRoomCode;
+  }
+
+  import { gameName, timeToScore, badGuessPenalty, cardsPerPlayer, game, you } from "./js/_variables";
+  import { playerID } from "../invalid/js/_variables.js";
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
 
-  const savePlayerInfo = () => {
+  const generateUniqueID = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < 12; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+
+  const generateRoomCode = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let result = "";
+    for (let i = 0; i < 4; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+
+  const savePlayerInfo = async () => {
     you.name = you.nameInput;
+    localStorage.save;
     you.jobTitle = you.jobTitleInput;
+
+    localStorage.setItem("kindaFunPlayerName", you.name);
+
+    const playersCollection = collection(db, "rooms", game.roomCode, "players");
+    const playerQuery = query(playersCollection, where("playerID", "==", you.playerID));
+    const querySnapshot = await getDocs(playerQuery);
 
     let playerFound = false;
 
-    // Loop through each player in game.players
-    for (let player of game.players) {
-      if (player.socketID === you.socketID) {
-        // Update player information if socketID matches
-        player.name = you.name;
-        player.jobTitle = you.jobTitle;
-        player.isHost = you.isHost;
+    if (!querySnapshot.empty) {
+      // Update the existing player document
+      querySnapshot.forEach(async (docSnapshot) => {
+        const playerRef = doc(db, "rooms", game.roomCode, "players", docSnapshot.id);
+        await updateDoc(playerRef, {
+          name: newPlayer.name,
+          jobTitle: newPlayer.jobTitle,
+        });
         playerFound = true;
-        break;
-      }
-    }
-
-    // If you.socketID isn't found in any of the players, add a new player
-    if (!playerFound) {
-      game.players.push({
-        name: you.name,
-        jobTitle: you.jobTitle,
-        socketID: you.socketID,
-        isHost: you.isHost,
-        score: 0,
       });
     }
 
-    socket.emit("sendPlayerList", {
-      roomCode: game.roomCode,
-      from: you.socketID,
-      players: game.players,
-    });
+    if (!playerFound) {
+      const newPlayer = {
+        name: you.name,
+        jobTitle: you.jobTitle,
+        score: 0,
+      };
+
+      // Create a new player document with an empty hand collection
+      const playerRef = doc(db, "rooms", game.roomCode, "players", you.playerID);
+      await setDoc(playerRef, { ...newPlayer, playerID: you.playerID });
+    }
   };
 
-  const shuffleUpAndDeal = () => {
+  const shuffleUpAndDeal = async () => {
+    // --- Update player stats before dealing cards ---
+    const now = serverTimestamp();
+    for (const player of gamePlayers.value) {
+      // /stats/meeting/players/${player.name}
+      const meetingPlayerRef = doc(db, `stats/meeting/players/${player.name}`);
+      const meetingPlayerSnap = await getDoc(meetingPlayerRef);
+      if (meetingPlayerSnap.exists()) {
+        await updateDoc(meetingPlayerRef, {
+          timesPlayed: increment(1),
+          lastPlayed: now,
+        });
+      } else {
+        await setDoc(meetingPlayerRef, {
+          name: player.name,
+          timesPlayed: 1,
+          lastPlayed: now,
+        });
+      }
+      // /stats/meeting/jobTitles/${player.jobTitle}
+      if (player.jobTitle) {
+        const meetingJobRef = doc(db, `stats/meeting/jobTitles/${player.jobTitle}`);
+        const meetingJobSnap = await getDoc(meetingJobRef);
+        if (meetingJobSnap.exists()) {
+          await updateDoc(meetingJobRef, {
+            timesPlayed: increment(1),
+            lastPlayed: now,
+          });
+        } else {
+          await setDoc(meetingJobRef, {
+            jobTitle: player.jobTitle,
+            timesPlayed: 1,
+            lastPlayed: now,
+          });
+        }
+      }
+      // /stats/general/players/${player.name}
+      const generalPlayerRef = doc(db, `stats/general/players/${player.name}`);
+      const generalPlayerSnap = await getDoc(generalPlayerRef);
+      if (generalPlayerSnap.exists()) {
+        await updateDoc(generalPlayerRef, {
+          gamesPlayed: increment(1),
+          mostRecentGame: "meeting",
+          lastPlayed: now,
+        });
+      } else {
+        await setDoc(generalPlayerRef, {
+          name: player.name,
+          gamesPlayed: 1,
+          mostRecentGame: "meeting",
+          lastPlayed: now,
+        });
+      }
+    }
+
     game.deck = shuffle([...allCards]);
 
     const totalPlayers = game.players.length;
@@ -84,39 +328,100 @@
       return;
     }
 
-    // // Deal cards to each player's hand
-    game.players.forEach((player) => {
-      player.hand = [];
+    // Deal cards to each player's hand
+    for (const player of game.players) {
+      let playerHand = [];
       for (let i = 0; i < cardsPerPlayer; i++) {
         let newCard = game.deck.shift(); // Remove the first card from the deck
         newCard.status = "unplayed";
-        player.hand.push(newCard);
+        playerHand.push(newCard);
       }
-    });
+      // Create a collection called hand for this player, and add the documents defined in playerHand.
+      const handCollectionRef = collection(db, `rooms/${game.roomCode}/players/${player.playerID}/hand`);
+      for (const card of playerHand) {
+        const cardDocRef = doc(handCollectionRef);
+        await setDoc(cardDocRef, card);
+      }
+    }
 
-    socket.emit("startTheGame", {
-      roomCode: game.roomCode,
-      from: you.socketID,
-      players: game.players,
+    const roomRef = doc(db, `rooms/${game.roomCode}`);
+    await updateDoc(roomRef, {
+      isGameStarted: true,
+    });
+    await updateDoc(statsRef, {
+      gamesStarted: increment(1),
+      lastGameStarted: serverTimestamp(),
     });
   };
 
   const playThisCard = (card) => {
-    you.currentCard = card;
+    you.currentCard = { ...card };
     you.isCurrentlyPlayingACard = true;
     if (interval) {
       clearInterval(interval); // Clear any existing interval
     }
-    card.status = "playing";
+    const cardRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`);
+    updateDoc(cardRef, {
+      status: "playing",
+    });
     timer.value = timeToScore;
     interval = setInterval(() => {
       timer.value -= 10; // Decrease timer by 10 milliseconds
 
       if (timer.value <= 0) {
+        timer.value = 0;
         clearInterval(interval); // Clear the interval when timer reaches 0
         scoreThisCard(card);
       }
     }, 10);
+  };
+
+  const logCardScore = async (card) => {
+    const cardName = card.phrase;
+    const cardRef = doc(db, `/stats/meeting/cards/${cardName}`);
+    await runTransaction(db, async (transaction) => {
+      const cardSnapshot = await transaction.get(cardRef);
+      if (cardSnapshot.exists()) {
+        transaction.update(cardRef, {
+          timesScored: increment(1),
+          timesPlayed: increment(1),
+          lastPlayed: serverTimestamp(),
+        });
+      } else {
+        transaction.set(cardRef, {
+          phrase: cardName,
+          pointValue: card.points,
+          timesStolen: 0,
+          timesScored: 1,
+          timesPlayed: 1,
+          lastPlayed: serverTimestamp(),
+        });
+      }
+    });
+  };
+
+  const logCardTheft = async (card) => {
+    const cardName = card.phrase;
+    const cardRef = doc(db, `/stats/meeting/cards/${cardName}`);
+    await runTransaction(db, async (transaction) => {
+      const cardSnapshot = await transaction.get(cardRef);
+      if (cardSnapshot.exists()) {
+        transaction.update(cardRef, {
+          timesStolen: increment(1),
+          timesPlayed: increment(1),
+          lastPlayed: serverTimestamp(),
+        });
+      } else {
+        transaction.set(cardRef, {
+          phrase: cardName,
+          pointValue: card.points,
+          timesStolen: 1,
+          timesScored: 0,
+          timesPlayed: 1,
+          lastPlayed: serverTimestamp(),
+        });
+      }
+    });
   };
 
   const scoreThisCard = (card) => {
@@ -137,79 +442,76 @@
         icon: false,
       },
     );
-    findMe().score += card.points;
-    card.status = "played";
 
-    socket.emit("sendPlayerUpdate", {
-      roomCode: game.roomCode,
-      from: you.socketID,
-      socketID: you.socketID,
-      score: findMe().score,
-      scoredCard: card,
-      toast: {
-        message: `${you.name} just scored a card and got ${card.points} points.`,
-      },
+    const playerRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}`);
+    updateDoc(playerRef, {
+      score: increment(card.points),
     });
+
+    const cardRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}/hand/${card.id}`);
+    updateDoc(cardRef, {
+      status: "played",
+    });
+
+    logCardScore(card);
   };
 
   const performGuess = () => {
     const yourGuess = you.guess.toLowerCase().replace(/"/g, "");
-    let match = null;
-    let matchFound = false;
-    let stolenBy = "";
-    let alreadyScoredBy = "";
-    let actualPhrase = "";
 
-    // Go through every player's hand in game.players
-    for (
-      let playerIndex = 0;
-      playerIndex < game.players.length;
-      playerIndex++
-    ) {
-      const player = game.players[playerIndex];
+    let isThatPhraseYours = false;
+    let isAlreadyPlayed = false;
+    let isAlreadyStolen = false;
+    let isSuccess = false;
+    let cardHolder = {};
+
+    let match = {};
+
+    // Loop through every player in gamePlayers
+    outerLoop: for (const player of gamePlayers.value) {
       for (const card of player.hand) {
-        if (
-          // exact match
-          card.phrase.toLowerCase() === yourGuess ||
-          // match in alternates
-          (card.alternates &&
-            card.alternates.some((alt) => alt.toLowerCase() === yourGuess)) ||
-          // match in stringMatch
-          (card.stringMatch &&
-            yourGuess.includes(card.stringMatch.toLowerCase()))
-        ) {
-          actualPhrase = card.phrase;
-          if (player.socketID === you.socketID) {
-            severelyPenalizeTerribleGuess(card, you.guess);
-            matchFound = true;
-          } else if (card.status === "stolen") {
-            stolenBy = card.stolenBy;
-            matchFound = true;
+        const isExactMatch = card.phrase.toLowerCase() === yourGuess;
+        const isAltMatch = card.alternates && card.alternates.some((alt) => alt.toLowerCase() === yourGuess);
+        const isStringMatch = card.stringMatch && yourGuess.includes(card.stringMatch.toLowerCase());
+
+        if (isExactMatch || isAltMatch || isStringMatch) {
+          match = { ...card };
+          cardHolder = { ...player };
+
+          if (player.playerID === you.playerID) {
+            isThatPhraseYours = true;
           } else if (card.status === "played") {
-            alreadyScoredBy = player.name;
-            matchFound = true;
+            isAlreadyPlayed = true;
+          } else if (card.status === "stolen") {
+            isAlreadyStolen = true;
           } else {
-            // Create an object called match with the card, playerIndex, and player.name
-            match = {
-              ...card,
-              status: "stolen",
-              stolenBy: you.name,
-              socketID: player.socketID,
-              playerName: player.name,
-            };
-            card.status = "stolen";
-            card.stolenBy = you.name;
-            matchFound = true;
+            isSuccess = true;
           }
-          break;
+          break outerLoop; // break out of both loops
         }
       }
-      if (match) break; // Exit the loop early if a match is found
     }
 
-    if (matchFound && match) {
-      rewardGoodGuess(match);
-    } else if (stolenBy) {
+    if (isSuccess === true) {
+      rewardGoodGuess(match, cardHolder);
+    } else if (isAlreadyPlayed) {
+      toast(
+        {
+          component: MyToast,
+          props: {
+            title: "Too Late!",
+            // points: match.points,
+            message: `“<strong>${match.phrase}</strong>” has already been scored.`,
+          },
+        },
+        {
+          position: POSITION.BOTTOM_LEFT,
+          toastClassName: "yellow",
+          timeout: 8000,
+          icon: false,
+        },
+      );
+    } else if (isAlreadyStolen) {
       toast(
         {
           component: MyToast,
@@ -225,50 +527,16 @@
           icon: false,
         },
       );
-    } else if (alreadyScoredBy) {
-      toast(
-        {
-          component: MyToast,
-          props: {
-            title: "Too Late!",
-            // points: match.points,
-            message: `“<strong>${actualPhrase ?? yourGuess}</strong>” has already been scored.`,
-          },
-        },
-        {
-          position: POSITION.BOTTOM_LEFT,
-          toastClassName: "yellow",
-          timeout: 8000,
-          icon: false,
-        },
-      );
-    } else if (!matchFound) {
+    } else if (isThatPhraseYours) {
+      severelyPenalizeTerribleGuess(match, you.guess);
+    } else {
       penalizeBadGuess(you.guess);
     }
     you.guess = "";
   };
 
-  const findMe = () => {
-    const myPlayerObject = game.players.find(
-      (player) => player.socketID === you.socketID,
-    );
-    if (!myPlayerObject) {
-      return {
-        hand: [],
-        isHost: false,
-        name: "",
-        jobTitle: "",
-        score: "",
-        socketID: "",
-      };
-    } else {
-      return myPlayerObject;
-    }
-  };
-
-  const penalizeBadGuess = (yourGuess) => {
+  const penalizeBadGuess = async (yourGuess) => {
     const yourLoss = 0 - badGuessPenalty;
-    findMe().score -= badGuessPenalty;
     toast(
       {
         component: MyToast,
@@ -285,33 +553,34 @@
         icon: false,
       },
     );
-    you.guess = "";
-    game.badGuesses.push({
-      name: you.name,
-      guess: yourGuess,
-      penalty: you.yourLoss,
-      isOwnCard: false,
+
+    const playerRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}`);
+    updateDoc(playerRef, {
+      score: increment(yourLoss),
     });
-    socket.emit("sendPlayerUpdate", {
-      roomCode: game.roomCode,
-      from: you.socketID,
-      socketID: you.socketID,
-      score: findMe().score,
-      badGuess: {
-        name: you.name,
-        guess: yourGuess,
-        penalty: yourLoss,
-        isOwnCard: false,
-      },
-      toast: {
-        message: `${findMe().name} lost ${badGuessPenalty} for a bad guess`,
-      },
+
+    const newActivity = {
+      activityType: "badGuess",
+      guess: yourGuess,
+      penalty: yourLoss,
+      name: you.name,
+      playerID: you.playerID,
+      isOwnCard: false,
+      timestamp: serverTimestamp(),
+    };
+
+    const activitiesRef = collection(db, `rooms/${game.roomCode}/activities`);
+    await addDoc(activitiesRef, newActivity);
+
+    // Increment badGuesses in /stats/meeting
+    const statsMeetingRef = doc(db, `stats/meeting`);
+    await updateDoc(statsMeetingRef, {
+      badGuesses: increment(1),
     });
   };
 
-  const severelyPenalizeTerribleGuess = (card, yourGuess) => {
+  const severelyPenalizeTerribleGuess = async (card, yourGuess) => {
     const yourLoss = 0 - card.points;
-    findMe().score -= card.points;
     toast(
       {
         component: MyToast,
@@ -330,38 +599,33 @@
         icon: false,
       },
     );
-    you.guess = "";
-    game.badGuesses.push({
-      name: you.name,
+
+    const playerRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}`);
+    updateDoc(playerRef, {
+      score: increment(yourLoss),
+    });
+
+    const newActivity = {
+      activityType: "badGuess",
       guess: yourGuess,
-      penalty: you.yourLoss,
+      penalty: yourLoss,
+      name: you.name,
+      playerID: you.playerID,
       isOwnCard: true,
-    });
-    socket.emit("sendPlayerUpdate", {
-      roomCode: game.roomCode,
-      from: you.socketID,
-      socketID: you.socketID,
-      score: findMe().score,
-      badGuess: {
-        name: you.name,
-        guess: yourGuess,
-        penalty: yourLoss,
-        isOwnCard: true,
-      },
-      toast: {
-        message: `${findMe().name} lost ${card.points} for trying to guess their own card`,
-      },
-    });
+      timestamp: serverTimestamp(),
+    };
+    const activitiesRef = collection(db, `rooms/${game.roomCode}/activities`);
+    await addDoc(activitiesRef, newActivity);
   };
 
-  const rewardGoodGuess = (match) => {
+  const rewardGoodGuess = (match, cardHolder) => {
     toast(
       {
         component: MyToast,
         props: {
           title: "Got 'em!",
           points: match.points,
-          message: `<strong>${match.playerName}</strong> had “<strong>${match.phrase}</strong>.”`,
+          message: `<strong>${cardHolder.name}</strong> had “<strong>${match.phrase}</strong>.”`,
         },
       },
       {
@@ -371,76 +635,127 @@
         icon: false,
       },
     );
-    findMe().score += match.points;
-    you.stolenCards.push({
-      phrase: match.phrase,
-      points: match.points,
-      stolenFrom: {
-        playerName: match.playerName,
-        socketID: match.socketID,
-      },
+
+    //console.log(`rooms/${game.roomCode}/players/${you.playerID}`);
+    const playerRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}`);
+    updateDoc(playerRef, {
+      score: increment(match.points),
     });
 
-    socket.emit("sendPlayerUpdate", {
-      roomCode: game.roomCode,
-      from: you.socketID,
-      socketID: you.socketID,
-      score: findMe().score,
-      stolenCard: match,
+    const cardRef = doc(db, `rooms/${game.roomCode}/players/${cardHolder.playerID}/hand/${match.id}`);
+    updateDoc(cardRef, {
+      status: "stolen",
+      stolenBy: you.name,
     });
+
+    logCardTheft(match);
   };
 
-  const createRoom = () => {
+  const createRoom = async () => {
+    game.isFailedToGetRoomData = false;
+    // Generate a room code
     function makeID(digits) {
       let text = "";
       const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      for (let i = 0; i < digits; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      for (let i = 0; i < digits; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
     }
-    game.roomCode = makeID(4);
+    const roomCode = makeID(5);
+    const roomRef = doc(db, "rooms", roomCode);
 
-    socket.emit("createRoom", {
-      roomCode: game.roomCode,
-      gameName: gameName,
-    });
+    // Check if the room already exists
+    const roomSnapshot = await getDoc(roomRef);
+    if (roomSnapshot.exists()) {
+      alert("ERROR: room already exists");
+      console.error("Room already exists");
+      return;
+    }
 
-    let url = new URL(
-      location.protocol + "//" + location.host + location.pathname,
-    );
-    url.searchParams.set("room", game.roomCode);
-    window.history.pushState({}, "", url);
+    // Room does not exist, create the new room document
+    const newRoom = {
+      gameSlug: "meeting",
+      roomCode: roomCode,
+      isGameStarted: false,
+      isGameOver: false,
+      roomCreatorID: you.playerID,
+      createdAt: serverTimestamp(),
+      ttl: Timestamp.fromMillis(Date.now() + 86400000), // 1 day from now
+    };
+    await setDoc(roomRef, newRoom);
+    game.roomCode = roomCode;
+    console.log("Room created with code:", roomCode);
+
+    // Update the browser URL to the new meeting page
+    const protocol = window.location.protocol; // http: or https:
+    const host = window.location.host; // e.g., localhost:5173 or example.com
+    const newUrl = `${protocol}//${host}/meeting?room=${game.roomCode}`;
+    window.history.replaceState(null, "", newUrl);
+    joinRoom();
   };
 
   const joinRoom = () => {
-    // Try to join a room with the entered code.
-    socket.emit("joinRoom", {
-      roomCode: game.roomCode,
-      gameName: gameName,
-    });
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomCode = urlParams.get("room");
 
-    socket.emit("askHostForPlayersList", {
-      roomCode: game.roomCode,
-      from: you.socketID,
-    });
+    if (!roomCode) {
+      console.error("Room code is missing in the URL");
+      game.isFailedToGetRoomData = true;
+      return;
+    }
 
-    // you.isCurrentlyPlayingACard = true;
-    // let url = new URL(
-    //   location.protocol + "//" + location.host + location.pathname,
-    // );
-    // url.searchParams.set("room", game.roomCode);
-    // window.history.pushState({}, "", url);
+    game.roomCode = roomCode.toUpperCase();
+    const roomRef = doc(db, "rooms", game.roomCode);
+
+    // Fetch room data
+    game.roomData = useDocument(roomRef);
+
+    // Fetch players
+    const playersCollectionRef = collection(db, `rooms/${game.roomCode}/players`);
+    game.players = useCollection(playersCollectionRef);
   };
 
-  const endTheGame = () => {
-    socket.emit("endTheGame", {
-      roomCode: game.roomCode,
-      from: you.socketID,
-      gameName: gameName,
-      players: game.players,
-      badGuesses: game.badGuesses,
+  const joinRoomByInput = () => {
+    game.roomCode = you.roomCodeInput.toUpperCase();
+    const protocol = window.location.protocol; // http: or https:
+    const host = window.location.host; // e.g., localhost:5173 or example.com
+    const newUrl = `${protocol}//${host}/meeting?room=${game.roomCode}`;
+    window.history.replaceState(null, "", newUrl);
+    joinRoom();
+  };
+
+  const endTheGame = async () => {
+    const roomRef = doc(db, `rooms/${game.roomCode}`);
+    await updateDoc(roomRef, {
+      isGameOver: true,
+    });
+
+    await updateDoc(statsRef, {
+      gamesFinished: increment(1),
+      lastGameFinished: serverTimestamp(),
     });
   };
+
+  const isThisPlayerTheHost = (p) => {
+    // This player is the host if their playerID matches the roomCreatorID
+    return game.roomCreatorID === p.playerID;
+  };
+
+  const amITheHost = computed(() => {
+    // You are the host if your playerID matches the roomCreatorID stored in the room document.
+    return game.roomCreatorID === you.playerID;
+  });
+
+  const amISignedIn = computed(() => {
+    const playerID = String(you.playerID);
+    const list = Array.isArray(gamePlayers.value) ? gamePlayers.value : [];
+    for (const p of list) {
+      const player = p._custom?.value || p;
+      if (String(player.playerID) === playerID || String(player.id) === playerID) {
+        return true;
+      }
+    }
+    return false;
+  });
 
   const prettyTimerOutput = computed(() => {
     if (!timer || timer.value < 3) {
@@ -465,140 +780,41 @@
   });
 
   const computedPlayerHand = computed(() => {
-    // Loop through all the players in game.players
-    for (let player of game.players) {
-      // If player.socketID matches you.socketID, return the player.hand array
-      if (player.socketID === you.socketID) {
-        return player.hand;
-      }
-    }
-    // Return an empty array if no match is found
-    return [];
+    // Find the player whose playerID matches you.playerID
+    const player = gamePlayers.value.find((player) => player.id === you.playerID);
+
+    // Return the player's hand if found, otherwise return an empty array
+    return player ? player.hand || [] : [];
   });
 
   const computedPlayerList = computed(() => {
-    if (!game || !game.players) {
+    if (!gamePlayers.value || gamePlayers.value.length === 0) {
       return [];
-    } else if (!game.isGameStarted) {
-      return game.players;
-    } else {
-      // Sort players by score in descending order
-      return [...game.players].sort((a, b) => b.score - a.score);
-    }
-  });
-
-  socket.on("receivePlayerUpdate", (msg) => {
-    console.log(`Receiving player update from ${msg.from}`);
-    if (you.socketID == msg.from) {
-      console.log("That's me. I'm ignoring it");
-      return;
     }
 
-    // Find the player in game.players whose socketID matches msg.socketID
-    const player = game.players.find(
-      (player) => player.socketID === msg.socketID,
-    );
-    if (player) {
-      // Update the score if a new score came in the payload
-      if (msg.score || msg.score === 0) {
-        player.score = msg.score;
-        console.log(
-          `Updated score for player ${player.name} to ${player.score}`,
-        );
-      }
-
-      // Mark the card played if it has been scored on
-      if (msg.scoredCard) {
-        game.players.some((p) =>
-          p.hand.some((card) => {
-            if (card.phrase === msg.scoredCard.phrase) {
-              card.status = "played";
-              return true; // Exit the loop once a match is found
-            }
-          }),
-        );
-      }
-
-      // Mark the card stolen if somebody guessed it before it was scored.
-      if (msg.stolenCard) {
-        game.players.some((p) =>
-          p.hand.some((card) => {
-            if (card.phrase === msg.stolenCard.phrase) {
-              card.status = "stolen";
-              card.stolenBy = msg.stolenCard.stolenBy;
-              return true; // Exit the loop once a match is found
-            }
-          }),
-        );
-
-        // Is somebody stealing YOUR active card!??
-        // If so, clear those timers.
-        if (msg.stolenCard.phrase === you.currentCard.phrase) {
-          clearInterval(interval);
-          timer.value = 0;
-          you.currentCard = {};
-          you.isCurrentlyPlayingACard = false;
-        }
-
-        // Send a different toast, depending on if you were robbed or not.
-        if (msg.stolenCard.socketID === you.socketID) {
-          toast(
-            {
-              component: MyToast,
-              props: {
-                title: `You got robbed!`,
-                points: msg.stolenCard.points,
-                message: `<strong>${player.name}</strong> just scored your “<strong>${msg.stolenCard.phrase}</strong>” card`,
-              },
-            },
-            {
-              position: POSITION.BOTTOM_RIGHT,
-              toastClassName: "red",
-              timeout: 8000,
-              icon: false,
-            },
-          );
-        } else {
-          toast(
-            `<strong>${player.name}</strong> just stole a card from <strong>${msg.stolenCard.playerName}</strong> for <strong>${msg.stolenCard.points}</strong> points`,
-            {
-              timeout: 6000,
-            },
-          );
-        }
-      }
-
-      // Log bad guesses, for reference later in the game over screen
-      if (msg.badGuess && msg.badGuess.name) {
-        game.badGuesses.push(msg.badGuess);
-      }
-
-      // Show a toast if the payload says so.
-      if (msg.toast && msg.toast.message) {
-        toast(msg.toast.message, {
-          timeout: 6000,
-        });
-      }
-    } else {
-      console.log("Player not found");
-    }
+    // Clone and sort the players array by score in descending order
+    return [...gamePlayers.value].sort((a, b) => b.score - a.score);
   });
 
   onMounted(() => {
+    let playerID = localStorage.getItem("kindaFunPlayerID");
+    let playerName = localStorage.getItem("kindaFunPlayerName");
+    if (!playerID) {
+      playerID = generateUniqueID();
+      localStorage.setItem("kindaFunPlayerID", playerID);
+    }
+    if (playerName) {
+      you.nameInput = playerName;
+    }
+    you.playerID = playerID;
+    you.name = playerName;
+
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("create")) {
       createRoom();
     } else if (urlParams.has("room")) {
-      game.roomCode = urlParams.get("room").toUpperCase();
-      socket.on("connect", () => {
-        you.socketID = socket.id;
-        console.log(`Connected with socketId: ${socket.id}`);
-        joinRoom();
-      });
+      joinRoom();
     }
-
-    // Initialize socket event handlers
-    setupSocketHandlers(socket);
   });
 </script>
 <template lang="pug" src="./Meeting.pug"></template>

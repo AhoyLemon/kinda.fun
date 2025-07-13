@@ -1,46 +1,18 @@
 $focusColor: #ffc107;
-
+@import "@/shared/scss/globals/reset";
 @import "./scss/variables";
 
+@import "./scss/title-screen";
+@import "./scss/pregame";
 
-.meeting-board { display: grid; grid-template-columns: 1fr $playerListWidth; min-height: 100dvh;
-
-}
+.meeting-board { display: grid; grid-template-columns: 1fr $playerListWidth; min-height: 100dvh; }
 
 .instructions { color:white; 
   h1 { font-size:3rem; }
 }
 
-.card-table { background-color: #333; padding:20px; display: flex; flex-direction: column; justify-content: space-between;
-  .cards { display: grid; grid-template-columns: repeat( auto-fit, minmax(200px, 1fr) ); gap:20px;
-    .card { appearance: none; width:100%; background:$white; border-radius: 8px; padding:10px; border:2px solid transparent; height:100%; display:grid; grid-template-rows: 32px 1fr;
-      .points { border:2px; border-radius: 50%; width:32px; height:32px; line-height: 30px; text-align: center; font-family: $monospace; font-weight: 825; border:0.125em solid; }
-      &:not([disabled]) { cursor: pointer; }
-      &[disabled] { cursor: no-drop; opacity: 1; }
-      &.unplayed { background:$cream; color:$darkCream;
-        .points { color:$cream; background:$darkCream; }
-      }
-      &.playing { transform: scale(1.1); box-shadow: 0 0 2rem black; background-color:$lightCream; color:$darkCream; transition: transform 1s ease, background-color 1s linear;
-        .points { color: $lightCream; background:$darkCream; }
-      }
-      &.played { background:$lightGreen; color:$darkGreen; border-color:$green;
-        .points { color: $lightGreen; background:$darkGreen; }
-      }
-      &.stolen { background:$lightRed; color:$darkRed; border-color: $red;
-        .points { color: $lightRed; background:$darkRed; }
-      }
-    }
-    .points-holder { display: flex; align-items: flex-end; justify-content: flex-end; 
-    }
-    .phrase-holder { display: flex; justify-content: center; align-items: center; padding-bottom: 20px; height:100%; }
-    blockquote { font-family: $serif; font-weight: 500; font-size:2rem; text-align: center;
-      &:before { content:'“' }
-      &:after { content:'”' }
-    }
-  }
-}
-
-@import "scss/players";
+@import "./scss/players";
+@import "./scss/cards";
 
 .timer { position: fixed; bottom:0; left:0; right:$playerListWidth;
   .bar { position: absolute; bottom:0; left:0; right: 0; height:32px; background-color: black;
@@ -52,8 +24,8 @@ $focusColor: #ffc107;
   }
 }
 
-@import "scss/guess";
-@import "scss/pregame";
+@import "./scss/guess";
+
 
 .tippy-box { background:$white; color:#111;
   .tippy-arrow { color:$white; }
@@ -63,74 +35,6 @@ $focusColor: #ffc107;
   .tippy-content { font-family: $sans-serif; font-weight: 525; max-width: 160px}
 }
 
-@import "scss/animations";
+@import "./scss/animations";
 
-$lemonYellow: #e4e72c;
-$lemonBlack: #313131;
-$lemonOrange: #e98741;
-
-main.game-over { min-height: 100dvh; background-color: $lemonYellow; color:$lemonBlack;
-  h1 { text-align: center; font-family: $monospace; text-transform: uppercase; font-size:12vw; letter-spacing: 0.2em; }
-
-  ol.player-results { display:grid; gap:40px; padding:20px; grid-template-columns: repeat( auto-fit, minmax(550px, 1fr) );
-    li.player { background: $lemonBlack; padding:20px;
-      .score-and-name { display:flex; gap:20px;
-        .player-score { font-family: $monospace; font-size:4rem; line-height: 80%; font-weight: 825; color:$white; min-width:60px; text-align: right; }
-        .name-and-job { display:flex; align-items: center;
-          .text { display:grid; }
-        }
-        .player-name { font-family: $serif; font-weight: 625; color:$white; font-size:1.5rem; line-height: 90%;; }
-        .player-job { font-family: $sans-serif; font-weight: 700; color:$white; }
-      }
-      table {  font-family: $sans-serif; margin-top:10px; width:100%; max-width: 600px;
-        caption { color:$white; font-weight: 625; letter-spacing: 0.15em; }
-        thead { 
-          th { color:$white; font-weight: 725; font-size:0.875rem; padding: 10px 10px 0 10px; text-transform: uppercase;}
-        }
-        tbody { background:$white;
-          td { padding:5px 10px; border-bottom:2px solid $lemonBlack; border-right: 2px solid $lemonBlack; font-weight: 600;
-            &.phrase { font-weight: 825;}
-          }
-
-          tr.played {
-            td { background-color: $lightGreen; color:$darkGreen; }
-          }
-          tr.stolen {
-            td { background-color: $lightRed; color:$darkRed;
-              strong { font-weight: 900; }
-            }
-
-          }
-        }
-      }
-    }
-  }
-
-  h2 { text-align: center; font-family: $monospace; text-transform: uppercase; font-size:9vw; letter-spacing: 0.3em; }
-
-  ol.bad-guesses { display: grid; grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) ); gap:20px; padding:20px;
-    li.bad-guess { background: $white; color:$lemonBlack;
-      blockquote { border-left:0.5em solid #222; padding:10px 20px; font-family: $serif; font-size: 1.75em;
-        .quote-text {
-          &:before { content:'“' }
-          &:after { content:'?”' }
-        }
-        // .quote-text-with-own-card
-        cite { display: block; padding-left: 3em; font-family: $sans-serif; font-size:1rem; font-weight: 700;
-          &:before { content: '—'}
-        }
-      }
-    }
-  }
-
-  .game-by-lemon { padding:20dvh 20px 20px 20px;
-    a { color:currentColor; text-decoration: none; font-family: $serif; }
-    h3 { text-align: left; font-size:7vw; transition:color 0.15s linear; }
-    .image-holder { display: flex; align-items: center; justify-content: flex-end; }
-    .lemon { width:clamp(64px,50dvw, 300px); }
-    a:hover { color:$lemonOrange;
-      h3 { text-decoration: underline; text-decoration-thickness: 0.15em; text-underline-offset: 0.1em;}
-    }
-  }
-
-}
+@import "./scss/game-over";

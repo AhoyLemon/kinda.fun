@@ -2,7 +2,7 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // IMPORTS
-  import { reactive, computed, onMounted, getCurrentInstance } from "vue"; // Import reactive from Vue 3
+  import { reactive, computed, onMounted, getCurrentInstance, watch } from "vue"; // Import reactive from Vue 3
   import {
     randomNumber,
     randomFrom,
@@ -66,61 +66,154 @@
   import { io } from "socket.io-client";
   const socket = io.connect();
 
+  // Firebase & VueFire Stuff
+  import {
+    doc,
+    increment,
+    serverTimestamp,
+    Timestamp,
+    addDoc,
+    getDoc,
+    getDocs,
+    setDoc,
+    updateDoc,
+    collection,
+    query,
+    where,
+    onSnapshot,
+  } from "firebase/firestore";
+  import { useFirestore, useCollection, useDocument } from "vuefire";
+
+  // Initialize Firestore
+  const db = useFirestore();
+  const statsRef = doc(db, `stats/invalid`);
+
+  // Firebase Subscription Watch
+  watch(
+    () => game.roomCode,
+    async (newRoomCode) => {
+      if (newRoomCode) {
+        try {
+          await subscribeToRoom(newRoomCode);
+          await subscribeToGameStatus(newRoomCode);
+        } catch (error) {
+          console.error("Error subscribing to room:", error);
+        }
+      }
+    },
+    { immediate: true },
+  );
+
+  async function subscribeToRoom(roomCode) {
+    const playersRef = collection(doc(collection(db, "rooms"), roomCode), "players");
+
+    // Use onSnapshot to keep game.players in sync with the playersRef
+    onSnapshot(playersRef, (snapshot) => {
+      const updatedPlayers = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      game.players = updatedPlayers;
+    });
+  }
+
+  async function subscribeToGameStatus(roomCode) {
+    const gameRef = doc(collection(db, "rooms"), roomCode);
+    console.log("Game document reference:", gameRef);
+
+    onSnapshot(
+      gameRef,
+      (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const data = docSnapshot.data();
+          game.isGameStarted = data.isGameStarted ?? false;
+          game.roomCreatorID = data.roomCreatorID ?? "";
+          game.isGameOver = data.isGameOver ?? false;
+        } else {
+          console.error("Game document does not exist.");
+          game.isFailedToGetRoomData = true;
+        }
+      },
+      (error) => {
+        console.error("Error subscribing to game status:", error);
+      },
+    );
+  }
+
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Functions
 
-  const createRoom = () => {
+  const generateUniqueID = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < 12; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+
+  const createRoom = async () => {
+    game.isFailedToGetRoomData = false;
+    // Generate a room code
     function makeID(digits) {
       let text = "";
       const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-      for (let i = 0; i < digits; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
+      for (let i = 0; i < digits; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
     }
+    const roomCode = makeID(4);
+    const roomRef = doc(db, "rooms", roomCode);
 
-    game.roomCode = makeID(4);
+    // Check if the room already exists
+    const roomSnapshot = await getDoc(roomRef);
+    if (roomSnapshot.exists()) {
+      alert("ERROR: room already exists");
+      console.error("Room already exists");
+      return;
+    }
 
-    // Create a room with the randomly generated code.
-    // socket.emit("createRoom", {
-    //   roomCode: game.roomCode,
-    //   gameName: game.gameName,
-    // });
-
-    // Set your local variables.
-    my.isRoomHost = true;
-    game.currentlyInGame = true;
-    round.phase = "pregame";
-    let url = new URL(
-      location.protocol + "//" + location.host + location.pathname,
-    );
-    url.searchParams.set("room", game.roomCode);
-    window.history.pushState({}, "", url);
+    // Room does not exist, create the new room document
+    const newRoom = {
+      gameSlug: game.gameName,
+      roomCode: roomCode,
+      roomCreatorID: my.playerID,
+      isGameStarted: game.isGameStarted,
+      allowNaughty: game.allowNaughty,
+      maxRounds: game.maxRounds,
+      createdAt: serverTimestamp(),
+      ttl: Timestamp.fromMillis(Date.now() + 86400000), // 1 day from now
+    };
+    await setDoc(roomRef, newRoom);
+    game.roomCode = roomCode;
+    console.log("Room created with code:", roomCode);
+    // Update the browser URL to the new meeting page
+    const protocol = window.location.protocol; // http: or https:
+    const host = window.location.host; // e.g., localhost:5173 or example.com
+    const newUrl = `${protocol}//${host}/invalid?room=${game.roomCode}`;
+    window.history.replaceState(null, "", newUrl);
+    joinRoom();
   };
 
   const joinRoom = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomCode = urlParams.get("room");
 
-    let url = new URL(
-        location.protocol + "//" + location.host + location.pathname,
-      );
-      url.searchParams.set("room", game.roomCode);
-      window.history.pushState({}, "", url);
+    if (!roomCode) {
+      console.error("Room code is missing in the URL");
+      game.isFailedToGetRoomData = true;
+      return;
+    }
 
-    // Try to join a room with the entered code.
-    socket.emit("joinRoom", {
-      roomCode: game.roomCode,
-      gameName: game.gameName,
-    });
+    game.roomCode = roomCode.toUpperCase();
+    const roomRef = doc(db, "rooms", game.roomCode);
 
-    socket.emit("askHostForPlayersList", {
-      roomCode: game.roomCode,
-      from: my.socketID,
-    });
+    // Fetch room data
+    game.roomData = useDocument(roomRef);
 
-    game.currentlyInGame = true;
-    round.phase = "pregame";
+    // Fetch players
+    const playersCollectionRef = collection(db, `rooms/${game.roomCode}/players`);
+    game.players = useCollection(playersCollectionRef);
   };
 
   /////// BEFORE GAME (game hasn't started yet)
@@ -155,6 +248,56 @@
     } else {
       musicLobby.volume(0.6);
       musicFinalRound.volume(0.75);
+    }
+  };
+
+  const savePlayerInfo = async () => {
+    my.name = ui.nameInput.toUpperCase();
+    ui.appliedForJob = true;
+
+    localStorage.setItem("kindaFunPlayerName", my.name);
+
+    const playersCollection = collection(db, "rooms", game.roomCode, "players");
+    const playerQuery = query(playersCollection, where("playerID", "==", my.playerID));
+    const querySnapshot = await getDocs(playerQuery);
+
+    let playerFound = false;
+    let isHost = false;
+
+    // Check if there are existing players and if any of them are hosts
+    const allPlayersSnapshot = await getDocs(playersCollection);
+    if (allPlayersSnapshot.empty) {
+      isHost = true; // No other players in the room, this player will be the host
+    } else {
+      const hostExists = allPlayersSnapshot.docs.some((doc) => doc.data().isHost);
+      if (!hostExists) {
+        isHost = true; // No host exists among the existing players, this player will be the host
+      }
+    }
+
+    if (!querySnapshot.empty) {
+      // Update the existing player document
+      querySnapshot.forEach(async (docSnapshot) => {
+        const playerRef = doc(db, "rooms", game.roomCode, "players", docSnapshot.id);
+        await updateDoc(playerRef, {
+          name: my.name,
+          isHost: isHost,
+        });
+        playerFound = true;
+      });
+    }
+
+    if (!playerFound) {
+      const newPlayer = {
+        name: my.name,
+        employeeNumber: my.employeeNumber,
+        playerID: my.playerID,
+        score: 0,
+        passwordAttempts: 0,
+        isHost: isHost,
+      };
+      const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
+      await setDoc(playerRef, { ...newPlayer, playerID: my.playerID });
     }
   };
 
@@ -195,9 +338,7 @@
     document.title = my.name + " | " + gameTitle;
 
     if (my.playerIndex < 0) {
-      alert(
-        "could not get a player index. this is a bug. this should not happen.",
-      );
+      alert("could not get a player index. this is a bug. this should not happen.");
     }
 
     sendPlayerUpdate();
@@ -216,7 +357,7 @@
     });
   };
 
-  const startTheGame = () => {
+  const startTheGame = async () => {
     // Assign the host as SysAdmin, all other players are employees
     game.players.forEach(function (player, index) {
       if (player.isRoomHost) {
@@ -236,13 +377,13 @@
       game.maxRounds = game.players.length;
     }
 
-    socket.emit("startTheGame", {
-      roomCode: game.roomCode,
-      gameName: game.gameName,
-      players: game.players,
-      maxRounds: game.maxRounds,
-      sysAdminIndex: my.playerIndex,
-      allowNaughty: game.allowNaughty,
+    const roomRef = doc(db, `rooms/${game.roomCode}`);
+    await updateDoc(roomRef, {
+      isGameStarted: true,
+    });
+    await updateDoc(statsRef, {
+      gamesStarted: increment(1),
+      lastGameStarted: serverTimestamp(),
     });
 
     sendEvent("Invalid", "Game Started", game.roomCode);
@@ -358,11 +499,7 @@
         shibboleth: round.shibboleth,
         newRule: r,
       });
-    } else if (
-      rule.name == "Set A Maximum" ||
-      rule.name == "Set A Minimum" ||
-      rule.name == "Limit Vowels"
-    ) {
+    } else if (rule.name == "Set A Maximum" || rule.name == "Set A Minimum" || rule.name == "Limit Vowels") {
       // For situations where you DON'T have a second rule input.
       let r = {
         type: rule.name,
@@ -413,10 +550,7 @@
     } else if (ui.currentRule.editing) {
       // You're in edit mode.
       return true;
-    } else if (
-      ruleUnique &&
-      round.rules.some((rule) => rule.type === ruleName)
-    ) {
+    } else if (ruleUnique && round.rules.some((rule) => rule.type === ruleName)) {
       // this is a unique rule and you've already used it.
       return true;
     } else {
@@ -464,12 +598,7 @@
       if (r.inputValue == r.inputValueTwo) {
         r.message = "You may only use the letter " + r.inputValue + " once";
       } else {
-        r.message =
-          "Your password cannot contain both " +
-          r.inputValue +
-          " and " +
-          r.inputValueTwo +
-          " (simultanously)";
+        r.message = "Your password cannot contain both " + r.inputValue + " and " + r.inputValueTwo + " (simultanously)";
       }
     }
 
@@ -530,9 +659,7 @@
     });
 
     if (!foundMatch) {
-      ui.addBugErrors.push(
-        "Just so you know, " + bug + " wasn't a valid password",
-      );
+      ui.addBugErrors.push("Just so you know, " + bug + " wasn't a valid password");
     }
 
     if (findInArray(round.bugs, bug)) {
@@ -587,11 +714,7 @@
     round.roundTimer = setInterval(() => {
       round.elapsedTime += 1;
       game.players[round.sysAdminIndex].score += 1;
-      if (
-        round.elapsedTime >=
-          settings.timer.employeeMaxTime - settings.timer.hurryTime &&
-        round.hurryTimer == undefined
-      ) {
+      if (round.elapsedTime >= settings.timer.employeeMaxTime - settings.timer.hurryTime && round.hurryTimer == undefined) {
         startHurryTimer();
       }
     }, 1000);
@@ -727,22 +850,12 @@
         if (r.inputValue == r.inputValueTwo) {
           if (attempt.replace(/[^a]/g, "").length > 1) {
             attemptFailed = true;
-            attemptFailedReasons.push(
-              "Password can only contain one " + r.inputValue,
-            );
+            attemptFailedReasons.push("Password can only contain one " + r.inputValue);
           }
         } else if (r.inputValue != r.inputValueTwo) {
-          if (
-            attempt.includes(r.inputValue) &&
-            attempt.includes(r.inputValueTwo)
-          ) {
+          if (attempt.includes(r.inputValue) && attempt.includes(r.inputValueTwo)) {
             attemptFailed = true;
-            attemptFailedReasons.push(
-              "Password cannot contain both the letters " +
-                r.inputValue +
-                " and " +
-                r.inputValueTwo,
-            );
+            attemptFailedReasons.push("Password cannot contain both the letters " + r.inputValue + " and " + r.inputValueTwo);
           }
         }
       }
@@ -774,10 +887,7 @@
 
     let foundDupe = false;
     round.claimedPasswords.forEach(function (claimedPW) {
-      if (
-        attempt.replace(/[^0-9a-z]/gi, "") ==
-        claimedPW.toUpperCase().replace(/[^0-9a-z]/gi, "")
-      ) {
+      if (attempt.replace(/[^0-9a-z]/gi, "") == claimedPW.toUpperCase().replace(/[^0-9a-z]/gi, "")) {
         foundDupe = true;
       }
     });
@@ -789,10 +899,7 @@
 
     let foundOne = false;
     round.challenge.possible.forEach(function (possibility) {
-      if (
-        attempt.replace(/[^0-9a-z]/gi, "") ==
-        possibility.toUpperCase().replace(/[^0-9a-z]/gi, "")
-      ) {
+      if (attempt.replace(/[^0-9a-z]/gi, "") == possibility.toUpperCase().replace(/[^0-9a-z]/gi, "")) {
         foundOne = true;
       }
     });
@@ -815,17 +922,12 @@
       ui.passwordInputError = true;
     }
     if (duplicateCheck) {
-      ui.passwordAttemptErrors.push(
-        "Someone else has already used " + attempt + " as a password.",
-      );
+      ui.passwordAttemptErrors.push("Someone else has already used " + attempt + " as a password.");
       ui.passwordInputError = true;
     }
 
     if (!matchCheck) {
-      let errorMessage = round.challenge.failedMessage.replace(
-        "[PASS]",
-        attempt,
-      );
+      let errorMessage = round.challenge.failedMessage.replace("[PASS]", attempt);
       ui.passwordInputError = true;
       ui.passwordAttemptErrors.push(errorMessage);
     }
@@ -907,34 +1009,7 @@
   };
 
   const countLettersInEachWord = () => {
-    const allLetters = [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "I",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "O",
-      "P",
-      "Q",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-    ];
+    const allLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
     const possibilities = round.challenge.possible;
     let letter = "";
     let count = 0;
@@ -1059,16 +1134,12 @@
     let matchIndex = -1;
 
     game.allEmployeePasswords.forEach(function (p, i) {
-      if (
-        p.pw.replace(/[^0-9a-z]/gi, "") == attempt.replace(/[^0-9a-z]/gi, "")
-      ) {
+      if (p.pw.replace(/[^0-9a-z]/gi, "") == attempt.replace(/[^0-9a-z]/gi, "")) {
         pwMatch = true;
         if (p.name == my.name || p.playerIndex == my.playerIndex) {
           soundYouIdiot.play();
-          pwMatchErrorMessage =
-            "You just hacked into your own account. Did you mean to do that?";
-          game.players[my.playerIndex].score +=
-            settings.points.forCrackingOwnPassword;
+          pwMatchErrorMessage = "You just hacked into your own account. Did you mean to do that?";
+          game.players[my.playerIndex].score += settings.points.forCrackingOwnPassword;
           game.allEmployeePasswords[i].claimed = my.name;
           socket.emit("invalidPasswordCracked", {
             roomCode: game.roomCode,
@@ -1084,8 +1155,7 @@
         } else if (p.claimed) {
           soundTooSlow.play();
           passwordClaimed = true;
-          pwMatchErrorMessage =
-            "This password was already cracked by " + p.claimed;
+          pwMatchErrorMessage = "This password was already cracked by " + p.claimed;
         } else {
           pwPlayerIndex = p.playerIndex;
           matchIndex = i;
@@ -1097,19 +1167,12 @@
       ui.passwordAttemptErrors.push(pwMatchErrorMessage);
     } else if (!pwMatch) {
       soundNo.play();
-      ui.passwordAttemptErrors.push(
-        "There is no employee with the password " + attempt,
-      );
+      ui.passwordAttemptErrors.push("There is no employee with the password " + attempt);
     } else if (pwMatch && pwPlayerIndex != -1) {
       soundCracked.play();
-      ui.passwordSuccessMessage =
-        "The password " +
-        attempt +
-        " belongs to " +
-        game.players[pwPlayerIndex].name;
+      ui.passwordSuccessMessage = "The password " + attempt + " belongs to " + game.players[pwPlayerIndex].name;
       game.players[my.playerIndex].score += settings.points.forCrackingPassword;
-      game.players[pwPlayerIndex].score +=
-        settings.points.forHavingPasswordCracked;
+      game.players[pwPlayerIndex].score += settings.points.forHavingPasswordCracked;
 
       game.allEmployeePasswords[matchIndex].claimed = my.name;
 
@@ -1154,6 +1217,18 @@
     return u;
   };
 
+  const computedAmIHost = computed(() => {
+    const roomCreatorExists = game.players.some((player) => player.id === game.roomCreatorID);
+
+    if (roomCreatorExists) {
+      console.log(1335);
+      return my.playerID === game.roomCreatorID;
+    } else {
+      // Check if my.player is the first player in the players array
+      return game.players.length > 0 && game.players[0].id === my.playerID;
+    }
+  });
+
   // const uncrackedPasswords = () => {
 
   //   // Go through all of game.allEmployeePasswords
@@ -1191,10 +1266,7 @@
     return u;
   });
   const computedShibbolethRequired = computed(() => {
-    if (
-      round.shibboleth &&
-      ui.shibboleth.toUpperCase() != round.shibboleth.toUpperCase()
-    ) {
+    if (round.shibboleth && ui.shibboleth.toUpperCase() != round.shibboleth.toUpperCase()) {
       return true;
     } else {
       return false;
@@ -1221,9 +1293,7 @@
       };
     }
 
-    const uncracked = game.allEmployeePasswords.filter(
-      (password) => !password.claimed,
-    );
+    const uncracked = game.allEmployeePasswords.filter((password) => !password.claimed);
     const count = uncracked.length;
 
     return {
@@ -1283,9 +1353,7 @@
     });
 
     //Find the best cracker.
-    let bestCrackersList = [...playerTrophyStats].sort((a, b) =>
-      a.cracks <= b.cracks ? 1 : -1,
-    );
+    let bestCrackersList = [...playerTrophyStats].sort((a, b) => (a.cracks <= b.cracks ? 1 : -1));
     let bestCracker = null;
     if (bestCrackersList && bestCrackersList[0].cracks > 0) {
       bestCracker = bestCrackersList[0];
@@ -1295,9 +1363,7 @@
     }
 
     //Find the most cracked.
-    let mostCrackedList = [...playerTrophyStats].sort((a, b) =>
-      a.cracked <= b.cracked ? 1 : -1,
-    );
+    let mostCrackedList = [...playerTrophyStats].sort((a, b) => (a.cracked <= b.cracked ? 1 : -1));
     let mostCracked = null;
     if (mostCrackedList && mostCrackedList[0].cracked > 0) {
       mostCracked = mostCrackedList[0];
@@ -1307,9 +1373,7 @@
     }
 
     //Find the most selfpwned.
-    let mostSelfPwnsList = [...playerTrophyStats].sort((a, b) =>
-      a.selfPwn <= b.selfPwn ? 1 : -1,
-    );
+    let mostSelfPwnsList = [...playerTrophyStats].sort((a, b) => (a.selfPwn <= b.selfPwn ? 1 : -1));
     let mostSelfPwns = null;
     if (mostSelfPwnsList && mostSelfPwnsList[0].selfPwn > 0) {
       mostSelfPwns = mostSelfPwnsList[0];
@@ -1319,45 +1383,31 @@
     }
 
     //Find the most crashhappy.
-    let mostCrashesList = [...playerTrophyStats].sort((a, b) =>
-      a.crashesCaused <= b.crashesCaused ? 1 : -1,
-    );
+    let mostCrashesList = [...playerTrophyStats].sort((a, b) => (a.crashesCaused <= b.crashesCaused ? 1 : -1));
     let mostCrashes = null;
     if (mostCrashesList && mostCrashesList[0].crashesCaused > 0) {
       mostCrashes = mostCrashesList[0];
-      if (
-        mostCrashesList[0].crashesCaused == mostCrashesList[1].crashesCaused
-      ) {
+      if (mostCrashesList[0].crashesCaused == mostCrashesList[1].crashesCaused) {
         mostCrashes.name = "TIE";
       }
     }
 
     //Find the player with the most successful passwords
-    let mostPasswordsList = [...playerTrophyStats].sort((a, b) =>
-      a.passwordsCreated <= b.passwordsCreated ? 1 : -1,
-    );
+    let mostPasswordsList = [...playerTrophyStats].sort((a, b) => (a.passwordsCreated <= b.passwordsCreated ? 1 : -1));
     let mostPasswords = null;
     if (mostPasswordsList && mostPasswordsList[0].passwordsCreated > 0) {
       mostPasswords = mostPasswordsList[0];
-      if (
-        mostPasswordsList[0].passwordsCreated ==
-        mostPasswordsList[1].passwordsCreated
-      ) {
+      if (mostPasswordsList[0].passwordsCreated == mostPasswordsList[1].passwordsCreated) {
         mostPasswords.name = "TIE";
       }
     }
 
     //Find the player with the most password attempts
-    let mostAttemptsList = [...playerTrophyStats].sort((a, b) =>
-      a.passwordAttempts <= b.passwordAttempts ? 1 : -1,
-    );
+    let mostAttemptsList = [...playerTrophyStats].sort((a, b) => (a.passwordAttempts <= b.passwordAttempts ? 1 : -1));
     let mostAttempts = null;
     if (mostAttemptsList && mostAttemptsList[0].passwordAttempts > 0) {
       mostAttempts = mostAttemptsList[0];
-      if (
-        mostAttemptsList[0].passwordAttempts ==
-        mostAttemptsList[1].passwordAttempts
-      ) {
+      if (mostAttemptsList[0].passwordAttempts == mostAttemptsList[1].passwordAttempts) {
         mostAttempts.name = "TIE";
       }
     }
@@ -1376,26 +1426,6 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Sockets  (I can't easily move these into a file without annoying refactor)
-
-  socket.on("startTheGame", function (msg) {
-    musicLobby.stop();
-    ui.musicPlaying = false;
-
-    game.players = msg.players;
-    my.role = msg.players[my.playerIndex].role;
-    round.phase = "choose rules";
-    game.gameStarted = true;
-    round.number = 1;
-    game.maxRounds = msg.maxRounds;
-    round.sysAdminIndex = msg.sysAdminIndex;
-    game.allowNaughty = msg.allowNaughty;
-    if (my.role == "SysAdmin") {
-      definePossibleChallenges();
-      document.title = my.role + " | " + gameTitle;
-    } else {
-      document.title = my.name + " | " + gameTitle;
-    }
-  });
 
   // Inform the player of their own socketID
   socket.on("hostSelected", (hostSocketId) => {
@@ -1421,7 +1451,7 @@
         roomCode: game.roomCode,
         from: my.socketID,
         players: game.players,
-        isGameStarted: game.gameStarted,
+        isGameStarted: game.isGameStarted,
       });
     }
   });
@@ -1432,7 +1462,7 @@
     console.warn("The socket " + msg + " disconnected.");
 
     // TODO: See if that socketID is in your game. Remove them if so.
-    if (!game.gameStarted) {
+    if (!game.isGameStarted) {
       game.players.forEach(function (p, index) {
         if (p.socketID == msg) {
           game.players.splice(index, 1);
@@ -1450,11 +1480,9 @@
       socket.emit("updatePlayers", {
         roomCode: game.roomCode,
         players: game.players,
-        gameStarted: game.gameStarted,
+        gameStarted: game.isGameStarted,
       });
-      console.log(
-        "I'm the host! I gave the room all the players I know about!",
-      );
+      console.log("I'm the host! I gave the room all the players I know about!");
     }
   });
 
@@ -1462,7 +1490,7 @@
   socket.on("updatePlayers", function (msg) {
     console.log("THE PLAYERS HAVE BEEN UPDATED!!!!!!!!");
     game.players = msg.players;
-    game.gameStarted = msg.gameStarted;
+    game.isGameStarted = msg.gameStarted;
 
     // NOTE: This bit may be unnecessary, but confirms & updates your own playerIndex every time the players get updated.
     game.players.forEach(function (p, index) {
@@ -1474,9 +1502,7 @@
 
   // The SysAdmin has picked a password challenge.
   socket.on("invalidUpdatePasswordChallenge", function (msg) {
-    console.log(
-      "I (an employee) have been informed of the password challenge.",
-    );
+    console.log("I (an employee) have been informed of the password challenge.");
     round.challenge = msg.challenge;
     round.shibboleth = "";
     soundNewRule.play();
@@ -1516,8 +1542,7 @@
   socket.on("invalidTriedPassword", function (msg) {
     console.log("Someone else had a bad password.");
     round.attempts.push(msg);
-    game.players[round.sysAdminIndex].score +=
-      settings.points.forFailedPassword;
+    game.players[round.sysAdminIndex].score += settings.points.forFailedPassword;
     if (my.role == "SysAdmin") {
       my.score += settings.points.forFailedPassword;
     }
@@ -1698,16 +1723,29 @@
   // Mounted
 
   onMounted(() => {
+    let playerID = localStorage.getItem("kindaFunPlayerID");
+    let playerName = localStorage.getItem("kindaFunPlayerName");
+    if (!playerID) {
+      playerID = generateUniqueID();
+      localStorage.setItem("kindaFunPlayerID", playerID);
+    }
+    if (playerName) {
+      my.name = playerName;
+      ui.nameInput = playerName;
+    }
+    my.playerID = playerID;
+
     let urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("create")) {
       createRoom();
     } else if (urlParams.has("room")) {
-      game.roomCode = urlParams.get("room").toUpperCase();
-      socket.on("connect", () => {
-        console.log(`Connected with socketId: ${socket.id}`);
-        my.socketID = socket.id;
-        joinRoom();
-      });
+      joinRoom();
+      // game.roomCode = urlParams.get("room").toUpperCase();
+      // socket.on("connect", () => {
+      //   console.log(`Connected with socketId: ${socket.id}`);
+      //   my.socketID = socket.id;
+
+      // });
     } else if (urlParams.has("join")) {
       document.getElementById("EnterRoomCode").focus();
     }

@@ -45,7 +45,7 @@ const defaultSettings = {
 
 export const my = reactive({
   employeeNumber: randomNumber(10000, 99999),
-  // employeeNumber: 999,
+  playerID: "",
   name: "",
   color: "#ff0000",
   playerIndex: -1, // This is assigned in updatePlayer()
@@ -97,6 +97,7 @@ export const round = reactive({
 });
 
 export const ui = reactive({
+  nameInput: "",
   appliedForJob: false,
   enterCode: {
     focus: false,
@@ -126,7 +127,9 @@ export const ui = reactive({
 
 export const game = reactive({
   currentlyInGame: false,
-  gameStarted: false,
+  isGameStarted: false,
+  isFailedToGetRoomData: false,
+  roomCreatorID: "",
   roomCode: "",
   gameName: "invalid",
 

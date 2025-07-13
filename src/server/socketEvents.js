@@ -49,6 +49,8 @@ export const socketEvents = (io, socket) => {
     } else if (msg.gameName == "wrongest") {
       addOneInDatabase("wrongestGames", "RoomsCreated");
     }
+    // Assign the host as the creator (first socket in the room)
+    io.to(msg.roomCode).emit("hostSelected", socket.id);
   });
 
   socket.on("joinRoom", (msg) => {
@@ -59,14 +61,11 @@ export const socketEvents = (io, socket) => {
 
     // Get all sockets in the room
     const clients = io.sockets.adapter.rooms.get(msg.roomCode);
-
     if (clients) {
-      // Convert Set to array and get the first client
       const clientArray = Array.from(clients);
       const hostSocketId = clientArray[0];
-
-      // Notify the entire room of the host's socketId
-      io.to(msg.roomCode).emit("hostSelected", hostSocketId);
+      // Only notify the joining socket who the host is, do not re-emit to the whole room
+      io.to(socket.id).emit("hostSelected", hostSocketId);
     }
   });
 
@@ -111,6 +110,7 @@ export const socketEvents = (io, socket) => {
   socket.on("cameoFinishGame", (msg) => {
     console.log("a player finished a game of COMPARATIVELY FAMOUS");
 
+    addOneInDatabase("cameoGames", "GamesFinished");
     addOneInDatabase("cameoGames", "GamesFinished");
     newCameoPlayerScore(
       msg.playerScore,

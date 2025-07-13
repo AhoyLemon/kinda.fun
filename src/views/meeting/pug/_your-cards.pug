@@ -1,11 +1,9 @@
 ul.cards
-  li(v-for="card in computedPlayerHand")
-    button.card(
-        :class="card.status"
-        @click="playThisCard(card)" 
-        :disabled="you.isCurrentlyPlayingACard || card.status === 'played' || card.status === 'stolen'"
-      )
-      .points-holder 
-        .points(:point-value="card.points") {{card.points}}
-      .phrase-holder 
-        blockquote {{card.phrase}} 
+  li(v-for="card in computedPlayerHand" :key="card.id")
+    button.card(:class="card.status" @click="playThisCard(card)" :disabled="you.isCurrentlyPlayingACard || card.status === 'played' || card.status === 'stolen'")
+      .points-holder
+        .points {{card.points}}
+      .phrase-holder
+        blockquote {{card.phrase}}
+.card-explainer
+  p Say the #[strong exact phrase] on one of your cards, then click that card to try to score.

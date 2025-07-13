@@ -2,43 +2,46 @@ section.guillotine.stats(v-if="ui.viewing == 'guillotine'")
   figure
     img(src="/svg/games/nomorebillionaires.svg")
 
-  .stats-boxes
+  .table-and-stats
 
-    .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.guillotine")
-      .caption Last Game
-      .time-ago(v-text="formatTime(stats.general.lastPlayed.guillotine,'fromNow')")
-      .calendar(v-text="formatTime(stats.general.lastPlayed.guillotine,'calendar')")
-    .box.big-number
-      .caption Games Started
-      .number(v-text="addCommas(stats.guillotine.counts.gamesStarted)")
-      .sub-number
-        strong(v-text="calculateAverage(stats.guillotine.counts.gamesStarted, dates.guillotine.dayCount)")
-        |  per day
-    .box.big-number
-      .caption Games Finished
-      .number(v-text="addCommas(stats.guillotine.counts.gamesFinished)")
-      .sub-number
-          strong(v-text="calculateAverage(stats.guillotine.counts.gamesFinished, dates.guillotine.dayCount)")
-          |  per day (
-          strong(v-text="percentOf(stats.guillotine.counts.gamesStarted,stats.guillotine.counts.gamesFinished) + '%'")
-          | )
-    .box.big-number
-      .caption Scores Shared
-      .number(v-text="addCommas(stats.guillotine.counts.scoresShared)")
-      .sub-number
-        strong(v-text="percentOf(stats.guillotine.counts.gamesFinished,stats.guillotine.counts.scoresShared) + '%'")
-        |  share rate
-    .box.big-name(span="2" v-if="computedGuillotineMostKilled && computedGuillotineMostKilled.iname")
-      .caption Most Frequently Killed
-      .name {{computedGuillotineMostKilled.iname}}
-      .subtext
-        | Sent to the guillotine  {{computedGuillotineMostKilled.icount}} times
-    .box.big-number(span="2")
-      .caption Avg Earnings
-      .number(v-text="computedGuillotineAverageGameWealth")
-
-
-  .two-tables
+    .stats-boxes-wrapper
+      .stats-boxes
+        .box.date(v-if="stats.guillotine && stats.guillotine.lastGameStarted")
+          .caption Last Game
+          .time-ago(v-text="formatTime(stats.guillotine.lastGameStarted,'fromNow')")
+          .calendar(v-text="formatTime(stats.guillotine.lastGameStarted,'calendar')")
+        .box.big-number(v-if="stats.guillotine && stats.guillotine.gamesStarted")
+          .caption Games Started
+          .number(v-text="addCommas(stats.guillotine.gamesStarted)")
+          .sub-number
+            strong(v-text="calculateAverage(stats.guillotine.gamesStarted, dates.guillotine.dayCount)")
+            |  per day
+        .box.big-number(v-if="stats.guillotine && stats.guillotine.gamesFinished")
+          .caption Games Finished
+          .number(v-text="addCommas(stats.guillotine.gamesFinished)")
+          .sub-number
+              strong(v-text="calculateAverage(stats.guillotine.gamesFinished, dates.guillotine.dayCount)")
+              |  per day (
+              strong(v-text="percentOf(stats.guillotine.gamesStarted, stats.guillotine.gamesFinished) + '%'")
+              | )
+        .box.big-number(v-if="stats.guillotine && stats.guillotine.scoresShared")
+          .caption Scores Shared
+          .number(v-text="addCommas(stats.guillotine.scoresShared)")
+          .sub-number
+            strong(v-text="percentOf(stats.guillotine.gamesFinished, stats.guillotine.scoresShared) + '%'")
+            |  share rate
+        .box.big-name(span="2" v-if="computedGuillotine && computedGuillotine.mostExecuted")
+          .caption Most Executed
+          .name {{computedGuillotine.mostExecuted.name}}
+          .subtext
+            | Sent to the guillotine  {{computedGuillotine.mostExecuted.headCount}} times
+        .box.big-number(span="2" v-if="computedGuillotine && computedGuillotine.moneyLiberated")
+          .caption Total Money Liberated
+          .number(v-text="billionsOfDollars(computedGuillotine.moneyLiberated, true)")
+        .box.big-number( span="2" v-if="computedGuillotine && computedGuillotine.averageHeadValue")
+          .caption Average Head Value
+          .number(v-text="billionsOfDollars(computedGuillotine.averageHeadValue, true)")
+        
 
     .good-table(v-if="ui.guillotineLoaded")
       h2 Heads Removed
@@ -47,15 +50,5 @@ section.guillotine.stats(v-if="ui.viewing == 'guillotine'")
                       :columns="columns.guillotineHeads"
                       theme="black-rhino"
                       :line-numbers="true"
-                      :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
-                      :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-
-    .good-table(v-if="ui.guillotineLoaded")
-      h2 Player Scores
-      vue-good-table( v-if="stats.guillotine.playerScores && stats.guillotine.playerScores.length"
-                      :rows="stats.guillotine.playerScores"
-                      :columns="columns.guillotinePlayerScores"
-                      theme="black-rhino"
-                      :line-numbers="true"
-                      :sort-options="{ enabled: true, initialSortBy: {field: 'finishTime', type: 'desc'} }"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'headCount', type: 'desc'} }"
                       :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")

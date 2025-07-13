@@ -86,7 +86,7 @@ export const allValues = [
   },
   {
     name: "Lil' Kim",
-    desc: "Formerly of Junior M.A.F.I.A.",
+    desc: "Used to hang out with Notorious B.I.G.",
     slug: "lilkimthequeenbee",
     value: 500,
   },
@@ -177,6 +177,12 @@ export const allValues = [
     value: 375,
   },
   {
+    name: "Jeff Garlin",
+    desc: "Larry's agent on Curb Your Enthusiasm",
+    slug: "thejeffgarlin",
+    value: 350,
+  },
+  {
     name: "Wu-Tang Clan",
     desc: "Okay, so the Cameo profile says “Wu-Tang Clan”, but it's actually just Masta Killa",
     slug: "wutang",
@@ -186,12 +192,6 @@ export const allValues = [
     name: "John C. McGinley",
     desc: "Dr. Cox on Scrubs",
     slug: "johncmcginley",
-    value: 350,
-  },
-  {
-    name: "Jackie Mason",
-    desc: "Rabbi Hyman Krustofski on The Simpsons",
-    slug: "jackiemason",
     value: 350,
   },
   {
@@ -224,7 +224,6 @@ export const allValues = [
     slug: "dolphlundgren",
     value: 350,
   },
-  // { name: "Bob Saget", desc: "Danny on Full House", slug: "bobsagetofficial", value:350 }, // dead
   {
     name: "Engelbert Humperdinck",
     desc: "Singer, “Spanish Eyes”",
@@ -281,6 +280,12 @@ export const allValues = [
     value: 300,
   },
   {
+    name: "Lance Bass",
+    desc: "One of the boys in *NSYNC who wasn't Justin Timberlake",
+    slug: "lancebass",
+    value: 299,
+  },
+  {
     name: "Michael Buffer",
     desc: "the guy who says “Let’s Get Ready To Rumble!”",
     slug: "michaelbuffer",
@@ -330,6 +335,12 @@ export const allValues = [
     value: 275,
   },
   { name: "deadmau5", desc: "Canadian DJ", slug: "deadmau5", value: 269 },
+  {
+    name: "A.J. & Big Justice",
+    desc: "They say “we're Costco guys” on TikTok",
+    slug: "ajandbigjustice",
+    value: 250,
+  },
   {
     name: "George Papadopoulos",
     desc: "Served Twelve Days In Prison Before Getting Pardoned",
@@ -395,6 +406,12 @@ export const allValues = [
     desc: "One Of The Monkees",
     slug: "mickydolenz",
     value: 239,
+  },
+  {
+    name: "Xzibit",
+    desc: "Host, “Pimp My Ride”",
+    slug: "xzibit",
+    value: 225,
   },
   {
     name: "David Koechner",
@@ -464,15 +481,15 @@ export const allValues = [
     value: 200,
   },
   {
-    name: "Punxsutawney Phil",
-    desc: "World Famous Groundhog",
-    slug: "punxsyphil",
+    name: "Martin Kove",
+    desc: "The bad guy in Karate Kid",
+    slug: "martinkove",
     value: 199,
   },
   {
-    name: "Coolio",
-    desc: "Cowrote Gangsta's Paradise",
-    slug: "therealcoolio",
+    name: "Punxsutawney Phil",
+    desc: "World Famous Groundhog",
+    slug: "punxsyphil",
     value: 199,
   },
   {
@@ -482,16 +499,16 @@ export const allValues = [
     value: 198,
   },
   {
+    name: "Jonathan Van Ness",
+    desc: "The hair guy in the Queer Eye reboot",
+    slug: "jvn",
+    value: 175,
+  },
+  {
     name: "Ben Sinclair",
     desc: "The Guy on High Maintenance",
     slug: "bathroomremodel",
     value: 175,
-  },
-  {
-    name: "Meat Loaf",
-    desc: "Contestant, The Celebrity Apprentice",
-    slug: "meatloaf",
-    value: 170,
   },
   {
     name: "Redman",
@@ -533,12 +550,6 @@ export const allValues = [
     name: "Jon Lovitz",
     desc: "“Yeah, That's The Ticket”, SNL",
     slug: "jonlovitz",
-    value: 150,
-  },
-  {
-    name: "Gilbert Gottfried",
-    desc: "Iago in Aladdin",
-    slug: "gilbertgottfried",
     value: 150,
   },
   {
@@ -590,7 +601,6 @@ export const allValues = [
     value: 139,
   },
   { name: "Penn Jillette", desc: "Penn & Teller", slug: "pennj", value: 135 },
-  //{ name: "Jerry Springer", desc:"Former Mayor of Cincinnati", slug:"jerryspringer", value:135 }, // dead
   {
     name: "Ernie Hudson",
     desc: "Winston in Ghostbusters",
@@ -660,12 +670,17 @@ export const allValues = [
     value: 125,
   },
   {
+    name: "Johnny Brennan",
+    desc: "The guy who did those Jerky Boys CDs. Also there was a movie for some reason?",
+    slug: "johnnybrennan",
+    value: 120,
+  },
+  {
     name: "Takeru Kobayashi",
     desc: "Competitive Gurgitator",
     slug: "takerukobayashi",
     value: 120,
   },
-
   {
     name: "Steve Carlson",
     desc: "One of the guys from the movie Slapshot",
@@ -710,12 +725,7 @@ export const allValues = [
     value: 100,
   },
   { name: "SISQÓ", desc: "wants to see your thong", slug: "sisqo", value: 100 },
-  {
-    name: "George Lowe",
-    desc: "Space Ghost",
-    slug: "georgeloweofficial",
-    value: 100,
-  },
+
   {
     name: "Nigel Farage",
     desc: "Caused Brexit, Pretty Much",
@@ -999,6 +1009,12 @@ export const allValues = [
     value: 50,
   },
   {
+    name: "George Santos",
+    desc: "former New York Congressman and Felon",
+    slug: "gads",
+    value: 50,
+  },
+  {
     name: "George Wallace",
     desc: "The Legendary Comedian (Not The Racist Senator)",
     slug: "georgewallace",
@@ -1214,6 +1230,12 @@ export const allValues = [
     value: 29,
   },
   {
+    name: "Kanye East",
+    desc: "pretends to be Kanye West",
+    slug: "thekanyeeast",
+    value: 25,
+  },
+  {
     name: "Ken Bone",
     desc: "Wore a red sweater at a Presidential debate",
     slug: "kenbone18",
@@ -1285,5 +1307,50 @@ export const allValues = [
     desc: "Also known as #greenshirtguy",
     slug: "alex_kack",
     value: 10,
+  },
+];
+
+export const deadCelebrities = [
+  {
+    name: "George Lowe",
+    desc: "Space Ghost",
+    slug: "georgeloweofficial",
+    value: 100,
+  },
+  {
+    name: "Bob Saget",
+    desc: "Danny on Full House",
+    slug: "bobsagetofficial",
+    value: 350,
+  },
+  {
+    name: "Coolio",
+    desc: "Cowrote Gangsta's Paradise",
+    slug: "therealcoolio",
+    value: 199,
+  },
+  {
+    name: "Jerry Springer",
+    desc: "Former Mayor of Cincinnati",
+    slug: "jerryspringer",
+    value: 135,
+  },
+  {
+    name: "Jackie Mason",
+    desc: "Rabbi Hyman Krustofski on The Simpsons",
+    slug: "jackiemason",
+    value: 350,
+  },
+  {
+    name: "Gilbert Gottfried",
+    desc: "Iago in Aladdin",
+    slug: "gilbertgottfried",
+    value: 150,
+  },
+  {
+    name: "Meat Loaf",
+    desc: "Contestant, The Celebrity Apprentice",
+    slug: "meatloaf",
+    value: 170,
   },
 ];

@@ -1,0 +1,34 @@
+include ../../shared/pug/_variables.pug
+- const name = "Sisyphus Clicker"
+- const desc = "Click on Sisyphus to push the rock up the mountain (formerly futile.fun)"
+
+doctype html
+html(lang="en")
+  head
+    include ../../shared/pug/_meta.pug
+
+    // Fonts & CSS
+    link(rel="preconnect" href="https://fonts.gstatic.com")
+    link(href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700|Poppins:400,400i,700" rel="stylesheet")
+    link(href="/sisyphus.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+
+    // Favicon
+    link(rel="apple-touch-icon" sizes="180x180" href=baseUrl+"/img/sisyphus/apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href=baseUrl+"/img/sisyphus/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href=baseUrl+"/img/sisyphus/favicon-16x16.png")
+    link(rel="manifest" href=baseUrl+"/img/sisyphus/site.webmanifest")
+    link(rel="mask-icon" href=baseUrl+"/img/sisyphus/safari-pinned-tab.svg" color="#f9ca77")
+    link(rel="shortcut icon" href=baseUrl+"/img/sisyphus/favicon.ico")
+
+    // OpenGraph
+    meta(property="og:title" content=name)
+    meta(property="og:type" content="website")
+    meta(property="og:image:width" content="1200")
+    meta(property="og:image:height" content="630")
+    meta(property="og:description" content=desc)
+    meta(property="og:url" content=baseUrl +"/sisyphus")
+    meta(property="og:image" content=baseUrl +"/img/og-sisypus.png")
+    meta(property="og:email" content=email) 
+  body
+    #app
+    script(type="module" src="/src/entries/sisyphus.js")

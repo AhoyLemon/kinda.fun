@@ -1,0 +1,88 @@
+{
+  "hosting": {
+    "site": "kinda-fun",
+    "public": "dist",
+    "ignore": [],
+    "rewrites": [
+      {
+        "source": "/cameo",
+        "destination": "/cameo.html"
+      },
+      {
+        "source": "/cameo/",
+        "destination": "/cameo.html"
+      },
+      {
+        "source": "/guillotine",
+        "destination": "/guillotine.html"
+      },
+      {
+        "source": "/guillotine/",
+        "destination": "/guillotine.html"
+      },
+      {
+        "source": "/invalid",
+        "destination": "/invalid.html"
+      },
+      {
+        "source": "/invalid/",
+        "destination": "/invalid.html"
+      },
+      {
+        "source": "/meeting",
+        "destination": "/meeting.html"
+      },
+      {
+        "source": "/meeting/",
+        "destination": "/meeting.html"
+      },
+      {
+        "source": "/pretend",
+        "destination": "/pretend.html"
+      },
+      {
+        "source": "/pretend/",
+        "destination": "/pretend.html"
+      },
+      {
+        "source": "/sisyphus",
+        "destination": "/sisyphus.html"
+      },
+      {
+        "source": "/sisyphus/",
+        "destination": "/sisyphus.html"
+      },
+      {
+        "source": "/wrongest",
+        "destination": "/wrongest.html"
+      },
+      {
+        "source": "/wrongest/",
+        "destination": "/wrongest.html"
+      },
+      {
+        "source": "/stats",
+        "destination": "/stats.html"
+      },
+      {
+        "source": "/stats/",
+        "destination": "/stats.html"
+      },
+      {
+        "source": "/",
+        "destination": "/index.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "*.local"]
+    }
+  ]
+}

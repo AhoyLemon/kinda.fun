@@ -13,36 +13,17 @@
     sendEvent,
     dollars,
   } from "@/shared/js/_functions.js";
-  import {
-    cheeseIntroHeadlines,
-    cheeseIntroMessages,
-    cheeseStatus,
-  } from "./js/_cheese";
-  import {
-    workThisArray,
-    stringInArray,
-    capitalize,
-    bold,
-    similarity,
-    editDistance,
-    testChance,
-  } from "./js/_functions";
+  import { cheeseIntroHeadlines, cheeseIntroMessages, cheeseStatus } from "./js/_cheese";
+  import { workThisArray, stringInArray, capitalize, bold, similarity, editDistance, testChance } from "./js/_functions";
   import { picPath, impersonators } from "./js/_impersonators";
-  import {
-    minglingHeadlines,
-    moodHeadlines,
-    partyMoods,
-  } from "./js/_partymoods";
-  import {
-    settings,
-    correctHeadlines,
-    closeHeadlines,
-    wrongHeadlines,
-  } from "./js/_variables";
+  import { minglingHeadlines, moodHeadlines, partyMoods } from "./js/_partymoods";
+  import { settings, correctHeadlines, closeHeadlines, wrongHeadlines } from "./js/_variables";
 
-  // socket.io
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  // Firebase & VueFire Stuff
+  import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
+  import { useFirestore, useCollection, useDocument } from "vuefire";
+  const db = useFirestore();
+  const statsRef = doc(db, `stats/pretend`);
 
   ///////////////////////////////////
   // Variables
@@ -136,8 +117,8 @@
 
   const findImpersonator = () => {
     // Who are you going to meet?
-    let i = randomFrom(ui.celebrities);
-    //let i = ui.celebrities[88];
+    //let i = randomFrom(ui.celebrities);
+    let i = ui.celebrities[91];
     current.pic = picPath + i.file;
     current.name = i.celebrity;
     current.url = i.url;
@@ -156,11 +137,7 @@
     if (my.seenCheese == false && my.stepsToCheese < settings.stepsToCheese) {
       cheeseScreen("show");
       setFocus();
-    } else if (
-      dangerZone &&
-      my.previousMood == "veryBad" &&
-      ui.answer == "wrong"
-    ) {
+    } else if (dangerZone && my.previousMood == "veryBad" && ui.answer == "wrong") {
       specialScreen.show = true;
       specialScreen.type = "lose";
       specialScreen.pic = "img/pretend/gameover/lose-mobile.jpg";
@@ -168,9 +145,7 @@
       specialScreen.message =
         "Having experienced significant problems assessing the identities of the guests as well as what others at this party would consider socially acceptable, you are told to leave.<br/><br />An hour later, you find yourself at a Taco Bell getting sick on chaulpas, and tell a Larry The Cable Guy impersonator that he's your best friend. That is the saddest moment you've ever had.";
       specialScreen.gameOver = true;
-      socket.emit("pretendGameOver", {
-        gameState: "lose",
-      });
+      logGameOver("lose");
       sendEvent("Game Over", "Lose", "Round " + my.round);
     } else if (my.stepsToCheese < 1) {
       specialScreen.show = true;
@@ -179,19 +154,14 @@
       specialScreen.headline = "You win!";
       specialScreen.message = "";
       specialScreen.gameOver = true;
-      socket.emit("pretendGameOver", {
-        gameState: "win",
-      });
+      logGameOver("win");
       sendEvent("Game Over", "Win", "Round " + my.round);
     }
   };
 
   const checkName = () => {
     let correctGuess = false;
-    if (
-      ui.guess.toLowerCase() == current.name.toLowerCase() ||
-      ui.guess == "xxxx"
-    ) {
+    if (ui.guess.toLowerCase() == current.name.toLowerCase() || ui.guess == "xxxx") {
       // 100% correct
       ui.answer = "correct";
       correctGuess = true;
@@ -218,35 +188,83 @@
     }
 
     if (my.round < 2) {
-      socket.emit("pretendGameStart", {
-        correctName: current.name,
-      });
+      logNewGame();
     }
 
     if (ui.answer == "correct") {
       my.points = my.points + 1;
       my.correctGuesses++;
-      socket.emit("pretendCorrectGuess", {
-        correctName: current.name,
-      });
+      logPretendGuess(current, "correct");
     } else if (ui.answer == "close") {
       my.points = my.points + 0.7;
       my.correctGuesses++;
-      socket.emit("pretendCloseGuess", {
-        correctName: current.name,
-        guessedName: ui.guess,
-      });
+      logPretendGuess(current, "close");
     } else if (ui.answer == "wrong") {
       my.points = my.points - 0.85;
-      socket.emit("pretendBadGuess", {
-        correctName: current.name,
-        guessedName: ui.guess,
-      });
+      logPretendGuess(current, "bad");
     }
 
     sendEvent(ui.answer, current.name, ui.guess);
     generateFeedback();
     ui.phase = "answer";
+  };
+
+  const logNewGame = async () => {
+    await updateDoc(statsRef, {
+      gamesStarted: increment(1),
+      lastGameStarted: serverTimestamp(),
+    });
+  };
+
+  const logPretendGuess = async (pretender, guess) => {
+    const pretendName = pretender.name;
+    const pretendRef = doc(db, `stats/pretend/impersonators/${pretendName}`);
+
+    const isCorrect = guess === "correct";
+    const isClose = guess === "close";
+    const isBad = guess === "bad";
+
+    await runTransaction(db, async (transaction) => {
+      const pretendDoc = await transaction.get(pretendRef);
+      if (!pretendDoc.exists()) {
+        transaction.set(pretendRef, {
+          name: pretendName,
+          correctGuessCount: isCorrect ? 1 : 0,
+          closeGuessCount: isClose ? 1 : 0,
+          badGuessCount: isBad ? 1 : 0,
+          lastGuess: serverTimestamp(),
+        });
+      } else {
+        const updateData = {
+          lastGuess: serverTimestamp(),
+        };
+        if (isCorrect) {
+          updateData.correctGuessCount = increment(1);
+        } else if (isClose) {
+          updateData.closeGuessCount = increment(1);
+        } else if (isBad) {
+          updateData.badGuessCount = increment(1);
+        }
+        transaction.update(pretendRef, updateData);
+      }
+    });
+  };
+
+  const logGameOver = async (gameStatus) => {
+    let incrementGamesWon = 0;
+    let incrementGamesLost = 0;
+    if (gameStatus === "win") {
+      incrementGamesWon = 1;
+    }
+    if (gameStatus === "lose") {
+      incrementGamesLost = 1;
+    }
+    await updateDoc(statsRef, {
+      gamesFinished: increment(1),
+      lastGameFinished: serverTimestamp(),
+      gamesWon: increment(incrementGamesWon),
+      gamesLost: increment(incrementGamesLost),
+    });
   };
 
   const generateAnswerFeedback = () => {
@@ -315,31 +333,18 @@
 
       let closeMessages = [
         [
-          capitalize(he(current.sex)) +
-            " is actually a " +
-            bold(current.name) +
-            " impersonator, ",
+          `${capitalize(he(current.sex))} is actually a ${bold(current.name)} impersonator, `,
           [
-            "but " +
-              he(current.sex) +
-              " chalks up the mistake to you having a speech impediment, which you now have to pretend for the rest of the night",
-            "but " +
-              he(current.sex) +
-              ' just assumes you&apos;e illiterate. To futher the ruse, you write down "HALO, NISE 2 MEET U :)" on a piece of paper.',
-            "but blames the misspelling on your mouthful of Ritz crackers. You continue to make small talk, spitting crumbs in " +
-              his(current.sex) +
-              " face.",
+            `but ${he(current.sex)} chalks up the mistake to you having a speech impediment, which you now have to pretend for the rest of the night`,
+            `but ${he(current.sex)} just assumes you&apos;e illiterate. To futher the ruse, you write down "HALO, NISE 2 MEET U :)" on a piece of paper.`,
+            `but blames the misspelling on your mouthful of Ritz crackers. You continue to make small talk, spitting crumbs in ${his(current.sex)} face.`,
           ],
         ],
         [
-          "“" + yourGuess + ", right?” you ask.",
+          `“${yourGuess}, right?” you ask.`,
           [
-            he(current.sex) +
-              " looks at you quizzically. “" +
-              bold(current.name) +
-              " actually.” “That's what I said. " +
-              current.name +
-              ".” You confidently reply.",
+            `${he(current.sex)} looks at you quizzically. “${bold(current.name)} actually.” “That's what I said. `,
+            current.name + ".” You confidently reply.",
             "“Did you say " +
               current.name +
               " or " +
@@ -351,64 +356,25 @@
               " asks. You then ask if " +
               he(current.sex) +
               " wants to see a magic trick, but do not perform one.",
-            "“You mean " +
-              current.name +
-              "”" +
-              he(current.sex) +
-              " asks. You tell" +
-              him(current.sex) +
-              "that's what you meant.",
+            `“You mean ${current.name}?” ${he(current.sex)} asks. You tell ${him(current.sex)} that's what you meant.`,
           ],
         ],
         [
-          "“You kinda look like " +
-            yourGuess +
-            ".” you tell " +
-            him(current.sex) +
-            ". ",
+          `“You kinda look like ${yourGuess}.” you tell ${him(current.sex)}. `,
           [
-            "“Kind of looking like " +
-              bold(current.name) +
-              " is kind of what I do!”" +
-              he(current.sex) +
-              "says. You laugh politely.",
-            capitalize(he(current.sex)) +
-              " thanks you for saying so, and doesn't correct you by pronouncing it " +
-              bold(current.name) +
-              ".",
+            `“Kind of looking like ${bold(current.name)} is kind of what I do!” ${he(current.sex)} says. You laugh politely.`,
+            `${capitalize(he(current.sex))} thanks you for saying so, and doesn't correct you by pronouncing it ${bold(current.name)}.`,
           ],
         ],
         [
-          "The " +
-            bold(current.name) +
-            " impersonator weighs the pros and cons of correcting you, and ultimately ",
+          `The ${bold(current.name)} impersonator weighs the pros and cons of correcting you, and ultimately `,
           [
-            "points over your shoulder and shouts “Is that Beyoncé!?” but your back is to the wall. You see " +
-              him(current.sex) +
-              " give a sad look, and finally turn around out of politeness.",
-            "realizing life is too short, " +
-              he(current.sex) +
-              " mutters “Sure.” and then pushes past you.",
-            "sighs, pinches the bridge of " +
-              his(current.sex) +
-              " nose, and just kind of stands there. After three minutes, you realize " +
-              he(current.sex) +
-              " has fallen asleep.",
-            "decides on chewing scenery. “" +
-              ui.guess +
-              "!!??” " +
-              he(current.sex) +
-              " bellows, and then gives a perfomative sob with " +
-              his(current.sex) +
-              " face in the crook of " +
-              his(current.sex) +
-              " elbow. Nearby guests politely applaud.",
-            "hands you a business card that says “" +
-              current.name +
-              ". (Not " +
-              yourGuess +
-              ")” and slinks away.",
-            "throws an arm around your shoulders and says “close enough!” As the heartbreak of halitosis sinks in, you realize it might be <i>too</i> close.",
+            `points over your shoulder and shouts “Is that Beyoncé!?” but your back is to the wall. You see ${him(current.sex)} give a sad look, and finally turn around out of politeness.`,
+            `realizing life is too short, ${he(current.sex)} mutters “Sure.” and then pushes past you.`,
+            `sighs, pinches the bridge of ${his(current.sex)} nose, and just kind of stands there. After three minutes, you realize ${he(current.sex)} has fallen asleep.`,
+            `decides on chewing scenery. “${ui.guess}!!??” ${he(current.sex)} bellows, and then gives a perfomative sob with ${his(current.sex)} face in the crook of ${his(current.sex)} elbow. Nearby guests politely applaud.`,
+            `hands you a business card that says “${current.name}. (Not ${yourGuess})” and slinks away.`,
+            `throws an arm around your shoulders and says “close enough!” As the heartbreak of halitosis sinks in, you realize it might be <i>too</i> close.`,
           ],
         ],
       ];
@@ -418,26 +384,12 @@
       let wrongMessages = [
         [
           "The  " + bold(current.name) + " impersonator ",
-          [
-            "looks visibly annoyed that",
-            "is furious",
-            "seems genuinely hurt that",
-            "is super bummed",
-            "can not believe",
-          ],
+          ["looks visibly annoyed that", "is furious", "seems genuinely hurt that", "is super bummed", "can not believe"],
           " you mistook " + him(current.sex) + " for " + yourGuess + ". ",
           [
-            "You apologize profusely and " +
-              he(current.sex) +
-              " seems placated.",
-            "You distract " +
-              him(current.sex) +
-              " by asking " +
-              his(current.sex) +
-              " workout routine.",
-            "You lift your shirt collar over your face and " +
-              he(current.sex) +
-              " goes away.",
+            "You apologize profusely and " + he(current.sex) + " seems placated.",
+            "You distract " + him(current.sex) + " by asking " + his(current.sex) + " workout routine.",
+            "You lift your shirt collar over your face and " + he(current.sex) + " goes away.",
             "You try to change topics, but the only one you can think of is javascript, and nobody <i>ever</i> wants to talk about javascript.",
             "So " +
               he(current.sex) +
@@ -451,11 +403,7 @@
           ],
         ],
         [
-          "“" +
-            yourGuess +
-            "!” you scream, and the " +
-            bold(current.name) +
-            " impersonator ",
+          "“" + yourGuess + "!” you scream, and the " + bold(current.name) + " impersonator ",
           [
             "takes a wild punch at your nose, missing by a good foot.",
             "spits directly into your mouth.",
@@ -472,15 +420,9 @@
             "You'll have to do better.",
             "You feel genuine shame.",
             "You fold your arms and look around the room for a couple minutes.",
-            "You apologize, and " +
-              he(current.sex) +
-              " immediately forgives you.",
+            "You apologize, and " + he(current.sex) + " immediately forgives you.",
             "You apologize, but " + he(current.sex) + " doesn't forgive you.",
-            "“Pistols at dawn!” " +
-              capitalize(he(current.sex)) +
-              " declares. “And pray you're a better shot than " +
-              ui.guess +
-              " was!”",
+            "“Pistols at dawn!” " + capitalize(he(current.sex)) + " declares. “And pray you're a better shot than " + ui.guess + " was!”",
           ],
         ],
         [
@@ -496,14 +438,10 @@
           " “" + bold(current.name) + "!” " + he(current.sex) + " screams ",
           [
             "directly into your face.",
-            "and you excuse yourself to the bathroom to break " +
-              his(current.sex) +
-              " line of sight.",
+            "and you excuse yourself to the bathroom to break " + his(current.sex) + " line of sight.",
             "and you weep openly in front of " + him(current.sex) + ".",
             "and the whole party turns to look at you.",
-            "and then snaps " +
-              his(current.sex) +
-              " teeth at you, like Val Kilmer in Top gun. Perhaps not intimidating, but <i>definitely</i> unsettling",
+            "and then snaps " + his(current.sex) + " teeth at you, like Val Kilmer in Top gun. Perhaps not intimidating, but <i>definitely</i> unsettling",
           ],
         ],
       ];
@@ -604,24 +542,12 @@
 
   const visitImpersonatorWebsite = () => {
     sendEvent("Impersonator Website", current.name, current.url);
-    window.open(
-      current.url,
-      "_blank",
-      "location=yes,height=600,width=960,scrollbars=yes,status=yes",
-    );
+    window.open(current.url, "_blank", "location=yes,height=600,width=960,scrollbars=yes,status=yes");
   };
 
   const visitIllustratorWebsite = () => {
-    sendEvent(
-      "Illustrator Website",
-      "Sanguinary Novel",
-      "https://twitter.com/aberrantwhimsy",
-    );
-    window.open(
-      "https://twitter.com/aberrantwhimsy",
-      "_blank",
-      "location=yes,height=600,width=960,scrollbars=yes,status=yes",
-    );
+    sendEvent("Illustrator Website", "Sanguinary Novel", "https://twitter.com/aberrantwhimsy");
+    window.open("https://twitter.com/aberrantwhimsy", "_blank", "location=yes,height=600,width=960,scrollbars=yes,status=yes");
   };
 
   const setFocus = () => {
