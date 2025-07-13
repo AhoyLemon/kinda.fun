@@ -7,7 +7,7 @@ section { font-size:20px; font-family: $serif;
 
   .stats-boxes { display:grid; gap:$gap; grid-template-columns: repeat(4,1fr);
     .box { backdrop-filter: invert(1); padding:$padding; color:#262626; box-shadow: 0 0 5px black; display:grid; }
-    .caption { font-size:90%; text-transform: uppercase; font-weight: 600; }
+    .caption { font-family: $sans-serif; font-size:0.875rem; text-transform: uppercase; font-weight: 600; }
     [span="2"] { grid-column: span 2; }
     [span="3"] { grid-column: span 3; }
     [span="4"] { grid-column: span 4; }
@@ -31,18 +31,8 @@ section { font-size:20px; font-family: $serif;
   }
 
   .good-table { padding-top:2em;
-
     h2 { font-size:190%; padding-bottom: 0.35em; }
-    .vgt-wrap { box-shadow: 0 0 10px black;}
-    table.vgt-table {
-      th { font-weight: 900; padding:5px 5px 5px 20px; text-transform: uppercase; font-size: 85%; }
-      td { padding: 5px; }
-      th.sorting-desc, th.sorting-asc { color:#dce4ac; }
-      th.sorting:hover:after { border-bottom-color: currentColor; }
-      th.sorting:after { right:unset; left:5px; }
-      th.sorting-desc:after { border-top-color: currentColor;}
-      th.sorting-asc:after { border-bottom-color: currentColor; }
-    }
+    .vgt-wrap { box-shadow: 0 0 10px black; }
   }
 
 }
@@ -85,7 +75,6 @@ section.wrongest { padding:($gap * 2) $gap $gap 0;
 
 section.pretend {
   .pretend-split { display:grid; grid-template-columns:1fr 1fr; gap:40px;
-    // .stats-boxes { display:flex; align-items:flex-start; flex-direction: column; justify-content: flex-start; align-items: stretch; padding-top:100px; }
     .table { order:1; }
     .good-table { padding-top:0; }
     .stats-boxes { grid-template-columns: repeat(2,1fr); gap:40px; align-content: start; order:2; padding-right: 40px; }

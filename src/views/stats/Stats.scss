@@ -7,6 +7,6 @@
 @import "scss/_default";
 @import "scss/_sections";
 @import "scss/_general"; 
+@import "scss/_tables"; 
 
 .stats-screen { display:grid; gap:$gap; grid-template-columns: 240px 1fr; }
-section .good-table table.vgt-table td.font-bold { font-weight: 700; }

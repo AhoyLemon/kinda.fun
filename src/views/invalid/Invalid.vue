@@ -377,8 +377,6 @@
       game.maxRounds = game.players.length;
     }
 
-    alert(game.roomCode);
-
     const roomRef = doc(db, `rooms/${game.roomCode}`);
     await updateDoc(roomRef, {
       isGameStarted: true,

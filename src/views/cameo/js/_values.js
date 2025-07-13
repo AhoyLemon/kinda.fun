@@ -86,7 +86,7 @@ export const allValues = [
   },
   {
     name: "Lil' Kim",
-    desc: "Formerly of Junior M.A.F.I.A.",
+    desc: "Used to hang out with Notorious B.I.G.",
     slug: "lilkimthequeenbee",
     value: 500,
   },
@@ -175,6 +175,12 @@ export const allValues = [
     desc: "No longer licensed to practice law.",
     slug: "rudygiuliani",
     value: 375,
+  },
+  {
+    name: "Jeff Garlin",
+    desc: "Larry's agent on Curb Your Enthusiasm",
+    slug: "thejeffgarlin",
+    value: 350,
   },
   {
     name: "Wu-Tang Clan",
@@ -272,6 +278,12 @@ export const allValues = [
     desc: "MTV's Jersey Shore",
     slug: "snooki",
     value: 300,
+  },
+  {
+    name: "Lance Bass",
+    desc: "One of the boys in *NSYNC who wasn't Justin Timberlake",
+    slug: "lancebass",
+    value: 299,
   },
   {
     name: "Michael Buffer",
@@ -396,6 +408,12 @@ export const allValues = [
     value: 239,
   },
   {
+    name: "Xzibit",
+    desc: "Host, “Pimp My Ride”",
+    slug: "xzibit",
+    value: 225,
+  },
+  {
     name: "David Koechner",
     desc: "Champ in Anchorman",
     slug: "davidkoechner",
@@ -479,6 +497,12 @@ export const allValues = [
     desc: "Radio Doctor, “Loveline”",
     slug: "drdrew",
     value: 198,
+  },
+  {
+    name: "Jonathan Van Ness",
+    desc: "The hair guy in the Queer Eye reboot",
+    slug: "jvn",
+    value: 175,
   },
   {
     name: "Ben Sinclair",
@@ -646,12 +670,17 @@ export const allValues = [
     value: 125,
   },
   {
+    name: "Johnny Brennan",
+    desc: "The guy who did those Jerky Boys CDs. Also there was a movie for some reason?",
+    slug: "johnnybrennan",
+    value: 120,
+  },
+  {
     name: "Takeru Kobayashi",
     desc: "Competitive Gurgitator",
     slug: "takerukobayashi",
     value: 120,
   },
-
   {
     name: "Steve Carlson",
     desc: "One of the guys from the movie Slapshot",
@@ -980,6 +1009,12 @@ export const allValues = [
     value: 50,
   },
   {
+    name: "George Santos",
+    desc: "former New York Congressman and Felon",
+    slug: "gads",
+    value: 50,
+  },
+  {
     name: "George Wallace",
     desc: "The Legendary Comedian (Not The Racist Senator)",
     slug: "georgewallace",
@@ -1193,6 +1228,12 @@ export const allValues = [
     desc: "Bassist, Stryper",
     slug: "perryrichardson",
     value: 29,
+  },
+  {
+    name: "Kanye East",
+    desc: "pretends to be Kanye West",
+    slug: "thekanyeeast",
+    value: 25,
   },
   {
     name: "Ken Bone",
