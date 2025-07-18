@@ -1,3 +1,8 @@
+// Adds commas to a number
+export const addCommas = (n) => {
+  if (n === undefined || n === null) return "0";
+  return n.toLocaleString();
+};
 import { timeZoneOffset } from "./_variables";
 import moment from "moment";
 export const formatDate = (d) => {

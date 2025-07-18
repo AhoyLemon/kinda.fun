@@ -4,6 +4,7 @@
   import { timeZoneOffset, jsonURL } from "./js/_variables";
   import { formatDate, dollars, billionsOfDollars, exceededBudgetOutput, formatStatement } from "./js/_functions";
   import { addCommas, percentOf } from "@/shared/js/_functions";
+  import { columns } from "./js/_columns";
   import axios from "axios";
   import moment from "moment";
   import "vue-good-table-next/dist/vue-good-table-next.css";
@@ -59,306 +60,6 @@
     sisyphus: {},
     pretend: {},
     meeting: {},
-  });
-
-  const columns = reactive({
-    // NO MORE BILLIONAIRES table columns
-    guillotineHeads: [
-      {
-        label: "Name",
-        field: "name",
-        tdClass: "font-bold",
-      },
-      {
-        label: "Worth",
-        field: "netWorth",
-        type: "number",
-        formatFn: billionsOfDollars,
-      },
-      {
-        label: "x",
-        field: "headCount",
-        type: "number",
-        formatFn: addCommas,
-      },
-      {
-        label: "Last Removed",
-        field: "lastRemoved",
-        // type: "date",
-        formatFn: formatDate,
-      },
-    ],
-
-    // COMPARATIVELY FAMOUS table columns
-    celebs: [
-      {
-        label: "Name",
-        field: "name",
-        tdClass: "font-bold",
-      },
-      {
-        label: "Actual Value",
-        field: "actualValue",
-        type: "number",
-        formatFn: dollars,
-      },
-      {
-        label: "Avg Value",
-        field: "averagePlayerValue",
-        type: "decimal",
-        formatFn: dollars,
-      },
-      {
-        label: "Market Forces",
-        field: "marketForces",
-        type: "decimal",
-        formatFn: dollars,
-      },
-      {
-        label: "Sort Score",
-        field: "sortScore",
-        type: "number",
-      },
-      {
-        label: "Birthdays",
-        field: "birthdayWishCount",
-        type: "number",
-      },
-    ],
-    cameoSpecialGames: [
-      {
-        label: "Game",
-        field: "name",
-        tdClass: "font-bold",
-      },
-      {
-        label: "Played",
-        field: "startedCount",
-        type: "number",
-      },
-    ],
-
-    // SISYPHUS CLICKER table columns
-    sisyphusCheevos: [
-      {
-        label: "Name",
-        field: "name",
-        tdClass: "font-bold",
-      },
-      {
-        label: "Points",
-        field: "pointValue",
-        type: "number",
-      },
-      {
-        label: "Earned",
-        field: "earnedCount",
-        type: "number",
-        formatFn: addCommas,
-      },
-      {
-        label: "Last Earned",
-        field: "lastEarned",
-        // type: "date",
-        formatFn: formatDate,
-      },
-    ],
-    sisyphusPurchases: [
-      {
-        label: "Name",
-        field: "name",
-        tdClass: "font-bold",
-      },
-      {
-        label: "Price",
-        field: "price",
-        type: "number",
-      },
-      {
-        label: "Bought",
-        field: "timesBought",
-        type: "number",
-        formatFn: addCommas,
-      },
-      {
-        label: "Last Purchase",
-        field: "lastPurchased",
-        type: "date",
-        formatFn: formatDate,
-      },
-    ],
-
-    // PRETEND WORLD table columns
-    pretendGuesses: [
-      {
-        label: "Celebrity",
-        field: "name",
-        tdClass: "font-bold",
-      },
-      {
-        label: "Correct %",
-        field: "correctPercent",
-        type: "number",
-        formatFn: (val) => (val !== undefined && val !== null ? val + "%" : "0%"),
-      },
-      {
-        label: "Exact",
-        field: "correctGuessCount",
-        type: "number",
-      },
-      {
-        label: "Close",
-        field: "closeGuessCount",
-        type: "number",
-      },
-      {
-        label: "Bad",
-        field: "badGuessCount",
-        type: "number",
-      },
-    ],
-
-    // THIS MEETING HAS POINTS table columns
-    meetingCards: [
-      {
-        label: "Phrase",
-        field: "phrase",
-        tdClass: "font-bold",
-        formatFn: (val) => (val ? `“${val}”` : ""),
-      },
-      {
-        label: "Value",
-        field: "pointValue",
-        type: "number",
-      },
-      {
-        label: "Played",
-        field: "timesPlayed",
-        type: "number",
-      },
-      {
-        label: "Scored",
-        field: "timesScored",
-        type: "number",
-      },
-      {
-        label: "Stolen",
-        field: "timesStolen",
-        type: "number",
-      },
-    ],
-
-    // INVALID
-    bugs: [
-      {
-        label: "Bug",
-        field: "iname",
-      },
-      {
-        label: "Deployed",
-        field: "icount",
-        type: "number",
-      },
-    ],
-    challenges: [
-      {
-        label: "Challenge",
-        field: "iname",
-      },
-      {
-        label: "Played",
-        field: "icount",
-        type: "number",
-      },
-    ],
-    letters: [
-      {
-        label: "Letter",
-        field: "letter",
-      },
-      {
-        label: "Banned",
-        field: "banned",
-        type: "number",
-      },
-      {
-        label: "Demanded",
-        field: "demanded",
-        type: "number",
-      },
-    ],
-    passwords: [
-      {
-        label: "Password",
-        field: "password",
-      },
-      {
-        label: "Challenge",
-        field: "challenge",
-      },
-      {
-        label: "Used",
-        field: "used",
-        type: "number",
-      },
-      {
-        label: "Cracked",
-        field: "cracked",
-        type: "number",
-      },
-      {
-        label: "Crashed",
-        field: "crashed",
-        type: "number",
-      },
-    ],
-    playerCounts: [
-      {
-        label: "Game Type",
-        field: "iname",
-      },
-      {
-        label: "Played",
-        field: "icount",
-        type: "number",
-      },
-    ],
-    rules: [
-      {
-        label: "Rule",
-        field: "iname",
-      },
-      {
-        label: "Deployed",
-        field: "icount",
-        type: "number",
-      },
-    ],
-
-    // WRONGEST WORDS
-    wrongestStatements: [
-      {
-        label: "Statement",
-        field: "iname",
-        formatFn: formatStatement,
-      },
-      {
-        label: "Total Score",
-        field: "icount",
-        type: "number",
-      },
-    ],
-    decks: [
-      {
-        label: "Deck",
-        field: "iname",
-      },
-      {
-        label: "Played",
-        field: "icount",
-        type: "number",
-      },
-    ],
   });
 
   const ui = reactive({
@@ -535,6 +236,14 @@
               timestampFields: ["lastPurchased"],
               process: (data) => {
                 data.icount = typeof data.icount === "number" ? data.icount : 0;
+                // Convert jobTitles.lastPlayed to timestamp if it's an object
+                if (stats.meeting.jobTitles && Array.isArray(stats.meeting.jobTitles)) {
+                  stats.meeting.jobTitles.forEach((jt) => {
+                    if (jt.lastPlayed && typeof jt.lastPlayed === "object" && typeof jt.lastPlayed.seconds === "number") {
+                      jt.lastPlayed = convertTimestamp(jt.lastPlayed);
+                    }
+                  });
+                }
                 data.price = typeof data.price === "number" ? data.price : 0;
                 return data;
               },
@@ -599,8 +308,12 @@
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
           subcollections: {
             cards: {},
-            players: {},
-            jobTitles: {},
+            players: {
+              timestampFields: ["lastPlayed"],
+            },
+            jobTitles: {
+              timestampFields: ["lastPlayed"],
+            },
           },
         });
         dates.meeting.dayCount = dates.today.diff(dates.meeting.launched, "days");

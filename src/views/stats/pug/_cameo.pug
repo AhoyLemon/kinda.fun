@@ -36,25 +36,25 @@ section.famous.stats(v-if="ui.viewing == 'cameo'")
           strong(v-text="computedMostPopularCameoGame.percent")
           | %)
 
-      .box.big-number(v-if="computedCameoPlayerData.averagePoints != 0")
-        .caption Average Player Score
-        .number(v-text="computedCameoPlayerData.averagePoints")
+      //- .box.big-number(v-if="computedCameoPlayerData.averagePoints != 0")
+      //-   .caption Average Player Score
+      //-   .number(v-text="computedCameoPlayerData.averagePoints")
 
-      .box.big-number(v-if="computedCameoPlayerData.correctSortPercent > 0")
-        .caption Average Correct Sorts
-        .number.percent(v-text="computedCameoPlayerData.correctSortPercent + '%'")
+      //- .box.big-number(v-if="computedCameoPlayerData.correctSortPercent > 0")
+      //-   .caption Average Correct Sorts
+      //-   .number.percent(v-text="computedCameoPlayerData.correctSortPercent + '%'")
 
       .box.big-number
         .caption Avg Market Forces
         .number(v-text="computedAvgMarketForces")
 
-      .box.big-number(v-if="computedCameoPlayerData.exceededBudgetPercent > 0")
-        .caption Blew Birthday Budget
-        .number.percent(v-text="computedCameoPlayerData.exceededBudgetPercent + '%'")
+      //- .box.big-number(v-if="computedCameoPlayerData.exceededBudgetPercent > 0")
+      //-   .caption Blew Birthday Budget
+      //-   .number.percent(v-text="computedCameoPlayerData.exceededBudgetPercent + '%'")
       
-      .box.big-number(v-if="computedCameoPlayerData.averageBirthdayWishes > 0")
-        .caption Average Birthday Wishes
-        .number(v-text="computedCameoPlayerData.averageBirthdayWishes")
+      //- .box.big-number(v-if="computedCameoPlayerData.averageBirthdayWishes > 0")
+      //-   .caption Average Birthday Wishes
+      //-   .number(v-text="computedCameoPlayerData.averageBirthdayWishes")
       
       .box.big-name(span="2" v-if="computedMostOvervaluedCeleb && computedMostOvervaluedCeleb.name")
         .caption Most Overvalued 

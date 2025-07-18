@@ -78,4 +78,26 @@ section.pretend.stats(v-if="ui.viewing == 'meeting'")
                         theme="black-rhino"
                         :line-numbers="true"
                         :sort-options="{ enabled: true, initialSortBy: { field: 'timesPlayed', type: 'desc'} }"
-                        :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+                        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [19, 25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+  .two-tables
+
+    .good-table.celeb-table(v-if="ui.meetingLoaded")
+      h2 Players
+      vue-good-table( v-if="stats.meeting.players && stats.meeting.players.length"
+                      :rows="stats.meeting.players"
+                      :columns="columns.meetingPlayers"
+                      theme="black-rhino"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'timesPlayed', type: 'desc'} }"
+                      :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+    .good-table.celeb-table(v-if="ui.meetingLoaded")
+      h2 Job Titles
+      vue-good-table( v-if="stats.meeting.jobTitles && stats.meeting.jobTitles.length"
+                      :rows="stats.meeting.jobTitles"
+                      :columns="columns.meetingJobTitles" 
+                      theme="black-rhino"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'timesPlayed', type: 'desc'} }"
+                      :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50 ], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")

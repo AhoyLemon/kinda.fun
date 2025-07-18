@@ -619,6 +619,24 @@
             });
           }
         });
+
+        // Increment correctSorts or incorrectSorts in stats/cameo
+        const statsDocRef = doc(db, "stats/cameo");
+        await runTransaction(db, async (transaction) => {
+          const statsDoc = await transaction.get(statsDocRef);
+          if (!statsDoc.exists()) {
+            throw new Error("Stats document does not exist!");
+          }
+          if (cameo.correct) {
+            transaction.update(statsDocRef, {
+              correctSorts: increment(1),
+            });
+          } else {
+            transaction.update(statsDocRef, {
+              incorrectSorts: increment(1),
+            });
+          }
+        });
       }
 
       // Update birthdayWishes
@@ -637,6 +655,18 @@
               birthdayWishCount: increment(1),
             });
           }
+        });
+
+        // Increment birthdayWishes in stats/cameo
+        const statsDocRef = doc(db, "stats/cameo");
+        await runTransaction(db, async (transaction) => {
+          const statsDoc = await transaction.get(statsDocRef);
+          if (!statsDoc.exists()) {
+            throw new Error("Stats document does not exist!");
+          }
+          transaction.update(statsDocRef, {
+            birthdayWishes: increment(1),
+          });
         });
       }
     } catch (e) {
