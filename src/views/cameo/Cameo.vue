@@ -596,6 +596,8 @@
 
         if (isBudgetExceeded === "YES") {
           updates.timesBudgetExceeded = increment(1);
+        } else {
+          updates.timesBudgetMet = increment(1);
         }
 
         transaction.update(statsRef, updates);
