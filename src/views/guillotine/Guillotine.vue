@@ -392,6 +392,7 @@
     sendEvent("NO MORE BILLIONAIRES", "Score Shared", p.wealthCreatedToday);
     logTheScoreSharing();
     window.history.replaceState(null, "", newURL);
+    ui.shareScreen.display = true;
     return false;
   };
 
