@@ -22,7 +22,7 @@
           a(href="https://kinda.fun") different games
           |  available.
 
-  .game-started(v-else-if="game.isGameStarted")
+  .game-started(v-else-if="game.isGameStarted && !my.role")
     .inside
       .content
         h2 The game has already started.
