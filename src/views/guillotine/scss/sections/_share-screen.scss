@@ -1,32 +1,118 @@
-.share-screen { @include position(fixed,0,0,0,0); background:$black; color:$yellow; z-index:$z-share-screen;
-  display:flex; flex-direction: column; justify-content: center;
-  .inner { text-align: center; display:grid; gap:60px; }
+.share-screen {
+  @include position(fixed, 0, 0, 0, 0);
+  background: $black;
+  color: $yellow;
+  z-index: $z-share-screen;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .cheater {
+    .big-text {
+      font-size: 18dvw;
+      font-family: $monospaced;
+      color: $red;
+      font-weight: 900;
+      line-height: 0.9em;
+    }
+    p {
+      color: $white;
+      font-size: 1.25rem;
+    }
+  }
+
+  .inner {
+    text-align: center;
+    display: grid;
+    gap: 60px;
+  }
 
   .stat-lead-in,
-  .schools-funded { font-size:clamp(18px,5vw, 28px); color:$white; }
+  .schools-funded {
+    font-size: clamp(18px, 5vw, 28px);
+    color: $white;
+    .player-name {
+      display: inline-block;
+      margin-left: 1em;
+      margin-right: 0.5em;
+    }
+  }
+  .come-back-tomorrow {
+    color: $white;
+    font-size: 1.25em;
+  }
 
   input,
-  select { font-size:22px; border: 1px solid rgba($white,0.5); background:transparent; color:$white; font-family: $font-family; padding:0.1em 0.75em; width:14ch; }
   select {
-    &:focus { outline:none; color:$yellow; border-color: $yellow; }
+    font-size: 22px;
+    border: 1px solid rgba($white, 0.5);
+    background: transparent;
+    color: $white;
+    font-family: $font-family;
+    padding: 0.1em 0.75em;
+    width: 14ch;
+  }
+  select {
+    &:focus {
+      outline: none;
+      color: $yellow;
+      border-color: $yellow;
+    }
   }
   input {
-    &:focus { outline:none; color:$yellow; border-color: $yellow; }
-  }
-  select option { color:$black; font-size:1rem; }
-  .stat.wealth-created { 
-    .value { line-height: 0.95; font-weight: 925; }
-    .dollars-today { font-size:9.25vw; letter-spacing: -0.05em; text-shadow: 1px 1px 0.05em rgba($black,0.5); font-family: $monospaced;
-      sup { font-size:45%; display:inline-block; transform: translateY(-0.35em); }
-      .cents { padding-left:0.25em; letter-spacing: 0em; }
+    &:focus {
+      outline: none;
+      color: $yellow;
+      border-color: $yellow;
     }
-    .usd { margin-left:-2.25em; display: inline-block; }
   }
-  .share-cta { @include position(fixed,0,0,null,0); }
+  select option {
+    color: $black;
+    font-size: 1rem;
+  }
+  .stat.wealth-created {
+    .value {
+      line-height: 0.95;
+      font-weight: 925;
+    }
+    .dollars-today {
+      font-size: 9.25vw;
+      letter-spacing: -0.05em;
+      text-shadow: 1px 1px 0.05em rgba($black, 0.5);
+      font-family: $monospaced;
+      sup {
+        font-size: 45%;
+        display: inline-block;
+        transform: translateY(-0.35em);
+      }
+      .cents {
+        padding-left: 0.25em;
+        letter-spacing: 0em;
+      }
+    }
+    .usd {
+      margin-left: -2.25em;
+      display: inline-block;
+    }
+  }
+  .share-cta {
+    @include position(fixed, 0, 0, null, 0);
+  }
   .play-cta {
-    button { font-size:clamp(20px,5.5vw, 34px); background:$yellow; padding:0.25em 1.25em; border-radius: 1.5em; font-family: $font-family; font-weight: 825; color:$black; cursor: pointer; border:2px solid transparent;
-      &:hover { border-color:rgba(0,0,0,0.5); background:darken($yellow,3%); }
+    button {
+      font-size: clamp(20px, 5.5vw, 34px);
+      background: $yellow;
+      padding: 0.25em 1.25em;
+      border-radius: 1.5em;
+      font-family: $font-family;
+      font-weight: 825;
+      color: $black;
+      cursor: pointer;
+      border: 2px solid transparent;
+      &:hover {
+        border-color: rgba(0, 0, 0, 0.5);
+        background: darken($yellow, 3%);
+      }
     }
   }
-
 }
