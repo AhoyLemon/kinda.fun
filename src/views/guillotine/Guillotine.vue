@@ -56,6 +56,8 @@
       playDate: null,
       wealthCreatedToday: null,
       playerName: null,
+      amISharing: false,
+      isHashInvalid: false,
     },
   });
 
@@ -162,20 +164,20 @@
   const getDailyRank = (person) => {
     // Get all billionaires for today (both current and executed)
     const allTodaysBillionaires = [...todaysGame.currentBillionaires, ...todaysGame.formerBillionaires];
-    
+
     // Sort by net worth in descending order
     const sortedByWealth = allTodaysBillionaires.sort((a, b) => b.netWorth - a.netWorth);
-    
+
     // Find the rank of the executed person (1-based index)
-    const dailyRank = sortedByWealth.findIndex(b => b.name === person.name) + 1;
-    
+    const dailyRank = sortedByWealth.findIndex((b) => b.name === person.name) + 1;
+
     return dailyRank;
   };
 
   const playCheeringSound = (person) => {
     // Get the daily comparative rank within today's list of 20
     const dailyRank = getDailyRank(person);
-    
+
     // Check if the executed billionaire is in the top 5 for today
     if (dailyRank <= 5) {
       const cheerKey = `rank${dailyRank}`;
@@ -201,7 +203,7 @@
           } else {
             lastWords.play(p);
           }
-          
+
           // Play cheering sound after last words for top 5 billionaires
           setTimeout(() => {
             playCheeringSound(person);
@@ -384,6 +386,11 @@
       wealthCreatedToday: Number(player.history.lastGameResults.wealthCreated.toFixed(3)),
     };
 
+    // Populate the share screen data
+    ui.shareScreen.playDate = p.playDate;
+    ui.shareScreen.wealthCreatedToday = p.wealthCreatedToday;
+    ui.shareScreen.amISharing = true;
+
     let newURL = new URL(location.protocol + "//" + location.host + location.pathname);
     newURL.searchParams.set("playDate", p.playDate);
     newURL.searchParams.set("wealthCreatedToday", p.wealthCreatedToday);
@@ -419,7 +426,7 @@
 
       sendEvent("NO MORE BILLIONAIRES", "Score Shared", ui.shareScreen.playerName);
 
-      window.location.replace(newURL);
+      window.history.replaceState(null, "", newURL);
     }
   };
 
@@ -683,8 +690,45 @@
     }
   });
 
+  const loadShareDataFromURL = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const playerName = urlParams.get("playerName");
+    const wealthCreatedToday = urlParams.get("wealthCreatedToday");
+    const playDate = urlParams.get("playDate");
+    const hash = urlParams.get("hash");
+
+    if (playerName || wealthCreatedToday || playDate || hash) {
+      // Verify the hash if we have the required data
+      if (playDate && wealthCreatedToday && hash) {
+        const expectedHash = generateCheapHash(Number(playDate), Number(wealthCreatedToday));
+        if (Number(hash) !== expectedHash) {
+          ui.shareScreen.playerName = playerName;
+          ui.shareScreen.isHashInvalid = true;
+          ui.shareScreen.display = true;
+          return;
+        }
+      } else if (playDate || wealthCreatedToday) {
+        ui.shareScreen.playerName = playerName;
+        ui.shareScreen.isHashInvalid = true;
+        ui.shareScreen.display = true;
+        return;
+      }
+
+      // Load the values into the UI
+      ui.shareScreen.playerName = playerName;
+      ui.shareScreen.wealthCreatedToday = wealthCreatedToday ? Number(wealthCreatedToday) : null;
+      ui.shareScreen.playDate = playDate ? Number(playDate) : null;
+      ui.shareScreen.isHashInvalid = false;
+
+      // Show the share screen if we have share data
+      ui.shareScreen.display = true;
+    }
+  };
+
   onMounted(() => {
     loadInitialGameState();
+    loadShareDataFromURL();
   });
 
   const executeAllBillionaires = async () => {
