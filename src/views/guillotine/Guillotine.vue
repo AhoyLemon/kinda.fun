@@ -160,16 +160,12 @@
   };
 
   const playCheeringSound = (person) => {
-    console.log(`Checking cheering for ${person.name}, rank: ${person.rank}`);
     // Check if the executed billionaire is in the top 5 rankings
     if (person.rank <= 5) {
-      console.log(`Playing cheering sound for rank ${person.rank}`);
       const cheerKey = `rank${person.rank}`;
       if (cheeringSounds[cheerKey]) {
         cheeringSounds[cheerKey].play();
       }
-    } else {
-      console.log(`No cheering sound for rank ${person.rank} (not in top 5)`);
     }
   };
 
