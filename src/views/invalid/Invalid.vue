@@ -61,11 +61,6 @@
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
-  /////// socket.io
-  // import { setupSocketHandlers } from "./js/_socketHandlers";
-  import { io } from "socket.io-client";
-  const socket = io.connect();
-
   // Firebase & VueFire Stuff
   import {
     doc,
@@ -129,6 +124,58 @@
           game.isGameStarted = data.isGameStarted ?? false;
           game.roomCreatorID = data.roomCreatorID ?? "";
           game.isGameOver = data.isGameOver ?? false;
+          
+          // Handle game state updates
+          const gamePhase = data.gamePhase;
+          if (gamePhase) {
+            handleGamePhaseChange(gamePhase, data);
+          }
+          
+          // Update game state from Firestore
+          if (data.currentChallenge) {
+            round.challenge = data.currentChallenge;
+          }
+          if (data.currentRules) {
+            round.rules = data.currentRules;
+          }
+          if (data.currentBugs) {
+            round.bugs = data.currentBugs;
+          }
+          if (data.currentShibboleth !== undefined) {
+            round.shibboleth = data.currentShibboleth;
+          }
+          if (data.roundNumber !== undefined) {
+            round.number = data.roundNumber;
+          }
+          if (data.sysAdminIndex !== undefined) {
+            round.sysAdminIndex = data.sysAdminIndex;
+          }
+          if (data.claimedPasswords) {
+            round.claimedPasswords = data.claimedPasswords;
+          }
+          if (data.allEmployeePasswords) {
+            game.allEmployeePasswords = data.allEmployeePasswords;
+          }
+          if (data.crashSummary) {
+            game.crashSummary = data.crashSummary;
+          }
+          if (data.crackSummary) {
+            game.crackSummary = data.crackSummary;
+          }
+          if (data.roundSummary) {
+            game.roundSummary = data.roundSummary;
+          }
+          if (data.attempts) {
+            round.attempts = data.attempts;
+          }
+          if (data.flyingPigActive !== undefined) {
+            round.flyingPig.active = data.flyingPigActive;
+            if (data.flyingPigActive) {
+              summonTheFlyingPig();
+            } else {
+              killThePig();
+            }
+          }
         } else {
           console.error("Game document does not exist.");
           game.isFailedToGetRoomData = true;
@@ -138,6 +185,64 @@
         console.error("Error subscribing to game status:", error);
       },
     );
+  }
+
+  // Handle game phase changes from Firestore
+  function handleGamePhaseChange(newPhase, data) {
+    const previousPhase = round.phase;
+    round.phase = newPhase;
+    
+    switch (newPhase) {
+      case "choose-challenge":
+        if (my.role === "SysAdmin") {
+          definePossibleChallenges();
+        }
+        break;
+      case "choose-rules":
+        if (my.role === "SysAdmin") {
+          my.rulebux = settings.default.rulebux;
+        }
+        break;
+      case "create-password":
+        if (previousPhase !== "create-password") {
+          roundStartTimer();
+          soundinvalidStartGuessing.play();
+        }
+        break;
+      case "crashed":
+        if (data.crashedPlayer && data.crashedWord) {
+          round.crash.active = true;
+          round.crash.player = game.players.find(p => p.playerID === data.crashedPlayer);
+          round.crash.word = data.crashedWord;
+          soundSystemCrash.play();
+          endTheGuessingRound();
+        }
+        break;
+      case "final-round":
+        ui.enterFinalPasswords = true;
+        startFinalRoundCounter();
+        musicFinalRound.play();
+        break;
+      case "game-over":
+        musicFinalRound.stop();
+        soundFinalRoundOver.play();
+        clearInterval(round.roundTimer);
+        round.roundTimer = undefined;
+        document.title = "GAME OVER" + " | " + gameTitle;
+        break;
+    }
+  }
+
+  // Helper function to update room state in Firestore
+  async function updateRoomState(updates) {
+    if (!game.roomCode) return;
+    
+    try {
+      const roomRef = doc(db, "rooms", game.roomCode);
+      await updateDoc(roomRef, updates);
+    } catch (error) {
+      console.error("Error updating room state:", error);
+    }
   }
 
   /////////////////////////////////////////////////////////
@@ -183,6 +288,21 @@
       maxRounds: game.maxRounds,
       createdAt: serverTimestamp(),
       ttl: Timestamp.fromMillis(Date.now() + 86400000), // 1 day from now
+      // Game state fields for real-time sync
+      gamePhase: "lobby", // lobby, choose-challenge, choose-rules, create-password, crashed, final-round, game-over
+      currentChallenge: null,
+      currentRules: [],
+      currentBugs: [],
+      currentShibboleth: "",
+      roundNumber: 0,
+      sysAdminIndex: -1,
+      claimedPasswords: [],
+      allEmployeePasswords: [],
+      crashSummary: [],
+      crackSummary: [],
+      roundSummary: [],
+      attempts: [],
+      flyingPigActive: false,
     };
     await setDoc(roomRef, newRoom);
     game.roomCode = roomCode;
@@ -341,20 +461,10 @@
       alert("could not get a player index. this is a bug. this should not happen.");
     }
 
-    sendPlayerUpdate();
-
     if (!ui.musicPlaying) {
       musicLobby.play();
       ui.musicPlaying = true;
     }
-  };
-
-  const sendPlayerUpdate = () => {
-    socket.emit("sendPlayerList", {
-      roomCode: game.roomCode,
-      from: my.socketID,
-      players: game.players,
-    });
   };
 
   const startTheGame = async () => {
@@ -377,9 +487,16 @@
       game.maxRounds = game.players.length;
     }
 
+    // Find the first host as the initial SysAdmin
+    const hostIndex = game.players.findIndex(player => player.isRoomHost);
+    
     const roomRef = doc(db, `rooms/${game.roomCode}`);
     await updateDoc(roomRef, {
       isGameStarted: true,
+      gamePhase: "choose-challenge",
+      roundNumber: 1,
+      sysAdminIndex: hostIndex,
+      maxRounds: game.maxRounds,
     });
     await updateDoc(statsRef, {
       gamesStarted: increment(1),
@@ -419,7 +536,7 @@
     }
   };
 
-  const chooseAChallenge = () => {
+  const chooseAChallenge = async () => {
     challenges.forEach(function (c) {
       if (c.id == ui.challengeID) {
         round.challenge = c;
@@ -431,15 +548,16 @@
     countLettersInEachWord();
     startAdminTimer();
 
-    socket.emit("invalidUpdatePasswordChallenge", {
-      roomCode: game.roomCode,
-      challenge: round.challenge,
+    // Update Firestore instead of using Socket.IO
+    await updateRoomState({
+      currentChallenge: round.challenge,
+      gamePhase: "choose-rules",
     });
 
     sendEvent("Invalid", "Challenge Selected", round.challenge.name);
   };
 
-  const chooseRule = (rule) => {
+  const chooseRule = async (rule) => {
     if (rule.name == "Flying Pig") {
       // Special process for summoning a flying pig.
       my.rulebux -= rule.cost;
@@ -449,15 +567,11 @@
         message: "Look at the flying pig.",
       };
       round.rules.push(r);
-      // Inform the other players.
-      socket.emit("invalidUpdatePasswordRules", {
-        roomCode: game.roomCode,
-        rules: round.rules,
-        shibboleth: round.shibboleth,
-        newRule: r,
-      });
-      socket.emit("invalidSummonThePig", {
-        roomCode: game.roomCode,
+      // Update Firestore instead of using Socket.IO
+      await updateRoomState({
+        currentRules: round.rules,
+        currentShibboleth: round.shibboleth,
+        flyingPigActive: true,
       });
     } else if (rule.name == "Peek At Answers") {
       let shuffledAnswers = shuffle(round.challenge.possible);
@@ -493,11 +607,9 @@
         inputValueTwo: "",
       };
       round.rules.push(r);
-      socket.emit("invalidUpdatePasswordRules", {
-        roomCode: game.roomCode,
-        rules: round.rules,
-        shibboleth: round.shibboleth,
-        newRule: r,
+      await updateRoomState({
+        currentRules: round.rules,
+        currentShibboleth: round.shibboleth,
       });
     } else if (rule.name == "Set A Maximum" || rule.name == "Set A Minimum" || rule.name == "Limit Vowels") {
       // For situations where you DON'T have a second rule input.
@@ -529,12 +641,10 @@
       // Recalculate Possible Right Answers.
       findPossibleRightAnswers();
 
-      // Inform the other players.
-      socket.emit("invalidUpdatePasswordRules", {
-        roomCode: game.roomCode,
-        rules: round.rules,
-        shibboleth: round.shibboleth,
-        newRule: r,
+      // Update Firestore instead of using Socket.IO
+      await updateRoomState({
+        currentRules: round.rules,
+        currentShibboleth: round.shibboleth,
       });
     } else {
       ui.currentRule.name = rule.name;
@@ -558,7 +668,7 @@
     }
   };
 
-  const saveRule = (rule) => {
+  const saveRule = async (rule) => {
     let r = {
       type: "",
       message: "",
@@ -612,12 +722,10 @@
       // Pay for it.
       my.rulebux = my.rulebux - rule.cost;
 
-      // Inform the other players.
-      socket.emit("invalidUpdatePasswordRules", {
-        roomCode: game.roomCode,
-        rules: round.rules,
-        shibboleth: round.shibboleth,
-        newRule: r,
+      // Update Firestore instead of using Socket.IO
+      await updateRoomState({
+        currentRules: round.rules,
+        currentShibboleth: round.shibboleth,
       });
     } else {
       toast(
@@ -648,7 +756,7 @@
     ui.currentRule.editing = false;
   };
 
-  const addBug = () => {
+  const addBug = async () => {
     ui.addBugErrors = [];
     const bug = ui.addBug.toUpperCase();
     let foundMatch = false;
@@ -674,21 +782,20 @@
     ui.addBug = "";
     round.bugs.push(bug);
 
-    socket.emit("invalidUpdateBugs", {
-      roomCode: game.roomCode,
-      bugs: round.bugs,
-      challengeName: round.challenge.name,
-      newBug: bug,
+    // Update Firestore instead of using Socket.IO
+    await updateRoomState({
+      currentBugs: round.bugs,
     });
 
     sendEvent("Invalid", "Add Bug", bug);
   };
 
-  const onboardEmployees = () => {
+  const onboardEmployees = async () => {
     resetAdminTimer();
 
-    socket.emit("invalidStartGuessing", {
-      roomCode: game.roomCode,
+    // Update Firestore to start the guessing phase
+    await updateRoomState({
+      gamePhase: "create-password",
       sysAdminIndex: my.playerIndex,
     });
   };
@@ -799,13 +906,12 @@
     round.flyingPig.timer = undefined;
   };
 
-  const endTheGuessingRound = () => {
+  const endTheGuessingRound = async () => {
     resetRoundTimer();
     resetHurryTimer();
-    // BUG: Figure out why this fires for each player, and try to make it only fire once.
-    socket.emit("invalidRoundOver", {
-      from: my.socketID,
-      roomCode: game.roomCode,
+    // Update Firestore to indicate round is over
+    await updateRoomState({
+      gamePhase: "round-over",
     });
   };
 
@@ -906,7 +1012,7 @@
     return foundOne;
   };
 
-  const tryThisPassword = (attempt) => {
+  const tryThisPassword = async (attempt) => {
     attempt = attempt.toUpperCase();
     ui.passwordAttemptErrors = [];
 
@@ -941,29 +1047,45 @@
     ui.passwordAttempt = "";
     ui.shibboleth = "";
 
-    if (crashCheck) {
-      socket.emit("invalidCrashedServer", {
-        roomCode: game.roomCode,
-        playerIndex: my.playerIndex,
-        pwAttempt: attempt,
-        attemptCount: my.passwordAttempts,
-        result: "crash",
-        challengeName: round.challenge.name,
-      });
-      my.crashesCaused += 1;
+    // Create attempt record
+    const attemptRecord = {
+      playerIndex: my.playerIndex,
+      pwAttempt: attempt,
+      attemptCount: my.passwordAttempts,
+      timestamp: serverTimestamp(),
+    };
 
+    if (crashCheck) {
+      attemptRecord.result = "crash";
+      attemptRecord.challengeName = round.challenge.name;
+      
+      // Update crash state in Firestore
+      const newCrashSummary = [...(game.crashSummary || []), {
+        playerIndex: my.playerIndex,
+        sysAdminIndex: round.sysAdminIndex,
+        word: attempt,
+      }];
+      
+      await updateRoomState({
+        gamePhase: "crashed",
+        crashedPlayer: my.playerID,
+        crashedWord: attempt,
+        crashSummary: newCrashSummary,
+        attempts: [...(round.attempts || []), attemptRecord],
+      });
+      
+      my.crashesCaused += 1;
       sendEvent("Invalid", "Server Crashed", attempt);
     } else if (correctAnswer) {
       soundCorrectGuess.play();
-      passwordSuccess(attempt);
+      await passwordSuccess(attempt);
     } else {
       soundBadGuess.play();
-      socket.emit("invalidTriedPassword", {
-        roomCode: game.roomCode,
-        playerIndex: my.playerIndex,
-        pwAttempt: attempt,
-        attemptCount: my.passwordAttempts,
-        result: "failed",
+      attemptRecord.result = "failed";
+      
+      // Update attempts in Firestore for failed password
+      await updateRoomState({
+        attempts: [...(round.attempts || []), attemptRecord],
       });
     }
   };
@@ -1045,7 +1167,7 @@
     });
   };
 
-  const passwordSuccess = (attempt) => {
+  const passwordSuccess = async (attempt) => {
     // YOU GOT IT!
     // Let's give you some points
     my.score += settings.points.forGoodPassword;
@@ -1057,14 +1179,37 @@
     // Let's change the UI to reflect you having won.
     ui.passwordSucceeded = true;
 
-    socket.emit("invalidPasswordSuccess", {
-      roomCode: game.roomCode,
+    // Update player score in Firestore
+    const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
+    await updateDoc(playerRef, {
+      score: my.score,
+      passwordSuccess: true,
+    });
+
+    // Update game state
+    const newClaimedPasswords = [...(round.claimedPasswords || []), attempt];
+    const newEmployeePasswords = [...(game.allEmployeePasswords || []), {
+      pw: attempt,
+      name: my.name,
+      playerIndex: my.playerIndex,
+      playerID: my.playerID,
+      claimed: false,
+    }];
+    
+    const attemptRecord = {
       playerIndex: my.playerIndex,
       pwAttempt: attempt,
       attemptCount: my.passwordAttempts,
       playerScore: my.score,
       challengeName: round.challenge.name,
       result: "success",
+      timestamp: serverTimestamp(),
+    };
+
+    await updateRoomState({
+      claimedPasswords: newClaimedPasswords,
+      allEmployeePasswords: newEmployeePasswords,
+      attempts: [...(round.attempts || []), attemptRecord],
     });
 
     if (round.flyingPig.active) {
@@ -1075,7 +1220,7 @@
     }
   };
 
-  const startNextRoundClicked = () => {
+  const startNextRoundClicked = async () => {
     var summary = {
       challenge: round.challenge.name,
       sysAdmin: my.name,
@@ -1086,12 +1231,38 @@
       possibleAnswers: round.possibleAnswerCount,
     };
 
-    socket.emit("invalidStartNewRound", {
-      roomCode: game.roomCode,
-      playerIndex: my.playerIndex,
-      players: game.players,
-      summary: summary,
-    });
+    // Update round summary and start new round
+    const newRoundSummary = [...(game.roundSummary || []), summary];
+    
+    // Check if it's time for final round
+    const nextRoundNumber = round.number + 1;
+    if (nextRoundNumber > game.maxRounds) {
+      await updateRoomState({
+        roundSummary: newRoundSummary,
+        gamePhase: "final-round",
+      });
+    } else {
+      // Find next SysAdmin
+      let nextSysAdminIndex = round.sysAdminIndex + 1;
+      if (nextSysAdminIndex >= game.players.length) {
+        nextSysAdminIndex = 0;
+      }
+      
+      await updateRoomState({
+        roundSummary: newRoundSummary,
+        roundNumber: nextRoundNumber,
+        sysAdminIndex: nextSysAdminIndex,
+        gamePhase: "choose-challenge",
+        // Reset round state
+        currentChallenge: null,
+        currentRules: [],
+        currentBugs: [],
+        currentShibboleth: "",
+        claimedPasswords: [],
+        attempts: [],
+        flyingPigActive: false,
+      });
+    }
   };
 
   const onPaste = (evt) => {
@@ -1120,7 +1291,7 @@
     return false;
   };
 
-  const tryToCrackWith = (attempt) => {
+  const tryToCrackWith = async (attempt) => {
     attempt = attempt.toUpperCase();
     document.getElementById("PasswordAttempt").focus();
 
@@ -1141,16 +1312,15 @@
           pwMatchErrorMessage = "You just hacked into your own account. Did you mean to do that?";
           game.players[my.playerIndex].score += settings.points.forCrackingOwnPassword;
           game.allEmployeePasswords[i].claimed = my.name;
-          socket.emit("invalidPasswordCracked", {
-            roomCode: game.roomCode,
-            players: game.players,
-            allEmployeePasswords: game.allEmployeePasswords,
-            crackSummary: {
-              pw: attempt,
-              attackerIndex: my.playerIndex,
-              victimIndex: my.playerIndex,
-            },
-          });
+          
+          // Update Firestore for self-hack
+          const crackSummary = {
+            pw: attempt,
+            attackerIndex: my.playerIndex,
+            victimIndex: my.playerIndex,
+          };
+          
+          updateCrackResults(crackSummary);
           // sendEvent("Invalid", "Self-pwn", attempt);
         } else if (p.claimed) {
           soundTooSlow.play();
@@ -1176,16 +1346,13 @@
 
       game.allEmployeePasswords[matchIndex].claimed = my.name;
 
-      socket.emit("invalidPasswordCracked", {
-        roomCode: game.roomCode,
-        players: game.players,
-        allEmployeePasswords: game.allEmployeePasswords,
-        crackSummary: {
-          pw: attempt,
-          attackerIndex: my.playerIndex,
-          victimIndex: pwPlayerIndex,
-        },
-      });
+      const crackSummary = {
+        pw: attempt,
+        attackerIndex: my.playerIndex,
+        victimIndex: pwPlayerIndex,
+      };
+      
+      await updateCrackResults(crackSummary);
       sendEvent("Invalid", "Password Cracked", attempt);
 
       if (computedUnclaimedPasswords.value < 1) {
@@ -1195,17 +1362,46 @@
     document.getElementById("PasswordAttempt").focus();
   };
 
-  const setGameOver = () => {
+  // Helper function to update crack results in Firestore
+  async function updateCrackResults(crackSummary) {
+    // Update player scores
+    const attackerRef = doc(db, "rooms", game.roomCode, "players", game.players[crackSummary.attackerIndex].playerID);
+    const victimRef = doc(db, "rooms", game.roomCode, "players", game.players[crackSummary.victimIndex].playerID);
+    
+    await updateDoc(attackerRef, {
+      score: game.players[crackSummary.attackerIndex].score,
+    });
+    
+    if (crackSummary.attackerIndex !== crackSummary.victimIndex) {
+      await updateDoc(victimRef, {
+        score: game.players[crackSummary.victimIndex].score,
+      });
+    }
+
+    // Update game state
+    await updateRoomState({
+      allEmployeePasswords: game.allEmployeePasswords,
+      crackSummary: [...(game.crackSummary || []), crackSummary],
+    });
+  }
+
+  const setGameOver = async () => {
     musicFinalRound.stop();
     soundFinalRoundOver.play();
     clearInterval(round.roundTimer);
     round.roundTimer = undefined;
     round.phase = "GAME OVER";
-    socket.emit("gameOver", {
-      roomCode: game.roomCode,
-      gameName: game.gameName,
-      playerIndex: my.playerIndex,
+    
+    // Update player attempts in Firestore
+    const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
+    await updateDoc(playerRef, {
       passwordAttempts: my.passwordAttempts,
+    });
+    
+    // Set game over state
+    await updateRoomState({
+      gamePhase: "game-over",
+      isGameOver: true,
     });
   };
 
@@ -1425,277 +1621,11 @@
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
-  // Sockets  (I can't easily move these into a file without annoying refactor)
-
-  // Inform the player of their own socketID
-  socket.on("hostSelected", (hostSocketId) => {
-    console.log(`Host selected: ${hostSocketId}`);
-    if (socket.id === hostSocketId) {
-      my.isRoomHost = true;
-      console.log("You are the host!");
-    } else {
-      my.isRoomHost = false;
-      console.log("You are not the host.");
-    }
-  });
-
-  socket.on("receivePlayerList", (msg) => {
-    console.log(`Receiving new player list from  ${msg.from}`);
-    game.players = msg.players;
-  });
-
-  socket.on("sendThePlayerListIfYouAreHost", (msg) => {
-    if (my.isRoomHost && msg.from != my.socketID) {
-      console.log(`Player List request from ${msg.from}`);
-      socket.emit("sendPlayerList", {
-        roomCode: game.roomCode,
-        from: my.socketID,
-        players: game.players,
-        isGameStarted: game.isGameStarted,
-      });
-    }
-  });
-
-  // A client disconnected!
-  // Let's try to deal with it.
-  socket.on("clientDisconnect", function (msg) {
-    console.warn("The socket " + msg + " disconnected.");
-
-    // TODO: See if that socketID is in your game. Remove them if so.
-    if (!game.isGameStarted) {
-      game.players.forEach(function (p, index) {
-        if (p.socketID == msg) {
-          game.players.splice(index, 1);
-        }
-      });
-    }
-  });
-
-  ////////////////////////////////////////////////////////////////
-  // Everything below this line should ONLY be messages to the room.
-
-  socket.on("requestPlayers", function (msg) {
-    console.log("The client wants players from me!");
-    if (my.isRoomHost) {
-      socket.emit("updatePlayers", {
-        roomCode: game.roomCode,
-        players: game.players,
-        gameStarted: game.isGameStarted,
-      });
-      console.log("I'm the host! I gave the room all the players I know about!");
-    }
-  });
-
-  // Someone updated a player (this should have been the game host)
-  socket.on("updatePlayers", function (msg) {
-    console.log("THE PLAYERS HAVE BEEN UPDATED!!!!!!!!");
-    game.players = msg.players;
-    game.isGameStarted = msg.gameStarted;
-
-    // NOTE: This bit may be unnecessary, but confirms & updates your own playerIndex every time the players get updated.
-    game.players.forEach(function (p, index) {
-      if (p.employeeNumber == my.employeeNumber) {
-        my.playerIndex = index;
-      }
-    });
-  });
-
-  // The SysAdmin has picked a password challenge.
-  socket.on("invalidUpdatePasswordChallenge", function (msg) {
-    console.log("I (an employee) have been informed of the password challenge.");
-    round.challenge = msg.challenge;
-    round.shibboleth = "";
-    soundNewRule.play();
-  });
-
-  // The SysAdmin has set a new rule.
-  socket.on("invalidUpdatePasswordRules", function (msg) {
-    console.log("I (an employee) am being updated on the password rules.");
-    round.rules = msg.rules;
-    round.shibboleth = msg.shibboleth;
-    soundNewRule.play();
-  });
-
-  // The Flying Pig has been summoned!
-  socket.on("invalidSummonThePig", function () {
-    console.log("Look everybody! It's a flying pig!");
-    summonTheFlyingPig();
-  });
-
-  // The SysAdmin has a new bug!
-  socket.on("invalidUpdateBugs", function (msg) {
-    console.log("I (an employee) am being updated on the round bugs.");
-    round.bugs = msg.bugs;
-    soundNewRule.play();
-  });
-
-  // The guessing has begun!
-  socket.on("invalidStartGuessing", function (msg) {
-    console.log("The guessing has begun!");
-    round.phase = "create password";
-    round.sysAdminIndex = msg.sysAdminIndex;
-    roundStartTimer();
-    soundinvalidStartGuessing.play();
-  });
-
-  // Some player (other than me) tried a password (and failed)
-  socket.on("invalidTriedPassword", function (msg) {
-    console.log("Someone else had a bad password.");
-    round.attempts.push(msg);
-    game.players[round.sysAdminIndex].score += settings.points.forFailedPassword;
-    if (my.role == "SysAdmin") {
-      my.score += settings.points.forFailedPassword;
-    }
-  });
-
-  // Some player (possibly me, but maybe not) caused a server crash!
-  socket.on("invalidCrashedServer", function (msg) {
-    console.log("The server crashed! It may or may not be because of me!");
-
-    let i = msg.playerIndex;
-    round.phase = "crashed";
-    round.crash.active = true;
-    round.crash.player = game.players[i];
-    round.crash.word = msg.pwAttempt;
-    round.attempts.push(msg);
-
-    game.crashSummary.push({
-      playerIndex: msg.playerIndex,
-      sysAdminIndex: round.sysAdminIndex,
-      word: msg.pwAttempt,
-    });
-
-    soundSystemCrash.play();
-    game.players[round.sysAdminIndex].score += settings.points.forServerCrash;
-    if (my.role == "SysAdmin") {
-      my.score += settings.points.forServerCrash;
-    }
-    endTheGuessingRound();
-    killThePig();
-  });
-
-  // Some player (other than me) successfully guessed a password.
-  socket.on("invalidPasswordSuccess", function (msg) {
-    console.log("Someone else had a successful password.");
-
-    // Award points and mark pw as claimed.
-    let i = msg.playerIndex;
-    game.players[i].score = msg.playerScore;
-    game.players[i].passwordSuccess = true;
-    round.claimedPasswords.push(msg.pwAttempt);
-    game.allEmployeePasswords.push({
-      pw: msg.pwAttempt,
-      name: game.players[i].name,
-      playerIndex: i,
-      claimed: false,
-    });
-    round.attempts.push(msg);
-
-    // If the Hurry Up timer hasn't already started, start it now.
-    if (round.hurryTimer == undefined) {
-      startHurryTimer();
-    }
-
-    // Let's check to see if all employees have succeeded.
-    if (round.claimedPasswords.length >= game.players.length - 1) {
-      // Yup! Let's end the round.
-      endTheGuessingRound();
-    }
-  });
-
-  // Some player (could be anyone) announced the round was over.
-  socket.on("invalidRoundOver", function () {
-    console.log("The round is over.");
-    ui.roundOver = true;
-    ui.passwordSucceeded = false;
-    ui.passwordAttemptErrors = [];
-    ui.shibboleth = "";
-    resetHurryTimer();
-    resetRoundTimer();
-    killThePig();
-  });
-
-  // The SysAdmin (which might be me) started a new round.
-  socket.on("invalidStartNewRound", function (msg) {
-    console.log("new round started.");
-
-    msg.players.forEach(function (p, index) {
-      p.passwordSuccess = false;
-      if (p.employeeNumber == game.players[index].employeeNumber) {
-        game.players[index].score = p.score;
-      }
-    });
-
-    game.players = msg.players;
-    game.roundSummary.push(msg.summary);
-
-    // Hey, what round is it? Is it time for the final round?
-    if (round.number >= game.maxRounds) {
-      // Yep, Time for the final round.
-
-      // First, reset the UI and the round variables.
-      resetUI();
-      resetRoundVariables();
-
-      // Then do FINAL ROUND stuff.
-      round.phase = "FINAL ROUND";
-      startCountdownToFinalRound();
-      document.title = "FINAL ROUND | " + gameTitle;
-    } else {
-      // Nope, let's do another round.
-      round.phase = "choose rules";
-      round.number += 1;
-
-      // Who's the SysAdmin?
-      // Let's make the next player the SysAdmin.
-      // Unless there is no next player, in which case let's start over at 0.
-      let i = round.sysAdminIndex + 1;
-      if (i >= game.players.length) {
-        round.sysAdminIndex = 0;
-      } else {
-        round.sysAdminIndex = i;
-      }
-
-      // Okay, now define roles for everyone.
-      game.players.forEach(function (p) {
-        p.role = "employee";
-      });
-      game.players[round.sysAdminIndex].role = "SysAdmin";
-      my.role = game.players[my.playerIndex].role;
-
-      // Reset the UI and the round variables.
-      resetUI();
-      resetRoundVariables();
-
-      // If you're the SysAdmin, set up some challenges for you to choose from.
-      if (my.role == "SysAdmin") {
-        my.rulebux = settings.default.rulebux;
-        definePossibleChallenges();
-        document.title = my.role + " | " + gameTitle;
-      } else {
-        document.title = my.name + " | " + gameTitle;
-      }
-    }
-  });
-
-  // A player (other than me) cracked a password (in the final round.)
-  socket.on("invalidPasswordCracked", function (msg) {
-    game.players = msg.players;
-    game.allEmployeePasswords = msg.allEmployeePasswords;
-    game.crackSummary.push(msg.crackSummary);
-  });
-
-  // Some player (could be anyone) said the game is over.
-  socket.on("gameOver", function (msg) {
-    // TODO: Try to get this to only fire once per game. Similar to the nextRound bug.
-    console.log("GAME OVER ⚰️");
-    //setGameOver();
-    game.players[msg.playerIndex].passwordAttempts = msg.passwordAttempts;
-    if (my.isRoomHost) {
-      sendEvent("Invalid", "Game Over", game.roomCode);
-    }
-    document.title = "GAME OVER" + " | " + gameTitle;
-  });
+  // Real-time Game Events (now handled by Firestore listeners)
+  // All socket.io listeners have been replaced with Firestore onSnapshot listeners
+  // in the subscribeToGameStatus function above. Game events like challenges, rules,
+  // password attempts, crashes, and round transitions are now synchronized through
+  // the Firestore document updates in the updateRoomState function.
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
