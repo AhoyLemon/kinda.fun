@@ -1,6 +1,7 @@
 var app = new Vue({
   el: '#app',
-  data: {
+  data: function() {
+return {
 
     gameStatus: "loading",
     currentBillionaires: [],
@@ -62,7 +63,8 @@ var app = new Vue({
       trophies: []
     }
 
-  },
+  };
+},
 
   methods: {
 

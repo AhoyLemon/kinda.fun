@@ -4,13 +4,15 @@
 
 var app = new Vue({
   el: '#app',
-  data: {
+  data: function() {
+return {
     dailyArrests: 20,
     allBillionaires: allBillionaires,
     billionaireCount: allBillionaires.length,
     yesterdaysArrests: [],
     arrestWarrants: []
-  },
+  };
+},
 
   methods: {
 

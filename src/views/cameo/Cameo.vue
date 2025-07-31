@@ -724,7 +724,7 @@
 
     let happyBirthdays = [...birthdayHowls];
 
-    if (computedGimmickName === "Porno People") {
+    if (computedGimmickName.value === "Porno People") {
       // Simone isn't one of these.
       happyBirthdays.splice(7, 3);
     }

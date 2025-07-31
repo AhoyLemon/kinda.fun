@@ -758,7 +758,7 @@
   });
 
   const prettyTimerOutput = computed(() => {
-    if (!timer || timer.value < 3) {
+    if (!timer.value || timer.value < 3) {
       return "";
     }
     if (timer.value) {
@@ -770,7 +770,7 @@
   });
 
   const timerProgressPercent = computed(() => {
-    if (!timer || timer.value < 3) {
+    if (!timer.value || timer.value < 3) {
       return "";
     }
     if (timer.value) {
