@@ -208,7 +208,27 @@
   // Handle game phase changes from Firestore
   function handleGamePhaseChange(newPhase, data) {
     const previousPhase = round.phase;
-    round.phase = newPhase;
+    
+    // Convert Firestore phase names (with dashes) to template phase names (with spaces)
+    let templatePhase = newPhase;
+    switch (newPhase) {
+      case "choose-rules":
+        templatePhase = "choose rules";
+        break;
+      case "create-password":
+        templatePhase = "create password";
+        break;
+      case "final-round":
+        templatePhase = "FINAL ROUND";
+        break;
+      case "game-over":
+        templatePhase = "GAME OVER";
+        break;
+      default:
+        templatePhase = newPhase;
+    }
+    
+    round.phase = templatePhase;
     
     // Update player roles based on sysAdminIndex
     if (data.sysAdminIndex !== undefined && game.players.length > 0) {
@@ -229,7 +249,7 @@
     }
     
     switch (newPhase) {
-      case "choose-challenge":
+      case "choose-rules":
         if (my.role === "SysAdmin") {
           my.rulebux = settings.default.rulebux;
           definePossibleChallenges();
@@ -238,11 +258,8 @@
           document.title = my.name + " | " + gameTitle;
         }
         break;
-      case "choose-rules":
-        // SysAdmin can now set rules
-        break;
       case "create-password":
-        if (previousPhase !== "create-password") {
+        if (previousPhase !== "create password") {
           roundStartTimer();
           soundinvalidStartGuessing.play();
         }
@@ -337,7 +354,7 @@
       createdAt: serverTimestamp(),
       ttl: Timestamp.fromMillis(Date.now() + 86400000), // 1 day from now
       // Game state fields for real-time sync
-      gamePhase: "lobby", // lobby, choose-challenge, choose-rules, create-password, crashed, final-round, game-over
+      gamePhase: "lobby", // lobby, choose-rules, create-password, crashed, final-round, game-over
       currentChallenge: null,
       currentRules: [],
       currentBugs: [],
@@ -495,7 +512,7 @@
     const roomRef = doc(db, `rooms/${game.roomCode}`);
     await updateDoc(roomRef, {
       isGameStarted: true,
-      gamePhase: "choose-challenge",
+      gamePhase: "choose-rules",
       roundNumber: 1,
       sysAdminIndex: hostIndex,
       maxRounds: game.maxRounds,
@@ -1254,7 +1271,7 @@
         roundSummary: newRoundSummary,
         roundNumber: nextRoundNumber,
         sysAdminIndex: nextSysAdminIndex,
-        gamePhase: "choose-challenge",
+        gamePhase: "choose-rules",
         // Reset round state
         currentChallenge: null,
         currentRules: [],
