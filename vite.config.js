@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from "node:url";
 import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vueDevTools from "vite-plugin-vue-devtools";
-import Sitemap from "vite-plugin-sitemap";
+// import Sitemap from "vite-plugin-sitemap"; // Temporarily disabled
 import path, { resolve } from "path";
 
 export default defineConfig(({ mode }) => {
@@ -31,11 +31,12 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       vueDevTools(),
-      Sitemap({
-        hostname: "https://kinda.fun",
-        readable: true,
-        dynamicRoutes: ["/cameo", "/guillotine", "/invalid", "/meeting", "/pretend", "/sisyphus", "/wrongest"],
-      }),
+      // Sitemap temporarily disabled to fix deployment
+      // Sitemap({
+      //   hostname: "https://kinda.fun",
+      //   readable: true,
+      //   dynamicRoutes: ["/cameo", "/guillotine", "/invalid", "/meeting", "/pretend", "/sisyphus", "/wrongest"],
+      // }),
     ],
     resolve: {
       alias: {
