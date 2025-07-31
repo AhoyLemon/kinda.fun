@@ -17,6 +17,7 @@ This project is set up with automated Firebase deployment using GitHub Actions. 
 3. Add this repository secret:
 
 ### Required Secret:
+
 - **Name**: `FIREBASE_SERVICE_ACCOUNT_KINDA_FUN`  
   **Value**: Copy and paste the entire contents of the Firebase service account JSON file
 
@@ -30,6 +31,7 @@ This project is set up with automated Firebase deployment using GitHub Actions. 
 ## 4. Manual deployment
 
 You can manually deploy by going to:
+
 1. GitHub repository → Actions tab
 2. Select "Deploy to Firebase" workflow
 3. Click "Run workflow" → "Run workflow"
@@ -40,6 +42,7 @@ After setup, you can view all deployments at:
 https://github.com/AhoyLemon/kinda.fun/deployments
 
 Each deployment will show:
+
 - Deployment time
 - Commit that triggered it
 - Live site URL
