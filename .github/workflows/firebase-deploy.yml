@@ -11,7 +11,7 @@ jobs:
     
     environment:
       name: production
-      url: https://kinda-fun.web.app
+      url: "https://kinda-fun.web.app"
     
     steps:
     - name: Checkout code
