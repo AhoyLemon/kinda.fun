@@ -3,7 +3,7 @@ import SisyphusPage from "../views/sisyphus/Sisyphus.vue";
 // ...existing code from entry-sisyphus.js, update imports for new path...
 import { VueFire } from "vuefire";
 import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "../../firebaseConfig.js";
+import { firebaseConfig } from "../../firebaseConfig.public.js";
 const firebaseApp = initializeApp(firebaseConfig);
 import { auth } from "../firebase";
 import VueTippy from "vue-tippy";

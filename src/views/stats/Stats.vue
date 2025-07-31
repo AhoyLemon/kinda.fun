@@ -11,7 +11,7 @@
   import { VueGoodTable } from "vue-good-table-next";
   import { getDatabase, ref, get } from "firebase/database";
   import { initializeApp } from "firebase/app";
-  import { firebaseConfig } from "../../../firebaseConfig";
+  import { firebaseConfig } from "../../../firebaseConfig.public";
   import { useFirestore } from "vuefire";
   import { collection, getDocs } from "firebase/firestore";
 

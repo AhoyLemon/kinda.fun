@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import HomePage from "../views/home/Home.vue";
 import { VueFire } from "vuefire";
 import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "../../firebaseConfig.js";
+import { firebaseConfig } from "../../firebaseConfig.public.js";
 const firebaseApp = initializeApp(firebaseConfig);
 import { auth } from "../firebase";
 import VueTippy from "vue-tippy";

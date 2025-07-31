@@ -206,6 +206,26 @@ After removing Socket.IO calls, test that each game still works:
 2. **Update documentation**
 3. **Test production deployment**
 4. **Verify all games work correctly**
+5. **Re-enable sitemap generation** (see Known Issues below)
+
+---
+
+## 🚨 **Known Issues & TODOs**
+
+### Sitemap Plugin Issue
+**Status**: Temporarily disabled during GitHub Actions setup  
+**Issue**: `vite-plugin-sitemap` was causing build failures by looking for `robots.txt` in `/dist/` during build process  
+**Temporary Fix**: Plugin commented out in `vite.config.js`  
+**TODO**: 
+- Research proper configuration for `vite-plugin-sitemap` plugin
+- OR switch to alternative sitemap generation method
+- OR implement manual sitemap generation in build process
+- Re-enable sitemap.xml generation for SEO
+
+**Files affected**:
+- `vite.config.js` - Plugin temporarily commented out
+- `public/robots.txt` - Added during troubleshooting
+- Build process currently works without sitemap generation
 
 ---
 
