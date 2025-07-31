@@ -12,7 +12,7 @@
 
   // Sounds
   import { Howl, Howler } from "howler";
-  import { dropSound, lastWords } from "./js/partials/_sounds.js";
+  import { dropSound, lastWords, cheeringSounds } from "./js/partials/_sounds.js";
 
   // Firebase & VueFire Stuff
   import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
@@ -159,6 +159,20 @@
     sendEvent("NO MORE BILLIONAIRES", "Game Started", "Fresh Game");
   };
 
+  const playCheeringSound = (person) => {
+    console.log(`Checking cheering for ${person.name}, rank: ${person.rank}`);
+    // Check if the executed billionaire is in the top 5 rankings
+    if (person.rank <= 5) {
+      console.log(`Playing cheering sound for rank ${person.rank}`);
+      const cheerKey = `rank${person.rank}`;
+      if (cheeringSounds[cheerKey]) {
+        cheeringSounds[cheerKey].play();
+      }
+    } else {
+      console.log(`No cheering sound for rank ${person.rank} (not in top 5)`);
+    }
+  };
+
   const dropBlade = (person) => {
     ui.currentlyBusy = true;
     const newList = todaysGame.currentBillionaires.filter((value) => value.name != person.name);
@@ -175,6 +189,11 @@
           } else {
             lastWords.play(p);
           }
+          
+          // Play cheering sound after last words for top 5 billionaires
+          setTimeout(() => {
+            playCheeringSound(person);
+          }, "1000");
         }, "320");
         setTimeout(() => {
           $("#G_Head").attr("href", "img/guillotine/heads/empty.png");
