@@ -12,15 +12,6 @@ export default defineConfig(({ mode }) => {
   const isDev = (env.IS_DEV === "true" || env.IS_DEV === true) ?? false;
   const isProd = (env.IS_PROD === "true" || env.IS_PROD === true) ?? false;
 
-  let currentDatabase;
-  if (env.VITE_DEV_DB === env.VITE_DB) {
-    currentDatabase = "VITE_DEV_DB";
-  } else if (env.VITE_LIVE_DB === env.VITE_DB) {
-    currentDatabase = "VITE_DEV_DB";
-  } else {
-    currentDatabase = "??? UNKNOWN ????";
-  }
-
   console.table([
     { key: "mode", value: mode },
     { key: "IS_DEV?", value: isDev },
