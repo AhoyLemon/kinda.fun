@@ -9,10 +9,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     
-    environment:
-      name: production
-      url: "https://kinda-fun.web.app"
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
