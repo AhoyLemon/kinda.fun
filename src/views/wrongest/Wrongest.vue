@@ -47,6 +47,13 @@
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
+  // Helper Functions
+  const generatePlayerID = () => {
+    return 'player_' + Math.random().toString(36).substr(2, 9);
+  };
+
+  /////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////
   // Variables
   const game = reactive({
     roomCode: "",
@@ -97,10 +104,6 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Functions
-  const generatePlayerID = () => {
-    return 'player_' + Math.random().toString(36).substr(2, 9);
-  };
-
   const createRoom = async () => {
     function makeID(digits) {
       let text = "";
@@ -417,12 +420,13 @@
       let d = shuffle(newDeck.cards);
       game.gameDeck.cards = d;
 
-      let instance = Vue.$toast.open({
-        message:
-          "<div style='max-width:32ch; line-height:150%;'><h3 style='font-size:130%; margin-bottom:1em;'>You've run out of cards.</h3>As such, I've chosen a new deck and shuffled that for you.</div>",
-        type: "info",
-        duration: 50000,
-      });
+      // TODO: Need to implement proper toast notification
+      console.warn("You've run out of cards. Emergency backup scenario triggered.");
+      
+      // Emergency backup scenario - choose a new random deck
+      let backupDeck = randomFrom(allDecks);
+      let shuffledCards = shuffle(backupDeck.cards);
+      game.gameDeck.cards = shuffledCards;
     }
 
     game.players.forEach(function (player, index) {
