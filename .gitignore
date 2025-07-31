@@ -30,3 +30,4 @@ coverage
 .env.prod
 firebaseConfig.js
 .firebase
+firebase-privatekey.json
