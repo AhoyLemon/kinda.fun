@@ -34,6 +34,7 @@ export default defineConfig(({ mode }) => {
       Sitemap({
         hostname: "https://kinda.fun",
         readable: true,
+        robots: false, // Disable automatic robots.txt inclusion
         dynamicRoutes: ["/cameo", "/guillotine", "/invalid", "/meeting", "/pretend", "/sisyphus", "/wrongest"],
       }),
     ],
