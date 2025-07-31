@@ -121,6 +121,12 @@
       (docSnapshot) => {
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
+          const previousData = {
+            challenge: round.challenge,
+            rules: round.rules,
+            bugs: round.bugs,
+          };
+          
           game.isGameStarted = data.isGameStarted ?? false;
           game.roomCreatorID = data.roomCreatorID ?? "";
           game.isGameOver = data.isGameOver ?? false;
@@ -134,12 +140,24 @@
           // Update game state from Firestore
           if (data.currentChallenge) {
             round.challenge = data.currentChallenge;
+            // Play sound if challenge changed
+            if (previousData.challenge?.id !== data.currentChallenge.id) {
+              soundNewRule.play();
+            }
           }
           if (data.currentRules) {
             round.rules = data.currentRules;
+            // Play sound if rules changed
+            if (previousData.rules?.length !== data.currentRules.length) {
+              soundNewRule.play();
+            }
           }
           if (data.currentBugs) {
             round.bugs = data.currentBugs;
+            // Play sound if bugs changed
+            if (previousData.bugs?.length !== data.currentBugs.length) {
+              soundNewRule.play();
+            }
           }
           if (data.currentShibboleth !== undefined) {
             round.shibboleth = data.currentShibboleth;
@@ -192,16 +210,36 @@
     const previousPhase = round.phase;
     round.phase = newPhase;
     
+    // Update player roles based on sysAdminIndex
+    if (data.sysAdminIndex !== undefined && game.players.length > 0) {
+      game.players.forEach((player, index) => {
+        if (index === data.sysAdminIndex) {
+          player.role = "SysAdmin";
+        } else {
+          player.role = "employee";
+        }
+      });
+      
+      // Update my role
+      const myIndex = game.players.findIndex(player => player.playerID === my.playerID);
+      if (myIndex !== -1) {
+        my.role = game.players[myIndex].role;
+        my.playerIndex = myIndex;
+      }
+    }
+    
     switch (newPhase) {
       case "choose-challenge":
         if (my.role === "SysAdmin") {
+          my.rulebux = settings.default.rulebux;
           definePossibleChallenges();
+          document.title = my.role + " | " + gameTitle;
+        } else {
+          document.title = my.name + " | " + gameTitle;
         }
         break;
       case "choose-rules":
-        if (my.role === "SysAdmin") {
-          my.rulebux = settings.default.rulebux;
-        }
+        // SysAdmin can now set rules
         break;
       case "create-password":
         if (previousPhase !== "create-password") {
@@ -218,10 +256,20 @@
           endTheGuessingRound();
         }
         break;
+      case "round-over":
+        ui.roundOver = true;
+        ui.passwordSucceeded = false;
+        ui.passwordAttemptErrors = [];
+        ui.shibboleth = "";
+        resetHurryTimer();
+        resetRoundTimer();
+        killThePig();
+        break;
       case "final-round":
         ui.enterFinalPasswords = true;
         startFinalRoundCounter();
         musicFinalRound.play();
+        document.title = "FINAL ROUND | " + gameTitle;
         break;
       case "game-over":
         musicFinalRound.stop();
@@ -421,56 +469,10 @@
     }
   };
 
-  const updatePlayer = () => {
-    my.name = my.name.toUpperCase();
-    ui.appliedForJob = true;
-    //Is this a new player or a player update
-    let newPlayer = true;
-
-    const p = {
-      name: my.name,
-      employeeNumber: my.employeeNumber,
-      socketID: my.socketID,
-      isRoomHost: my.isRoomHost,
-      role: null,
-      score: 0,
-      passwordAttempts: 0,
-      passwordSuccess: false,
-    };
-
-    game.players.forEach(function (player, index) {
-      if (player.employeeNumber == my.employeeNumber) {
-        game.players[index] = p;
-        newPlayer = false;
-      }
-    });
-
-    // It's a new player, add that to the array.
-    if (newPlayer) {
-      game.players.push(p);
-    }
-
-    game.players.forEach(function (player, index) {
-      if (player.employeeNumber == my.employeeNumber) {
-        my.playerIndex = index;
-      }
-    });
-    document.title = my.name + " | " + gameTitle;
-
-    if (my.playerIndex < 0) {
-      alert("could not get a player index. this is a bug. this should not happen.");
-    }
-
-    if (!ui.musicPlaying) {
-      musicLobby.play();
-      ui.musicPlaying = true;
-    }
-  };
-
   const startTheGame = async () => {
     // Assign the host as SysAdmin, all other players are employees
     game.players.forEach(function (player, index) {
-      if (player.isRoomHost) {
+      if (player.isHost) {
         game.players[index].role = "SysAdmin";
       } else {
         game.players[index].role = "employee";
@@ -488,7 +490,7 @@
     }
 
     // Find the first host as the initial SysAdmin
-    const hostIndex = game.players.findIndex(player => player.isRoomHost);
+    const hostIndex = game.players.findIndex(player => player.isHost);
     
     const roomRef = doc(db, `rooms/${game.roomCode}`);
     await updateDoc(roomRef, {
@@ -1414,14 +1416,16 @@
   };
 
   const computedAmIHost = computed(() => {
-    const roomCreatorExists = game.players.some((player) => player.id === game.roomCreatorID);
+    const roomCreatorExists = game.players.some((player) => player.playerID === game.roomCreatorID);
 
     if (roomCreatorExists) {
-      console.log(1335);
       return my.playerID === game.roomCreatorID;
     } else {
-      // Check if my.player is the first player in the players array
-      return game.players.length > 0 && game.players[0].id === my.playerID;
+      // Check if my player is the first player in the players array or if I'm marked as host
+      return game.players.length > 0 && (
+        game.players[0].playerID === my.playerID ||
+        game.players.some(player => player.playerID === my.playerID && player.isHost)
+      );
     }
   });
 
