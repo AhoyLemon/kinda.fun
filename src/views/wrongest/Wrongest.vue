@@ -2,7 +2,7 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // IMPORTS
-  import { reactive, computed, onMounted, getCurrentInstance } from "vue"; // Import reactive from Vue 3
+  import { reactive, computed, onMounted, onBeforeUnmount, getCurrentInstance } from "vue"; // Import reactive from Vue 3
   import {
     randomNumber,
     randomFrom,
@@ -24,9 +24,26 @@
     soundPresentationOver,
   } from "./js/_variables";
 
-  //////// socket.io
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  //////// Firebase/Firestore
+  import {
+    doc,
+    increment,
+    serverTimestamp,
+    Timestamp,
+    addDoc,
+    getDoc,
+    getDocs,
+    setDoc,
+    updateDoc,
+    collection,
+    query,
+    where,
+    onSnapshot,
+  } from "firebase/firestore";
+  import { useFirestore, useCollection, useDocument } from "vuefire";
+
+  // Initialize Firestore
+  const db = useFirestore();
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
@@ -50,7 +67,7 @@
   const my = reactive({
     isRoomHost: false,
     name: "",
-    socketID: "",
+    playerID: generatePlayerID(),
     card: "",
     playerIndex: -1,
 
@@ -80,7 +97,11 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Functions
-  const createRoom = () => {
+  const generatePlayerID = () => {
+    return 'player_' + Math.random().toString(36).substr(2, 9);
+  };
+
+  const createRoom = async () => {
     function makeID(digits) {
       let text = "";
       const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -93,37 +114,176 @@
 
     game.roomCode = makeID(4);
 
-    // Create a room with the randomly generated code.
-    socket.emit("createRoom", {
-      roomCode: game.roomCode,
-      gameName: game.gameName,
-    });
+    try {
+      // Create a room document in Firestore
+      const roomRef = doc(collection(db, "rooms"), game.roomCode);
+      await setDoc(roomRef, {
+        host: my.playerID,
+        createdAt: serverTimestamp(),
+        lastActivity: serverTimestamp(),
+        gameType: "wrongest"
+      });
 
-    // Set your local variables.
-    my.isRoomHost = true;
-    game.inRoom = true;
-    let url = new URL(
-      location.protocol + "//" + location.host + location.pathname,
-    );
-    url.searchParams.set("room", game.roomCode);
-    window.history.pushState({}, "", url);
+      // Create gameState subcollection
+      const gameStateRef = doc(collection(roomRef, "gameState"), "current");
+      await setDoc(gameStateRef, {
+        phase: "lobby",
+        started: false,
+        gameOver: false,
+        currentRound: 0,
+        maxRounds: 0,
+        dealerIndex: 0,
+        activePlayerIndex: -1,
+        chosenDeck: {},
+        gameDeck: {},
+        cardsPlayed: [],
+        statementHistory: [],
+        voteHistory: [],
+        presentationTimer: null,
+        votesSubmitted: 0,
+        cardsPresented: []
+      });
+
+      // Set your local variables.
+      my.isRoomHost = true;
+      game.inRoom = true;
+      let url = new URL(
+        location.protocol + "//" + location.host + location.pathname,
+      );
+      url.searchParams.set("room", game.roomCode);
+      window.history.pushState({}, "", url);
+
+      console.log(`Created room ${game.roomCode} with host ${my.playerID}`);
+    } catch (error) {
+      console.error("Error creating room:", error);
+      alert("Failed to create room. Please try again.");
+    }
   };
 
-  const joinRoom = () => {
-    // Try to join a room with the entered code.
-    socket.emit("joinRoom", {
-      roomCode: game.roomCode,
-      gameName: game.gameName,
-    });
+  const joinRoom = async () => {
+    try {
+      // Check if room exists
+      const roomRef = doc(collection(db, "rooms"), game.roomCode);
+      const roomSnap = await getDoc(roomRef);
+      
+      if (!roomSnap.exists()) {
+        alert("Room not found. Please check the room code and try again.");
+        return;
+      }
 
-    socket.emit("askHostForPlayersList", {
-      roomCode: game.roomCode,
-      from: my.socketID,
-    });
+      const roomData = roomSnap.data();
+      
+      // Subscribe to room changes
+      await subscribeToRoom(game.roomCode);
+      await subscribeToGameState(game.roomCode);
 
-    my.isRoomHost = false;
-    game.inRoom = true;
+      my.isRoomHost = false;
+      game.inRoom = true;
+      
+      console.log(`Joined room ${game.roomCode}`);
+    } catch (error) {
+      console.error("Error joining room:", error);
+      alert("Failed to join room. Please try again.");
+    }
   };
+
+  // Firebase subscription functions
+  let unsubscribeRoom = null;
+  let unsubscribeGameState = null;
+
+  async function subscribeToRoom(roomCode) {
+    const playersRef = collection(doc(collection(db, "rooms"), roomCode), "players");
+
+    unsubscribeRoom = onSnapshot(playersRef, (snapshot) => {
+      const updatedPlayers = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      game.players = updatedPlayers;
+      console.log("Players updated:", updatedPlayers);
+    });
+  }
+
+  async function subscribeToGameState(roomCode) {
+    const gameStateRef = doc(collection(doc(collection(db, "rooms"), roomCode), "gameState"), "current");
+
+    unsubscribeGameState = onSnapshot(gameStateRef, (doc) => {
+      if (doc.exists()) {
+        const gameState = doc.data();
+        
+        // Handle game start
+        if (gameState.started && !lastGameState.started) {
+          game.gameStarted = true;
+          round.number = 1;
+          round.dealerIndex = 0;
+          round.phase = "presenting";
+          
+          // Find my player index by playerID
+          my.playerIndex = game.players.findIndex(player => player.playerID === my.playerID);
+          
+          // Grab my card
+          if (my.playerIndex > -1 && game.players[my.playerIndex]) {
+            my.card = game.players[my.playerIndex].card;
+          }
+          
+          changeFavicon("wrongest/favicons/favicon.ico");
+        }
+        
+        // Handle presentation phase changes
+        if (gameState.activePlayerIndex !== lastGameState.activePlayerIndex && gameState.phase === "presenting") {
+          round.activePlayerIndex = gameState.activePlayerIndex;
+          if (gameState.activePlayerIndex >= 0) {
+            round.playerPresenting = true;
+            startPresentationTimer();
+          }
+        }
+        
+        // Handle phase changes
+        if (gameState.phase !== lastGameState.phase) {
+          if (gameState.phase === "voting") {
+            round.phase = "voting";
+            round.playerPresenting = false;
+            resetPresentationTimer();
+          } else if (gameState.phase === "presenting") {
+            round.phase = "presenting";
+            resetUIVariables();
+          } else if (gameState.phase === "GAME OVER") {
+            round.phase = "GAME OVER";
+            game.gameOver = true;
+            resetRoundVariables();
+            resetUIVariables();
+            if (my.isRoomHost) {
+              sendEvent("The Wrongest Words", "Game Over", game.roomCode);
+            }
+          }
+        }
+        
+        // Update local game state
+        game.gameStarted = gameState.started || false;
+        game.gameOver = gameState.gameOver || false;
+        game.maxRounds = gameState.maxRounds || 0;
+        game.chosenDeck = gameState.chosenDeck || {};
+        game.gameDeck = gameState.gameDeck || {};
+        game.cardsPlayed = gameState.cardsPlayed || [];
+        game.statementHistory = gameState.statementHistory || [];
+        game.voteHistory = gameState.voteHistory || [];
+        
+        // Update round state
+        round.phase = gameState.phase || "lobby";
+        round.number = gameState.currentRound || 0;
+        round.dealerIndex = gameState.dealerIndex || 0;
+        round.activePlayerIndex = gameState.activePlayerIndex || -1;
+        round.cardsPresented = gameState.cardsPresented || [];
+        round.votesSubmitted = gameState.votesSubmitted || 0;
+
+        lastGameState = { ...gameState };
+        console.log("Game state updated:", gameState);
+      }
+    });
+    
+    // Also subscribe to votes
+    subscribeToVotes(roomCode);
+  }
 
   const watchVideo = () => {
     ui.watchingVideo = true;
@@ -136,51 +296,50 @@
 
   ////////////////////////////////////////
   // Pregame
-  const updateMyInfo = () => {
+  const updateMyInfo = async () => {
     const p = {
       name: my.name,
-      socketID: my.socketID,
+      playerID: my.playerID,
+      isHost: my.isRoomHost,
+      isConnected: true,
       card: "",
-      score: 0,
+      playerIndex: -1,
+      upVote: "",
+      downVote: "",
+      lastSeen: serverTimestamp(),
+      score: 0
     };
 
-    // Put this player in the Player Array.
-    if (!ui.nameEntered) {
-      game.players.push(p);
-    } else {
-      my.playerIndex = -1;
-      game.players.forEach(function (player, index) {
-        if (player.socketID == my.socketID) {
-          //alert('found one');
-          game.players[index].name = my.name;
-        }
-      });
-    }
+    try {
+      // Add or update player in Firestore
+      const playerRef = doc(collection(doc(collection(db, "rooms"), game.roomCode), "players"), my.playerID);
+      await setDoc(playerRef, p, { merge: true });
 
-    // find this player's playerIndex
-    game.players.forEach(function (player, index) {
-      if (player.socketID == my.socketID) {
-        my.playerIndex = index;
-      }
-    });
-
-    ui.nameEntered = true;
-    sendPlayerUpdate();
-    if (my.playerIndex < 0) {
-      alert(
-        "WARNING: I have a player index of " +
-          my.playerIndex +
-          "! This should not happen. I am a bug.",
-      );
+      // Update my player index
+      const playersSnap = await getDocs(collection(doc(collection(db, "rooms"), game.roomCode), "players"));
+      const players = playersSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      
+      my.playerIndex = players.findIndex(player => player.playerID === my.playerID);
+      
+      ui.nameEntered = true;
+      
+      console.log("Player info updated:", p);
+    } catch (error) {
+      console.error("Error updating player info:", error);
     }
   };
 
-  const sendPlayerUpdate = () => {
-    socket.emit("sendPlayerList", {
-      roomCode: game.roomCode,
-      from: my.socketID,
-      players: game.players,
-    });
+  const sendPlayerUpdate = async () => {
+    // This is now handled automatically through Firestore subscriptions
+    try {
+      const playerRef = doc(collection(doc(collection(db, "rooms"), game.roomCode), "players"), my.playerID);
+      await updateDoc(playerRef, {
+        lastSeen: serverTimestamp(),
+        isConnected: true
+      });
+    } catch (error) {
+      console.error("Error sending player update:", error);
+    }
   };
 
   const changeDeck = () => {
@@ -201,7 +360,7 @@
     }
   };
 
-  const startTheGame = () => {
+  const startTheGame = async () => {
     let d = shuffle(game.chosenDeck.cards);
     game.gameDeck.cards = d;
     dealOutCards();
@@ -214,16 +373,38 @@
       game.maxRounds = 2;
     }
 
-    socket.emit("startTheGame", {
-      roomCode: game.roomCode,
-      gameName: game.gameName,
-      players: game.players,
-      gameDeck: game.gameDeck,
-      maxRounds: game.maxRounds,
-      chosenDeckName: game.chosenDeck.name,
-    });
+    try {
+      // Update game state in Firestore
+      const gameStateRef = doc(collection(doc(collection(db, "rooms"), game.roomCode), "gameState"), "current");
+      await updateDoc(gameStateRef, {
+        started: true,
+        phase: "presenting",
+        currentRound: 1,
+        maxRounds: game.maxRounds,
+        gameDeck: game.gameDeck,
+        chosenDeck: game.chosenDeck,
+        dealerIndex: 0,
+        activePlayerIndex: -1
+      });
 
-    sendEvent("The Wrongest Words", "Game Started", game.roomCode);
+      // Update all players with their cards
+      const playersRef = collection(doc(collection(db, "rooms"), game.roomCode), "players");
+      const playersSnap = await getDocs(playersRef);
+      
+      let cardIndex = 0;
+      for (const playerDoc of playersSnap.docs) {
+        await updateDoc(playerDoc.ref, {
+          card: game.players[cardIndex].card,
+          playerIndex: cardIndex
+        });
+        cardIndex++;
+      }
+
+      sendEvent("The Wrongest Words", "Game Started", game.roomCode);
+      console.log("Game started successfully");
+    } catch (error) {
+      console.error("Error starting game:", error);
+    }
   };
   ////////////////////////////////////////
   // In Game
@@ -250,42 +431,69 @@
     });
   };
 
-  const sendGameDeck = () => {
-    socket.emit("sendGameDeck", {
-      roomCode: game.roomCode,
-      gameDeck: game.gameDeck,
-    });
+  const sendGameDeck = async () => {
+    try {
+      const gameStateRef = doc(collection(doc(collection(db, "rooms"), game.roomCode), "gameState"), "current");
+      await updateDoc(gameStateRef, {
+        gameDeck: game.gameDeck,
+      });
+    } catch (error) {
+      console.error("Error sending game deck:", error);
+    }
   };
 
-  const dealCard = () => {
+  const dealCard = async () => {
     round.activePlayerIndex++;
-    socket.emit("wrongestStartPresenting", {
-      roomCode: game.roomCode,
-      activePlayerIndex: round.activePlayerIndex,
-      activePlayerName: game.players[round.activePlayerIndex].name,
-    });
-    soundBeginTalking.play();
+    try {
+      const gameStateRef = doc(collection(doc(collection(db, "rooms"), game.roomCode), "gameState"), "current");
+      await updateDoc(gameStateRef, {
+        activePlayerIndex: round.activePlayerIndex,
+        phase: "presenting"
+      });
+      soundBeginTalking.play();
+      console.log(`Player ${round.activePlayerIndex} is now presenting`);
+    } catch (error) {
+      console.error("Error starting presentation:", error);
+    }
   };
 
-  const presentationFinished = () => {
+  const presentationFinished = async () => {
     round.playerPresenting = false;
     resetPresentationTimer();
-    socket.emit("wrongestDonePresenting", {
-      roomCode: game.roomCode,
-      activePlayerIndex: round.activePlayerIndex,
-      activePlayerName: game.players[round.activePlayerIndex].name,
-      activePlayerCard: game.players[round.activePlayerIndex].card,
-    });
-    soundPresentationOver.play();
+    
+    try {
+      const cardData = {
+        card: game.players[round.activePlayerIndex].card,
+        playerIndex: round.activePlayerIndex,
+        playerName: game.players[round.activePlayerIndex].name,
+        score: 0,
+      };
+
+      const gameStateRef = doc(collection(doc(collection(db, "rooms"), game.roomCode), "gameState"), "current");
+      await updateDoc(gameStateRef, {
+        cardsPresented: [...round.cardsPresented, cardData]
+      });
+      
+      soundPresentationOver.play();
+      console.log("Presentation finished for player", round.activePlayerIndex);
+    } catch (error) {
+      console.error("Error finishing presentation:", error);
+    }
   };
 
   /////////////////////////////////////////
   // Voting
-  const startVoting = () => {
-    socket.emit("wrongestStartVoting", {
-      roomCode: game.roomCode,
-      cardsPresented: round.cardsPresented,
-    });
+  const startVoting = async () => {
+    try {
+      const gameStateRef = doc(collection(doc(collection(db, "rooms"), game.roomCode), "gameState"), "current");
+      await updateDoc(gameStateRef, {
+        phase: "voting",
+        cardsPresented: round.cardsPresented
+      });
+      console.log("Voting phase started");
+    } catch (error) {
+      console.error("Error starting voting:", error);
+    }
   };
 
   const voteUp = (statement) => {
@@ -309,7 +517,7 @@
   //   }
   // };
 
-  const submitVotes = () => {
+  const submitVotes = async () => {
     let upVoteIndex;
     let downVoteIndex;
     let upVoteCard = my.upVote;
@@ -327,47 +535,92 @@
       }
     });
 
-    socket.emit("wrongestSubmitVotes", {
-      roomCode: game.roomCode,
-      votingPlayerIndex: my.playerIndex,
-      votingPlayerName: my.name,
-      downVoteIndex: downVoteIndex,
-      upVoteIndex: upVoteIndex,
-      downVoteCard: downVoteCard,
-      upVoteCard: upVoteCard,
-    });
+    try {
+      const voteData = {
+        votingPlayerIndex: my.playerIndex,
+        votingPlayerName: my.name,
+        downVoteIndex: downVoteIndex,
+        upVoteIndex: upVoteIndex,
+        downVoteCard: downVoteCard,
+        upVoteCard: upVoteCard,
+        timestamp: serverTimestamp()
+      };
 
-    ui.iVoted = true;
-    sendEvent("The Wrongest Words", "Downvote", downVoteCard);
-    sendEvent("The Wrongest Words", "Upvote", upVoteCard);
+      // Add individual vote record
+      const votesRef = collection(doc(collection(db, "rooms"), game.roomCode), "votes");
+      await addDoc(votesRef, voteData);
+
+      // Update game state with incremented vote count
+      const gameStateRef = doc(collection(doc(collection(db, "rooms"), game.roomCode), "gameState"), "current");
+      await updateDoc(gameStateRef, {
+        votesSubmitted: increment(1)
+      });
+
+      ui.iVoted = true;
+      sendEvent("The Wrongest Words", "Downvote", downVoteCard);
+      sendEvent("The Wrongest Words", "Upvote", upVoteCard);
+      
+      console.log("Votes submitted:", voteData);
+    } catch (error) {
+      console.error("Error submitting votes:", error);
+    }
   };
 
-  const startNextRound = () => {
+  const startNextRound = async () => {
     game.players.push(game.players.shift());
     round.number += 1;
     dealOutCards();
     const s = game.statementHistory.concat(round.cardsPresented);
     game.statementHistory = s;
-    socket.emit("wrongestStartNextRound", {
-      roomCode: game.roomCode,
-      gameName: game.gameName,
-      players: game.players,
-      gameDeck: game.gameDeck,
-      statementHistory: game.statementHistory,
-      roundNumber: round.number,
-    });
+    
+    try {
+      const gameStateRef = doc(collection(doc(collection(db, "rooms"), game.roomCode), "gameState"), "current");
+      await updateDoc(gameStateRef, {
+        currentRound: round.number,
+        gameDeck: game.gameDeck,
+        statementHistory: game.statementHistory,
+        phase: "presenting",
+        activePlayerIndex: -1,
+        cardsPresented: [],
+        votesSubmitted: 0
+      });
+
+      // Update player cards and positions
+      const playersRef = collection(doc(collection(db, "rooms"), game.roomCode), "players");
+      const playersSnap = await getDocs(playersRef);
+      
+      let cardIndex = 0;
+      for (const playerDoc of playersSnap.docs) {
+        await updateDoc(playerDoc.ref, {
+          card: game.players[cardIndex].card,
+          playerIndex: cardIndex
+        });
+        cardIndex++;
+      }
+      
+      console.log("Next round started:", round.number);
+    } catch (error) {
+      console.error("Error starting next round:", error);
+    }
   };
 
-  const sendGameOver = () => {
+  const sendGameOver = async () => {
     const s = game.statementHistory.concat(round.cardsPresented);
     game.statementHistory = s;
-    socket.emit("wrongestGameOver", {
-      roomCode: game.roomCode,
-      players: game.players,
-      //gameDeck: game.gameDeck,
-      statementHistory: game.statementHistory,
-      roundNumber: round.number,
-    });
+    
+    try {
+      const gameStateRef = doc(collection(doc(collection(db, "rooms"), game.roomCode), "gameState"), "current");
+      await updateDoc(gameStateRef, {
+        gameOver: true,
+        phase: "GAME OVER",
+        statementHistory: game.statementHistory,
+        currentRound: round.number
+      });
+      
+      console.log("Game over");
+    } catch (error) {
+      console.error("Error sending game over:", error);
+    }
   };
 
   ////////////////////////////////////////
@@ -580,158 +833,55 @@
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
-  // Sockets  (I can't easily move these into a file without annoying refactor)
-  socket.on("hostSelected", (hostSocketId) => {
-    console.log(`Host selected: ${hostSocketId}`);
-    if (socket.id === hostSocketId) {
-      my.isRoomHost = true;
-      console.log("You are the host!");
-    } else {
-      my.isRoomHost = false;
-      console.log("You are not the host.");
-    }
-  });
+  // Firebase listeners and game state management
+  
+  // Additional Firebase subscription for vote processing
+  async function subscribeToVotes(roomCode) {
+    const votesRef = collection(doc(collection(db, "rooms"), roomCode), "votes");
+    
+    onSnapshot(votesRef, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          const voteData = change.doc.data();
+          
+          // Process the vote
+          game.voteHistory.push({
+            downVoteIndex: voteData.downVoteIndex,
+            voterName: voteData.votingPlayerName,
+            voted: "down",
+            presenter: round.cardsPresented[voteData.downVoteIndex]?.playerName,
+            card: round.cardsPresented[voteData.downVoteIndex]?.card,
+          });
 
-  socket.on("receivePlayerList", (msg) => {
-    console.log(`Receiving new player list from  ${msg.from}`);
-    game.players = msg.players;
-  });
-
-  socket.on("sendThePlayerListIfYouAreHost", (msg) => {
-    if (my.isRoomHost && msg.from != my.socketID) {
-      console.log(`Player List request from ${msg.from}`);
-      socket.emit("sendPlayerList", {
-        roomCode: game.roomCode,
-        from: my.socketID,
-        players: game.players,
-        isGameStarted: game.gameStarted,
+          game.voteHistory.push({
+            upVoteIndex: voteData.upVoteIndex,
+            voterName: voteData.votingPlayerName,
+            voted: "up",
+            presenter: round.cardsPresented[voteData.upVoteIndex]?.playerName,
+            card: round.cardsPresented[voteData.upVoteIndex]?.card,
+          });
+          
+          // Update scores (this should ideally be done server-side with Cloud Functions)
+          if (game.players[voteData.downVoteIndex]) {
+            game.players[voteData.downVoteIndex].score -= 1;
+          }
+          if (round.cardsPresented[voteData.downVoteIndex]) {
+            round.cardsPresented[voteData.downVoteIndex].score -= 1;
+          }
+          
+          if (game.players[voteData.upVoteIndex]) {
+            game.players[voteData.upVoteIndex].score += 1;
+          }
+          if (round.cardsPresented[voteData.upVoteIndex]) {
+            round.cardsPresented[voteData.upVoteIndex].score += 1;
+          }
+        }
       });
-    }
-  });
-
-  socket.on("receivePlayerList", (msg) => {
-    console.log(`Receiving new player list from  ${msg.from}`);
-    game.players = msg.players;
-  });
-
-  socket.on("getSocketID", function (msg) {
-    console.info("Player socketID is " + msg);
-    my.socketID = msg;
-  });
-
-  socket.on("startTheGame", function (msg) {
-    game.players = msg.players;
-    game.gameDeck = msg.gameDeck;
-    game.chosenDeck.name = msg.chosenDeckName;
-    game.maxRounds = msg.maxRounds;
-    game.gameStarted = true;
-    round.number = 1;
-    round.dealerIndex = 0;
-    round.phase = "presenting";
-
-    // Assign my player index...
-    game.players.forEach(function (player, index) {
-      if (player.socketID == my.socketID) {
-        my.playerIndex = index;
-      }
     });
+  }
 
-    //Grab my card.
-    if (my.playerIndex > -1) {
-      my.card = game.players[my.playerIndex].card;
-    }
-
-    changeFavicon("wrongest/favicons/favicon.ico");
-  });
-
-  // A player must present now!
-  socket.on("wrongestStartPresenting", function (msg) {
-    round.activePlayerIndex = msg.activePlayerIndex;
-    round.playerPresenting = true;
-    // UNUSED : activePlayerName
-    startPresentationTimer();
-  });
-
-  // A player has finished presenting.
-  socket.on("wrongestDonePresenting", function (msg) {
-    round.cardsPresented.push({
-      card: msg.activePlayerCard,
-      playerIndex: msg.activePlayerIndex,
-      playerName: msg.activePlayerName,
-      score: 0,
-    });
-    round.playerPresenting = false;
-    resetPresentationTimer();
-  });
-
-  // Voting begins
-  socket.on("wrongestStartVoting", function (msg) {
-    round.cardsPresented = msg.cardsPresented;
-    round.phase = "voting";
-  });
-
-  socket.on("wrongestSubmitVotes", function (msg) {
-    const dI = game.voteHistory.push({
-      downVoteIndex: msg.downVoteIndex,
-      voterName: msg.votingPlayerName,
-      voted: "down",
-      presenter: round.cardsPresented[msg.downVoteIndex].playerName,
-      card: round.cardsPresented[msg.downVoteIndex].card,
-    });
-
-    game.voteHistory.push({
-      upVoteIndex: msg.upVoteIndex,
-      voterName: msg.votingPlayerName,
-      voted: "up",
-      presenter: round.cardsPresented[msg.upVoteIndex].playerName,
-      card: round.cardsPresented[msg.upVoteIndex].card,
-    });
-    game.players[msg.downVoteIndex].score -= 1;
-    round.cardsPresented[msg.downVoteIndex].score -= 1;
-
-    game.players[msg.upVoteIndex].score += 1;
-    round.cardsPresented[msg.upVoteIndex].score += 1;
-
-    round.votesSubmitted += 1;
-
-    if (round.votesSubmitted >= computedPlayerCount.value) {
-      // This should be handled in the UI.
-    }
-  });
-
-  // The host has started the game!
-  socket.on("wrongestStartNextRound", function (msg) {
-    game.players = msg.players;
-    game.gameDeck = msg.gameDeck;
-    round.number = msg.roundNumber;
-    game.statementHistory = msg.statementHistory;
-    resetRoundVariables();
-    resetUIVariables();
-
-    // Assign my player index...
-    game.players.forEach(function (player, index) {
-      if (player.socketID == my.socketID) {
-        my.playerIndex = index;
-      }
-    });
-
-    //Grab my card.
-    if (my.playerIndex > -1) {
-      my.card = game.players[my.playerIndex].card;
-    }
-  });
-
-  socket.on("wrongestGameOver", function (msg) {
-    game.players = msg.players;
-    game.statementHistory = msg.statementHistory;
-    resetRoundVariables();
-    resetUIVariables();
-    round.phase = "GAME OVER";
-    game.gameOver = true;
-    if (my.isRoomHost) {
-      sendEvent("The Wrongest Words", "Game Over", game.roomCode);
-    }
-  });
+  // Watch for game state changes to trigger specific actions
+  let lastGameState = {};
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
@@ -747,14 +897,18 @@
       );
       url.searchParams.set("room", game.roomCode);
       window.history.pushState({}, "", url);
-      socket.on("connect", () => {
-        console.log(`Connected with socketId: ${socket.id}`);
-        my.socketID = socket.id;
-        joinRoom();
-      });
+      
+      // Join the room immediately
+      joinRoom();
     } else if (urlParams.has("join")) {
       document.getElementById("EnterRoomCode").focus();
     }
+
+    // Clean up subscriptions when component unmounts
+    onBeforeUnmount(() => {
+      if (unsubscribeRoom) unsubscribeRoom();
+      if (unsubscribeGameState) unsubscribeGameState();
+    });
 
     // game.gameStarted = true;
     // round.phase = "voting";
