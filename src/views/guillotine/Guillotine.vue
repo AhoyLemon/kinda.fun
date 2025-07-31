@@ -673,32 +673,6 @@
       }
     }
   };
-
-  const collectBillionaireHeads = async () => {
-    const { doc, runTransaction, getDoc, serverTimestamp, updateDoc } = await import("firebase/firestore");
-    const db = useFirestore();
-    for (let i = 0; i < allBillionaires.length; i++) {
-      const billionaire = allBillionaires[i];
-      const trophyRef = doc(db, `stats/guillotine/heads/${billionaire.name}`);
-      const headCount = Math.floor(Math.random() * (120 - 4 + 1)) + 4;
-      const trophyDoc = await getDoc(trophyRef);
-      if (trophyDoc.exists()) {
-        await updateDoc(trophyRef, {
-          headCount: headCount,
-        });
-      } else {
-        await runTransaction(db, async (transaction) => {
-          transaction.set(trophyRef, {
-            name: billionaire.name,
-            netWorth: billionaire.netWorth,
-            headCount: headCount,
-            lastRemoved: serverTimestamp(),
-          });
-        });
-      }
-      console.log(`${i + 1} of ${allBillionaires.length} (${billionaire.name}) has a headcount of ${headCount}`);
-    }
-  };
 </script>
 <template lang="pug" src="./Guillotine.pug"></template>
 <style lang="scss" src="./Guillotine.scss"></style>
