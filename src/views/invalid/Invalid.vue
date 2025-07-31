@@ -1188,7 +1188,7 @@
       });
       sendEvent("Invalid", "Password Cracked", attempt);
 
-      if (computedUnclaimedPasswords < 1) {
+      if (computedUnclaimedPasswords.value < 1) {
         setGameOver();
       }
     }

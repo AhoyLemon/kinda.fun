@@ -159,10 +159,26 @@
     sendEvent("NO MORE BILLIONAIRES", "Game Started", "Fresh Game");
   };
 
+  const getDailyRank = (person) => {
+    // Get all billionaires for today (both current and executed)
+    const allTodaysBillionaires = [...todaysGame.currentBillionaires, ...todaysGame.formerBillionaires];
+    
+    // Sort by net worth in descending order
+    const sortedByWealth = allTodaysBillionaires.sort((a, b) => b.netWorth - a.netWorth);
+    
+    // Find the rank of the executed person (1-based index)
+    const dailyRank = sortedByWealth.findIndex(b => b.name === person.name) + 1;
+    
+    return dailyRank;
+  };
+
   const playCheeringSound = (person) => {
-    // Check if the executed billionaire is in the top 5 rankings
-    if (person.rank <= 5) {
-      const cheerKey = `rank${person.rank}`;
+    // Get the daily comparative rank within today's list of 20
+    const dailyRank = getDailyRank(person);
+    
+    // Check if the executed billionaire is in the top 5 for today
+    if (dailyRank <= 5) {
+      const cheerKey = `rank${dailyRank}`;
       if (cheeringSounds[cheerKey]) {
         cheeringSounds[cheerKey].play();
       }
