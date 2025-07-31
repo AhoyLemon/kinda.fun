@@ -1,4 +1,4 @@
-![kinda.fun](https://kinda.fun/img/og-square.png)
+![kinda.fun](https://kinda.fun/img/og-wide.png)
 
 [![Last Deploy](https://img.shields.io/github/last-commit/AhoyLemon/kinda.fun/main?label=Last%20Deploy&style=for-the-badge&color=green)](https://github.com/AhoyLemon/kinda.fun/actions)
 [![Live Site](https://img.shields.io/badge/Live%20Site-kinda.fun-blue?style=for-the-badge)](https://kinda.fun)
