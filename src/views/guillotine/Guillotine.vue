@@ -12,7 +12,7 @@
 
   // Sounds
   import { Howl, Howler } from "howler";
-  import { dropSound, lastWords } from "./js/partials/_sounds.js";
+  import { dropSound, lastWords, cheeringSounds } from "./js/partials/_sounds.js";
 
   // Firebase & VueFire Stuff
   import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
@@ -159,6 +159,32 @@
     sendEvent("NO MORE BILLIONAIRES", "Game Started", "Fresh Game");
   };
 
+  const getDailyRank = (person) => {
+    // Get all billionaires for today (both current and executed)
+    const allTodaysBillionaires = [...todaysGame.currentBillionaires, ...todaysGame.formerBillionaires];
+    
+    // Sort by net worth in descending order
+    const sortedByWealth = allTodaysBillionaires.sort((a, b) => b.netWorth - a.netWorth);
+    
+    // Find the rank of the executed person (1-based index)
+    const dailyRank = sortedByWealth.findIndex(b => b.name === person.name) + 1;
+    
+    return dailyRank;
+  };
+
+  const playCheeringSound = (person) => {
+    // Get the daily comparative rank within today's list of 20
+    const dailyRank = getDailyRank(person);
+    
+    // Check if the executed billionaire is in the top 5 for today
+    if (dailyRank <= 5) {
+      const cheerKey = `rank${dailyRank}`;
+      if (cheeringSounds[cheerKey]) {
+        cheeringSounds[cheerKey].play();
+      }
+    }
+  };
+
   const dropBlade = (person) => {
     ui.currentlyBusy = true;
     const newList = todaysGame.currentBillionaires.filter((value) => value.name != person.name);
@@ -175,6 +201,11 @@
           } else {
             lastWords.play(p);
           }
+          
+          // Play cheering sound after last words for top 5 billionaires
+          setTimeout(() => {
+            playCheeringSound(person);
+          }, "1000");
         }, "320");
         setTimeout(() => {
           $("#G_Head").attr("href", "img/guillotine/heads/empty.png");
@@ -361,6 +392,7 @@
     sendEvent("NO MORE BILLIONAIRES", "Score Shared", p.wealthCreatedToday);
     logTheScoreSharing();
     window.history.replaceState(null, "", newURL);
+    ui.shareScreen.display = true;
     return false;
   };
 
