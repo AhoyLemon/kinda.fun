@@ -63,8 +63,8 @@
 
   /////// socket.io
   // import { setupSocketHandlers } from "./js/_socketHandlers";
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  // TEMPORARILY DISABLED FOR TESTING - import { io } from "socket.io-client";
+  // TEMPORARILY DISABLED FOR TESTING - const socket = io.connect();
 
   // Firebase & VueFire Stuff
   import {

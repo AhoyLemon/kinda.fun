@@ -25,8 +25,8 @@
   } from "./js/_variables";
 
   //////// socket.io
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  // TEMPORARILY DISABLED FOR TESTING - import { io } from "socket.io-client";
+  // TEMPORARILY DISABLED FOR TESTING - const socket = io.connect();
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
