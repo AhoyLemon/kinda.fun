@@ -43,8 +43,23 @@ export default defineConfig(({ mode }) => {
       },
     },
     define: {
-      __APP_ENV__: env.APP_ENV,
-      "process.env": env,
+      __APP_ENV__: JSON.stringify(env.APP_ENV),
+      "process.env.NODE_ENV": JSON.stringify(mode),
+      "process.env.VITE_FIREBASE_API_KEY": JSON.stringify(env.VITE_FIREBASE_API_KEY),
+      "process.env.VITE_FIREBASE_AUTH_DOMAIN": JSON.stringify(env.VITE_FIREBASE_AUTH_DOMAIN),
+      "process.env.VITE_FIREBASE_PROJECT_ID": JSON.stringify(env.VITE_FIREBASE_PROJECT_ID),
+      "process.env.VITE_FIREBASE_STORAGE_BUCKET": JSON.stringify(env.VITE_FIREBASE_STORAGE_BUCKET),
+      "process.env.VITE_FIREBASE_MESSAGING_SENDER_ID": JSON.stringify(env.VITE_FIREBASE_MESSAGING_SENDER_ID),
+      "process.env.VITE_FIREBASE_APP_ID": JSON.stringify(env.VITE_FIREBASE_APP_ID),
+      "process.env.VITE_DB": JSON.stringify(env.VITE_DB),
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          quietDeps: true,
+          silenceDeprecations: ["import", "global-builtin", "color-functions", "mixed-decls"],
+        },
+      },
     },
     build: {
       rollupOptions: {
@@ -68,8 +83,8 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       middlewareMode: false,
-      setupMiddlewares(middlewares) {
-        middlewares.use((req, res, next) => {
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
           const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home"];
           const url = req.url.split("?")[0];
@@ -85,7 +100,6 @@ export default defineConfig(({ mode }) => {
           }
           next();
         });
-        return middlewares;
       },
     },
   };
