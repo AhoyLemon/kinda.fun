@@ -97,7 +97,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_Bob's_Burgers_characters",
   },
 
-  // African Countries
+  // African Countries | 4
   {
     id: 4,
     name: "African Countries",
@@ -164,7 +164,7 @@ export const challenges = [
     ],
   },
 
-  // NFL Football Teams
+  // NFL Football Teams | 6
   {
     id: 6,
     name: "NFL Football",
@@ -205,7 +205,7 @@ export const challenges = [
     ],
   },
 
-  // NHL Hockey Teams
+  // NHL Hockey Teams | 7
   {
     id: 7,
     name: "Hockey",
@@ -247,7 +247,7 @@ export const challenges = [
     ],
   },
 
-  // Synonyms For Blue
+  // Synonyms For Blue | 8
   {
     id: 8,
     name: "Colors That Are Blue",
@@ -303,7 +303,7 @@ export const challenges = [
     ],
   },
 
-  // Salad Greens
+  // Salad Greens | 9
   {
     id: 9,
     name: "Salad Greens",
@@ -334,7 +334,7 @@ export const challenges = [
     source: "https://www.thespruceeats.com/popular-salad-greens-2216503",
   },
 
-  // World Languages
+  // World Languages | 10
   {
     id: 10,
     name: "World Languages",
@@ -425,7 +425,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_official_languages_by_country_and_territory",
   },
 
-  // Coen Brothers Movies
+  // Coen Brothers Movies | 11
   {
     id: 11,
     name: "Coen Brothers Movies",
@@ -463,7 +463,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/Coen_brothers_filmography",
   },
 
-  // U.S. State Birds
+  // U.S. State Birds | 12
   {
     id: 12,
     name: "U.S. State Birds",
@@ -500,7 +500,7 @@ export const challenges = [
     ],
   },
 
-  // My Little Pony
+  // My Little Pony | 15
   {
     id: 15,
     name: "My Little Pony",
@@ -576,7 +576,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_My_Little_Pony:_Friendship_Is_Magic_characters",
   },
 
-  // Pokemon
+  // Pokemon | 16
   {
     id: 16,
     name: "Generation I Pokemon",
@@ -736,7 +736,7 @@ export const challenges = [
     ],
   },
 
-  // Root Vegetables
+  // Root Vegetables | 17
   {
     id: 17,
     name: "Root Vegetables",
@@ -774,7 +774,7 @@ export const challenges = [
     source: "https://www.foodandwine.com/vegetables/root-vegetables-list",
   },
 
-  // Olympic Sports
+  // Olympic Sports | 18
   {
     id: 18,
     name: "Olympic Sports",
@@ -866,7 +866,7 @@ export const challenges = [
     ],
   },
 
-  // Classic Cocktails
+  // Classic Cocktails | 19
   {
     id: 19,
     name: "Classic Cocktails",
@@ -931,7 +931,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_IBA_official_cocktails",
   },
 
-  // Simpsons Characters
+  // Simpsons Characters | 20
   {
     id: 20,
     name: "Simpsons Characters",
@@ -1006,7 +1006,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_recurring_The_Simpsons_characters",
   },
 
-  // Human Organs
+  // Human Organs | 22
   {
     id: 22,
     name: "Human Organs",
@@ -1092,7 +1092,7 @@ export const challenges = [
     source: "https://byjus.com/biology/what-are-the-78-organs-in-the-human-body/",
   },
 
-  // One Hit Wonders (1990s)
+  // One Hit Wonders (1990s) | 24
   {
     id: 24,
     name: "One-Hit Wonders (1990s)",
@@ -1170,7 +1170,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_one-hit_wonders_in_the_United_States#1990s",
   },
 
-  // Board Games
+  // Board Games | 28
   {
     id: 28,
     name: "Board Games",
@@ -1220,7 +1220,7 @@ export const challenges = [
     source: "https://www.fun.com/best-selling-board-games-all-time.html",
   },
 
-  // Gemstones
+  // Gemstones | 30
   {
     id: 30,
     name: "Gemstones",
@@ -1268,7 +1268,7 @@ export const challenges = [
     source: "https://www.antiquejewellerycompany.com/gemstone-guide/",
   },
 
-  // Disney Movies
+  // Disney Movies | 32
   {
     id: 32,
     name: "Disney Movies",
@@ -1361,7 +1361,7 @@ export const challenges = [
     ],
   },
 
-  // Cheese
+  // Cheese | 34
   {
     id: 34,
     name: "Cheese",
@@ -1425,7 +1425,7 @@ export const challenges = [
     ],
   },
 
-  // Muppet SHow
+  // Muppet SHow | 38
   {
     id: 38,
     name: "The Muppet Show",
@@ -1476,7 +1476,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_Muppets",
   },
 
-  // Looney Tunes
+  // Looney Tunes | 40
   {
     id: 40,
     name: "Looney Tunes",
@@ -1554,7 +1554,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/Category:Looney_Tunes_characters",
   },
 
-  // Scavengers
+  // Scavengers | 43
   {
     id: 43,
     name: "Scavenger Animals",
@@ -1607,7 +1607,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/Scavenger",
   },
 
-  // Smash Bros.
+  // Smash Bros. | 44
   {
     id: 44,
     name: "Smash Bros.",
@@ -1694,7 +1694,7 @@ export const challenges = [
     ],
   },
 
-  // World Currencies
+  // World Currencies | 45
   {
     id: 45,
     name: "World Currencuies",
@@ -1766,7 +1766,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_currencies_in_circulation",
   },
 
-  // Norse Gods
+  // Norse Gods | 47
   {
     id: 47,
     name: "Norse Gods",
@@ -1840,7 +1840,7 @@ export const challenges = [
     source: "https://thenorsegods.com/norse-gods/",
   },
 
-  // Major Airlines
+  // Major Airlines | 48
   {
     id: 48,
     name: "Major Airlines",
@@ -1888,7 +1888,7 @@ export const challenges = [
     source: "https://aviationa2z.com/index.php/2025/01/02/largest-airlines-in-world-by-revenue/",
   },
 
-  // Common Trees
+  // Common Trees | 49
   {
     id: 49,
     name: "Common Trees",
@@ -2067,7 +2067,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_medieval_weapons",
   },
 
-  // Hanna-Barbera
+  // Hanna-Barbera | 62
   {
     id: 62,
     name: "Hanna-Barbera",
@@ -2149,7 +2149,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_Hanna-Barbera_characters",
   },
 
-  // Sushi
+  // Sushi | 69
   {
     id: 69,
     name: "Sushi",
@@ -2229,7 +2229,7 @@ export const challenges = [
     source: "https://www.umami-insider.com/common-japanese-sushi-ingredients-guide/",
   },
 
-  // MLB Baseball
+  // MLB Baseball | 73
   {
     id: 73,
     name: "MLB Baseball",
@@ -2270,7 +2270,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/Major_League_Baseball",
   },
 
-  // Fast Food Chains
+  // Fast Food Chains | 74
   {
     id: 74,
     name: "Fast Food Chains",
@@ -2332,7 +2332,7 @@ export const challenges = [
     source: "https://www.visualcapitalist.com/top-50-fast-food-chains-ranked/",
   },
 
-  // Adobe
+  // Adobe | 76
   {
     id: 76,
     name: "Adobe Products",
@@ -2403,7 +2403,7 @@ export const challenges = [
     ],
   },
 
-  // Nestlé Brands
+  // Nestlé Brands | 77
   {
     id: 77,
     name: "Nestlé Brands",
@@ -2467,7 +2467,7 @@ export const challenges = [
     ],
   },
 
-  // U.S. Presidents
+  // U.S. Presidents | 79
   {
     id: 79,
     name: "U.S. Presidents",
@@ -2524,7 +2524,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_presidents_of_the_United_States",
   },
 
-  // Periodic Table Elements
+  // Periodic Table Elements | 80
   {
     id: 80,
     name: "Periodic Table Elements",
@@ -2653,7 +2653,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_chemical_elements",
   },
 
-  // Phonetic Alphabet
+  // Phonetic Alphabet | 81
   {
     id: 81,
     name: "Phonetic Alphabet",
@@ -2691,7 +2691,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/NATO_phonetic_alphabet",
   },
 
-  // Crayola Colors
+  // Crayola Colors | 82
   {
     id: 82,
     name: "Crayola Colors",
@@ -2780,7 +2780,7 @@ export const challenges = [
     source: "https://www.crayola.com/explore/color-collection/64-count-crayons.aspx",
   },
 
-  // Constellations
+  // Constellations | 84
   {
     id: 84,
     name: "Constellations",
@@ -2880,7 +2880,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/88_constellations",
   },
 
-  // Composers
+  // Composers | 85
   {
     id: 85,
     name: "Classical Composers",
@@ -2941,7 +2941,7 @@ export const challenges = [
     source: "https://www.classical-music.com/features/composers/50-greatest-composers-all-time/",
   },
 
-  // EU Countries
+  // EU Countries | 86
   {
     id: 86,
     name: "EU Countries",
@@ -2980,7 +2980,7 @@ export const challenges = [
     source: "https://european-union.europa.eu/principles-countries-history/countries-eu_en",
   },
 
-  // Europe Capitals
+  // Europe Capitals | 87
   {
     id: 87,
     name: "Europe Capitals",
@@ -3037,7 +3037,7 @@ export const challenges = [
     source: "https://www.coe.int/en/web/portal/members-states",
   },
 
-  // Programming Languages
+  // Programming Languages | 88
   {
     id: 88,
     name: "Programming Languages",
@@ -3100,7 +3100,7 @@ export const challenges = [
     source: "https://www.tiobe.com/tiobe-index/",
   },
 
-  // Holywood Walk of Fame
+  // Holywood Walk of Fame | 90
   {
     id: 90,
     name: "Hollywood Walk of Fame",
@@ -3161,7 +3161,7 @@ export const challenges = [
     source: "https://walkoffame.com/history/",
   },
 
-  // Marvel Actors
+  // Marvel Actors | 91
   {
     id: 91,
     name: "Marvel Actors",
@@ -3221,7 +3221,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_Marvel_Cinematic_Universe_cast_members",
   },
 
-  // Cities in Canada
+  // Cities in Canada | 92
   {
     id: 92,
     name: "Cities in Canada",
@@ -3263,7 +3263,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_the_largest_cities_in_Canada_by_population",
   },
 
-  // Greek Gods
+  // Greek Gods | 93
   {
     id: 93,
     name: "Greek Gods",
@@ -3303,7 +3303,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_Greek_mythological_figures",
   },
 
-  // Greek Mythology
+  // Greek Mythology | 96
   {
     id: 96,
     name: "Greek Mythology (Misc)",
@@ -3360,7 +3360,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_Greek_mythological_figures",
   },
 
-  // World Rvers
+  // World Rvers | 97
   {
     id: 97,
     name: "World Rivers",
@@ -3411,7 +3411,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_river_systems_by_length",
   },
 
-  // Types of Pasta
+  // Types of Pasta | 98
   {
     id: 98,
     name: "Types of Pasta",
@@ -3451,7 +3451,7 @@ export const challenges = [
     source: "https://www.pastafits.org/pasta-dictionary/",
   },
 
-  // Spice Rack
+  // Spice Rack | 99
   {
     id: 99,
     name: "Spice Rack",
@@ -3500,7 +3500,7 @@ export const challenges = [
     source: "https://www.ciachef.edu/wp-content/uploads/2024/07/dried-spices.pdf",
   },
 
-  // WWE Champions
+  // WWE Champions | 100
   {
     id: 100,
     name: "WWE Champions",
@@ -3570,7 +3570,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_WWE_Champions",
   },
 
-  // DC Comics Movies
+  // DC Comics Movies | 101
   {
     id: 101,
     name: "DC Comics Movies",
@@ -3613,7 +3613,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/List_of_films_based_on_DC_Comics_publications",
   },
 
-  // Orchestra Instruments
+  // Orchestra Instruments | 102
   {
     id: 102,
     name: "Orchestra Instruments",
@@ -3676,7 +3676,7 @@ export const challenges = [
     source: "https://en.wikipedia.org/wiki/Orchestra",
   },
 
-  // Most Valuable Paintings
+  // Valuable Painters | 103
   {
     id: 103,
     name: "Valuable Painters",
