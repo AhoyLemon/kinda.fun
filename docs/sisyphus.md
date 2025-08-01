@@ -12,5 +12,5 @@ Also, there are achievements.
 | ------------------------------------------ | -------------- | --------------------------------------- |
 | **Each click that pushes the rock uphill** | +1 push        | Can be spent on upgrades                |
 | **Purchase upgrades**                      | spend pushes   | Upgrades are of no value.               |
-| **Earn achievements**                      | get points     | Achivements and points are of no value. |
+| **Earn achievements**                      | get points     | Achievements and points are of no value. |
 | **Buy your dignity**                       | -50,000 pushes | You are of no value.                    |
