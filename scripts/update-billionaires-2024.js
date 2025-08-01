@@ -164,8 +164,6 @@ function parseFlag(country) {
       return "gb";
     case "Luxembourg":
       return "lu";
-    case "Chile":
-      return "cl";
     case "Slovenia":
       return "si";
     case "Latvia":
