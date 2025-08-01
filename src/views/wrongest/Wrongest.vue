@@ -228,7 +228,7 @@
   ////////////////////////////////////////
   // In Game
   const dealOutCards = () => {
-    if (game.gameDeck.cards.length <= computedPlayerCount.value) {
+    if (game.gameDeck.cards.length <= computedPlayerCount) {
       ////////////////////////////////////////////////////////////
       // You've run out of cards.
       // EMERGENCY BACKUP SCENARIO.
@@ -507,7 +507,7 @@
   });
 
   const computedAreAllVotesCast = computed(() => {
-    if (round.votesSubmitted >= computedPlayerCount.value) {
+    if (round.votesSubmitted >= computedPlayerCount) {
       return true;
     } else {
       return false;
@@ -694,7 +694,7 @@
 
     round.votesSubmitted += 1;
 
-    if (round.votesSubmitted >= computedPlayerCount.value) {
+    if (round.votesSubmitted >= computedPlayerCount) {
       // This should be handled in the UI.
     }
   });
