@@ -423,19 +423,13 @@
     joinRoom();
   };
 
+  /**
+   * Joins a room using a room code from the URL parameter.
+   * Called automatically when the page loads with a ?room= parameter.
+   */
   const joinRoom = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    let roomCode = urlParams.get("room");
-
-    // If no room code in URL, check if we have one from the form input
-    if (!roomCode && ui.roomCodeInput) {
-      roomCode = ui.roomCodeInput;
-      // Update the URL with the room code
-      const protocol = window.location.protocol;
-      const host = window.location.host;
-      const newUrl = `${protocol}//${host}/invalid?room=${roomCode}`;
-      window.history.replaceState(null, "", newUrl);
-    }
+    const roomCode = urlParams.get("room");
 
     if (!roomCode) {
       console.error("Room code is missing in the URL");
@@ -443,6 +437,34 @@
       return;
     }
 
+    connectToRoom(roomCode);
+  };
+
+  /**
+   * Joins a room using a room code from form input.
+   * Updates the URL and then connects to the room.
+   */
+  const joinRoomFromInput = () => {
+    if (!ui.roomCodeInput) {
+      console.error("No room code provided in input");
+      game.isFailedToGetRoomData = true;
+      return;
+    }
+
+    // Update the URL with the room code from form input
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const newUrl = `${protocol}//${host}/invalid?room=${ui.roomCodeInput}`;
+    window.history.replaceState(null, "", newUrl);
+
+    connectToRoom(ui.roomCodeInput);
+  };
+
+  /**
+   * Core connection logic for joining a room with a given room code.
+   * Sets up Firestore subscriptions for room data and players.
+   */
+  const connectToRoom = (roomCode) => {
     game.roomCode = roomCode.toUpperCase();
     const roomRef = doc(db, "rooms", game.roomCode);
 
