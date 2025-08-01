@@ -117,8 +117,7 @@
 
   const findImpersonator = () => {
     // Who are you going to meet?
-    //let i = randomFrom(ui.celebrities);
-    let i = ui.celebrities[91];
+    let i = randomFrom(ui.celebrities);
     current.pic = picPath + i.file;
     current.name = i.celebrity;
     current.url = i.url;
