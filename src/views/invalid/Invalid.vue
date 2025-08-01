@@ -124,11 +124,6 @@
       (docSnapshot) => {
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
-          const previousData = {
-            challenge: round.challenge,
-            rules: round.rules,
-            bugs: round.bugs,
-          };
 
           game.isGameStarted = data.isGameStarted ?? false;
           game.roomCreatorID = data.roomCreatorID ?? "";
@@ -172,25 +167,25 @@
 
           // Update game state from Firestore
           if (data.currentChallenge !== undefined) {
-            round.challenge = data.currentChallenge;
-            // Play sound if challenge changed
-            if (data.currentChallenge && previousData.challenge?.id !== data.currentChallenge.id) {
+            // Play sound if challenge changed (only create previous value when needed)
+            if (data.currentChallenge && round.challenge?.id !== data.currentChallenge.id) {
               soundNewRule.play();
             }
+            round.challenge = data.currentChallenge;
           }
           if (data.currentRules) {
-            round.rules = data.currentRules;
-            // Play sound if rules changed
-            if (previousData.rules?.length !== data.currentRules.length) {
+            // Play sound if rules changed (only create previous value when needed)
+            if (round.rules?.length !== data.currentRules.length) {
               soundNewRule.play();
             }
+            round.rules = data.currentRules;
           }
           if (data.currentBugs) {
-            round.bugs = data.currentBugs;
-            // Play sound if bugs changed
-            if (previousData.bugs?.length !== data.currentBugs.length) {
+            // Play sound if bugs changed (only create previous value when needed)
+            if (round.bugs?.length !== data.currentBugs.length) {
               soundNewRule.play();
             }
+            round.bugs = data.currentBugs;
           }
           if (data.currentShibboleth !== undefined) {
             round.shibboleth = data.currentShibboleth;
@@ -1809,7 +1804,7 @@
           }
         }
       });
-    }
+    },
   );
 
   onMounted(() => {
