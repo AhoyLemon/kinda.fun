@@ -131,10 +131,50 @@
           game.roomCreatorID = data.roomCreatorID ?? "";
           game.isGameOver = data.isGameOver ?? false;
           
-          // Handle game state updates
+          // Handle game state updates - only call phase change handler if phase actually changed
           const gamePhase = data.gamePhase;
           if (gamePhase) {
-            handleGamePhaseChange(gamePhase, data);
+            // Convert Firestore phase to template phase for comparison
+            let templatePhase = gamePhase;
+            switch (gamePhase) {
+              case "choose-rules":
+                templatePhase = "choose rules";
+                break;
+              case "create-password":
+                templatePhase = "create password";
+                break;
+              case "final-round":
+                templatePhase = "FINAL ROUND";
+                break;
+              case "game-over":
+                templatePhase = "GAME OVER";
+                break;
+              default:
+                templatePhase = gamePhase;
+            }
+            
+            // Only handle phase change if the phase actually changed
+            // Special case: "add bugs" is a local sub-phase of "choose rules"
+            const currentPhase = round.phase;
+            const isAddBugsSubPhase = currentPhase === "add bugs" && templatePhase === "choose rules";
+            
+            console.log("Phase check:", {
+              firestorePhase: gamePhase,
+              templatePhase: templatePhase,
+              currentPhase: currentPhase,
+              isAddBugsSubPhase: isAddBugsSubPhase,
+              willTriggerChange: templatePhase !== currentPhase && !isAddBugsSubPhase
+            });
+            
+            // CRITICAL FIX: Don't trigger phase change if we're in "add bugs" sub-phase
+            // The "add bugs" phase is local-only and should not be overridden by Firestore
+            if (isAddBugsSubPhase) {
+              console.log("PREVENTED: Staying in add bugs sub-phase, ignoring Firestore phase update");
+              // Do NOT call handleGamePhaseChange - stay in add bugs phase
+            } else if (templatePhase !== currentPhase) {
+              console.log(`Phase change detected: ${currentPhase} -> ${templatePhase}`);
+              handleGamePhaseChange(gamePhase, data);
+            }
           }
           
           // Update game state from Firestore
@@ -184,7 +224,11 @@
             game.roundSummary = data.roundSummary;
           }
           if (data.attempts) {
+            console.log("=== ATTEMPTS UPDATE FROM FIRESTORE ===");
+            console.log("Previous round.attempts:", round.attempts);
+            console.log("New data.attempts:", data.attempts);
             round.attempts = data.attempts;
+            console.log("Updated round.attempts:", round.attempts);
           }
           if (data.flyingPigActive !== undefined) {
             round.flyingPig.active = data.flyingPigActive;
@@ -207,6 +251,9 @@
 
   // Handle game phase changes from Firestore
   function handleGamePhaseChange(newPhase, data) {
+    console.log("=== handleGamePhaseChange CALLED ===");
+    console.log("New phase:", newPhase, "Current rulebux before change:", my.rulebux);
+    
     const previousPhase = round.phase;
     
     // Convert Firestore phase names (with dashes) to template phase names (with spaces)
@@ -228,6 +275,7 @@
         templatePhase = newPhase;
     }
     
+    console.log("Setting round.phase from", previousPhase, "to", templatePhase);
     round.phase = templatePhase;
     
     // Update player roles based on sysAdminIndex
@@ -251,7 +299,15 @@
     switch (newPhase) {
       case "choose-rules":
         if (my.role === "SysAdmin") {
-          my.rulebux = settings.default.rulebux;
+          // Only reset rulebux if this is a true phase change (not just a reconnect)
+          if (previousPhase !== "choose rules") {
+            console.log("RESETTING RULEBUX: previousPhase was", previousPhase, "new phase is choose rules");
+            console.log("Rulebux before reset:", my.rulebux);
+            my.rulebux = settings.default.rulebux;
+            console.log("Rulebux after reset:", my.rulebux);
+          } else {
+            console.log("NOT resetting rulebux - phase didn't actually change");
+          }
           definePossibleChallenges();
           document.title = my.role + " | " + gameTitle;
         } else {
@@ -738,7 +794,7 @@
 
     // if possibleRightAnswers is high enough, save the rule.
     if (round.possibleAnswerCount >= game.players.length) {
-      // Pay for it.
+      // Pay for it BEFORE updating Firestore
       my.rulebux = my.rulebux - rule.cost;
 
       // Update Firestore instead of using Socket.IO
@@ -776,6 +832,9 @@
   };
 
   const addBug = async () => {
+    console.log("=== addBug START ===");
+    console.log("addBug called, current rulebux:", my.rulebux, "current phase:", round.phase);
+    
     ui.addBugErrors = [];
     const bug = ui.addBug.toUpperCase();
     let foundMatch = false;
@@ -797,14 +856,21 @@
     if (round.bugs && round.bugs.length > 0) {
       my.rulebux -= 1;
     }
+    
+    console.log("After rulebux deduction, rulebux:", my.rulebux, "phase:", round.phase);
 
     ui.addBug = "";
     round.bugs.push(bug);
 
+    console.log("About to call updateRoomState with bugs, rulebux:", my.rulebux, "phase:", round.phase);
+    
     // Update Firestore instead of using Socket.IO
     await updateRoomState({
       currentBugs: round.bugs,
     });
+    
+    console.log("=== addBug END ===");
+    console.log("After updateRoomState call, rulebux:", my.rulebux, "phase:", round.phase);
 
     sendEvent("Invalid", "Add Bug", bug);
   };
@@ -817,6 +883,12 @@
       gamePhase: "create-password",
       sysAdminIndex: my.playerIndex,
     });
+  };
+
+  const finishRules = async () => {
+    round.phase = 'add bugs';
+    // Don't update Firestore phase yet - keep it as "choose-rules" 
+    // until we actually onboard employees
   };
 
   /////////// Timers
@@ -1102,10 +1174,19 @@
       soundBadGuess.play();
       attemptRecord.result = "failed";
       
+      console.log("=== FAILED PASSWORD ATTEMPT ===");
+      console.log("Current round.attempts:", round.attempts);
+      console.log("Adding attempt record:", attemptRecord);
+      
       // Update attempts in Firestore for failed password
+      const newAttempts = [...(round.attempts || []), attemptRecord];
+      console.log("New attempts array:", newAttempts);
+      
       await updateRoomState({
-        attempts: [...(round.attempts || []), attemptRecord],
+        attempts: newAttempts,
       });
+      
+      console.log("After updateRoomState call for failed attempt");
     }
   };
 
