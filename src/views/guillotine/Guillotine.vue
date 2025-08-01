@@ -443,6 +443,16 @@
     if (!industry) {
       return false;
     }
+
+    // Check for string matches first (more flexible)
+    if (industry.includes("Energy")) {
+      return "power-plant";
+    }
+    if (industry.includes("Transportation") || industry.includes("Logistics")) {
+      return "trucking";
+    }
+
+    // Then check for exact matches
     switch (industry) {
       case "Automotive":
         return "automotive";
@@ -452,6 +462,8 @@
         return "hamburger";
       case "Real Estate":
         return "house";
+      case "Real Estate & Construction":
+        return "house";
       case "Technology":
         return "technology";
       case "Manufacturing":
@@ -460,9 +472,9 @@
         return "television";
       case "Fashion & Retail":
         return "shopping-bag";
-      case "Energy":
-        return "power-plant";
       case "Healthcare":
+        return "healthcare";
+      case "Healthcare & Pharmaceuticals":
         return "healthcare";
       case "Telecom":
         return "digital-station";
@@ -472,9 +484,9 @@
         return "waiter";
       case "Diversified":
         return "pie-chart";
-      case "Logistics":
-        return "trucking";
       case "Gambling & Casinos":
+        return "slot-machine";
+      case "Sports & Gaming":
         return "slot-machine";
       case "Sports":
         return "football";
