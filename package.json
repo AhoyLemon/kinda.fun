@@ -9,16 +9,18 @@
     "dev:client": "vite",
     "dev:server": "concurrently --prefix none \"vite\" \"node src/server/express.js\" || (exit 0)",
     "build:pages": "node build-pages.js",
-    "build": "vite build && npm run build:pages && cp dist/home.html dist/index.html",
+    "build": "node scripts/update-sitemap.js && vite build && npm run build:pages && cp dist/home.html dist/index.html",
     "preview": "vite preview",
     "test:unit": "vitest",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
     "serve-heroku": "vite --host 0.0.0.0 --port $PORT preview --mode sandbox",
+    "update-billionaires": "node scripts/update-billionaires-2024.js",
+    "generate-arrests": "node scripts/generate-arrests.js",
     "watch:pages": "concurrently -k \"nodemon -w src/views/cameo/Page.pug -x node build-pages.js cameo\" \"nodemon -w src/views/guillotine/Page.pug -x node build-pages.js guillotine\" \"nodemon -w src/views/home/Page.pug -x node build-pages.js index\" \"nodemon -w src/views/invalid/Page.pug -x node build-pages.js invalid\" \"nodemon -w src/views/meeting/Page.pug -x node build-pages.js meeting\" \"nodemon -w src/views/pretend/Page.pug -x node build-pages.js pretend\" \"nodemon -w src/views/sisyphus/Page.pug -x node build-pages.js sisyphus\" \"nodemon -w src/views/wrongest/Page.pug -x node build-pages.js wrongest\" \"nodemon -w src/views/stats/Page.pug -x node build-pages.js stats\""
   },
   "dependencies": {
-    "firebase": "^10.8.0",
+    "firebase": "^10.14.1",
     "howler": "^2.2.4",
     "luxon": "^3.4.4",
     "vue": "^3.4.29",
@@ -46,14 +48,17 @@
     "nodemon": "^3.1.10",
     "prettier": "^3.2.5",
     "pug": "^3.0.3",
-    "pug-cli": "^1.0.0-alpha6",
     "sass": "^1.77.6",
     "socket.io-client": "^4.7.5",
     "vite": "^5.3.1",
-    "vite-plugin-sitemap": "^0.6.2",
     "vite-plugin-socket-io": "^1.0.2",
     "vite-plugin-vue-devtools": "^7.3.1",
     "vitest": "^1.6.0",
     "vue-good-table-next": "^0.2.1"
+  },
+  "overrides": {
+    "firebase": {
+      "undici": "^6.21.3"
+    }
   }
 }

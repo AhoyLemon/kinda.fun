@@ -31,3 +31,27 @@ export const lastWords = new Howl({
     console.log("sound played");
   },
 });
+
+// Cheering crowd sounds for top 5 billionaires
+export const cheeringSounds = {
+  rank1: new Howl({
+    src: ["/audio/guillotine/cheer-rank1.mp3"],
+    volume: 1.0, // Most exuberant
+  }),
+  rank2: new Howl({
+    src: ["/audio/guillotine/cheer-rank2.mp3"],
+    volume: 0.9, // Very enthusiastic
+  }),
+  rank3: new Howl({
+    src: ["/audio/guillotine/cheer-rank3.mp3"],
+    volume: 0.8, // Strong cheering
+  }),
+  rank4: new Howl({
+    src: ["/audio/guillotine/cheer-rank4.mp3"],
+    volume: 0.7, // Moderate cheering
+  }),
+  rank5: new Howl({
+    src: ["/audio/guillotine/cheer-rank5.mp3"],
+    volume: 0.6, // Light cheering
+  })
+};

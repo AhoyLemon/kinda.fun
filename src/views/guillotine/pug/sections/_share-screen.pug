@@ -1,24 +1,30 @@
 .share-screen(v-if="ui.shareScreen.display")
-  .inner
+
+  .inner.cheater(v-if="ui.shareScreen.isHashInvalid")
+    span.big-text CHEATER!
+    p.explanation 
+      strong(v-if="ui.shareScreen.playerName" v-text="ui.shareScreen.playerName")
+      span(v-else) Somebody
+      span  tried to share their No More Billionaires score with you, but I don't believe it.
+    p Please execute billionaires the old fashioned way.
+
+    .play-cta(v-if="!computedDidYouAlreadyPlayToday")
+      button(@click="playFromShare()") No More Billionaires.
+
+  .inner(v-else)
     .share-cta(v-if="computedDidYouAlreadyPlayToday")
       span ↑ Share this URL and challenge your friends. ↑
 
     .stat-lead-in
       span On 
       span {{formatDate(ui.shareScreen.playDate)}} 
-      input(v-if="computedDidYouAlreadyPlayToday" type="text" placeholder="Enter your name" @keyup="enterYourName()" v-model="ui.shareScreen.playerName")
-      strong(v-else) {{ui.shareScreen.playerName}}
+      input.player-name(v-if="ui.shareScreen.amISharing" type="text" placeholder="Enter your name" @keyup="enterYourName()" v-model="ui.shareScreen.playerName")
+      strong.player-name(v-else) {{ui.shareScreen.playerName || 'Somebody'}}
       span  created
     .stat.wealth-created.today(v-if="ui.shareScreen.wealthCreatedToday > 0")
       .value(:digits="convertToBillion(ui.shareScreen.wealthCreatedToday).toString().length")
         span.big-number.dollars-today(v-html="formatDollars(ui.shareScreen.wealthCreatedToday,true)")
         sub.usd (USD)
-    .stat.schools-funded(v-if="computedSchoolsFunded && computedSchoolsFunded.today")
-      span.label (That's enough to fund 
-      span.value {{formatNumber(computedSchoolsFunded.today)}}
-      span.label  public schools in 
-      +stateSelector()
-      span.label  for a year.)
 
     .play-cta(v-if="!computedDidYouAlreadyPlayToday")
       button(@click="playFromShare()") No More Billionaires.
