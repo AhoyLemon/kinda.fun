@@ -12,8 +12,8 @@ const defaultSettings = {
     minOffset: 2,
     vowelOffset: 1,
     hurryTime: 20,
-    adminTimeLeft: 9000,
-    employeeMaxTime: 5000,
+    adminTimeLeft: 90,
+    employeeMaxTime: 50,
     finalTimeLeft: 60,
     numberOfPossibleChallenges: 3,
   },
@@ -33,7 +33,7 @@ const defaultSettings = {
       forCrackingOwnPassword: -50,
     },
     timer: {
-      employeeMaxTime: 5000,
+      employeeMaxTime: 50,
       hurryTime: 20,
       adminTimeLeft: 90,
       countdownToFinal: 30,
@@ -55,7 +55,6 @@ export const my = reactive({
   crashesCaused: 0,
   score: 0,
   isRoomHost: false,
-  socketID: "",
 });
 
 export const round = reactive({
@@ -98,6 +97,7 @@ export const round = reactive({
 
 export const ui = reactive({
   nameInput: "",
+  roomCodeInput: "",
   appliedForJob: false,
   enterCode: {
     focus: false,

@@ -8,6 +8,8 @@
     .round-number ROUND {{round.number}} / {{game.maxRounds}}
 
   .panels
+
+    // CHALLENGE SELECTOR (LEFT)
     .panel.challenge-select.focus(v-if="ui.challengeID == null")
       .notched
         p First, select your password challenge.
@@ -17,14 +19,14 @@
               option(disabled selected)
               option(v-for="option in round.possibleChallenges" :value="option.id") {{option.name}}
             label Password Challenge
-          
-        //-button(type="submit") Choose
+          //-button(type="submit") Choose
 
+    // CURRENT PASSWORD RULES SUMMARY (LEFT)
     .panel.rules-summary(v-if="ui.challengeID != null && round.phase != 'crashed' && !ui.roundOver")
       .notched
         ul
-          li {{round.challenge.nameAsRule}}
-          li(v-if="round.challenge.hint") {{round.challenge.hint}}
+          li(v-if="round.challenge && round.challenge.nameAsRule") {{round.challenge.nameAsRule}}
+          li(v-if="round.challenge && round.challenge.hint") {{round.challenge.hint}}
           li.admin-only There are {{round.possibleAnswerCount}} possible
           li.admin-only Average password size is {{round.averageSize}} characters
           li.admin-only There's an average of {{round.averageVowels}} vowels
@@ -36,6 +38,23 @@
           li.admin-only(v-for="(bug,index) in round.bugs") {{bug}} will cause a system crash.
         p.admin-only Info in this color is for admin eyes only.
 
+
+    // ROUND IS OVER, YOU ARE FIRED. (LEFT)
+    .panel.round-over.focus(v-if="ui.roundOver")
+      .notched
+        h2 This round is over.
+        div(v-if="round.number == game.maxRounds") 
+          p BigCorp Middle Management is pleased with all the passwords which have been provided. 
+          p Management sincerely hopes nobody tries to hack any of the passwords given. 😱
+        div(v-else)
+          p Middle management is unsatisfied with the passwords provided. A new SysAdmin will be named.
+          p BigCorp thanks you for your service! 🙂
+          p Now clean out your desk immediately.
+        p
+          button.start-next-round(type="button" @click="startNextRoundClicked()") Start Next Round
+
+
+    // SELECT RULES (MIDDLE)
     .panel.rules-panel(v-if="ui.challengeID != null && round.phase == 'choose rules'" :class="{focus: (!ui.currentRule.editing)}")
       .notched
         .add-a-rule
@@ -66,7 +85,8 @@
             button.finished(type="button" @click="finishRules()" v-if="!ui.currentRule.editing") FINISH RULES
               .tooltip
                 span Set rules and enter in {{my.rulebux + 1}} system bugs
-      
+    
+    // RULE SPECIFICS (MIDDLE)
     .panel.rule-details.focus(v-if="ui.currentRule.editing && (round.phase == 'choose rules')")
       .notched
         form.fieldset-and-button(v-if="ui.currentRule.name == 'Demand A Letter'" v-on:submit.prevent="saveRule(ui.currentRule)")
@@ -80,13 +100,13 @@
         form.fieldset-and-button(v-if="ui.currentRule.name == 'Ban A Letter'" v-on:submit.prevent="saveRule(ui.currentRule)")
           fieldset
             label(for="BanTheLetter") Ban the letter
-            input.uppercase(v-model="ui.currentRule.inputValue" type="text" id="BanTheLetter" maxlength="1" minlength="1" required  placeholder="?")
+            input.uppercase(v-model="ui.currentRule.inputValue" type="text" id="BanTheLetter" maxlength="1" minlength="1" required placeholder="?" v-focus)
           button(type="submit") Set
 
         form.fieldset-and-button(v-if="ui.currentRule.name == 'Ban A Combo'" v-on:submit.prevent="saveRule(ui.currentRule)")
           fieldset
             label(for="FirstBannedLetter") Ban The Letter 
-            input.uppercase(v-model="ui.currentRule.inputValue" type="text"  id="FirstBannedLetter" maxlength="1" minlength="1" required)
+            input.uppercase(v-model="ui.currentRule.inputValue" type="text" id="FirstBannedLetter" maxlength="1" minlength="1" required v-focus)
             label(for="SecondBannedLetter") from being used with 
             input.uppercase(v-model="ui.currentRule.inputValueTwo" type="text" id="SecondBannedLetter"  maxlength="1" minlength="1" required)
           button(type="submit") Set
@@ -105,6 +125,7 @@
               option PASSWORD1
           button(type="submit") Set
 
+    // SET YOUR BUGS (MIDDLE)
     .panel.bug-setup.focus(v-if="round.phase == 'add bugs' && (!round.bugs || round.bugs.length < 1 || my.rulebux > 0)")
       .notched
         .first-bug-intro(v-if="!round.bugs || round.bugs.length < 1")
@@ -122,13 +143,16 @@
             input.uppercase(type="text" id="BugPassword" v-model="ui.addBug"  autocomplete="off" maxlength="25" placeholder="PASSWORD")
           button(type="Submit") Set
 
+    // ONBOARD EMPLOYEES (???)
     .panel.onboard-button(v-if="round.phase == 'add bugs' && !ui.addBug" :class="{focus: ((round.bugs && round.bugs.length > 0) && my.rulebux < 1)}")
       .notched
         button.onboard-employees(@click="onboardEmployees()") Onboard Employees
   
+    // CONSOLE ON WHAT EMPLOYEES ARE DOING
     .panel.attempt-console(v-if="round.phase == 'create password' || round.phase == 'crashed'" :class="{focus: (round.phase == 'create password')}")
       .notched
-        h3(v-if="round.phase == 'create password'") Employees are trying to enter passwords...
+        h3(v-if="round.phase == 'create password' && !ui.roundOver") Employees are trying to enter passwords...
+        h3(v-if="round.phase == 'create password' && ui.roundOver") Employees have entered passwords.
         .crash-notification(v-if="round.phase == 'crashed'")
           h2 System Crash!
           p Congratulations! 
@@ -159,27 +183,5 @@
       | .
       sup.decimal {{round.adminTimeLeft.toFixed(2).split('.')[1]}}
 
-
-  include _scores.pug
-
-// Round over screen for admin - shown outside main container
-.admin-screen.round-over-screen(v-if="my.role == 'SysAdmin' && ui.roundOver")
-  .top-info
-    .name {{my.name}}
-    .job SysAdmin
-    .round-number ROUND {{round.number}} / {{game.maxRounds}}
-
-  .panels
-    .panel.round-over.focus
-      .notched
-        h2 This round is over.
-        p(v-if="round.number == game.maxRounds") BigCorp Middle Management is pleased with all the passwords which have been provided. Management sincerely hopes nobody tries to hack any of the passwords given.
-        div(v-else)
-          p Middle management is unsatisfied with the passwords provided. A new SysAdmin will be named.
-          p BigCorp thanks you for your service! 🙂
-          p Now clean out your desk immediately.
-
-        p
-          button.start-next-round(type="button" @click="startNextRoundClicked()") Start Next Round
 
   include _scores.pug

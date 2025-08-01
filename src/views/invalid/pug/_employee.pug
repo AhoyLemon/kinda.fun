@@ -31,7 +31,7 @@ main.employee-screen(v-if="my.role == 'employee' && (round.phase == 'choose rule
               span(v-else) There are {{round.bugs.length}} system bugs.
           
           .stand-by(v-if="round.phase != 'create password' && !ui.roundOver")
-            p Your password rules are still being created by {{computedSysAdminName}}, your friendly and helpful System Administrator.
+            p Your password rules are being created by {{computedSysAdminName}}, your friendly and helpful System Administrator.
 
       // This is where you put in the password, and get feedback about your password.
 
@@ -116,6 +116,7 @@ main.employee-screen(v-if="my.role == 'employee' && (round.phase == 'choose rule
 .crash-screen(v-if="my.role == 'employee' && round.phase == 'crashed'")
   .inside
     h1 Server error in '/' Application
+    h2 Authentication Error
     p
       strong Description: 
       | An unhandled exception occured when 
@@ -127,7 +128,7 @@ main.employee-screen(v-if="my.role == 'employee' && (round.phase == 'choose rule
       strong Source Error
     pre
       code.
-        Line 109113:     protected isTheSiteCrashed(ooobject pwassword) {
+        Line 109113:     protected isTheSiteCrashed(object pwassword) {
         Line 109114:       while (password != error) {
         Line 109115:         destroyWebsite = false;
         Line 109116:       }
@@ -156,24 +157,5 @@ main.employee-screen(v-if="my.role == 'employee' && (round.phase == 'choose rule
       strong Version Information:
       br
       code BigCorp Framework Version 4.00.1134.Release5-Final--Version2.TestBuild-5
-
-// Round over screen for employee - shown outside main container
-main.employee-screen.round-over-screen(v-if="my.role == 'employee' && ui.roundOver")
-  .top-info
-    .name {{my.name}}
-    .job 
-      span Employee 
-      sup #
-      span {{my.employeeNumber}}
-    .round-number ROUND {{round.number}} / {{game.maxRounds}}
-    .score SCORE: {{game.players[my.playerIndex].score}}
-
-  .interface
-    .inside
-      .info
-        .content
-          h2 This round is over.
-          p(v-if="round.number == game.maxRounds") BigCorp Middle Management is pleased with all the passwords which have been provided. Management sincerely hopes nobody tries to hack any of the passwords given.
-          p(v-else) Your password(s) have been sent to BigCorp Middle Management, who finds them lacking. A new SysAdmin will be named to help create better passwords.
 
   include _scores.pug

@@ -18,6 +18,7 @@
 
 .employee-screen {
   min-height: 100vh;
+  background-color: #6893b9;
   background-image: url(https://picsum.photos/1920/1080);
   background-size: cover;
   background-position: center;
@@ -273,19 +274,30 @@
   color: black;
   padding: $padding;
   @include position(absolute, 0, 0, 0, 0);
-  display: flex; // align-items: center; justify-content: center;
+  z-index: 2;
+  display: flex;
   .inside {
     width: 100%;
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
   }
+
   h1 {
     color: red;
-    border-bottom: 3px solid currentColor;
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    border-bottom: 3px solid #966;
     display: block;
+    margin-bottom: 0.5em;
+  }
+  h2 {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    font-weight: 300;
+    font-style: italic;
     margin-bottom: 2em;
   }
   pre {
     background: #ffffcc;
     font-weight: bold;
+    font-family: "Courier New", Courier, monospace;
     padding: 1em;
     margin-bottom: 2em;
   }

@@ -1,10 +1,8 @@
 <script setup>
-  // TODO - This PR right now has a lot of debug code. Remove debug code before merging in the PR.
-
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // IMPORTS
-  import { reactive, computed, onMounted, getCurrentInstance, watch } from "vue"; // Import reactive from Vue 3
+  import { reactive, computed, onMounted, getCurrentInstance, watch, nextTick } from "vue"; // Import reactive from Vue 3
   import {
     randomNumber,
     randomFrom,
@@ -81,6 +79,10 @@
   } from "firebase/firestore";
   import { useFirestore, useCollection, useDocument } from "vuefire";
 
+  /////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////
+  // FIREBASE & FIRESTORE
+
   // Initialize Firestore
   const db = useFirestore();
   const statsRef = doc(db, `stats/invalid`);
@@ -116,7 +118,6 @@
 
   async function subscribeToGameStatus(roomCode) {
     const gameRef = doc(collection(db, "rooms"), roomCode);
-    console.log("Game document reference:", gameRef);
 
     onSnapshot(
       gameRef,
@@ -160,21 +161,11 @@
             const currentPhase = round.phase;
             const isAddBugsSubPhase = currentPhase === "add bugs" && templatePhase === "choose rules";
 
-            console.log("Phase check:", {
-              firestorePhase: gamePhase,
-              templatePhase: templatePhase,
-              currentPhase: currentPhase,
-              isAddBugsSubPhase: isAddBugsSubPhase,
-              willTriggerChange: templatePhase !== currentPhase && !isAddBugsSubPhase,
-            });
-
             // CRITICAL FIX: Don't trigger phase change if we're in "add bugs" sub-phase
             // The "add bugs" phase is local-only and should not be overridden by Firestore
             if (isAddBugsSubPhase) {
-              console.log("PREVENTED: Staying in add bugs sub-phase, ignoring Firestore phase update");
               // Do NOT call handleGamePhaseChange - stay in add bugs phase
             } else if (templatePhase !== currentPhase) {
-              console.log(`Phase change detected: ${currentPhase} -> ${templatePhase}`);
               handleGamePhaseChange(gamePhase, data);
             }
           }
@@ -229,11 +220,7 @@
             game.roundSummary = data.roundSummary;
           }
           if (data.attempts) {
-            console.log("=== ATTEMPTS UPDATE FROM FIRESTORE ===");
-            console.log("Previous round.attempts:", round.attempts);
-            console.log("New data.attempts:", data.attempts);
             round.attempts = data.attempts;
-            console.log("Updated round.attempts:", round.attempts);
           }
           if (data.flyingPigActive !== undefined) {
             round.flyingPig.active = data.flyingPigActive;
@@ -244,7 +231,14 @@
             }
           }
           if (data.isRoundOver !== undefined) {
+            const wasRoundOver = ui.roundOver;
             ui.roundOver = data.isRoundOver;
+
+            // Stop the timer when round becomes over
+            if (!wasRoundOver && data.isRoundOver) {
+              resetRoundTimer();
+              resetHurryTimer();
+            }
           }
         } else {
           console.error("Game document does not exist.");
@@ -259,9 +253,6 @@
 
   // Handle game phase changes from Firestore
   function handleGamePhaseChange(newPhase, data) {
-    console.log("=== handleGamePhaseChange CALLED ===");
-    console.log("New phase:", newPhase, "Current rulebux before change:", my.rulebux);
-
     const previousPhase = round.phase;
 
     // Convert Firestore phase names (with dashes) to template phase names (with spaces)
@@ -283,7 +274,6 @@
         templatePhase = newPhase;
     }
 
-    console.log("Setting round.phase from", previousPhase, "to", templatePhase);
     round.phase = templatePhase;
 
     // Update player roles based on sysAdminIndex
@@ -311,16 +301,24 @@
         ui.passwordSucceeded = false;
         ui.passwordAttemptErrors = [];
         ui.challengeID = null;
+        ui.shibboleth = ""; // Clear shibboleth input from previous round
+
+        // Clear password success indicators from all players
+        if (previousPhase !== "choose rules") {
+          game.players.forEach(async (player) => {
+            if (player.passwordSuccess) {
+              const playerRef = doc(db, "rooms", game.roomCode, "players", player.playerID);
+              await updateDoc(playerRef, {
+                passwordSuccess: false,
+              });
+            }
+          });
+        }
 
         if (my.role === "SysAdmin") {
           // Only reset rulebux if this is a true phase change (not just a reconnect)
           if (previousPhase !== "choose rules") {
-            console.log("RESETTING RULEBUX: previousPhase was", previousPhase, "new phase is choose rules");
-            console.log("Rulebux before reset:", my.rulebux);
             my.rulebux = settings.default.rulebux;
-            console.log("Rulebux after reset:", my.rulebux);
-          } else {
-            console.log("NOT resetting rulebux - phase didn't actually change");
           }
           definePossibleChallenges();
           document.title = my.role + " | " + gameTitle;
@@ -335,25 +333,16 @@
         }
         break;
       case "crashed":
-        console.log("=== CRASH PHASE DETECTED ===");
-        console.log("Crash data:", { crashedPlayer: data.crashedPlayer, crashedWord: data.crashedWord });
-        console.log("Current players:", game.players);
         if (data.crashedPlayer && data.crashedWord) {
           round.crash.active = true;
           round.crash.player = game.players.find((p) => p.playerID === data.crashedPlayer);
           round.crash.word = data.crashedWord;
-          console.log("Set crash player:", round.crash.player);
-          console.log("Set crash word:", round.crash.word);
           soundSystemCrash.play();
           endTheGuessingRound();
-        } else {
-          console.log("Missing crash data - player or word not found");
         }
         break;
       case "final-round":
-        ui.enterFinalPasswords = true;
-        startFinalRoundCounter();
-        musicFinalRound.play();
+        startCountdownToFinalRound();
         document.title = "FINAL ROUND | " + gameTitle;
         break;
       case "game-over":
@@ -374,29 +363,13 @@
     }
 
     try {
-      console.log("updateRoomState called with:", updates);
       const roomRef = doc(db, "rooms", game.roomCode);
-      console.log("Room reference:", roomRef);
       await updateDoc(roomRef, updates);
-      console.log("updateDoc completed successfully");
     } catch (error) {
       console.error("Error updating room state:", error);
       throw error; // Re-throw so calling code can handle it
     }
   }
-
-  /////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////
-  // Functions
-
-  const generateUniqueID = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let result = "";
-    for (let i = 0; i < 12; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  };
 
   const createRoom = async () => {
     game.isFailedToGetRoomData = false;
@@ -447,7 +420,6 @@
     };
     await setDoc(roomRef, newRoom);
     game.roomCode = roomCode;
-    console.log("Room created with code:", roomCode);
     // Update the browser URL to the new meeting page
     const protocol = window.location.protocol; // http: or https:
     const host = window.location.host; // e.g., localhost:5173 or example.com
@@ -458,7 +430,17 @@
 
   const joinRoom = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const roomCode = urlParams.get("room");
+    let roomCode = urlParams.get("room");
+
+    // If no room code in URL, check if we have one from the form input
+    if (!roomCode && ui.roomCodeInput) {
+      roomCode = ui.roomCodeInput;
+      // Update the URL with the room code
+      const protocol = window.location.protocol;
+      const host = window.location.host;
+      const newUrl = `${protocol}//${host}/invalid?room=${roomCode}`;
+      window.history.replaceState(null, "", newUrl);
+    }
 
     if (!roomCode) {
       console.error("Room code is missing in the URL");
@@ -475,41 +457,6 @@
     // Fetch players
     const playersCollectionRef = collection(db, `rooms/${game.roomCode}/players`);
     game.players = useCollection(playersCollectionRef);
-  };
-
-  /////// BEFORE GAME (game hasn't started yet)
-  const watchVideo = () => {
-    ui.watchingVideo = true;
-    if (game.currentlyInGame) {
-      sendEvent("Invalid", "Instruction Video", "Pregame Screen");
-    } else {
-      sendEvent("Invalid", "Instruction Video", "Title Screen");
-    }
-    if (ui.musicPlaying) {
-      musicLobby.volume(0);
-    }
-  };
-
-  const stopWatchingVideo = () => {
-    ui.watchingVideo = false;
-    if (ui.musicPlaying) {
-      if (ui.musicHushed) {
-        musicLobby.volume(0.05);
-      } else {
-        musicLobby.volume(0.6);
-      }
-    }
-  };
-
-  const toggleMusicVolume = () => {
-    ui.musicHushed = !ui.musicHushed;
-    if (ui.musicHushed) {
-      musicLobby.volume(0.05);
-      musicFinalRound.volume(0.1);
-    } else {
-      musicLobby.volume(0.6);
-      musicFinalRound.volume(0.75);
-    }
   };
 
   const savePlayerInfo = async () => {
@@ -601,9 +548,60 @@
     sendEvent("Invalid", "Game Started", game.roomCode);
   };
 
+  /////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////
+  // FUNCTIONS
+
+  const generateUniqueID = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < 12; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+
+  /////// BEFORE GAME (game hasn't started yet)
+  const watchVideo = () => {
+    ui.watchingVideo = true;
+    if (game.currentlyInGame) {
+      sendEvent("Invalid", "Instruction Video", "Pregame Screen");
+    } else {
+      sendEvent("Invalid", "Instruction Video", "Title Screen");
+    }
+    if (ui.musicPlaying) {
+      musicLobby.volume(0);
+    }
+  };
+
+  const stopWatchingVideo = () => {
+    ui.watchingVideo = false;
+    if (ui.musicPlaying) {
+      if (ui.musicHushed) {
+        musicLobby.volume(0.05);
+      } else {
+        musicLobby.volume(0.6);
+      }
+    }
+  };
+
+  const toggleMusicVolume = () => {
+    ui.musicHushed = !ui.musicHushed;
+    if (ui.musicHushed) {
+      musicLobby.volume(0.05);
+      musicFinalRound.volume(0.1);
+    } else {
+      musicLobby.volume(0.6);
+      musicFinalRound.volume(0.75);
+    }
+  };
+
   /////////// SysAdmin Methods
   const definePossibleChallenges = () => {
     round.possibleChallenges = [];
+
+    // Get list of previously used challenge names from round summaries
+    const usedChallengeNames = (game.roundSummary || []).map((summary) => summary.challenge);
 
     let n = 0;
 
@@ -614,6 +612,9 @@
       let appendThisChallenge = true;
       if (randomChallenge.naughty && !game.allowNaughty) {
         // This challenge is too naughty for this game, pick again.
+        appendThisChallenge = false;
+      } else if (usedChallengeNames.includes(randomChallenge.name)) {
+        // This challenge was already used in a previous round, pick again.
         appendThisChallenge = false;
       } else if (round.possibleChallenges.length != []) {
         round.possibleChallenges.forEach(function (c) {
@@ -643,7 +644,6 @@
     countLettersInEachWord();
     startAdminTimer();
 
-    // Update Firestore instead of using Socket.IO
     await updateRoomState({
       currentChallenge: round.challenge,
       gamePhase: "choose-rules",
@@ -662,7 +662,6 @@
         message: "Look at the flying pig.",
       };
       round.rules.push(r);
-      // Update Firestore instead of using Socket.IO
       await updateRoomState({
         currentRules: round.rules,
         currentShibboleth: round.shibboleth,
@@ -736,7 +735,6 @@
       // Recalculate Possible Right Answers.
       findPossibleRightAnswers();
 
-      // Update Firestore instead of using Socket.IO
       await updateRoomState({
         currentRules: round.rules,
         currentShibboleth: round.shibboleth,
@@ -817,7 +815,6 @@
       // Pay for it BEFORE updating Firestore
       my.rulebux = my.rulebux - rule.cost;
 
-      // Update Firestore instead of using Socket.IO
       await updateRoomState({
         currentRules: round.rules,
         currentShibboleth: round.shibboleth,
@@ -852,9 +849,6 @@
   };
 
   const addBug = async () => {
-    console.log("=== addBug START ===");
-    console.log("addBug called, current rulebux:", my.rulebux, "current phase:", round.phase);
-
     ui.addBugErrors = [];
     const bug = ui.addBug.toUpperCase();
     let foundMatch = false;
@@ -877,20 +871,11 @@
       my.rulebux -= 1;
     }
 
-    console.log("After rulebux deduction, rulebux:", my.rulebux, "phase:", round.phase);
-
     ui.addBug = "";
     round.bugs.push(bug);
-
-    console.log("About to call updateRoomState with bugs, rulebux:", my.rulebux, "phase:", round.phase);
-
-    // Update Firestore instead of using Socket.IO
     await updateRoomState({
       currentBugs: round.bugs,
     });
-
-    console.log("=== addBug END ===");
-    console.log("After updateRoomState call, rulebux:", my.rulebux, "phase:", round.phase);
 
     sendEvent("Invalid", "Add Bug", bug);
   };
@@ -1045,6 +1030,8 @@
   const endTheGuessingRound = async () => {
     resetRoundTimer();
     resetHurryTimer();
+    // Give a small delay to ensure final score update propagates before ending round
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     // Update Firestore to indicate round is over
     await updateRoomState({
       isRoundOver: true,
@@ -1128,8 +1115,8 @@
     attempt = attempt.toUpperCase();
 
     let foundDupe = false;
-    round.claimedPasswords.forEach(function (claimedPW) {
-      if (attempt.replace(/[^0-9a-z]/gi, "") == claimedPW.toUpperCase().replace(/[^0-9a-z]/gi, "")) {
+    game.allEmployeePasswords.forEach(function (empPW) {
+      if (attempt.replace(/[^0-9a-z]/gi, "") == empPW.pw.toUpperCase().replace(/[^0-9a-z]/gi, "")) {
         foundDupe = true;
       }
     });
@@ -1198,7 +1185,6 @@
       // Award points to the SysAdmin for causing a crash
       if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
         game.players[round.sysAdminIndex].score += settings.points.forServerCrash;
-        console.log(`SysAdmin ${game.players[round.sysAdminIndex].name} earned ${settings.points.forServerCrash} points for server crash!`);
       }
 
       // Update crash state in Firestore
@@ -1237,28 +1223,16 @@
       soundBadGuess.play();
       attemptRecord.result = "failed";
 
-      console.log("=== FAILED PASSWORD ATTEMPT ===");
-      console.log("Current round.attempts:", round.attempts);
-      console.log("Current round.attempts type:", typeof round.attempts);
-      console.log("Is round.attempts array?", Array.isArray(round.attempts));
-      console.log("Adding attempt record:", attemptRecord);
-
       // Update attempts in Firestore for failed password
       const newAttempts = [...(round.attempts || []), attemptRecord];
-      console.log("New attempts array:", newAttempts);
-      console.log("New attempts array length:", newAttempts.length);
 
       try {
-        console.log("About to call updateRoomState with:", { attempts: newAttempts });
         await updateRoomState({
           attempts: newAttempts,
         });
-        console.log("updateRoomState completed successfully");
       } catch (error) {
         console.error("Error in updateRoomState:", error);
       }
-
-      console.log("After updateRoomState call for failed attempt");
     }
   };
 
@@ -1344,7 +1318,7 @@
     // Let's give you some points
     my.score += settings.points.forGoodPassword;
 
-    if (round.claimedPasswords.length < 1 && game.players.length > 2) {
+    if (game.allEmployeePasswords.length < 1 && game.players.length > 2) {
       my.score += settings.points.forFirstPassword;
     }
 
@@ -1359,7 +1333,6 @@
     });
 
     // Update game state
-    const newClaimedPasswords = [...(round.claimedPasswords || []), attempt];
     const newEmployeePasswords = [
       ...(game.allEmployeePasswords || []),
       {
@@ -1378,39 +1351,36 @@
       playerScore: my.score,
       challengeName: round.challenge.name,
       result: "success",
-      timestamp: new Date(), // Use regular Date instead of serverTimestamp() for arrays
+      timestamp: new Date(),
     };
 
-    await updateRoomState({
-      claimedPasswords: newClaimedPasswords,
-      allEmployeePasswords: newEmployeePasswords,
-      attempts: [...(round.attempts || []), attemptRecord],
-    });
-
-    // Check if all employees have successfully guessed
+    // Check if all employees have successfully guessed BEFORE updating Firestore
     // Use sysAdminIndex to determine employee count instead of relying on role property
     // since roles might not be synced at this exact moment
     const totalPlayers = game.players.length;
     const sysAdminCount = 1; // There's always exactly one SysAdmin
     const employeeCount = totalPlayers - sysAdminCount;
-    const successfulPasswordCount = newEmployeePasswords.length;
 
-    console.log("Checking round completion:", {
-      totalPlayers: game.players.length,
-      sysAdminIndex: round.sysAdminIndex,
-      playerRoles: game.players.map((p) => ({ name: p.name, role: p.role })),
-      employeeCount,
-      successfulPasswordCount,
-      shouldEndRound: employeeCount === successfulPasswordCount,
+    // Count successful passwords in the current round only
+    // Note: We count from the current round attempts plus the new success attempt
+    const updatedAttempts = [...(round.attempts || []), attemptRecord];
+    const successfulPasswordsThisRound = updatedAttempts.filter((attempt) => attempt.result === "success").length;
+
+    const shouldEndRound = employeeCount === successfulPasswordsThisRound;
+
+    await updateRoomState({
+      allEmployeePasswords: newEmployeePasswords,
+      attempts: [...(round.attempts || []), attemptRecord],
     });
 
-    if (employeeCount === successfulPasswordCount) {
-      console.log("All employees have guessed correctly - ending round");
+    if (shouldEndRound) {
       // Stop the timer immediately to prevent further score changes
       resetRoundTimer();
       resetHurryTimer();
       // Update admin score one final time after stopping timer
       await updateAdminScore();
+      // Give a small delay to ensure final score update propagates before ending round
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       // End the round
       await updateRoomState({
         isRoundOver: true,
@@ -1463,7 +1433,6 @@
         currentRules: [],
         currentBugs: [],
         currentShibboleth: "",
-        claimedPasswords: [],
         attempts: [],
         flyingPigActive: false,
         isRoundOver: false,
@@ -1472,7 +1441,6 @@
   };
 
   const onPaste = (evt) => {
-    console.log("on paste", evt);
     evt.preventDefault();
 
     my.score -= 10;
@@ -1513,7 +1481,19 @@
     game.allEmployeePasswords.forEach(function (p, i) {
       if (p.pw.replace(/[^0-9a-z]/gi, "") == attempt.replace(/[^0-9a-z]/gi, "")) {
         pwMatch = true;
-        if (p.name == my.name || p.playerIndex == my.playerIndex) {
+        // First check if password is already claimed
+        if (p.claimed) {
+          passwordClaimed = true;
+          // Check if it was claimed by the current player
+          if (p.claimed === my.name || p.playerIndex === my.playerIndex) {
+            soundNo.play();
+            pwMatchErrorMessage = "This password was already cracked by you.";
+          } else {
+            soundTooSlow.play();
+            pwMatchErrorMessage = "This password was already cracked by " + p.claimed;
+          }
+        } else if (p.name == my.name || p.playerIndex == my.playerIndex) {
+          // Password is not claimed and belongs to current player - process as self-hack
           soundYouIdiot.play();
           pwMatchErrorMessage = "You just hacked into your own account. Did you mean to do that?";
           game.players[my.playerIndex].score += settings.points.forCrackingOwnPassword;
@@ -1528,11 +1508,8 @@
 
           updateCrackResults(crackSummary);
           // sendEvent("Invalid", "Self-pwn", attempt);
-        } else if (p.claimed) {
-          soundTooSlow.play();
-          passwordClaimed = true;
-          pwMatchErrorMessage = "This password was already cracked by " + p.claimed;
         } else {
+          // Password is not claimed and belongs to someone else - ready to crack
           pwPlayerIndex = p.playerIndex;
           matchIndex = i;
         }
@@ -1611,14 +1588,6 @@
     });
   };
 
-  const usedRuleNames = () => {
-    let u = [];
-    round.rules.forEach(function (r) {
-      u.push(r.type);
-    });
-    return u;
-  };
-
   const computedAmIHost = computed(() => {
     const roomCreatorExists = game.players.some((player) => player.playerID === game.roomCreatorID);
 
@@ -1632,22 +1601,9 @@
     }
   });
 
-  // const uncrackedPasswords = () => {
-
-  //   // Go through all of game.allEmployeePasswords
-  //   // Filter to only those where claimed doesn't have a string attached.
-  //   // return both the array of uncracked passwords as well as a count of how many there are.
-
-  //   return {
-  //     array,
-  //     count
-  //   }
-
-  // };
-
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
-  // Computeds
+  // COMPUTED PROPERTIES
 
   const computedSysAdminName = computed(() => {
     if (game.players && game.players.length > 0 && round.sysAdminIndex > -1) {
@@ -1660,14 +1616,6 @@
     return round.sysAdminIndex;
   });
 
-  //I've probably deprecated this one.
-  const computedUsedRuleNames = computed(() => {
-    let u = [];
-    round.rules.forEach(function (r) {
-      u.push(r.type);
-    });
-    return u;
-  });
   const computedShibbolethRequired = computed(() => {
     if (round.shibboleth && ui.shibboleth.toUpperCase() != round.shibboleth.toUpperCase()) {
       return true;
@@ -1759,8 +1707,8 @@
     let bestCrackersList = [...playerTrophyStats].sort((a, b) => (a.cracks <= b.cracks ? 1 : -1));
     let bestCracker = null;
     if (bestCrackersList && bestCrackersList[0].cracks > 0) {
-      bestCracker = bestCrackersList[0];
-      if (bestCrackersList[0].cracks == bestCrackersList[1].cracks) {
+      bestCracker = { ...bestCrackersList[0] }; // Create a copy to avoid mutating original
+      if (bestCrackersList.length > 1 && bestCrackersList[0].cracks == bestCrackersList[1].cracks) {
         bestCracker.name = "TIE";
       }
     }
@@ -1769,8 +1717,8 @@
     let mostCrackedList = [...playerTrophyStats].sort((a, b) => (a.cracked <= b.cracked ? 1 : -1));
     let mostCracked = null;
     if (mostCrackedList && mostCrackedList[0].cracked > 0) {
-      mostCracked = mostCrackedList[0];
-      if (mostCrackedList[0].cracked == mostCrackedList[1].cracked) {
+      mostCracked = { ...mostCrackedList[0] }; // Create a copy to avoid mutating original
+      if (mostCrackedList.length > 1 && mostCrackedList[0].cracked == mostCrackedList[1].cracked) {
         mostCracked.name = "TIE";
       }
     }
@@ -1779,8 +1727,8 @@
     let mostSelfPwnsList = [...playerTrophyStats].sort((a, b) => (a.selfPwn <= b.selfPwn ? 1 : -1));
     let mostSelfPwns = null;
     if (mostSelfPwnsList && mostSelfPwnsList[0].selfPwn > 0) {
-      mostSelfPwns = mostSelfPwnsList[0];
-      if (mostSelfPwnsList[0].selfPwn == mostSelfPwnsList[1].selfPwn) {
+      mostSelfPwns = { ...mostSelfPwnsList[0] }; // Create a copy to avoid mutating original
+      if (mostSelfPwnsList.length > 1 && mostSelfPwnsList[0].selfPwn == mostSelfPwnsList[1].selfPwn) {
         mostSelfPwns.name = "TIE";
       }
     }
@@ -1789,8 +1737,8 @@
     let mostCrashesList = [...playerTrophyStats].sort((a, b) => (a.crashesCaused <= b.crashesCaused ? 1 : -1));
     let mostCrashes = null;
     if (mostCrashesList && mostCrashesList[0].crashesCaused > 0) {
-      mostCrashes = mostCrashesList[0];
-      if (mostCrashesList[0].crashesCaused == mostCrashesList[1].crashesCaused) {
+      mostCrashes = { ...mostCrashesList[0] }; // Create a copy to avoid mutating original
+      if (mostCrashesList.length > 1 && mostCrashesList[0].crashesCaused == mostCrashesList[1].crashesCaused) {
         mostCrashes.name = "TIE";
       }
     }
@@ -1799,8 +1747,8 @@
     let mostPasswordsList = [...playerTrophyStats].sort((a, b) => (a.passwordsCreated <= b.passwordsCreated ? 1 : -1));
     let mostPasswords = null;
     if (mostPasswordsList && mostPasswordsList[0].passwordsCreated > 0) {
-      mostPasswords = mostPasswordsList[0];
-      if (mostPasswordsList[0].passwordsCreated == mostPasswordsList[1].passwordsCreated) {
+      mostPasswords = { ...mostPasswordsList[0] }; // Create a copy to avoid mutating original
+      if (mostPasswordsList.length > 1 && mostPasswordsList[0].passwordsCreated == mostPasswordsList[1].passwordsCreated) {
         mostPasswords.name = "TIE";
       }
     }
@@ -1809,8 +1757,8 @@
     let mostAttemptsList = [...playerTrophyStats].sort((a, b) => (a.passwordAttempts <= b.passwordAttempts ? 1 : -1));
     let mostAttempts = null;
     if (mostAttemptsList && mostAttemptsList[0].passwordAttempts > 0) {
-      mostAttempts = mostAttemptsList[0];
-      if (mostAttemptsList[0].passwordAttempts == mostAttemptsList[1].passwordAttempts) {
+      mostAttempts = { ...mostAttemptsList[0] }; // Create a copy to avoid mutating original
+      if (mostAttemptsList.length > 1 && mostAttemptsList[0].passwordAttempts == mostAttemptsList[1].passwordAttempts) {
         mostAttempts.name = "TIE";
       }
     }
@@ -1828,15 +1776,7 @@
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
-  // Real-time Game Events (now handled by Firestore listeners)
-  // All socket.io listeners have been replaced with Firestore onSnapshot listeners
-  // in the subscribeToGameStatus function above. Game events like challenges, rules,
-  // password attempts, crashes, and round transitions are now synchronized through
-  // the Firestore document updates in the updateRoomState function.
-
-  /////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////
-  // Directives
+  // DIRECTIVES
 
   // Define the v-focus directive
   const vFocus = {
@@ -1844,20 +1784,33 @@
       el.focus();
     },
   };
-  // Define the  directive
-  // const vToUppercase = {
-  //   mounted(el) {
-  //     el.addEventListener("input", () => {
-  //       if (el.value) {
-  //         el.value = el.value.toUpperCase();
-  //       }
-  //     });
-  //   },
-  // };
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
-  // Mounted
+  // LIFECYCLE
+
+  // Watch for shibboleth requirement changes to auto-focus appropriate field
+  watch(
+    () => computedShibbolethRequired.value,
+    (newValue, oldValue) => {
+      // Use nextTick to ensure the DOM has updated before trying to focus
+      nextTick(() => {
+        if (newValue === true && oldValue === false) {
+          // Shibboleth just became required - focus the shibboleth input
+          const shibbolethInput = document.getElementById("ShibbolethInput");
+          if (shibbolethInput) {
+            shibbolethInput.focus();
+          }
+        } else if (oldValue === true && newValue === false) {
+          // Shibboleth requirement was just satisfied - focus the password field
+          const passwordInput = document.getElementById("PasswordAttempt");
+          if (passwordInput) {
+            passwordInput.focus();
+          }
+        }
+      });
+    }
+  );
 
   onMounted(() => {
     let playerID = localStorage.getItem("kindaFunPlayerID");
@@ -1877,27 +1830,17 @@
       createRoom();
     } else if (urlParams.has("room")) {
       joinRoom();
-      // game.roomCode = urlParams.get("room").toUpperCase();
-      // socket.on("connect", () => {
-      //   console.log(`Connected with socketId: ${socket.id}`);
-      //   my.socketID = socket.id;
-
-      // });
     } else if (urlParams.has("join")) {
       document.getElementById("EnterRoomCode").focus();
     }
     if (urlParams.has("ref")) {
       sendEvent("Invalid", "Ref", urlParams.get("ref"));
     }
-    // Initialize socket event handlers
 
     const instance = getCurrentInstance();
     if (instance) {
       instance.appContext.app.directive("focus", vFocus);
-      // instance.appContext.app.directive("touppercase", vToUppercase);
     }
-
-    // setupSocketHandlers(socket);
   });
 </script>
 <template lang="pug" src="./Invalid.pug"></template>
