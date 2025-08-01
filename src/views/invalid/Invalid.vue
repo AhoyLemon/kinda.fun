@@ -126,11 +126,11 @@
             rules: round.rules,
             bugs: round.bugs,
           };
-          
+
           game.isGameStarted = data.isGameStarted ?? false;
           game.roomCreatorID = data.roomCreatorID ?? "";
           game.isGameOver = data.isGameOver ?? false;
-          
+
           // Handle game state updates - only call phase change handler if phase actually changed
           const gamePhase = data.gamePhase;
           if (gamePhase) {
@@ -152,20 +152,20 @@
               default:
                 templatePhase = gamePhase;
             }
-            
+
             // Only handle phase change if the phase actually changed
             // Special case: "add bugs" is a local sub-phase of "choose rules"
             const currentPhase = round.phase;
             const isAddBugsSubPhase = currentPhase === "add bugs" && templatePhase === "choose rules";
-            
+
             console.log("Phase check:", {
               firestorePhase: gamePhase,
               templatePhase: templatePhase,
               currentPhase: currentPhase,
               isAddBugsSubPhase: isAddBugsSubPhase,
-              willTriggerChange: templatePhase !== currentPhase && !isAddBugsSubPhase
+              willTriggerChange: templatePhase !== currentPhase && !isAddBugsSubPhase,
             });
-            
+
             // CRITICAL FIX: Don't trigger phase change if we're in "add bugs" sub-phase
             // The "add bugs" phase is local-only and should not be overridden by Firestore
             if (isAddBugsSubPhase) {
@@ -176,12 +176,12 @@
               handleGamePhaseChange(gamePhase, data);
             }
           }
-          
+
           // Update game state from Firestore
-          if (data.currentChallenge) {
+          if (data.currentChallenge !== undefined) {
             round.challenge = data.currentChallenge;
             // Play sound if challenge changed
-            if (previousData.challenge?.id !== data.currentChallenge.id) {
+            if (data.currentChallenge && previousData.challenge?.id !== data.currentChallenge.id) {
               soundNewRule.play();
             }
           }
@@ -207,6 +207,9 @@
           }
           if (data.sysAdminIndex !== undefined) {
             round.sysAdminIndex = data.sysAdminIndex;
+          }
+          if (data.maxRounds !== undefined) {
+            game.maxRounds = data.maxRounds;
           }
           if (data.claimedPasswords) {
             round.claimedPasswords = data.claimedPasswords;
@@ -238,6 +241,9 @@
               killThePig();
             }
           }
+          if (data.isRoundOver !== undefined) {
+            ui.roundOver = data.isRoundOver;
+          }
         } else {
           console.error("Game document does not exist.");
           game.isFailedToGetRoomData = true;
@@ -253,9 +259,9 @@
   function handleGamePhaseChange(newPhase, data) {
     console.log("=== handleGamePhaseChange CALLED ===");
     console.log("New phase:", newPhase, "Current rulebux before change:", my.rulebux);
-    
+
     const previousPhase = round.phase;
-    
+
     // Convert Firestore phase names (with dashes) to template phase names (with spaces)
     let templatePhase = newPhase;
     switch (newPhase) {
@@ -274,10 +280,10 @@
       default:
         templatePhase = newPhase;
     }
-    
+
     console.log("Setting round.phase from", previousPhase, "to", templatePhase);
     round.phase = templatePhase;
-    
+
     // Update player roles based on sysAdminIndex
     if (data.sysAdminIndex !== undefined && game.players.length > 0) {
       game.players.forEach((player, index) => {
@@ -287,17 +293,23 @@
           player.role = "employee";
         }
       });
-      
+
       // Update my role
-      const myIndex = game.players.findIndex(player => player.playerID === my.playerID);
+      const myIndex = game.players.findIndex((player) => player.playerID === my.playerID);
       if (myIndex !== -1) {
         my.role = game.players[myIndex].role;
         my.playerIndex = myIndex;
       }
     }
-    
+
     switch (newPhase) {
       case "choose-rules":
+        // Reset UI state for new round
+        ui.roundOver = false;
+        ui.passwordSucceeded = false;
+        ui.passwordAttemptErrors = [];
+        ui.challengeID = null;
+
         if (my.role === "SysAdmin") {
           // Only reset rulebux if this is a true phase change (not just a reconnect)
           if (previousPhase !== "choose rules") {
@@ -321,22 +333,20 @@
         }
         break;
       case "crashed":
+        console.log("=== CRASH PHASE DETECTED ===");
+        console.log("Crash data:", { crashedPlayer: data.crashedPlayer, crashedWord: data.crashedWord });
+        console.log("Current players:", game.players);
         if (data.crashedPlayer && data.crashedWord) {
           round.crash.active = true;
-          round.crash.player = game.players.find(p => p.playerID === data.crashedPlayer);
+          round.crash.player = game.players.find((p) => p.playerID === data.crashedPlayer);
           round.crash.word = data.crashedWord;
+          console.log("Set crash player:", round.crash.player);
+          console.log("Set crash word:", round.crash.word);
           soundSystemCrash.play();
           endTheGuessingRound();
+        } else {
+          console.log("Missing crash data - player or word not found");
         }
-        break;
-      case "round-over":
-        ui.roundOver = true;
-        ui.passwordSucceeded = false;
-        ui.passwordAttemptErrors = [];
-        ui.shibboleth = "";
-        resetHurryTimer();
-        resetRoundTimer();
-        killThePig();
         break;
       case "final-round":
         ui.enterFinalPasswords = true;
@@ -356,13 +366,20 @@
 
   // Helper function to update room state in Firestore
   async function updateRoomState(updates) {
-    if (!game.roomCode) return;
-    
+    if (!game.roomCode) {
+      console.error("updateRoomState: No room code available");
+      return;
+    }
+
     try {
+      console.log("updateRoomState called with:", updates);
       const roomRef = doc(db, "rooms", game.roomCode);
+      console.log("Room reference:", roomRef);
       await updateDoc(roomRef, updates);
+      console.log("updateDoc completed successfully");
     } catch (error) {
       console.error("Error updating room state:", error);
+      throw error; // Re-throw so calling code can handle it
     }
   }
 
@@ -424,6 +441,7 @@
       roundSummary: [],
       attempts: [],
       flyingPigActive: false,
+      isRoundOver: false,
     };
     await setDoc(roomRef, newRoom);
     game.roomCode = roomCode;
@@ -563,8 +581,8 @@
     }
 
     // Find the first host as the initial SysAdmin
-    const hostIndex = game.players.findIndex(player => player.isHost);
-    
+    const hostIndex = game.players.findIndex((player) => player.isHost);
+
     const roomRef = doc(db, `rooms/${game.roomCode}`);
     await updateDoc(roomRef, {
       isGameStarted: true,
@@ -834,7 +852,7 @@
   const addBug = async () => {
     console.log("=== addBug START ===");
     console.log("addBug called, current rulebux:", my.rulebux, "current phase:", round.phase);
-    
+
     ui.addBugErrors = [];
     const bug = ui.addBug.toUpperCase();
     let foundMatch = false;
@@ -856,19 +874,19 @@
     if (round.bugs && round.bugs.length > 0) {
       my.rulebux -= 1;
     }
-    
+
     console.log("After rulebux deduction, rulebux:", my.rulebux, "phase:", round.phase);
 
     ui.addBug = "";
     round.bugs.push(bug);
 
     console.log("About to call updateRoomState with bugs, rulebux:", my.rulebux, "phase:", round.phase);
-    
+
     // Update Firestore instead of using Socket.IO
     await updateRoomState({
       currentBugs: round.bugs,
     });
-    
+
     console.log("=== addBug END ===");
     console.log("After updateRoomState call, rulebux:", my.rulebux, "phase:", round.phase);
 
@@ -886,8 +904,8 @@
   };
 
   const finishRules = async () => {
-    round.phase = 'add bugs';
-    // Don't update Firestore phase yet - keep it as "choose-rules" 
+    round.phase = "add bugs";
+    // Don't update Firestore phase yet - keep it as "choose-rules"
     // until we actually onboard employees
   };
 
@@ -908,10 +926,31 @@
     round.adminTimeLeft = defaults.adminTimeLeft;
   };
 
+  // Helper function to update admin score in Firestore
+  const updateAdminScore = async () => {
+    if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
+      try {
+        const adminPlayer = game.players[round.sysAdminIndex];
+        const adminRef = doc(db, "rooms", game.roomCode, "players", adminPlayer.playerID);
+        await updateDoc(adminRef, {
+          score: adminPlayer.score,
+        });
+      } catch (error) {
+        console.error("Error updating admin score:", error);
+      }
+    }
+  };
+
   const roundStartTimer = () => {
     round.roundTimer = setInterval(() => {
       round.elapsedTime += 1;
       game.players[round.sysAdminIndex].score += 1;
+
+      // Update admin score in Firestore every 10 seconds to prevent loss
+      if (round.elapsedTime % 10 === 0) {
+        updateAdminScore();
+      }
+
       if (round.elapsedTime >= settings.timer.employeeMaxTime - settings.timer.hurryTime && round.hurryTimer == undefined) {
         startHurryTimer();
       }
@@ -940,6 +979,10 @@
   };
 
   const resetRoundTimer = () => {
+    // Save admin score before stopping timer
+    if (round.roundTimer) {
+      updateAdminScore();
+    }
     clearInterval(round.roundTimer);
     round.roundTimer = undefined;
     round.elapsedTime = 0;
@@ -1002,7 +1045,7 @@
     resetHurryTimer();
     // Update Firestore to indicate round is over
     await updateRoomState({
-      gamePhase: "round-over",
+      isRoundOver: true,
     });
   };
 
@@ -1143,20 +1186,29 @@
       playerIndex: my.playerIndex,
       pwAttempt: attempt,
       attemptCount: my.passwordAttempts,
-      timestamp: serverTimestamp(),
+      timestamp: new Date(), // Use regular Date instead of serverTimestamp() for arrays
     };
 
     if (crashCheck) {
       attemptRecord.result = "crash";
       attemptRecord.challengeName = round.challenge.name;
-      
+
+      // Award points to the SysAdmin for causing a crash
+      if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
+        game.players[round.sysAdminIndex].score += settings.points.forServerCrash;
+        console.log(`SysAdmin ${game.players[round.sysAdminIndex].name} earned ${settings.points.forServerCrash} points for server crash!`);
+      }
+
       // Update crash state in Firestore
-      const newCrashSummary = [...(game.crashSummary || []), {
-        playerIndex: my.playerIndex,
-        sysAdminIndex: round.sysAdminIndex,
-        word: attempt,
-      }];
-      
+      const newCrashSummary = [
+        ...(game.crashSummary || []),
+        {
+          playerIndex: my.playerIndex,
+          sysAdminIndex: round.sysAdminIndex,
+          word: attempt,
+        },
+      ];
+
       await updateRoomState({
         gamePhase: "crashed",
         crashedPlayer: my.playerID,
@@ -1164,7 +1216,16 @@
         crashSummary: newCrashSummary,
         attempts: [...(round.attempts || []), attemptRecord],
       });
-      
+
+      // Update SysAdmin score in Firestore
+      if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
+        const adminPlayer = game.players[round.sysAdminIndex];
+        const adminRef = doc(db, "rooms", game.roomCode, "players", adminPlayer.playerID);
+        await updateDoc(adminRef, {
+          score: adminPlayer.score,
+        });
+      }
+
       my.crashesCaused += 1;
       sendEvent("Invalid", "Server Crashed", attempt);
     } else if (correctAnswer) {
@@ -1173,19 +1234,28 @@
     } else {
       soundBadGuess.play();
       attemptRecord.result = "failed";
-      
+
       console.log("=== FAILED PASSWORD ATTEMPT ===");
       console.log("Current round.attempts:", round.attempts);
+      console.log("Current round.attempts type:", typeof round.attempts);
+      console.log("Is round.attempts array?", Array.isArray(round.attempts));
       console.log("Adding attempt record:", attemptRecord);
-      
+
       // Update attempts in Firestore for failed password
       const newAttempts = [...(round.attempts || []), attemptRecord];
       console.log("New attempts array:", newAttempts);
-      
-      await updateRoomState({
-        attempts: newAttempts,
-      });
-      
+      console.log("New attempts array length:", newAttempts.length);
+
+      try {
+        console.log("About to call updateRoomState with:", { attempts: newAttempts });
+        await updateRoomState({
+          attempts: newAttempts,
+        });
+        console.log("updateRoomState completed successfully");
+      } catch (error) {
+        console.error("Error in updateRoomState:", error);
+      }
+
       console.log("After updateRoomState call for failed attempt");
     }
   };
@@ -1288,14 +1358,17 @@
 
     // Update game state
     const newClaimedPasswords = [...(round.claimedPasswords || []), attempt];
-    const newEmployeePasswords = [...(game.allEmployeePasswords || []), {
-      pw: attempt,
-      name: my.name,
-      playerIndex: my.playerIndex,
-      playerID: my.playerID,
-      claimed: false,
-    }];
-    
+    const newEmployeePasswords = [
+      ...(game.allEmployeePasswords || []),
+      {
+        pw: attempt,
+        name: my.name,
+        playerIndex: my.playerIndex,
+        playerID: my.playerID,
+        claimed: false,
+      },
+    ];
+
     const attemptRecord = {
       playerIndex: my.playerIndex,
       pwAttempt: attempt,
@@ -1303,7 +1376,7 @@
       playerScore: my.score,
       challengeName: round.challenge.name,
       result: "success",
-      timestamp: serverTimestamp(),
+      timestamp: new Date(), // Use regular Date instead of serverTimestamp() for arrays
     };
 
     await updateRoomState({
@@ -1311,6 +1384,36 @@
       allEmployeePasswords: newEmployeePasswords,
       attempts: [...(round.attempts || []), attemptRecord],
     });
+
+    // Check if all employees have successfully guessed
+    // Use sysAdminIndex to determine employee count instead of relying on role property
+    // since roles might not be synced at this exact moment
+    const totalPlayers = game.players.length;
+    const sysAdminCount = 1; // There's always exactly one SysAdmin
+    const employeeCount = totalPlayers - sysAdminCount;
+    const successfulPasswordCount = newEmployeePasswords.length;
+
+    console.log("Checking round completion:", {
+      totalPlayers: game.players.length,
+      sysAdminIndex: round.sysAdminIndex,
+      playerRoles: game.players.map((p) => ({ name: p.name, role: p.role })),
+      employeeCount,
+      successfulPasswordCount,
+      shouldEndRound: employeeCount === successfulPasswordCount,
+    });
+
+    if (employeeCount === successfulPasswordCount) {
+      console.log("All employees have guessed correctly - ending round");
+      // Stop the timer immediately to prevent further score changes
+      resetRoundTimer();
+      resetHurryTimer();
+      // Update admin score one final time after stopping timer
+      await updateAdminScore();
+      // End the round
+      await updateRoomState({
+        isRoundOver: true,
+      });
+    }
 
     if (round.flyingPig.active) {
       round.flyingPig.message = randomFrom(flyingPigLines.afterCorrect);
@@ -1322,18 +1425,18 @@
 
   const startNextRoundClicked = async () => {
     var summary = {
-      challenge: round.challenge.name,
+      challenge: round.challenge?.name || "Unknown Challenge",
       sysAdmin: my.name,
-      rules: round.rules,
-      bugs: round.bugs,
-      attempts: round.attempts,
-      listSource: round.challenge.source,
-      possibleAnswers: round.possibleAnswerCount,
+      rules: round.rules || [],
+      bugs: round.bugs || [],
+      attempts: round.attempts || [],
+      listSource: round.challenge?.source || "Unknown Source",
+      possibleAnswers: round.possibleAnswerCount || 0,
     };
 
     // Update round summary and start new round
     const newRoundSummary = [...(game.roundSummary || []), summary];
-    
+
     // Check if it's time for final round
     const nextRoundNumber = round.number + 1;
     if (nextRoundNumber > game.maxRounds) {
@@ -1347,7 +1450,7 @@
       if (nextSysAdminIndex >= game.players.length) {
         nextSysAdminIndex = 0;
       }
-      
+
       await updateRoomState({
         roundSummary: newRoundSummary,
         roundNumber: nextRoundNumber,
@@ -1361,6 +1464,7 @@
         claimedPasswords: [],
         attempts: [],
         flyingPigActive: false,
+        isRoundOver: false,
       });
     }
   };
@@ -1412,14 +1516,14 @@
           pwMatchErrorMessage = "You just hacked into your own account. Did you mean to do that?";
           game.players[my.playerIndex].score += settings.points.forCrackingOwnPassword;
           game.allEmployeePasswords[i].claimed = my.name;
-          
+
           // Update Firestore for self-hack
           const crackSummary = {
             pw: attempt,
             attackerIndex: my.playerIndex,
             victimIndex: my.playerIndex,
           };
-          
+
           updateCrackResults(crackSummary);
           // sendEvent("Invalid", "Self-pwn", attempt);
         } else if (p.claimed) {
@@ -1451,7 +1555,7 @@
         attackerIndex: my.playerIndex,
         victimIndex: pwPlayerIndex,
       };
-      
+
       await updateCrackResults(crackSummary);
       sendEvent("Invalid", "Password Cracked", attempt);
 
@@ -1467,11 +1571,11 @@
     // Update player scores
     const attackerRef = doc(db, "rooms", game.roomCode, "players", game.players[crackSummary.attackerIndex].playerID);
     const victimRef = doc(db, "rooms", game.roomCode, "players", game.players[crackSummary.victimIndex].playerID);
-    
+
     await updateDoc(attackerRef, {
       score: game.players[crackSummary.attackerIndex].score,
     });
-    
+
     if (crackSummary.attackerIndex !== crackSummary.victimIndex) {
       await updateDoc(victimRef, {
         score: game.players[crackSummary.victimIndex].score,
@@ -1491,13 +1595,13 @@
     clearInterval(round.roundTimer);
     round.roundTimer = undefined;
     round.phase = "GAME OVER";
-    
+
     // Update player attempts in Firestore
     const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
     await updateDoc(playerRef, {
       passwordAttempts: my.passwordAttempts,
     });
-    
+
     // Set game over state
     await updateRoomState({
       gamePhase: "game-over",
@@ -1520,9 +1624,8 @@
       return my.playerID === game.roomCreatorID;
     } else {
       // Check if my player is the first player in the players array or if I'm marked as host
-      return game.players.length > 0 && (
-        game.players[0].playerID === my.playerID ||
-        game.players.some(player => player.playerID === my.playerID && player.isHost)
+      return (
+        game.players.length > 0 && (game.players[0].playerID === my.playerID || game.players.some((player) => player.playerID === my.playerID && player.isHost))
       );
     }
   });

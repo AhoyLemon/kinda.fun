@@ -152,7 +152,25 @@
               span.name {{game.players[a.playerIndex].name}}
               |  crashed the server!
 
-    .panel.round-over(v-if="ui.roundOver" :class="{focus: ui.roundOver}")
+  .admin-timer(v-if="round.adminTimer != undefined")
+    .label TIME LEFT
+    time
+      span.integer {{round.adminTimeLeft.toFixed(2).split('.')[0]}}
+      | .
+      sup.decimal {{round.adminTimeLeft.toFixed(2).split('.')[1]}}
+
+
+  include _scores.pug
+
+// Round over screen for admin - shown outside main container
+.admin-screen.round-over-screen(v-if="my.role == 'SysAdmin' && ui.roundOver")
+  .top-info
+    .name {{my.name}}
+    .job SysAdmin
+    .round-number ROUND {{round.number}} / {{game.maxRounds}}
+
+  .panels
+    .panel.round-over.focus
       .notched
         h2 This round is over.
         p(v-if="round.number == game.maxRounds") BigCorp Middle Management is pleased with all the passwords which have been provided. Management sincerely hopes nobody tries to hack any of the passwords given.
@@ -163,13 +181,5 @@
 
         p
           button.start-next-round(type="button" @click="startNextRoundClicked()") Start Next Round
-
-  .admin-timer(v-if="round.adminTimer != undefined")
-    .label TIME LEFT
-    time
-      span.integer {{round.adminTimeLeft.toFixed(2).split('.')[0]}}
-      | .
-      sup.decimal {{round.adminTimeLeft.toFixed(2).split('.')[1]}}
-
 
   include _scores.pug

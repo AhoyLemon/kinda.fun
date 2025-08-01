@@ -33,7 +33,7 @@ const defaultSettings = {
       forCrackingOwnPassword: -50,
     },
     timer: {
-      employeeMaxTime: 50,
+      employeeMaxTime: 5000,
       hurryTime: 20,
       adminTimeLeft: 90,
       countdownToFinal: 30,
