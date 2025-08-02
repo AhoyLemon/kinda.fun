@@ -120,17 +120,30 @@ _These would work technically but are either too subjective or require very spec
 - **Estimated Items**: ~40-50 items
 - **Why Bad**: Sensitive subject matter, medical knowledge required
 
-### Programming Languages
-
-- **Description**: JavaScript, Python, C++, Ruby, etc.
-- **Estimated Items**: ~50+ items
-- **Why Bad**: Too niche for general audience, many obscure languages
-
 ### Types of Fabric
 
 - **Description**: Cotton, Silk, Polyester, Velvet, etc.
 - **Estimated Items**: ~40-50 items
 - **Why Bad**: Many technical textile terms, requires fashion/manufacturing knowledge
+
+### Banned License Plates
+
+- **Description**: Personalized license plates rejected by DMVs for being inappropriate
+- **Estimated Items**: ~100+ items
+- **Source**: https://www.mentalfloss.com/article/622562/banned-personalized-license-plates, https://www.governmentattic.org/13docs/CO-BannedPlates_2012.pdf
+- **Why Bad**: Content is inappropriate for general audiences, many contain offensive language or references, and players would have no way to reasonably guess the answers
+
+### Stock Market Ticker Symbols
+
+- **Description**: AAPL, MSFT, GOOGL, TSLA, etc.
+- **Estimated Items**: ~1000+ items
+- **Why Bad**: Arbitrary abbreviations with no logical connection to company names, pure memorization required
+
+### Password Requirements from Real Websites
+
+- **Description**: Actual complex password rules from various websites and systems
+- **Estimated Items**: ~50+ items
+- **Why Bad**: Too meta for the game concept, rules are often absurdly specific and not guessable
 
 ## Research Notes
 
