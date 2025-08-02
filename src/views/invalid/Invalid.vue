@@ -622,18 +622,15 @@
         const playerStatsRef = doc(db, `stats/general/players/${player.name}`);
         const playerStatsSnap = await getDoc(playerStatsRef);
         if (playerStatsSnap.exists()) {
-          const prevData = playerStatsSnap.data();
           await updateDoc(playerStatsRef, {
-            gamesPlayed: (prevData.gamesPlayed || 0) + 1,
+            gamesPlayed: increment(1),
             lastPlayed: serverTimestamp(),
-            mostRecentGame: game.gameName || "invalid",
-            name: player.name,
           });
         } else {
           await setDoc(playerStatsRef, {
             gamesPlayed: 1,
             lastPlayed: serverTimestamp(),
-            mostRecentGame: game.gameName || "invalid",
+            mostRecentGame: "invalid",
             name: player.name,
           });
         }
@@ -669,6 +666,31 @@
     });
 
     sendEvent("Invalid", "Game Started", game.roomCode);
+  };
+
+  // Pay for a rule and update rule stats in Firebase
+  const payForRule = async (name, cost) => {
+    my.rulebux -= cost;
+    try {
+      const ruleStatsRef = doc(db, `stats/invalid/rules/${name}`);
+      const now = serverTimestamp();
+      await updateDoc(ruleStatsRef, {
+        name: name,
+        cost: cost,
+        lastUsed: now,
+        count: increment(1),
+      }).catch(async () => {
+        // If doc doesn't exist, create it
+        await setDoc(ruleStatsRef, {
+          name: name,
+          cost: cost,
+          lastUsed: now,
+          count: 1,
+        });
+      });
+    } catch (err) {
+      console.error(`Error updating rule stats for ${name}:`, err);
+    }
   };
 
   /////////////////////////////////////////////////////////
@@ -777,19 +799,16 @@
       const challengeName = round.challenge.name;
       const challengeStatsRef = doc(db, `stats/invalid/challenges/${challengeName}`);
       const challengeStatsSnap = await getDoc(challengeStatsRef);
-      if (challengeStatsSnap.exists()) {
-        const prevData = challengeStatsSnap.data();
-        await updateDoc(challengeStatsRef, {
-          timesChosen: (prevData.timesChosen || 0) + 1,
-          lastChosen: serverTimestamp(),
-        });
-      } else {
+      await updateDoc(challengeStatsRef, {
+        timesChosen: increment(1),
+        lastChosen: serverTimestamp(),
+      }).catch(async () => {
         await setDoc(challengeStatsRef, {
           name: challengeName,
           timesChosen: 1,
           lastChosen: serverTimestamp(),
         });
-      }
+      });
     } catch (err) {
       console.error("Error updating challenge stats:", err);
     }
@@ -800,7 +819,7 @@
   const chooseRule = async (rule) => {
     if (rule.name == "Flying Pig") {
       // Special process for summoning a flying pig.
-      my.rulebux -= rule.cost;
+      await payForRule(rule.name, rule.cost);
       round.flyingPig.active = true;
       let r = {
         type: "Flying Pig",
@@ -836,8 +855,7 @@
         },
       );
 
-      // Pay for it.
-      my.rulebux = my.rulebux - rule.cost;
+      await payForRule(rule.name, rule.cost);
 
       let r = {
         type: "Peek At Answers",
@@ -874,10 +892,8 @@
       r.message = r.message.replace("[SIZE+1]", r.inputValue + 1);
       r.message = r.message.replace("[SIZE-1]", r.inputValue - 1);
 
-      // Pay for it.
-      my.rulebux = my.rulebux - rule.cost;
+      await payForRule(rule.name, rule.cost);
       round.rules.push(r);
-      // Recalculate Possible Right Answers.
       findPossibleRightAnswers();
 
       await updateRoomState({
@@ -957,9 +973,7 @@
 
     // if possibleRightAnswers is high enough, save the rule.
     if (round.possibleAnswerCount >= game.players.length) {
-      // Pay for it BEFORE updating Firestore
-      my.rulebux = my.rulebux - rule.cost;
-
+      await payForRule(rule.name, rule.cost);
       await updateRoomState({
         currentRules: round.rules,
         currentShibboleth: round.shibboleth,
@@ -2030,4 +2044,5 @@
   });
 </script>
 <template lang="pug" src="./Invalid.pug"></template>
+<style lang="scss" src="./Invalid.scss"></style>
 <style lang="scss" src="./Invalid.scss"></style>
