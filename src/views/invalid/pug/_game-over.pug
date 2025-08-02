@@ -9,7 +9,7 @@ main.game-over(v-if="round.phase == 'GAME OVER'")
         .number {{(index + 1)}}
         .sysadmin {{r.sysAdmin}} presented...
         .challenge {{r.challenge}}
-        .source(v-if="r.listSource")
+        .source(v-if="r.listSource && r.listSource !== 'Unknown Source'")
           a(:href="r.listSource" target="_blank") List Source
         ul.rules
           li.rule(v-for="m in r.rules") {{m.message}}
@@ -51,7 +51,8 @@ main.game-over(v-if="round.phase == 'GAME OVER'")
                 path(d="M27.645 68.391l.124 1.516c.012.308-.015 1.214-.048 2.388l.002.004c.284.396.936.739 2.025.856 1.352.142 2.144-.008 2.603-.206.795-.891.979-1.152 1.548-1.813l.844-.638a76.65 76.65 0 00-7.098-2.107zM34.948 70.571l-.051 1.102c.007.087-.062.725-.152 1.633.291.153.762.348 1.513.554 1.487.403 2.345.405 2.819.32.036-.836.542-1.748 1.297-1.903-1.43-.34-3.059-.841-4.922-1.523a21.574 21.574 0 00-.504-.183zM42.579 74.746c1.12.037 1.946-.167 2.373-.582.364-.355.457-.893.48-1.393-1.153.121-2.527.031-4.193-.305.226.169.387.428.437.739a2.54 2.54 0 01-.161 1.393c.236.073.579.132 1.064.148z")
             .victim {{game.players[c.victimIndex].name}}
 
-    .crack-headline(v-if="computedUncrackedPasswords.count > 0") There were {{computedUncrackedPasswords.count}} secure passwords.
+    .crack-headline(v-if="computedUncrackedPasswords.count > 1") There were {{computedUncrackedPasswords.count}} secure passwords.
+    .crack-headline(v-else-if="computedUncrackedPasswords.count === 1") There was 1 secure password.
     .crack-headline(v-else) There were no secure passwords.
     .cracks(v-if="computedUncrackedPasswords.count > 0")
       .crack(v-for="u in computedUncrackedPasswords.array")
@@ -64,7 +65,7 @@ main.game-over(v-if="round.phase == 'GAME OVER'")
           .creator {{u.name}}
 
   h2 Employee Awards
-  section.awards-section
+  section.awards-section 
     .awards
 
       .award(v-if="computedCheevos.mostPasswords && computedCheevos.mostPasswords.name != 'TIE'")
@@ -134,4 +135,4 @@ main.game-over(v-if="round.phase == 'GAME OVER'")
   
   section.final-links
     a(href="https://github.com/AhoyLemon/kinda.fun") GitHub Repo.
-    a(href=pageURL) Play Again.
+    a(href="/invalid") Play Again.

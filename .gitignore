@@ -31,3 +31,13 @@ coverage
 firebaseConfig.js
 .firebase
 firebase-privatekey.json
+
+# Generated HTML files (for dev only)
+cameo.html
+guillotine.html
+invalid.html
+meeting.html
+pretend.html
+sisyphus.html
+stats.html
+wrongest.html

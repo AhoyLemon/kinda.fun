@@ -2,7 +2,7 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // IMPORTS
-  import { reactive, computed, onMounted, getCurrentInstance, watch } from "vue"; // Import reactive from Vue 3
+  import { reactive, computed, onMounted, getCurrentInstance, watch, nextTick } from "vue"; // Import reactive from Vue 3
   import {
     randomNumber,
     randomFrom,
@@ -61,11 +61,6 @@
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
-  /////// socket.io
-  // import { setupSocketHandlers } from "./js/_socketHandlers";
-  import { io } from "socket.io-client";
-  const socket = io.connect();
-
   // Firebase & VueFire Stuff
   import {
     doc,
@@ -83,6 +78,30 @@
     onSnapshot,
   } from "firebase/firestore";
   import { useFirestore, useCollection, useDocument } from "vuefire";
+
+  /////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////
+  // UTILITY FUNCTIONS
+
+  // Convert Firestore phase names (with dashes) to template phase names (with spaces)
+  const convertPhaseToTemplate = (firestorePhase) => {
+    switch (firestorePhase) {
+      case "choose-rules":
+        return "choose rules";
+      case "create-password":
+        return "create password";
+      case "final-round":
+        return "FINAL ROUND";
+      case "game-over":
+        return "GAME OVER";
+      default:
+        return firestorePhase;
+    }
+  };
+
+  /////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////
+  // FIREBASE & FIRESTORE
 
   // Initialize Firestore
   const db = useFirestore();
@@ -119,16 +138,107 @@
 
   async function subscribeToGameStatus(roomCode) {
     const gameRef = doc(collection(db, "rooms"), roomCode);
-    console.log("Game document reference:", gameRef);
 
     onSnapshot(
       gameRef,
       (docSnapshot) => {
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
+
           game.isGameStarted = data.isGameStarted ?? false;
           game.roomCreatorID = data.roomCreatorID ?? "";
           game.isGameOver = data.isGameOver ?? false;
+
+          // Handle game state updates - only call phase change handler if phase actually changed
+          const gamePhase = data.gamePhase;
+          if (gamePhase) {
+            // Convert Firestore phase to template phase for comparison
+            const templatePhase = convertPhaseToTemplate(gamePhase);
+
+            // Only handle phase change if the phase actually changed
+            // Special case: "add bugs" is a local sub-phase of "choose rules"
+            const currentPhase = round.phase;
+            const isAddBugsSubPhase = currentPhase === "add bugs" && templatePhase === "choose rules";
+
+            // CRITICAL FIX: Don't trigger phase change if we're in "add bugs" sub-phase
+            // The "add bugs" phase is local-only and should not be overridden by Firestore
+            if (isAddBugsSubPhase) {
+              // Do NOT call handleGamePhaseChange - stay in add bugs phase
+            } else if (templatePhase !== currentPhase) {
+              handleGamePhaseChange(gamePhase, data);
+            }
+          }
+
+          // Update game state from Firestore
+          if (data.currentChallenge !== undefined) {
+            // Play sound if challenge changed (only create previous value when needed)
+            if (data.currentChallenge && round.challenge?.id !== data.currentChallenge.id) {
+              soundNewRule.play();
+            }
+            round.challenge = data.currentChallenge;
+          }
+          if (data.currentRules) {
+            // Play sound if rules changed (only create previous value when needed)
+            if (round.rules?.length !== data.currentRules.length) {
+              soundNewRule.play();
+            }
+            round.rules = data.currentRules;
+          }
+          if (data.currentBugs) {
+            // Play sound if bugs changed (only create previous value when needed)
+            if (round.bugs?.length !== data.currentBugs.length) {
+              soundNewRule.play();
+            }
+            round.bugs = data.currentBugs;
+          }
+          if (data.currentShibboleth !== undefined) {
+            round.shibboleth = data.currentShibboleth;
+          }
+          if (data.roundNumber !== undefined) {
+            round.number = data.roundNumber;
+          }
+          if (data.sysAdminIndex !== undefined) {
+            round.sysAdminIndex = data.sysAdminIndex;
+          }
+          if (data.maxRounds !== undefined) {
+            game.maxRounds = data.maxRounds;
+          }
+          if (data.claimedPasswords) {
+            round.claimedPasswords = data.claimedPasswords;
+          }
+          if (data.allEmployeePasswords) {
+            game.allEmployeePasswords = data.allEmployeePasswords;
+          }
+          if (data.crashSummary) {
+            game.crashSummary = data.crashSummary;
+          }
+          if (data.crackSummary) {
+            game.crackSummary = data.crackSummary;
+          }
+          if (data.roundSummary) {
+            game.roundSummary = data.roundSummary;
+          }
+          if (data.attempts) {
+            round.attempts = data.attempts;
+          }
+          if (data.flyingPigActive !== undefined) {
+            round.flyingPig.active = data.flyingPigActive;
+            if (data.flyingPigActive) {
+              summonTheFlyingPig();
+            } else {
+              killThePig();
+            }
+          }
+          if (data.isRoundOver !== undefined) {
+            const wasRoundOver = ui.roundOver;
+            ui.roundOver = data.isRoundOver;
+
+            // Stop the timer when round becomes over
+            if (!wasRoundOver && data.isRoundOver) {
+              resetRoundTimer();
+              resetHurryTimer();
+            }
+          }
         } else {
           console.error("Game document does not exist.");
           game.isFailedToGetRoomData = true;
@@ -140,18 +250,109 @@
     );
   }
 
-  /////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////
-  // Functions
+  // Handle game phase changes from Firestore
+  function handleGamePhaseChange(newPhase, data) {
+    const previousPhase = round.phase;
 
-  const generateUniqueID = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let result = "";
-    for (let i = 0; i < 12; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    // Convert Firestore phase names (with dashes) to template phase names (with spaces)
+    const templatePhase = convertPhaseToTemplate(newPhase);
+
+    round.phase = templatePhase;
+
+    // Update player roles based on sysAdminIndex
+    if (data.sysAdminIndex !== undefined && game.players.length > 0) {
+      game.players.forEach((player, index) => {
+        if (index === data.sysAdminIndex) {
+          player.role = "SysAdmin";
+        } else {
+          player.role = "employee";
+        }
+      });
+
+      // Update my role
+      const myIndex = game.players.findIndex((player) => player.playerID === my.playerID);
+      if (myIndex !== -1) {
+        my.role = game.players[myIndex].role;
+        my.playerIndex = myIndex;
+      }
     }
-    return result;
-  };
+
+    switch (newPhase) {
+      case "choose-rules":
+        // Reset UI state for new round
+        ui.roundOver = false;
+        ui.passwordSucceeded = false;
+        ui.passwordAttemptErrors = [];
+        ui.challengeID = null;
+        ui.shibboleth = ""; // Clear shibboleth input from previous round
+
+        // Clear password success indicators from all players
+        if (previousPhase !== "choose rules") {
+          game.players.forEach(async (player) => {
+            if (player.passwordSuccess) {
+              const playerRef = doc(db, "rooms", game.roomCode, "players", player.playerID);
+              await updateDoc(playerRef, {
+                passwordSuccess: false,
+              });
+            }
+          });
+        }
+
+        if (my.role === "SysAdmin") {
+          // Only reset rulebux if this is a true phase change (not just a reconnect)
+          if (previousPhase !== "choose rules") {
+            my.rulebux = settings.default.rulebux;
+          }
+          definePossibleChallenges();
+          document.title = my.role + " | " + gameTitle;
+        } else {
+          document.title = my.name + " | " + gameTitle;
+        }
+        break;
+      case "create-password":
+        if (previousPhase !== "create password") {
+          roundStartTimer();
+          soundinvalidStartGuessing.play();
+        }
+        break;
+      case "crashed":
+        if (data.crashedPlayer && data.crashedWord) {
+          round.crash.active = true;
+          round.crash.player = game.players.find((p) => p.playerID === data.crashedPlayer);
+          round.crash.word = data.crashedWord;
+          soundSystemCrash.play();
+          endTheGuessingRound();
+        }
+        break;
+      case "final-round":
+        startCountdownToFinalRound();
+        document.title = "FINAL ROUND | " + gameTitle;
+        break;
+      case "game-over":
+        musicFinalRound.stop();
+        soundFinalRoundOver.play();
+        clearInterval(round.roundTimer);
+        round.roundTimer = undefined;
+        document.title = "GAME OVER" + " | " + gameTitle;
+        break;
+    }
+  }
+
+  // Helper function to update room state in Firestore
+  async function updateRoomState(updates) {
+    if (!game.roomCode) {
+      console.error("updateRoomState: No room code available");
+      return;
+    }
+
+    try {
+      const roomRef = doc(db, "rooms", game.roomCode);
+      await updateDoc(roomRef, updates);
+    } catch (error) {
+      console.error("Error updating room state:", error);
+      throw error; // Re-throw so calling code can handle it
+    }
+  }
 
   const createRoom = async () => {
     game.isFailedToGetRoomData = false;
@@ -183,10 +384,25 @@
       maxRounds: game.maxRounds,
       createdAt: serverTimestamp(),
       ttl: Timestamp.fromMillis(Date.now() + 86400000), // 1 day from now
+      // Game state fields for real-time sync
+      gamePhase: "lobby", // lobby, choose-rules, create-password, crashed, final-round, game-over
+      currentChallenge: null,
+      currentRules: [],
+      currentBugs: [],
+      currentShibboleth: "",
+      roundNumber: 0,
+      sysAdminIndex: -1,
+      claimedPasswords: [],
+      allEmployeePasswords: [],
+      crashSummary: [],
+      crackSummary: [],
+      roundSummary: [],
+      attempts: [],
+      flyingPigActive: false,
+      isRoundOver: false,
     };
     await setDoc(roomRef, newRoom);
     game.roomCode = roomCode;
-    console.log("Room created with code:", roomCode);
     // Update the browser URL to the new meeting page
     const protocol = window.location.protocol; // http: or https:
     const host = window.location.host; // e.g., localhost:5173 or example.com
@@ -195,6 +411,10 @@
     joinRoom();
   };
 
+  /**
+   * Joins a room using a room code from the URL parameter.
+   * Called automatically when the page loads with a ?room= parameter.
+   */
   const joinRoom = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get("room");
@@ -205,6 +425,34 @@
       return;
     }
 
+    connectToRoom(roomCode);
+  };
+
+  /**
+   * Joins a room using a room code from form input.
+   * Updates the URL and then connects to the room.
+   */
+  const joinRoomFromInput = () => {
+    if (!ui.roomCodeInput) {
+      console.error("No room code provided in input");
+      game.isFailedToGetRoomData = true;
+      return;
+    }
+
+    // Update the URL with the room code from form input
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const newUrl = `${protocol}//${host}/invalid?room=${ui.roomCodeInput}`;
+    window.history.replaceState(null, "", newUrl);
+
+    connectToRoom(ui.roomCodeInput);
+  };
+
+  /**
+   * Core connection logic for joining a room with a given room code.
+   * Sets up Firestore subscriptions for room data and players.
+   */
+  const connectToRoom = (roomCode) => {
     game.roomCode = roomCode.toUpperCase();
     const roomRef = doc(db, "rooms", game.roomCode);
 
@@ -214,41 +462,6 @@
     // Fetch players
     const playersCollectionRef = collection(db, `rooms/${game.roomCode}/players`);
     game.players = useCollection(playersCollectionRef);
-  };
-
-  /////// BEFORE GAME (game hasn't started yet)
-  const watchVideo = () => {
-    ui.watchingVideo = true;
-    if (game.currentlyInGame) {
-      sendEvent("Invalid", "Instruction Video", "Pregame Screen");
-    } else {
-      sendEvent("Invalid", "Instruction Video", "Title Screen");
-    }
-    if (ui.musicPlaying) {
-      musicLobby.volume(0);
-    }
-  };
-
-  const stopWatchingVideo = () => {
-    ui.watchingVideo = false;
-    if (ui.musicPlaying) {
-      if (ui.musicHushed) {
-        musicLobby.volume(0.05);
-      } else {
-        musicLobby.volume(0.6);
-      }
-    }
-  };
-
-  const toggleMusicVolume = () => {
-    ui.musicHushed = !ui.musicHushed;
-    if (ui.musicHushed) {
-      musicLobby.volume(0.05);
-      musicFinalRound.volume(0.1);
-    } else {
-      musicLobby.volume(0.6);
-      musicFinalRound.volume(0.75);
-    }
   };
 
   const savePlayerInfo = async () => {
@@ -301,66 +514,10 @@
     }
   };
 
-  const updatePlayer = () => {
-    my.name = my.name.toUpperCase();
-    ui.appliedForJob = true;
-    //Is this a new player or a player update
-    let newPlayer = true;
-
-    const p = {
-      name: my.name,
-      employeeNumber: my.employeeNumber,
-      socketID: my.socketID,
-      isRoomHost: my.isRoomHost,
-      role: null,
-      score: 0,
-      passwordAttempts: 0,
-      passwordSuccess: false,
-    };
-
-    game.players.forEach(function (player, index) {
-      if (player.employeeNumber == my.employeeNumber) {
-        game.players[index] = p;
-        newPlayer = false;
-      }
-    });
-
-    // It's a new player, add that to the array.
-    if (newPlayer) {
-      game.players.push(p);
-    }
-
-    game.players.forEach(function (player, index) {
-      if (player.employeeNumber == my.employeeNumber) {
-        my.playerIndex = index;
-      }
-    });
-    document.title = my.name + " | " + gameTitle;
-
-    if (my.playerIndex < 0) {
-      alert("could not get a player index. this is a bug. this should not happen.");
-    }
-
-    sendPlayerUpdate();
-
-    if (!ui.musicPlaying) {
-      musicLobby.play();
-      ui.musicPlaying = true;
-    }
-  };
-
-  const sendPlayerUpdate = () => {
-    socket.emit("sendPlayerList", {
-      roomCode: game.roomCode,
-      from: my.socketID,
-      players: game.players,
-    });
-  };
-
   const startTheGame = async () => {
     // Assign the host as SysAdmin, all other players are employees
     game.players.forEach(function (player, index) {
-      if (player.isRoomHost) {
+      if (player.isHost) {
         game.players[index].role = "SysAdmin";
       } else {
         game.players[index].role = "employee";
@@ -377,9 +534,16 @@
       game.maxRounds = game.players.length;
     }
 
+    // Find the first host as the initial SysAdmin
+    const hostIndex = game.players.findIndex((player) => player.isHost);
+
     const roomRef = doc(db, `rooms/${game.roomCode}`);
     await updateDoc(roomRef, {
       isGameStarted: true,
+      gamePhase: "choose-rules",
+      roundNumber: 1,
+      sysAdminIndex: hostIndex,
+      maxRounds: game.maxRounds,
     });
     await updateDoc(statsRef, {
       gamesStarted: increment(1),
@@ -389,9 +553,60 @@
     sendEvent("Invalid", "Game Started", game.roomCode);
   };
 
+  /////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////
+  // FUNCTIONS
+
+  const generateUniqueID = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < 12; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+
+  /////// BEFORE GAME (game hasn't started yet)
+  const watchVideo = () => {
+    ui.watchingVideo = true;
+    if (game.currentlyInGame) {
+      sendEvent("Invalid", "Instruction Video", "Pregame Screen");
+    } else {
+      sendEvent("Invalid", "Instruction Video", "Title Screen");
+    }
+    if (ui.musicPlaying) {
+      musicLobby.volume(0);
+    }
+  };
+
+  const stopWatchingVideo = () => {
+    ui.watchingVideo = false;
+    if (ui.musicPlaying) {
+      if (ui.musicHushed) {
+        musicLobby.volume(0.05);
+      } else {
+        musicLobby.volume(0.6);
+      }
+    }
+  };
+
+  const toggleMusicVolume = () => {
+    ui.musicHushed = !ui.musicHushed;
+    if (ui.musicHushed) {
+      musicLobby.volume(0.05);
+      musicFinalRound.volume(0.1);
+    } else {
+      musicLobby.volume(0.6);
+      musicFinalRound.volume(0.75);
+    }
+  };
+
   /////////// SysAdmin Methods
   const definePossibleChallenges = () => {
     round.possibleChallenges = [];
+
+    // Get list of previously used challenge names from round summaries
+    const usedChallengeNames = (game.roundSummary || []).map((summary) => summary.challenge);
 
     let n = 0;
 
@@ -402,6 +617,9 @@
       let appendThisChallenge = true;
       if (randomChallenge.naughty && !game.allowNaughty) {
         // This challenge is too naughty for this game, pick again.
+        appendThisChallenge = false;
+      } else if (usedChallengeNames.includes(randomChallenge.name)) {
+        // This challenge was already used in a previous round, pick again.
         appendThisChallenge = false;
       } else if (round.possibleChallenges.length != []) {
         round.possibleChallenges.forEach(function (c) {
@@ -419,7 +637,7 @@
     }
   };
 
-  const chooseAChallenge = () => {
+  const chooseAChallenge = async () => {
     challenges.forEach(function (c) {
       if (c.id == ui.challengeID) {
         round.challenge = c;
@@ -431,15 +649,15 @@
     countLettersInEachWord();
     startAdminTimer();
 
-    socket.emit("invalidUpdatePasswordChallenge", {
-      roomCode: game.roomCode,
-      challenge: round.challenge,
+    await updateRoomState({
+      currentChallenge: round.challenge,
+      gamePhase: "choose-rules",
     });
 
     sendEvent("Invalid", "Challenge Selected", round.challenge.name);
   };
 
-  const chooseRule = (rule) => {
+  const chooseRule = async (rule) => {
     if (rule.name == "Flying Pig") {
       // Special process for summoning a flying pig.
       my.rulebux -= rule.cost;
@@ -449,15 +667,10 @@
         message: "Look at the flying pig.",
       };
       round.rules.push(r);
-      // Inform the other players.
-      socket.emit("invalidUpdatePasswordRules", {
-        roomCode: game.roomCode,
-        rules: round.rules,
-        shibboleth: round.shibboleth,
-        newRule: r,
-      });
-      socket.emit("invalidSummonThePig", {
-        roomCode: game.roomCode,
+      await updateRoomState({
+        currentRules: round.rules,
+        currentShibboleth: round.shibboleth,
+        flyingPigActive: true,
       });
     } else if (rule.name == "Peek At Answers") {
       let shuffledAnswers = shuffle(round.challenge.possible);
@@ -493,11 +706,9 @@
         inputValueTwo: "",
       };
       round.rules.push(r);
-      socket.emit("invalidUpdatePasswordRules", {
-        roomCode: game.roomCode,
-        rules: round.rules,
-        shibboleth: round.shibboleth,
-        newRule: r,
+      await updateRoomState({
+        currentRules: round.rules,
+        currentShibboleth: round.shibboleth,
       });
     } else if (rule.name == "Set A Maximum" || rule.name == "Set A Minimum" || rule.name == "Limit Vowels") {
       // For situations where you DON'T have a second rule input.
@@ -529,12 +740,9 @@
       // Recalculate Possible Right Answers.
       findPossibleRightAnswers();
 
-      // Inform the other players.
-      socket.emit("invalidUpdatePasswordRules", {
-        roomCode: game.roomCode,
-        rules: round.rules,
-        shibboleth: round.shibboleth,
-        newRule: r,
+      await updateRoomState({
+        currentRules: round.rules,
+        currentShibboleth: round.shibboleth,
       });
     } else {
       ui.currentRule.name = rule.name;
@@ -558,7 +766,7 @@
     }
   };
 
-  const saveRule = (rule) => {
+  const saveRule = async (rule) => {
     let r = {
       type: "",
       message: "",
@@ -609,15 +817,12 @@
 
     // if possibleRightAnswers is high enough, save the rule.
     if (round.possibleAnswerCount >= game.players.length) {
-      // Pay for it.
+      // Pay for it BEFORE updating Firestore
       my.rulebux = my.rulebux - rule.cost;
 
-      // Inform the other players.
-      socket.emit("invalidUpdatePasswordRules", {
-        roomCode: game.roomCode,
-        rules: round.rules,
-        shibboleth: round.shibboleth,
-        newRule: r,
+      await updateRoomState({
+        currentRules: round.rules,
+        currentShibboleth: round.shibboleth,
       });
     } else {
       toast(
@@ -648,7 +853,7 @@
     ui.currentRule.editing = false;
   };
 
-  const addBug = () => {
+  const addBug = async () => {
     ui.addBugErrors = [];
     const bug = ui.addBug.toUpperCase();
     let foundMatch = false;
@@ -673,24 +878,27 @@
 
     ui.addBug = "";
     round.bugs.push(bug);
-
-    socket.emit("invalidUpdateBugs", {
-      roomCode: game.roomCode,
-      bugs: round.bugs,
-      challengeName: round.challenge.name,
-      newBug: bug,
+    await updateRoomState({
+      currentBugs: round.bugs,
     });
 
     sendEvent("Invalid", "Add Bug", bug);
   };
 
-  const onboardEmployees = () => {
+  const onboardEmployees = async () => {
     resetAdminTimer();
 
-    socket.emit("invalidStartGuessing", {
-      roomCode: game.roomCode,
+    // Update Firestore to start the guessing phase
+    await updateRoomState({
+      gamePhase: "create-password",
       sysAdminIndex: my.playerIndex,
     });
+  };
+
+  const finishRules = async () => {
+    round.phase = "add bugs";
+    // Don't update Firestore phase yet - keep it as "choose-rules"
+    // until we actually onboard employees
   };
 
   /////////// Timers
@@ -710,10 +918,31 @@
     round.adminTimeLeft = defaults.adminTimeLeft;
   };
 
+  // Helper function to update admin score in Firestore
+  const updateAdminScore = async () => {
+    if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
+      try {
+        const adminPlayer = game.players[round.sysAdminIndex];
+        const adminRef = doc(db, "rooms", game.roomCode, "players", adminPlayer.playerID);
+        await updateDoc(adminRef, {
+          score: adminPlayer.score,
+        });
+      } catch (error) {
+        console.error("Error updating admin score:", error);
+      }
+    }
+  };
+
   const roundStartTimer = () => {
     round.roundTimer = setInterval(() => {
       round.elapsedTime += 1;
       game.players[round.sysAdminIndex].score += 1;
+
+      // Update admin score in Firestore every 10 seconds to prevent loss
+      if (round.elapsedTime % 10 === 0) {
+        updateAdminScore();
+      }
+
       if (round.elapsedTime >= settings.timer.employeeMaxTime - settings.timer.hurryTime && round.hurryTimer == undefined) {
         startHurryTimer();
       }
@@ -742,6 +971,10 @@
   };
 
   const resetRoundTimer = () => {
+    // Save admin score before stopping timer
+    if (round.roundTimer) {
+      updateAdminScore();
+    }
     clearInterval(round.roundTimer);
     round.roundTimer = undefined;
     round.elapsedTime = 0;
@@ -799,13 +1032,14 @@
     round.flyingPig.timer = undefined;
   };
 
-  const endTheGuessingRound = () => {
+  const endTheGuessingRound = async () => {
     resetRoundTimer();
     resetHurryTimer();
-    // BUG: Figure out why this fires for each player, and try to make it only fire once.
-    socket.emit("invalidRoundOver", {
-      from: my.socketID,
-      roomCode: game.roomCode,
+    // Give a small delay to ensure final score update propagates before ending round
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    // Update Firestore to indicate round is over
+    await updateRoomState({
+      isRoundOver: true,
     });
   };
 
@@ -886,8 +1120,8 @@
     attempt = attempt.toUpperCase();
 
     let foundDupe = false;
-    round.claimedPasswords.forEach(function (claimedPW) {
-      if (attempt.replace(/[^0-9a-z]/gi, "") == claimedPW.toUpperCase().replace(/[^0-9a-z]/gi, "")) {
+    game.allEmployeePasswords.forEach(function (empPW) {
+      if (attempt.replace(/[^0-9a-z]/gi, "") == empPW.pw.toUpperCase().replace(/[^0-9a-z]/gi, "")) {
         foundDupe = true;
       }
     });
@@ -906,7 +1140,7 @@
     return foundOne;
   };
 
-  const tryThisPassword = (attempt) => {
+  const tryThisPassword = async (attempt) => {
     attempt = attempt.toUpperCase();
     ui.passwordAttemptErrors = [];
 
@@ -941,30 +1175,69 @@
     ui.passwordAttempt = "";
     ui.shibboleth = "";
 
-    if (crashCheck) {
-      socket.emit("invalidCrashedServer", {
-        roomCode: game.roomCode,
-        playerIndex: my.playerIndex,
-        pwAttempt: attempt,
-        attemptCount: my.passwordAttempts,
-        result: "crash",
-        challengeName: round.challenge.name,
-      });
-      my.crashesCaused += 1;
+    // Create attempt record
+    const attemptRecord = {
+      playerIndex: my.playerIndex,
+      pwAttempt: attempt,
+      attemptCount: my.passwordAttempts,
+      timestamp: new Date(), // Use regular Date instead of serverTimestamp() for arrays
+    };
 
+    if (crashCheck) {
+      attemptRecord.result = "crash";
+      attemptRecord.challengeName = round.challenge.name;
+
+      // Award points to the SysAdmin for causing a crash
+      if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
+        game.players[round.sysAdminIndex].score += settings.points.forServerCrash;
+      }
+
+      // Update crash state in Firestore
+      const newCrashSummary = [
+        ...(game.crashSummary || []),
+        {
+          playerIndex: my.playerIndex,
+          sysAdminIndex: round.sysAdminIndex,
+          word: attempt,
+        },
+      ];
+
+      await updateRoomState({
+        gamePhase: "crashed",
+        crashedPlayer: my.playerID,
+        crashedWord: attempt,
+        crashSummary: newCrashSummary,
+        attempts: [...(round.attempts || []), attemptRecord],
+      });
+
+      // Update SysAdmin score in Firestore
+      if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
+        const adminPlayer = game.players[round.sysAdminIndex];
+        const adminRef = doc(db, "rooms", game.roomCode, "players", adminPlayer.playerID);
+        await updateDoc(adminRef, {
+          score: adminPlayer.score,
+        });
+      }
+
+      my.crashesCaused += 1;
       sendEvent("Invalid", "Server Crashed", attempt);
     } else if (correctAnswer) {
       soundCorrectGuess.play();
-      passwordSuccess(attempt);
+      await passwordSuccess(attempt);
     } else {
       soundBadGuess.play();
-      socket.emit("invalidTriedPassword", {
-        roomCode: game.roomCode,
-        playerIndex: my.playerIndex,
-        pwAttempt: attempt,
-        attemptCount: my.passwordAttempts,
-        result: "failed",
-      });
+      attemptRecord.result = "failed";
+
+      // Update attempts in Firestore for failed password
+      const newAttempts = [...(round.attempts || []), attemptRecord];
+
+      try {
+        await updateRoomState({
+          attempts: newAttempts,
+        });
+      } catch (error) {
+        console.error("Error in updateRoomState:", error);
+      }
     }
   };
 
@@ -1045,27 +1318,79 @@
     });
   };
 
-  const passwordSuccess = (attempt) => {
+  const passwordSuccess = async (attempt) => {
     // YOU GOT IT!
     // Let's give you some points
     my.score += settings.points.forGoodPassword;
 
-    if (round.claimedPasswords.length < 1 && game.players.length > 2) {
+    if (game.allEmployeePasswords.length < 1 && game.players.length > 2) {
       my.score += settings.points.forFirstPassword;
     }
 
     // Let's change the UI to reflect you having won.
     ui.passwordSucceeded = true;
 
-    socket.emit("invalidPasswordSuccess", {
-      roomCode: game.roomCode,
+    // Update player score in Firestore
+    const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
+    await updateDoc(playerRef, {
+      score: my.score,
+      passwordSuccess: true,
+    });
+
+    // Update game state
+    const newEmployeePasswords = [
+      ...(game.allEmployeePasswords || []),
+      {
+        pw: attempt,
+        name: my.name,
+        playerIndex: my.playerIndex,
+        playerID: my.playerID,
+        claimed: false,
+      },
+    ];
+
+    const attemptRecord = {
       playerIndex: my.playerIndex,
       pwAttempt: attempt,
       attemptCount: my.passwordAttempts,
       playerScore: my.score,
       challengeName: round.challenge.name,
       result: "success",
+      timestamp: new Date(),
+    };
+
+    // Check if all employees have successfully guessed BEFORE updating Firestore
+    // Use sysAdminIndex to determine employee count instead of relying on role property
+    // since roles might not be synced at this exact moment
+    const totalPlayers = game.players.length;
+    const sysAdminCount = 1; // There's always exactly one SysAdmin
+    const employeeCount = totalPlayers - sysAdminCount;
+
+    // Count successful passwords in the current round only
+    // Note: We count from the current round attempts plus the new success attempt
+    const updatedAttempts = [...(round.attempts || []), attemptRecord];
+    const successfulPasswordsThisRound = updatedAttempts.filter((attempt) => attempt.result === "success").length;
+
+    const shouldEndRound = employeeCount === successfulPasswordsThisRound;
+
+    await updateRoomState({
+      allEmployeePasswords: newEmployeePasswords,
+      attempts: [...(round.attempts || []), attemptRecord],
     });
+
+    if (shouldEndRound) {
+      // Stop the timer immediately to prevent further score changes
+      resetRoundTimer();
+      resetHurryTimer();
+      // Update admin score one final time after stopping timer
+      await updateAdminScore();
+      // Give a small delay to ensure final score update propagates before ending round
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // End the round
+      await updateRoomState({
+        isRoundOver: true,
+      });
+    }
 
     if (round.flyingPig.active) {
       round.flyingPig.message = randomFrom(flyingPigLines.afterCorrect);
@@ -1075,27 +1400,52 @@
     }
   };
 
-  const startNextRoundClicked = () => {
+  const startNextRoundClicked = async () => {
     var summary = {
-      challenge: round.challenge.name,
+      challenge: round.challenge?.name || "Unknown Challenge",
       sysAdmin: my.name,
-      rules: round.rules,
-      bugs: round.bugs,
-      attempts: round.attempts,
-      listSource: round.challenge.source,
-      possibleAnswers: round.possibleAnswerCount,
+      rules: round.rules || [],
+      bugs: round.bugs || [],
+      attempts: round.attempts || [],
+      listSource: round.challenge?.source || "Unknown Source",
+      possibleAnswers: round.possibleAnswerCount || 0,
     };
 
-    socket.emit("invalidStartNewRound", {
-      roomCode: game.roomCode,
-      playerIndex: my.playerIndex,
-      players: game.players,
-      summary: summary,
-    });
+    // Update round summary and start new round
+    const newRoundSummary = [...(game.roundSummary || []), summary];
+
+    // Check if it's time for final round
+    const nextRoundNumber = round.number + 1;
+    if (nextRoundNumber > game.maxRounds) {
+      await updateRoomState({
+        roundSummary: newRoundSummary,
+        gamePhase: "final-round",
+      });
+    } else {
+      // Find next SysAdmin
+      let nextSysAdminIndex = round.sysAdminIndex + 1;
+      if (nextSysAdminIndex >= game.players.length) {
+        nextSysAdminIndex = 0;
+      }
+
+      await updateRoomState({
+        roundSummary: newRoundSummary,
+        roundNumber: nextRoundNumber,
+        sysAdminIndex: nextSysAdminIndex,
+        gamePhase: "choose-rules",
+        // Reset round state
+        currentChallenge: null,
+        currentRules: [],
+        currentBugs: [],
+        currentShibboleth: "",
+        attempts: [],
+        flyingPigActive: false,
+        isRoundOver: false,
+      });
+    }
   };
 
   const onPaste = (evt) => {
-    console.log("on paste", evt);
     evt.preventDefault();
 
     my.score -= 10;
@@ -1120,7 +1470,7 @@
     return false;
   };
 
-  const tryToCrackWith = (attempt) => {
+  const tryToCrackWith = async (attempt) => {
     attempt = attempt.toUpperCase();
     document.getElementById("PasswordAttempt").focus();
 
@@ -1136,27 +1486,35 @@
     game.allEmployeePasswords.forEach(function (p, i) {
       if (p.pw.replace(/[^0-9a-z]/gi, "") == attempt.replace(/[^0-9a-z]/gi, "")) {
         pwMatch = true;
-        if (p.name == my.name || p.playerIndex == my.playerIndex) {
+        // First check if password is already claimed
+        if (p.claimed) {
+          passwordClaimed = true;
+          // Check if it was claimed by the current player
+          if (p.claimed === my.name || p.playerIndex === my.playerIndex) {
+            soundNo.play();
+            pwMatchErrorMessage = "This password was already cracked by you.";
+          } else {
+            soundTooSlow.play();
+            pwMatchErrorMessage = "This password was already cracked by " + p.claimed;
+          }
+        } else if (p.name == my.name || p.playerIndex == my.playerIndex) {
+          // Password is not claimed and belongs to current player - process as self-hack
           soundYouIdiot.play();
           pwMatchErrorMessage = "You just hacked into your own account. Did you mean to do that?";
           game.players[my.playerIndex].score += settings.points.forCrackingOwnPassword;
           game.allEmployeePasswords[i].claimed = my.name;
-          socket.emit("invalidPasswordCracked", {
-            roomCode: game.roomCode,
-            players: game.players,
-            allEmployeePasswords: game.allEmployeePasswords,
-            crackSummary: {
-              pw: attempt,
-              attackerIndex: my.playerIndex,
-              victimIndex: my.playerIndex,
-            },
-          });
+
+          // Update Firestore for self-hack
+          const crackSummary = {
+            pw: attempt,
+            attackerIndex: my.playerIndex,
+            victimIndex: my.playerIndex,
+          };
+
+          updateCrackResults(crackSummary);
           // sendEvent("Invalid", "Self-pwn", attempt);
-        } else if (p.claimed) {
-          soundTooSlow.play();
-          passwordClaimed = true;
-          pwMatchErrorMessage = "This password was already cracked by " + p.claimed;
         } else {
+          // Password is not claimed and belongs to someone else - ready to crack
           pwPlayerIndex = p.playerIndex;
           matchIndex = i;
         }
@@ -1176,75 +1534,81 @@
 
       game.allEmployeePasswords[matchIndex].claimed = my.name;
 
-      socket.emit("invalidPasswordCracked", {
-        roomCode: game.roomCode,
-        players: game.players,
-        allEmployeePasswords: game.allEmployeePasswords,
-        crackSummary: {
-          pw: attempt,
-          attackerIndex: my.playerIndex,
-          victimIndex: pwPlayerIndex,
-        },
-      });
+      const crackSummary = {
+        pw: attempt,
+        attackerIndex: my.playerIndex,
+        victimIndex: pwPlayerIndex,
+      };
+
+      await updateCrackResults(crackSummary);
       sendEvent("Invalid", "Password Cracked", attempt);
 
-      if (computedUnclaimedPasswords < 1) {
+      if (computedUnclaimedPasswords.value < 1) {
         setGameOver();
       }
     }
     document.getElementById("PasswordAttempt").focus();
   };
 
-  const setGameOver = () => {
+  // Helper function to update crack results in Firestore
+  async function updateCrackResults(crackSummary) {
+    // Update player scores
+    const attackerRef = doc(db, "rooms", game.roomCode, "players", game.players[crackSummary.attackerIndex].playerID);
+    const victimRef = doc(db, "rooms", game.roomCode, "players", game.players[crackSummary.victimIndex].playerID);
+
+    await updateDoc(attackerRef, {
+      score: game.players[crackSummary.attackerIndex].score,
+    });
+
+    if (crackSummary.attackerIndex !== crackSummary.victimIndex) {
+      await updateDoc(victimRef, {
+        score: game.players[crackSummary.victimIndex].score,
+      });
+    }
+
+    // Update game state
+    await updateRoomState({
+      allEmployeePasswords: game.allEmployeePasswords,
+      crackSummary: [...(game.crackSummary || []), crackSummary],
+    });
+  }
+
+  const setGameOver = async () => {
     musicFinalRound.stop();
     soundFinalRoundOver.play();
     clearInterval(round.roundTimer);
     round.roundTimer = undefined;
     round.phase = "GAME OVER";
-    socket.emit("gameOver", {
-      roomCode: game.roomCode,
-      gameName: game.gameName,
-      playerIndex: my.playerIndex,
+
+    // Update player attempts in Firestore
+    const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
+    await updateDoc(playerRef, {
       passwordAttempts: my.passwordAttempts,
     });
-  };
 
-  const usedRuleNames = () => {
-    let u = [];
-    round.rules.forEach(function (r) {
-      u.push(r.type);
+    // Set game over state
+    await updateRoomState({
+      gamePhase: "game-over",
+      isGameOver: true,
     });
-    return u;
   };
 
   const computedAmIHost = computed(() => {
-    const roomCreatorExists = game.players.some((player) => player.id === game.roomCreatorID);
+    const roomCreatorExists = game.players.some((player) => player.playerID === game.roomCreatorID);
 
     if (roomCreatorExists) {
-      console.log(1335);
       return my.playerID === game.roomCreatorID;
     } else {
-      // Check if my.player is the first player in the players array
-      return game.players.length > 0 && game.players[0].id === my.playerID;
+      // Check if my player is the first player in the players array or if I'm marked as host
+      return (
+        game.players.length > 0 && (game.players[0].playerID === my.playerID || game.players.some((player) => player.playerID === my.playerID && player.isHost))
+      );
     }
   });
 
-  // const uncrackedPasswords = () => {
-
-  //   // Go through all of game.allEmployeePasswords
-  //   // Filter to only those where claimed doesn't have a string attached.
-  //   // return both the array of uncracked passwords as well as a count of how many there are.
-
-  //   return {
-  //     array,
-  //     count
-  //   }
-
-  // };
-
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
-  // Computeds
+  // COMPUTED PROPERTIES
 
   const computedSysAdminName = computed(() => {
     if (game.players && game.players.length > 0 && round.sysAdminIndex > -1) {
@@ -1257,14 +1621,6 @@
     return round.sysAdminIndex;
   });
 
-  //I've probably deprecated this one.
-  const computedUsedRuleNames = computed(() => {
-    let u = [];
-    round.rules.forEach(function (r) {
-      u.push(r.type);
-    });
-    return u;
-  });
   const computedShibbolethRequired = computed(() => {
     if (round.shibboleth && ui.shibboleth.toUpperCase() != round.shibboleth.toUpperCase()) {
       return true;
@@ -1356,8 +1712,8 @@
     let bestCrackersList = [...playerTrophyStats].sort((a, b) => (a.cracks <= b.cracks ? 1 : -1));
     let bestCracker = null;
     if (bestCrackersList && bestCrackersList[0].cracks > 0) {
-      bestCracker = bestCrackersList[0];
-      if (bestCrackersList[0].cracks == bestCrackersList[1].cracks) {
+      bestCracker = { ...bestCrackersList[0] }; // Create a copy to avoid mutating original
+      if (bestCrackersList.length > 1 && bestCrackersList[0].cracks == bestCrackersList[1].cracks) {
         bestCracker.name = "TIE";
       }
     }
@@ -1366,8 +1722,8 @@
     let mostCrackedList = [...playerTrophyStats].sort((a, b) => (a.cracked <= b.cracked ? 1 : -1));
     let mostCracked = null;
     if (mostCrackedList && mostCrackedList[0].cracked > 0) {
-      mostCracked = mostCrackedList[0];
-      if (mostCrackedList[0].cracked == mostCrackedList[1].cracked) {
+      mostCracked = { ...mostCrackedList[0] }; // Create a copy to avoid mutating original
+      if (mostCrackedList.length > 1 && mostCrackedList[0].cracked == mostCrackedList[1].cracked) {
         mostCracked.name = "TIE";
       }
     }
@@ -1376,8 +1732,8 @@
     let mostSelfPwnsList = [...playerTrophyStats].sort((a, b) => (a.selfPwn <= b.selfPwn ? 1 : -1));
     let mostSelfPwns = null;
     if (mostSelfPwnsList && mostSelfPwnsList[0].selfPwn > 0) {
-      mostSelfPwns = mostSelfPwnsList[0];
-      if (mostSelfPwnsList[0].selfPwn == mostSelfPwnsList[1].selfPwn) {
+      mostSelfPwns = { ...mostSelfPwnsList[0] }; // Create a copy to avoid mutating original
+      if (mostSelfPwnsList.length > 1 && mostSelfPwnsList[0].selfPwn == mostSelfPwnsList[1].selfPwn) {
         mostSelfPwns.name = "TIE";
       }
     }
@@ -1386,8 +1742,8 @@
     let mostCrashesList = [...playerTrophyStats].sort((a, b) => (a.crashesCaused <= b.crashesCaused ? 1 : -1));
     let mostCrashes = null;
     if (mostCrashesList && mostCrashesList[0].crashesCaused > 0) {
-      mostCrashes = mostCrashesList[0];
-      if (mostCrashesList[0].crashesCaused == mostCrashesList[1].crashesCaused) {
+      mostCrashes = { ...mostCrashesList[0] }; // Create a copy to avoid mutating original
+      if (mostCrashesList.length > 1 && mostCrashesList[0].crashesCaused == mostCrashesList[1].crashesCaused) {
         mostCrashes.name = "TIE";
       }
     }
@@ -1396,8 +1752,8 @@
     let mostPasswordsList = [...playerTrophyStats].sort((a, b) => (a.passwordsCreated <= b.passwordsCreated ? 1 : -1));
     let mostPasswords = null;
     if (mostPasswordsList && mostPasswordsList[0].passwordsCreated > 0) {
-      mostPasswords = mostPasswordsList[0];
-      if (mostPasswordsList[0].passwordsCreated == mostPasswordsList[1].passwordsCreated) {
+      mostPasswords = { ...mostPasswordsList[0] }; // Create a copy to avoid mutating original
+      if (mostPasswordsList.length > 1 && mostPasswordsList[0].passwordsCreated == mostPasswordsList[1].passwordsCreated) {
         mostPasswords.name = "TIE";
       }
     }
@@ -1406,8 +1762,8 @@
     let mostAttemptsList = [...playerTrophyStats].sort((a, b) => (a.passwordAttempts <= b.passwordAttempts ? 1 : -1));
     let mostAttempts = null;
     if (mostAttemptsList && mostAttemptsList[0].passwordAttempts > 0) {
-      mostAttempts = mostAttemptsList[0];
-      if (mostAttemptsList[0].passwordAttempts == mostAttemptsList[1].passwordAttempts) {
+      mostAttempts = { ...mostAttemptsList[0] }; // Create a copy to avoid mutating original
+      if (mostAttemptsList.length > 1 && mostAttemptsList[0].passwordAttempts == mostAttemptsList[1].passwordAttempts) {
         mostAttempts.name = "TIE";
       }
     }
@@ -1425,281 +1781,7 @@
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
-  // Sockets  (I can't easily move these into a file without annoying refactor)
-
-  // Inform the player of their own socketID
-  socket.on("hostSelected", (hostSocketId) => {
-    console.log(`Host selected: ${hostSocketId}`);
-    if (socket.id === hostSocketId) {
-      my.isRoomHost = true;
-      console.log("You are the host!");
-    } else {
-      my.isRoomHost = false;
-      console.log("You are not the host.");
-    }
-  });
-
-  socket.on("receivePlayerList", (msg) => {
-    console.log(`Receiving new player list from  ${msg.from}`);
-    game.players = msg.players;
-  });
-
-  socket.on("sendThePlayerListIfYouAreHost", (msg) => {
-    if (my.isRoomHost && msg.from != my.socketID) {
-      console.log(`Player List request from ${msg.from}`);
-      socket.emit("sendPlayerList", {
-        roomCode: game.roomCode,
-        from: my.socketID,
-        players: game.players,
-        isGameStarted: game.isGameStarted,
-      });
-    }
-  });
-
-  // A client disconnected!
-  // Let's try to deal with it.
-  socket.on("clientDisconnect", function (msg) {
-    console.warn("The socket " + msg + " disconnected.");
-
-    // TODO: See if that socketID is in your game. Remove them if so.
-    if (!game.isGameStarted) {
-      game.players.forEach(function (p, index) {
-        if (p.socketID == msg) {
-          game.players.splice(index, 1);
-        }
-      });
-    }
-  });
-
-  ////////////////////////////////////////////////////////////////
-  // Everything below this line should ONLY be messages to the room.
-
-  socket.on("requestPlayers", function (msg) {
-    console.log("The client wants players from me!");
-    if (my.isRoomHost) {
-      socket.emit("updatePlayers", {
-        roomCode: game.roomCode,
-        players: game.players,
-        gameStarted: game.isGameStarted,
-      });
-      console.log("I'm the host! I gave the room all the players I know about!");
-    }
-  });
-
-  // Someone updated a player (this should have been the game host)
-  socket.on("updatePlayers", function (msg) {
-    console.log("THE PLAYERS HAVE BEEN UPDATED!!!!!!!!");
-    game.players = msg.players;
-    game.isGameStarted = msg.gameStarted;
-
-    // NOTE: This bit may be unnecessary, but confirms & updates your own playerIndex every time the players get updated.
-    game.players.forEach(function (p, index) {
-      if (p.employeeNumber == my.employeeNumber) {
-        my.playerIndex = index;
-      }
-    });
-  });
-
-  // The SysAdmin has picked a password challenge.
-  socket.on("invalidUpdatePasswordChallenge", function (msg) {
-    console.log("I (an employee) have been informed of the password challenge.");
-    round.challenge = msg.challenge;
-    round.shibboleth = "";
-    soundNewRule.play();
-  });
-
-  // The SysAdmin has set a new rule.
-  socket.on("invalidUpdatePasswordRules", function (msg) {
-    console.log("I (an employee) am being updated on the password rules.");
-    round.rules = msg.rules;
-    round.shibboleth = msg.shibboleth;
-    soundNewRule.play();
-  });
-
-  // The Flying Pig has been summoned!
-  socket.on("invalidSummonThePig", function () {
-    console.log("Look everybody! It's a flying pig!");
-    summonTheFlyingPig();
-  });
-
-  // The SysAdmin has a new bug!
-  socket.on("invalidUpdateBugs", function (msg) {
-    console.log("I (an employee) am being updated on the round bugs.");
-    round.bugs = msg.bugs;
-    soundNewRule.play();
-  });
-
-  // The guessing has begun!
-  socket.on("invalidStartGuessing", function (msg) {
-    console.log("The guessing has begun!");
-    round.phase = "create password";
-    round.sysAdminIndex = msg.sysAdminIndex;
-    roundStartTimer();
-    soundinvalidStartGuessing.play();
-  });
-
-  // Some player (other than me) tried a password (and failed)
-  socket.on("invalidTriedPassword", function (msg) {
-    console.log("Someone else had a bad password.");
-    round.attempts.push(msg);
-    game.players[round.sysAdminIndex].score += settings.points.forFailedPassword;
-    if (my.role == "SysAdmin") {
-      my.score += settings.points.forFailedPassword;
-    }
-  });
-
-  // Some player (possibly me, but maybe not) caused a server crash!
-  socket.on("invalidCrashedServer", function (msg) {
-    console.log("The server crashed! It may or may not be because of me!");
-
-    let i = msg.playerIndex;
-    round.phase = "crashed";
-    round.crash.active = true;
-    round.crash.player = game.players[i];
-    round.crash.word = msg.pwAttempt;
-    round.attempts.push(msg);
-
-    game.crashSummary.push({
-      playerIndex: msg.playerIndex,
-      sysAdminIndex: round.sysAdminIndex,
-      word: msg.pwAttempt,
-    });
-
-    soundSystemCrash.play();
-    game.players[round.sysAdminIndex].score += settings.points.forServerCrash;
-    if (my.role == "SysAdmin") {
-      my.score += settings.points.forServerCrash;
-    }
-    endTheGuessingRound();
-    killThePig();
-  });
-
-  // Some player (other than me) successfully guessed a password.
-  socket.on("invalidPasswordSuccess", function (msg) {
-    console.log("Someone else had a successful password.");
-
-    // Award points and mark pw as claimed.
-    let i = msg.playerIndex;
-    game.players[i].score = msg.playerScore;
-    game.players[i].passwordSuccess = true;
-    round.claimedPasswords.push(msg.pwAttempt);
-    game.allEmployeePasswords.push({
-      pw: msg.pwAttempt,
-      name: game.players[i].name,
-      playerIndex: i,
-      claimed: false,
-    });
-    round.attempts.push(msg);
-
-    // If the Hurry Up timer hasn't already started, start it now.
-    if (round.hurryTimer == undefined) {
-      startHurryTimer();
-    }
-
-    // Let's check to see if all employees have succeeded.
-    if (round.claimedPasswords.length >= game.players.length - 1) {
-      // Yup! Let's end the round.
-      endTheGuessingRound();
-    }
-  });
-
-  // Some player (could be anyone) announced the round was over.
-  socket.on("invalidRoundOver", function () {
-    console.log("The round is over.");
-    ui.roundOver = true;
-    ui.passwordSucceeded = false;
-    ui.passwordAttemptErrors = [];
-    ui.shibboleth = "";
-    resetHurryTimer();
-    resetRoundTimer();
-    killThePig();
-  });
-
-  // The SysAdmin (which might be me) started a new round.
-  socket.on("invalidStartNewRound", function (msg) {
-    console.log("new round started.");
-
-    msg.players.forEach(function (p, index) {
-      p.passwordSuccess = false;
-      if (p.employeeNumber == game.players[index].employeeNumber) {
-        game.players[index].score = p.score;
-      }
-    });
-
-    game.players = msg.players;
-    game.roundSummary.push(msg.summary);
-
-    // Hey, what round is it? Is it time for the final round?
-    if (round.number >= game.maxRounds) {
-      // Yep, Time for the final round.
-
-      // First, reset the UI and the round variables.
-      resetUI();
-      resetRoundVariables();
-
-      // Then do FINAL ROUND stuff.
-      round.phase = "FINAL ROUND";
-      startCountdownToFinalRound();
-      document.title = "FINAL ROUND | " + gameTitle;
-    } else {
-      // Nope, let's do another round.
-      round.phase = "choose rules";
-      round.number += 1;
-
-      // Who's the SysAdmin?
-      // Let's make the next player the SysAdmin.
-      // Unless there is no next player, in which case let's start over at 0.
-      let i = round.sysAdminIndex + 1;
-      if (i >= game.players.length) {
-        round.sysAdminIndex = 0;
-      } else {
-        round.sysAdminIndex = i;
-      }
-
-      // Okay, now define roles for everyone.
-      game.players.forEach(function (p) {
-        p.role = "employee";
-      });
-      game.players[round.sysAdminIndex].role = "SysAdmin";
-      my.role = game.players[my.playerIndex].role;
-
-      // Reset the UI and the round variables.
-      resetUI();
-      resetRoundVariables();
-
-      // If you're the SysAdmin, set up some challenges for you to choose from.
-      if (my.role == "SysAdmin") {
-        my.rulebux = settings.default.rulebux;
-        definePossibleChallenges();
-        document.title = my.role + " | " + gameTitle;
-      } else {
-        document.title = my.name + " | " + gameTitle;
-      }
-    }
-  });
-
-  // A player (other than me) cracked a password (in the final round.)
-  socket.on("invalidPasswordCracked", function (msg) {
-    game.players = msg.players;
-    game.allEmployeePasswords = msg.allEmployeePasswords;
-    game.crackSummary.push(msg.crackSummary);
-  });
-
-  // Some player (could be anyone) said the game is over.
-  socket.on("gameOver", function (msg) {
-    // TODO: Try to get this to only fire once per game. Similar to the nextRound bug.
-    console.log("GAME OVER ⚰️");
-    //setGameOver();
-    game.players[msg.playerIndex].passwordAttempts = msg.passwordAttempts;
-    if (my.isRoomHost) {
-      sendEvent("Invalid", "Game Over", game.roomCode);
-    }
-    document.title = "GAME OVER" + " | " + gameTitle;
-  });
-
-  /////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////
-  // Directives
+  // DIRECTIVES
 
   // Define the v-focus directive
   const vFocus = {
@@ -1707,20 +1789,33 @@
       el.focus();
     },
   };
-  // Define the  directive
-  // const vToUppercase = {
-  //   mounted(el) {
-  //     el.addEventListener("input", () => {
-  //       if (el.value) {
-  //         el.value = el.value.toUpperCase();
-  //       }
-  //     });
-  //   },
-  // };
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
-  // Mounted
+  // LIFECYCLE
+
+  // Watch for shibboleth requirement changes to auto-focus appropriate field
+  watch(
+    () => computedShibbolethRequired.value,
+    (newValue, oldValue) => {
+      // Use nextTick to ensure the DOM has updated before trying to focus
+      nextTick(() => {
+        if (newValue === true && oldValue === false) {
+          // Shibboleth just became required - focus the shibboleth input
+          const shibbolethInput = document.getElementById("ShibbolethInput");
+          if (shibbolethInput) {
+            shibbolethInput.focus();
+          }
+        } else if (oldValue === true && newValue === false) {
+          // Shibboleth requirement was just satisfied - focus the password field
+          const passwordInput = document.getElementById("PasswordAttempt");
+          if (passwordInput) {
+            passwordInput.focus();
+          }
+        }
+      });
+    },
+  );
 
   onMounted(() => {
     let playerID = localStorage.getItem("kindaFunPlayerID");
@@ -1740,27 +1835,17 @@
       createRoom();
     } else if (urlParams.has("room")) {
       joinRoom();
-      // game.roomCode = urlParams.get("room").toUpperCase();
-      // socket.on("connect", () => {
-      //   console.log(`Connected with socketId: ${socket.id}`);
-      //   my.socketID = socket.id;
-
-      // });
     } else if (urlParams.has("join")) {
       document.getElementById("EnterRoomCode").focus();
     }
     if (urlParams.has("ref")) {
       sendEvent("Invalid", "Ref", urlParams.get("ref"));
     }
-    // Initialize socket event handlers
 
     const instance = getCurrentInstance();
     if (instance) {
       instance.appContext.app.directive("focus", vFocus);
-      // instance.appContext.app.directive("touppercase", vToUppercase);
     }
-
-    // setupSocketHandlers(socket);
   });
 </script>
 <template lang="pug" src="./Invalid.pug"></template>

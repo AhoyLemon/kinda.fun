@@ -55,7 +55,6 @@ export const my = reactive({
   crashesCaused: 0,
   score: 0,
   isRoomHost: false,
-  socketID: "",
 });
 
 export const round = reactive({
@@ -98,6 +97,7 @@ export const round = reactive({
 
 export const ui = reactive({
   nameInput: "",
+  roomCodeInput: "",
   appliedForJob: false,
   enterCode: {
     focus: false,

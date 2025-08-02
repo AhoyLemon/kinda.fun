@@ -1,4 +1,4 @@
-.pregame(v-if="game.roomCode")
+.pregame(v-if="game.roomCode && !my.role")
 
   .room-code
     .label Your room code
@@ -13,16 +13,16 @@
       figcaption
         button(@click="stopWatchingVideo()") Okay, close this video.
 
-  .error-box(v-if="1 == 1")
+  .error-box(v-if="game.isFailedToGetRoomData")
     .inside 
       .content
-        h2 Invalid multiplayer is currently broken. 
-        p I'm working on it, but there's things that need fixing. So multiplayer doesn't work right in this game for right now. 
-        p But there's a bunch of 
+        h2 Failed to connect to room. 
+        p There was an error connecting to the game room. Please check your room code and try again.
+        p Or you can try playing one of the other 
           a(href="https://kinda.fun") different games
-          |  that you can play instead.
+          |  available.
 
-  .game-started(v-else-if="game.isGameStarted")
+  .game-started(v-else-if="game.isGameStarted && !my.role")
     .inside
       .content
         h2 The game has already started.

@@ -23,9 +23,9 @@
   .or
     span or
   .join
-    form(@submit.prevent="joinRoom()")
-      button(v-if="game.roomCode && game.roomCode.length > 3" type="submit") Join this room.
-      input#Entergame.roomCode(type="text" minlength="4" maxlength="4" required v-model="game.roomCode"
-        @input="game.roomCode = $event.target.value.toUpperCase()"
+    form(@submit.prevent="joinRoomFromInput()")
+      button(v-if="ui.roomCodeInput && ui.roomCodeInput.length > 3" type="submit") Join this room.
+      input#Entergame.roomCode(type="text" minlength="4" maxlength="4" required v-model="ui.roomCodeInput"
+        @input="ui.roomCodeInput = $event.target.value.toUpperCase()"
         placeholder="Enter A Room Code"
       )
