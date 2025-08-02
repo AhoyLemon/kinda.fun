@@ -3991,7 +3991,6 @@ export const challenges = [
       "CORTESE",
       "FREISA",
       "BRACHETTO",
-      "SANGIOVESE",
       "BRUNELLO",
       "CHIANTI",
       "CORVINA",
