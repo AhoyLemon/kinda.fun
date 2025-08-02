@@ -488,11 +488,13 @@
         // Player found in Firebase - restore their state
         const playerData = querySnapshot.docs[0].data();
         
-        // Restore player state
+        // Restore player state from Firebase
         my.role = playerData.role;
         my.name = playerData.name;
         my.score = playerData.score || 0;
         my.rulebux = playerData.rulebux || 0;
+        my.passwordAttempts = playerData.passwordAttempts || 0;
+        my.employeeNumber = playerData.employeeNumber || my.employeeNumber;
         my.color = playerData.color || "#ff0000";
         my.isRoomHost = playerData.isHost || false;
         
