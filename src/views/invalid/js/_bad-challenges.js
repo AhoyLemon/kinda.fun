@@ -3,7 +3,7 @@ export const badChallenges = [
   //////////////////////////////////////////////////////////////////////
   // TOO DIFFICULT
 
-  // Modern Architecture
+  // Modern Architecture | 27
   {
     id: 27,
     name: "Modern Architecture",
@@ -60,7 +60,7 @@ export const badChallenges = [
     ],
   },
 
-  // Gods of Egypt
+  // Gods of Egypt | 104
   {
     id: 104,
     name: "Gods of Egypt",
@@ -149,7 +149,7 @@ export const badChallenges = [
     source: "https://en.wikipedia.org/wiki/List_of_Egyptian_deities",
   },
 
-  // Björk Albums
+  // Björk Albums | 78
   {
     id: 78,
     name: "Björk Albums",
@@ -204,7 +204,7 @@ export const badChallenges = [
     ],
   },
 
-  // Letterkenny
+  // Letterkenny | 42
   {
     id: 42,
     name: "Characters of Letterkenny",
@@ -255,7 +255,7 @@ export const badChallenges = [
     source: "https://en.wikipedia.org/wiki/List_of_Letterkenny_characters",
   },
 
-  // Gravity Falls
+  // Gravity Falls | 37
   {
     id: 37,
     name: "Gravity Falls",
@@ -301,7 +301,7 @@ export const badChallenges = [
     source: "https://en.wikipedia.org/wiki/List_of_Gravity_Falls_characters",
   },
 
-  // J.R.R. Tolkien Characters
+  // J.R.R. Tolkien Characters | 55
   {
     id: 55,
     name: "J.R.R. Tolkien",
@@ -358,7 +358,7 @@ export const badChallenges = [
     source: "https://en.wikipedia.org/wiki/List_of_Middle-earth_characters",
   },
 
-  // Game of Thrones
+  // Game of Thrones | 71
   {
     id: 71,
     name: "Game of Thrones",
@@ -398,10 +398,64 @@ export const badChallenges = [
   },
 
   ///////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////
-  // REDO ALL THESE
+  // TOO OPINION-BASED
 
-  // Words for Breasts
+  // Ridiculous Celebrity Baby Names | 66
+  {
+    id: 66,
+    name: "Celebrity Baby Names",
+    nameAsRule: "Your password must be a dumb name that a celebrity has named their child",
+    failedMessage: "[PASS] is not a a ridiculous enough baby name.",
+    possible: [
+      "BLUE IVY", // Beyoncé & Jay-Z
+      "PILOT INSPEKTOR", // Jason Lee & Beth Riesgraf
+      "MOXIE CRIMEFIGHTER", // Penn Jillette
+      "AUDIO SCIENCE", // Shannyn Sossamon
+      "MOON UNIT", // Frank Zappa
+      "DWEEZIL", // Frank Zappa
+      "DIVA THIN MUFFIN", // Frank Zappa
+      "X AE A-XII", // Elon Musk & Grimes
+      "EXA DARK SIDEREAL", // Elon Musk & Grimes
+      "TECHNO MECHANICUS", // Elon Musk & Grimes
+      "BRONX MOWGLI", // Ashlee Simpson & Pete Wentz
+      "ZUMA NESTA ROCK", // Gwen Stefani & Gavin Rossdale
+      "KULTURE", // Cardi B & Offset
+      "RADDIX", // Cameron Diaz & Benji Madden
+      "SAGE MOONBLOOD", // Sylvester Stallone
+      "SPURGEON", // Jessa Duggar
+      "JERMAJESTY", // Jermaine Jackson
+      "KAL-EL", // Nicolas Cage
+      "BLANKET", // Michael Jackson
+      "ROYAL REIGN", // Lil Kim
+      "PRINCESS TIAAMII", // Katie Price & Peter Andre
+      "MOROCCAN", // Mariah Carey & Nick Cannon
+      "MONROE", // Mariah Carey & Nick Cannon
+      "BANJO", // Rachel Griffiths
+      "CRICKET PEARL", // Busy Philipps
+      "BIRDIE LEIGH", // Busy Philipps
+      "GRAVITY", // Lucky Blue Smith & Stormi Bree
+      "DREAM", // Rob Kardashian & Blac Chyna
+      "DENIM", // Toni Braxton
+      "SIR", // Beyoncé & Jay-Z
+      "ROYALTY", // Chris Brown
+      "SNO FILMON DOT COM", // Chief Keef
+      "ODE MOUNTAIN", // Jena Malone
+      "SAGA BLADE", // Megan Fox & Machine Gun Kelly
+      "PETAL BLOSSOM RAINBOW", // Jamie Oliver
+      "BUDDY BEAR MAURICE", // Jamie Oliver
+      "RIVER ROCKET", // Jamie Oliver
+      "ELSIE OTTER", // Zooey Deschanel
+      "APOLLO BOWIE FLYNN", // Gwen Stefani
+      "LYRA ANTARCTICA", // Ed Sheeran
+      "HEAVENLY HIRAANI", // Michael Hutchence & Paula Yates
+      "PUMA SABTI", // Erykah Badu
+      "SEVEN SIRIUS", // Erykah Badu
+      "MARS MERKABA", // Erykah Badu
+    ],
+    source: "https://www.thehollywoodgossip.com/slideshows/17-most-ridiculous-celebrity-baby-names/",
+  },
+
+  // Words for Breasts | 3
   {
     id: 3,
     name: "Words For Breasts",
@@ -436,7 +490,7 @@ export const badChallenges = [
     ],
   },
 
-  // Words for Penis
+  // Words for Penis | 58
   {
     id: 58,
     name: "Words for Penis",
@@ -474,7 +528,7 @@ export const badChallenges = [
     source: "https://www.powerthesaurus.org/penis/synonyms",
   },
 
-  // Words for Vulva
+  // Words for Vulva | 59
   {
     id: 59,
     name: "Words for Vulva",
@@ -512,7 +566,77 @@ export const badChallenges = [
     source: "https://www.powerthesaurus.org/vulva/synonyms",
   },
 
-  // Worst Actors
+  // Types of Cookies | 33
+  {
+    id: 33,
+    name: "Types of Cookies",
+    nameAsRule: "Your password must be a popular type of cookie.",
+    failedMessage: "[PASS] isn't on the list, sorry.",
+    possible: [
+      "CHOCOLATE CHIP",
+      "SHORTBREAD",
+      "CUTOUT",
+      "OATMEAL RAISIN",
+      "GINGERSNAP",
+      "PEANUT BUTTER",
+      "WHOOPIE PIES",
+      "SUGAR",
+      "SNICKERDOODLE",
+      "CHOCOLATE",
+      "ICEBOX",
+      "SANDWICH",
+      "SPRITZ",
+      "BISCOTTI",
+      "BUTTER",
+      "SNOWBALL",
+      "MOLASSES",
+      "PINWHEEL",
+      "DROP",
+      "MERINGUE",
+      "LINZER",
+      "MACAROONS",
+      "MACARONS",
+      "THUMBPRINT",
+      "TEA CAKES",
+      "NO BAKE",
+      "GINGERBREAD",
+      "TASSIES",
+      "LEBKUCHEN",
+      "PIZZELLE",
+      "KOLACZKY",
+      "FORTUNE",
+      "KRUMKAKE",
+      "CUCCIDATI",
+      "TORCETTI",
+      "MANDELBRODT",
+      "SILVANAS",
+      "PFEFFERNUESSE",
+      "MA'AMOUL",
+      "REGANADAS",
+      "KOULOURAKIA",
+      "MELOMAKARONA",
+      "KOURAMBIETHES",
+      "PALMIERS",
+      "MADELEINES",
+      "KOLACHES",
+      "NANAIMO",
+      "COWBOY",
+      "KHRUCHIKI",
+      "ALFAJORES",
+      "SERINAKAKER",
+      "RUGELACH",
+      "CHIN CHIN",
+      "KUEY TARTS",
+      "POLVORON",
+      "MBATATA",
+    ],
+  },
+
+  ///////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+  // REDO ALL THESE
+
+  // Worst Actors | 13
   {
     id: 13,
     name: "Worst Actors",
@@ -555,7 +679,7 @@ export const badChallenges = [
     ],
   },
 
-  // Worst Actresses
+  // Worst Actresses | 14
   {
     id: 14,
     name: "Worst Actresses",
@@ -598,7 +722,7 @@ export const badChallenges = [
     ],
   },
 
-  // Dog Breeds
+  // Dog Breeds | 35
   {
     id: 35,
     name: "Dog Breeds",
@@ -725,191 +849,7 @@ export const badChallenges = [
     source: "https://www.akc.org/dog-breeds/",
   },
 
-  // Marvel Comics
-  {
-    id: 53,
-    name: "Marvel Comics",
-    nameAsRule: "Your password must be a notable Marvel character",
-    failedMessage: "[PASS] isn't on the list, please try again",
-    possible: [
-      "THOR",
-      "SPIDER-MAN",
-      "DEADPOOL",
-      "IRON MAN",
-      "HULK",
-      "WOLVERINE",
-      "CAPTAIN AMERICA",
-      "DOCTOR STRANGE",
-      "BLACK PANTHER",
-      "GROOT",
-      "SCARLET WITCH",
-      "ROCKET RACCOON",
-      "ANT-MAN",
-      "BLACK WIDOW",
-      "PUNISHER",
-      "GHOST RIDER",
-      "SILVER SURFER",
-      "STAR-LORD",
-      "VISION",
-      "HAWKEYE",
-      "GAMBIT",
-      "PHEONIX",
-      "MS MARVEL",
-      "NIGHTCRAWLER",
-      "PROFESSOR X",
-      "CABLE",
-      "BUCKY BARNES",
-      "MILES MORALES",
-      "COLOSSUS",
-      "DRAX THE DESTROYER",
-      "ODIN",
-      "CAPTAIN MARVEL",
-      "GAMORA",
-      "THING",
-      "HUMAN TORCH",
-      "BLADE",
-      "WAR MACHINE",
-      "GHOST RIDER",
-      "NOVA",
-      "HUMAN TORCH",
-      "NICK FURY",
-      "DAREDEVIL",
-      "MOON KNIGHT",
-      "QUICKSILVER",
-      "BEAST",
-      "ICEMAN",
-      "VALKYRIE",
-      "WASP",
-      "PSYLOCKE",
-      "STORM",
-      "X-23",
-      "ROGUE",
-      "LUKE CAGE",
-      "CYCLOPS",
-      "FALCON",
-      "IRON FIST",
-      "HEIMDALL",
-      "ANT-MAN",
-      "YONDU",
-      "SHE-HULK",
-      "ADAM WARLOCK",
-      "ARCHANGEL",
-      "INVISIBLE WOMAN",
-      "SPIDER-GWEN",
-      "MISTER FANTASTIC",
-      "BLACK BOLT",
-      "BLACK PANTHER",
-      "SHURI",
-      "DOMINO",
-      "RONIN",
-      "SPIDER-WOMAN",
-      "ELEKTRA",
-      "KITTY PRYDE",
-      "RED HULK",
-      "PHIL COULSON",
-      "BETA RAY BILL",
-      "HAVOK",
-      "NEBULA",
-      "JESSICA JONES",
-      "SCARLET SPIDER",
-      "ANGEL",
-      "CLOAK AND DAGGER",
-      "MANTIS",
-      "MS. MARVEL",
-      "BISHOP",
-      "PEPPER POTS",
-      "KORG",
-      "PRINCE NARMOR",
-      "JANE FOSTER",
-      "SENTRY",
-      "SIF",
-      "MAGIK",
-      "JUBILEE",
-      "SQUIRREL GIRL",
-      "SPIDER-GIRL",
-      "BANSHEE",
-      "WARLOCK",
-      "HOWARD THE DUCK",
-      "IRONHEART",
-    ],
-    source: "https://www.ranker.com/crowdranked-list/top-marvel-comics-superheroes",
-  },
-
-  // Medieval Weaponry
-  {
-    id: 56,
-    name: "Medieval Weaponry",
-    nameAsRule: "Your password must be a Medieval weapon used by a single combatant.",
-    failedMessage: "[PASS] isn't on the list, please try again.",
-    possible: [
-      "BATTLE AXE",
-      "BEC DE CORBIN",
-      "BLUDGEON",
-      "CLUB",
-      "FLAIL",
-      "FLANGED MACE",
-      "HORSEMAN'S PICK",
-      "MACE",
-      "MORNING STAR",
-      "QUARTERSTAFF",
-      "WAR HAMMER",
-      "ARMING SWORD",
-      "DAGGER",
-      "ESTOC",
-      "FALCHION",
-      "KATANA",
-      "KNIFE",
-      "LONGSWORD",
-      "RAPIER",
-      "SABRE",
-      // ALSO
-      // "SABER"
-      "SHORTSWORD",
-      "ULFBERHT",
-      "AHLSPIESS",
-      "BARDICHE",
-      "BILL",
-      "GLAIVE",
-      "GOEDENDAG",
-      "GUISARME",
-      "HALBERD",
-      "LANCE",
-      "LOCHABER AXE",
-      "LUCERNE HAMMER",
-      "MAN CATCHER",
-      "MILITARY FORK",
-      "PARTISAN",
-      "PIKE",
-      "RANSEUR",
-      "SOVNYA",
-      "SPETUM",
-      "SWORDSTAFF",
-      "VOULGE",
-      "WAR SCYTHE",
-      "WAR HAMMER",
-      "BOW",
-      "LONGBOW",
-      "CROSSBOW",
-      "FLAMETHROWER",
-      "ARQUEBUS",
-      "BOMBARD",
-      "CANNON",
-      "CULVERIN",
-      "HAND CANNON",
-      "MORTAR",
-      "MUSKET",
-      "SLING",
-      "CHAKRAM",
-      "FRANCISCA",
-      "KUNAI",
-      "SHURIKEN",
-      "THROWING KNIFE",
-      "THROWING SPEAR",
-    ],
-    source: "https://en.wikipedia.org/wiki/List_of_medieval_weapons",
-  },
-
-  // State Flowers
+  // State Flowers | 65
   {
     id: 65,
     name: "State Flowers",
@@ -968,75 +908,7 @@ export const badChallenges = [
     source: "https://en.wikipedia.org/wiki/List_of_U.S._state_and_territory_flowers",
   },
 
-  // Fruits
-  {
-    id: 67,
-    name: "Fruits",
-    nameAsRule: "Your password must be a popular fruit; the name does not need a specific variety name.",
-    failedMessage: "[PASS] is not on the list, please try again.",
-    possible: [
-      "TOMATO",
-      "BANANA",
-      "WATERMELON",
-      "APPLE",
-      "GRAPE",
-      "ORANGE",
-      "MANGO",
-      "GUAVA",
-      "PLANTAIN",
-      "TANGERINE",
-      "MANDARIN",
-      "CLEMENTINE",
-      "PINEAPPLE",
-      "PEACH",
-      "NECTARINE",
-      "PEAR",
-      "MELON",
-      "LEMON",
-      "LIME",
-      "PAPAYA",
-      "PLUM",
-      "SLOE",
-      "GRAPEFRUIT",
-      "DATE",
-      "STRAWBERRY",
-      "AVACADO",
-      "PERSIMMON",
-      "APRICOT",
-      "BLACKBERRY",
-      "BLACKCURRANT",
-      "BLUEBERRY",
-      "BOYSENBERRY",
-      "CAPER",
-      "CHERRY",
-      "CRANBERRY",
-      "DURIAN",
-      "ELDERBERRY",
-      "JACKFRUIT",
-      "GOJI BERRY",
-      "GROUNDCHERRY",
-      "GOOSEBERRY",
-      "JUJUBE",
-      "JUNIPER BERRY",
-      "KIWI",
-      "KUMQUAT",
-      "LONGAN",
-      "LYCHEE",
-      "MULBERRY",
-      "OLIVE",
-      "PASSION FRUIT",
-      "POMEGRANATE",
-      "RAMBUTAN",
-      "RASPBERRY",
-      "LINGONBERRY",
-      "RHUBARB",
-      "STARFRUIT",
-      "UGLI FRUIT",
-      "WATERMELON",
-    ],
-  },
-
-  // Textile Fibres
+  // Textile Fibres | 68
   {
     id: 68,
     name: "Textile Fibres",
@@ -1084,64 +956,11 @@ export const badChallenges = [
     source: "https://en.wikipedia.org/wiki/List_of_textile_fibres",
   },
 
-  // Pizza Toppings
-  {
-    id: 75,
-    name: "Pizza Toppings",
-    nameAsRule: "Your password must be a common pizza topping.",
-    failedMessage: "[PASS] is not a common pizza topping.",
-    hint: "Think about what you'd find at most pizza places.",
-    possible: [
-      "PEPPERONI",
-      "SAUSAGE",
-      "MUSHROOMS",
-      "CHEESE",
-      "MOZZARELLA",
-      "PEPPERS",
-      "ONIONS",
-      "OLIVES",
-      "HAM",
-      "BACON",
-      "PINEAPPLE",
-      "ANCHOVIES",
-      "TOMATOES",
-      "SPINACH",
-      "CHICKEN",
-      "BEEF",
-      "JALAPENOS",
-      "GARLIC",
-      "BASIL",
-      "OREGANO",
-      "MEATBALLS",
-      "SALAMI",
-      "CANADIAN BACON",
-      "BELL PEPPERS",
-      "GREEN PEPPERS",
-      "RED PEPPERS",
-      "BLACK OLIVES",
-      "GREEN OLIVES",
-      "RED ONIONS",
-      "WHITE ONIONS",
-      "ROMA TOMATOES",
-      "SUN DRIED TOMATOES",
-      "ARTICHOKE HEARTS",
-      "FETA",
-      "PARMESAN",
-      "RICOTTA",
-      "CHEDDAR",
-      "PROVOLONE",
-      "GOAT CHEESE",
-      "PROSCIUTTO",
-      "GROUND BEEF",
-    ],
-    source: "https://en.wikipedia.org/wiki/Pizza_in_the_United_States",
-  },
-
   ///////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
   // THESE ONES ARE JUST SHITTY
 
-  // One-Hit Wonders (1980s)
+  // One-Hit Wonders (1980s) | 23
   {
     id: 23,
     name: "1980's US One-Hit Wonders",
@@ -1257,7 +1076,7 @@ export const badChallenges = [
     source: "https://en.wikipedia.org/wiki/List_of_one-hit_wonders_in_the_United_States#1980s",
   },
 
-  // One-Hit Wonders (2000s)
+  // One-Hit Wonders (2000s) | 25
   {
     id: 25,
     name: "2000's US One-Hit Wonders",
@@ -1322,7 +1141,7 @@ export const badChallenges = [
     source: "https://en.wikipedia.org/wiki/List_of_one-hit_wonders_in_the_United_States#2000s",
   },
 
-  // Western Art Periods
+  // Western Art Periods | 26
   {
     id: 26,
     name: "Western Art Periods",
@@ -1451,73 +1270,7 @@ export const badChallenges = [
     ],
   },
 
-  // Types of Cookies
-  {
-    id: 33,
-    name: "Types of Cookies",
-    nameAsRule: "Your password must be a popular type of cookie.",
-    failedMessage: "[PASS] isn't on the list, sorry.",
-    possible: [
-      "CHOCOLATE CHIP",
-      "SHORTBREAD",
-      "CUTOUT",
-      "OATMEAL RAISIN",
-      "GINGERSNAP",
-      "PEANUT BUTTER",
-      "WHOOPIE PIES",
-      "SUGAR",
-      "SNICKERDOODLE",
-      "CHOCOLATE",
-      "ICEBOX",
-      "SANDWICH",
-      "SPRITZ",
-      "BISCOTTI",
-      "BUTTER",
-      "SNOWBALL",
-      "MOLASSES",
-      "PINWHEEL",
-      "DROP",
-      "MERINGUE",
-      "LINZER",
-      "MACAROONS",
-      "MACARONS",
-      "THUMBPRINT",
-      "TEA CAKES",
-      "NO BAKE",
-      "GINGERBREAD",
-      "TASSIES",
-      "LEBKUCHEN",
-      "PIZZELLE",
-      "KOLACZKY",
-      "FORTUNE",
-      "KRUMKAKE",
-      "CUCCIDATI",
-      "TORCETTI",
-      "MANDELBRODT",
-      "SILVANAS",
-      "PFEFFERNUESSE",
-      "MA'AMOUL",
-      "REGANADAS",
-      "KOULOURAKIA",
-      "MELOMAKARONA",
-      "KOURAMBIETHES",
-      "PALMIERS",
-      "MADELEINES",
-      "KOLACHES",
-      "NANAIMO",
-      "COWBOY",
-      "KHRUCHIKI",
-      "ALFAJORES",
-      "SERINAKAKER",
-      "RUGELACH",
-      "CHIN CHIN",
-      "KUEY TARTS",
-      "POLVORON",
-      "MBATATA",
-    ],
-  },
-
-  // Cat Breeds
+  // Cat Breeds | 36
   {
     id: 36,
     name: "Cat Breeds",
@@ -1573,7 +1326,7 @@ export const badChallenges = [
     source: "https://cfa.org/breeds/",
   },
 
-  // Breakfast Cereals
+  // Breakfast Cereals | 41
   {
     id: 41,
     name: "Breakfast Cereal",
@@ -1651,7 +1404,7 @@ export const badChallenges = [
     source: "https://nerdist.com/article/the-top-50-cereals-ranked/",
   },
 
-  // Artist Pigments
+  // Artist Pigments | 64
   {
     id: 64,
     name: "Artist Pigments",
@@ -1718,7 +1471,7 @@ export const badChallenges = [
     source: "https://gamblincolors.com/mineral-modern-colors/",
   },
 
-  // Coat of Arms
+  // Coat of Arms Creatures | 66
   {
     id: 66,
     name: "Coat of Arms Creatures",
