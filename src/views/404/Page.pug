@@ -1,0 +1,33 @@
+include ../../shared/pug/_variables.pug
+- const name = "404 - Page Not Found"
+- const desc = "The page you're looking for doesn't exist."
+
+doctype html
+html(lang="en")
+  head
+    include ../../shared/pug/_meta.pug
+
+    // Fonts & CSS
+    link(rel="preconnect" href="https://fonts.gstatic.com")
+    link(href="https://fonts.googleapis.com/css2?family=Big+Shoulders:opsz,wght@10..72,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet")
+    link(href="/404.css?lastUpdated="+lastUpdated type="text/css" rel="stylesheet")
+    
+    // Favicons (use default site favicon)
+    link(rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png")
+    link(rel="shortcut icon" href="/img/favicon.ico")
+
+    // OpenGraph
+    meta(property="og:title" content=name)
+    meta(property="og:type" content="website")
+    meta(property="og:image:width" content="1200")
+    meta(property="og:image:height" content="630")
+    meta(property="og:description" content=desc)
+    meta(property="og:url" content=baseUrl + "/404")
+    meta(property="og:image" content=baseUrl + "/img/og-404.png")
+    meta(property="og:email" content=email)
+
+  body
+    #app
+    script(type="module" src="/src/entries/404.js")

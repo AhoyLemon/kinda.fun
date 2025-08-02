@@ -1,0 +1,21 @@
+import { createApp } from "vue";
+import NotFoundPage from "../views/404/NotFound.vue";
+import { VueFire } from "vuefire";
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "../../firebaseConfig.public.js";
+const firebaseApp = initializeApp(firebaseConfig);
+import VueTippy from "vue-tippy";
+import "tippy.js/dist/tippy.css";
+const toolTipOptions = { defaultProps: { placement: "top" } };
+import Toast, { POSITION } from "vue-toastification";
+import "vue-toastification/dist/index.css";
+const toastOptions = {
+  position: POSITION.BOTTOM_RIGHT,
+  timeout: 3500,
+  closeOnClick: true,
+  pauseOnFocusLoss: true,
+  pauseOnHover: true,
+  showCloseButtonOnHover: true,
+};
+const app = createApp(NotFoundPage);
+app.use(VueFire, { firebaseApp, modules: [] }).use(Toast, toastOptions).use(VueTippy, toolTipOptions).mount("#app");
