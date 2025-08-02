@@ -4086,7 +4086,7 @@ export const challenges = [
     name: "Medical Specialties",
     nameAsRule: "Your password must be a medical specialty",
     failedMessage: "[PASS] must be a medical specialty.",
-    hint: " medical doctor specializations.",
+    hint: "medical doctor specializations.",
     possible: [
       "ALLERGY",
       "ANESTHESIOLOGY",
