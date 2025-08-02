@@ -1471,9 +1471,9 @@ export const badChallenges = [
     source: "https://gamblincolors.com/mineral-modern-colors/",
   },
 
-  // Coat of Arms Creatures | 66
+  // Coat of Arms Creatures | 167
   {
-    id: 66,
+    id: 167,
     name: "Coat of Arms Creatures",
     nameAsRule: "Your password must be an animal or mythical creature found on a coat of arms",
     failedMessage: "[PASS] is not on the list, please try again.",
