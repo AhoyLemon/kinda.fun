@@ -38,11 +38,11 @@
           input(v-model="my.employeeNumber" type="text" readonly disabled)
           label Employee Number
         fieldset
-          input.uppercase(v-model="ui.nameInput" type="text" maxlength="34" v-focus required)
+          input(:class="{ uppercase: !hasEmojiInName }" v-model="ui.nameInput" type="text" maxlength="34" v-focus required)
           label Employee Name
 
         .button-holder 
-          button(type="submit") 
+          button(type="submit" :disabled="ui.appliedForJob && my.name === ui.nameInput.toUpperCase()") 
             span(v-if="!ui.appliedForJob") Apply For Job
             span(v-if="ui.appliedForJob") Update Resume
 

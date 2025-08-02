@@ -82,11 +82,17 @@
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.35);
       font-size: 16px;
       padding: 10px;
-      cursor: pointer;
       outline: none;
-      &:hover,
-      &:focus {
+      &:not(:disabled) {
+        cursor: pointer;
+      }
+      &:not(:disabled):hover,
+      &:not(:disabled):focus {
         background: linear-gradient(to top, #0f0c29, #574ccc, #24243e);
+      }
+      &:disabled {
+        opacity: 0.25;
+        filter: grayscale(0.5);
       }
     }
   }
