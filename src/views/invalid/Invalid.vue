@@ -216,7 +216,15 @@
             game.crackSummary = data.crackSummary;
           }
           if (data.roundSummary) {
+            const previousRoundSummaryLength = game.roundSummary?.length || 0;
             game.roundSummary = data.roundSummary;
+
+            // If round summary was updated and we're a SysAdmin in choose rules phase,
+            // update possible challenges to exclude newly completed rounds
+            const currentGamePhase = data.gamePhase ? convertPhaseToTemplate(data.gamePhase) : round.phase;
+            if (data.roundSummary.length > previousRoundSummaryLength && my.role === "SysAdmin" && currentGamePhase === "choose rules") {
+              definePossibleChallenges();
+            }
           }
           if (data.attempts) {
             round.attempts = data.attempts;
@@ -315,7 +323,11 @@
           if (previousPhase !== "choose rules") {
             my.rulebux = settings.default.rulebux;
           }
-          definePossibleChallenges();
+          // Only define possible challenges if we don't have round summary yet
+          // or if this is the very first round (no previous rounds to exclude)
+          if (!game.roundSummary || game.roundSummary.length === 0) {
+            definePossibleChallenges();
+          }
           document.title = my.role + " | " + gameTitle;
         } else {
           document.title = my.name + " | " + gameTitle;
