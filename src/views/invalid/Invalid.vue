@@ -64,14 +64,14 @@
   // Firebase & VueFire Stuff
   import {
     doc,
-    increment,
-    serverTimestamp,
-    Timestamp,
-    addDoc,
     getDoc,
-    getDocs,
     setDoc,
     updateDoc,
+    serverTimestamp,
+    increment,
+    Timestamp,
+    addDoc,
+    getDocs,
     collection,
     query,
     where,
@@ -616,6 +616,32 @@
       }
     });
 
+    // Save/update player stats in /stats/general/players/{playerName}
+    for (const player of game.players) {
+      try {
+        const playerStatsRef = doc(db, `stats/general/players/${player.name}`);
+        const playerStatsSnap = await getDoc(playerStatsRef);
+        if (playerStatsSnap.exists()) {
+          const prevData = playerStatsSnap.data();
+          await updateDoc(playerStatsRef, {
+            gamesPlayed: (prevData.gamesPlayed || 0) + 1,
+            lastPlayed: serverTimestamp(),
+            mostRecentGame: game.gameName || "invalid",
+            name: player.name,
+          });
+        } else {
+          await setDoc(playerStatsRef, {
+            gamesPlayed: 1,
+            lastPlayed: serverTimestamp(),
+            mostRecentGame: game.gameName || "invalid",
+            name: player.name,
+          });
+        }
+      } catch (err) {
+        console.error(`Error updating stats for player ${player.name}:`, err);
+      }
+    }
+
     if (game.players.length == 2) {
       game.maxRounds = 6;
     } else if (game.players.length == 3) {
@@ -745,6 +771,28 @@
       currentChallenge: round.challenge,
       gamePhase: "choose-rules",
     });
+
+    // Send challenge stat to Firebase
+    try {
+      const challengeName = round.challenge.name;
+      const challengeStatsRef = doc(db, `stats/invalid/challenges/${challengeName}`);
+      const challengeStatsSnap = await getDoc(challengeStatsRef);
+      if (challengeStatsSnap.exists()) {
+        const prevData = challengeStatsSnap.data();
+        await updateDoc(challengeStatsRef, {
+          timesChosen: (prevData.timesChosen || 0) + 1,
+          lastChosen: serverTimestamp(),
+        });
+      } else {
+        await setDoc(challengeStatsRef, {
+          name: challengeName,
+          timesChosen: 1,
+          lastChosen: serverTimestamp(),
+        });
+      }
+    } catch (err) {
+      console.error("Error updating challenge stats:", err);
+    }
 
     sendEvent("Invalid", "Challenge Selected", round.challenge.name);
   };
@@ -1279,7 +1327,7 @@
       attemptRecord.result = "crash";
       attemptRecord.challengeName = round.challenge.name;
 
-      // Award points to the SysAdmin for causing a crash
+      // Award points to the SysAdmin for causing a crash BEFORE updating score in Firestore
       if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
         game.players[round.sysAdminIndex].score += settings.points.forServerCrash;
       }
@@ -1294,15 +1342,7 @@
         },
       ];
 
-      await updateRoomState({
-        gamePhase: "crashed",
-        crashedPlayer: my.playerID,
-        crashedWord: attempt,
-        crashSummary: newCrashSummary,
-        attempts: [...(round.attempts || []), attemptRecord],
-      });
-
-      // Update SysAdmin score in Firestore
+      // Update SysAdmin score in Firestore (now includes timer points + crash points)
       if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
         const adminPlayer = game.players[round.sysAdminIndex];
         const adminRef = doc(db, "rooms", game.roomCode, "players", adminPlayer.playerID);
@@ -1310,6 +1350,14 @@
           score: adminPlayer.score,
         });
       }
+
+      await updateRoomState({
+        gamePhase: "crashed",
+        crashedPlayer: my.playerID,
+        crashedWord: attempt,
+        crashSummary: newCrashSummary,
+        attempts: [...(round.attempts || []), attemptRecord],
+      });
 
       my.crashesCaused += 1;
       sendEvent("Invalid", "Server Crashed", attempt);

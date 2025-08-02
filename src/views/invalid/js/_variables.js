@@ -19,7 +19,7 @@ const defaultSettings = {
   },
   settings: {
     default: {
-      rulebux: 7,
+      rulebux: 107,
       numberOfPossibleChallenges: 5,
     },
     points: {
