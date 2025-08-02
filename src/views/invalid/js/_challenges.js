@@ -4049,7 +4049,7 @@ export const challenges = [
       "ZIERFANDLER",
       "ROTGIPFLER",
     ],
-    source: "Wikipedia International Variety and List of Grape Varieties pages",
+    source: "https://en.wikipedia.org/wiki/List_of_grape_varieties",
   },
 
   // Medical Specialties | 107
