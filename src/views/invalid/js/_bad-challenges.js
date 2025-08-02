@@ -1,7 +1,7 @@
 export const badChallenges = [
   ///////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
-  // TOO DIFFICULT OR OBCURE
+  // TOO DIFFICULT OR OBSCURE
 
   // Modern Architecture | 27
   {
@@ -364,7 +364,7 @@ export const badChallenges = [
       "ANDRO",
       "ANTHROPO",
       "APEIRO",
-      "APHENPHOSMPH",
+      "APHENPHOS",
       "API",
       "APOTEMNO",
       "AQUA",
@@ -382,7 +382,7 @@ export const badChallenges = [
       "CACOPHO",
       "CARCINO",
       "CATOPTRO",
-      "CEPHALALGAIO",
+      "CEPHALALGIAO",
       "CHEMO",
       "CHERO",
       "CHIONO",
