@@ -99,6 +99,7 @@ export const ui = reactive({
   nameInput: "",
   roomCodeInput: "",
   appliedForJob: false,
+  reconnecting: false,
   enterCode: {
     focus: false,
   },
