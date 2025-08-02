@@ -673,18 +673,15 @@
     my.rulebux -= cost;
     try {
       const ruleStatsRef = doc(db, `stats/invalid/rules/${name}`);
-      const now = serverTimestamp();
       await updateDoc(ruleStatsRef, {
-        name: name,
-        cost: cost,
-        lastUsed: now,
+        lastPlayed: serverTimestamp(),
         count: increment(1),
       }).catch(async () => {
         // If doc doesn't exist, create it
         await setDoc(ruleStatsRef, {
           name: name,
           cost: cost,
-          lastUsed: now,
+          lastPlayed: serverTimestamp(),
           count: 1,
         });
       });
@@ -798,15 +795,14 @@
     try {
       const challengeName = round.challenge.name;
       const challengeStatsRef = doc(db, `stats/invalid/challenges/${challengeName}`);
-      const challengeStatsSnap = await getDoc(challengeStatsRef);
       await updateDoc(challengeStatsRef, {
-        timesChosen: increment(1),
-        lastChosen: serverTimestamp(),
+        count: increment(1),
+        lastPlayed: serverTimestamp(),
       }).catch(async () => {
         await setDoc(challengeStatsRef, {
           name: challengeName,
-          timesChosen: 1,
-          lastChosen: serverTimestamp(),
+          count: 1,
+          lastPlayed: serverTimestamp(),
         });
       });
     } catch (err) {
