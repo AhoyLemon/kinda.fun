@@ -22,6 +22,12 @@
           a(href="https://kinda.fun") different games
           |  available.
 
+  .reconnecting(v-else-if="ui.reconnecting")
+    .inside
+      .content
+        h2 🔄 Reconnecting...
+        p Finding your place in the game...
+
   .game-started(v-else-if="game.isGameStarted && !my.role")
     .inside
       .content

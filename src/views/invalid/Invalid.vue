@@ -439,7 +439,7 @@
    * Joins a room using a room code from the URL parameter.
    * Called automatically when the page loads with a ?room= parameter.
    */
-  const joinRoom = () => {
+  const joinRoom = async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get("room");
 
@@ -449,14 +449,14 @@
       return;
     }
 
-    connectToRoom(roomCode);
+    await connectToRoom(roomCode);
   };
 
   /**
    * Joins a room using a room code from form input.
    * Updates the URL and then connects to the room.
    */
-  const joinRoomFromInput = () => {
+  const joinRoomFromInput = async () => {
     if (!ui.roomCodeInput) {
       console.error("No room code provided in input");
       game.isFailedToGetRoomData = true;
@@ -469,14 +469,66 @@
     const newUrl = `${protocol}//${host}/invalid?room=${ui.roomCodeInput}`;
     window.history.replaceState(null, "", newUrl);
 
-    connectToRoom(ui.roomCodeInput);
+    await connectToRoom(ui.roomCodeInput);
+  };
+
+  /**
+   * Check if the current player already exists in the Firebase room
+   * and restore their state if found (for reconnection scenarios).
+   */
+  const checkForExistingPlayer = async (roomCode) => {
+    try {
+      ui.reconnecting = true;
+
+      const playersCollectionRef = collection(db, `rooms/${roomCode}/players`);
+      const playerQuery = query(playersCollectionRef, where("playerID", "==", my.playerID));
+      const querySnapshot = await getDocs(playerQuery);
+
+      if (!querySnapshot.empty) {
+        // Player found in Firebase - restore their state
+        const playerData = querySnapshot.docs[0].data();
+
+        // Restore player state from Firebase
+        // Do NOT restore role from Firebase, recalculate using sysAdminIndex and game.players
+        my.name = playerData.name;
+        my.score = playerData.score || 0;
+        my.rulebux = playerData.rulebux || 0;
+        my.passwordAttempts = playerData.passwordAttempts || 0;
+        my.employeeNumber = playerData.employeeNumber || my.employeeNumber;
+        my.color = playerData.color || "#ff0000";
+        my.isRoomHost = playerData.isHost || false;
+
+        // Recalculate my.role using sysAdminIndex and game.players
+        await nextTick();
+        if (game.players && game.players.length > 0 && typeof round.sysAdminIndex === "number" && round.sysAdminIndex > -1) {
+          const myIndex = game.players.findIndex((player) => player.playerID === my.playerID);
+          if (myIndex !== -1) {
+            my.role = myIndex === round.sysAdminIndex ? "SysAdmin" : "employee";
+            my.playerIndex = myIndex;
+          }
+        }
+
+        // Update UI state to reflect successful reconnection
+        ui.appliedForJob = true;
+        ui.nameInput = my.name;
+
+        console.log(`Reconnected player: ${my.name} (${my.role})`);
+
+        // Show reconnection success toast
+        toast.success(`Reconnected as ${my.name}!`);
+      }
+    } catch (error) {
+      console.error("Error checking for existing player:", error);
+    } finally {
+      ui.reconnecting = false;
+    }
   };
 
   /**
    * Core connection logic for joining a room with a given room code.
    * Sets up Firestore subscriptions for room data and players.
    */
-  const connectToRoom = (roomCode) => {
+  const connectToRoom = async (roomCode) => {
     game.roomCode = roomCode.toUpperCase();
     const roomRef = doc(db, "rooms", game.roomCode);
 
@@ -486,6 +538,9 @@
     // Fetch players
     const playersCollectionRef = collection(db, `rooms/${game.roomCode}/players`);
     game.players = useCollection(playersCollectionRef);
+
+    // Check for existing player and restore state if needed
+    await checkForExistingPlayer(roomCode);
   };
 
   const savePlayerInfo = async () => {
