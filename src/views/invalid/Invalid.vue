@@ -639,14 +639,40 @@
       }
     }
 
-    if (game.players.length == 2) {
+    // Use a variable for player count
+    const playerCount = game.players.length;
+
+    if (playerCount == 2) {
       game.maxRounds = 6;
-    } else if (game.players.length == 3) {
+    } else if (playerCount == 3) {
       game.maxRounds = 6;
-    } else if (game.players.length == 4) {
+    } else if (playerCount == 4) {
       game.maxRounds = 8;
     } else {
-      game.maxRounds = game.players.length;
+      game.maxRounds = playerCount;
+    }
+
+    // Save/update player count stats in /stats/invalid, field: players{playerCount}
+    try {
+      const fieldName = `players${playerCount}`;
+      // Try to increment the field, or set to 1 if not present
+      await updateDoc(statsRef, {
+        [fieldName]: increment(1),
+      }).catch(async () => {
+        // If doc doesn't exist or field missing, set to 1
+        const statsSnap = await getDoc(statsRef);
+        if (!statsSnap.exists() || statsSnap.data()[fieldName] === undefined) {
+          await setDoc(
+            statsRef,
+            {
+              [fieldName]: 1,
+            },
+            { merge: true },
+          );
+        }
+      });
+    } catch (err) {
+      console.error(`Error updating stats/invalid field ${fieldName}:`, err);
     }
 
     // Find the first host as the initial SysAdmin
@@ -1740,11 +1766,19 @@
       passwordAttempts: my.passwordAttempts,
     });
 
-    // Set game over state
-    await updateRoomState({
-      gamePhase: "game-over",
-      isGameOver: true,
-    });
+    // Only host logs gamesFinished and lastGameFinished
+    if (computedAmIHost.value) {
+      await updateDoc(statsRef, {
+        gamesFinished: increment(1),
+        lastGameFinished: serverTimestamp(),
+      });
+
+      // Set game over state
+      await updateRoomState({
+        gamePhase: "game-over",
+        isGameOver: true,
+      });
+    }
   };
 
   const computedAmIHost = computed(() => {
