@@ -1,0 +1,27 @@
+include ../../shared/pug/_variables.pug
+- const name = "Celebrity Baby Names"
+- const desc = "Can you match these ridiculous celebrity baby names to their famous parents?"
+
+doctype html
+html(lang="en")
+  head
+    include ../../shared/pug/_meta.pug
+
+    // Fonts & CSS
+    link(rel="preconnect" href="https://fonts.gstatic.com")
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet")
+    link(href="/baby-names.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+
+    // OpenGraph
+    meta(property="og:title" content=name)
+    meta(property="og:type" content="website")
+    meta(property="og:image:width" content="1200")
+    meta(property="og:image:height" content="630")
+    meta(property="og:description" content=desc)
+    meta(property="og:url" content=baseUrl +"/baby-names")
+    meta(property="og:image" content=baseUrl +"/img/og-baby-names.png")
+    meta(property="og:email" content=email) 
+
+  body
+    #app
+    script(type="module" src="/src/entries/baby-names.js")

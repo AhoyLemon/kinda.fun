@@ -49,6 +49,7 @@ export default defineConfig(({ mode }) => {
     build: {
       rollupOptions: {
         input: {
+          "baby-names": resolve(__dirname, "src/entries/baby-names.js"),
           cameo: resolve(__dirname, "src/entries/cameo.js"),
           guillotine: resolve(__dirname, "src/entries/guillotine.js"),
           invalid: resolve(__dirname, "src/entries/invalid.js"),
@@ -71,7 +72,7 @@ export default defineConfig(({ mode }) => {
       setupMiddlewares(middlewares) {
         middlewares.use((req, res, next) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
-          const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home"];
+          const mpaPages = ["baby-names", "cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home"];
           const url = req.url.split("?")[0];
           // If the URL is exactly "/", rewrite to /home.html
           if (url === "/") {

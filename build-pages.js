@@ -15,6 +15,11 @@ fs.mkdirSync(path.join(__dirname, "dist"), { recursive: true });
 
 const pages = [
   {
+    src: path.join(__dirname, "src", "views", "baby-names", "Page.pug"),
+    out: path.join(__dirname, "dist", "baby-names.html"),
+    name: "baby-names.html",
+  },
+  {
     src: path.join(__dirname, "src", "views", "cameo", "Page.pug"),
     out: path.join(__dirname, "dist", "cameo.html"),
     name: "cameo.html",

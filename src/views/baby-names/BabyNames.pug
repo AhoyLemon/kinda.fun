@@ -1,0 +1,113 @@
+#app.baby-names-game
+  // Title Screen
+  .title-screen(v-if="game.phase === 'title'")
+    .title-container
+      h1.game-title Celebrity Baby Names
+      p.game-description Can you match these ridiculous celebrity baby names to their famous parents?
+      
+      .difficulty-section
+        .difficulty-info(v-if="!ui.showDifficultySelector")
+          p Current Difficulty: 
+            strong.difficulty-label {{ difficultyLabel }}
+          p {{ difficultySettings[game.difficulty].description }}
+          button.btn.btn-secondary(@click="showDifficultySelector") Change Difficulty
+        
+        .difficulty-selector(v-if="ui.showDifficultySelector")
+          h3 Choose Your Difficulty:
+          .difficulty-options
+            .difficulty-option(
+              v-for="(settings, key) in difficultySettings"
+              :key="key"
+              @click="selectDifficulty(key)"
+              :class="{ active: game.difficulty === key }"
+            )
+              h4 {{ settings.label }}
+              p {{ settings.description }}
+              small Points multiplier: {{ settings.multiplier }}x
+      
+      button.btn.btn-primary.start-button(@click="startGame") Start Game
+
+  // Game Screen
+  .game-screen(v-if="game.phase === 'playing' || game.phase === 'question' || game.phase === 'answer'")
+    .game-header
+      .score Score: {{ addCommas(game.score) }}
+      .progress-container
+        .progress-bar
+          .progress-fill(:style="{ width: progressPercentage + '%' }")
+        .progress-text {{ game.questionsAnswered }} / {{ gameSettings.questionsPerGame }}
+      .timer(:class="{ warning: game.timeLeft <= 5 }")
+        | ⏰ {{ game.timeLeft }}s
+
+    .question-container(v-if="game.phase === 'question' || game.phase === 'answer'")
+      .question-header
+        h2.baby-name "{{ currentQuestion.babyName }}"
+        p.question-text Who are the parents of this uniquely named child?
+        .difficulty-badge(:class="currentQuestion.difficulty") {{ difficultySettings[currentQuestion.difficulty].label }}
+
+      .options-container
+        .option(
+          v-for="(option, index) in currentQuestion.options"
+          :key="index"
+          @click="selectAnswer(option)"
+          :class="{ selected: currentQuestion.selectedAnswer === option, correct: ui.showAnswer && option === currentQuestion.correctAnswer, wrong: ui.showAnswer && currentQuestion.selectedAnswer === option && !currentQuestion.isCorrect, disabled: ui.answersLocked }"
+        )
+          | {{ option }}
+
+      .answer-section(v-if="ui.showAnswer")
+        .feedback(:class="ui.feedbackClass")
+          h3 {{ ui.feedback }}
+          
+        .correct-answer(v-if="!currentQuestion.isCorrect")
+          p 
+            strong Correct Answer: 
+            | {{ currentQuestion.correctAnswer }}
+          
+        .explanation
+          p 
+            strong Fun Fact: 
+            | {{ currentQuestion.explanation }}
+            
+        button.btn.btn-primary.next-button(
+          v-if="ui.showNextButton"
+          @click="continueGame"
+        ) 
+          | {{ game.currentQuestionIndex + 1 >= gameSettings.questionsPerGame ? 'See Results' : 'Next Question' }}
+
+  // Game Over Screen
+  .game-over-screen(v-if="game.phase === 'game-over'")
+    .results-container
+      h1.results-title Game Over!
+      
+      .final-score
+        h2 Final Score: {{ addCommas(finalScore) }}
+        
+      .stats-grid
+        .stat-item
+          .stat-number {{ game.correctAnswers }}
+          .stat-label Correct
+          
+        .stat-item
+          .stat-number {{ game.questionsAnswered - game.correctAnswers }}
+          .stat-label Wrong
+          
+        .stat-item
+          .stat-number {{ accuracy }}%
+          .stat-label Accuracy
+          
+        .stat-item
+          .stat-number {{ difficultyLabel }}
+          .stat-label Difficulty
+
+      .performance-message
+        p(v-if="accuracy >= 90") 
+          | 🌟 Amazing! You're a celebrity baby name expert!
+        p(v-else-if="accuracy >= 70") 
+          | 👏 Great job! You know your celebrity gossip!
+        p(v-else-if="accuracy >= 50") 
+          | 👍 Not bad! You got some tricky ones right!
+        p(v-else) 
+          | 🤔 These names are pretty ridiculous, aren't they?
+
+      .action-buttons
+        button.btn.btn-primary(@click="restartGame") Play Again
+        button.btn.btn-secondary(@click="showDifficultySelector") Change Difficulty
