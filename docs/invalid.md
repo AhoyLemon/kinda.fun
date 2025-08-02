@@ -2,9 +2,13 @@
 
 ## The Premise
 
-Invalid! is a trivia game about making things difficult for other people. It can accept any number of players, but it's probably best with 4-10.
+Invalid! is a trivia game about making things difficult for other people. It can accept 2 or more players, but it's best with 3–6.
 
 ## How to Play
+
+### Video Explanation
+
+[![Watch the video explanation](https://img.youtube.com/vi/uhA83jtHmzM/0.jpg)](https://www.youtube.com/watch?v=uhA83jtHmzM)
 
 Each round will have one SysAdmin, and everyone else is an employee. The only thing the employees want to do is successfully create a password. If they can successfully create a password, they've succeeded in the round. It's the goal of the SysAdmin to make that as difficult as possible.
 
@@ -36,6 +40,8 @@ If a player accidentally cracks their own password, they are punished.
 
 ## SysAdmin Powers
 
+Each time you become SysAdmin, you are given a set amount of ƒ (Rulebux) to spend on powers and bugs. The first bug you add is free; each additional bug costs 1 ƒ.
+
 | Power           | Cost (ƒ) | Description                                                                 |
 | --------------- | -------- | --------------------------------------------------------------------------- |
 | Demand A Letter | 5ƒ       | Password must use letter of SysAdmin's choosing                             |
@@ -46,6 +52,7 @@ If a player accidentally cracks their own password, they are punished.
 | Set A Minimum   | 2ƒ       | Minimum Characters are enforced (average character count -1)                |
 | Limit Vowels    | 1ƒ       | Maximum Vowel use is enforced (average vowel count + 1)                     |
 | Ban A Combo     | 1ƒ       | Employees cannot use two letters of the SysAdmin's choosing in the password |
+| Add Bug         | 1ƒ       | Add a bug to the system (first bug is free)                                 |
 
 ## Timers
 
@@ -59,15 +66,15 @@ If a player accidentally cracks their own password, they are punished.
 
 ## Round Count
 
-| Players   | Rounds   |
-| --------- | -------- |
-| 2 players | 6 rounds |
-| 3 players | 6 rounds |
-| 4 players | 8 rounds |
-| 5 players | 5 rounds |
-| 6 players | 6 rounds |
-| 7 players | 7 rounds |
-| 8 players | 8 rounds |
+| Players    | Rounds             |
+| ---------- | ------------------ |
+| 2 players  | 6 rounds           |
+| 3 players  | 6 rounds           |
+| 4 players  | 8 rounds           |
+| 5 players  | 5 rounds           |
+| 6+ players | 1 round per player |
+
+|
 
 ## Game Phases
 

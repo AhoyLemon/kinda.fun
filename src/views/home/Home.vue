@@ -19,6 +19,18 @@
   const currentFilter = ref("");
   const isListRandomized = ref(false);
   const thingData = {
+    invalid: {
+      name: "Invalid",
+      slug: "invalid",
+      logo: "invalid.svg",
+      slogan: "A trivia game of unnecessary suffering.",
+      description: `<p>This is a multiplayer competitive triva game <strong>(best with 3-7 players)</strong> that involves all players taking on one of two roles.</p>
+        <p><strong>Employees</strong> are trying to use their wits and trivia knowledge to come up with a password. But the <strong>SysAdmin</strong> is trying to make everyone's life difficult.</p>`,
+      url: `${baseURL}/invalid`,
+      buttonText: "",
+      isMultiplayer: true,
+      tags: ["game", "multiplayer", "trivia", "guess"],
+    },
     cameo: {
       name: "Comparatively Famous",
       slug: "cameo",
