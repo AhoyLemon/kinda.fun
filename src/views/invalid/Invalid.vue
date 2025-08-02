@@ -1834,7 +1834,16 @@
     if (urlParams.has("create")) {
       createRoom();
     } else if (urlParams.has("room")) {
-      joinRoom();
+      // Instead of automatically joining, pre-fill the room code and show title screen
+      const roomCode = urlParams.get("room");
+      ui.roomCodeInput = roomCode ? roomCode.toUpperCase() : "";
+      // Focus the submit button so user can easily join
+      nextTick(() => {
+        const submitButton = document.getElementById("SubmitRoomCodeButton");
+        if (submitButton) {
+          submitButton.focus();
+        }
+      });
     } else if (urlParams.has("join")) {
       document.getElementById("EnterRoomCode").focus();
     }
