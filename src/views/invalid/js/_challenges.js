@@ -3992,29 +3992,20 @@ export const challenges = [
       "FREISA",
       "BRACHETTO",
       "BRUNELLO",
-      "CHIANTI",
       "CORVINA",
       "RONDINELLA",
-      "BARBERA",
       "GRIGNOLINO",
       "PELAVERGA",
       "CILIEGIOLO",
       "COLORINO",
       "CANAIOLO",
 
-      // German varietals
+      // German/Austrian varietals
       "GRÜNER VELTLINER",
       "MÜLLER-THURGAU",
       "SILVANER",
       "KERNER",
       "SCHEUREBE",
-      "RIESLING",
-      "GEWÜRZTRAMINER",
-      "PINOT BLANC",
-      "PINOT GRIS",
-
-      // Austrian varietals
-      "GRÜNER VELTLINER",
       "ZWEIGELT",
       "BLAUFRÄNKISCH",
       "ST. LAURENT",
@@ -4022,33 +4013,15 @@ export const challenges = [
       // Loire varietals
       "MUSCADET",
       "MELON DE BOURGOGNE",
-      "CABERNET FRANC",
-      "CHENIN BLANC",
-      "SAUVIGNON BLANC",
-
-      // Rhône varietals
-      "VIOGNIER",
-      "MARSANNE",
-      "ROUSSANNE",
-      "SYRAH",
-      "GRENACHE",
-      "MOURVÈDRE",
-      "CINSAUT",
-
-      // Burgundy varietals
-      "CHARDONNAY",
-      "PINOT NOIR",
       "ALIGOTÉ",
       "GAMAY",
 
+      // Rhône varietals
+      "MARSANNE",
+      "ROUSSANNE",
+      "CINSAUT",
+
       // Bordeaux varietals
-      "CABERNET SAUVIGNON",
-      "MERLOT",
-      "CABERNET FRANC",
-      "PETIT VERDOT",
-      "MALBEC",
-      "SAUVIGNON BLANC",
-      "SÉMILLON",
       "MUSCADELLE",
 
       // Portuguese varietals
