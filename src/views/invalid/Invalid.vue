@@ -261,6 +261,12 @@
 
     // Update player roles based on sysAdminIndex
     if (data.sysAdminIndex !== undefined && game.players.length > 0) {
+      console.log("Updating player roles. sysAdminIndex:", data.sysAdminIndex);
+      console.log(
+        "Players before role update:",
+        game.players.map((p) => ({ name: p.name, role: p.role, playerID: p.playerID })),
+      );
+
       game.players.forEach((player, index) => {
         if (index === data.sysAdminIndex) {
           player.role = "SysAdmin";
@@ -269,11 +275,17 @@
         }
       });
 
+      console.log(
+        "Players after role update:",
+        game.players.map((p) => ({ name: p.name, role: p.role, playerID: p.playerID })),
+      );
+
       // Update my role
       const myIndex = game.players.findIndex((player) => player.playerID === my.playerID);
       if (myIndex !== -1) {
         my.role = game.players[myIndex].role;
         my.playerIndex = myIndex;
+        console.log("My role updated to:", my.role, "at index:", myIndex);
       }
     }
 
@@ -465,7 +477,20 @@
   };
 
   const savePlayerInfo = async () => {
-    my.name = ui.nameInput.toUpperCase();
+    // Normalize the name input - handle emojis properly
+    let normalizedName = ui.nameInput.trim();
+
+    // Only convert to uppercase if the string doesn't contain emojis
+    // This prevents emoji corruption from toUpperCase()
+    const hasEmoji = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u.test(
+      normalizedName,
+    );
+
+    if (!hasEmoji) {
+      normalizedName = normalizedName.toUpperCase();
+    }
+
+    my.name = normalizedName;
     ui.appliedForJob = true;
 
     localStorage.setItem("kindaFunPlayerName", my.name);
@@ -1611,14 +1636,46 @@
   // COMPUTED PROPERTIES
 
   const computedSysAdminName = computed(() => {
+    // Debug logging to track down the emoji issue
+    console.log("computedSysAdminName debug:", {
+      playersCount: game.players?.length || 0,
+      sysAdminIndex: round.sysAdminIndex,
+      players: game.players?.map((p) => ({ name: p.name, role: p.role, playerID: p.playerID })) || [],
+    });
+
     if (game.players && game.players.length > 0 && round.sysAdminIndex > -1) {
-      return game.players[round.sysAdminIndex].name;
-    } else {
-      return null;
+      const adminPlayer = game.players[round.sysAdminIndex];
+      console.log("adminPlayer at index", round.sysAdminIndex, ":", adminPlayer);
+
+      if (adminPlayer && adminPlayer.name) {
+        console.log("Returning admin name:", adminPlayer.name);
+        return adminPlayer.name;
+      }
     }
+
+    // Fallback: find any player with SysAdmin role
+    if (game.players && game.players.length > 0) {
+      const adminPlayer = game.players.find((player) => player.role === "SysAdmin");
+      console.log("Fallback admin player:", adminPlayer);
+
+      if (adminPlayer && adminPlayer.name) {
+        console.log("Returning fallback admin name:", adminPlayer.name);
+        return adminPlayer.name;
+      }
+    }
+
+    console.log("No admin found, returning default");
+    return "System Administrator";
   });
   const computedSysAdminIndex = computed(() => {
     return round.sysAdminIndex;
+  });
+
+  const hasEmojiInName = computed(() => {
+    if (!ui.nameInput) return false;
+    return /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u.test(
+      ui.nameInput,
+    );
   });
 
   const computedShibbolethRequired = computed(() => {
