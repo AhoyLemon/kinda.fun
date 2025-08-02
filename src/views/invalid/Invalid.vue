@@ -1558,6 +1558,22 @@
       attempts: [...(round.attempts || []), attemptRecord],
     });
 
+    try {
+      const passwordStatsRef = doc(db, `stats/invalid/passwords/${attempt}`);
+      await updateDoc(passwordStatsRef, {
+        timesCreated: increment(1),
+        lastCreated: serverTimestamp(),
+      }).catch(async () => {
+        await setDoc(passwordStatsRef, {
+          name: attempt,
+          timesCreated: 1,
+          lastCreated: serverTimestamp(),
+        });
+      });
+    } catch (err) {
+      console.error("Error updating password attempt stats:", err);
+    }
+
     if (shouldEndRound) {
       // Stop the timer immediately to prevent further score changes
       resetRoundTimer();
