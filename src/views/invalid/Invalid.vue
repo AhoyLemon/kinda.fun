@@ -221,7 +221,8 @@
 
             // If round summary was updated and we're a SysAdmin in choose rules phase,
             // update possible challenges to exclude newly completed rounds
-            if (data.roundSummary.length > previousRoundSummaryLength && my.role === "SysAdmin" && round.phase === "choose rules") {
+            const currentGamePhase = data.gamePhase ? convertPhaseToTemplate(data.gamePhase) : null;
+            if (data.roundSummary.length > previousRoundSummaryLength && my.role === "SysAdmin" && currentGamePhase === "choose rules") {
               definePossibleChallenges();
             }
           }
