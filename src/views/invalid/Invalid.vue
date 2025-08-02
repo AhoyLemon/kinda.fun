@@ -81,6 +81,26 @@
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
+  // UTILITY FUNCTIONS
+
+  // Convert Firestore phase names (with dashes) to template phase names (with spaces)
+  const convertPhaseToTemplate = (firestorePhase) => {
+    switch (firestorePhase) {
+      case "choose-rules":
+        return "choose rules";
+      case "create-password":
+        return "create password";
+      case "final-round":
+        return "FINAL ROUND";
+      case "game-over":
+        return "GAME OVER";
+      default:
+        return firestorePhase;
+    }
+  };
+
+  /////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////
   // FIREBASE & FIRESTORE
 
   // Initialize Firestore
@@ -133,23 +153,7 @@
           const gamePhase = data.gamePhase;
           if (gamePhase) {
             // Convert Firestore phase to template phase for comparison
-            let templatePhase = gamePhase;
-            switch (gamePhase) {
-              case "choose-rules":
-                templatePhase = "choose rules";
-                break;
-              case "create-password":
-                templatePhase = "create password";
-                break;
-              case "final-round":
-                templatePhase = "FINAL ROUND";
-                break;
-              case "game-over":
-                templatePhase = "GAME OVER";
-                break;
-              default:
-                templatePhase = gamePhase;
-            }
+            const templatePhase = convertPhaseToTemplate(gamePhase);
 
             // Only handle phase change if the phase actually changed
             // Special case: "add bugs" is a local sub-phase of "choose rules"
@@ -251,23 +255,7 @@
     const previousPhase = round.phase;
 
     // Convert Firestore phase names (with dashes) to template phase names (with spaces)
-    let templatePhase = newPhase;
-    switch (newPhase) {
-      case "choose-rules":
-        templatePhase = "choose rules";
-        break;
-      case "create-password":
-        templatePhase = "create password";
-        break;
-      case "final-round":
-        templatePhase = "FINAL ROUND";
-        break;
-      case "game-over":
-        templatePhase = "GAME OVER";
-        break;
-      default:
-        templatePhase = newPhase;
-    }
+    const templatePhase = convertPhaseToTemplate(newPhase);
 
     round.phase = templatePhase;
 
