@@ -673,56 +673,23 @@
     my.rulebux -= cost;
     try {
       const ruleStatsRef = doc(db, `stats/invalid/rules/${name}`);
+      const now = serverTimestamp();
       await updateDoc(ruleStatsRef, {
-        lastPlayed: serverTimestamp(),
+        name: name,
+        cost: cost,
+        lastUsed: now,
         count: increment(1),
       }).catch(async () => {
         // If doc doesn't exist, create it
         await setDoc(ruleStatsRef, {
           name: name,
           cost: cost,
-          lastPlayed: serverTimestamp(),
+          lastUsed: now,
           count: 1,
         });
       });
     } catch (err) {
       console.error(`Error updating rule stats for ${name}:`, err);
-    }
-  };
-
-  const logABug = async (name, action) => {
-    try {
-      const bugStatsRef = doc(db, `stats/invalid/bugs/${name}`);
-
-      if (action == "add") {
-        await updateDoc(bugStatsRef, {
-          lastCreated: serverTimestamp(),
-          timesCreated: increment(1),
-        }).catch(async () => {
-          // If doc doesn't exist, create it
-          await setDoc(bugStatsRef, {
-            name: name,
-            lastCreated: serverTimestamp(),
-            timesCreated: 1,
-          });
-        });
-      }
-
-      if (action == "crashed") {
-        await updateDoc(bugStatsRef, {
-          lastCrashed: serverTimestamp(),
-          timesCrashed: increment(1),
-        }).catch(async () => {
-          // If doc doesn't exist, create it
-          await setDoc(bugStatsRef, {
-            name: name,
-            lastCrashed: serverTimestamp(),
-            timesCrashed: 1,
-          });
-        });
-      }
-    } catch (err) {
-      console.error(`Error updating bug stats for ${name}:`, err);
     }
   };
 
@@ -831,14 +798,15 @@
     try {
       const challengeName = round.challenge.name;
       const challengeStatsRef = doc(db, `stats/invalid/challenges/${challengeName}`);
+      const challengeStatsSnap = await getDoc(challengeStatsRef);
       await updateDoc(challengeStatsRef, {
-        count: increment(1),
-        lastPlayed: serverTimestamp(),
+        timesChosen: increment(1),
+        lastChosen: serverTimestamp(),
       }).catch(async () => {
         await setDoc(challengeStatsRef, {
           name: challengeName,
-          count: 1,
-          lastPlayed: serverTimestamp(),
+          timesChosen: 1,
+          lastChosen: serverTimestamp(),
         });
       });
     } catch (err) {
@@ -1051,12 +1019,10 @@
 
     if (!foundMatch) {
       ui.addBugErrors.push("Just so you know, " + bug + " wasn't a valid password");
-      toast.error(`FYI: ${bug} is not a valid password for this challenge.`);
     }
 
     if (findInArray(round.bugs, bug)) {
       ui.addBugErrors.push("You already added " + bug + ".");
-      toast.info(`It's weird that you added ${bug} twice, but you're the admin, I guess.`);
     }
 
     // Charge for adding the bug.
@@ -1069,7 +1035,6 @@
     await updateRoomState({
       currentBugs: round.bugs,
     });
-    await logABug(bug, "add");
 
     sendEvent("Invalid", "Add Bug", bug);
   };
@@ -1407,7 +1372,6 @@
         crashSummary: newCrashSummary,
         attempts: [...(round.attempts || []), attemptRecord],
       });
-      await logABug(attempt, "crashed");
 
       my.crashesCaused += 1;
       sendEvent("Invalid", "Server Crashed", attempt);
