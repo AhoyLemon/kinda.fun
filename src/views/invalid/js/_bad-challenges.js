@@ -403,9 +403,9 @@ export const badChallenges = [
   // Ridiculous Celebrity Baby Names | 66
   {
     id: 66,
-    name: "Celebrity Baby Names",
-    nameAsRule: "Your password must be a dumb name that a celebrity has named their child",
-    failedMessage: "[PASS] is not a a ridiculous enough baby name.",
+    name: "Celebrity Babies",
+    nameAsRule: "Your password must be an absurd name that a celebrity has named their child",
+    failedMessage: "Either [PASS] is not ridiculous enough, or their parent is not famous enough.",
     possible: [
       "BLUE IVY", // Beyoncé & Jay-Z
       "PILOT INSPEKTOR", // Jason Lee & Beth Riesgraf
