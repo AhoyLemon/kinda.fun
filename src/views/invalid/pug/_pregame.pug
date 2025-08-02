@@ -46,7 +46,8 @@
             span(v-if="!ui.appliedForJob") Apply For Job
             span(v-if="ui.appliedForJob") Update Resume
 
-        fieldset.checkbox(v-if="computedAmIHost && ui.appliedForJob")
+        // Right now there are no "naughty challenges", so we'll disable this bit.
+        //-fieldset.checkbox(v-if="computedAmIHost && ui.appliedForJob")
           input(v-model="game.allowNaughty" type="checkbox" id="AllowNaughtyChallenges")
           label(for="AllowNaughtyChallenges" title="Checking this will allow profane and/or sexual challenges, passwords and options to be available") Allow naughty things.
             
