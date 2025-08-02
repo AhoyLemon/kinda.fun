@@ -71,10 +71,13 @@
       {
         "source": "/",
         "destination": "/index.html"
-      },
+      }
+    ],
+    "redirects": [
       {
         "source": "**",
-        "destination": "/index.html"
+        "destination": "/404.html",
+        "type": 404
       }
     ]
   },
