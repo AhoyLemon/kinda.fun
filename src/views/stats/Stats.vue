@@ -145,6 +145,12 @@
     if (game == "general") {
       try {
         const { doc, getDoc } = await import("firebase/firestore");
+
+        const generalsSnap = await getDoc(doc(firestoreDb, "stats", "general"));
+        if (generalsSnap.exists()) {
+          const generalsData = generalsSnap.data();
+          stats.general.lastCloned = generalsData.lastCloned || null;
+        }
         // Cameo
         const cameoSnap = await getDoc(doc(firestoreDb, "stats", "cameo"));
         if (cameoSnap.exists()) {

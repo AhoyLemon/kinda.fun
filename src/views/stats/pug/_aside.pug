@@ -51,3 +51,9 @@ aside.general.general-stats(v-if="ui.viewing != 'general'")
     //-   .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.wrongest")
     //-     .time-caption Last Game
     //-     .time-ago(v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')")
+
+
+    aside.last-cloned-holder(v-if="stats?.general?.lastCloned")
+      .last-cloned
+        div Last Clone:  
+        strong(v-text="formatTime(stats.general.lastCloned, 'calendar')")

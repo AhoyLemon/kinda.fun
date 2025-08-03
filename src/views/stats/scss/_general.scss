@@ -104,6 +104,17 @@ main.general-stats {
       }
     }
   }
+
+  .last-cloned-holder {
+    text-align: center;
+    padding-top: 4em;
+    .last-cloned {
+      padding: 1em;
+      background-color: $white;
+      color: $black;
+      display: inline-flex;
+    }
+  }
 }
 
 aside.general-stats {
@@ -118,6 +129,7 @@ aside.general-stats {
     gap: 2rem;
     position: sticky;
     top: 5px;
+    padding-bottom: 3rem;
   }
   .summary {
     figure {

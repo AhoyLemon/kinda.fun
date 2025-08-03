@@ -18,6 +18,7 @@
 
   const currentFilter = ref("");
   const isListRandomized = ref(false);
+
   const thingData = {
     invalid: {
       name: "Invalid",
