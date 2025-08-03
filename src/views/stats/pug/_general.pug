@@ -26,6 +26,15 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
       .summary
         figure
+          img(src="/svg/games/invalid.svg" @click="getData('invalid')")
+        .last-played(v-if="stats.general && stats.general.invalidLastPlayed")
+          .time-ago(v-text="formatTime(stats.general.invalidLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.invalidLastPlayed,'calendar')")
+        .button-holder 
+          button(@click="getData('invalid')") Details
+
+      .summary
+        figure
           img(src="/svg/games/thismeetinghaspoints.svg" @click="getData('meeting')")
         .last-played(v-if="stats.general && stats.general.meetingLastPlayed")
           //.time-caption Last Game
@@ -55,25 +64,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
           button(@click="getData('sisyphus')") Details
       
 
-      .summary
-        figure
-          img(src="/svg/games/invalid.svg" @click="getData('invalid')")
-        .last-played(v-if="stats.general && stats.general.invalidLastPlayed")
-          .time-caption Last Game
-          .time-ago(v-text="formatTime(stats.general.invalidLastPlayed,'fromNow')")
-          .calendar(v-text="formatTime(stats.general.invalidLastPlayed,'calendar')")
-        .button-holder 
-          button(@click="getData('invalid')") Details
-
-      //-.summary(v-if="stats.general && stats.general.lastPlayed && stats.general.wrongest")
-        figure
-          img(src="/svg/games/thewrongestwords.svg" @click="getData('wrongest')")
-        //.last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.wrongest")
-          .time-caption Last Game
-          .time-ago(v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')")
-          .calendar(v-text="formatTime(stats.general.lastPlayed.wrongest,'calendar')")
-        //.button-holder
-          button(@click="getData('wrongest')") Details
+      
 
       .summary(v-if="stats.general && stats.general.lastPlayed")
         figure

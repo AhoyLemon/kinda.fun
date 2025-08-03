@@ -41,6 +41,34 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
         strong(v-text="computedInvalid.mostPopularChallenge.timesChosen")
         span  times
 
+    .box.big-name(v-if="computedInvalid?.mostCreatedPassword")
+      .caption Favorite Password
+      .name {{computedInvalid.mostCreatedPassword.name}}
+      .sub-number
+        span created 
+        strong(v-text="computedInvalid.mostCreatedPassword.timesCreated")
+        span  times
+        span(v-if="computedInvalid.mostCreatedPassword.timesCracked") / cracked 
+        strong(v-text="computedInvalid.mostCreatedPassword.timesCracked")
+
+    .box.big-name(v-if="computedInvalid?.mostCrackedPassword")
+      .caption Most Shared Password
+      .name {{computedInvalid.mostCrackedPassword.name}}
+      .sub-number
+        span cracked 
+        strong(v-text="computedInvalid.mostCrackedPassword.timesCracked")
+        |   (
+        strong(v-text="percentOf(computedInvalid.mostCrackedPassword.timesCreated, computedInvalid.mostCrackedPassword.timesCracked) + '%'")
+        | )
+    
+    .box.big-name(v-if="computedInvalid?.mostUsedRule")
+      .caption Favorite Rule
+      .name {{computedInvalid.mostUsedRule.name}}
+      .sub-number
+        span played   
+        strong(v-text="computedInvalid.mostUsedRule.count")
+        span  times
+
     //- .box.big-number
     //-   .caption Naughty Mode
     //-   .number.percent(v-text="computedNaughtyPercentage + '%'")

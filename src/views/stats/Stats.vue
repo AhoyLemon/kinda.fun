@@ -715,6 +715,9 @@
         mostCommonGameSize: null,
         averageGameSize: null,
         mostRecentSize: null,
+        mostCreatedPassword: null,
+        mostCrackedPassword: null,
+        mostUsedRule: null,
       };
     }
 
@@ -763,12 +766,45 @@
       }, stats.invalid.challenges[0]);
     }
 
+    // 6. Most created password (highest timesCreated)
+    let mostCreatedPassword = null;
+    if (stats.invalid.passwords && stats.invalid.passwords.length) {
+      mostCreatedPassword = stats.invalid.passwords.reduce((max, pwd) => {
+        const created = Number(pwd.timesCreated) || 0;
+        const maxCreated = Number(max.timesCreated) || 0;
+        return created > maxCreated ? pwd : max;
+      }, stats.invalid.passwords[0]);
+    }
+
+    // 7. Most cracked password (highest timesCracked)
+    let mostCrackedPassword = null;
+    if (stats.invalid.passwords && stats.invalid.passwords.length) {
+      mostCrackedPassword = stats.invalid.passwords.reduce((max, pwd) => {
+        const cracked = Number(pwd.timesCracked) || 0;
+        const maxCracked = Number(max.timesCracked) || 0;
+        return cracked > maxCracked ? pwd : max;
+      }, stats.invalid.passwords[0]);
+    }
+
+    // 8. Most used rule (highest count)
+    let mostUsedRule = null;
+    if (stats.invalid.rules && stats.invalid.rules.length) {
+      mostUsedRule = stats.invalid.rules.reduce((max, rule) => {
+        const count = Number(rule.count) || 0;
+        const maxCount = Number(max.count) || 0;
+        return count > maxCount ? rule : max;
+      }, stats.invalid.rules[0]);
+    }
+
     return {
       mostPopularGroupSize,
       averageGameSize,
       mostRecentGroupSize,
       mostDangerousBug,
       mostPopularChallenge,
+      mostCreatedPassword,
+      mostCrackedPassword,
+      mostUsedRule,
     };
   });
 

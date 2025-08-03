@@ -49,10 +49,10 @@ export const columns = {
   // THIS MEETING HAS POINTS
   meetingCards: [
     { label: "Phrase", field: "phrase", tdClass: "font-bold", formatFn: (val) => (val ? `“${val}”` : "") },
-    { label: "Value", field: "pointValue", type: "number" },
     { label: "Played", field: "timesPlayed", type: "number" },
     { label: "Scored", field: "timesScored", type: "number" },
     { label: "Stolen", field: "timesStolen", type: "number" },
+    { label: "Value", field: "pointValue", type: "number" },
   ],
   meetingPlayers: [
     { label: "Name", field: "name", tdClass: "font-bold" },
@@ -90,22 +90,5 @@ export const columns = {
     { label: "Created", field: "timesCreated" },
     { label: "Cracked", field: "timesCracked" },
     { label: "Last", field: "lastCreated", type: "date", formatFn: formatDate },
-  ],
-  playerCounts: [
-    { label: "Game Type", field: "iname" },
-    { label: "Played", field: "icount", type: "number" },
-  ],
-  invalidRules: [
-    { label: "Rule", field: "name" },
-    { label: "x Played", field: "count", type: "number" },
-    { label: "Last Played", field: "lastPlayed", type: "date", formatFn: formatDate },
-  ],
-  wrongestStatements: [
-    { label: "Statement", field: "iname", formatFn: formatStatement },
-    { label: "Total Score", field: "icount", type: "number" },
-  ],
-  decks: [
-    { label: "Deck", field: "iname" },
-    { label: "Played", field: "icount", type: "number" },
   ],
 };
