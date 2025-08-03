@@ -1745,7 +1745,10 @@
           };
 
           updateCrackResults(crackSummary);
-          // sendEvent("Invalid", "Self-pwn", attempt);
+
+          if (computedUnclaimedPasswords.value < 1) {
+            setGameOver();
+          }
         } else {
           // Password is not claimed and belongs to someone else - ready to crack
           pwPlayerIndex = p.playerIndex;
