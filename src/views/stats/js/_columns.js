@@ -1,12 +1,15 @@
 import { billionsOfDollars, addCommas, dollars, formatDate, formatStatement } from "./_functions";
 
 export const columns = {
+  // NO MORE BILLIONAIRES
   guillotineHeads: [
     { label: "Name", field: "name", tdClass: "font-bold" },
     { label: "Worth", field: "netWorth", type: "number", formatFn: billionsOfDollars },
     { label: "x", field: "headCount", type: "number", formatFn: addCommas },
     { label: "Last Removed", field: "lastRemoved", formatFn: formatDate },
   ],
+
+  // COMPARATIVELY FAMOUS
   celebs: [
     { label: "Name", field: "name", tdClass: "font-bold" },
     { label: "Actual Value", field: "actualValue", type: "number", formatFn: dollars },
@@ -19,6 +22,8 @@ export const columns = {
     { label: "Game", field: "name", tdClass: "font-bold" },
     { label: "Played", field: "startedCount", type: "number" },
   ],
+
+  // SISYPHUS CLICKER
   sisyphusCheevos: [
     { label: "Name", field: "name", tdClass: "font-bold" },
     { label: "Points", field: "pointValue", type: "number" },
@@ -31,6 +36,8 @@ export const columns = {
     { label: "Bought", field: "timesBought", type: "number", formatFn: addCommas },
     { label: "Last Purchase", field: "lastPurchased", type: "date", formatFn: formatDate },
   ],
+
+  // PRETEND WORLD
   pretendGuesses: [
     { label: "Celebrity", field: "name", tdClass: "font-bold" },
     { label: "Correct %", field: "correctPercent", type: "number", formatFn: (val) => (val !== undefined && val !== null ? val + "%" : "0%") },
@@ -38,6 +45,8 @@ export const columns = {
     { label: "Close", field: "closeGuessCount", type: "number" },
     { label: "Bad", field: "badGuessCount", type: "number" },
   ],
+
+  // THIS MEETING HAS POINTS
   meetingCards: [
     { label: "Phrase", field: "phrase", tdClass: "font-bold", formatFn: (val) => (val ? `“${val}”` : "") },
     { label: "Value", field: "pointValue", type: "number" },
@@ -55,13 +64,21 @@ export const columns = {
     { label: "Played", field: "timesPlayed", type: "number" },
     { label: "Last Played", field: "lastPlayed", type: "date", formatFn: formatDate },
   ],
-  bugs: [
-    { label: "Bug", field: "iname" },
-    { label: "Deployed", field: "icount", type: "number" },
+
+  // INVALID
+  invalidBugs: [
+    { label: "Bug", field: "name" },
+    { label: "Deployed", field: "timesCreated", type: "number", formatFn: addCommas },
+    { label: "Crashed", field: "timesCrashed", type: "number" },
   ],
-  challenges: [
-    { label: "Challenge", field: "iname" },
-    { label: "Played", field: "icount", type: "number" },
+  invalidChallenges: [
+    { label: "Challenge", field: "name" },
+    { label: "Played", field: "timesChosen", type: "number" },
+  ],
+  invalidGameSizes: [
+    { label: "Players", field: "players", type: "number" },
+    { label: "Games Started", field: "gamesStarted", type: "number" },
+    { label: "Games Finished", field: "gamesFinished", type: "number" },
   ],
   letters: [
     { label: "Letter", field: "letter" },

@@ -55,14 +55,14 @@ main.general-stats(v-if="ui.viewing == 'general'")
           button(@click="getData('sisyphus')") Details
       
 
-      //-.summary
+      .summary
         figure
           img(src="/svg/games/invalid.svg" @click="getData('invalid')")
-        //.last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.invalid")
+        .last-played(v-if="stats.general && stats.general.invalidLastPlayed")
           .time-caption Last Game
-          .time-ago(v-text="formatTime(stats.general.lastPlayed.invalid,'fromNow')")
-          .calendar(v-text="formatTime(stats.general.lastPlayed.invalid,'calendar')")
-        //.button-holder
+          .time-ago(v-text="formatTime(stats.general.invalidLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.invalidLastPlayed,'calendar')")
+        .button-holder 
           button(@click="getData('invalid')") Details
 
       //-.summary(v-if="stats.general && stats.general.lastPlayed && stats.general.wrongest")

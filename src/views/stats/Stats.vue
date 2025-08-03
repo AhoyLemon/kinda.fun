@@ -14,6 +14,7 @@
   import { firebaseConfig } from "../../../firebaseConfig.public";
   import { useFirestore } from "vuefire";
   import { collection, getDocs } from "firebase/firestore";
+  import { challenges } from "../invalid/js/_challenges";
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
@@ -29,10 +30,7 @@
       launched: "2021-02-16",
       dayCount: null,
     },
-    invalid: {
-      launched: "2021-01-27",
-      dayCount: null,
-    },
+
     wrongest: {
       launched: "2020-01-27",
       dayCount: null,
@@ -48,6 +46,10 @@
     meeting: {
       launched: "2025-07-09",
       dayCount: 0,
+    },
+    invalid: {
+      launched: "2025-08-01",
+      dayCount: null,
     },
   });
 
@@ -178,6 +180,14 @@
           stats.general.sisyphusFirstClick = sisyphusData.firstClick || 0;
           stats.general.sisyphusLastPlayed = sisyphusData.lastGameStarted ? convertTimestamp(sisyphusData.lastGameStarted) : null;
         }
+
+        const invalidSnap = await getDoc(doc(firestoreDb, "stats", "invalid"));
+        if (invalidSnap.exists()) {
+          const invalidData = invalidSnap.data();
+          stats.general.invalidGamesStarted = invalidData.gamesStarted || 0;
+          stats.general.invalidLastPlayed = invalidData.lastGameStarted ? convertTimestamp(invalidData.lastGameStarted) : null;
+        }
+
         ui.viewing = "general";
       } catch (e) {
         // fallback: clear fields
@@ -326,6 +336,29 @@
         stats.meeting.jobTitles = [];
         errorOccurred = true;
         console.error("Error loading meeting stats from Firestore:", e);
+      }
+    } else if (game == "invalid") {
+      try {
+        await loadFirestoreStats("invalid", {
+          mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
+          subcollections: {
+            bugs: {},
+            challenges: {},
+            gameSizes: {
+              timestampFields: ["lastGameStarted", "lastGameFinished"],
+            },
+          },
+        });
+        dates.invalid.dayCount = dates.today.diff(dates.invalid.launched, "days");
+        ui.invalidLoaded = true;
+        ui.viewing = "invalid";
+      } catch (e) {
+        if (!stats.invalid) stats.invalid = {};
+        stats.invalid.bugs = [];
+        stats.invalid.challenges = [];
+        stats.invalid.gameSizes = [];
+        errorOccurred = true;
+        console.error("Error loading invalid stats from Firestore:", e);
       }
     }
 
@@ -661,6 +694,69 @@
       moneyLiberated: +moneyLiberated.toFixed(2),
       averageHeadValue,
       totalHeads: totalHeadCount,
+    };
+  });
+
+  const computedInvalid = computed(() => {
+    if (!stats.invalid.gameSizes || !stats.invalid.gameSizes.length) {
+      return {
+        mostCommonGameSize: null,
+        averageGameSize: null,
+        mostRecentSize: null,
+      };
+    }
+
+    // 1. Most popular group size (highest gamesPlayed)
+    const mostPopularGroupSize = stats.invalid.gameSizes.reduce((max, size) => {
+      return (size.gamesPlayed || 0) > (max.gamesPlayed || 0) ? size : max;
+    }, stats.invalid.gameSizes[0]);
+
+    // 2. Average game size (weighted average of players per game)
+    let totalPlayers = 0;
+    let totalGames = 0;
+    stats.invalid.gameSizes.forEach((size) => {
+      const games = Number(size.gamesStarted) || 0;
+      const players = Number(size.players) || 0;
+      totalPlayers += games * players;
+      totalGames += games;
+    });
+    const averageGameSize = totalGames > 0 ? (totalPlayers / totalGames).toFixed(2) : null;
+
+    // 3. Most recent group size (latest lastGameStarted)
+    const mostRecentGroupSize = stats.invalid.gameSizes.reduce((latest, size) => {
+      if (!latest.lastGameStarted) return size;
+      if (!size.lastGameStarted) return latest;
+      return new Date(size.lastGameStarted) > new Date(latest.lastGameStarted) ? size : latest;
+    }, stats.invalid.gameSizes[0]);
+
+    // 4. Most dangerous bug (highest timesCreated + timesCrashed)
+    let mostDangerousBug = null;
+    if (stats.invalid.bugs && stats.invalid.bugs.length) {
+      mostDangerousBug = stats.invalid.bugs.reduce((max, bug) => {
+        const created = Number(bug.timesCreated) || 0;
+        const crashed = Number(bug.timesCrashed) || 0;
+        const maxCreated = Number(max.timesCreated) || 0;
+        const maxCrashed = Number(max.timesCrashed) || 0;
+        return created + crashed > maxCreated + maxCrashed ? bug : max;
+      }, stats.invalid.bugs[0]);
+    }
+
+    // 5. Most popular challenge (highest timesChosen)
+    let mostPopularChallenge = null;
+    if (stats.invalid.challenges && stats.invalid.challenges.length) {
+      mostPopularChallenge = stats.invalid.challenges.reduce((max, challenge) => {
+        const chosen = Number(challenge.timesChosen) || 0;
+        const maxChosen = Number(max.timesChosen) || 0;
+        return chosen > maxChosen ? challenge : max;
+      }, stats.invalid.challenges[0]);
+    }
+
+    return {
+      mostPopularGroupSize,
+      averageGameSize,
+      mostRecentGroupSize,
+      mostDangerousBug,
+      mostPopularChallenge,
     };
   });
 
