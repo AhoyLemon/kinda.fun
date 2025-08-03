@@ -959,15 +959,54 @@
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue.toUpperCase();
       r.message = "You may not use the letter " + r.inputValue;
+      try {
+        const bannedLetterRef = doc(db, `stats/invalid/letters/${r.inputValue}`);
+        await updateDoc(bannedLetterRef, {
+          timesBanned: increment(1),
+        }).catch(async () => {
+          await setDoc(bannedLetterRef, {
+            letter: r.inputValue,
+            timesBanned: 1,
+          });
+        });
+      } catch (err) {
+        console.error(`Error updating banned letter stats for ${r.inputValue}:`, err);
+      }
     } else if (rule.name == "Demand A Letter") {
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue.toUpperCase();
       r.message = "You must use the letter " + r.inputValue;
+      try {
+        const demandLetterRef = doc(db, `stats/invalid/letters/${r.inputValue}`);
+        await updateDoc(demandLetterRef, {
+          timesDemanded: increment(1),
+        }).catch(async () => {
+          await setDoc(demandLetterRef, {
+            letter: r.inputValue,
+            timesDemanded: 1,
+          });
+        });
+      } catch (err) {
+        console.error(`Error updating demand letter stats for ${r.inputValue}:`, err);
+      }
     } else if (rule.name == "Shibboleth") {
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue;
       r.message = "Before entering a password, you must type " + r.inputValue;
       round.shibboleth = r.inputValue;
+      try {
+        const shibbolethRef = doc(db, `/stats/invalid/rules/Shibboleth/shibboleths/${r.inputValue}`);
+        await updateDoc(shibbolethRef, {
+          count: increment(1),
+        }).catch(async () => {
+          await setDoc(shibbolethRef, {
+            name: r.inputValue,
+            count: 1,
+          });
+        });
+      } catch (err) {
+        console.error(`Error updating demand letter stats for ${r.inputValue}:`, err);
+      }
     } else if (rule.name == "Set A Maximum") {
       r.type = rule.name;
       r.inputValue = round.averageSize + round.maxOffset;
@@ -984,7 +1023,6 @@
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue.toUpperCase();
       r.inputValueTwo = ui.currentRule.inputValueTwo.toUpperCase();
-
       if (r.inputValue == r.inputValueTwo) {
         r.message = "You may only use the letter " + r.inputValue + " once";
       } else {
@@ -1756,6 +1794,13 @@
       score: game.players[crackSummary.attackerIndex].score,
     });
 
+    // Update stats to mark this password as cracked
+    const passwordStatsRef = doc(db, `stats/invalid/passwords/${crackSummary.pw}`);
+    await updateDoc(passwordStatsRef, {
+      timesCracked: increment(1),
+      lastCracked: serverTimestamp(),
+    });
+
     if (crackSummary.attackerIndex !== crackSummary.victimIndex) {
       await updateDoc(victimRef, {
         score: game.players[crackSummary.victimIndex].score,
@@ -1788,13 +1833,12 @@
         gamesFinished: increment(1),
         lastGameFinished: serverTimestamp(),
       });
-
-      // Set game over state
-      await updateRoomState({
-        gamePhase: "game-over",
-        isGameOver: true,
-      });
     }
+    // Set game over state
+    await updateRoomState({
+      gamePhase: "game-over",
+      isGameOver: true,
+    });
   };
 
   const computedAmIHost = computed(() => {
