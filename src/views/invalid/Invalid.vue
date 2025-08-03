@@ -639,14 +639,39 @@
       }
     }
 
-    if (game.players.length == 2) {
+    // Use a variable for player count
+    const playerCount = game.players.length;
+
+    if (playerCount == 2) {
       game.maxRounds = 6;
-    } else if (game.players.length == 3) {
+    } else if (playerCount == 3) {
       game.maxRounds = 6;
-    } else if (game.players.length == 4) {
+    } else if (playerCount == 4) {
       game.maxRounds = 8;
     } else {
-      game.maxRounds = game.players.length;
+      game.maxRounds = playerCount;
+    }
+
+    // Save/update player count stats in /stats/invalid/gameSizes/{playerCount} players
+    try {
+      const docId = `${playerCount} players`;
+      const gameSizeRef = doc(db, `stats/invalid/gameSizes/${docId}`);
+      const gameSizeSnap = await getDoc(gameSizeRef);
+
+      if (gameSizeSnap.exists()) {
+        await updateDoc(gameSizeRef, {
+          gamesStarted: increment(1),
+          lastGameStarted: serverTimestamp(),
+        });
+      } else {
+        await setDoc(gameSizeRef, {
+          players: playerCount,
+          gamesStarted: 1,
+          lastGameStarted: serverTimestamp(),
+        });
+      }
+    } catch (err) {
+      console.error(`Error updating stats/invalid/gameSizes/${playerCount} players:`, err);
     }
 
     // Find the first host as the initial SysAdmin
@@ -933,15 +958,54 @@
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue.toUpperCase();
       r.message = "You may not use the letter " + r.inputValue;
+      try {
+        const bannedLetterRef = doc(db, `stats/invalid/letters/${r.inputValue}`);
+        await updateDoc(bannedLetterRef, {
+          timesBanned: increment(1),
+        }).catch(async () => {
+          await setDoc(bannedLetterRef, {
+            letter: r.inputValue,
+            timesBanned: 1,
+          });
+        });
+      } catch (err) {
+        console.error(`Error updating banned letter stats for ${r.inputValue}:`, err);
+      }
     } else if (rule.name == "Demand A Letter") {
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue.toUpperCase();
       r.message = "You must use the letter " + r.inputValue;
+      try {
+        const demandLetterRef = doc(db, `stats/invalid/letters/${r.inputValue}`);
+        await updateDoc(demandLetterRef, {
+          timesDemanded: increment(1),
+        }).catch(async () => {
+          await setDoc(demandLetterRef, {
+            letter: r.inputValue,
+            timesDemanded: 1,
+          });
+        });
+      } catch (err) {
+        console.error(`Error updating demand letter stats for ${r.inputValue}:`, err);
+      }
     } else if (rule.name == "Shibboleth") {
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue;
       r.message = "Before entering a password, you must type " + r.inputValue;
       round.shibboleth = r.inputValue;
+      try {
+        const shibbolethRef = doc(db, `/stats/invalid/rules/Shibboleth/shibboleths/${r.inputValue}`);
+        await updateDoc(shibbolethRef, {
+          count: increment(1),
+        }).catch(async () => {
+          await setDoc(shibbolethRef, {
+            name: r.inputValue,
+            count: 1,
+          });
+        });
+      } catch (err) {
+        console.error(`Error updating demand letter stats for ${r.inputValue}:`, err);
+      }
     } else if (rule.name == "Set A Maximum") {
       r.type = rule.name;
       r.inputValue = round.averageSize + round.maxOffset;
@@ -958,7 +1022,6 @@
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue.toUpperCase();
       r.inputValueTwo = ui.currentRule.inputValueTwo.toUpperCase();
-
       if (r.inputValue == r.inputValueTwo) {
         r.message = "You may only use the letter " + r.inputValue + " once";
       } else {
@@ -1532,6 +1595,22 @@
       attempts: [...(round.attempts || []), attemptRecord],
     });
 
+    try {
+      const passwordStatsRef = doc(db, `stats/invalid/passwords/${attempt}`);
+      await updateDoc(passwordStatsRef, {
+        timesCreated: increment(1),
+        lastCreated: serverTimestamp(),
+      }).catch(async () => {
+        await setDoc(passwordStatsRef, {
+          name: attempt,
+          timesCreated: 1,
+          lastCreated: serverTimestamp(),
+        });
+      });
+    } catch (err) {
+      console.error("Error updating password attempt stats:", err);
+    }
+
     if (shouldEndRound) {
       // Stop the timer immediately to prevent further score changes
       resetRoundTimer();
@@ -1666,7 +1745,10 @@
           };
 
           updateCrackResults(crackSummary);
-          // sendEvent("Invalid", "Self-pwn", attempt);
+
+          if (computedUnclaimedPasswords.value < 1) {
+            setGameOver();
+          }
         } else {
           // Password is not claimed and belongs to someone else - ready to crack
           pwPlayerIndex = p.playerIndex;
@@ -1714,6 +1796,13 @@
       score: game.players[crackSummary.attackerIndex].score,
     });
 
+    // Update stats to mark this password as cracked
+    const passwordStatsRef = doc(db, `stats/invalid/passwords/${crackSummary.pw}`);
+    await updateDoc(passwordStatsRef, {
+      timesCracked: increment(1),
+      lastCracked: serverTimestamp(),
+    });
+
     if (crackSummary.attackerIndex !== crackSummary.victimIndex) {
       await updateDoc(victimRef, {
         score: game.players[crackSummary.victimIndex].score,
@@ -1740,6 +1829,21 @@
       passwordAttempts: my.passwordAttempts,
     });
 
+    // Only host logs gamesFinished and lastGameFinished
+    if (computedAmIHost.value) {
+      await updateDoc(statsRef, {
+        gamesFinished: increment(1),
+        lastGameFinished: serverTimestamp(),
+      });
+
+      // Update gamesFinished for this player count
+      const docId = `${game.players.length} players`;
+      const gameSizeRef = doc(db, `stats/invalid/gameSizes/${docId}`);
+      await updateDoc(gameSizeRef, {
+        gamesFinished: increment(1),
+        lastGameFinished: serverTimestamp(),
+      });
+    }
     // Set game over state
     await updateRoomState({
       gamePhase: "game-over",
