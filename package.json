@@ -17,7 +17,8 @@
     "serve-heroku": "vite --host 0.0.0.0 --port $PORT preview --mode sandbox",
     "update-billionaires": "node scripts/update-billionaires-2024.js",
     "generate-arrests": "node scripts/generate-arrests.js",
-    "watch:pages": "concurrently -k \"nodemon -w src/views/cameo/Page.pug -x node build-pages.js cameo\" \"nodemon -w src/views/guillotine/Page.pug -x node build-pages.js guillotine\" \"nodemon -w src/views/home/Page.pug -x node build-pages.js index\" \"nodemon -w src/views/invalid/Page.pug -x node build-pages.js invalid\" \"nodemon -w src/views/meeting/Page.pug -x node build-pages.js meeting\" \"nodemon -w src/views/pretend/Page.pug -x node build-pages.js pretend\" \"nodemon -w src/views/sisyphus/Page.pug -x node build-pages.js sisyphus\" \"nodemon -w src/views/wrongest/Page.pug -x node build-pages.js wrongest\" \"nodemon -w src/views/stats/Page.pug -x node build-pages.js stats\""
+    "watch:pages": "concurrently -k \"nodemon -w src/views/cameo/Page.pug -x node build-pages.js cameo\" \"nodemon -w src/views/guillotine/Page.pug -x node build-pages.js guillotine\" \"nodemon -w src/views/home/Page.pug -x node build-pages.js index\" \"nodemon -w src/views/invalid/Page.pug -x node build-pages.js invalid\" \"nodemon -w src/views/meeting/Page.pug -x node build-pages.js meeting\" \"nodemon -w src/views/pretend/Page.pug -x node build-pages.js pretend\" \"nodemon -w src/views/sisyphus/Page.pug -x node build-pages.js sisyphus\" \"nodemon -w src/views/wrongest/Page.pug -x node build-pages.js wrongest\" \"nodemon -w src/views/stats/Page.pug -x node build-pages.js stats\"",
+    "firebase:hydrate": "node scripts/firebase/cloneFirestore.js"
   },
   "dependencies": {
     "firebase": "^10.14.1",
@@ -41,6 +42,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",
     "express": "^4.19.2",
+    "firebase-admin": "^13.4.0",
     "jquery": "^3.7.1",
     "jsdom": "^24.1.0",
     "moment": "^2.30.1",

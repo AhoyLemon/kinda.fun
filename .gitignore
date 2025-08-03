@@ -28,6 +28,7 @@ coverage
 *.tsbuildinfo
 .env.local
 .env.prod
+scripts/firebase
 firebaseConfig.js
 .firebase
 firebase-privatekey.json
