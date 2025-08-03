@@ -80,25 +80,25 @@ export const columns = {
     { label: "Games Started", field: "gamesStarted", type: "number" },
     { label: "Games Finished", field: "gamesFinished", type: "number" },
   ],
-  letters: [
+  invalidLetters: [
     { label: "Letter", field: "letter" },
-    { label: "Banned", field: "banned", type: "number" },
-    { label: "Demanded", field: "demanded", type: "number" },
+    { label: "Demanded", field: "timesDemanded", type: "number" },
+    { label: "Banned", field: "timesBanned", type: "number" },
   ],
-  passwords: [
-    { label: "Password", field: "password" },
-    { label: "Challenge", field: "challenge" },
-    { label: "Used", field: "used", type: "number" },
-    { label: "Cracked", field: "cracked", type: "number" },
-    { label: "Crashed", field: "crashed", type: "number" },
+  invalidPasswords: [
+    { label: "Password", field: "name" },
+    { label: "Created", field: "timesCreated" },
+    { label: "Cracked", field: "timesCracked" },
+    { label: "Last", field: "lastCreated", type: "date", formatFn: formatDate },
   ],
   playerCounts: [
     { label: "Game Type", field: "iname" },
     { label: "Played", field: "icount", type: "number" },
   ],
-  rules: [
-    { label: "Rule", field: "iname" },
-    { label: "Deployed", field: "icount", type: "number" },
+  invalidRules: [
+    { label: "Rule", field: "name" },
+    { label: "x Played", field: "count", type: "number" },
+    { label: "Last Played", field: "lastPlayed", type: "date", formatFn: formatDate },
   ],
   wrongestStatements: [
     { label: "Statement", field: "iname", formatFn: formatStatement },

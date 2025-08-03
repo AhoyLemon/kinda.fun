@@ -343,9 +343,18 @@
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
           subcollections: {
             bugs: {},
-            challenges: {},
+            challenges: {
+              timestampFields: ["lastChosen"],
+            },
             gameSizes: {
               timestampFields: ["lastGameStarted", "lastGameFinished"],
+            },
+            letters: {},
+            passwords: {
+              timestampFields: ["lastCreated", "lastCracked"],
+            },
+            rules: {
+              timestampFields: ["lastPlayed"],
             },
           },
         });
@@ -357,6 +366,9 @@
         stats.invalid.bugs = [];
         stats.invalid.challenges = [];
         stats.invalid.gameSizes = [];
+        stats.invalid.letters = [];
+        stats.invalid.passwords = [];
+        stats.invalid.rules = [];
         errorOccurred = true;
         console.error("Error loading invalid stats from Firestore:", e);
       }

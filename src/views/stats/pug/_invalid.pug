@@ -41,12 +41,6 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
         strong(v-text="computedInvalid.mostPopularChallenge.timesChosen")
         span  times
 
-    //- .box.big-number(v-if="computedAveragePlayerCounts")
-    //-   .caption Avg Player Count
-    //-   .number(v-text="computedAveragePlayerCounts.invalid")
-    //-   .sub-number
-    //-     | most common: 
-    //-     strong(v-text="computedAveragePlayerCounts.invalidMostCommon")
     //- .box.big-number
     //-   .caption Naughty Mode
     //-   .number.percent(v-text="computedNaughtyPercentage + '%'")
@@ -67,23 +61,43 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
 
   .good-tables(v-if="ui.invalidLoaded")
 
-
-    //.good-table.pass-table
+    .good-table.pass-table
       h2 Passwords
       vue-good-table(
         :rows="stats.invalid.passwords"
-        :columns="columns.passwords"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'used', type: 'desc'} }"
+        :columns="columns.invalidPasswords"
+        :sort-options="{ enabled: true, initialSortBy: [ { field: 'timesCreated', type: 'desc'}, {field: 'timesCracked', type: 'desc'} ], }"
         theme="black-rhino"
         styleClass="vgt-table condensed"
         :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        template(v-slot:table-row="props")
+          template(v-if="props.column.field === 'timesCracked'")
+            span(v-if="props.row.timesCracked") {{ addCommas(props.row.timesCracked) }}
+            span(v-else) 0 
+
+    .good-table
+      h2 Letters
+      vue-good-table( 
+        :rows="stats.invalid.letters"
+        :columns="columns.invalidLetters"
+        :sort-options="{ enabled: true, initialSortBy: [ { field: 'timesDemanded', type: 'desc'}, {field: 'timesBanned', type: 'desc'} ], }"
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        template(v-slot:table-row="props")
+          template(v-if="props.column.field === 'timesBanned'")
+            span(v-if="props.row.timesBanned") {{ addCommas(props.row.timesBanned) }}
+            span(v-else) 0
+          template(v-if="props.column.field === 'timesDemanded'")
+            span(v-if="props.row.timesDemanded") {{ addCommas(props.row.timesDemanded) }}
+            span(v-else) 0
 
     .good-table
       h2 Bugs
       vue-good-table(
         :rows="stats.invalid.bugs"
         :columns="columns.invalidBugs"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'timesCreated', type: 'desc'} }"
+        :sort-options="{ enabled: true, initialSortBy: [ { field: 'timesCreated', type: 'desc'}, {field: 'timesCrashed', type: 'desc'} ], }"
         theme="black-rhino"
         styleClass="vgt-table condensed"
         :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
@@ -102,26 +116,15 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
         styleClass="vgt-table condensed"
         :pagination-options="{ enabled: true, perPage: 40, position: 'top', perPageDropdown: [25, 40, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
     
-    //.good-table
+    .good-table
       h2 Rules
       vue-good-table(
         :rows="stats.invalid.rules"
-        :columns="columns.rules"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
+        :columns="columns.invalidRules"
+        :sort-options="{ enabled: true, initialSortBy: {field: 'count', type: 'desc'} }"
         theme="black-rhino"
         styleClass="vgt-table condensed"
         :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-      br
-      br
-      h2 Letters
-      vue-good-table(
-        :rows="stats.invalid.letters"
-        :columns="columns.letters"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'letter', type: 'asc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-
 
     .good-table
       h2 Game Sizes
