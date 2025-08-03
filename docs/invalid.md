@@ -95,3 +95,16 @@ Each time you become SysAdmin, you are given a set amount of ƒ (Rulebux) to spe
 | failed  | Your password attempt failed. It could be that it violated a rule, or it wasn't a match with the list, or someone else got to it first |
 | success | Your password worked and you got points                                                                                                |
 | crash   | This password crashed the server                                                                                                       |
+
+## What stats exist?
+
+| Where                                         | What                                                   |
+| --------------------------------------------- | ------------------------------------------------------ |
+| `/stats/invalid`                              | Games Started & Finished                               |
+| `/stats/invalid/bugs`                         | Bugs created & how many times they crashed the system  |
+| `/stats/invalid/gameSizes`                    | Games Started/Finished by group size                   |
+| `/stats/invalid/challenges`                   | Password challenges played                             |
+| `/stats/invalid/passwords`                    | Passwords created and how many times they were cracked |
+| `/stats/invalid/rules`                        | Rules implemented                                      |
+| `/stats/invalid/letters`                      | Letters that were demanded or banned by a rule         |
+| `/stats/invalid/rules/Shibboleth/shibboleths` | Shibboleths deployed                                   |
