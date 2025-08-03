@@ -652,27 +652,26 @@
       game.maxRounds = playerCount;
     }
 
-    // Save/update player count stats in /stats/invalid, field: players{playerCount}
+    // Save/update player count stats in /stats/invalid/gameSizes/{playerCount} players
     try {
-      const fieldName = `players${playerCount}`;
-      // Try to increment the field, or set to 1 if not present
-      await updateDoc(statsRef, {
-        [fieldName]: increment(1),
-      }).catch(async () => {
-        // If doc doesn't exist or field missing, set to 1
-        const statsSnap = await getDoc(statsRef);
-        if (!statsSnap.exists() || statsSnap.data()[fieldName] === undefined) {
-          await setDoc(
-            statsRef,
-            {
-              [fieldName]: 1,
-            },
-            { merge: true },
-          );
-        }
-      });
+      const docId = `${playerCount} players`;
+      const gameSizeRef = doc(db, `stats/invalid/gameSizes/${docId}`);
+      const gameSizeSnap = await getDoc(gameSizeRef);
+
+      if (gameSizeSnap.exists()) {
+        await updateDoc(gameSizeRef, {
+          gamesStarted: increment(1),
+          lastGameStarted: serverTimestamp(),
+        });
+      } else {
+        await setDoc(gameSizeRef, {
+          players: playerCount,
+          gamesStarted: 1,
+          lastGameStarted: serverTimestamp(),
+        });
+      }
     } catch (err) {
-      console.error(`Error updating stats/invalid field ${fieldName}:`, err);
+      console.error(`Error updating stats/invalid/gameSizes/${playerCount} players:`, err);
     }
 
     // Find the first host as the initial SysAdmin
@@ -1830,6 +1829,14 @@
     // Only host logs gamesFinished and lastGameFinished
     if (computedAmIHost.value) {
       await updateDoc(statsRef, {
+        gamesFinished: increment(1),
+        lastGameFinished: serverTimestamp(),
+      });
+
+      // Update gamesFinished for this player count
+      const docId = `${game.players.length} players`;
+      const gameSizeRef = doc(db, `stats/invalid/gameSizes/${docId}`);
+      await updateDoc(gameSizeRef, {
         gamesFinished: increment(1),
         lastGameFinished: serverTimestamp(),
       });
