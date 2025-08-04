@@ -1,22 +1,16 @@
 $gap: 40px;
 $padding: 20px;
 
-
 // Font shit
-$barlow: 'Barlow', sans-serif;
-$sans-serif: $barlow;
-$fira: 'Fira Code', monospace;
-$monospace: $fira;
-$lora: 'Lora', serif;
-$serif: $lora;
+$serif: "Lora", serif;
+$sans-serif: "Inter", sans-serif;
+$font-family: $serif;
 
 $medium: 300;
 $bold: 600;
 
-
-
 // Colors
-$lime: #2EF429;
+$lime: #2ef429;
 $green: $lime;
 $pink: #e01b91;
 $purple: #791fc7;
@@ -27,8 +21,8 @@ $red: #d41f1f;
 
 $adminOnly: #ffcc00;
 $adminError: $red;
-$adminPanelColor: rgba(1,12,1,1);
-$employeePanelColor: rgba(246,246,256,1);
+$adminPanelColor: rgba(1, 12, 1, 1);
+$employeePanelColor: rgba(246, 246, 256, 1);
 
 $adminActive: $green;
 $adminAccent: #ffcc00;

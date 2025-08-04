@@ -3,13 +3,11 @@
     .not-found-content
       .error-number 404
       .error-message Page Not Found
-      .error-description
-        p The page you're looking for doesn't exist.
-        p Maybe it was moved, deleted, or you entered the wrong URL.
       
       .navigation-options
-        button.btn.btn-primary(@click="goBack") ← Go Back
+        button.btn.btn-primary(@click="goBack") ⬅️ Go Back
         button.btn.btn-secondary(@click="goHome") 🏠 Home
+        button.btn.btn-secondary(@click="visitLemon") 🍋 ahoylemon.xyz
         
       .quick-links
         h3 Or try one of these games:

@@ -4,10 +4,17 @@
 @import "@/shared/scss/globals/mixins";
 @import "@/shared/scss/globals/extends";
 
+$serif: "Lora", serif;
+$sans-serif: "Inter", sans-serif;
+$font-family: $serif;
+
+$accent: #09e9a9;
+
 .NotFoundPage {
+  background: radial-gradient(#353535, #161616);
+  color: #eee;
+  background-attachment: fixed;
   min-height: 100vh;
-  background: $white;
-  color: $copy;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,7 +28,9 @@
 
   .not-found-content {
     .error-number {
-      font-size: 8rem;
+      font-size: clamp(4rem, 15vw, 16rem);
+
+      font-family: $serif;
       font-weight: $bold;
       color: $accent;
       margin-bottom: 0.5rem;
@@ -29,10 +38,13 @@
     }
 
     .error-message {
-      font-size: 2.5rem;
-      font-weight: $bold;
+      font-family: $sans-serif;
       margin-bottom: 2rem;
-      color: $copy;
+      color: $white;
+      text-transform: uppercase;
+      font-size: 1.8rem;
+      font-weight: 300;
+      letter-spacing: 0.5em;
     }
 
     .error-description {
@@ -60,23 +72,18 @@
       cursor: pointer;
       text-decoration: none;
       transition: all 0.2s ease;
+      font-family: $sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      font-weight: 625;
+      text-transform: uppercase;
 
-      &.btn-primary {
-        background-color: $accent;
-        color: $white;
-
-        &:hover {
-          background-color: darken($accent, 10%);
-        }
+      &:hover,
+      &:focus-visible {
+        background-color: lighten($accent, 35%);
       }
-
-      &.btn-secondary {
-        background-color: $copy;
-        color: $white;
-
-        &:hover {
-          background-color: lighten($copy, 10%);
-        }
+      &:active {
+        background-color: darken($accent, 15%);
       }
     }
   }
@@ -85,7 +92,7 @@
     h3 {
       font-size: 1.5rem;
       margin-bottom: 1.5rem;
-      color: $copy;
+      color: $white;
     }
 
     .game-links {
@@ -97,16 +104,20 @@
       .game-link {
         display: inline-block;
         padding: 0.6rem 1.2rem;
-        background-color: lighten($accent, 20%);
-        color: $copy;
+        background-color: $white;
         text-decoration: none;
         border-radius: 0.25rem;
-        font-weight: $medium;
         transition: all 0.2s ease;
-
-        &:hover {
-          background-color: $accent;
-          color: $white;
+        color: $black;
+        font-family: $sans-serif;
+        font-weight: 615;
+        font-size: 0.75rem;
+        &:hover,
+        &:focus-visible {
+          background-color: lighten($accent, 35%);
+        }
+        &:active {
+          background-color: darken($accent, 15%);
         }
       }
     }
