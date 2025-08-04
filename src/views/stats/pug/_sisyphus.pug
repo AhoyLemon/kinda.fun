@@ -40,7 +40,7 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
           strong(v-text="calculateAverage(computedSisyphus.totalPurchases, dates.sisyphus.dayCount)")
           |  per day
     
-    .box.big-number(v-if="computedSisyphus.pushesSpent")
+    .box.big-number(v-if="computedSisyphus?.pushesSpent !== undefined")
       .caption Pushes Spent
       .number(v-text="addCommas(computedSisyphus.pushesSpent)")
       .sub-number
