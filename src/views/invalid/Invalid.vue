@@ -1099,6 +1099,27 @@
       currentBugs: round.bugs,
     });
 
+    // Log bug creation in Firestore
+    try {
+      const bugRef = doc(db, `stats/invalid/bugs/${bug}`);
+      const bugSnap = await getDoc(bugRef);
+      if (bugSnap.exists()) {
+        await updateDoc(bugRef, {
+          timesCreated: increment(1),
+          lastCreated: serverTimestamp(),
+        });
+      } else {
+        await setDoc(bugRef, {
+          name: bug,
+          timesCreated: 1,
+          timesCrashed: 0,
+          lastCreated: serverTimestamp(),
+        });
+      }
+    } catch (err) {
+      console.error(`Error logging bug creation for ${bug}:`, err);
+    }
+
     sendEvent("Invalid", "Add Bug", bug);
   };
 
@@ -1437,6 +1458,27 @@
       });
 
       my.crashesCaused += 1;
+      // Log bug crash in Firestore
+      try {
+        const bugCrashRef = doc(db, `stats/invalid/bugs/${attempt}`);
+        const bugCrashSnap = await getDoc(bugCrashRef);
+        if (bugCrashSnap.exists()) {
+          await updateDoc(bugCrashRef, {
+            timesCrashed: increment(1),
+            lastCrashed: serverTimestamp(),
+          });
+        } else {
+          await setDoc(bugCrashRef, {
+            name: attempt,
+            timesCrashed: 1,
+            lastCrashed: serverTimestamp(),
+            timesCreated: 1,
+          });
+        }
+      } catch (err) {
+        console.error(`Error logging bug crash for ${attempt}:`, err);
+      }
+
       sendEvent("Invalid", "Server Crashed", attempt);
     } else if (correctAnswer) {
       soundCorrectGuess.play();
