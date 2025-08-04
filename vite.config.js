@@ -27,16 +27,7 @@ export default defineConfig(({ mode }) => {
   ]);
 
   return {
-    plugins: [
-      vue(),
-      vueDevTools(),
-      // Sitemap temporarily disabled to fix deployment
-      // Sitemap({
-      //   hostname: "https://kinda.fun",
-      //   readable: true,
-      //   dynamicRoutes: ["/cameo", "/guillotine", "/invalid", "/meeting", "/pretend", "/sisyphus", "/wrongest"],
-      // }),
-    ],
+    plugins: [vue(), vueDevTools()],
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),

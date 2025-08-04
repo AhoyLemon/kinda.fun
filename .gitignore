@@ -26,11 +26,16 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+
+# Firebase Stuff
 .env.local
 .env.prod
 firebaseConfig.js
 .firebase
 firebase-privatekey.json
+scripts/firebase/dev-service-account.json
+scripts/firebase/prod-service-account.json
 
 # Generated HTML files (for dev only)
 /index.html

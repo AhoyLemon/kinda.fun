@@ -1,12 +1,15 @@
 import { billionsOfDollars, addCommas, dollars, formatDate, formatStatement } from "./_functions";
 
 export const columns = {
+  // NO MORE BILLIONAIRES
   guillotineHeads: [
     { label: "Name", field: "name", tdClass: "font-bold" },
     { label: "Worth", field: "netWorth", type: "number", formatFn: billionsOfDollars },
     { label: "x", field: "headCount", type: "number", formatFn: addCommas },
     { label: "Last Removed", field: "lastRemoved", formatFn: formatDate },
   ],
+
+  // COMPARATIVELY FAMOUS
   celebs: [
     { label: "Name", field: "name", tdClass: "font-bold" },
     { label: "Actual Value", field: "actualValue", type: "number", formatFn: dollars },
@@ -19,6 +22,8 @@ export const columns = {
     { label: "Game", field: "name", tdClass: "font-bold" },
     { label: "Played", field: "startedCount", type: "number" },
   ],
+
+  // SISYPHUS CLICKER
   sisyphusCheevos: [
     { label: "Name", field: "name", tdClass: "font-bold" },
     { label: "Points", field: "pointValue", type: "number" },
@@ -31,6 +36,8 @@ export const columns = {
     { label: "Bought", field: "timesBought", type: "number", formatFn: addCommas },
     { label: "Last Purchase", field: "lastPurchased", type: "date", formatFn: formatDate },
   ],
+
+  // PRETEND WORLD
   pretendGuesses: [
     { label: "Celebrity", field: "name", tdClass: "font-bold" },
     { label: "Correct %", field: "correctPercent", type: "number", formatFn: (val) => (val !== undefined && val !== null ? val + "%" : "0%") },
@@ -38,12 +45,14 @@ export const columns = {
     { label: "Close", field: "closeGuessCount", type: "number" },
     { label: "Bad", field: "badGuessCount", type: "number" },
   ],
+
+  // THIS MEETING HAS POINTS
   meetingCards: [
     { label: "Phrase", field: "phrase", tdClass: "font-bold", formatFn: (val) => (val ? `“${val}”` : "") },
-    { label: "Value", field: "pointValue", type: "number" },
     { label: "Played", field: "timesPlayed", type: "number" },
     { label: "Scored", field: "timesScored", type: "number" },
     { label: "Stolen", field: "timesStolen", type: "number" },
+    { label: "Value", field: "pointValue", type: "number" },
   ],
   meetingPlayers: [
     { label: "Name", field: "name", tdClass: "font-bold" },
@@ -55,40 +64,36 @@ export const columns = {
     { label: "Played", field: "timesPlayed", type: "number" },
     { label: "Last Played", field: "lastPlayed", type: "date", formatFn: formatDate },
   ],
-  bugs: [
-    { label: "Bug", field: "iname" },
-    { label: "Deployed", field: "icount", type: "number" },
+
+  // INVALID
+  invalidBugs: [
+    { label: "Bug", field: "name", tdClass: "font-bold" },
+    { label: "Deployed", field: "timesCreated", type: "number", formatFn: addCommas },
+    { label: "Crashed", field: "timesCrashed", type: "number" },
   ],
-  challenges: [
-    { label: "Challenge", field: "iname" },
-    { label: "Played", field: "icount", type: "number" },
+  invalidChallenges: [
+    { label: "Challenge", field: "name", tdClass: "font-bold" },
+    { label: "Played", field: "timesChosen", type: "number" },
   ],
-  letters: [
-    { label: "Letter", field: "letter" },
-    { label: "Banned", field: "banned", type: "number" },
-    { label: "Demanded", field: "demanded", type: "number" },
+  invalidGameSizes: [
+    { label: "Players", field: "players", type: "number" },
+    { label: "Games Started", field: "gamesStarted", type: "number" },
+    { label: "Games Finished", field: "gamesFinished", type: "number" },
   ],
-  passwords: [
-    { label: "Password", field: "password" },
-    { label: "Challenge", field: "challenge" },
-    { label: "Used", field: "used", type: "number" },
-    { label: "Cracked", field: "cracked", type: "number" },
-    { label: "Crashed", field: "crashed", type: "number" },
+  invalidLetters: [
+    { label: "Letter", field: "letter", tdClass: "font-bold" },
+    { label: "Demanded", field: "timesDemanded", type: "number" },
+    { label: "Banned", field: "timesBanned", type: "number" },
   ],
-  playerCounts: [
-    { label: "Game Type", field: "iname" },
-    { label: "Played", field: "icount", type: "number" },
+  invalidPasswords: [
+    { label: "Password", field: "name", tdClass: "font-bold" },
+    { label: "Created", field: "timesCreated" },
+    { label: "Cracked", field: "timesCracked" },
+    { label: "Last", field: "lastCreated", type: "date", formatFn: formatDate },
   ],
-  rules: [
-    { label: "Rule", field: "iname" },
-    { label: "Deployed", field: "icount", type: "number" },
-  ],
-  wrongestStatements: [
-    { label: "Statement", field: "iname", formatFn: formatStatement },
-    { label: "Total Score", field: "icount", type: "number" },
-  ],
-  decks: [
-    { label: "Deck", field: "iname" },
-    { label: "Played", field: "icount", type: "number" },
+  invalidRules: [
+    { label: "Rule", field: "name", tdClass: "font-bold" },
+    { label: "Played", field: "count", type: "number" },
+    { label: "Last Played", field: "lastPlayed", type: "date", formatFn: formatDate },
   ],
 };

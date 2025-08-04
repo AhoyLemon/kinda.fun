@@ -27,42 +27,51 @@ section.famous.stats(v-if="ui.viewing == 'cameo'")
           strong(v-text="percentOf(stats.cameo.gamesStarted, stats.cameo.gamesFinished) + '%'")
           | )
 
-      .box.big-name
-        .caption Most Played Special
-        .name {{computedMostPopularCameoGame.name}}
+      .box.big-number(v-if="computedCameo?.specialGameCount")
+        .caption Special Games
+        .number(v-text="addCommas(computedCameo.specialGameCount)")
+        .sub-number
+          |  (
+          strong(v-text="percentOf(stats.cameo.gamesFinished, computedCameo.specialGameCount) + '%'")
+          |   of total)
+
+
+      .box.big-name(v-if="computedCameo?.mostPopularSpecialGame")
+        .caption Best Special
+        .name {{computedCameo.mostPopularSpecialGame.name}}
         .subtext played 
-          strong(v-text="computedMostPopularCameoGame.startedCount")
+          strong(v-text="computedCameo.mostPopularSpecialGame.startedCount")
           |  times (
-          strong(v-text="computedMostPopularCameoGame.percent")
+          strong(v-text="percentOf(computedCameo.specialGameCount, computedCameo.mostPopularSpecialGame.startedCount)")
           | %)
 
-      //- .box.big-number(v-if="computedCameoPlayerData.averagePoints != 0")
-      //-   .caption Average Player Score
-      //-   .number(v-text="computedCameoPlayerData.averagePoints")
-
-      //- .box.big-number(v-if="computedCameoPlayerData.correctSortPercent > 0")
-      //-   .caption Average Correct Sorts
-      //-   .number.percent(v-text="computedCameoPlayerData.correctSortPercent + '%'")
-
-      .box.big-number
+      .box.big-number(v-if="computedCameo?.averageMarketForces")
         .caption Avg Market Forces
-        .number(v-text="computedAvgMarketForces")
-
-      //- .box.big-number(v-if="computedCameoPlayerData.exceededBudgetPercent > 0")
-      //-   .caption Blew Birthday Budget
-      //-   .number.percent(v-text="computedCameoPlayerData.exceededBudgetPercent + '%'")
+        .number(v-text="dollars(computedCameo.averageMarketForces)")
       
-      //- .box.big-number(v-if="computedCameoPlayerData.averageBirthdayWishes > 0")
-      //-   .caption Average Birthday Wishes
-      //-   .number(v-text="computedCameoPlayerData.averageBirthdayWishes")
       
-      .box.big-name(span="2" v-if="computedMostOvervaluedCeleb && computedMostOvervaluedCeleb.name")
-        .caption Most Overvalued 
-        .name {{computedMostOvervaluedCeleb.name}}
+      .box.big-name(v-if="computedCameo?.mostBirthdays")
+        .caption Birthday Clown
+        .name {{computedCameo.mostBirthdays.name}}
         .subtext
-          | Overvalued by {{dollars(Math.abs(computedMostOvervaluedCeleb.marketForces))}}
+          strong(v-text="computedCameo.mostBirthdays.birthdayWishCount")
+          span  birthday wishes.
       
-      .box.date(v-if="dates.cameo.launched")
+      .box.big-name(v-if="computedCameo?.mostOvervalued")
+        .caption Most Overvalued 
+        .name {{computedCameo.mostOvervalued.name}}
+        .subtext
+          span Overvalued by 
+          strong(v-text="dollars(Math.abs(computedCameo.mostOvervalued.marketForces))")
+      
+      .box.big-name(v-if="computedCameo?.mostUndervalued")
+        .caption Most Undervalued 
+        .name {{computedCameo.mostUndervalued.name}}
+        .subtext
+          span Undervalued by 
+          strong(v-text="dollars(Math.abs(computedCameo.mostUndervalued.marketForces))")
+
+      //-.box.date(v-if="dates.cameo.launched")
         .caption Game Launched
         .time-ago(v-text="formatTime(dates.cameo.launched,'MMM D, YYYY')")
         .calendar(v-text="formatTime(dates.cameo.launched,'fromNow')")
