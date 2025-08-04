@@ -64,14 +64,14 @@
   // Firebase & VueFire Stuff
   import {
     doc,
-    increment,
-    serverTimestamp,
-    Timestamp,
-    addDoc,
     getDoc,
-    getDocs,
     setDoc,
     updateDoc,
+    serverTimestamp,
+    increment,
+    Timestamp,
+    addDoc,
+    getDocs,
     collection,
     query,
     where,
@@ -439,7 +439,7 @@
    * Joins a room using a room code from the URL parameter.
    * Called automatically when the page loads with a ?room= parameter.
    */
-  const joinRoom = () => {
+  const joinRoom = async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get("room");
 
@@ -449,14 +449,14 @@
       return;
     }
 
-    connectToRoom(roomCode);
+    await connectToRoom(roomCode);
   };
 
   /**
    * Joins a room using a room code from form input.
    * Updates the URL and then connects to the room.
    */
-  const joinRoomFromInput = () => {
+  const joinRoomFromInput = async () => {
     if (!ui.roomCodeInput) {
       console.error("No room code provided in input");
       game.isFailedToGetRoomData = true;
@@ -469,14 +469,66 @@
     const newUrl = `${protocol}//${host}/invalid?room=${ui.roomCodeInput}`;
     window.history.replaceState(null, "", newUrl);
 
-    connectToRoom(ui.roomCodeInput);
+    await connectToRoom(ui.roomCodeInput);
+  };
+
+  /**
+   * Check if the current player already exists in the Firebase room
+   * and restore their state if found (for reconnection scenarios).
+   */
+  const checkForExistingPlayer = async (roomCode) => {
+    try {
+      ui.reconnecting = true;
+
+      const playersCollectionRef = collection(db, `rooms/${roomCode}/players`);
+      const playerQuery = query(playersCollectionRef, where("playerID", "==", my.playerID));
+      const querySnapshot = await getDocs(playerQuery);
+
+      if (!querySnapshot.empty) {
+        // Player found in Firebase - restore their state
+        const playerData = querySnapshot.docs[0].data();
+
+        // Restore player state from Firebase
+        // Do NOT restore role from Firebase, recalculate using sysAdminIndex and game.players
+        my.name = playerData.name;
+        my.score = playerData.score || 0;
+        my.rulebux = playerData.rulebux || 0;
+        my.passwordAttempts = playerData.passwordAttempts || 0;
+        my.employeeNumber = playerData.employeeNumber || my.employeeNumber;
+        my.color = playerData.color || "#ff0000";
+        my.isRoomHost = playerData.isHost || false;
+
+        // Recalculate my.role using sysAdminIndex and game.players
+        await nextTick();
+        if (game.players && game.players.length > 0 && typeof round.sysAdminIndex === "number" && round.sysAdminIndex > -1) {
+          const myIndex = game.players.findIndex((player) => player.playerID === my.playerID);
+          if (myIndex !== -1) {
+            my.role = myIndex === round.sysAdminIndex ? "SysAdmin" : "employee";
+            my.playerIndex = myIndex;
+          }
+        }
+
+        // Update UI state to reflect successful reconnection
+        ui.appliedForJob = true;
+        ui.nameInput = my.name;
+
+        console.log(`Reconnected player: ${my.name} (${my.role})`);
+
+        // Show reconnection success toast
+        toast.success(`Reconnected as ${my.name}!`);
+      }
+    } catch (error) {
+      console.error("Error checking for existing player:", error);
+    } finally {
+      ui.reconnecting = false;
+    }
   };
 
   /**
    * Core connection logic for joining a room with a given room code.
    * Sets up Firestore subscriptions for room data and players.
    */
-  const connectToRoom = (roomCode) => {
+  const connectToRoom = async (roomCode) => {
     game.roomCode = roomCode.toUpperCase();
     const roomRef = doc(db, "rooms", game.roomCode);
 
@@ -486,6 +538,9 @@
     // Fetch players
     const playersCollectionRef = collection(db, `rooms/${game.roomCode}/players`);
     game.players = useCollection(playersCollectionRef);
+
+    // Check for existing player and restore state if needed
+    await checkForExistingPlayer(roomCode);
   };
 
   const savePlayerInfo = async () => {
@@ -561,14 +616,62 @@
       }
     });
 
-    if (game.players.length == 2) {
+    // Save/update player stats in /stats/general/players/{playerName}
+    for (const player of game.players) {
+      try {
+        const playerStatsRef = doc(db, `stats/general/players/${player.name}`);
+        const playerStatsSnap = await getDoc(playerStatsRef);
+        if (playerStatsSnap.exists()) {
+          await updateDoc(playerStatsRef, {
+            gamesPlayed: increment(1),
+            lastPlayed: serverTimestamp(),
+          });
+        } else {
+          await setDoc(playerStatsRef, {
+            gamesPlayed: 1,
+            lastPlayed: serverTimestamp(),
+            mostRecentGame: "invalid",
+            name: player.name,
+          });
+        }
+      } catch (err) {
+        console.error(`Error updating stats for player ${player.name}:`, err);
+      }
+    }
+
+    // Use a variable for player count
+    const playerCount = game.players.length;
+
+    if (playerCount == 2) {
       game.maxRounds = 6;
-    } else if (game.players.length == 3) {
+    } else if (playerCount == 3) {
       game.maxRounds = 6;
-    } else if (game.players.length == 4) {
+    } else if (playerCount == 4) {
       game.maxRounds = 8;
     } else {
-      game.maxRounds = game.players.length;
+      game.maxRounds = playerCount;
+    }
+
+    // Save/update player count stats in /stats/invalid/gameSizes/{playerCount} players
+    try {
+      const docId = `${playerCount} players`;
+      const gameSizeRef = doc(db, `stats/invalid/gameSizes/${docId}`);
+      const gameSizeSnap = await getDoc(gameSizeRef);
+
+      if (gameSizeSnap.exists()) {
+        await updateDoc(gameSizeRef, {
+          gamesStarted: increment(1),
+          lastGameStarted: serverTimestamp(),
+        });
+      } else {
+        await setDoc(gameSizeRef, {
+          players: playerCount,
+          gamesStarted: 1,
+          lastGameStarted: serverTimestamp(),
+        });
+      }
+    } catch (err) {
+      console.error(`Error updating stats/invalid/gameSizes/${playerCount} players:`, err);
     }
 
     // Find the first host as the initial SysAdmin
@@ -588,6 +691,31 @@
     });
 
     sendEvent("Invalid", "Game Started", game.roomCode);
+  };
+
+  // Pay for a rule and update rule stats in Firebase
+  const payForRule = async (name, cost) => {
+    my.rulebux -= cost;
+    try {
+      const ruleStatsRef = doc(db, `stats/invalid/rules/${name}`);
+      const now = serverTimestamp();
+      await updateDoc(ruleStatsRef, {
+        name: name,
+        cost: cost,
+        lastUsed: now,
+        count: increment(1),
+      }).catch(async () => {
+        // If doc doesn't exist, create it
+        await setDoc(ruleStatsRef, {
+          name: name,
+          cost: cost,
+          lastUsed: now,
+          count: 1,
+        });
+      });
+    } catch (err) {
+      console.error(`Error updating rule stats for ${name}:`, err);
+    }
   };
 
   /////////////////////////////////////////////////////////
@@ -691,13 +819,32 @@
       gamePhase: "choose-rules",
     });
 
+    // Send challenge stat to Firebase
+    try {
+      const challengeName = round.challenge.name;
+      const challengeStatsRef = doc(db, `stats/invalid/challenges/${challengeName}`);
+      const challengeStatsSnap = await getDoc(challengeStatsRef);
+      await updateDoc(challengeStatsRef, {
+        timesChosen: increment(1),
+        lastChosen: serverTimestamp(),
+      }).catch(async () => {
+        await setDoc(challengeStatsRef, {
+          name: challengeName,
+          timesChosen: 1,
+          lastChosen: serverTimestamp(),
+        });
+      });
+    } catch (err) {
+      console.error("Error updating challenge stats:", err);
+    }
+
     sendEvent("Invalid", "Challenge Selected", round.challenge.name);
   };
 
   const chooseRule = async (rule) => {
     if (rule.name == "Flying Pig") {
       // Special process for summoning a flying pig.
-      my.rulebux -= rule.cost;
+      await payForRule(rule.name, rule.cost);
       round.flyingPig.active = true;
       let r = {
         type: "Flying Pig",
@@ -733,8 +880,7 @@
         },
       );
 
-      // Pay for it.
-      my.rulebux = my.rulebux - rule.cost;
+      await payForRule(rule.name, rule.cost);
 
       let r = {
         type: "Peek At Answers",
@@ -771,10 +917,8 @@
       r.message = r.message.replace("[SIZE+1]", r.inputValue + 1);
       r.message = r.message.replace("[SIZE-1]", r.inputValue - 1);
 
-      // Pay for it.
-      my.rulebux = my.rulebux - rule.cost;
+      await payForRule(rule.name, rule.cost);
       round.rules.push(r);
-      // Recalculate Possible Right Answers.
       findPossibleRightAnswers();
 
       await updateRoomState({
@@ -814,15 +958,54 @@
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue.toUpperCase();
       r.message = "You may not use the letter " + r.inputValue;
+      try {
+        const bannedLetterRef = doc(db, `stats/invalid/letters/${r.inputValue}`);
+        await updateDoc(bannedLetterRef, {
+          timesBanned: increment(1),
+        }).catch(async () => {
+          await setDoc(bannedLetterRef, {
+            letter: r.inputValue,
+            timesBanned: 1,
+          });
+        });
+      } catch (err) {
+        console.error(`Error updating banned letter stats for ${r.inputValue}:`, err);
+      }
     } else if (rule.name == "Demand A Letter") {
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue.toUpperCase();
       r.message = "You must use the letter " + r.inputValue;
+      try {
+        const demandLetterRef = doc(db, `stats/invalid/letters/${r.inputValue}`);
+        await updateDoc(demandLetterRef, {
+          timesDemanded: increment(1),
+        }).catch(async () => {
+          await setDoc(demandLetterRef, {
+            letter: r.inputValue,
+            timesDemanded: 1,
+          });
+        });
+      } catch (err) {
+        console.error(`Error updating demand letter stats for ${r.inputValue}:`, err);
+      }
     } else if (rule.name == "Shibboleth") {
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue;
       r.message = "Before entering a password, you must type " + r.inputValue;
       round.shibboleth = r.inputValue;
+      try {
+        const shibbolethRef = doc(db, `/stats/invalid/rules/Shibboleth/shibboleths/${r.inputValue}`);
+        await updateDoc(shibbolethRef, {
+          count: increment(1),
+        }).catch(async () => {
+          await setDoc(shibbolethRef, {
+            name: r.inputValue,
+            count: 1,
+          });
+        });
+      } catch (err) {
+        console.error(`Error updating demand letter stats for ${r.inputValue}:`, err);
+      }
     } else if (rule.name == "Set A Maximum") {
       r.type = rule.name;
       r.inputValue = round.averageSize + round.maxOffset;
@@ -839,7 +1022,6 @@
       r.type = rule.name;
       r.inputValue = ui.currentRule.inputValue.toUpperCase();
       r.inputValueTwo = ui.currentRule.inputValueTwo.toUpperCase();
-
       if (r.inputValue == r.inputValueTwo) {
         r.message = "You may only use the letter " + r.inputValue + " once";
       } else {
@@ -854,9 +1036,7 @@
 
     // if possibleRightAnswers is high enough, save the rule.
     if (round.possibleAnswerCount >= game.players.length) {
-      // Pay for it BEFORE updating Firestore
-      my.rulebux = my.rulebux - rule.cost;
-
+      await payForRule(rule.name, rule.cost);
       await updateRoomState({
         currentRules: round.rules,
         currentShibboleth: round.shibboleth,
@@ -1224,7 +1404,7 @@
       attemptRecord.result = "crash";
       attemptRecord.challengeName = round.challenge.name;
 
-      // Award points to the SysAdmin for causing a crash
+      // Award points to the SysAdmin for causing a crash BEFORE updating score in Firestore
       if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
         game.players[round.sysAdminIndex].score += settings.points.forServerCrash;
       }
@@ -1239,15 +1419,7 @@
         },
       ];
 
-      await updateRoomState({
-        gamePhase: "crashed",
-        crashedPlayer: my.playerID,
-        crashedWord: attempt,
-        crashSummary: newCrashSummary,
-        attempts: [...(round.attempts || []), attemptRecord],
-      });
-
-      // Update SysAdmin score in Firestore
+      // Update SysAdmin score in Firestore (now includes timer points + crash points)
       if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
         const adminPlayer = game.players[round.sysAdminIndex];
         const adminRef = doc(db, "rooms", game.roomCode, "players", adminPlayer.playerID);
@@ -1255,6 +1427,14 @@
           score: adminPlayer.score,
         });
       }
+
+      await updateRoomState({
+        gamePhase: "crashed",
+        crashedPlayer: my.playerID,
+        crashedWord: attempt,
+        crashSummary: newCrashSummary,
+        attempts: [...(round.attempts || []), attemptRecord],
+      });
 
       my.crashesCaused += 1;
       sendEvent("Invalid", "Server Crashed", attempt);
@@ -1415,6 +1595,22 @@
       attempts: [...(round.attempts || []), attemptRecord],
     });
 
+    try {
+      const passwordStatsRef = doc(db, `stats/invalid/passwords/${attempt}`);
+      await updateDoc(passwordStatsRef, {
+        timesCreated: increment(1),
+        lastCreated: serverTimestamp(),
+      }).catch(async () => {
+        await setDoc(passwordStatsRef, {
+          name: attempt,
+          timesCreated: 1,
+          lastCreated: serverTimestamp(),
+        });
+      });
+    } catch (err) {
+      console.error("Error updating password attempt stats:", err);
+    }
+
     if (shouldEndRound) {
       // Stop the timer immediately to prevent further score changes
       resetRoundTimer();
@@ -1549,7 +1745,10 @@
           };
 
           updateCrackResults(crackSummary);
-          // sendEvent("Invalid", "Self-pwn", attempt);
+
+          if (computedUnclaimedPasswords.value < 1) {
+            setGameOver();
+          }
         } else {
           // Password is not claimed and belongs to someone else - ready to crack
           pwPlayerIndex = p.playerIndex;
@@ -1597,6 +1796,13 @@
       score: game.players[crackSummary.attackerIndex].score,
     });
 
+    // Update stats to mark this password as cracked
+    const passwordStatsRef = doc(db, `stats/invalid/passwords/${crackSummary.pw}`);
+    await updateDoc(passwordStatsRef, {
+      timesCracked: increment(1),
+      lastCracked: serverTimestamp(),
+    });
+
     if (crackSummary.attackerIndex !== crackSummary.victimIndex) {
       await updateDoc(victimRef, {
         score: game.players[crackSummary.victimIndex].score,
@@ -1623,6 +1829,21 @@
       passwordAttempts: my.passwordAttempts,
     });
 
+    // Only host logs gamesFinished and lastGameFinished
+    if (computedAmIHost.value) {
+      await updateDoc(statsRef, {
+        gamesFinished: increment(1),
+        lastGameFinished: serverTimestamp(),
+      });
+
+      // Update gamesFinished for this player count
+      const docId = `${game.players.length} players`;
+      const gameSizeRef = doc(db, `stats/invalid/gameSizes/${docId}`);
+      await updateDoc(gameSizeRef, {
+        gamesFinished: increment(1),
+        lastGameFinished: serverTimestamp(),
+      });
+    }
     // Set game over state
     await updateRoomState({
       gamePhase: "game-over",
@@ -1927,4 +2148,5 @@
   });
 </script>
 <template lang="pug" src="./Invalid.pug"></template>
+<style lang="scss" src="./Invalid.scss"></style>
 <style lang="scss" src="./Invalid.scss"></style>

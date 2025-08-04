@@ -2,6 +2,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
   .inside
 
+
     .game-summaries
 
       .summary
@@ -23,6 +24,15 @@ main.general-stats(v-if="ui.viewing == 'general'")
           .calendar(v-text="formatTime(stats.general.guillotineLastPlayed,'calendar')")
         .button-holder
           button(@click="getData('guillotine')") Details
+
+      .summary
+        figure
+          img(src="/svg/games/invalid.svg" @click="getData('invalid')")
+        .last-played(v-if="stats.general && stats.general.invalidLastPlayed")
+          .time-ago(v-text="formatTime(stats.general.invalidLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.invalidLastPlayed,'calendar')")
+        .button-holder 
+          button(@click="getData('invalid')") Details
 
       .summary
         figure
@@ -55,25 +65,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
           button(@click="getData('sisyphus')") Details
       
 
-      //-.summary
-        figure
-          img(src="/svg/games/invalid.svg" @click="getData('invalid')")
-        //.last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.invalid")
-          .time-caption Last Game
-          .time-ago(v-text="formatTime(stats.general.lastPlayed.invalid,'fromNow')")
-          .calendar(v-text="formatTime(stats.general.lastPlayed.invalid,'calendar')")
-        //.button-holder
-          button(@click="getData('invalid')") Details
-
-      //-.summary(v-if="stats.general && stats.general.lastPlayed && stats.general.wrongest")
-        figure
-          img(src="/svg/games/thewrongestwords.svg" @click="getData('wrongest')")
-        //.last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.wrongest")
-          .time-caption Last Game
-          .time-ago(v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')")
-          .calendar(v-text="formatTime(stats.general.lastPlayed.wrongest,'calendar')")
-        //.button-holder
-          button(@click="getData('wrongest')") Details
+      
 
       .summary(v-if="stats.general && stats.general.lastPlayed")
         figure
@@ -94,6 +86,12 @@ main.general-stats(v-if="ui.viewing == 'general'")
           .calendar(v-text="formatTime(stats.general.lastPlayed.pretend,'calendar')")
         //.button-holder
           button(@click="getData('pretend')") Details
+
+    aside.last-cloned-holder(v-if="stats?.general?.lastCloned")
+      .last-cloned
+        span 🗄️ Database was last cloned  &nbsp; 
+        strong(v-text="formatTime(stats.general.lastCloned, 'calendar')")
+
 
   .player-table 
     //.good-table.player-table(v-if="stats.general.playerNames")

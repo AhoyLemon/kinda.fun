@@ -59,11 +59,6 @@ const pages = [
     out: path.join(__dirname, "dist", "home.html"),
     name: "home.html",
   },
-  {
-    src: path.join(__dirname, "src", "views", "404", "Page.pug"),
-    out: path.join(__dirname, "dist", "404.html"),
-    name: "404.html",
-  },
 ];
 
 const arg = process.argv[2];

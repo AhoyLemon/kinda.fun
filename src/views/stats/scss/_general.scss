@@ -1,45 +1,158 @@
-main.general-stats { grid-column: span 2; min-height: 99vh; display: flex; align-items: center; font-family: $serif;
-  .inside { width:100%; }
-  .game-summaries { display:grid; gap:($gap * 2); grid-template-columns: repeat(3, 1fr ); margin-left: auto; margin-right: auto;  width:100%; padding-left: 20px; padding-right: 20px;
-    .summary { text-align: center; }
-    figure { display: flex; align-items: center; justify-content: center; margin-bottom: 25px;  }
-    img { cursor: pointer; opacity: 0.8; max-width: 100%; max-height: 120px;
-      &:hover, &:focus { opacity: 1; }
+main.general-stats {
+  grid-column: span 2;
+  min-height: 99vh;
+  display: flex;
+  align-items: center;
+  font-family: $serif;
+  .inside {
+    width: 100%;
+  }
+  .game-summaries {
+    display: grid;
+    gap: ($gap * 2);
+    grid-template-columns: repeat(3, 1fr);
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    .summary {
+      text-align: center;
     }
-    .last-played { padding-bottom: $padding; }
-    .time-caption { font-size:110%; margin-bottom: 10px; text-transform: uppercase; }
-    .time-ago { font-size: 140%; font-weight: 900; }
-    .more-stats { min-height: 3em; }
-    button { background: #2d4450; font-family: inherit; font-weight: 900; font-size: 1.3rem; border: 2px solid rgba(255, 255, 255, 0.5); color: white; padding: 0.25em 1em; border-radius: 6px; cursor: pointer;
-      &:hover, &:focus { background:saturate($color: #2d4450, $amount: 50%)}
+    figure {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+    img {
+      cursor: pointer;
+      opacity: 0.8;
+      max-width: 100%;
+      max-height: 120px;
+      &:hover,
+      &:focus {
+        opacity: 1;
+      }
+    }
+    .last-played {
+      padding-bottom: $padding;
+    }
+    .time-caption {
+      font-size: 110%;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .time-ago {
+      font-size: 140%;
+      font-weight: 900;
+    }
+    .more-stats {
+      min-height: 3em;
+    }
+    button {
+      background: #2d4450;
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 1.3rem;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      color: white;
+      padding: 0.25em 1em;
+      border-radius: 6px;
+      cursor: pointer;
+      &:hover,
+      &:focus {
+        background: saturate($color: #2d4450, $amount: 50%);
+      }
     }
   }
-  display:grid; grid-template-columns: 1fr 340px; gap:$gap;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: $gap;
 
-  .player-table { max-height: 99.999vh; overflow-y: auto;}
+  .player-table {
+    max-height: 99.999vh;
+    overflow-y: auto;
+  }
   .good-table {
-    h2 { font-size:190%; padding-bottom: 0.35em; }
+    h2 {
+      font-size: 190%;
+      padding-bottom: 0.35em;
+    }
     table.vgt-table {
-      th { font-weight: 900; padding:5px; text-transform: uppercase; font-size: 85%; }
-      td { padding: 5px; } 
-      .vgt-right-align { text-align: left; }
-      .player-name-cell { max-width: 180px; overflow:hidden; text-overflow: ellipsis; }
-      .last-played-cell { max-width: 100px; overflow:hidden; text-overflow: ellipsis; }
+      th {
+        font-weight: 900;
+        padding: 5px;
+        text-transform: uppercase;
+        font-size: 85%;
+      }
+      td {
+        padding: 5px;
+      }
+      .vgt-right-align {
+        text-align: left;
+      }
+      .player-name-cell {
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .last-played-cell {
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 
+  .last-cloned-holder {
+    text-align: center;
+    padding-top: 4em;
+    .last-cloned {
+      padding: 1em;
+      background-color: $white;
+      color: $black;
+      display: inline-flex;
+    }
+  }
 }
 
-aside.general-stats { padding:100px $padding; font-family: $serif;
-  img { max-width: 100%; }
-  .inside { display: flex; flex-direction: column; gap:3rem; position: sticky; top:5px; }
+aside.general-stats {
+  padding: 100px $padding;
+  font-family: $serif;
+  img {
+    max-width: 100%;
+  }
+  .inside {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: sticky;
+    top: 5px;
+    padding-bottom: 3rem;
+  }
   .summary {
-    figure { cursor: pointer; opacity: 0.5; margin:0;
-      &:hover { opacity: 1; }
+    figure {
+      cursor: pointer;
+      opacity: 0.5;
+      margin: 0;
+      &:hover {
+        opacity: 1;
+      }
     }
-    &.active figure { cursor: default; opacity: 1; }
-    &.inactive { color:rgba(255, 255, 255, 0.65); }
-    .time-caption { text-transform: uppercase; }
-    .time-ago { font-size:165%; }
+    &.active figure {
+      cursor: default;
+      opacity: 1;
+    }
+    &.inactive {
+      color: rgba(255, 255, 255, 0.65);
+    }
+    .time-caption {
+      text-transform: uppercase;
+    }
+    .time-ago {
+      font-size: 1rem;
+      text-align: center;
+    }
   }
 }

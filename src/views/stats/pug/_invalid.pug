@@ -4,118 +4,137 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
 
   .stats-boxes
 
-    .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.invalid")
+    .box.date
       .caption Last Played
-      .time-ago(v-text="formatTime(stats.general.lastPlayed.invalid,'fromNow')")
-      .calendar(v-text="formatTime(stats.general.lastPlayed.invalid,'calendar')")
+      .time-ago(v-text="formatTime(stats.invalid.lastGameStarted,'fromNow')")
+      .calendar(v-text="formatTime(stats.invalid.lastGameStarted,'calendar')")
+    
     .box.big-number
       .caption Games Started
-      .number(v-text="addCommas(stats.general.invalid.GamesStarted)")
+      .number(v-text="addCommas(stats.invalid.gamesStarted)")
       .sub-number
-        strong(v-text="calculateAverage(stats.general.invalid.GamesStarted, dates.invalid.dayCount)")
+        strong(v-text="calculateAverage(stats.invalid.gamesStarted, dates.invalid.dayCount)")
         |  per day
-    .box.big-number(v-if="computedAveragePlayerCounts")
-      .caption Avg Player Count
-      .number(v-text="computedAveragePlayerCounts.invalid")
+    
+    .box.big-name(v-if="computedInvalid?.averageGameSize")
+      .caption Most Popular Group Size
+      .name(v-if="computedInvalid.mostPopularGroupSize && computedInvalid.mostPopularGroupSize.players") {{computedInvalid.mostPopularGroupSize.players}} players
+      .name(v-else) tie
       .sub-number
-        | most common: 
-        strong(v-text="computedAveragePlayerCounts.invalidMostCommon")
-    .box.big-number
-      .caption Naughty Mode
-      .number.percent(v-text="computedNaughtyPercentage + '%'")
-    .box.big-number
-      .caption Server Crashes
-      .number.percent(v-text="addCommas(computedServerCrashes)")
-    .box.big-number
-      .caption Cracked Passwords
-      .number.percent(v-text="computedCrackedPasswordPercent + '%'")
-    .box.big-number
-      .caption Rooms Created
-      .number(v-text="addCommas(stats.general.invalid.RoomsCreated)")
-    .box.date(v-if="dates.invalid && dates.invalid.launched")
-      .caption Launched
-      .time-ago(v-text="formatTime(dates.invalid.launched,'MMM D, YYYY')")
-      .calendar(v-text="formatTime(dates.invalid.launched,'fromNow')")
+        | avg size: 
+        strong(v-text="computedInvalid.averageGameSize")
+    
+    .box.big-name(v-if="computedInvalid?.mostDangerousBug")
+      .caption Most Dangerous Bug
+      .name {{computedInvalid.mostDangerousBug.name}}
+      .sub-number
+        span Deployed: 
+        strong(v-text="computedInvalid.mostDangerousBug.timesCreated")
+        span  | 
+        span Crashed: 
+        strong(v-text="computedInvalid.mostDangerousBug.timesCrashed")
+    
+    .box.big-name(v-if="computedInvalid?.mostPopularChallenge")
+      .caption Most Popular Challenge
+      .name {{computedInvalid.mostPopularChallenge.name}}
+      .sub-number
+        span played   
+        strong(v-text="computedInvalid.mostPopularChallenge.timesChosen")
+        span  times
 
+    .box.big-name(v-if="computedInvalid?.mostCreatedPassword")
+      .caption Favorite Password
+      .name {{computedInvalid.mostCreatedPassword.name}}
+      .sub-number
+        span created 
+        strong(v-text="computedInvalid.mostCreatedPassword.timesCreated")
+        span  times
+        span(v-if="computedInvalid.mostCreatedPassword.timesCracked") / cracked 
+        strong(v-text="computedInvalid.mostCreatedPassword.timesCracked")
 
-  .good-tables(v-if="ui.invalidLoaded")
+    .box.big-name(v-if="computedInvalid?.mostCrackedPassword")
+      .caption Most Shared Password
+      .name {{computedInvalid.mostCrackedPassword.name}}
+      .sub-number
+        span cracked 
+        strong(v-text="computedInvalid.mostCrackedPassword.timesCracked")
+        |   (
+        strong(v-text="percentOf(computedInvalid.mostCrackedPassword.timesCreated, computedInvalid.mostCrackedPassword.timesCracked) + '%'")
+        | )
+    
+    .box.big-name(v-if="computedInvalid?.mostUsedRule")
+      .caption Favorite Rule
+      .name {{computedInvalid.mostUsedRule.name}}
+      .sub-number
+        span played   
+        strong(v-text="computedInvalid.mostUsedRule.count")
+        span  times
 
+  .two-tables(v-if="ui.invalidLoaded")
 
-    .good-table.pass-table
+    .good-table
+      h2 Challenges
+      vue-good-table(
+        :rows="stats.invalid.challenges"
+        :columns="columns.invalidChallenges"
+        :sort-options="{ enabled: true, initialSortBy: {field: 'timesChosen', type: 'desc'} }"
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 40, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+    .good-table
       h2 Passwords
       vue-good-table(
         :rows="stats.invalid.passwords"
-        :columns="columns.passwords"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'used', type: 'desc'} }"
+        :columns="columns.invalidPasswords"
+        :sort-options="{ enabled: true, initialSortBy: [ { field: 'timesCreated', type: 'desc'}, {field: 'timesCracked', type: 'desc'} ], }"
         theme="black-rhino"
         styleClass="vgt-table condensed"
         :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        template(v-slot:table-row="props")
+          template(v-if="props.column.field === 'timesCracked'")
+            span(v-if="props.row.timesCracked") {{ addCommas(props.row.timesCracked) }}
+            span(v-else) 0
+
+  .three-tables(v-if="ui.invalidLoaded")
+    .good-table
+      h2 Letters
+      vue-good-table( 
+        :rows="stats.invalid.letters"
+        :columns="columns.invalidLetters"
+        :sort-options="{ enabled: true, initialSortBy: [ { field: 'timesDemanded', type: 'desc'}, {field: 'timesBanned', type: 'desc'} ], }"
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        template(v-slot:table-row="props")
+          template(v-if="props.column.field === 'timesBanned'")
+            span(v-if="props.row.timesBanned") {{ addCommas(props.row.timesBanned) }}
+            span(v-else) 0
+          template(v-if="props.column.field === 'timesDemanded'")
+            span(v-if="props.row.timesDemanded") {{ addCommas(props.row.timesDemanded) }}
+            span(v-else) 0
 
     .good-table
       h2 Bugs
       vue-good-table(
         :rows="stats.invalid.bugs"
-        :columns="columns.bugs"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
+        :columns="columns.invalidBugs"
+        :sort-options="{ enabled: true, initialSortBy: [ { field: 'timesCreated', type: 'desc'}, {field: 'timesCrashed', type: 'desc'} ], }"
         theme="black-rhino"
         styleClass="vgt-table condensed"
         :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-    
-    .good-table
-      h2 Challenges
-      vue-good-table(
-        :rows="stats.invalid.challenges"
-        :columns="columns.challenges"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 40, position: 'top', perPageDropdown: [25, 40, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        template(v-slot:table-row="props")
+          template(v-if="props.column.field === 'timesCrashed'")
+            span(v-if="props.row.timesCrashed") {{ addCommas(props.row.timesCrashed) }}
+            span(v-else) 0
     
     .good-table
       h2 Rules
-      vue-good-table(
+      vue-good-table( 
         :rows="stats.invalid.rules"
-        :columns="columns.rules"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
+        :columns="columns.invalidRules"
+        :sort-options="{ enabled: true, initialSortBy: {field: 'count', type: 'desc'} }"
         theme="black-rhino"
         styleClass="vgt-table condensed"
         :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-      br
-      br
-      h2 Letters
-      vue-good-table(
-        :rows="stats.invalid.letters"
-        :columns="columns.letters"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'letter', type: 'asc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-
-
-    .good-table
-      h2 Player Counts
-      vue-good-table(
-        :rows="stats.invalid.playerCounts"
-        :columns="columns.playerCounts"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 20], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-      br
-      br
-      h2 Player Names
-      vue-good-table(
-        :rows="stats.general.playerNames"
-        :columns="columns.playerNames"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'lastPlayed', type: 'asc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 27, position: 'top', perPageDropdown: [10, 27, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-  
-  .good-tables(v-if="ui.invalidLoaded")
-
-    .good-table
-      
-
-    .good-table.player-table(v-if="stats.general.playerNames")
       

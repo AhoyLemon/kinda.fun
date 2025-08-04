@@ -51,6 +51,7 @@ section {
     .big-name {
       .name {
         font-size: 210%;
+        word-break: break-word;
       }
     }
 
@@ -90,6 +91,11 @@ section {
   .two-tables {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  .three-tables {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 40px;
   }
 }

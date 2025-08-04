@@ -27,16 +27,7 @@ export default defineConfig(({ mode }) => {
   ]);
 
   return {
-    plugins: [
-      vue(),
-      vueDevTools(),
-      // Sitemap temporarily disabled to fix deployment
-      // Sitemap({
-      //   hostname: "https://kinda.fun",
-      //   readable: true,
-      //   dynamicRoutes: ["/cameo", "/guillotine", "/invalid", "/meeting", "/pretend", "/sisyphus", "/wrongest"],
-      // }),
-    ],
+    plugins: [vue(), vueDevTools()],
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -58,7 +49,6 @@ export default defineConfig(({ mode }) => {
           stats: resolve(__dirname, "src/entries/stats.js"),
           wrongest: resolve(__dirname, "src/entries/wrongest.js"),
           home: resolve(__dirname, "src/entries/home.js"),
-          "404": resolve(__dirname, "src/entries/404.js"),
         },
         output: {
           entryFileNames: "[name].js",
@@ -69,38 +59,24 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       middlewareMode: false,
-      configureServer(server) {
-        server.middlewares.use((req, res, next) => {
+      setupMiddlewares(middlewares) {
+        middlewares.use((req, res, next) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
           const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home"];
           const url = req.url.split("?")[0];
-          
-          // Skip if it's a static asset or API call
-          if (url.includes('.') || url.startsWith('/@') || url.startsWith('/node_modules') || url.startsWith('/src')) {
-            return next();
-          }
-          
           // If the URL is exactly "/", rewrite to /home.html
           if (url === "/") {
             req.url = "/home.html";
           } else {
-            // If the URL is exactly "/slug" or "/slug/", rewrite to "/slug.html"
+            // If the URL is exactly "/slug", rewrite to "/slug.html"
             const match = url.match(/^\/(\w+)\/?$/);
-            if (match) {
-              const slug = match[1];
-              if (mpaPages.includes(slug)) {
-                req.url = `/${slug}.html`;
-              } else {
-                // Handle invalid single-level routes by serving 404.html
-                req.url = "/404.html";
-              }
-            } else {
-              // Handle any other complex routes (like /invalid/badroute) by serving 404.html
-              req.url = "/404.html";
+            if (match && mpaPages.includes(match[1])) {
+              req.url = `/${match[1]}.html`;
             }
           }
           next();
         });
+        return middlewares;
       },
     },
   };

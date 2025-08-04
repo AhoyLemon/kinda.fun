@@ -65,7 +65,6 @@
                 sup ƒ
               |  to spend
           .rules
-            //-button.rule(v-for="(rule,index) in rules" @click="chooseRule(rule)")
 
             +ruleButton('Demand A Letter', 5)
             +ruleButton('Ban A Letter', 3)
@@ -77,12 +76,10 @@
             +ruleButton('Limit Vowels', 1, true)
             +ruleButton('Ban A Combo', 1)
 
-            //-button.rule(v-for="(rule,index) in rules" @click="chooseRule(rule)" :class="{ active: (rule.name == ui.currentRule.name), 'too-expensive': (rule.cost > my.rulebux) }" :disabled="ui.currentRule.editing || (rule.cost > my.rulebux)")
-              .name {{rule.name}}
-              .cost {{rule.cost}}
-                sup ƒ
-
-            button.finished(type="button" @click="finishRules()" v-if="!ui.currentRule.editing") FINISH RULES
+            button.finished(type="button" @click="finishRules()" v-if="!ui.currentRule.editing") 
+              span(v-if="my.rulebux > 1") FINISH RULES AND ADD BUGS
+              span(v-else-if="my.rulebux === 1") FINISH RULES AND ADD BUG
+              span(v-else) FINISH RULES
               .tooltip
                 span Set rules and enter in {{my.rulebux + 1}} system bugs
     
@@ -100,7 +97,17 @@
         form.fieldset-and-button(v-if="ui.currentRule.name == 'Ban A Letter'" v-on:submit.prevent="saveRule(ui.currentRule)")
           fieldset
             label(for="BanTheLetter") Ban the letter
-            input.uppercase(v-model="ui.currentRule.inputValue" type="text" id="BanTheLetter" maxlength="1" minlength="1" required placeholder="?" v-focus)
+            input.uppercase(
+              v-model="ui.currentRule.inputValue"
+              type="text"
+              id="BanTheLetter"
+              maxlength="1"
+              minlength="1"
+              required
+              placeholder="?"
+              v-focus
+              pattern="[A-Za-z]"
+            )
           button(type="submit") Set
 
         form.fieldset-and-button(v-if="ui.currentRule.name == 'Ban A Combo'" v-on:submit.prevent="saveRule(ui.currentRule)")

@@ -7,11 +7,7 @@ export function randomFrom(array) {
 }
 
 export function shuffle(o) {
-  for (
-    var j, x, i = o.length;
-    i;
-    j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x
-  );
+  for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
   return o;
 }
 
@@ -52,26 +48,12 @@ export function preceisePercentOf(total, part) {
 }
 
 export function sendEvent(c, a, l, v) {
-  console.log(
-    "CATEGORY: " + c + ", ACTION:" + a + ", LABEL:" + l + ", VALUE:" + v,
-  );
-  // if (_paq && _paq != undefined) {
-  //   if (v) {
-  //     _paq.push(['trackEvent', c, a, l, v]);
-  //     //ga('send', 'event', { eventCategory: c, eventAction: a, eventLabel: l, eventValue:v });
-  //     console.log('CATEGORY: '+c+', ACTION:'+a+', LABEL:'+l+', VALUE:'+v);
-  //   } else if (l) {
-  //     _paq.push(['trackEvent', c, a, l]);
-  //     //ga('send', 'event', { eventCategory: c, eventAction: a, eventLabel: l });
-  //     console.log('CATEGORY: '+c+', ACTION:'+a+', LABEL:'+l);
-  //   } else {
-  //     _paq.push(['trackEvent', c, a]);
-  //     //ga('send', 'event', { eventCategory: c, eventAction: a });
-  //     console.log('CATEGORY: '+c+', ACTION:'+a);
-  //   }
-  // } else {
-
-  // }
+  let output = [];
+  if (c !== undefined) output.push("CATEGORY: " + c);
+  if (a !== undefined) output.push("ACTION:" + a);
+  if (l !== undefined) output.push("LABEL:" + l);
+  if (v !== undefined) output.push("VALUE:" + v);
+  if (output.length) console.log(output.join(", "));
 }
 
 ///////////
