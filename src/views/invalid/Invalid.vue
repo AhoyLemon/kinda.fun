@@ -61,6 +61,9 @@
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
+  // Are you in devMode?
+  const devMode = import.meta.env.DEV;
+
   // Firebase & VueFire Stuff
   import {
     doc,
@@ -141,7 +144,7 @@
 
     onSnapshot(
       gameRef,
-      (docSnapshot) => {
+      async (docSnapshot) => {
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
 
@@ -243,6 +246,19 @@
 
             // Stop the timer when round becomes over
             if (!wasRoundOver && data.isRoundOver) {
+              // If current player is the admin, increment their score by round.elapsedTime
+              if (my.playerIndex === round.sysAdminIndex) {
+                my.score += round.elapsedTime;
+                // Also update the score in Firestore
+                try {
+                  const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
+                  await updateDoc(playerRef, { score: my.score });
+                } catch (err) {
+                  console.error("Error updating admin score after round over:", err);
+                }
+              }
+              // Reset elapsedTime for all
+              round.elapsedTime = 0;
               resetRoundTimer();
               resetHurryTimer();
             }
@@ -1207,49 +1223,26 @@
     round.adminTimeLeft = defaults.adminTimeLeft;
   };
 
-  // Helper function to update admin score in Firestore
-  const updateAdminScore = async () => {
-    if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
-      try {
-        const adminPlayer = game.players[round.sysAdminIndex];
-        const adminRef = doc(db, "rooms", game.roomCode, "players", adminPlayer.playerID);
-        await updateDoc(adminRef, {
-          score: adminPlayer.score,
-        });
-      } catch (error) {
-        console.error("Error updating admin score:", error);
-      }
-    }
-  };
-
+  // Timer logic for round
   const roundStartTimer = () => {
+    round.elapsedTime = 0;
     round.roundTimer = setInterval(() => {
       round.elapsedTime += 1;
-      game.players[round.sysAdminIndex].score += 1;
-
-      // Update admin score in Firestore every 10 seconds to prevent loss
-      if (round.elapsedTime % 10 === 0) {
-        updateAdminScore();
-      }
-
       if (round.elapsedTime >= settings.timer.employeeMaxTime - settings.timer.hurryTime && round.hurryTimer == undefined) {
         startHurryTimer();
       }
     }, 1000);
 
     // Also, get the Flying Pig talking if he should be....
-
     if (round.flyingPig.active && my.role == "employee") {
       if (round.phase == "create password") {
         round.flyingPig.message = randomFrom(flyingPigLines.guessing);
       }
       round.flyingPig.timer = setInterval(() => {
         if (!round.flyingPig.active) {
-          // if the pig isn't active, kill the pig.
           clearInterval(round.flyingPig.timer);
           round.flyingPig.timer = undefined;
         } else {
-          // Otherwise, let's generate a new line for the pig.
           if (round.phase == "create password") {
             round.flyingPig.message = randomFrom(flyingPigLines.guessing);
             soundOink.play();
@@ -1260,13 +1253,8 @@
   };
 
   const resetRoundTimer = () => {
-    // Save admin score before stopping timer
-    if (round.roundTimer) {
-      updateAdminScore();
-    }
     clearInterval(round.roundTimer);
     round.roundTimer = undefined;
-    round.elapsedTime = 0;
   };
 
   const startHurryTimer = () => {
@@ -1705,13 +1693,9 @@
     }
 
     if (shouldEndRound) {
-      // Stop the timer immediately to prevent further score changes
+      // Stop the timer immediately
       resetRoundTimer();
       resetHurryTimer();
-      // Update admin score one final time after stopping timer
-      await updateAdminScore();
-      // Give a small delay to ensure final score update propagates before ending round
-      await new Promise((resolve) => setTimeout(resolve, 1500));
       // End the round
       await updateRoomState({
         isRoundOver: true,
