@@ -45,7 +45,33 @@ const collectionsToClone = [
 
 // Individual documents to clone (fields only, no subcollections)
 const documentsToClone = [
-  //"stats/cameo", "stats/guillotine", "stats/invalid", "stats/meeting", "stats/pretend", "stats/sisyphus"
+  ////////////////////////////////////
+  // GENERAL
+  // "stats/general",
+  //
+  ////////////////////////////////////
+  // COMPARATIVELY FAMOUS
+  //"stats/cameo",
+  //
+  ////////////////////////////////////
+  // NO MORE BILLIONAIRES
+  // "stats/guillotine",
+  //
+  ////////////////////////////////////
+  // INVALID
+  // "stats/invalid",
+  //
+  ////////////////////////////////////
+  // THIS MEETING HAS POINTS
+  // "stats/meeting",
+  //
+  ////////////////////////////////////
+  // PRETEND WORLD
+  //"stats/pretend",
+  //
+  ////////////////////////////////////
+  // SISYPHUS CLICKER
+  //"stats/sisyphus",
 ];
 
 // =============================================================
