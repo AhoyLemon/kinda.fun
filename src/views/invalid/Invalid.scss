@@ -1,4 +1,3 @@
-
 //GLOBALS, GET DEFAULTS
 @import "@/shared/scss/globals/_reset";
 @import "@/shared/scss/globals/_variables";
@@ -21,8 +20,12 @@
 @import "scss/_final";
 @import "scss/_game-over";
 
+// COMPONENTS
+@import "scss/toasts";
+
 // OTHER PAGES
 @import "scss/_article";
 
-
-input.uppercase { text-transform: uppercase; }
+input.uppercase {
+  text-transform: uppercase;
+}

@@ -1,0 +1,16 @@
+.Vue-Toastification__toast--warning {
+  color: $black;
+  .text-holder {
+    color: $black;
+    code {
+      font-size: 135%;
+      font-weight: 800;
+    }
+  }
+  .Vue-Toastification__close-button {
+    color: $black;
+  }
+  .Vue-Toastification__progress-bar {
+    background-color: $black;
+  }
+}
