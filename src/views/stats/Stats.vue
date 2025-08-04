@@ -490,6 +490,13 @@
       }
     });
 
+    // 6. gameCountByValuations: sum all valuationCount in celebs, divide by 5
+    const totalValuationCount = celebs.reduce((sum, celeb) => {
+      const count = typeof celeb.valuationCount === "number" && !isNaN(celeb.valuationCount) ? celeb.valuationCount : 0;
+      return sum + count;
+    }, 0);
+    const gameCountByValuations = celebs.length > 0 && totalValuationCount ? Math.round(totalValuationCount / 5) : 0;
+
     return {
       mostPopularSpecialGame,
       specialGameCount,
@@ -497,6 +504,7 @@
       mostOvervalued,
       mostUndervalued,
       mostBirthdays,
+      gameCountByValuations,
     };
   });
 

@@ -13,6 +13,7 @@
     .panel.challenge-select.focus(v-if="ui.challengeID == null")
       .notched
         p First, select your password challenge.
+        
         form(@submit.prevent="chooseAChallenge()")
           fieldset
             select(v-model="ui.challengeID" @change="chooseAChallenge()")
@@ -20,6 +21,9 @@
               option(v-for="option in round.possibleChallenges" :value="option.id") {{option.name}}
             label Password Challenge
           //-button(type="submit") Choose
+        
+        p(v-if="devMode && challenges?.length > 2" style='padding-top:2em;')
+          span DEV NOTE: There are #[strong {{challenges.length}}] challenges
 
     // CURRENT PASSWORD RULES SUMMARY (LEFT)
     .panel.rules-summary(v-if="ui.challengeID != null && round.phase != 'crashed' && !ui.roundOver")

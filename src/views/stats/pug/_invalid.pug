@@ -80,7 +80,7 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
         :sort-options="{ enabled: true, initialSortBy: {field: 'timesChosen', type: 'desc'} }"
         theme="black-rhino"
         styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 40, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
 
     .good-table
       h2 Passwords
@@ -90,13 +90,39 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
         :sort-options="{ enabled: true, initialSortBy: [ { field: 'timesCreated', type: 'desc'}, {field: 'timesCracked', type: 'desc'} ], }"
         theme="black-rhino"
         styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
         template(v-slot:table-row="props")
           template(v-if="props.column.field === 'timesCracked'")
             span(v-if="props.row.timesCracked") {{ addCommas(props.row.timesCracked) }}
             span(v-else) 0
 
+
   .three-tables(v-if="ui.invalidLoaded")
+
+    .good-table
+      h2 Rules
+      vue-good-table( 
+        :rows="stats.invalid.rules"
+        :columns="columns.invalidRules"
+        :sort-options="{ enabled: true, initialSortBy: {field: 'count', type: 'desc'} }"
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+    .good-table
+      h2 Bugs
+      vue-good-table(
+        :rows="stats.invalid.bugs"
+        :columns="columns.invalidBugs"
+        :sort-options="{ enabled: true, initialSortBy: [ { field: 'timesCreated', type: 'desc'}, {field: 'timesCrashed', type: 'desc'} ], }"
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        template(v-slot:table-row="props")
+          template(v-if="props.column.field === 'timesCrashed'")
+            span(v-if="props.row.timesCrashed") {{ addCommas(props.row.timesCrashed) }}
+            span(v-else) 0
+
     .good-table
       h2 Letters
       vue-good-table( 
@@ -113,28 +139,3 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
           template(v-if="props.column.field === 'timesDemanded'")
             span(v-if="props.row.timesDemanded") {{ addCommas(props.row.timesDemanded) }}
             span(v-else) 0
-
-    .good-table
-      h2 Bugs
-      vue-good-table(
-        :rows="stats.invalid.bugs"
-        :columns="columns.invalidBugs"
-        :sort-options="{ enabled: true, initialSortBy: [ { field: 'timesCreated', type: 'desc'}, {field: 'timesCrashed', type: 'desc'} ], }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-        template(v-slot:table-row="props")
-          template(v-if="props.column.field === 'timesCrashed'")
-            span(v-if="props.row.timesCrashed") {{ addCommas(props.row.timesCrashed) }}
-            span(v-else) 0
-    
-    .good-table
-      h2 Rules
-      vue-good-table( 
-        :rows="stats.invalid.rules"
-        :columns="columns.invalidRules"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'count', type: 'desc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-      

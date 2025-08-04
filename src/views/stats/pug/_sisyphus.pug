@@ -4,11 +4,13 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
 
   .stats-boxes
 
-    .box.big-number(v-if="stats.sisyphus" style="grid-column:span 2")
-      .caption Cursed Persons
+    .box.big-number(v-if="stats.sisyphus")
+      .caption Cursed Souls
       .number(v-text="addCommas(stats.sisyphus.firstClick)")
-      .subtext damned souls have logged their first click.
-  
+      .sub-number
+        strong(v-text="calculateAverage(stats.sisyphus.firstClick, dates.sisyphus.dayCount)")
+        |  per day
+    
     .box.date(v-if="stats.sisyphus?.lastGameStarted")
       .caption Last Damnation
       .time-ago(v-text="formatTime(stats.sisyphus.lastGameStarted,'fromNow')")
@@ -18,6 +20,11 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
       .caption The Rock Has Rolled Downhill
       .number(v-text="addCommas(stats.sisyphus.rollbackCount)")
       .subtext times
+    
+    .box.big-number(v-if="computedSisyphus?.pushesSpent !== undefined")
+      .caption Pushes Spent
+      .number(v-text="addCommas(computedSisyphus.pushesSpent)")
+      .subtext (pushes spent on cheevos)
 
     .box.big-number(v-if="computedSisyphus?.cheevosEarned")
       .caption Cheevos Earned
@@ -38,13 +45,6 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
       .number(v-text="addCommas(computedSisyphus.totalPurchases)")
       .sub-number
           strong(v-text="calculateAverage(computedSisyphus.totalPurchases, dates.sisyphus.dayCount)")
-          |  per day
-    
-    .box.big-number(v-if="computedSisyphus?.pushesSpent !== undefined")
-      .caption Pushes Spent
-      .number(v-text="addCommas(computedSisyphus.pushesSpent)")
-      .sub-number
-          strong(v-text="calculateAverage(computedSisyphus.pushesSpent, dates.sisyphus.dayCount)")
           |  per day
 
   .two-tables
