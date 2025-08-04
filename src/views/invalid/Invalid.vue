@@ -337,7 +337,7 @@
         if (my.role === "SysAdmin") {
           // Only reset rulebux if this is a true phase change (not just a reconnect)
           if (previousPhase !== "choose rules") {
-            my.rulebux = 6;
+            my.rulebux = settings.default.rulebux;
           }
           // Only define possible challenges if we don't have round summary yet
           // or if this is the very first round (no previous rounds to exclude)
