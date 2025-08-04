@@ -11,10 +11,12 @@ import { fileURLToPath } from "url";
 function parseCSV(csvText) {
   const lines = csvText.trim().split(/\r?\n/);
   const headers = lines[0].replace(/"/g, "").split(",");
-  return lines.slice(1).map(line => {
-    const values = line.match(/("[^"]*"|[^,]+)/g).map(v => v.replace(/"/g, ""));
+  return lines.slice(1).map((line) => {
+    const values = line.match(/("[^"]*"|[^,]+)/g).map((v) => v.replace(/"/g, ""));
     const obj = {};
-    headers.forEach((h, i) => { obj[h] = values[i]; });
+    headers.forEach((h, i) => {
+      obj[h] = values[i];
+    });
     return obj;
   });
 }
@@ -27,9 +29,12 @@ const __dirname = dirname(__filename);
 const devServiceAccount = JSON.parse(readFileSync(join(__dirname, "./dev-service-account.json"), "utf8"));
 
 // Initialize Firebase app
-const devApp = admin.initializeApp({
-  credential: admin.credential.cert(devServiceAccount),
-}, "development");
+const devApp = admin.initializeApp(
+  {
+    credential: admin.credential.cert(devServiceAccount),
+  },
+  "development",
+);
 const devDb = devApp.firestore();
 
 async function updateSisyphusCheevos() {
@@ -59,7 +64,7 @@ async function updateSisyphusCheevos() {
   process.exit(0);
 }
 
-updateSisyphusCheevos().catch(err => {
+updateSisyphusCheevos().catch((err) => {
   console.error("❌ Error in updateSisyphusCheevos:", err);
   process.exit(1);
 });

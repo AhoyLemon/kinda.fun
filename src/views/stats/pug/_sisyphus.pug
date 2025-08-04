@@ -4,47 +4,47 @@ section.sisyphus.stats(v-if="ui.viewing == 'sisyphus'")
 
   .stats-boxes
 
-    .box.big-number(v-if="stats.sisyphus" span="2")
+    .box.big-number(v-if="stats.sisyphus" style="grid-column:span 2")
       .caption Cursed Persons
       .number(v-text="addCommas(stats.sisyphus.firstClick)")
       .subtext damned souls have logged their first click.
   
-    .box.date(v-if="stats.sisyphus && stats.sisyphus.lastGameStarted")
+    .box.date(v-if="stats.sisyphus?.lastGameStarted")
       .caption Last Damnation
       .time-ago(v-text="formatTime(stats.sisyphus.lastGameStarted,'fromNow')")
       .calendar(v-text="formatTime(stats.sisyphus.lastGameStarted,'calendar')")
 
-    .box.big-number(v-if="stats.sisyphus && stats.sisyphus.rollbackCount")
+    .box.big-number(v-if="stats.sisyphus?.rollbackCount")
       .caption The Rock Has Rolled Downhill
       .number(v-text="addCommas(stats.sisyphus.rollbackCount)")
       .subtext times
 
-    .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevos && computedSisyphusCheevos.totalCheevos")
+    .box.big-number(v-if="computedSisyphus?.cheevosEarned")
       .caption Cheevos Earned
-      .number(v-text="addCommas(computedSisyphusCheevos.totalCheevos)")
+      .number(v-text="addCommas(computedSisyphus.cheevosEarned)")
       .sub-number
-        strong(v-text="calculateAverage(computedSisyphusCheevos.totalCheevos, dates.sisyphus.dayCount)")
+        strong(v-text="calculateAverage(computedSisyphus.cheevosEarned, dates.sisyphus.dayCount)")
         |  per day
 
-    .box.big-number(v-if="stats.sisyphus && computedSisyphusCheevos && computedSisyphusCheevos.totalPoints")
+    .box.big-number(v-if="computedSisyphus?.pointsEarned")
       .caption Points Earned
-      .number(v-text="addCommas(computedSisyphusCheevos.totalPoints)")
+      .number(v-text="addCommas(computedSisyphus.pointsEarned)")
       .sub-number
-          strong(v-text="calculateAverage(computedSisyphusCheevos.totalPoints, dates.sisyphus.dayCount)")
+          strong(v-text="calculateAverage(computedSisyphus.pointsEarned, dates.sisyphus.dayCount)")
           |  per day
 
-    .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchases && computedSisyphusPurchases.totalNumber")
+    .box.big-number(v-if="computedSisyphus.totalPurchases")
       .caption Purchases Made
-      .number(v-text="addCommas(computedSisyphusPurchases.totalNumber)")
+      .number(v-text="addCommas(computedSisyphus.totalPurchases)")
       .sub-number
-          strong(v-text="calculateAverage(computedSisyphusPurchases.totalNumber, dates.sisyphus.dayCount)")
+          strong(v-text="calculateAverage(computedSisyphus.totalPurchases, dates.sisyphus.dayCount)")
           |  per day
     
-    .box.big-number(v-if="stats.sisyphus && computedSisyphusPurchases && computedSisyphusPurchases.totalCost")
+    .box.big-number(v-if="computedSisyphus.pushesSpent")
       .caption Pushes Spent
-      .number(v-text="addCommas(computedSisyphusPurchases.totalCost)")
+      .number(v-text="addCommas(computedSisyphus.pushesSpent)")
       .sub-number
-          strong(v-text="calculateAverage(computedSisyphusPurchases.totalCost, dates.sisyphus.dayCount)")
+          strong(v-text="calculateAverage(computedSisyphus.pushesSpent, dates.sisyphus.dayCount)")
           |  per day
 
   .two-tables

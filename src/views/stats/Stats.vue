@@ -1,7 +1,6 @@
 <script setup>
   import { reactive, computed, onMounted, onBeforeMount } from "vue";
   // import { DateTime } from "luxon";
-  import { timeZoneOffset, jsonURL } from "./js/_variables";
   import { formatDate, dollars, billionsOfDollars, exceededBudgetOutput, formatStatement } from "./js/_functions";
   import { addCommas, percentOf } from "@/shared/js/_functions";
   import { columns } from "./js/_columns";
@@ -438,166 +437,6 @@
   /////////////////////////////////////////////////////////
   // Computed
 
-  // const computedCameoPlayerData = computed(() => {
-  //   let cameoObject = {
-  //     averagePoints: 0,
-  //     averageCorrectSorts: 0,
-  //     averageBirthdayWishes: 0,
-  //     exceededBudget: 0,
-  //     observedBudget: 0,
-  //     exceededBudgetPercent: 0,
-  //     correctSortPercent: 0,
-  //   };
-
-  //   const self = this;
-  //   if (!stats.cameo.playerScores || stats.cameo.playerScores.length < 10) {
-  //     return cameoObject;
-  //   }
-
-  //   let totalPoints = 0;
-  //   let totalCorrectSorts = 0;
-  //   let totalBirthdayWishes = 0;
-  //   stats.cameo.playerScores.forEach((player) => {
-  //     totalPoints += player.playerScore;
-  //     totalCorrectSorts += player.correctSorts;
-  //     totalBirthdayWishes += player.birthdayWishes;
-
-  //     if (player.exceededBudget == "no") {
-  //       // do nothing
-  //       // This is because I screwed up early data.
-  //     } else if (player.exceededBudget == "NO") {
-  //       cameoObject.observedBudget++;
-  //     } else if (player.exceededBudget == "YES") {
-  //       cameoObject.exceededBudget++;
-  //     }
-  //   });
-
-  //   let playerCount = stats.cameo.playerScores.length;
-  //   cameoObject.averagePoints = parseInt(totalPoints / playerCount);
-  //   cameoObject.averagePoints = addCommas(cameoObject.averagePoints);
-  //   cameoObject.averageCorrectSorts = parseInt(totalCorrectSorts / playerCount);
-  //   cameoObject.averageBirthdayWishes = parseInt(totalBirthdayWishes / playerCount);
-
-  //   cameoObject.exceededBudgetPercent = percentOf(cameoObject.observedBudget + cameoObject.exceededBudget, cameoObject.exceededBudget);
-  //   cameoObject.correctSortPercent = percentOf(12, cameoObject.averageCorrectSorts);
-
-  //   return cameoObject;
-  // });
-
-  // const computedNaughtyPercentage = computed(() => {
-  //   const self = this;
-
-  //   if (!stats.general || !stats.general.invalid || !stats.general.invalid.NaughtyModeOn) {
-  //     return "0";
-  //   }
-
-  //   return percentOf(stats.general.invalid.NaughtyModeOn + stats.general.invalid.NaughtyModeOff, stats.general.invalid.NaughtyModeOn);
-  // });
-
-  const computedCrackedPasswordPercent = computed(() => {
-    if (!stats.invalid || !stats.invalid.successfulPasswords || !stats.invalid.cracks) {
-      return "0";
-    }
-
-    return percentOf(stats.invalid.successfulPasswords.length, stats.invalid.cracks.length);
-  });
-
-  const computedServerCrashes = computed(() => {
-    const self = this;
-    if (!stats.invalid || !stats.invalid.crashes) {
-      return "0";
-    }
-    let c = 0;
-    stats.invalid.crashes.forEach((crash) => {
-      c += crash.icount;
-    });
-    return c;
-  });
-
-  const computedAveragePlayerCounts = computed(() => {
-    const self = this;
-    let invalidAverage;
-    let invalidMostCommon;
-    let wrongestAverage;
-    let wrongestMostCommon;
-    let totalPlayers;
-    let totalGames;
-    let highestCount;
-
-    if (stats && stats.invalid && stats.invalid.playerCounts) {
-      totalPlayers = 0;
-      totalGames = 0;
-      highestCount = 0;
-      stats.invalid.playerCounts.forEach((element) => {
-        let players = element.iname.replace(/\D/g, "");
-        players = parseInt(players);
-        const count = element.icount;
-        totalPlayers += players * count;
-        totalGames += element.icount;
-        if (count > highestCount) {
-          highestCount = count;
-          invalidMostCommon = element.iname;
-        }
-      });
-      invalidAverage = (totalPlayers / totalGames).toFixed(1);
-    }
-
-    if (stats && stats.wrongest && stats.wrongest.playerCounts) {
-      totalPlayers = 0;
-      totalGames = 0;
-      highestCount = 0;
-      stats.wrongest.playerCounts.forEach((element) => {
-        let players = element.iname.replace(/\D/g, "");
-        players = parseInt(players);
-        const count = element.icount;
-        totalPlayers += players * count;
-        totalGames += element.icount;
-        if (count > highestCount) {
-          highestCount = count;
-          wrongestMostCommon = element.iname;
-        }
-      });
-      wrongestAverage = (totalPlayers / totalGames).toFixed(1);
-    }
-
-    return {
-      invalid: invalidAverage,
-      invalidMostCommon: invalidMostCommon,
-      wrongest: wrongestAverage,
-      wrongestMostCommon: wrongestMostCommon,
-    };
-  });
-
-  const computedSisyphusCheevos = computed(() => {
-    if (!stats.sisyphus.cheevos) {
-      return { totalCheevos: 0, totalPoints: 0 };
-    }
-    let totalCheevos = 0;
-    let totalPoints = 0;
-    stats.sisyphus.cheevos.forEach((cheevo) => {
-      const earned = typeof cheevo.earnedCount === "number" ? cheevo.earnedCount : 0;
-      const points = typeof cheevo.pointValue === "number" ? cheevo.pointValue : 0;
-      totalCheevos += earned;
-      totalPoints += earned * points;
-    });
-    return { totalCheevos, totalPoints };
-  });
-
-  const computedSisyphusPurchases = computed(() => {
-    if (!stats.sisyphus.purchases) {
-      return { totalNumber: 0, totalCost: 0 };
-    }
-    let totalNumber = 0;
-    let totalCost = 0;
-    stats.sisyphus.purchases.forEach((purchase) => {
-      const timesBought = typeof purchase.timesBought === "number" ? purchase.timesBought : 0;
-      const price = typeof purchase.price === "number" ? purchase.price : 0;
-      totalNumber += timesBought;
-      totalCost += timesBought * price;
-    });
-    return { totalNumber, totalCost };
-  });
-
   const computedCameo = computed(() => {
     // Defensive checks
     const specialGames = stats.cameo.specialGames || [];
@@ -843,6 +682,37 @@
       mostCreatedPassword,
       mostCrackedPassword,
       mostUsedRule,
+    };
+  });
+
+  const computedSisyphus = computed(() => {
+    // Defensive checks
+    const purchases = stats.sisyphus.purchases || [];
+    const cheevos = stats.sisyphus.cheevos || [];
+
+    let totalPurchases = 0;
+    let pushesSpent = 0;
+    purchases.forEach((purchase) => {
+      const timesBought = typeof purchase.timesBought === "number" ? purchase.timesBought : 0;
+      const price = typeof purchase.price === "number" ? purchase.price : 0;
+      totalPurchases += timesBought;
+      pushesSpent += timesBought * price;
+    });
+
+    let cheevosEarned = 0;
+    let pointsEarned = 0;
+    cheevos.forEach((cheevo) => {
+      const earnedCount = typeof cheevo.earnedCount === "number" ? cheevo.earnedCount : 0;
+      const pointValue = typeof cheevo.pointValue === "number" ? cheevo.pointValue : 0;
+      cheevosEarned += earnedCount;
+      pointsEarned += earnedCount * pointValue;
+    });
+
+    return {
+      totalPurchases,
+      cheevosEarned,
+      pushesSpent,
+      pointsEarned,
     };
   });
 

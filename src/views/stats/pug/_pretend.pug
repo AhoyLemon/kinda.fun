@@ -7,11 +7,34 @@ section.pretend.stats(v-if="ui.viewing == 'pretend'")
   
     .stats-boxes
 
+      .box.big-name(span="2" v-if="computedPretend && computedPretend.bestImpersonator")
+        .caption Best Impersonator
+        .name {{computedPretend.bestImpersonator.name}}
+        .subtext
+          | {{computedPretend.bestImpersonator.correctPercent}}% correct guesses
+
+      .box.big-name(span="2" v-if="computedPretend && computedPretend.worstImpersonator")
+          .caption Worst Impersonator
+          .name {{computedPretend.worstImpersonator.name}}
+          .subtext
+            | {{computedPretend.worstImpersonator.correctPercent}}% correct guesses
+
       .box.date(v-if="stats.pretend && stats.pretend.lastGameStarted")
         .caption Last Game
         .time-ago(v-text="formatTime(stats.pretend.lastGameStarted,'fromNow')")
         .calendar(v-text="formatTime(stats.pretend.lastGameStarted,'calendar')")
-      .box.date(v-if="dates.pretend.launched")
+
+      .box.big-number(v-if="computedPretend && computedPretend.badGuessPercent")
+        .caption Bad Guesses
+        .number 
+          | {{computedPretend.badGuessPercent}}%
+        .sub-number
+          strong {{computedPretend.exactGuessPercent}}%
+          |  exact / 
+          strong {{computedPretend.closeGuessPercent}}%
+          |  close
+
+      //.box.date(v-if="dates.pretend.launched")
         .caption Game Launched
         .time-ago(v-text="formatTime(dates.pretend.launched,'MMM D, YYYY')")
         .calendar(v-text="formatTime(dates.pretend.launched,'fromNow')")
@@ -22,18 +45,21 @@ section.pretend.stats(v-if="ui.viewing == 'pretend'")
         .sub-number
           strong(v-text="calculateAverage(stats.pretend.gamesStarted, dates.pretend.dayCount)")
           |  games per day
+
       .box.big-number(v-if="stats.pretend && stats.pretend.gamesFinished")
         .caption Games Finished
         .number(v-text="addCommas(stats.pretend.gamesFinished)")
         .sub-number
           strong(v-text="percentOf(stats.pretend.gamesStarted,stats.pretend.gamesFinished) + '%'")
           |  completion rate
+
       .box.big-number(v-if="stats.pretend && stats.pretend.gamesWon")
         .caption Games Won
         .number(v-text="addCommas(stats.pretend.gamesWon)")
         .sub-number
           strong(v-text="percentOf(stats.pretend.gamesFinished,stats.pretend.gamesWon) + '%'")
           |  success rate
+
       .box.big-number(v-if="stats.pretend && stats.pretend.gamesLost")
         .caption Games Lost
         .number(v-text="addCommas(stats.pretend.gamesLost)")
@@ -41,27 +67,7 @@ section.pretend.stats(v-if="ui.viewing == 'pretend'")
           strong(v-text="percentOf(stats.pretend.gamesFinished,stats.pretend.gamesLost) + '%'")
           |  failure rate
 
-      .box.big-number(v-if="computedPretend && computedPretend.badGuessPercent")
-        .caption Bad Guesses
-        .number 
-          | {{computedPretend.badGuessPercent}}%
-          
-        .sub-number
-          strong {{computedPretend.exactGuessPercent}}%
-          |  exact / 
-          strong {{computedPretend.closeGuessPercent}}%
-          |  close
-
-      .box.big-name(span="2" v-if="computedPretend && computedPretend.bestImpersonator")
-        .caption Best Impersonator
-        .name {{computedPretend.bestImpersonator.name}}
-        .subtext
-          | {{computedPretend.bestImpersonator.correctPercent}}% correct guesses
-      .box.big-name(span="2" v-if="computedPretend && computedPretend.worstImpersonator")
-          .caption Worst Impersonator
-          .name {{computedPretend.worstImpersonator.name}}
-          .subtext
-            | {{computedPretend.worstImpersonator.correctPercent}}% correct guesses
+      
 
     .table
 

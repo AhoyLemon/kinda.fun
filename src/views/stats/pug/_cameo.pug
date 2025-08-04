@@ -69,7 +69,7 @@ section.famous.stats(v-if="ui.viewing == 'cameo'")
         .name {{computedCameo.mostUndervalued.name}}
         .subtext
           span Undervalued by 
-          strong(v-text="dollars(Math.abs(computedCameo.mostOvervalued.marketForces))")
+          strong(v-text="dollars(Math.abs(computedCameo.mostUndervalued.marketForces))")
 
       //-.box.date(v-if="dates.cameo.launched")
         .caption Game Launched
