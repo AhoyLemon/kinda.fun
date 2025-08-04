@@ -1,0 +1,77 @@
+.mobile-title-screen {
+  display: grid;
+  height: 100dvh;
+  background: radial-gradient(#ffffff, #d3d3d3);
+  .inside {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .splash {
+    grid-column: span 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .inside {
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
+  }
+  figure.logo {
+    width: 100%;
+    max-width: 340px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2em;
+    svg {
+      * {
+        fill: #ee2f26;
+      }
+    }
+    figcaption {
+      font-family: $serif;
+      text-align: center;
+      .slogan {
+        font-size: 110%;
+        margin-top: 1em;
+        margin-bottom: 1em;
+      }
+    }
+  }
+  p {
+    font-family: $open-sans;
+    font-weight: 525;
+    line-height: 165%;
+    text-wrap: balanced;
+    font-size: 0.875rem;
+    margin-bottom: 1.5em;
+  }
+  a {
+    color: $pink;
+    font-weight: 700;
+    &:hover,
+    &:focus-visible {
+      color: darken($pink, 25%);
+    }
+  }
+  code {
+    font-weight: 700;
+    font-family: $monospace;
+    font-size: 1.25em;
+  }
+}
+
+@media (max-width: 999px) {
+  .title-screen {
+    display: none;
+  }
+  .pregame {
+    display: none;
+  }
+}
+@media (min-width: 1000px) {
+  .mobile-title-screen {
+    display: none;
+  }
+}
