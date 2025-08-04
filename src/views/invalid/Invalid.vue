@@ -858,7 +858,18 @@
   };
 
   const chooseRule = async (rule) => {
-    if (rule.name == "Flying Pig") {
+    if (rule.name == "DROWSSAP") {
+      // DROWSSAP rule: password must be entered backwards
+      await payForRule(rule.name, 3);
+      let r = {
+        type: "DROWSSAP",
+        message: "Your password must be entered backwards. PASSWORD = DROWSSAP",
+      };
+      round.rules.push(r);
+      await updateRoomState({
+        currentRules: round.rules,
+      });
+    } else if (rule.name == "Flying Pig") {
       // Special process for summoning a flying pig.
       await payForRule(rule.name, rule.cost);
       round.flyingPig.active = true;
@@ -1420,6 +1431,12 @@
   const tryThisPassword = async (attempt) => {
     attempt = attempt.toUpperCase();
     ui.passwordAttemptErrors = [];
+
+    // Check for DROWSSAP rule and reverse attempt if active
+    const hasDrowssapRule = round.rules.some((r) => r.type === "DROWSSAP");
+    if (hasDrowssapRule) {
+      attempt = attempt.split("").reverse().join("");
+    }
 
     const crashCheck = tryToCrashWith(attempt);
     const failCheck = tryToFailThis(attempt);
