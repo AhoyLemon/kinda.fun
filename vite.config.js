@@ -37,6 +37,14 @@ export default defineConfig(({ mode }) => {
       __APP_ENV__: env.APP_ENV,
       "process.env": env,
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          quietDeps: true,
+          silenceDeprecations: ["import", "global-builtin", "color-functions", "mixed-decls"],
+        },
+      },
+    },
     build: {
       rollupOptions: {
         input: {
