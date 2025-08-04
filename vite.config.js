@@ -57,6 +57,7 @@ export default defineConfig(({ mode }) => {
           stats: resolve(__dirname, "src/entries/stats.js"),
           wrongest: resolve(__dirname, "src/entries/wrongest.js"),
           home: resolve(__dirname, "src/entries/home.js"),
+          404: resolve(__dirname, "src/entries/404.js"),
         },
         output: {
           entryFileNames: "[name].js",
@@ -70,16 +71,27 @@ export default defineConfig(({ mode }) => {
       setupMiddlewares(middlewares) {
         middlewares.use((req, res, next) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
-          const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home"];
+          const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home", "404"];
           const url = req.url.split("?")[0];
+          
+          console.log('Original URL:', url);
+          
           // If the URL is exactly "/", rewrite to /home.html
           if (url === "/") {
             req.url = "/home.html";
+            console.log('Rewrite / to /home.html');
           } else {
             // If the URL is exactly "/slug", rewrite to "/slug.html"
             const match = url.match(/^\/(\w+)\/?$/);
             if (match && mpaPages.includes(match[1])) {
               req.url = `/${match[1]}.html`;
+              console.log(`Rewrite ${url} to ${req.url}`);
+            } else {
+              // For any unmatched routes that look like pages (not assets), serve the 404 page
+              if (!url.includes('.') && url !== '/') {
+                req.url = "/404.html";
+                console.log(`Rewrite ${url} to /404.html (404 case)`);
+              }
             }
           }
           next();

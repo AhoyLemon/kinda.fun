@@ -1,0 +1,151 @@
+//GLOBALS, GET DEFAULTS
+@import "@/shared/scss/globals/reset";
+@import "@/shared/scss/globals/variables";
+@import "@/shared/scss/globals/mixins";
+@import "@/shared/scss/globals/extends";
+
+.NotFoundPage {
+  min-height: 100vh;
+  background: $white;
+  color: $copy;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-family: $font-family;
+
+  .container {
+    max-width: 600px;
+    text-align: center;
+  }
+
+  .not-found-content {
+    .error-number {
+      font-size: 8rem;
+      font-weight: $bold;
+      color: $accent;
+      margin-bottom: 0.5rem;
+      line-height: 1;
+    }
+
+    .error-message {
+      font-size: 2.5rem;
+      font-weight: $bold;
+      margin-bottom: 2rem;
+      color: $copy;
+    }
+
+    .error-description {
+      font-size: 1.2rem;
+      margin-bottom: 3rem;
+      line-height: 1.6;
+
+      p {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  .navigation-options {
+    margin-bottom: 3rem;
+
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      margin: 0 0.5rem;
+      border: none;
+      border-radius: 0.25rem;
+      font-size: 1rem;
+      font-weight: $medium;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+
+      &.btn-primary {
+        background-color: $accent;
+        color: $white;
+
+        &:hover {
+          background-color: darken($accent, 10%);
+        }
+      }
+
+      &.btn-secondary {
+        background-color: $copy;
+        color: $white;
+
+        &:hover {
+          background-color: lighten($copy, 10%);
+        }
+      }
+    }
+  }
+
+  .quick-links {
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: $copy;
+    }
+
+    .game-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+
+      .game-link {
+        display: inline-block;
+        padding: 0.6rem 1.2rem;
+        background-color: lighten($accent, 20%);
+        color: $copy;
+        text-decoration: none;
+        border-radius: 0.25rem;
+        font-weight: $medium;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: $accent;
+          color: $white;
+        }
+      }
+    }
+  }
+
+  @media (max-width: $mobile-max) {
+    padding: 1rem;
+
+    .not-found-content {
+      .error-number {
+        font-size: 6rem;
+      }
+
+      .error-message {
+        font-size: 2rem;
+      }
+
+      .error-description {
+        font-size: 1.1rem;
+      }
+    }
+
+    .navigation-options {
+      .btn {
+        display: block;
+        margin: 0.5rem auto;
+        width: 200px;
+      }
+    }
+
+    .quick-links {
+      .game-links {
+        flex-direction: column;
+        align-items: center;
+
+        .game-link {
+          width: 200px;
+        }
+      }
+    }
+  }
+}
