@@ -1523,7 +1523,7 @@
             name: attempt,
             timesCrashed: 1,
             lastCrashed: serverTimestamp(),
-            timesCreated: 1,
+            timesCreated: 0,
           });
         }
       } catch (err) {
