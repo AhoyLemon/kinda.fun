@@ -858,7 +858,18 @@
   };
 
   const chooseRule = async (rule) => {
-    if (rule.name == "Flying Pig") {
+    if (rule.name == "DROWSSAP") {
+      // DROWSSAP rule: password must be entered backwards
+      await payForRule(rule.name, 3);
+      let r = {
+        type: "DROWSSAP",
+        message: "Your password must be entered backwards. PASSWORD = DROWSSAP",
+      };
+      round.rules.push(r);
+      await updateRoomState({
+        currentRules: round.rules,
+      });
+    } else if (rule.name == "Flying Pig") {
       // Special process for summoning a flying pig.
       await payForRule(rule.name, rule.cost);
       round.flyingPig.active = true;
@@ -1096,25 +1107,37 @@
 
     // Toast message variants for invalid and duplicate bugs
     const invalidBugMessages = [
-      `<p><code>{BUG}</code> is not recognized as a valid password in your current ruleset.</p>
+      `<p><code>{BUG}</code> would not have been a valid password.</p>
         <p>Our compliance robots have flagged this entry for further review, which will be ignored by the entire company, but you'll receive a number of emails about it.</p>`,
-      `<p><code>{BUG}</code> is not on the official password list for this challenge.</p>
+      `<p><code>{BUG}</code> would not have been a valid password.</p>
         <p>Please consult your company handbook, your supervisor, or the nearest sentient office plant for advice.</p>`,
-      `<p><code>{BUG}</code> would not have been a valid password. The system has notified HR, IT, and your 5th grade teacher. Please review the challenge requirements, try again, and remember: every mistake is logged for posterity.</p>`,
-      `<p><code>{BUG}</code> would not have been a valid password.</p><p>Double-check your ruleset, your spelling, and your life choices.</p>`,
-      `<p><code>{BUG}</code> would not have been a valid password.</p><p>Refer to the official documentation, or at least tell your supervisor that you did</p>`,
-      `<p><code>{BUG}</code> is not a recognized entry in your current ruleset.</p><p>For compliance, please use an approved password, or invent a new department to handle this situation.</p>`,
-      `<p><code>{BUG}</code> is not a valid password in this ruleset.</p><p>Check your spelling, your company rules, and your horoscope.</p>`,
-      `<p><code>{BUG}</code> is invalid for this round.</p><p>Hey, that's the name of the game! That's fun! :)</p>`,
-      `<p><code>{BUG}</code> has been flagged as "creative" but not "correct." We at BigCorp discourage creativity.</p>`,
+      `<p><code>{BUG}</code> would not have been a valid password.</p>
+        <p>The system has notified HR, IT, and your 5th grade teacher. Please review the challenge requirements, try again, and remember: every mistake is logged for posterity.</p>`,
+      `<p><code>{BUG}</code> would not have been a valid password.</p>
+        <p>Double-check your ruleset, your spelling, and your life choices.</p>`,
+      `<p><code>{BUG}</code> would not have been a valid password.</p>
+        <p>Refer to the official documentation, or at least tell your supervisor that you did</p>`,
+      `<p><code>{BUG}</code> would not have been a valid password.</p>
+        <p>The compliance department has asked that you provide valid passwords. For compliance, please use an approved password, or invent a new department to handle this situation.</p>`,
+      `<p><code>{BUG}</code> would not have been a valid password.</p>
+        <p>Check your spelling, your company rules, and your horoscope.</p>`,
+      `<p><code>{BUG}</code> is invalid for this round.</p>
+        <p>Hey, that's the name of the game! That's fun! :)</p>`,
+      `<p><code>{BUG}</code> is invalid for this round.</p>
+        <p><code>{BUG}</code> has been flagged as "creative" but not "correct." We at BigCorp discourage creativity.</p>`,
     ];
 
     const duplicateBugMessages = [
-      `<p><code>{BUG}</code> has already generated a bug for this round.</p><p>BigCorp appreciates your continued vigilance. For compliance purposes, your duplicate bug will still be logged and you will be charged accordingly. Please consult the official bug tracker for further updates, or just move on with your life.</p>`,
-      `<p><code>{BUG}</code> is a duplicate bug entry.</p><p>You will still be charged for compliance, but not for originality.</p>`,
-      `<p><code>{BUG}</code> was already submitted for this round.</p><p>BigCorp thanks you for your attention to detail. Please check the bug tracker for updates, or just pretend this never happened.</p>`,
-      `<p><code>{BUG}</code> is a repeat entry.</p><p>Your duplicate will be processed, but not celebrated.</p>`,
-      `<p><code>{BUG}</code> is already in the system.</p><p>No need to report it again, but your duplicate will be processed, charged, and possibly used as an example in next week's training video.</p>`,
+      `<p><code>{BUG}</code> has already generated a bug for this round.</p>
+        <p>BigCorp appreciates your continued vigilance. For compliance purposes, your duplicate bug will still be logged and you will be charged accordingly. Please consult the official bug tracker for further updates, or just move on with your life.</p>`,
+      `<p><code>{BUG}</code> is a duplicate bug entry.</p>
+        <p>You will still be charged for compliance, but not for originality.</p>`,
+      `<p><code>{BUG}</code> was already submitted for this round.</p>
+        <p>BigCorp thanks you for your attention to detail. Please check the bug tracker for updates, or just pretend this never happened.</p>`,
+      `<p><code>{BUG}</code> is a repeat entry.</p>
+        <p>Your duplicate will be processed, but not celebrated.</p>`,
+      `<p><code>{BUG}</code> is already in the system.</p>
+        <p>No need to report it again, but your duplicate will be processed, charged, and possibly used as an example in next week's training video.</p>`,
       `<p><code>{BUG}</code> is already famous in our system. Further reports will be archived in the "Hall of Redundancy Hall."</p>`,
       `<p>You already added <code>{BUG}</code>, but your enthusiasm is noted. Please consult the bug tracker for updates, or just go get a snack.</p>`,
     ];
@@ -1420,6 +1443,12 @@
   const tryThisPassword = async (attempt) => {
     attempt = attempt.toUpperCase();
     ui.passwordAttemptErrors = [];
+
+    // Check for DROWSSAP rule and reverse attempt if active
+    const hasDrowssapRule = round.rules.some((r) => r.type === "DROWSSAP");
+    if (hasDrowssapRule) {
+      attempt = attempt.split("").reverse().join("");
+    }
 
     const crashCheck = tryToCrashWith(attempt);
     const failCheck = tryToFailThis(attempt);

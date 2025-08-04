@@ -10,8 +10,8 @@
     .inside
       figure.video
         iframe#ytplayer(type="text/html" src="https://www.youtube-nocookie.com/embed/uhA83jtHmzM?autoplay=1&controls=0&fs=0&modestbranding=1&playsinline=1&color=white" frameborder="0" allowfullscreen)
-      figcaption
-        button(@click="stopWatchingVideo()") Okay, close this video.
+        figcaption
+          button(@click="stopWatchingVideo()") Okay, close this video.
 
   .error-box(v-if="game.isFailedToGetRoomData")
     .inside 
@@ -34,7 +34,7 @@
         h2 The game has already started.
         p Ask the game host to start a new game, so you can join.
 
-  .sign-in(v-else)
+  .sign-in(v-else-if="!ui.watchingVideo")
 
     .inside
         

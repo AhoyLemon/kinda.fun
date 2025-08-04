@@ -65,7 +65,8 @@
           .desc
             h2 Add a Password Rule
             p You have 
-              strong.rulebux {{my.rulebux}}
+              strong.rulebux 
+                span.number {{my.rulebux}}
                 sup ƒ
               |  to spend
           .rules
@@ -74,6 +75,7 @@
             +ruleButton('Ban A Letter', 3)
             +ruleButton('Shibboleth', 3, true)
             +ruleButton('Flying Pig', 3, true)
+            +ruleButton('DROWSSAP', 3, true)
             +ruleButton('Set A Maximum', 2, true)
             +ruleButton('Set A Minimum', 2, true)
             +ruleButton('Peek At Answers', 2) 

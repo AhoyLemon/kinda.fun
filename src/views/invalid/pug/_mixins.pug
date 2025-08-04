@@ -30,7 +30,7 @@ mixin ruleButton(name,cost,unique)
     - unique = false
   else
     - unique = true
-  button.rule( @click="chooseRule({name:'"+name+"', cost:"+cost+"})" :class="{ active: (ui.currentRule.name == '"+name+"'), 'too-expensive': (my.rulebux < "+cost+") }" :disabled="isRuleButtonDisabled('"+name+"',"+cost+","+unique+")")
+  button.rule( @click="chooseRule({name:'"+name+"', cost:"+cost+", unique:"+unique+"})" :class="{ active: (ui.currentRule.name == '"+name+"'), 'too-expensive': (my.rulebux < "+cost+") }" :disabled="isRuleButtonDisabled('"+name+"',"+cost+","+unique+")")
     .name= name
     .cost= cost
       sup ƒ
@@ -55,3 +55,5 @@ mixin ruleButton(name,cost,unique)
         span Ban Two Letters From Being Used Together
       else if name == "Peek At Answers"
         span Shows the SysAdmin 5 random passwords from this set.
+      else if name == "DROWSSAP"
+        span Employees must enter their password BACKWARDS.

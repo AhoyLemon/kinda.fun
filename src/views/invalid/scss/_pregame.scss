@@ -254,7 +254,7 @@
       line-height: 140%;
     }
     a {
-      color: $purple;
+      color: $pink;
       font-weight: 700;
       text-decoration: none;
       cursor: pointer;
@@ -275,17 +275,9 @@
       padding: 10px;
     }
     figure.video {
-      width: 100%;
       position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
       iframe {
-        width: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        aspect-ratio: 16/9;
       }
     }
     figcaption {
