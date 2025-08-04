@@ -68,13 +68,13 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       middlewareMode: false,
-      setupMiddlewares(middlewares) {
-        middlewares.use((req, res, next) => {
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
           const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home", "404"];
           const url = req.url.split("?")[0];
           
-          console.log('Original URL:', url);
+          console.log('Middleware hit for URL:', url);
           
           // If the URL is exactly "/", rewrite to /home.html
           if (url === "/") {
@@ -88,7 +88,7 @@ export default defineConfig(({ mode }) => {
               console.log(`Rewrite ${url} to ${req.url}`);
             } else {
               // For any unmatched routes that look like pages (not assets), serve the 404 page
-              if (!url.includes('.') && url !== '/') {
+              if (!url.includes('.') && url !== '/' && !url.startsWith('/@') && !url.startsWith('/node_modules')) {
                 req.url = "/404.html";
                 console.log(`Rewrite ${url} to /404.html (404 case)`);
               }
@@ -96,7 +96,6 @@ export default defineConfig(({ mode }) => {
           }
           next();
         });
-        return middlewares;
       },
     },
   };
