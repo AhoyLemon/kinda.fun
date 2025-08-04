@@ -92,6 +92,11 @@ section {
     grid-template-columns: 1fr 1fr;
     gap: 40px;
   }
+  .three-tables {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
 }
 
 section.loading {

@@ -438,61 +438,61 @@
   /////////////////////////////////////////////////////////
   // Computed
 
-  const computedCameoPlayerData = computed(() => {
-    let cameoObject = {
-      averagePoints: 0,
-      averageCorrectSorts: 0,
-      averageBirthdayWishes: 0,
-      exceededBudget: 0,
-      observedBudget: 0,
-      exceededBudgetPercent: 0,
-      correctSortPercent: 0,
-    };
+  // const computedCameoPlayerData = computed(() => {
+  //   let cameoObject = {
+  //     averagePoints: 0,
+  //     averageCorrectSorts: 0,
+  //     averageBirthdayWishes: 0,
+  //     exceededBudget: 0,
+  //     observedBudget: 0,
+  //     exceededBudgetPercent: 0,
+  //     correctSortPercent: 0,
+  //   };
 
-    const self = this;
-    if (!stats.cameo.playerScores || stats.cameo.playerScores.length < 10) {
-      return cameoObject;
-    }
+  //   const self = this;
+  //   if (!stats.cameo.playerScores || stats.cameo.playerScores.length < 10) {
+  //     return cameoObject;
+  //   }
 
-    let totalPoints = 0;
-    let totalCorrectSorts = 0;
-    let totalBirthdayWishes = 0;
-    stats.cameo.playerScores.forEach((player) => {
-      totalPoints += player.playerScore;
-      totalCorrectSorts += player.correctSorts;
-      totalBirthdayWishes += player.birthdayWishes;
+  //   let totalPoints = 0;
+  //   let totalCorrectSorts = 0;
+  //   let totalBirthdayWishes = 0;
+  //   stats.cameo.playerScores.forEach((player) => {
+  //     totalPoints += player.playerScore;
+  //     totalCorrectSorts += player.correctSorts;
+  //     totalBirthdayWishes += player.birthdayWishes;
 
-      if (player.exceededBudget == "no") {
-        // do nothing
-        // This is because I screwed up early data.
-      } else if (player.exceededBudget == "NO") {
-        cameoObject.observedBudget++;
-      } else if (player.exceededBudget == "YES") {
-        cameoObject.exceededBudget++;
-      }
-    });
+  //     if (player.exceededBudget == "no") {
+  //       // do nothing
+  //       // This is because I screwed up early data.
+  //     } else if (player.exceededBudget == "NO") {
+  //       cameoObject.observedBudget++;
+  //     } else if (player.exceededBudget == "YES") {
+  //       cameoObject.exceededBudget++;
+  //     }
+  //   });
 
-    let playerCount = stats.cameo.playerScores.length;
-    cameoObject.averagePoints = parseInt(totalPoints / playerCount);
-    cameoObject.averagePoints = addCommas(cameoObject.averagePoints);
-    cameoObject.averageCorrectSorts = parseInt(totalCorrectSorts / playerCount);
-    cameoObject.averageBirthdayWishes = parseInt(totalBirthdayWishes / playerCount);
+  //   let playerCount = stats.cameo.playerScores.length;
+  //   cameoObject.averagePoints = parseInt(totalPoints / playerCount);
+  //   cameoObject.averagePoints = addCommas(cameoObject.averagePoints);
+  //   cameoObject.averageCorrectSorts = parseInt(totalCorrectSorts / playerCount);
+  //   cameoObject.averageBirthdayWishes = parseInt(totalBirthdayWishes / playerCount);
 
-    cameoObject.exceededBudgetPercent = percentOf(cameoObject.observedBudget + cameoObject.exceededBudget, cameoObject.exceededBudget);
-    cameoObject.correctSortPercent = percentOf(12, cameoObject.averageCorrectSorts);
+  //   cameoObject.exceededBudgetPercent = percentOf(cameoObject.observedBudget + cameoObject.exceededBudget, cameoObject.exceededBudget);
+  //   cameoObject.correctSortPercent = percentOf(12, cameoObject.averageCorrectSorts);
 
-    return cameoObject;
-  });
+  //   return cameoObject;
+  // });
 
-  const computedNaughtyPercentage = computed(() => {
-    const self = this;
+  // const computedNaughtyPercentage = computed(() => {
+  //   const self = this;
 
-    if (!stats.general || !stats.general.invalid || !stats.general.invalid.NaughtyModeOn) {
-      return "0";
-    }
+  //   if (!stats.general || !stats.general.invalid || !stats.general.invalid.NaughtyModeOn) {
+  //     return "0";
+  //   }
 
-    return percentOf(stats.general.invalid.NaughtyModeOn + stats.general.invalid.NaughtyModeOff, stats.general.invalid.NaughtyModeOn);
-  });
+  //   return percentOf(stats.general.invalid.NaughtyModeOn + stats.general.invalid.NaughtyModeOff, stats.general.invalid.NaughtyModeOn);
+  // });
 
   const computedCrackedPasswordPercent = computed(() => {
     if (!stats.invalid || !stats.invalid.successfulPasswords || !stats.invalid.cracks) {
@@ -568,37 +568,6 @@
     };
   });
 
-  const computedAvgMarketForces = computed(() => {
-    if (!stats.cameo.celebs || !stats.cameo.celebs.length) return dollars(0);
-    // Only include celebs with a valid, finite number for marketForces
-    const filtered = stats.cameo.celebs.filter((celeb) => typeof celeb.marketForces === "number" && isFinite(celeb.marketForces));
-    if (!filtered.length) return dollars(0);
-    const total = filtered.reduce((sum, celeb) => sum + celeb.marketForces, 0);
-    return dollars(total / filtered.length);
-  });
-
-  const computedMostPopularCameoGame = computed(() => {
-    if (!stats.cameo || !stats.cameo.specialGames || !stats.cameo.specialGames.length) {
-      return null;
-    }
-    const total = stats.cameo.specialGames.reduce((sum, game) => sum + (game.startedCount || 0), 0);
-    const mostPopular = stats.cameo.specialGames.reduce((max, game) => {
-      return (game.startedCount || 0) > (max.startedCount || 0) ? game : max;
-    }, stats.cameo.specialGames[0]);
-    return {
-      ...mostPopular,
-      percent: total ? (((mostPopular.startedCount || 0) / total) * 100).toFixed(1) : "0",
-    };
-  });
-
-  const computedMostOvervaluedCeleb = computed(() => {
-    if (!stats.cameo.celebs || !stats.cameo.celebs.length) return null;
-    // Only consider celebs with a valid, finite marketForces number
-    const filtered = stats.cameo.celebs.filter((celeb) => typeof celeb.marketForces === "number" && isFinite(celeb.marketForces));
-    if (!filtered.length) return null;
-    return filtered.reduce((min, celeb) => (celeb.marketForces < min.marketForces ? celeb : min));
-  });
-
   const computedSisyphusCheevos = computed(() => {
     if (!stats.sisyphus.cheevos) {
       return { totalCheevos: 0, totalPoints: 0 };
@@ -627,6 +596,69 @@
       totalCost += timesBought * price;
     });
     return { totalNumber, totalCost };
+  });
+
+  const computedCameo = computed(() => {
+    // Defensive checks
+    const specialGames = stats.cameo.specialGames || [];
+    const celebs = stats.cameo.celebs || [];
+
+    // 1. mostPopularSpecialGame: object in specialGames with highest startedCount
+    let mostPopularSpecialGame = null;
+    let highestCount = -Infinity;
+    let specialGameCount = 0;
+    specialGames.forEach((game) => {
+      const count = typeof game.startedCount === "number" ? game.startedCount : 0;
+      specialGameCount += count;
+      if (count > highestCount) {
+        highestCount = count;
+        mostPopularSpecialGame = game;
+      }
+    });
+
+    // 2. averageMarketForces: average of all valid marketForces in celebs
+    const validMarketForces = celebs.map((celeb) => celeb.marketForces).filter((v) => typeof v === "number" && !isNaN(v));
+    const averageMarketForces = validMarketForces.length ? (validMarketForces.reduce((sum, v) => sum + v, 0) / validMarketForces.length).toFixed(2) : "0.00";
+
+    // 3. mostOvervalued: celeb with lowest marketForces
+    let mostOvervalued = null;
+    let minMarketForces = Infinity;
+    celebs.forEach((celeb) => {
+      if (typeof celeb.marketForces === "number" && !isNaN(celeb.marketForces) && celeb.marketForces < minMarketForces) {
+        minMarketForces = celeb.marketForces;
+        mostOvervalued = celeb;
+      }
+    });
+
+    // 4. mostUndervalued: celeb with highest marketForces
+    let mostUndervalued = null;
+    let maxMarketForces = -Infinity;
+    celebs.forEach((celeb) => {
+      if (typeof celeb.marketForces === "number" && !isNaN(celeb.marketForces) && celeb.marketForces > maxMarketForces) {
+        maxMarketForces = celeb.marketForces;
+        mostUndervalued = celeb;
+      }
+    });
+
+    // 5. mostBirthdays: celeb with highest birthdayWishCount
+    let mostBirthdays = null;
+    let maxBirthdayWishCount = -Infinity;
+    celebs.forEach((celeb) => {
+      const count = typeof celeb.birthdayWishCount === "number" ? celeb.birthdayWishCount : 0;
+      if (count > maxBirthdayWishCount) {
+        maxBirthdayWishCount = count;
+        mostBirthdays = celeb;
+      }
+    });
+
+    return {
+      mostPopularSpecialGame,
+      specialGameCount,
+      averageMarketForces,
+      mostOvervalued,
+      mostUndervalued,
+      mostBirthdays,
+    };
   });
 
   const computedPretend = computed(() => {

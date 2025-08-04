@@ -67,12 +67,12 @@ export const columns = {
 
   // INVALID
   invalidBugs: [
-    { label: "Bug", field: "name" },
+    { label: "Bug", field: "name", tdClass: "font-bold" },
     { label: "Deployed", field: "timesCreated", type: "number", formatFn: addCommas },
     { label: "Crashed", field: "timesCrashed", type: "number" },
   ],
   invalidChallenges: [
-    { label: "Challenge", field: "name" },
+    { label: "Challenge", field: "name", tdClass: "font-bold" },
     { label: "Played", field: "timesChosen", type: "number" },
   ],
   invalidGameSizes: [
@@ -81,14 +81,19 @@ export const columns = {
     { label: "Games Finished", field: "gamesFinished", type: "number" },
   ],
   invalidLetters: [
-    { label: "Letter", field: "letter" },
+    { label: "Letter", field: "letter", tdClass: "font-bold" },
     { label: "Demanded", field: "timesDemanded", type: "number" },
     { label: "Banned", field: "timesBanned", type: "number" },
   ],
   invalidPasswords: [
-    { label: "Password", field: "name" },
+    { label: "Password", field: "name", tdClass: "font-bold" },
     { label: "Created", field: "timesCreated" },
     { label: "Cracked", field: "timesCracked" },
     { label: "Last", field: "lastCreated", type: "date", formatFn: formatDate },
+  ],
+  invalidRules: [
+    { label: "Rule", field: "name", tdClass: "font-bold" },
+    { label: "Played", field: "count", type: "number" },
+    { label: "Last Played", field: "lastPlayed", type: "date", formatFn: formatDate },
   ],
 };
