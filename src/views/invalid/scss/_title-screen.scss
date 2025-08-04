@@ -38,10 +38,14 @@
     }
   }
   .help-holder {
-    font-family: $serif;
+    font-family: $sans-serif;
     margin-top: 12em;
+    font-size: 0.875rem;
+    p {
+      margin-bottom: 1em;
+    }
     a {
-      color: $purple;
+      color: $pink;
       cursor: pointer;
       font-weight: bold;
       &:hover {
@@ -75,7 +79,6 @@
       cursor: pointer;
     }
   }
-
   .create {
     text-align: right;
     button {
@@ -103,6 +106,7 @@
   }
   .join {
     position: relative;
+    padding-top: 3px;
     input {
       font-size: 36px;
       color: #23a0c7;
@@ -112,6 +116,7 @@
       border: none;
       outline: none;
       background: transparent;
+
       &::placeholder {
         color: #50666d;
       }

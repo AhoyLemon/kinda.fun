@@ -4,13 +4,14 @@ $padding: 20px;
 // Font shit
 $open-sans: "Open Sans", sans-serif;
 $bigShoulders: "Big Shoulders", sans-serif;
-$fira: "Fira Code", monospace;
+$fira: "Fira Code", "Fira Mono", "Menlo", "Consolas", "DejaVu Sans Mono", "Source Code Pro", "Liberation Mono", "Courier New", monospace;
 $lora: "Lora", serif;
 // $barlow: 'Barlow', sans-serif;
 $sans-serif: $open-sans;
 $headline-font: $bigShoulders;
 $monospace: $fira;
 $serif: $lora;
+$font-family: $lora;
 
 $medium: 300;
 $bold: 500;
