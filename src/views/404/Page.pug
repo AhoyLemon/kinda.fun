@@ -1,6 +1,6 @@
 include ../../shared/pug/_variables.pug
-- const name = "Kinda fun."
-- const desc = "Here's some games and stuff that Lemon made. All of it is kinda fun!"
+- const name = "404 - Page Not Found | Kinda fun."
+- const desc = "Sorry, the page you're looking for doesn't exist. Check out our games instead!"
 
 doctype html
 html(lang="en")
@@ -13,10 +13,10 @@ html(lang="en")
 
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.googleapis.com")
-    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet")
-    link(href="/home.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
-    
+    link(href="/404.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+
     // Favicons
     link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
     link(rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png")
@@ -31,10 +31,12 @@ html(lang="en")
     meta(property="og:image:width" content="1280")
     meta(property="og:image:height" content="640")
     meta(property="og:description" content=desc)
-    meta(property="og:url" content=baseUrl)
+    meta(property="og:url" content=baseUrl + "/404")
     meta(property="og:image" content=baseUrl + "/img/og-wide.png")
     meta(property="og:email" content=email)
-    meta(name="msvalidate.01" content="D3327FD7610C2D05D7D605EBCA288944")
+    
+    // Set proper HTTP status
+    meta(http-equiv="status" content="404")
   body
     #app
-    script(type="module" src="/src/entries/home.js")
+    script(type="module" src="/src/entries/404.js")

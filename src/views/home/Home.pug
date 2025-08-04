@@ -17,7 +17,7 @@ main.title-screen
     .info-holder
       transition(name="boing")
         .info(v-cloak v-if="currentThing && currentThing.name")
-          button.close(@click="selectGame('')") x
+          button.close(@click="selectGame('')") X
           .top-bar
             h2.game-name {{currentThing.name}}
           .content

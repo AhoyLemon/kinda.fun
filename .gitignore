@@ -38,6 +38,7 @@ scripts/firebase/dev-service-account.json
 scripts/firebase/prod-service-account.json
 
 # Generated HTML files (for dev only)
+/404.html
 /index.html
 /home.html
 /cameo.html
