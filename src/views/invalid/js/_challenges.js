@@ -3472,7 +3472,7 @@ export const challenges = [
   {
     id: 99,
     name: "Spice Rack",
-    nameAsRule: "Your password must be the name of a spice.",
+    nameAsRule: "Your password must be the name of a dried spice.",
     failedMessage: "[PASS] is not on the official list of dried spices from the CIA.",
     hint: "as defined by the Culinary Institute of America",
     possible: [
@@ -3523,7 +3523,7 @@ export const challenges = [
     name: "WWE Champions",
     nameAsRule: "Your password must be the last name of a WWF/WWE Champion.",
     failedMessage: "[PASS] is not the last name of someone who has held the WWF/WWE Championship belt.",
-    hint: "Last names only, if applicable.",
+    hint: "LAST NAMES ONLY, if applicable.",
     possible: [
       "ROGERS",
       "SAMMARTINO",
