@@ -40,11 +40,11 @@
     }
   }
   p {
-    font-family: $open-sans;
+    font-family: $serif;
     font-weight: 525;
     line-height: 165%;
     text-wrap: balanced;
-    font-size: 0.875rem;
+    font-size: 1rem;
     margin-bottom: 1.5em;
   }
   a {
@@ -62,7 +62,7 @@
   }
 }
 
-@media (max-width: 876px) {
+@media (max-width: 800px) {
   .title-screen {
     display: none;
   }
@@ -70,8 +70,8 @@
     display: none;
   }
 }
-@media (min-width: 877px) {
+@media (min-width: 801px) {
   .mobile-title-screen {
-    display: none;
+    display: none !important;
   }
 }

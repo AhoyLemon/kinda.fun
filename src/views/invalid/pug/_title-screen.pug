@@ -15,8 +15,8 @@
       .video-holder(v-if="ui.watchingVideo")
         figure.video
           iframe#ytplayer(type="text/html" src="https://www.youtube-nocookie.com/embed/uhA83jtHmzM?autoplay=1&controls=0&fs=0&modestbranding=1&playsinline=1&color=white" frameborder="0" allowfullscreen)
-        figcaption
-          button.close-video(@click="ui.watchingVideo = false") Okay, close this video. 
+          figcaption
+            button.close-video(@click="ui.watchingVideo = false") Okay, close this video. 
 
   .create
     button(@click="createRoom()") Create a New Room

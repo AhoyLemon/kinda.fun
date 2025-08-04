@@ -42,12 +42,15 @@ If a player accidentally cracks their own password, they are punished.
 
 Each time you become SysAdmin, you are given a set amount of ƒ (Rulebux) to spend on powers and bugs. The first bug you add is free; each additional bug costs 1 ƒ.
 
+Each round starts with 6 rulebux (ƒ) for the SysAdmin to spend.
+
 | Power           | Cost (ƒ) | Description                                                                 |
 | --------------- | -------- | --------------------------------------------------------------------------- |
 | Demand A Letter | 5ƒ       | Password must use letter of SysAdmin's choosing                             |
 | Ban A Letter    | 3ƒ       | Password cannot use letter of SysAdmin's choosing                           |
 | Shibboleth      | 3ƒ       | Employees must enter word of SysAdmin's choosing before entering password   |
 | Flying Pig      | 3ƒ       | A Flying Pig appears on Employee's screen, offering unhelpful advice        |
+| DROWSSAP        | 3ƒ       | Employees must enter their password backwards (e.g., PASSWORD → DROWSSAP)   |
 | Set A Maximum   | 2ƒ       | Maximum Characters are enforced (average character count +2)                |
 | Set A Minimum   | 2ƒ       | Minimum Characters are enforced (average character count -1)                |
 | Limit Vowels    | 1ƒ       | Maximum Vowel use is enforced (average vowel count + 1)                     |

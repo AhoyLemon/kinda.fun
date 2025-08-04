@@ -65,6 +65,13 @@ $admin-panel-color: #101010;
 
   .add-a-rule {
     padding-bottom: 2em;
+    .desc {
+      .number {
+        font-weight: 500;
+        font-size: 125%;
+        padding-right: 0.1em;
+      }
+    }
     .rules {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -133,7 +140,7 @@ $admin-panel-color: #101010;
       &:not([disabled]) .tooltip {
         opacity: 1;
         transition: opacity 0.5s linear;
-        transition-delay: 1s;
+        transition-delay: 0.25s;
       }
     }
     &[disabled] {
