@@ -1,0 +1,96 @@
+@media (max-width: 1000px) {
+  main.general-stats {
+    grid-template-columns: 1fr;
+    .game-summaries {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 20px;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+
+      .summary {
+        flex-basis: 260px;
+        // flex-grow: 1;
+        // flex-shrink: 1;
+        align-items: center;
+        justify-content: center;
+      }
+      figure {
+        margin: 0;
+      }
+    }
+    .player-table {
+      display: none;
+    }
+  }
+
+  main.general-stats .last-cloned-holder {
+    display: none;
+  }
+  // aside.general-stats {
+  //   display: none;
+  // }
+
+  section.stats {
+    .stats-boxes.with-table {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stats-screen {
+    grid-template-columns: 1fr;
+    aside.general-stats {
+      padding: 20px;
+      .inside {
+        flex-direction: row;
+        flex-wrap: wrap;
+        .summary {
+          flex-basis: 180px;
+          flex-grow: 1;
+          flex-shrink: 1;
+          img {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+  section.famous,
+  section.invalid {
+    padding: 0 20px;
+  }
+  section.guillotine .table-and-stats {
+    grid-template-columns: 1fr;
+  }
+  section .stats-boxes {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    > * {
+      flex-shrink: 1;
+      flex-grow: 1;
+    }
+  }
+  section .two-tables,
+  section .three-tables {
+    grid-template-columns: 1fr;
+  }
+  section.pretend {
+    padding: 0 20px;
+  }
+  section.pretend .pretend-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  section .stats-boxes.with-table .boxes {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 500px) {
+  section .stats-boxes.with-table .boxes {
+    grid-template-columns: 1fr;
+  }
+}

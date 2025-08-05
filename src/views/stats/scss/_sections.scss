@@ -26,6 +26,7 @@ section {
     }
     .caption {
       font-family: $sans-serif;
+      letter-spacing: 0.1em;
       font-size: 0.875rem;
       text-transform: uppercase;
       font-weight: 600;
@@ -46,6 +47,13 @@ section {
     }
     .time-ago {
       font-size: 210%;
+    }
+    .calendar,
+    .sub-number,
+    .subtext {
+      font-family: $sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
     }
 
     .big-name {

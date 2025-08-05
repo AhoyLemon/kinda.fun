@@ -193,6 +193,14 @@
           stats.general.invalidLastPlayed = invalidData.lastGameStarted ? convertTimestamp(invalidData.lastGameStarted) : null;
         }
 
+        await loadFirestoreStats("general", {
+          subcollections: {
+            players: {
+              timestampFields: ["lastPlayed"],
+            },
+          },
+        });
+
         ui.viewing = "general";
       } catch (e) {
         // fallback: clear fields

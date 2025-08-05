@@ -1,6 +1,14 @@
 import { billionsOfDollars, addCommas, dollars, formatDate, formatStatement } from "./_functions";
 
 export const columns = {
+  // GENERAL
+  generalPlayers: [
+    { label: "Name", field: "name", tdClass: "font-bold" },
+    { label: "x", field: "gamesPlayed", type: "number", formatFn: addCommas },
+    { label: "Most Recent", field: "mostRecentGame" },
+    { label: "Last Played", field: "lastPlayed", type: "date", tdClass: "date", formatFn: formatDate },
+  ],
+
   // NO MORE BILLIONAIRES
   guillotineHeads: [
     { label: "Name", field: "name", tdClass: "font-bold" },

@@ -34,11 +34,6 @@ section.pretend.stats(v-if="ui.viewing == 'pretend'")
           strong {{computedPretend.closeGuessPercent}}%
           |  close
 
-      //.box.date(v-if="dates.pretend.launched")
-        .caption Game Launched
-        .time-ago(v-text="formatTime(dates.pretend.launched,'MMM D, YYYY')")
-        .calendar(v-text="formatTime(dates.pretend.launched,'fromNow')")
-
       .box.big-number(v-if="stats.pretend && stats.pretend.gamesStarted")
         .caption Games Started
         .number(v-text="addCommas(stats.pretend.gamesStarted)")
@@ -78,5 +73,5 @@ section.pretend.stats(v-if="ui.viewing == 'pretend'")
                         :columns="columns.pretendGuesses"
                         theme="black-rhino"
                         :line-numbers="true"
-                        :sort-options="{ enabled: true, initialSortBy: { field: 'correctGuessCount', type: 'desc'} }"
+                        :sort-options="{ enabled: true, initialSortBy: { field: 'correctPercent', type: 'desc'} }"
                         :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")

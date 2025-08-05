@@ -2,7 +2,6 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
   .inside
 
-
     .game-summaries
 
       .summary
@@ -87,13 +86,16 @@ main.general-stats(v-if="ui.viewing == 'general'")
         //.button-holder
           button(@click="getData('pretend')") Details
 
-    aside.last-cloned-holder(v-if="stats?.general?.lastCloned")
-      .last-cloned
-        span 🗄️ Database was last cloned  &nbsp; 
-        strong(v-text="formatTime(stats.general.lastCloned, 'calendar')")
-
-
   .player-table 
-    //.good-table.player-table(v-if="stats.general.playerNames")
-      vue-good-table(:rows="stats.general.playerNames" :columns="columns.playerNames" :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
-        :pagination-options="{ enabled: true, perPage: 20, position: 'top', perPageDropdown: [10, 20, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+    h2 Top Players
+    .good-table.player-table(v-if="stats?.general?.players")
+      vue-good-table(:rows="stats.general.players"
+        theme="black-rhino"
+        :columns="columns.generalPlayers"
+        :sort-options="{ enabled: true, initialSortBy: {field: 'gamesPlayed', type: 'desc'} }"
+        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+  aside.last-cloned-holder(v-if="stats?.general?.lastCloned")
+    .last-cloned
+      span 🗄️ Database was last cloned  &nbsp; 
+      strong(v-text="formatTime(stats.general.lastCloned, 'calendar')")

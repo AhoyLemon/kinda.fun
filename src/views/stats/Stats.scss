@@ -1,12 +1,19 @@
 @import "@/shared/scss/globals/_variables";
 @import "@/shared/scss/globals/_mixins";
 @import "@/shared/scss/globals/_extends";
+@import "@/shared/scss/globals/reset";
 
 // SCREENS
 @import "scss/_variables";
 @import "scss/_default";
 @import "scss/_sections";
-@import "scss/_general"; 
-@import "scss/_tables"; 
+@import "scss/_general";
+@import "scss/_tables";
 
-.stats-screen { display:grid; gap:$gap; grid-template-columns: 240px 1fr; }
+.stats-screen {
+  display: grid;
+  gap: $gap;
+  grid-template-columns: 240px 1fr;
+}
+
+@import "scss/mobile";

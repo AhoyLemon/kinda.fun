@@ -1,9 +1,7 @@
 section {
-
   .good-table {
     .vgt-inner-wrap {
-
-      .vgt-wrap__footer  {
+      .vgt-wrap__footer {
         .footer__row-count__label {
           color: rgba($white, 0.8);
           font-family: $sans-serif;
@@ -21,17 +19,69 @@ section {
         }
       }
     }
-    table.vgt-table  {
-      td { border-left: 1px solid rgba(0,0,0,0.3); }
-      th { font-weight: 900; padding:5px 5px 5px 20px; text-transform: uppercase; font-size: 85%; }
-      td { padding: 5px; }
-      th.sorting-desc, th.sorting-asc { color:#dce4ac; }
-      th.sorting:hover:after { border-bottom-color: currentColor; }
-      th.sorting:after { right:unset; left:5px; }
-      th.sorting-desc:after { border-top-color: currentColor;}
-      th.sorting-asc:after { border-bottom-color: currentColor; }
-      td.font-bold { font-weight: 700; font-family: $sans-serif; }
-      td.vgt-right-align { font-family: $monospace; font-size: 0.875rem; }
+    table.vgt-table {
+      td {
+        border-left: 1px solid rgba(0, 0, 0, 0.3);
+      }
+      th {
+        font-weight: 900;
+        padding: 5px 5px 5px 20px;
+        text-transform: uppercase;
+        font-size: 85%;
+      }
+      td {
+        padding: 5px;
+      }
+      // th.sorting-desc, th.sorting-asc { color:#dce4ac; }
+      // th.sorting:hover:after { border-bottom-color: currentColor; }
+      // th.sorting:after { right:unset; left:5px; }
+      // th.sorting-desc:after { border-top-color: currentColor;}
+      // th.sorting-asc:after { border-bottom-color: currentColor; }
+      th {
+        font-weight: 900;
+        padding: 5px 20px 5px 10px;
+        text-transform: uppercase;
+        font-size: 85%;
+        font-family: $sans-serif;
+        font-weight: 525;
+        button {
+          cursor: pointer;
+        }
+        button:after,
+        button:before {
+          border: none;
+        }
+
+        &.sorting {
+          color: $yellow;
+          button:after {
+            background-color: $yellow;
+            width: 12px;
+            height: 10px;
+            right: 2px;
+            top: 18px;
+          }
+        }
+
+        &.sorting.sorting-desc {
+          button:after {
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+          }
+        }
+        &.sorting.sorting-asc {
+          button:after {
+            clip-path: polygon(50% 0, 0 100%, 100% 100%);
+          }
+        }
+      }
+      td.font-bold {
+        font-weight: 700;
+        font-family: $sans-serif;
+      }
+      td.vgt-right-align {
+        font-family: $monospace;
+        font-size: 0.875rem;
+      }
     }
   }
 }
