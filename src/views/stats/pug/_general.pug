@@ -62,29 +62,6 @@ main.general-stats(v-if="ui.viewing == 'general'")
           .calendar(v-text="formatTime(stats.general.sisyphusLastPlayed,'calendar')")
         .button-holder
           button(@click="getData('sisyphus')") Details
-      
-
-      
-
-      .summary(v-if="stats.general && stats.general.lastPlayed")
-        figure
-          img(src="/svg/sisyphus/logo-simple.svg" @click="getData('sisyphus')")
-        //.last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.sisyphus")
-          .time-caption Last Game
-          .time-ago(v-text="formatTime(stats.general.lastPlayed.sisyphus,'fromNow')")
-          .calendar(v-text="formatTime(stats.general.lastPlayed.sisyphus,'calendar')")
-        //.button-holder
-          button(@click="getData('sisyphus')") Details
-      
-      .summary(v-if="stats.general && stats.general.lastPlayed")
-        figure
-          img(src="/svg/games/pretendworld.svg" @click="getData('pretend')")
-        //.last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.pretend")
-          .time-caption Last Game
-          .time-ago(v-text="formatTime(stats.general.lastPlayed.pretend,'fromNow')")
-          .calendar(v-text="formatTime(stats.general.lastPlayed.pretend,'calendar')")
-        //.button-holder
-          button(@click="getData('pretend')") Details
 
   .player-table 
     h2 Top Players

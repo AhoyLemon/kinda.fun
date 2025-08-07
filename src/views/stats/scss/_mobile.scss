@@ -11,8 +11,6 @@
 
       .summary {
         flex-basis: 260px;
-        // flex-grow: 1;
-        // flex-shrink: 1;
         align-items: center;
         justify-content: center;
       }
@@ -28,9 +26,6 @@
   main.general-stats .last-cloned-holder {
     display: none;
   }
-  // aside.general-stats {
-  //   display: none;
-  // }
 
   section.stats {
     .stats-boxes.with-table {
