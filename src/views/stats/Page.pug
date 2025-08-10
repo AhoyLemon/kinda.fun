@@ -8,10 +8,11 @@ html(lang="en")
     meta(name="viewport" content="width=device-width,initial-scale=1")
 
     // Fonts & CSS
-    link(rel="preconnect" href="https://fonts.gstatic.com")
-    link(href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&display=swap" rel="stylesheet")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet")
     link(href="/stats.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
-
+    
     // Favicons
     link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
     link(rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png")
@@ -28,4 +29,4 @@ html(lang="en")
     meta(property="og:email" content=email) 
   body 
     #app
-    script(type="module" src="/src/entries/stats.js") 
+  script(type="module" src="/stats.js")

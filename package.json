@@ -18,7 +18,8 @@
     "update-billionaires": "node scripts/update-billionaires-2024.js",
     "generate-arrests": "node scripts/generate-arrests.js",
     "watch:pages": "concurrently --names \"cameo,guillotine,home,invalid,meeting,pretend,sisyphus,wrongest,stats\" --prefix \"[{name}]\" --prefix-colors \"yellow,red,green,blue,magenta,cyan,white,gray,brightBlue\" -k \"nodemon --quiet -w src/views/cameo/Page.pug -x node build-pages.js cameo\" \"nodemon --quiet -w src/views/guillotine/Page.pug -x node build-pages.js guillotine\" \"nodemon --quiet -w src/views/home/Page.pug -x node build-pages.js index\" \"nodemon --quiet -w src/views/invalid/Page.pug -x node build-pages.js invalid\" \"nodemon --quiet -w src/views/meeting/Page.pug -x node build-pages.js meeting\" \"nodemon --quiet -w src/views/pretend/Page.pug -x node build-pages.js pretend\" \"nodemon --quiet -w src/views/sisyphus/Page.pug -x node build-pages.js sisyphus\" \"nodemon --quiet -w src/views/wrongest/Page.pug -x node build-pages.js wrongest\" \"nodemon --quiet -w src/views/stats/Page.pug -x node build-pages.js stats\"",
-    "firebase:hydrate": "node scripts/firebase/cloneFirestore.js"
+    "firebase:hydrate": "node scripts/firebase/cloneFirestore.js",
+    "postinstall": "cd functions && npm install"
   },
   "dependencies": {
     "firebase": "^10.14.1",
@@ -52,10 +53,10 @@
     "pug": "^3.0.3",
     "sass": "^1.89.2",
     "socket.io-client": "^4.7.5",
-    "vite": "^5.3.1",
+    "vite": "^7.1.1",
     "vite-plugin-socket-io": "^1.0.2",
     "vite-plugin-vue-devtools": "^7.3.1",
-    "vitest": "^1.6.0",
+    "vitest": "^3.2.4",
     "vue-good-table-next": "^0.2.1"
   },
   "overrides": {
