@@ -37,11 +37,6 @@
     allTime: 0,
   });
 
-  // const wealthCreated = reactive({
-  //   today: 0,
-  //   allTime: 0,
-  // });
-
   const comparativeData = reactive({
     currentSchool: {},
   });
@@ -65,16 +60,6 @@
     active: true,
     unlimitedPlay: true,
   };
-
-  // const history = reactive({
-  //   firstPlay: null,
-  //   lastPlay: null,
-  //   lastGameResults: {
-  //     wealthCreated: null,
-  //     trophies: [],
-  //   },
-  //   trophies: [],
-  // });
 
   const todaysGame = reactive({
     currentBillionaires: [],

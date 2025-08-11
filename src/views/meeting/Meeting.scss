@@ -2,37 +2,88 @@ $focusColor: #ffc107;
 @import "@/shared/scss/globals/reset";
 @import "./scss/variables";
 
+// LIBRARIES (if any)
+@import "@/shared/scss/libraries/vue_toastification";
+
 @import "./scss/title-screen";
 @import "./scss/pregame";
 
-.meeting-board { display: grid; grid-template-columns: 1fr $playerListWidth; min-height: 100dvh; }
+.meeting-board {
+  display: grid;
+  grid-template-columns: 1fr $playerListWidth;
+  min-height: 100dvh;
+}
 
-.instructions { color:white; 
-  h1 { font-size:3rem; }
+.instructions {
+  color: white;
+  h1 {
+    font-size: 3rem;
+  }
 }
 
 @import "./scss/players";
 @import "./scss/cards";
 
-.timer { position: fixed; bottom:0; left:0; right:$playerListWidth;
-  .bar { position: absolute; bottom:0; left:0; right: 0; height:32px; background-color: black;
-    .fill { position: absolute; top:0; left:0; bottom:0; background:$yellow; }
+.timer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: $playerListWidth;
+  .bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 32px;
+    background-color: black;
+    .fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      background: $yellow;
+    }
   }
-  .seconds-holder { position: absolute; bottom:32px; left:0; padding-left: 20px;
-    .seconds { color:$yellow; font-family: $monospace; font-size:2.5rem; font-weight: 725; }
-    .after-seconds { color:$cream; font-family: $sans-serif; font-size:1rem; padding-left:1em; }
+  .seconds-holder {
+    position: absolute;
+    bottom: 32px;
+    left: 0;
+    padding-left: 20px;
+    .seconds {
+      color: $yellow;
+      font-family: $monospace;
+      font-size: 2.5rem;
+      font-weight: 725;
+    }
+    .after-seconds {
+      color: $cream;
+      font-family: $sans-serif;
+      font-size: 1rem;
+      padding-left: 1em;
+    }
   }
 }
 
 @import "./scss/guess";
 
-
-.tippy-box { background:$white; color:#111;
-  .tippy-arrow { color:$white; }
-  &[data-theme="light"] { background:$cream; color:#222;
-    .tippy-arrow { color:$cream; }
+.tippy-box {
+  background: $white;
+  color: #111;
+  .tippy-arrow {
+    color: $white;
   }
-  .tippy-content { font-family: $sans-serif; font-weight: 525; max-width: 160px}
+  &[data-theme="light"] {
+    background: $cream;
+    color: #222;
+    .tippy-arrow {
+      color: $cream;
+    }
+  }
+  .tippy-content {
+    font-family: $sans-serif;
+    font-weight: 525;
+    max-width: 160px;
+  }
 }
 
 @import "./scss/animations";

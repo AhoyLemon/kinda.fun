@@ -17,7 +17,7 @@
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
-  import "vue-toastification/dist/index.css";
+  // import "vue-toastification/dist/index.css";
   import MyToast from "./vue/MyToast.vue";
   import LemonToast from "./vue/LemonToast.vue";
   import { useToast } from "vue-toastification";
