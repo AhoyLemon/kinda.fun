@@ -66,7 +66,7 @@
     let r = ui.s.retreatSpeed;
     let bT;
 
-    document.getElementById("Sisyphus").blur();
+    //document.getElementById("Sisyphus").blur();
 
     // This handles the click IMMEDIATELY after you bought Dignity.
     if (ui.boughtDignity) {
@@ -357,18 +357,34 @@
         getCheevo("Drawer Opener", "What does that question mark mean? Well now you know!", 8);
       }
       ui.drawerOpenedCount++;
-      if (ui.drawerOpenedCount == 5) {
+      if (ui.drawerOpenedCount == 3) {
         getCheevo("Habitual Drawer Opener", "How many times are you gonna click on that question mark?", 10);
-      } else if (ui.drawerOpenedCount == 9) {
+      } else if (ui.drawerOpenedCount == 6) {
         getCheevo("Obsessive Drawer Opener", "Okay! You definitely know what happens when you click that question mark.", 13);
-      } else if (ui.drawerOpenedCount == 12) {
+      } else if (ui.drawerOpenedCount == 10) {
         getCheevo("Problematic Drawer Opener", "Stop clicking that question mark.", 1);
-      } else if (ui.drawerOpenedCount == 15) {
+      } else if (ui.drawerOpenedCount == 14) {
         getCheevo("Bad Listening Drawer Opener", "God damn it, stop it.", -15);
       } else if (ui.drawerOpenedCount == 18) {
         getCheevo("Massochistic Drawer Opener", "Okay fine, I'll take more points away from you", -10);
-      } else if (ui.drawerOpenedCount == 23) {
-        getCheevo("Ceaseless Drawer Opener", "Were you expecting more achievements? Because this isn't one.", 0);
+      } else if (ui.drawerOpenedCount > 22) {
+        toast(
+          {
+            component: MyToast,
+            props: {
+              title: "This isn't an achievement.",
+              points: 0,
+              message: ``,
+              customClass: "cheevo-toast-text",
+            },
+          },
+          {
+            position: POSITION.BOTTOM_LEFT,
+            toastClassName: "cheevo-toast",
+            // icon: "trophy",
+            timeout: 8000,
+          },
+        );
       }
     }
   };
@@ -382,7 +398,6 @@
   };
 
   const openOutsideLink = (linkTitle, linkUrl) => {
-    alert(linkTitle);
     setTimeout(() => {
       window.open(linkUrl, "_blank");
     }, 220);
