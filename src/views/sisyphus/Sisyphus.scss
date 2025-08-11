@@ -6,7 +6,8 @@
 @import "scss/globals/_z-index";
 
 // LIBRARIES
-@import "scss/libraries/animate";
+@import "@/shared/scss/libraries/animate";
+@import "@/shared/scss/libraries/vue_toastification";
 
 // SITE SPECIFIC
 @import "scss/partials/_variables";

@@ -32,7 +32,7 @@
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
-  import "vue-toastification/dist/index.css";
+  // import "vue-toastification/dist/index.css";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
