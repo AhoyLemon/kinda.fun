@@ -66,7 +66,7 @@
     let r = ui.s.retreatSpeed;
     let bT;
 
-    //document.getElementById("Sisyphus").blur();
+    document.getElementById("Sisyphus").blur();
 
     // This handles the click IMMEDIATELY after you bought Dignity.
     if (ui.boughtDignity) {
