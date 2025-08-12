@@ -6,20 +6,19 @@ $monospace: "Noto Sans Mono", monospace;
 // COLORS
 $white: #efefef;
 $black: #212121;
-$blue: #574AE2;
-$cream: #F0F0C9;
-$yellow: #F2BB05;
-$green: #4DAA57;
-$red: #6E0E0A;
+$blue: #574ae2;
+$cream: #f0f0c9;
+$yellow: #f2bb05;
+$green: #4daa57;
+$red: #6e0e0a;
 
-
-  // shades
-  $lightRed: lighten($red,48);
-  $darkRed: darken($red,5);
-  $lightGreen: lighten($green,30);
-  $darkGreen: darken($green,30);
-  $lightCream: saturate($cream,10);
-  $darkCream: darken($cream,85);
+// shades
+$lightRed: lighten($red, 48);
+$darkRed: darken($red, 5);
+$lightGreen: lighten($green, 30);
+$darkGreen: darken($green, 30);
+$lightCream: saturate($cream, 10);
+$darkCream: darken($cream, 85);
 
 // Measurements
 $playerListWidth: 290px;

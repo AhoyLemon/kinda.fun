@@ -28,3 +28,6 @@ export const you = reactive({
   guess: "",
   stolenCards: [],
 });
+export const ui = reactive({
+  isHelpScreenVisible: false,
+});

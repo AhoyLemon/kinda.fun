@@ -8,8 +8,10 @@ html(lang="en")
     include ../../shared/pug/_meta.pug
 
     // Fonts & CSS
-    link(rel="preconnect" href="https://fonts.gstatic.com")
-    link(href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Noto+Sans+Mono:wght@100..900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet")
+
     link(href="/meeting.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
 
     // OpenGraph
@@ -23,5 +25,5 @@ html(lang="en")
     meta(property="og:email" content=email) 
 
   body
-    #app
-    script(type="module" src="/src/entries/meeting.js")
+    #app 
+    script(type="module" src="/src/entries/meeting.js")  
