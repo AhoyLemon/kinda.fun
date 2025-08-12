@@ -116,50 +116,8 @@ main.employee-screen(v-if="my.role == 'employee' && (round.phase == 'choose rule
       sup.decimal {{round.hurryTime.toFixed(1).split('.')[1]}}
     .label(v-if="!ui.passwordSucceeded") Hurry Up
 
+
 // Crash screen for employees - shown outside main container
-.crash-screen(v-if="my.role == 'employee' && round.phase == 'crashed'")
-  .inside
-    h1 Server error in '/' Application
-    h2 Authentication Error
-    p
-      strong Description: 
-      | An unhandled exception occured when 
-      strong {{round.crash.player.name}}
-      |  entered the password 
-      strong {{round.crash.word}}
-
-    p
-      strong Source Error
-    pre
-      code.
-        Line 109113:     protected isTheSiteCrashed(object pwassword) {
-        Line 109114:       while (password != error) {
-        Line 109115:         destroyWebsite = false;
-        Line 109116:       }
-        Line 109117:     }
-
-    p
-      strong Password Entered
-    pre
-      code.
-        {{round.crash.word}}
-    
-    p
-      strong Employee Record
-    pre
-      code.
-        EMPloyeeNuumber:     {{round.crash.player.employeeNumber}}
-        EMpoyeeNAME:         {{round.crash.player.name}}
-    
-    p
-      strong Source File
-    pre
-      code.
-        D:\Code\Projects\BigCorp\Profiles\Scum\Auth\Processes\FuckItThisWillWorkForNow.aspx
-    
-    footer
-      strong Version Information:
-      br
-      code BigCorp Framework Version 4.00.1134.Release5-Final--Version2.TestBuild-5
-
-  include _scores.pug
+template(v-if="my.role == 'employee' && round.phase == 'crashed'")
+  main.crash-screen-wrapper
+    include ../html/_crash.html

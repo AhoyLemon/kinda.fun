@@ -269,43 +269,6 @@
   }
 }
 
-.crash-screen {
-  background: white;
-  color: black;
-  padding: $padding;
-  @include position(absolute, 0, 0, 0, 0);
-  z-index: 2;
-  display: flex;
-  .inside {
-    width: 100%;
-    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
-  }
-
-  h1 {
-    color: red;
-    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
-    border-bottom: 3px solid #966;
-    display: block;
-    margin-bottom: 0.5em;
-  }
-  h2 {
-    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
-    font-weight: 300;
-    font-style: italic;
-    margin-bottom: 2em;
-  }
-  pre {
-    background: #ffffcc;
-    font-weight: bold;
-    font-family: "Courier New", Courier, monospace;
-    padding: 1em;
-    margin-bottom: 2em;
-  }
-  footer {
-    border-top: 2px solid black;
-  }
-}
-
 @media (max-width: 720px) {
   .employee-screen {
     display: block;

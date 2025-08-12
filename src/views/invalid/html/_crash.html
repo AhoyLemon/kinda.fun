@@ -1,0 +1,54 @@
+<div class="crash-screen" v-if="my.role == 'employee' && round.phase == 'crashed'">
+  <div class="inside">
+    <h1>Server error in '/' Application</h1>
+    <h2>Authentication Error</h2>
+    <p>
+      <strong>Description: </strong>
+      <br />
+      An unhandled exception occured when <strong>{{round.crash.player.name}}</strong> entered the password
+      <strong class="crash-word">{{round.crash.word}}</strong>
+    </p>
+    <br />
+    <p><strong>Source Error</strong></p>
+    <pre><code>Line 109113:     protected isTheSiteCrashed(object pwassword) {
+Line 109114:       while (password != error) {
+Line 109115:         destroyWebsite = false;
+Line 109116:       }
+Line 109117:     }
+</code></pre>
+    <!-- <p><strong>Password Entered</strong></p>
+    <pre><code>{{round.crash.word}}</code></pre> -->
+    <p><strong>Employee Record</strong></p>
+    <pre><code>EMPloyeeNuumber:     {{round.crash.player.employeeNumber}}
+EMpoyeeNAME:         {{round.crash.player.name}}
+Password:            {{round.crash.word}}
+IsEmployeeFiredYet:  FALSE
+</code></pre>
+    <!-- <p><strong>Source File</strong></p>
+    <pre><code>D:\Code\Projects\BigCorp\Profiles\Scum\Auth\Processes\FuckItThisWillWorkForNow.aspx
+</code></pre> -->
+
+    <div style="margin-top: 32px">
+      <strong>Console Output:</strong>
+      <pre class="bigcorp-console">
+
+    BigCorp (R) Console v2.6.12
+    Copyright (C) BigCorp. All rights reserved.
+
+      > cscript.exe D:\Code\Projects\BigCorp\Profiles\Scum\Auth\Processes\FuckItThisWillWorkForNow.aspx
+      Initializing debug output...
+      // --- BEGIN PLAYER DUMP ---
+      // (for internal use only)
+      // TODO: REMOVE THIS BEFORE DEPLOYMENT
+      //
+  <template v-for="player in game.players">    {{ player.name.toUpperCase() }} : {{ player.score }}
+  </template>    //
+      // --- END PLAYER DUMP ---
+      string SECRET_API_KEY = "9f8a2e1b-{{ Math.floor(Math.random()*1000000) }}-SECRET"; // DO NOT SHARE
+
+        </pre>
+    </div>
+
+    <footer><strong>Version Information:</strong><br /><code>BigCorp Framework Version 4.00.1134.Release5-Final--Version2.TestBuild-5</code></footer>
+  </div>
+</div>

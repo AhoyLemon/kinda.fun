@@ -8,25 +8,26 @@
 @import "@/shared/scss/libraries/vue_toastification";
 
 // SITE SPECIFIC
-@import "scss/_variables";
-@import "scss/_z-index";
-@import "scss/_default";
-@import "scss/_scores";
+@import "scss/variables";
+@import "scss/z-index";
+@import "scss/default";
+@import "scss/scores";
 
 // SCREENS
-@import "scss/_pregame";
-@import "scss/_title-screen";
-@import "scss/_admin";
-@import "scss/_employee";
-@import "scss/_final";
-@import "scss/_game-over";
+@import "scss/pregame";
+@import "scss/title-screen";
+@import "scss/admin";
+@import "scss/employee";
+@import "scss/crash";
+@import "scss/final";
+@import "scss/game-over";
 
 // COMPONENTS
 @import "scss/mobile";
 @import "scss/toasts";
 
 // OTHER PAGES
-@import "scss/_article";
+@import "scss/article";
 
 input.uppercase {
   text-transform: uppercase;
