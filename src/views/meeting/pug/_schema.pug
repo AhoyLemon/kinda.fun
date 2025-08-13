@@ -3,16 +3,20 @@ script(type="application/ld+json").
     "@context": "http://schema.org",
     "@type": "VideoGame",
     "name": "#{name}",
+    "description": "#{desc}",
     "keywords": "#{keywords}",
+    "genre": "comedy",
     "url": "#{gameUrl}",
     "image": "#{ogImage}",
-    "playMode": "SinglePlayer",
+    "playMode": "MultiPlayer",
     "applicationCategory": "browser game",
     "gamePlatform": "web browser",
     "operatingSystem": "web browser",
-    "genre": "guessing game",
-    "description": "#{desc}",
     "inLanguage": "English",
+    "numberOfPlayers": {
+      "minValue": 2,
+      "maxValue": 8
+    },
     "creator": !{creatorSchema},
     "isAccessibleForFree": true,
     "offers": {

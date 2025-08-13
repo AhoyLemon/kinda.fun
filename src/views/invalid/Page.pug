@@ -1,12 +1,16 @@
 include ../../shared/pug/_variables.pug
 - const name = "Invalid"
 - const desc = "A trivia game of unnecessary suffering."
+- const keywords = "trivia game, party game, multiplayer, suffering, password, password guess, guessing, cracking, bugs"
+- const gameUrl = baseUrl + "/invalid"
+- const ogImage = baseUrl + "/img/og-invalid.png"
+- const datePublished = "2025-08-01"
 
 doctype html
 html(lang="en")
   head
     include ../../shared/pug/_meta.pug
-    link(rel="canonical" href=baseUrl + "/cameo")
+    link(rel="canonical" href=gameUrl)
 
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.googleapis.com")
@@ -26,13 +30,13 @@ html(lang="en")
     meta(property="og:image:width" content="1200")
     meta(property="og:image:height" content="630")
     meta(property="og:description" content=desc)
-    meta(property="og:url" content=baseUrl + "/invalid")
-    meta(property="og:image" content=baseUrl + "/img/og-invalid.png")
+    meta(property="og:url" content=gameUrl)
+    meta(property="og:image" content=ogImage)
     meta(property="og:email" content=email)
 
   body
     #app
     script(type="module" src="/src/entries/invalid.js")
 
-    script(type="application/ld+json")
-      include json/schema.json
+    // Schema.org
+    include pug/_schema.pug
