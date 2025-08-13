@@ -25,14 +25,9 @@ main.title-screen {
   .inside {
     display: grid;
     min-height: 100dvh;
-    //gap: 10dvh;
     grid-template-rows: 1fr 120px;
     font-family: $sans-serif;
   }
-  // h1 { font-size:3vw; font-family: $serif; }
-  // .logo {
-  //   height: 50vh;
-  // }
 
   .splash {
     max-width: 600px;
@@ -47,9 +42,10 @@ main.title-screen {
       gap: 20px;
       .logo {
         max-height: 20vh;
-        // Bounce animation and @starting-style removed, back to static
-        opacity: 1;
-        transform: none;
+        transition: transform 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        @starting-style {
+          transform: translateY(-20dvh);
+        }
       }
       figcaption {
         text-align: center;
@@ -57,6 +53,11 @@ main.title-screen {
         text-wrap: balance;
         font-family: $serif;
         font-size: 1.35em;
+        transition: all 0.3s linear;
+        @starting-style {
+          opacity: 0.25s;
+          transform: translateY(10px);
+        }
       }
     }
     .help-holder {
@@ -130,26 +131,9 @@ main.title-screen {
         transform 1s cubic-bezier(0.7, 0, 0.3, 1);
       @starting-style {
         opacity: 0;
-        //transform: translateY(20dvh);
-      }
-    }
-
-    // h3 {
-    //   @starting-style {
-    //     transform: translateY(3rem);
-    //   }
-    // }
-    p,
-    li {
-      @starting-style {
         transform: translateY(3rem);
       }
     }
-    // h2 {
-    //   @starting-style {
-    //     transform: translateY(100px);
-    //   }
-    // }
   }
   .create-or-join {
     display: flex;
@@ -244,11 +228,8 @@ main.title-screen {
           cursor: pointer;
           background-color: $yellow;
           color: $black;
-          //border-left: 2px solid $yellow;
         }
       }
     }
   }
 }
-
-// Remove the logo-double-bounce keyframes if present
