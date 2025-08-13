@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       __APP_ENV__: env.APP_ENV,
-      "process.env": env,
+      "process.env.APP_ENV": JSON.stringify(env.APP_ENV),
     },
     css: {
       preprocessorOptions: {
@@ -73,13 +73,13 @@ export default defineConfig(({ mode }) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
           const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home", "404"];
           const url = req.url.split("?")[0];
-          
-          console.log('Middleware hit for URL:', url);
-          
+
+          console.log("Middleware hit for URL:", url);
+
           // If the URL is exactly "/", rewrite to /home.html
           if (url === "/") {
             req.url = "/home.html";
-            console.log('Rewrite / to /home.html');
+            console.log("Rewrite / to /home.html");
           } else {
             // If the URL is exactly "/slug", rewrite to "/slug.html"
             const match = url.match(/^\/(\w+)\/?$/);
@@ -88,7 +88,7 @@ export default defineConfig(({ mode }) => {
               console.log(`Rewrite ${url} to ${req.url}`);
             } else {
               // For any unmatched routes that look like pages (not assets), serve the 404 page
-              if (!url.includes('.') && url !== '/' && !url.startsWith('/@') && !url.startsWith('/node_modules')) {
+              if (!url.includes(".") && url !== "/" && !url.startsWith("/@") && !url.startsWith("/node_modules")) {
                 req.url = "/404.html";
                 console.log(`Rewrite ${url} to /404.html (404 case)`);
               }
