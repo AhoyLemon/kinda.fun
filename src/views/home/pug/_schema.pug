@@ -1,0 +1,44 @@
+script(type="application/ld+json").
+  {
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "#{name}",
+    "description": "#{desc}",
+    "keywords": "#{keywords}",
+    "url": "#{baseUrl}",
+    "image": "#{ogImage}",
+    "publisher": !{creatorSchema},
+    "hasPart": [
+      {
+        "@type": "VideoGame",
+        "name": "Comparatively Famous",
+        "url": "#{baseUrl}/cameo"
+      },
+      {
+        "@type": "VideoGame",
+        "name": "No More Billionaires",
+        "url": "#{baseUrl}/guillotine"
+      },
+      {
+        "@type": "VideoGame",
+        "name": "Invalid",
+        "url": "#{baseUrl}/invalid"
+      },
+      {
+        "@type": "VideoGame",
+        "name": "This Meeting Has Points",
+        "url": "#{baseUrl}/meeting"
+      },
+      {
+        "@type": "VideoGame",
+        "name": "Pretend World",
+        "url": "#{baseUrl}/pretend"
+      },
+      {
+        "@type": "VideoGame",
+        "name": "Sisyphus Clicker",
+        "url": "#{baseUrl}/sisyphus"
+      }
+    ],
+    "dateModified": "#{lastUpdated}"
+  }

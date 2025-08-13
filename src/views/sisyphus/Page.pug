@@ -1,6 +1,10 @@
 include ../../shared/pug/_variables.pug
 - const name = "Sisyphus Clicker"
 - const desc = "Click on Sisyphus to push the rock up the mountain (formerly futile.fun)"
+- const keywords = "futile, futility, clicker, depressing, pointless, achievements, rock, the myth of sisyphus"
+- const gameUrl = baseUrl + "/sisyphus"
+- const ogImage = baseUrl +"/img/og-sisyphus.png"
+- const datePublished = "2021-09-21"
 
 doctype html
 html(lang="en")
@@ -32,3 +36,6 @@ html(lang="en")
   body
     #app
     script(type="module" src="/src/entries/sisyphus.js")
+
+    // Schema.org
+    include pug/_schema.pug

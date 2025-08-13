@@ -1,17 +1,16 @@
 include ../../shared/pug/_variables.pug
 - const name = "No More Billionaires"
 - const desc = "Generating wealth with a guillotine."
+- const gameUrl = baseUrl + "/guillotine"
+- const ogImage = baseUrl + "/img/og-guillotine.jpg"
+- const keywords = "billionaires, ultra-wealthy, class warfare, net worth, eat the rich, kill the rich, guillotine"
+- const datePublished = "2022-04-04"
 
 doctype html
 html(lang="en")
   head
-    meta(charset="UTF-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    
-    // Basic Meta
-    title #{name} | #{desc}
-    meta(name="description" content=desc)
-    meta(http-equiv="last-modified" content=lastUpdated)
+    include ../../shared/pug/_meta.pug
+    link(rel="canonical" href=gameUrl)
 
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.googleapis.com")
@@ -26,10 +25,12 @@ html(lang="en")
     meta(property="og:image:width" content="1200")
     meta(property="og:image:height" content="630")
     meta(property="og:description" content=desc)
-    meta(property="og:image" content=baseUrl + "/img/og-guillotine.jpg")
-    meta(property="og:url" content=baseUrl + "/guillotine")
-    link(rel="canonical" href=baseUrl + "/guillotine")
+    meta(property="og:image" content=ogImage)
+    meta(property="og:url" content=gameUrl)
     
   body
     #app
     script(type="module" src="/src/entries/guillotine.js")
+
+    // Schema.org
+    include pug/partials/_schema.pug

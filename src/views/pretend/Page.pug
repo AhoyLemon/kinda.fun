@@ -1,6 +1,10 @@
 include ../../shared/pug/_variables.pug
 - const name = "Pretend World"
 - const desc = "You are at a party of celebrity impersonators..."
+- const keywords = "celebrity impersonators, pretend celebrities, guessing game, cheese log, funny game, single player"
+- const gameUrl = baseUrl + "/pretend"
+- const ogImage = baseUrl +"/img/og-pretend.png"
+- const datePublished = "2023-08-23"
 
 doctype html
 html(lang="en")
@@ -25,3 +29,6 @@ html(lang="en")
   body
     #app
     script(type="module" src="/src/entries/pretend.js")
+
+    // Schema.org
+    include pug/_schema.pug

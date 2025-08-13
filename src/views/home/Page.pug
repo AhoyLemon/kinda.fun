@@ -1,15 +1,15 @@
 include ../../shared/pug/_variables.pug
 - const name = "Kinda fun."
 - const desc = "Here's some games and stuff that Lemon made. All of it is kinda fun!"
+- const keywords = "browser games, free games, indie games, Lemon, kinda fun, web games, party games, comedy games"
+- const ogImage = baseUrl + "/img/og-wide.png"
+
 
 doctype html
 html(lang="en")
   head
-    meta(charset="UTF-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title #{name}
-    meta(name="description" content=desc)
-    meta(http-equiv="last-modified" content=lastUpdated)
+    include ../../shared/pug/_meta.pug
+    link(rel="canonical" href=gameUrl)
 
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.googleapis.com")
@@ -32,9 +32,12 @@ html(lang="en")
     meta(property="og:image:height" content="640")
     meta(property="og:description" content=desc)
     meta(property="og:url" content=baseUrl)
-    meta(property="og:image" content=baseUrl + "/img/og-wide.png")
+    meta(property="og:image" content=ogImage)
     meta(property="og:email" content=email)
     meta(name="msvalidate.01" content="D3327FD7610C2D05D7D605EBCA288944")
   body
     #app
     script(type="module" src="/src/entries/home.js")
+
+    // Schema.org
+    include pug/_schema.pug

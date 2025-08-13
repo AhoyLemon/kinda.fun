@@ -2,50 +2,45 @@ script(type="application/ld+json").
   {
     "@context": "http://schema.org",
     "@type": "VideoGame",
-    "name": "#{pageTitle}",
-    "url": "#{siteURL}",
-    "image": "#{siteURL}/img/sisyphus/og-wide.png",
+    "name": "#{name}",
+    "description": "#{desc}",
+    "keywords": "#{keywords}",
+    "url": "#{gameUrl}",
+    "image": "#{ogImage}",
     "playMode": "SinglePlayer",
     "applicationCategory": "browser game",
     "gamePlatform": "web browser",
     "operatingSystem": "web browser",
     "genre": "clicker",
-    "description": "#{description}",
     "inLanguage": "English",
-    "author": {
-      "@type": "Person",
-      "name": "Lemon",
-      "url": "https://ahoylemon.xyz",
-      "email": "#{emailAddress}",
-      "sameAs": [
-        "https://thefpl.us/meet/lemon",
-        "https://twitter.com/AhoyLemon"
-      ]
-    },
+    "creator": !{creatorSchema},
     "offers": {
       "@type": "Offer",
       "description": "free",
       "price": "0",
       "priceCurrency": "USD"
     },
+    "isAccessibleForFree": true,
     "screenshot": [
       {
         "@type": "ImageObject",
-        "url": "#{siteURL}/img/sisyphus/screenshots/ss1.png",
+        "url": "#{baseUrl}/img/sisyphus/screenshots/ss1.png",
         "width": 1083,
         "height": 924
       },
       {
         "@type": "ImageObject",
-        "url": "#{siteURL}/img/sisyphus/screenshots/ss2.png",
+        "url": "#{baseUrl}/img/sisyphus/screenshots/ss2.png",
         "width": 1083,
         "height": 924
       },
       {
         "@type": "ImageObject",
-        "url": "#{siteURL}/img/sisyphus/screenshots/ss3.png",
+        "url": "#{baseUrl}/img/sisyphus/screenshots/ss3.png",
         "width": 1083,
         "height": 924
       }
-    ]
+    ],
+    "datePublished": "#{datePublished}",
+    "dateModified": "#{lastUpdated}"
   }
