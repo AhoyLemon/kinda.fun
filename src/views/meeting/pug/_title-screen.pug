@@ -1,17 +1,17 @@
 // Title Screen
 main.title-screen
   .inside 
-    .splash(v-if="!ui.isHelpScreenVisible")
-      figure
-        img.logo(src="/svg/games/thismeetinghaspoints.svg" alt="This Meeting Has Points")
-        figcaption
-          p Gather some coworkers and turn that boring meeting into a stealthy battle of jargon and subterfuge. Say the words on your cards to score. Don't get caught.
-      .help-holder
-        p Confused? 
-          button.how-to-play(@click="toggleHelpScreen(true)") Here's how to play
-          | .
-    transition(name="fade")
-      .how-to-play(v-if="ui.isHelpScreenVisible")
+    transition(name="fade" mode="out-in")
+      .splash(v-if="!ui.isHelpScreenVisible")
+        figure
+          img.logo(src="/svg/games/thismeetinghaspoints.svg" alt="This Meeting Has Points")
+          figcaption
+            p Gather some coworkers and turn that boring meeting into a stealthy battle of jargon and subterfuge. Say the words on your cards to score. Don't get caught.
+        .help-holder
+          p Confused? 
+            button.how-to-play(@click="toggleHelpScreen(true)") Here's how to play
+            | .
+      .how-to-play(v-else)
         h2#HowToPlayHeadline 
           span How To Play 
           img.logo(src="/svg/games/thismeetinghaspoints.svg" alt="This Meeting Has Points")

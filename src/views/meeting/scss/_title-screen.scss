@@ -47,6 +47,9 @@ main.title-screen {
       gap: 20px;
       .logo {
         max-height: 20vh;
+        // Bounce animation and @starting-style removed, back to static
+        opacity: 1;
+        transform: none;
       }
       figcaption {
         text-align: center;
@@ -84,6 +87,13 @@ main.title-screen {
       border-bottom: 1px solid $white;
       padding-bottom: 1em;
       margin-bottom: 2em;
+      .logo {
+        transition: all 0.5s ease-out;
+        @starting-style {
+          transform: scale(1.5) translate(-40%, 120%);
+        }
+        transform: none;
+      }
     }
     h3 {
       font-size: 2.15rem;
@@ -111,6 +121,35 @@ main.title-screen {
     button.close-help {
       @extend %link;
     }
+    p,
+    li {
+      opacity: 1;
+      transform: none;
+      transition:
+        opacity 1s cubic-bezier(0.7, 0, 0.3, 1),
+        transform 1s cubic-bezier(0.7, 0, 0.3, 1);
+      @starting-style {
+        opacity: 0;
+        //transform: translateY(20dvh);
+      }
+    }
+
+    // h3 {
+    //   @starting-style {
+    //     transform: translateY(3rem);
+    //   }
+    // }
+    p,
+    li {
+      @starting-style {
+        transform: translateY(3rem);
+      }
+    }
+    // h2 {
+    //   @starting-style {
+    //     transform: translateY(100px);
+    //   }
+    // }
   }
   .create-or-join {
     display: flex;
@@ -211,3 +250,5 @@ main.title-screen {
     }
   }
 }
+
+// Remove the logo-double-bounce keyframes if present
