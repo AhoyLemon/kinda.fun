@@ -23,11 +23,11 @@ const devBaseUrl = "http://localhost:5173";
 const distBaseUrl = "https://kinda.fun";
 
 // Step 2: Ensure dist directory exists in project root
+const PROJECT_ROOT = process.cwd();
 const DIST_DIR = path.join(PROJECT_ROOT, "dist");
 fs.mkdirSync(DIST_DIR, { recursive: true });
 
 // Step 3: Define all pages to build
-const PROJECT_ROOT = process.cwd();
 const SRC_DIR = path.join(PROJECT_ROOT, "src");
 
 const pages = [
