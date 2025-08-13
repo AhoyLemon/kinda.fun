@@ -810,9 +810,7 @@
     if (urlParams.has("create")) {
       createRoom();
     } else if (urlParams.has("room")) {
-      // joinRoom();
       const roomCode = urlParams.get("room").toUpperCase();
-      // game.roomCode = roomCode;
       you.roomCodeInput = roomCode;
     }
   });
