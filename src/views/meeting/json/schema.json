@@ -1,0 +1,31 @@
+{
+  "@context": "http://schema.org",
+  "@type": "VideoGame",
+  "name": "This Meeting Has Points",
+  "url": "https://kinda.fun/meeting",
+  "image": "https://kinda.fun/img/og-meeting.png",
+  "playMode": "MultiPlayer",
+  "applicationCategory": "browser game",
+  "gamePlatform": "web browser",
+  "operatingSystem": "web browser",
+  "genre": "comedy",
+  "description": "So now you have a reason to pay attention.",
+  "inLanguage": "English",
+  "numberOfPlayers": {
+    "minValue": 2,
+    "maxValue": 8
+  },
+  "creator": {
+    "@type": "Person",
+    "name": "Lemon",
+    "url": "https://ahoylemon.xyz",
+    "email": "lemon@ahoylemon.xyz",
+    "sameAs": ["https://github.com/ahoylemon", "https://thefpl.us/meet/lemon", "https://bsky.app/profile/ahoylemon.xyz"]
+  },
+  "offers": {
+    "@type": "Offer",
+    "description": "free",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}

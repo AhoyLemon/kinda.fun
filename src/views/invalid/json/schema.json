@@ -1,0 +1,55 @@
+{
+  "@context": "http://schema.org",
+  "@type": "VideoGame",
+  "name": "Invalid",
+  "url": "https://kinda.fun/invalid",
+  "image": "https://kinda.fun/img/og-invalid.png",
+  "playMode": "MultiPlayer",
+  "applicationCategory": "browser game",
+  "gamePlatform": "web browser",
+  "operatingSystem": "web browser",
+  "genre": "comedy",
+  "description": "A trivia game of unnecessary suffering.",
+  "inLanguage": "English",
+  "numberOfPlayers": {
+    "minValue": 2,
+    "maxValue": 10
+  },
+  "aggregateRating": {
+    "ratingValue": 4.33333,
+    "ratingCount": 3
+  },
+  "creator": {
+    "@type": "Person",
+    "name": "Lemon",
+    "url": "https://ahoylemon.xyz",
+    "email": "lemon@ahoylemon.xyz",
+    "sameAs": ["https://github.com/ahoylemon", "https://thefpl.us/meet/lemon", "https://bsky.app/profile/ahoylemon.xyz"]
+  },
+  "offers": {
+    "@type": "Offer",
+    "description": "free",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "screenshot": [
+    {
+      "@type": "ImageObject",
+      "url": "https://kinda.fun/img/invalid/screenshots/1.jpg",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "@type": "ImageObject",
+      "url": "https://kinda.fun/img/invalid/screenshots/2.jpg",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "@type": "ImageObject",
+      "url": "https://kinda.fun/img/invalid/screenshots/3.jpg",
+      "width": 1920,
+      "height": 1080
+    }
+  ]
+}

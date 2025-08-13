@@ -6,6 +6,7 @@ doctype html
 html(lang="en")
   head
     include ../../shared/pug/_meta.pug
+    link(rel="canonical" href=baseUrl + "/meeting")
 
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.googleapis.com")
@@ -27,3 +28,7 @@ html(lang="en")
   body
     #app 
     script(type="module" src="/src/entries/meeting.js")  
+
+    // Schema.org
+    script(type="application/ld+json")
+      include json/schema.json

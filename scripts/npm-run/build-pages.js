@@ -108,7 +108,7 @@ for (const page of filteredPages) {
     distHtml = beautify.html(distHtml, { indent_size: 2, wrap_line_length: 120 });
     distHtml = distHtml.replace(
       /<script\s+type=["']module["']\s+src=["']\/src\/entries\/([a-zA-Z0-9_-]+)\.js["'][^>]*>.*?<\/script>/gs,
-      (match, p1) => `<script type="module" src="/${p1}.js"></script>`,
+      (match, p1) => `<script type="module" src="/${p1}.js?lastUpdated=${lastUpdated}"></script>`,
     );
     // e. Write the dist HTML (production version)
     fs.writeFileSync(page.out, distHtml, "utf8");
