@@ -22,8 +22,9 @@ const lastUpdated = new Date().toISOString();
 const devBaseUrl = "http://localhost:5173";
 const distBaseUrl = "https://kinda.fun";
 
-// Step 2: Ensure dist directory exists
-fs.mkdirSync(path.join(__dirname, "dist"), { recursive: true });
+// Step 2: Ensure dist directory exists in project root
+const DIST_DIR = path.join(PROJECT_ROOT, "dist");
+fs.mkdirSync(DIST_DIR, { recursive: true });
 
 // Step 3: Define all pages to build
 const PROJECT_ROOT = process.cwd();
@@ -32,52 +33,52 @@ const SRC_DIR = path.join(PROJECT_ROOT, "src");
 const pages = [
   {
     src: path.join(SRC_DIR, "views", "cameo", "Page.pug"),
-    out: path.join(__dirname, "dist", "cameo.html"),
+    out: path.join(DIST_DIR, "cameo.html"),
     name: "cameo.html",
   },
   {
     src: path.join(SRC_DIR, "views", "guillotine", "Page.pug"),
-    out: path.join(__dirname, "dist", "guillotine.html"),
+    out: path.join(DIST_DIR, "guillotine.html"),
     name: "guillotine.html",
   },
   {
     src: path.join(SRC_DIR, "views", "invalid", "Page.pug"),
-    out: path.join(__dirname, "dist", "invalid.html"),
+    out: path.join(DIST_DIR, "invalid.html"),
     name: "invalid.html",
   },
   {
     src: path.join(SRC_DIR, "views", "meeting", "Page.pug"),
-    out: path.join(__dirname, "dist", "meeting.html"),
+    out: path.join(DIST_DIR, "meeting.html"),
     name: "meeting.html",
   },
   {
     src: path.join(SRC_DIR, "views", "pretend", "Page.pug"),
-    out: path.join(__dirname, "dist", "pretend.html"),
+    out: path.join(DIST_DIR, "pretend.html"),
     name: "pretend.html",
   },
   {
     src: path.join(SRC_DIR, "views", "sisyphus", "Page.pug"),
-    out: path.join(__dirname, "dist", "sisyphus.html"),
+    out: path.join(DIST_DIR, "sisyphus.html"),
     name: "sisyphus.html",
   },
   {
     src: path.join(SRC_DIR, "views", "wrongest", "Page.pug"),
-    out: path.join(__dirname, "dist", "wrongest.html"),
+    out: path.join(DIST_DIR, "wrongest.html"),
     name: "wrongest.html",
   },
   {
     src: path.join(SRC_DIR, "views", "stats", "Page.pug"),
-    out: path.join(__dirname, "dist", "stats.html"),
+    out: path.join(DIST_DIR, "stats.html"),
     name: "stats.html",
   },
   {
     src: path.join(SRC_DIR, "views", "home", "Page.pug"),
-    out: path.join(__dirname, "dist", "home.html"),
+    out: path.join(DIST_DIR, "home.html"),
     name: "home.html",
   },
   {
     src: path.join(SRC_DIR, "views", "404", "Page.pug"),
-    out: path.join(__dirname, "dist", "404.html"),
+    out: path.join(DIST_DIR, "404.html"),
     name: "404.html",
   },
 ];
