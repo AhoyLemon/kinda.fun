@@ -1,50 +1,175 @@
-.pregame-lobby { background-color: #333; padding:20px; display:flex; align-items: center; justify-content: center;
+.pregame-lobby {
+  background-color: #121212;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  .panel { width:360px; display:grid; gap:20px; }
+  .panel {
+    width: 360px;
+    display: grid;
+    gap: 20px;
+  }
 
-  form { background:$green; padding:20px; display: grid; gap:15px; font-family: $sans-serif;
-    background:rgba(0,0,0,0.25); border:2px solid $white;
+  form {
+    background: $green;
+    padding: 20px;
+    display: grid;
+    gap: 15px;
+    font-family: $sans-serif;
+    background: rgba(0, 0, 0, 0.25);
+    border: 2px solid $white;
 
-
-    fieldset { position: relative; border:3px solid $white; background-color: rgba(0,0,0,0.45);
-      label { font-weight: 675; padding-left:1rem; padding-top:0.25rem; display: block; color:$white; font-size:0.875rem;
-        &.required:after { content:'*'; color:$red; }
+    fieldset {
+      position: relative;
+      border: 3px solid $white;
+      background-color: rgba(0, 0, 0, 0.45);
+      label {
+        font-weight: 675;
+        padding-left: 1rem;
+        padding-top: 0.25rem;
+        display: block;
+        color: $white;
+        font-size: 0.875rem;
+        &.required:after {
+          content: " *";
+          color: #f22;
+        }
       }
-      input { padding:0.4rem 1rem; width:100%; outline:none; font-family: $serif; font-weight: 850; font-size:1.25rem; border:none; background-color: transparent; color:$white; }
+      input {
+        padding: 0.4rem 1rem;
+        width: 100%;
+        outline: none;
+        font-family: $serif;
+        font-weight: 600;
+        font-size: 1.25rem;
+        border: none;
+        background-color: transparent;
+        color: $white;
+      }
 
-      &:has(input:focus) { background:rgba(0,0,0,.75);
-        label { color:$yellow; }
-        input { color:$yellow; }
+      &:has(input:focus) {
+        background: rgba(0, 0, 0, 0.75);
+        label {
+          color: $yellow;
+        }
+        input {
+          color: $yellow;
+        }
         border-color: $yellow;
       }
     }
-    button[type="submit"] { font-family: $sans-serif; padding:1rem 1rem; display: block; width:100%; font-size:1.15rem; font-weight: 725; cursor: pointer; border:none; background-color:$white; color:$black; transition: all 0.15s linear; outline: none; 
-      &:hover, &:focus { background:$yellow; }
+    button[type="submit"] {
+      font-family: $sans-serif;
+      padding: 1rem 1rem;
+      display: block;
+      width: 100%;
+      font-size: 1.15rem;
+      font-weight: 725;
+      cursor: pointer;
+      border: none;
+      background-color: $white;
+      color: $black;
+      transition: all 0.15s linear;
+      outline: none;
+      &:hover,
+      &:focus {
+        background: $yellow;
+      }
     }
   }
-  .share-callout { color:$white; font-family: $sans-serif;
+  .share-callout {
+    color: $white;
+    font-family: $sans-serif;
   }
-  .start-game-wrapper { display:grid; gap:10px; color:yellow;
-    label { font-weight: 600; color:$white; font-family: $sans-serif; font-size: 0.875rem; text-align: center; }
-  }
-  button.start-game { background-color: $yellow; color:darken($yellow,35); font-family: $sans-serif; font-weight: 825; font-size:1.25rem; display: block; width: 100%; padding:0.75em 1em; border:2px solid rgba(0,0,0,.35); transition:all 0.3s linear;
-    &[disabled] { opacity: 0.5; filter:grayscale(1); }
-    &:not([disabled]) { cursor: pointer;
-      &:hover, &:focus { background-color: lighten($yellow,40); color:darken($yellow,30); }
+  .start-game-wrapper {
+    display: grid;
+    gap: 10px;
+    color: yellow;
+    label {
+      font-weight: 600;
+      color: $white;
+      font-family: $sans-serif;
+      font-size: 0.875rem;
+      text-align: center;
     }
   }
-  
-  .room-code { position: absolute; top:0; left:0; padding:20px;
-    .label { font-family: $sans-serif; color:$white; }
-    .display { font-family: $monospace; font-size:3.5em; color:$yellow; font-weight: 800; line-height: 90%; }
-    .how-to-share { font-family: $sans-serif; color:$white; font-size:0.75rem; max-width: 160px; padding-top:0.5em; }
+  button.start-game {
+    background-color: $yellow;
+    color: darken($yellow, 35);
+    font-family: $sans-serif;
+    font-weight: 825;
+    font-size: 1.25rem;
+    display: block;
+    width: 100%;
+    padding: 0.75em 1em;
+    border: 2px solid rgba(0, 0, 0, 0.35);
+    transition: all 0.3s linear;
+    &[disabled] {
+      opacity: 0.5;
+      filter: grayscale(1);
+    }
+    &:not([disabled]) {
+      cursor: pointer;
+      &:hover,
+      &:focus {
+        background-color: lighten($yellow, 40);
+        color: darken($yellow, 30);
+      }
+    }
   }
 
-  .lobby-error { width:460px; background-color: $lightRed; color:$darkRed; padding:20px; font-family: $sans-serif;
-    h2 { font-size:3rem; font-family: $serif;  }
-    p { line-height: 200%; margin-bottom: 1em;}
-    button { border: 1px solid $darkRed; padding:0.75rem 1rem; font-size: 1rem; cursor: pointer; background-color: $lightRed; color:$darkRed; font-family: $sans-serif;
-      &:hover { background-color: $darkRed; color:$lightRed; }
+  .room-code {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    .label {
+      font-family: $sans-serif;
+      color: $white;
+    }
+    .display {
+      font-family: $monospace;
+      font-size: 3.5em;
+      color: $yellow;
+      font-weight: 800;
+      line-height: 90%;
+    }
+    .how-to-share {
+      font-family: $sans-serif;
+      color: $white;
+      font-size: 0.75rem;
+      max-width: 160px;
+      padding-top: 0.5em;
+    }
+  }
+
+  .lobby-error {
+    width: 460px;
+    background-color: $lightRed;
+    color: $darkRed;
+    padding: 20px;
+    font-family: $sans-serif;
+    h2 {
+      font-size: 3rem;
+      font-family: $serif;
+    }
+    p {
+      line-height: 200%;
+      margin-bottom: 1em;
+    }
+    button {
+      border: 1px solid $darkRed;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      background-color: $lightRed;
+      color: $darkRed;
+      font-family: $sans-serif;
+      &:hover {
+        background-color: $darkRed;
+        color: $lightRed;
+      }
     }
   }
 }

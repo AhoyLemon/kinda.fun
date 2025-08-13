@@ -701,16 +701,7 @@
   };
 
   const joinRoom = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const roomCode = urlParams.get("room");
-
-    if (!roomCode) {
-      console.error("Room code is missing in the URL");
-      game.isFailedToGetRoomData = true;
-      return;
-    }
-
-    game.roomCode = roomCode.toUpperCase();
+    // game.roomCode = roomCode.toUpperCase();
     const roomRef = doc(db, "rooms", game.roomCode);
 
     // Fetch room data
@@ -820,7 +811,10 @@
     if (urlParams.has("create")) {
       createRoom();
     } else if (urlParams.has("room")) {
-      joinRoom();
+      // joinRoom();
+      const roomCode = urlParams.get("room").toUpperCase();
+      // game.roomCode = roomCode;
+      you.roomCodeInput = roomCode;
     }
   });
 </script>

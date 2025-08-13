@@ -9,5 +9,13 @@
   "arrowParens": "always",
   "vueIndentScriptAndStyle": true,
   "singleAttributePerLine": false,
-  "printWidth": 160
+  "printWidth": 160,
+  "overrides": [
+    {
+      "files": "src/views/meeting/js/_allCards.ts",
+      "options": {
+        "printWidth": 60
+      }
+    }
+  ]
 }

@@ -34,14 +34,10 @@ main.title-screen
         button.close-help(@click="toggleHelpScreen(false)") Close this help screen
     
     .create-or-join
-      button.create(
-        type="button"
-        @click="createRoom()"
-        :disabled="you.roomCodeInput?.length > 0" 
-      ) Create A Room
+      button.create(type="button" @click="createRoom()" :disabled="you.roomCodeInput?.length > 1") Create A Room
       span.or or
       form(@submit.prevent="joinRoomByInput()")
         fieldset
           label(for="RoomCodeInput") Enter Room Code
           input.room-code-input#RoomCodeInput(type="text" v-model="you.roomCodeInput" autocapitalize="true" autocomplete="off" required minlength="5" maxlength="5")
-        button.submit(type="submit" v-if="you.roomCodeInput && you.roomCodeInput?.length > 4") JOIN
+        button.submit(type="submit" v-if="you.roomCodeInput && you.roomCodeInput?.length > 3") JOIN

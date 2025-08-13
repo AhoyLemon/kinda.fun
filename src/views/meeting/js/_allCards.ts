@@ -1,10 +1,19 @@
 interface Card {
+  /** The phrase the player must say out loud in the meeting. */
   phrase: string;
+  /** The point value for this card (higher = harder to say). */
   points: number;
+  /** Alternate acceptable answers a player could type to guess this card. */
   alternates?: string[];
+  /** The main string a player must type to guess this card. */
   stringMatch?: string;
 }
 
+function normalize(str: string) {
+  return str.replace(/[^a-z0-9]/gi, "").toLowerCase();
+}
+
+// Remove redundant stringMatch in allCards
 export const allCards: Card[] = [
   // 5 Points
   {
@@ -12,7 +21,6 @@ export const allCards: Card[] = [
     points: 5,
     stringMatch: "bullet",
   },
-
   {
     phrase: `We'll have to circle back on that one.`,
     points: 5,
@@ -34,6 +42,22 @@ export const allCards: Card[] = [
     points: 5,
     stringMatch: "killer instinct",
   },
+  {
+    phrase: "moving the goalposts",
+    points: 5,
+    stringMatch: "goalposts",
+    alternates: ["goal posts"],
+  },
+  {
+    phrase: "that's a real quick win",
+    points: 5,
+    stringMatch: "quick win",
+  },
+  {
+    phrase: "let's table this for now",
+    points: 5,
+    stringMatch: "table this",
+  },
   /////////////
   //
   // 10 Points
@@ -42,12 +66,6 @@ export const allCards: Card[] = [
     points: 10,
     alternates: ["donuts", "dunkin'"],
     stringMatch: "dunkin",
-  },
-  {
-    phrase: `I like things that are kinda fun.`,
-    points: 5,
-    alternates: ["kinda.fun", "things that are kinda.fun", "i like things that are kinda.fun"],
-    stringMatch: "kinda fun",
   },
   {
     phrase: `a forty pound alligator`,
@@ -106,6 +124,39 @@ export const allCards: Card[] = [
     alternates: ["fly-over"],
     stringMatch: "flyover",
   },
+  {
+    phrase: "boil the ocean",
+    points: 10,
+    alternates: ["boil ocean"],
+  },
+  {
+    phrase: "I'm low-key obsessed",
+    points: 10,
+    stringMatch: "low-key obsessed",
+    alternates: ["low key obsessed"],
+  },
+  {
+    phrase: "do a quick vibe check",
+    points: 10,
+    stringMatch: "vibe check",
+  },
+  {
+    phrase: "low-hanging fruit",
+    points: 10,
+    alternates: ["low hanging fruit"],
+  },
+  {
+    phrase: "let's run it up the flagpole",
+    points: 10,
+    stringMatch: "run it up the flagpole",
+    alternates: ["flagpole"],
+  },
+  {
+    phrase: "a silent disco",
+    points: 10,
+    stringMatch: "silent disco",
+  },
+
   /////////////
   //
   // 15 Points
@@ -127,7 +178,10 @@ export const allCards: Card[] = [
   {
     phrase: `true out of the box thinking`,
     points: 15,
-    alternates: ["out-of-the-box", "out-of-the-box thinking"],
+    alternates: [
+      "out-of-the-box",
+      "out-of-the-box thinking",
+    ],
     stringMatch: "the box",
   },
   {
@@ -174,27 +228,112 @@ export const allCards: Card[] = [
   {
     phrase: `a fresh new pair of Doc Martens boots`,
     points: 15,
-    alternates: [`doc martin`, "doc martin boots", "dr. martin", "dr. martin"],
+    alternates: [
+      `doc martin`,
+      "doc martin boots",
+      "dr. martin",
+      "dr. martin",
+    ],
     stringMatch: "doc marten",
   },
   {
     phrase: `Gwen Stefani`,
     points: 15,
   },
+  {
+    phrase: "peel back the onion",
+    points: 15,
+    alternates: ["peel the onion", "peel back onion"],
+  },
+  {
+    phrase: "let's not yuck anyone's yum",
+    points: 15,
+    stringMatch: "yuck anyone's yum",
+    alternates: [
+      "yuck someones yum",
+      "yuck yum",
+      "yuck a yum",
+      "yuck anyones yum",
+    ],
+  },
+  {
+    phrase: `I like things that are kinda fun.`,
+    points: 15,
+    alternates: [
+      "kinda.fun",
+      "things that are kinda.fun",
+      "i like things that are kinda.fun",
+    ],
+    stringMatch: "kinda fun",
+  },
+  {
+    phrase: "the forbidden donut",
+    points: 15,
+    alternates: ["forbidden donut", "forbidden doughnut"],
+  },
+
+  /////////////
+  //
+  // 20 Points
+  {
+    phrase: "the ghost of Steve Ballmer",
+    points: 20,
+    stringMatch: "steve ballmer",
+  },
+  {
+    phrase: "the last Blockbuster",
+    points: 20,
+    alternates: ["last blockbuster", "blockbuster"],
+  },
+  {
+    phrase: "the blue shell from Mario Kart",
+    points: 20,
+    stringMatch: "blue shell",
+    alternates: ["mario kart"],
+  },
+  {
+    phrase: "the great resignation",
+    points: 20,
+    stringMatch: "great resignation",
+  },
+  {
+    phrase: "an emoji I can't pronounce",
+    points: 20,
+    alternates: ["emoji i can't pronounce"],
+  },
+  {
+    phrase: "the quantum deliverable",
+    points: 20,
+    stringMatch: "quantum deliverable",
+  },
+
   /////////////
   //
   // 30 Points
   {
     phrase: `Sonia Sotomayor`,
     points: 30,
+    alternates: ["sonia", "sotomayor"],
   },
   {
     phrase: `Sufjan Stevens`,
     points: 30,
+    alternates: ["sufjan", "sufyan stevens"],
   },
   {
-    phrase: `Diplo`,
+    phrase: `a Diplo remix`,
     points: 30,
+    stringMatch: "diplo",
+  },
+  {
+    phrase: "In the year 2525, if man is still alive",
+    points: 30,
+    stringMatch: "2525",
+  },
+  {
+    phrase: "the secret menu at Waffle House",
+    points: 30,
+    stringMatch: "waffle house",
   },
   {
     phrase: `Bring on the dancing horses.`,
