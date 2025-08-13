@@ -701,7 +701,6 @@
   };
 
   const joinRoom = () => {
-    // game.roomCode = roomCode.toUpperCase();
     const roomRef = doc(db, "rooms", game.roomCode);
 
     // Fetch room data

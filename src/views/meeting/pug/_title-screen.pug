@@ -10,31 +10,32 @@ main.title-screen
         p Confused? 
           button.how-to-play(@click="toggleHelpScreen(true)") Here's how to play
           | .
-    .how-to-play(v-if="ui.isHelpScreenVisible")
-      h2#HowToPlayHeadline 
-        span How To Play 
-        img.logo(src="/svg/games/thismeetinghaspoints.svg" alt="This Meeting Has Points")
-      h3 Getting Started
-      p To kick things off, #[strong one player will create a room]. This person becomes the host, receives a unique room code, and shares it with their coworkers. Players can enter their name and job title in the lobby, and #[strong the host will start the game] and everyone is ready to go.
+    transition(name="fade")
+      .how-to-play(v-if="ui.isHelpScreenVisible")
+        h2#HowToPlayHeadline 
+          span How To Play 
+          img.logo(src="/svg/games/thismeetinghaspoints.svg" alt="This Meeting Has Points")
+        h3 Getting Started
+        p To kick things off, #[strong one player will create a room]. This person becomes the host, receives a unique room code, and shares it with their coworkers. Players can enter their name and job title in the lobby, and #[strong the host will start the game] and everyone is ready to go.
 
-      h3 The Game, The Rules
-      p Each player starts with five cards, each with a specific phrase (for example: "threw me under the bus") and a point value that's determined by how difficult the phrase is to slip into a meeting. Your goal is to sneak these phrases into the meeting's conversation.
-      p To #[strong play a card], you must #[strong say the phrase exactly as written], before clicking/tapping the card you just said. This starts a short timer. If no one catches you before the timer runs out, you get the points!
+        h3 The Game, The Rules
+        p Each player starts with five cards, each with a specific phrase (for example: "threw me under the bus") and a point value that's determined by how difficult the phrase is to slip into a meeting. Your goal is to sneak these phrases into the meeting's conversation.
+        p To #[strong play a card], you must #[strong say the phrase exactly as written], before clicking/tapping the card you just said. This starts a short timer. If no one catches you before the timer runs out, you get the points!
 
-      h3 Stealing and Penalties
-      p This is where things get interesting. At any point, anyone in the game can try to steal a card from another player. If you hear something supicious, type in what you think was on that player's card.
-      ul
-        li #[strong Guess correctly?] You'll steal the card for yourself and score all of its points.
-        li #[strong Bad guess?] If what you typed isn't in any player's hand, you'll get a small point penalty.
-      p Once points are successfully scored, either by a played card's timer running out or a successful steal, those points are locked in and can no longer be taken away.
-      h3 Ending the Game
-      p When the meeting is mercifully over (or whenever the host feels like it) they can click the #[strong End the game] button. The game over screen shows the final scores, but more interestingly you'll see the cards each player had.
+        h3 Stealing and Penalties
+        p This is where things get interesting. At any point, anyone in the game can try to steal a card from another player. If you hear something supicious, type in what you think was on that player's card.
+        ul
+          li #[strong Guess correctly?] You'll steal the card for yourself and score all of its points.
+          li #[strong Bad guess?] If what you typed isn't in any player's hand, you'll get a small point penalty.
+        p Once points are successfully scored, either by a played card's timer running out or a successful steal, those points are locked in and can no longer be taken away.
+        h3 Ending the Game
+        p When the meeting is mercifully over (or whenever the host feels like it) they can click the #[strong End the game] button. The game over screen shows the final scores, but more interestingly you'll see the cards each player had.
 
-      p Got it? 
-        button.close-help(@click="toggleHelpScreen(false)") Close this help screen
+        p Got it? 
+          button.close-help(@click="toggleHelpScreen(false)") Close this help screen
     
     .create-or-join
-      button.create(type="button" @click="createRoom()" :disabled="you.roomCodeInput?.length > 1") Create A Room
+      button.create(type="button" @click="createRoom()" :disabled="you.roomCodeInput?.length > 3") Create A Room
       span.or or
       form(@submit.prevent="joinRoomByInput()")
         fieldset
