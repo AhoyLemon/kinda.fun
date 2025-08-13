@@ -201,7 +201,7 @@
     game.roomCode = newRoomCode;
   }
 
-  import { gameName, timeToScore, badGuessPenalty, cardsPerPlayer, game, you } from "./js/_variables";
+  import { gameName, timeToScore, badGuessPenalty, cardsPerPlayer, game, you, ui } from "./js/_variables";
   import { playerID } from "../invalid/js/_variables.js";
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
@@ -222,6 +222,14 @@
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
+  };
+
+  const toggleHelpScreen = (to) => {
+    if (to == true || to == false) {
+      ui.isHelpScreenVisible = to;
+    } else {
+      ui.isHelpScreenVisible = !ui.isHelpScreenVisible;
+    }
   };
 
   const savePlayerInfo = async () => {
@@ -693,16 +701,6 @@
   };
 
   const joinRoom = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const roomCode = urlParams.get("room");
-
-    if (!roomCode) {
-      console.error("Room code is missing in the URL");
-      game.isFailedToGetRoomData = true;
-      return;
-    }
-
-    game.roomCode = roomCode.toUpperCase();
     const roomRef = doc(db, "rooms", game.roomCode);
 
     // Fetch room data
@@ -812,7 +810,8 @@
     if (urlParams.has("create")) {
       createRoom();
     } else if (urlParams.has("room")) {
-      joinRoom();
+      const roomCode = urlParams.get("room").toUpperCase();
+      you.roomCodeInput = roomCode;
     }
   });
 </script>

@@ -1,31 +1,102 @@
-.card-players { background:#111; overflow-x: hidden;
-  ul.players { display:grid; gap:20px; padding:20px; }
-  li.player { border: 1px solid #aaa; padding:10px; background:#000; color:$white; display:grid; gap:10px; }
-  
-  .name-and-icon { display: grid; grid-template-columns: 1fr 32px;
-    .host-icon { margin-left: 10px; margin-right: 10px; cursor: help; padding-top:4px}
+.card-players {
+  background: #040404;
+  overflow-x: hidden;
+  ul.players {
+    display: grid;
+    gap: 20px;
+    padding: 20px;
   }
-  .player-name { font-family: $serif; font-size:1.5rem; font-weight: 700;
-    &.is-you { color:$yellow; }
+  li.player {
+    border: 1px solid #777;
+    padding: 10px;
+    background: #efefef;
+    color: $black;
+    display: grid;
+    gap: 6px;
   }
-  .player-job { font-family: $sans-serif; font-size:1rem; font-weight: 525; }
-  .player-score { font-family: $monospace; font-size:1rem; text-align: right; }
-  ul.known-hand { display: flex; gap:10px;
-    li { width:1.5rem; height:1.5rem; border-radius: 50%; color:transparent; cursor: help; box-shadow: -2px 2px 1px rgba(0,0,0,0.15);
-      &.unplayed { background:$cream; }
-      &.played { background-color: $green;}
-      &.stolen { background-color: lighten($red,25);}
-      &.playing { background-color: $blue;}
+  .name-and-icon {
+    display: grid;
+    grid-template-columns: 1fr 32px;
+    .host-icon {
+      margin-left: 10px;
+      margin-right: 10px;
+      cursor: help;
+      padding-top: 4px;
     }
   }
-
-  &.for-host { display:flex; flex-direction: column; justify-content: space-between; gap:40px;
-    .end-meeting { display: grid; gap:5px; padding:40px 20px 10px 20px;
-      label { font-size:0.75rem; color:$white; font-family: $sans-serif; text-align: center;}
-      button { background:transparent; border:2px solid $yellow; color:$yellow; padding:0.5em 1em; font-family: $sans-serif; font-size:0.875rem; cursor: pointer;
-        &:hover, &:focus { background-color: $yellow; color:#000; }
+  .player-name {
+    font-family: $serif;
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 110%;
+    &.is-you {
+      color: #38096b;
+    }
+  }
+  .player-job {
+    font-family: $sans-serif;
+    font-size: 1rem;
+    font-weight: 525;
+  }
+  .player-score {
+    font-family: $monospace;
+    font-size: 1rem;
+    text-align: right;
+  }
+  ul.known-hand {
+    display: flex;
+    gap: 10px;
+    li {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      color: transparent;
+      cursor: help;
+      box-shadow: -2px 2px 1px rgba(0, 0, 0, 0.15);
+      &.unplayed {
+        background: $cream;
+      }
+      &.played {
+        background-color: $green;
+      }
+      &.stolen {
+        background-color: lighten($red, 25);
+      }
+      &.playing {
+        background-color: $blue;
       }
     }
   }
-  
+
+  &.for-host {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+    .end-meeting {
+      display: grid;
+      gap: 5px;
+      padding: 40px 20px 10px 20px;
+      label {
+        font-size: 0.75rem;
+        color: $white;
+        font-family: $sans-serif;
+        text-align: center;
+      }
+      button {
+        background: transparent;
+        border: 2px solid $yellow;
+        color: $yellow;
+        padding: 0.5em 1em;
+        font-family: $sans-serif;
+        font-size: 0.875rem;
+        cursor: pointer;
+        &:hover,
+        &:focus {
+          background-color: $yellow;
+          color: #000;
+        }
+      }
+    }
+  }
 }

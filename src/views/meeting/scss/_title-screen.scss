@@ -1,25 +1,235 @@
-main.title-screen { background-color: #121212; color:$white; min-height: 100dvh; display:flex; align-items: center; justify-content: center;
-  .inside { display:grid; gap:10dvh; font-family: $sans-serif; }
-  // h1 { font-size:3vw; font-family: $serif; }
-  .logo { height:50vh; }
-  .create-or-join { display:flex; align-items: stretch; gap:18px; justify-content: center;
-    button.create { font-family: $sans-serif; font-weight: 800; border:0.1em solid $yellow; color:$yellow; font-size:1.5rem; padding:1em; background-color: rgba($yellow,0.025); cursor: pointer;
-      &:hover, &:focus { background:$yellow; color:#111; }
-    }
-    .or { display: inline-flex; align-self: center; font-weight: 750; }
-    form { display:inline-flex; }
-    fieldset { position: relative;
-      label { position: absolute; top:5px; left:10px; font-size: 12px; }
-      &:has(input:focus) { 
-        label { color: $yellow; }
-        input { border-color: $yellow; outline: none; }
+%link {
+  background: none;
+  border: none;
+  color: $yellow;
+  font-weight: 600;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  text-decoration: none;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+  }
+}
+
+main.title-screen {
+  background-color: #121212;
+  color: $white;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .inside {
+    display: grid;
+    min-height: 100dvh;
+    grid-template-rows: 1fr 120px;
+    font-family: $sans-serif;
+  }
+
+  .splash {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    figure {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      .logo {
+        max-height: 20vh;
+        transition: transform 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        @starting-style {
+          transform: translateY(-20dvh);
+        }
+      }
+      figcaption {
+        text-align: center;
+        line-height: 150%;
+        text-wrap: balance;
+        font-family: $serif;
+        font-size: 1.35em;
+        transition: all 0.3s linear;
+        @starting-style {
+          opacity: 0.25s;
+          transform: translateY(10px);
+        }
       }
     }
-    input.room-code-input { font-family: $sans-serif; font-weight: 800; padding:10px 0 0 6px; text-transform: uppercase;font-size:3.5rem; width:3.5em; background:black; border:2px solid black; color:$yellow;
-      &:focus { border-color: $yellow; outline: none;}
+    .help-holder {
+      text-align: center;
+      font-family: $serif;
+      font-size: 1.25em;
+      button {
+        @extend %link;
+      }
     }
-    button.submit { border-radius: 0; border:none; font-weight: 700; background:$yellow;
-      &:disabled { opacity: 0.25; color:$yellow; background:black; }
+  }
+
+  .how-to-play {
+    padding-top: 2em;
+    max-width: 600px;
+    padding-bottom: 3rem;
+
+    h2 {
+      display: grid;
+      grid-template-columns: 20rem 1fr;
+      gap: 20px;
+      align-items: center;
+      span {
+        font-weight: 300;
+        text-align: right;
+        font-size: 3rem;
+      }
+      border-bottom: 1px solid $white;
+      padding-bottom: 1em;
+      margin-bottom: 2em;
+      .logo {
+        transition: all 0.5s ease-out;
+        @starting-style {
+          transform: scale(1.5) translate(-40%, 120%);
+        }
+        transform: none;
+      }
+    }
+    h3 {
+      font-size: 2.15rem;
+      font-weight: 300;
+    }
+    p {
+      padding-left: 1.5em;
+      margin-bottom: 1em;
+      line-height: 145%;
+      text-wrap: pretty;
+    }
+    ul,
+    ol {
+      padding-left: 1.5em;
+      margin-bottom: 1em;
+      line-height: 145%;
+      display: grid;
+      gap: 0.5rem;
+      li {
+        list-style-type: disc;
+        margin-left: 1em;
+        text-wrap: pretty;
+      }
+    }
+    button.close-help {
+      @extend %link;
+    }
+    p,
+    li {
+      opacity: 1;
+      transform: none;
+      transition:
+        opacity 1s cubic-bezier(0.7, 0, 0.3, 1),
+        transform 1s cubic-bezier(0.7, 0, 0.3, 1);
+      @starting-style {
+        opacity: 0;
+        transform: translateY(3rem);
+      }
+    }
+  }
+  .create-or-join {
+    display: flex;
+    align-items: stretch;
+    gap: 18px;
+    justify-content: center;
+    button.create {
+      font-family: $sans-serif;
+      font-weight: 800;
+      border: 0.1em solid $yellow;
+      color: $yellow;
+      font-size: 1.5rem;
+      padding: 1em;
+      background-color: rgba($yellow, 0.025);
+      cursor: pointer;
+      height: 82px;
+      &[disabled] {
+        filter: grayscale(0.85) opacity(0.85);
+        cursor: default;
+      }
+      &:not([disabled]) {
+        &:hover,
+        &:focus-visible {
+          background: $yellow;
+          color: #111;
+        }
+      }
+    }
+    .or {
+      display: inline-flex;
+      align-self: center;
+      font-weight: 750;
+    }
+    form {
+      display: inline-flex;
+    }
+    fieldset {
+      position: relative;
+      label {
+        position: absolute;
+        top: 5px;
+        left: 10px;
+        font-size: 12px;
+      }
+      &:has(input:focus) {
+        label {
+          color: $yellow;
+        }
+        input {
+          border-color: $yellow;
+          outline: none;
+        }
+      }
+    }
+    input.room-code-input {
+      font-family: $monospace;
+      font-weight: 800;
+      padding: 10px 0 0 6px;
+      text-transform: uppercase;
+      font-size: 3.5rem;
+      width: 3.2em;
+      height: 82px;
+      background: black;
+      border: 2px solid black;
+      color: $yellow;
+      &:focus {
+        border-color: $yellow;
+        outline: none;
+      }
+    }
+    button.submit {
+      border-radius: 0;
+      border: none;
+      font-weight: 700;
+      background: black;
+      font-family: $sans-serif;
+      color: $yellow;
+      padding-left: 1em;
+      padding-right: 1em;
+      height: 82px;
+      border: 2px solid $yellow;
+      border-left: none;
+      outline: none;
+      &:disabled {
+        opacity: 0.25;
+        color: $yellow;
+        background: black;
+      }
+      &:not(:disabled) {
+        &:hover,
+        &:focus-visible {
+          cursor: pointer;
+          background-color: $yellow;
+          color: $black;
+        }
+      }
     }
   }
 }
