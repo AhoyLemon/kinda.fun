@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Games made by Lemon.",
   "scripts": {
-    "dev": "set NODE_NO_WARNINGS=1 && concurrently --names \"CLIENT  ,WATCH   \" --prefix \"{name}|\" --prefix-colors \"magenta,cyan\" -k \"npm run dev:client\" \"npm run watch:pages\"",
+    "dev": "node scripts/npm-run/dev.js",
     "dev:client": "vite",
     "dev:server": "concurrently --prefix none \"vite\" \"node src/server/express.js\" || (exit 0)",
     "build:pages": "node build-pages.js",
@@ -17,7 +17,7 @@
     "serve-heroku": "vite --host 0.0.0.0 --port $PORT preview --mode sandbox",
     "update-billionaires": "node scripts/update-billionaires-2024.js",
     "generate-arrests": "node scripts/generate-arrests.js",
-    "watch:pages": "concurrently --names \"cameo,guillotine,home,invalid,meeting,pretend,sisyphus,wrongest,stats\" --prefix \"[{name}]\" --prefix-colors \"yellow,red,green,blue,magenta,cyan,white,gray,brightBlue\" -k \"nodemon --quiet -w src/views/cameo/Page.pug -x node build-pages.js cameo\" \"nodemon --quiet -w src/views/guillotine/Page.pug -x node build-pages.js guillotine\" \"nodemon --quiet -w src/views/home/Page.pug -x node build-pages.js index\" \"nodemon --quiet -w src/views/invalid/Page.pug -x node build-pages.js invalid\" \"nodemon --quiet -w src/views/meeting/Page.pug -x node build-pages.js meeting\" \"nodemon --quiet -w src/views/pretend/Page.pug -x node build-pages.js pretend\" \"nodemon --quiet -w src/views/sisyphus/Page.pug -x node build-pages.js sisyphus\" \"nodemon --quiet -w src/views/wrongest/Page.pug -x node build-pages.js wrongest\" \"nodemon --quiet -w src/views/stats/Page.pug -x node build-pages.js stats\"",
+    "watch:pages": "node scripts/npm-run/watch-pages.js",
     "firebase:hydrate": "node scripts/firebase/cloneFirestore.js",
     "postinstall": "cd functions && npm install"
   },
