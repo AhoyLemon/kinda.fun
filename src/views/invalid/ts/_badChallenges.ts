@@ -1,4 +1,18 @@
-export const badChallenges = [
+export interface Challenge {
+  id: number; // Unique identifier for the challenge
+  name: string; // Canonical name, used when selecting the challenge from a list, or displaying it in stats
+  nameAsRule: string; // The password rule as it will be seen by the employees.
+  hint?: string; // Optional. This will be shown to employees to help them know what they should type (eg: Last Name)
+  failedMessage: string; // What the employees will say if your password isn't on the list. [PASS] will be replaced with the entered password.
+  possible: string[]; // ALLCAPS list of every possible answers, each is treated as unique.
+  source?: string; // Optional URL. This should be the source used to generate the list of possible answers.
+  naughty?: boolean; // Optional. If true, this challenge will only be shown to players with the "naughty" setting enabled.
+}
+
+/**
+ * These challenges weren't good enough to be used in the normal game.
+ */
+export const badChallenges: Challenge[] = [
   ///////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
   // TOO DIFFICULT OR OBSCURE

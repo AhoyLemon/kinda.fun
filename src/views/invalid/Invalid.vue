@@ -33,7 +33,7 @@
     ui,
     game,
   } from "./js/_variables";
-  import { challenges } from "./js/_challenges";
+  import { challenges } from "./ts/_challenges";
 
   /////// Sounds
   import { Howl, Howler } from "howler";
@@ -802,7 +802,7 @@
       } else if (usedChallengeNames.includes(randomChallenge.name)) {
         // This challenge was already used in a previous round, pick again.
         appendThisChallenge = false;
-      } else if (round.possibleChallenges.length != []) {
+      } else if (round.possibleChallenges.length > 0) {
         round.possibleChallenges.forEach(function (c) {
           if (c.id == randomChallenge.id) {
             // This challenge already exists in your list.

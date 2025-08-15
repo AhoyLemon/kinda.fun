@@ -664,12 +664,6 @@ export const allValues = [
     value: 125,
   },
   {
-    name: "George Wendt",
-    desc: "Norm on Cheers",
-    slug: "georgewendt",
-    value: 125,
-  },
-  {
     name: "Johnny Brennan",
     desc: "The guy who did those Jerky Boys CDs. Also there was a movie for some reason?",
     slug: "johnnybrennan",
@@ -1311,12 +1305,7 @@ export const allValues = [
 ];
 
 export const deadCelebrities = [
-  {
-    name: "George Lowe",
-    desc: "Space Ghost",
-    slug: "georgeloweofficial",
-    value: 100,
-  },
+  { name: "George Lowe", desc: "Space Ghost", slug: "georgeloweofficial", value: 100 },
   {
     name: "Bob Saget",
     desc: "Danny on Full House",
@@ -1352,5 +1341,11 @@ export const deadCelebrities = [
     desc: "Contestant, The Celebrity Apprentice",
     slug: "meatloaf",
     value: 170,
+  },
+  {
+    name: "George Wendt",
+    desc: "Norm on Cheers",
+    slug: "georgewendt",
+    value: 125,
   },
 ];
