@@ -13,7 +13,7 @@
   import { firebaseConfig } from "../../../firebaseConfig.public";
   import { useFirestore } from "vuefire";
   import { collection, getDocs } from "firebase/firestore";
-  import { challenges } from "../invalid/js/_challenges";
+  import { challenges } from "../invalid/ts/_challenges";
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
