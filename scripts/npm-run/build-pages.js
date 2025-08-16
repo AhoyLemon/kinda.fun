@@ -52,6 +52,11 @@ const pages = [
     name: "meeting.html",
   },
   {
+    src: path.join(SRC_DIR, "views", "megachurch", "Page.pug"),
+    out: path.join(DIST_DIR, "megachurch.html"),
+    name: "megachurch.html",
+  },
+  {
     src: path.join(SRC_DIR, "views", "pretend", "Page.pug"),
     out: path.join(DIST_DIR, "pretend.html"),
     name: "pretend.html",

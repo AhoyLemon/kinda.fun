@@ -1,0 +1,33 @@
+/* Restore and improve custom styles for @vueform/multiselect */
+.multiselect {
+  min-width: 300px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.multiselect__input {
+  padding: 8px 12px;
+  color: #222;
+}
+.multiselect__option--highlight {
+  background: #e0e7ff;
+  color: #222;
+}
+.multiselect__option--selected {
+  background: #c7d2fe;
+  color: #222;
+}
+.multiselect__tags {
+  background: #f3f4f6;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+.multiselect__tag {
+  background: #6366f1;
+  color: #fff;
+  border-radius: 4px;
+  margin: 2px;
+  padding: 2px 8px;
+}

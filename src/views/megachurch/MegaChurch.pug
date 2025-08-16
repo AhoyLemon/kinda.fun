@@ -1,0 +1,91 @@
+h1 MegaChurch Tycoon
+h2 This works
+
+section(v-if="ui.choosing === 'religion'")
+  form(@submit.prevent="chooseReligion(selected)")
+    Multiselect(
+      v-model="selected"
+      :options="options"
+      :multiple="false"
+      :searchable="true"
+      placeholder="Select Your Religion"
+      label="Religion"
+    )
+    button(type="submit") That's my religion
+
+
+section(v-if="ui.choosing === 'sermon'")
+
+  h2 What will you preach today?
+  form(@submit.prevent="chooseSermon()")
+    ol
+      // First Topic
+      li
+        Multiselect(
+          v-model="selectedSermons[0]"
+          :options="sermons"
+          value-prop="id"
+          track-by="id"
+          label="title"
+          mode="single"
+          placeholder="First Topic"
+        )
+        div(v-if="selectedSermons[0]")
+          p {{showSermonDescription(selectedSermons[0])}}
+
+      
+      // Second Topic
+      li
+        Multiselect(
+          v-model="selectedSermons[1]"
+          :options="sermons"
+          value-prop="id"
+          track-by="id"
+          label="title"
+          mode="single"
+          placeholder="Second Topic"
+        )
+        div(v-if="selectedSermons[1]")
+          p {{showSermonDescription(selectedSermons[1])}}
+
+      // Second Topic
+      li
+        Multiselect(
+          v-model="selectedSermons[2]"
+          :options="sermons"
+          value-prop="id"
+          track-by="id"
+          label="title"
+          mode="single"
+          placeholder="Second Topic"
+        )
+        div(v-if="selectedSermons[2]")
+          p {{showSermonDescription(selectedSermons[2])}}
+
+      //- // Second Topic
+      //- li
+      //-   Multiselect(
+      //-     v-model="selectedSermons[1]"
+      //-     :options="getSermonOptions()"
+      //-     :multiple="false"
+      //-     :searchable="true"
+      //-     placeholder="First Topic"
+      //-     label="label"
+      //-     track-by="id"
+      //-   )
+      //-   div(v-if="selectedSermons[1]?.desc")
+      //-     p {{selectedSermons[1].desc }}
+
+      //- // Second Topic
+      //- li
+      //-   Multiselect(
+      //-     v-model="selectedSermons[1]"
+      //-     :options="getSermonOptions()"
+      //-     :multiple="false"
+      //-     :searchable="true"
+      //-     placeholder="First Topic"
+      //-     label="label"
+      //-     track-by="id"
+      //-   )
+      //-   div(v-if="selectedSermons[2]?.desc")
+      //-     p {{selectedSermons[2].desc }}

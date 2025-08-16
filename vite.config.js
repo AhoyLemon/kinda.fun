@@ -58,6 +58,7 @@ export default defineConfig(({ mode }) => {
           wrongest: resolve(__dirname, "src/entries/wrongest.js"),
           home: resolve(__dirname, "src/entries/home.js"),
           404: resolve(__dirname, "src/entries/404.js"),
+          megachurch: resolve(__dirname, "src/entries/megachurch.js"),
         },
         output: {
           entryFileNames: "[name].js",

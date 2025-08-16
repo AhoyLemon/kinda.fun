@@ -8,6 +8,7 @@ const watchers = [
   { name: "home", color: "green", file: "src/views/home/Page.pug", build: "index" },
   { name: "invalid", color: "blue", file: "src/views/invalid/Page.pug", build: "invalid" },
   { name: "meeting", color: "magenta", file: "src/views/meeting/Page.pug", build: "meeting" },
+  { name: "megachurch", color: "purple", file: "src/views/megachurch/Page.pug", build: "megachurch" },
   { name: "pretend", color: "cyan", file: "src/views/pretend/Page.pug", build: "pretend" },
   { name: "sisyphus", color: "white", file: "src/views/sisyphus/Page.pug", build: "sisyphus" },
   { name: "wrongest", color: "gray", file: "src/views/wrongest/Page.pug", build: "wrongest" },

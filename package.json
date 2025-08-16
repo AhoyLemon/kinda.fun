@@ -22,6 +22,7 @@
     "postinstall": "cd functions && npm install"
   },
   "dependencies": {
+    "@vueform/multiselect": "^2.6.11",
     "firebase": "^10.14.1",
     "howler": "^2.2.4",
     "luxon": "^3.4.4",

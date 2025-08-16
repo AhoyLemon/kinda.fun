@@ -16,6 +16,13 @@
       "options": {
         "printWidth": 60
       }
+    },
+    {
+      "files": "src/views/megachurch/ts/*.ts",
+      "options": {
+        "printWidth": 60,
+        "proseWrap": "always"
+      }
     }
   ]
 }
