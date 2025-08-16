@@ -33,7 +33,7 @@
     ui,
     game,
   } from "./js/_variables";
-  import { challenges } from "./js/_challenges";
+  import { challenges } from "./ts/_challenges";
 
   /////// Sounds
   import { Howl, Howler } from "howler";
@@ -246,16 +246,24 @@
 
             // Stop the timer when round becomes over
             if (!wasRoundOver && data.isRoundOver) {
-              // If current player is the admin, increment their score by round.elapsedTime
-              if (my.playerIndex === round.sysAdminIndex) {
-                my.score += round.elapsedTime;
-                // Also update the score in Firestore
-                try {
-                  const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
-                  await updateDoc(playerRef, { score: my.score });
-                } catch (err) {
-                  console.error("Error updating admin score after round over:", err);
+              // Only the host updates the sysadmin's score at round end, and only if a crash did NOT occur
+              if (my.isRoomHost && round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
+                if (!round.sysAdminCrashAwarded) {
+                  const adminPlayer = game.players[round.sysAdminIndex];
+                  adminPlayer.score += round.elapsedTime;
+                  // If host is also sysadmin, update local score
+                  if (my.playerIndex === round.sysAdminIndex) {
+                    my.score = adminPlayer.score;
+                  }
+                  // Update the score in Firestore
+                  try {
+                    const adminRef = doc(db, "rooms", game.roomCode, "players", adminPlayer.playerID);
+                    await updateDoc(adminRef, { score: adminPlayer.score });
+                  } catch (err) {
+                    console.error("Error updating admin score after round over:", err);
+                  }
                 }
+                // If crash was awarded, do nothing (score already updated)
               }
               // Reset elapsedTime for all
               round.elapsedTime = 0;
@@ -802,7 +810,7 @@
       } else if (usedChallengeNames.includes(randomChallenge.name)) {
         // This challenge was already used in a previous round, pick again.
         appendThisChallenge = false;
-      } else if (round.possibleChallenges.length != []) {
+      } else if (round.possibleChallenges.length > 0) {
         round.possibleChallenges.forEach(function (c) {
           if (c.id == randomChallenge.id) {
             // This challenge already exists in your list.
@@ -1490,12 +1498,31 @@
     };
 
     if (crashCheck) {
+      // Prevent double-awarding timer points at round end
+      round.sysAdminCrashAwarded = true;
       attemptRecord.result = "crash";
       attemptRecord.challengeName = round.challenge.name;
 
-      // Award points to the SysAdmin for causing a crash BEFORE updating score in Firestore
+      // Award BOTH timer points and crash bonus to SysAdmin
       if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
-        game.players[round.sysAdminIndex].score += settings.points.forServerCrash;
+        const adminPlayer = game.players[round.sysAdminIndex];
+        // Award timer points for elapsed time (if not already awarded)
+        if (typeof round.elapsedTime === "number" && round.elapsedTime > 0) {
+          adminPlayer.score += round.elapsedTime;
+        }
+        // Award crash bonus
+        adminPlayer.score += settings.points.forServerCrash;
+
+        // If current player is sysadmin, update local score too
+        if (my.playerIndex === round.sysAdminIndex) {
+          my.score = adminPlayer.score;
+        }
+
+        // Update SysAdmin score in Firestore
+        const adminRef = doc(db, "rooms", game.roomCode, "players", adminPlayer.playerID);
+        await updateDoc(adminRef, {
+          score: adminPlayer.score,
+        });
       }
 
       // Update crash state in Firestore
@@ -1507,15 +1534,6 @@
           word: attempt,
         },
       ];
-
-      // Update SysAdmin score in Firestore (now includes timer points + crash points)
-      if (round.sysAdminIndex >= 0 && game.players[round.sysAdminIndex]) {
-        const adminPlayer = game.players[round.sysAdminIndex];
-        const adminRef = doc(db, "rooms", game.roomCode, "players", adminPlayer.playerID);
-        await updateDoc(adminRef, {
-          score: adminPlayer.score,
-        });
-      }
 
       await updateRoomState({
         gamePhase: "crashed",
