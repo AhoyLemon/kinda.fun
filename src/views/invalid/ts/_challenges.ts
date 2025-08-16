@@ -4239,7 +4239,6 @@ export const challenges: Challenge[] = [
       "BOWIE",
       "BROWN",
       "BROWNE",
-      "BROWN",
       "BURKE",
       "BUFFETT",
       "BUSH",
