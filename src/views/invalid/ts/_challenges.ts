@@ -4282,7 +4282,6 @@ export const challenges: Challenge[] = [
       "JAY-Z",
       "JOEL",
       "JOHN",
-      "JOHN",
       "JOHNSON",
       "JOPLIN",
       "KING",
