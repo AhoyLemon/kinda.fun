@@ -19,15 +19,16 @@ main
 
     form(@submit.prevent="chooseReligion(ui.religionIndex)")
       fieldset
-        label Your Name
-        input(type="text" v-model="my.name" :placeholder="randomPastor" required)
+        label.required Your Name
+        input(type="text" v-model="my.name" required)
 
       fieldset
-        label Choose a religion
+        label.required Choose a religion
         Multiselect(
           v-model="ui.religionIndex"
           :options="religions"
           :searchable="true"
+          :required="true"
           value-prop="id"
           track-by="name"
           label="name"
@@ -98,16 +99,32 @@ main
         button(type="submit") Okay.
 
   section.diagnosis(v-if="computedSermonDiagnosis")
+
+    ol
+      li {{my.sermonToday.topics[0]}}
+      li {{my.sermonToday.topics[1]}}
+      li {{my.sermonToday.topics[2]}}
+
     p Your sermon today will tackle the subjects of 
       strong(v-text="computedSermonDiagnosis.biggestThemes[0]") 
       |  and 
       strong(v-text="computedSermonDiagnosis.biggestThemes[1]")
-      | , which I supect will go over well with 
+      | . 
+
+    p
+      | This should go over well with 
       strong(v-text="computedSermonDiagnosis.preferredReligions[0]")
       |  and 
       strong(v-text="computedSermonDiagnosis.preferredReligions[1]")
-      | . But you're not gonna make any friends in 
+      | . 
+    
+    p 
+      | This probably won't make any friends in  
       strong(v-text="computedSermonDiagnosis.opposedReligions[0]")
       |  or 
       strong(v-text="computedSermonDiagnosis.opposedReligions[1]")
-      |  today.
+      | .
+
+    .button-holder
+      button.cancel Oops, start over.
+      button.submit Let's Preach!

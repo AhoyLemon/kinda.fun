@@ -16,6 +16,8 @@ $purple: #6a4c93;
 
 $focus: $blue;
 
+@import "scss/extends";
+
 :root {
   --ms-option-bg-selected-pointed: #212121;
   --ms-option-bg-selected: #313131;
@@ -100,5 +102,36 @@ aside.your-details {
       font-family: $serif;
       font-size: 1.35rem;
     }
+  }
+}
+
+section.diagnosis {
+  width: 100%;
+  max-width: 600px;
+
+  ol {
+    list-style: decimal;
+    padding-left: 1em;
+    padding-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 1.45rem;
+    li::marker {
+      font-size: 75%;
+      font-weight: 700;
+    }
+  }
+  p {
+    font-size: 1.25rem;
+    margin-bottom: 0.5em;
+    line-height: 140%;
+    strong {
+      display: inline-block;
+    }
+  }
+
+  .button-holder {
+    @extend %buttons;
   }
 }

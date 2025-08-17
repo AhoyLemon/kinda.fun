@@ -1,5 +1,5 @@
 // Allowed values
-import { Categories, Tags, ReligionNames } from "./_types";
+import { Tags, ReligionNames } from "./_types";
 import { religions } from "./_religions";
 
 export interface Theme {

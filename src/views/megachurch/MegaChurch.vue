@@ -10,14 +10,10 @@
   import { ui, my } from "./ts/_variables";
 
   // ================= VARIABLES =================
-  interface Theme {
-    id: number;
-    title: string;
-    desc: string;
-    [key: string]: any;
-  }
 
-  const randomPastor = famousPastors[Math.floor(Math.random() * famousPastors.length)];
+  import type { Theme, WeightedTag, WeightedReligion, MixedTag, MixedReligion, SermonToday } from "./ts/_types";
+
+  //const randomPastor = famousPastors[Math.floor(Math.random() * famousPastors.length)];
 
   // ================= FUNCTIONS =================
   function provideTopicOptions(index: number): typeof themes {
@@ -49,41 +45,112 @@
     const topicIDs = my.selectedTopics.filter((id): id is number => typeof id === "number");
     const selectedThemes = topicIDs.map((id) => themes.find((t) => t.id === id)).filter(Boolean);
 
-    const likedTags = selectedThemes.flatMap((t) => t.likedBy.tags ?? []);
-    const likedReligions = selectedThemes.flatMap((t) => t.likedBy.religions ?? []);
-    const dislikedTags = selectedThemes.flatMap((t) => t.dislikedBy.tags ?? []);
-    const dislikedReligions = selectedThemes.flatMap((t) => t.dislikedBy.religions ?? []);
+    // Count weights for tags
+    const tagWeights: Record<string, { liked: number; disliked: number }> = {};
+    // Count weights for religions
+    const religionWeights: Record<number, { name: string; liked: number; disliked: number }> = {};
 
-    const mixedTags = likedTags.filter((tag) => dislikedTags.includes(tag));
-    const mixedReligions = likedReligions.filter((rel) => dislikedReligions.includes(rel));
+    selectedThemes.forEach((theme) => {
+      // Liked tags
+      (theme.likedBy.tags ?? []).forEach((tag: string) => {
+        if (!tagWeights[tag]) tagWeights[tag] = { liked: 0, disliked: 0 };
+        tagWeights[tag].liked++;
+      });
+      // Disliked tags
+      (theme.dislikedBy.tags ?? []).forEach((tag: string) => {
+        if (!tagWeights[tag]) tagWeights[tag] = { liked: 0, disliked: 0 };
+        tagWeights[tag].disliked++;
+      });
+      // Liked religions
+      (theme.likedBy.religions ?? []).forEach((rel: any) => {
+        let id: number;
+        let name: string;
+        if (typeof rel === "object") {
+          id = rel.id;
+          name = rel.name;
+        } else if (typeof rel === "number") {
+          id = rel;
+          name = String(rel);
+        } else {
+          // rel is a string, use its hash as id
+          id = rel.split("").reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
+          name = rel;
+        }
+        if (!religionWeights[id]) religionWeights[id] = { name, liked: 0, disliked: 0 };
+        religionWeights[id].liked++;
+      });
+      // Disliked religions
+      (theme.dislikedBy.religions ?? []).forEach((rel: any) => {
+        let id: number;
+        let name: string;
+        if (typeof rel === "object") {
+          id = rel.id;
+          name = rel.name;
+        } else if (typeof rel === "number") {
+          id = rel;
+          name = String(rel);
+        } else {
+          // rel is a string, use its hash as id
+          id = rel.split("").reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
+          name = rel;
+        }
+        if (!religionWeights[id]) religionWeights[id] = { name, liked: 0, disliked: 0 };
+        religionWeights[id].disliked++;
+      });
+    });
+
+    // Build liked/disliked arrays sorted by weight
+    const likedTagsArr = Object.entries(tagWeights)
+      .filter(([_, v]) => v.liked > 0)
+      .map(([tag, v]) => ({ tag, weight: v.liked }))
+      .sort((a, b) => b.weight - a.weight);
+    const dislikedTagsArr = Object.entries(tagWeights)
+      .filter(([_, v]) => v.disliked > 0)
+      .map(([tag, v]) => ({ tag, weight: v.disliked }))
+      .sort((a, b) => b.weight - a.weight);
+
+    const likedReligionsArr = Object.entries(religionWeights)
+      .filter(([_, v]) => v.liked > 0)
+      .map(([id, v]) => ({ name: v.name, id: Number(id), weight: v.liked }))
+      .sort((a, b) => b.weight - a.weight);
+    const dislikedReligionsArr = Object.entries(religionWeights)
+      .filter(([_, v]) => v.disliked > 0)
+      .map(([id, v]) => ({ name: v.name, id: Number(id), weight: v.disliked }))
+      .sort((a, b) => b.weight - a.weight);
+
+    // Mixed messages: tags and religions that appear in both liked and disliked
+    const mixedTagsArr = Object.entries(tagWeights)
+      .filter(([_, v]) => v.liked > 0 && v.disliked > 0)
+      .map(([tag, v]) => ({ tag, liked: v.liked, disliked: v.disliked }));
+    const mixedReligionsArr = Object.entries(religionWeights)
+      .filter(([_, v]) => v.liked > 0 && v.disliked > 0)
+      .map(([id, v]) => ({ name: v.name, id: Number(id), liked: v.liked, disliked: v.disliked }));
 
     my.sermonToday = {
       topics: selectedThemes.map((t) => t.title),
       topicIDs,
       likedBy: {
-        tags: likedTags,
-        religions: likedReligions,
+        tags: likedTagsArr,
+        religions: likedReligionsArr,
       },
       dislikedBy: {
-        tags: dislikedTags,
-        religions: dislikedReligions,
+        tags: dislikedTagsArr,
+        religions: dislikedReligionsArr,
       },
       mixedMessages: {
-        tags: mixedTags,
-        religions: mixedReligions,
+        tags: mixedTagsArr,
+        religions: mixedReligionsArr,
       },
     };
   }
 
-  function getTopN(arr: string[], n: number): string[] {
-    const freq: Record<string, number> = {};
-    arr.forEach((item) => {
-      freq[item] = (freq[item] || 0) + 1;
-    });
-    const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
-    if (sorted.length <= n) return sorted.map(([item]) => item);
-    const cutoff = sorted[n - 1][1];
-    const candidates = sorted.filter(([_, count]) => count >= cutoff).map(([item]) => item);
+  // Helper to get top N from weighted arrays
+  function getTopNWeighted<T extends { weight: number }>(arr: T[], n: number): T[] {
+    if (!arr.length) return [];
+    const sorted = arr.slice().sort((a, b) => b.weight - a.weight);
+    if (sorted.length <= n) return sorted;
+    const cutoff = sorted[n - 1].weight;
+    const candidates = sorted.filter((item) => item.weight >= cutoff);
     if (candidates.length > n) {
       const shuffled = candidates.sort(() => Math.random() - 0.5);
       return shuffled.slice(0, n);
@@ -96,10 +163,10 @@
     const sermon = my.sermonToday;
     if (!sermon || !sermon.topics || !sermon.topics.length) return null;
     return {
-      biggestThemes: getTopN(sermon.likedBy.tags, 3),
-      preferredReligions: getTopN(sermon.likedBy.religions, 2),
-      mostHatedThemes: getTopN(sermon.dislikedBy.tags, 3),
-      opposedReligions: getTopN(sermon.dislikedBy.religions, 2),
+      biggestThemes: getTopNWeighted<WeightedTag>(sermon.likedBy.tags as WeightedTag[], 3).map((t) => t.tag),
+      preferredReligions: getTopNWeighted<WeightedReligion>(sermon.likedBy.religions as WeightedReligion[], 2).map((r) => r.name),
+      mostHatedThemes: getTopNWeighted<WeightedTag>(sermon.dislikedBy.tags as WeightedTag[], 3).map((t) => t.tag),
+      opposedReligions: getTopNWeighted<WeightedReligion>(sermon.dislikedBy.religions as WeightedReligion[], 2).map((r) => r.name),
     };
   });
 </script>

@@ -1,4 +1,5 @@
 import { reactive, ref } from "vue";
+import { SermonToday } from "./_types";
 
 export const ui = reactive({
   choosing: "religion",
@@ -30,11 +31,6 @@ export const my = reactive<My>({
   },
 });
 
-interface UI {
-  choosing: string;
-  religionIndex: number;
-}
-
 interface My {
   name: string;
   money: number;
@@ -42,20 +38,5 @@ interface My {
   location: object;
   lucre: object;
   selectedTopics: Array<any>;
-  sermonToday: {
-    topics: string[];
-    topicIDs: number[];
-    likedBy: {
-      tags: string[];
-      religions: string[];
-    };
-    dislikedBy: {
-      tags: string[];
-      religions: string[];
-    };
-    mixedMessages: {
-      tags: string[];
-      religions: string[];
-    };
-  };
+  sermonToday: SermonToday;
 }

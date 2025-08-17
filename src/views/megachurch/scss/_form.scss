@@ -12,7 +12,19 @@ form {
       text-transform: uppercase;
       font-family: $sans-serif;
       color: #777;
+      &.required:after {
+        content: " *";
+        color: $red;
+        display: inline-block;
+        transform: scale(1.75) translateY(5%);
+        margin-left: 0.25em;
+      }
     }
+    // &:has(:required) {
+    //   label:after {
+
+    //   }
+    // }
     input[type="text"] {
       display: block;
       width: 100%;
@@ -63,22 +75,6 @@ form {
     }
   }
   .button-holder {
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    gap: 10px;
-    button {
-      font-family: $sans-serif;
-      font-size: 1rem;
-      font-weight: 525;
-      border: 2px solid #333;
-      padding: 0.35em 1.25em;
-      cursor: pointer;
-      &:hover,
-      &:focus {
-        background-color: #333;
-        color: #eee;
-      }
-    }
+    @extend %buttons;
   }
 }
