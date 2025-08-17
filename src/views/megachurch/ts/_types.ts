@@ -5,7 +5,7 @@ export type Categories =
   | "Prophecy"
   | "Family";
 
-export type Religions =
+export type ReligionNames =
   | "2 Fast 2 Faithful"
   | "Agnostic Atheists"
   | "Buddhist"
@@ -34,6 +34,15 @@ export type Religions =
   | "The Starseed Pilgrims"
   | "Theistic Satanism"
   | "Zardoz";
+
+export interface Religion {
+  id: number; // UID for religion
+  name: ReligionNames; // Name of this religion
+  description?: string; // Recommended. Describe this religion further.
+  likes: Tags[]; // A list of things this religion likes.
+  dislikes: Tags[]; // A list of things this religion dislikes.
+  enemies?: ReligionNames[]; // What religions this religion opposes.
+}
 
 export type Tags =
   | "abstinence"

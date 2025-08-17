@@ -1,91 +1,113 @@
-h1 MegaChurch Tycoon
-h2 This works
+aside.your-details(v-if="my.religion?.name")
 
-section(v-if="ui.choosing === 'religion'")
-  form(@submit.prevent="chooseReligion(selected)")
-    Multiselect(
-      v-model="selected"
-      :options="options"
-      :multiple="false"
-      :searchable="true"
-      placeholder="Select Your Religion"
-      label="Religion"
-    )
-    button(type="submit") That's my religion
+  .box
+    .label Name
+    .value {{my.name}}
+
+  .box
+    .label religion
+    .value {{my.religion.name}}
+  
+  .box
+    .label Money
+    .value {{dollars(my.money)}}
 
 
-section(v-if="ui.choosing === 'sermon'")
+main
 
-  h2 What will you preach today?
-  form(@submit.prevent="chooseSermon()")
-    ol
-      // First Topic
-      li
+  section.name-and-religion(v-if="ui.choosing === 'religion'")
+
+    form(@submit.prevent="chooseReligion(ui.religionIndex)")
+      fieldset
+        label Your Name
+        input(type="text" v-model="my.name" :placeholder="randomPastor" required)
+
+      fieldset
+        label Choose a religion
         Multiselect(
-          v-model="selectedSermons[0]"
-          :options="sermons"
+          v-model="ui.religionIndex"
+          :options="religions"
+          :searchable="true"
           value-prop="id"
-          track-by="id"
-          label="title"
+          track-by="name"
+          label="name"
           mode="single"
-          placeholder="First Topic"
         )
-        div(v-if="selectedSermons[0]")
-          p {{showSermonDescription(selectedSermons[0])}}
+        .religion-explainer(v-if="ui.religionIndex")
+          p(v-text="showReligionDescription(ui.religionIndex)")
 
+      fieldset.checkbox
+        label
+          input(type="checkbox" required) 
+          span I understand that my goal in this game is to amass tokens of wealth, and religion is simply a means to that end.
       
-      // Second Topic
-      li
+      .button-holder
+        button(type="reset") Start Over
+        button(type="submit") Let's Go
+
+  section.sermon(v-if="ui.choosing === 'sermon' && !computedSermonDiagnosis")
+
+
+    // TODO: Make these selects exclusive so the same sermon cannot be chosen for multiple topics.
+    h2 What will you preach today?
+    br
+    form(@submit.prevent="defineSermon()")
+
+      fieldset
+        label First Topic
         Multiselect(
-          v-model="selectedSermons[1]"
-          :options="sermons"
+          v-model="my.selectedTopics[0]"
+          :options="provideTopicOptions(0)"
+          :searchable="true"
           value-prop="id"
-          track-by="id"
+          track-by="title"
           label="title"
           mode="single"
-          placeholder="Second Topic"
         )
-        div(v-if="selectedSermons[1]")
-          p {{showSermonDescription(selectedSermons[1])}}
+        .explainer(v-if="my.selectedTopics[0]")
+          p {{showThemeDescription(my.selectedTopics[0])}}
 
-      // Second Topic
-      li
+      fieldset
+        label Second Topic
         Multiselect(
-          v-model="selectedSermons[2]"
-          :options="sermons"
+          v-model="my.selectedTopics[1]"
+          :options="provideTopicOptions(1)"
+          :searchable="true"
           value-prop="id"
-          track-by="id"
+          track-by="title"
           label="title"
           mode="single"
-          placeholder="Second Topic"
         )
-        div(v-if="selectedSermons[2]")
-          p {{showSermonDescription(selectedSermons[2])}}
+        .explainer(v-if="my.selectedTopics[1]")
+          p {{showThemeDescription(my.selectedTopics[1])}}
+      fieldset
+        label Third Topic
+        Multiselect(
+          v-model="my.selectedTopics[2]"
+          :options="provideTopicOptions(2)"
+          :searchable="true"
+          value-prop="id"
+          track-by="title"
+          label="title"
+          mode="single"
+        )
+        .explainer(v-if="my.selectedTopics[2]")
+          p {{showThemeDescription(my.selectedTopics[2])}}
 
-      //- // Second Topic
-      //- li
-      //-   Multiselect(
-      //-     v-model="selectedSermons[1]"
-      //-     :options="getSermonOptions()"
-      //-     :multiple="false"
-      //-     :searchable="true"
-      //-     placeholder="First Topic"
-      //-     label="label"
-      //-     track-by="id"
-      //-   )
-      //-   div(v-if="selectedSermons[1]?.desc")
-      //-     p {{selectedSermons[1].desc }}
+      .button-holder
+        button(type="submit") Okay.
 
-      //- // Second Topic
-      //- li
-      //-   Multiselect(
-      //-     v-model="selectedSermons[1]"
-      //-     :options="getSermonOptions()"
-      //-     :multiple="false"
-      //-     :searchable="true"
-      //-     placeholder="First Topic"
-      //-     label="label"
-      //-     track-by="id"
-      //-   )
-      //-   div(v-if="selectedSermons[2]?.desc")
-      //-     p {{selectedSermons[2].desc }}
+  section.diagnosis(v-if="computedSermonDiagnosis")
+    p Your sermon today will tackle the subjects of 
+      strong(v-text="computedSermonDiagnosis.biggestThemes[0]") 
+      |  and 
+      strong(v-text="computedSermonDiagnosis.biggestThemes[1]")
+      | , which I supect will go over well with 
+      strong(v-text="computedSermonDiagnosis.preferredReligions[0]")
+      |  and 
+      strong(v-text="computedSermonDiagnosis.preferredReligions[1]")
+      | . But you're not gonna make any friends in 
+      strong(v-text="computedSermonDiagnosis.opposedReligions[0]")
+      |  or 
+      strong(v-text="computedSermonDiagnosis.opposedReligions[1]")
+      |  today.

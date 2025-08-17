@@ -1,0 +1,17 @@
+export const famousPastors = [
+  "Joel Osteen",
+  "Rick Warren",
+  "T.D. Jakes",
+  "Bill Hybels",
+  "Andy Stanley",
+  "Creflo Dollar",
+  "Steven Furtick",
+  "Craig Groeschel",
+  "Ed Young Jr.",
+  "Robert Jeffress",
+  "Charles Stanley",
+  "Mark Batterson",
+  "Jentezen Franklin",
+  "Brian Houston",
+  "Tim Keller",
+];
