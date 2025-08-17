@@ -1,7 +1,17 @@
 import { reactive, ref } from "vue";
 import { SermonToday } from "./_types";
 
-export const ui = reactive({
+interface UI {
+  choosing:
+    | "religion"
+    | "sermon"
+    | "sermon-confirm"
+    | "preached"
+    | "sermon-results";
+  religionIndex: number;
+}
+
+export const ui = reactive<UI>({
   choosing: "religion",
   religionIndex: 0,
 });
@@ -15,7 +25,6 @@ export const my = reactive<My>({
   selectedTopics: [null, null, null],
   sermonToday: {
     topics: [],
-    topicIDs: [],
     likedBy: {
       tags: [],
       religions: [],
@@ -29,6 +38,7 @@ export const my = reactive<My>({
       religions: [],
     },
   },
+  religiousScorecard: [],
 });
 
 interface My {
@@ -39,4 +49,5 @@ interface My {
   lucre: object;
   selectedTopics: Array<any>;
   sermonToday: SermonToday;
+  religiousScorecard?: any[];
 }

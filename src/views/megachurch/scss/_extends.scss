@@ -33,5 +33,11 @@
       transition: transform 0.15 ease-out;
       transform: scale(90%);
     }
+
+    &:disabled {
+      filter: grayscale(1);
+      opacity: 0.75;
+      pointer-events: none;
+    }
   }
 }

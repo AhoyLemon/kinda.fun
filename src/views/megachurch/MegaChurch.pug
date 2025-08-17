@@ -15,7 +15,7 @@ aside.your-details(v-if="my.religion?.name")
 
 main
 
-  section.name-and-religion(v-if="ui.choosing === 'religion'")
+  section.choose-religion(v-if="ui.choosing === 'religion'")
 
     form(@submit.prevent="chooseReligion(ui.religionIndex)")
       fieldset
@@ -34,97 +34,46 @@ main
           label="name"
           mode="single"
         )
-        .religion-explainer(v-if="ui.religionIndex")
+        //.religion-explainer(v-if="ui.religionIndex")
           p(v-text="showReligionDescription(ui.religionIndex)")
+
+      .religion-details(v-if="ui.religionIndex")
+        .name {{getReligion(ui.religionIndex).name}}
+        .description {{getReligion(ui.religionIndex).description}}
+        dl
+          dt Likes
+          dd 
+            ul
+              li(v-for="like in getReligion(ui.religionIndex).likes") {{like}}
+        dl
+          dt Dislikes
+          dd 
+            ul
+              li(v-for="dislike in getReligion(ui.religionIndex).dislikes") {{dislike}}
 
       fieldset.checkbox
         label
           input(type="checkbox" required) 
-          span I understand that my goal in this game is to amass tokens of wealth, and religion is simply a means to that end.
+          span I understand that my goal in this game is to amass tokens of wealth, and my choice in religion is simply a means to that end.
       
       .button-holder
         button(type="reset") Start Over
         button(type="submit") Let's Go
 
-  section.sermon(v-if="ui.choosing === 'sermon' && !computedSermonDiagnosis")
+  include pug/_create-sermon.pug
 
+  include pug/_sermon-diagnosis.pug
 
-    // TODO: Make these selects exclusive so the same sermon cannot be chosen for multiple topics.
-    h2 What will you preach today?
-    br
-    form(@submit.prevent="defineSermon()")
+  section(v-if="ui.choosing === 'preached'")
 
-      fieldset
-        label First Topic
-        Multiselect(
-          v-model="my.selectedTopics[0]"
-          :options="provideTopicOptions(0)"
-          :searchable="true"
-          value-prop="id"
-          track-by="title"
-          label="title"
-          mode="single"
-        )
-        .explainer(v-if="my.selectedTopics[0]")
-          p {{showThemeDescription(my.selectedTopics[0])}}
-
-      fieldset
-        label Second Topic
-        Multiselect(
-          v-model="my.selectedTopics[1]"
-          :options="provideTopicOptions(1)"
-          :searchable="true"
-          value-prop="id"
-          track-by="title"
-          label="title"
-          mode="single"
-        )
-        .explainer(v-if="my.selectedTopics[1]")
-          p {{showThemeDescription(my.selectedTopics[1])}}
-      fieldset
-        label Third Topic
-        Multiselect(
-          v-model="my.selectedTopics[2]"
-          :options="provideTopicOptions(2)"
-          :searchable="true"
-          value-prop="id"
-          track-by="title"
-          label="title"
-          mode="single"
-        )
-        .explainer(v-if="my.selectedTopics[2]")
-          p {{showThemeDescription(my.selectedTopics[2])}}
-
-      .button-holder
-        button(type="submit") Okay.
-
-  section.diagnosis(v-if="computedSermonDiagnosis")
-
-    ol
-      li {{my.sermonToday.topics[0]}}
-      li {{my.sermonToday.topics[1]}}
-      li {{my.sermonToday.topics[2]}}
-
-    p Your sermon today will tackle the subjects of 
-      strong(v-text="computedSermonDiagnosis.biggestThemes[0]") 
-      |  and 
-      strong(v-text="computedSermonDiagnosis.biggestThemes[1]")
-      | . 
-
-    p
-      | This should go over well with 
-      strong(v-text="computedSermonDiagnosis.preferredReligions[0]")
-      |  and 
-      strong(v-text="computedSermonDiagnosis.preferredReligions[1]")
-      | . 
-    
-    p 
-      | This probably won't make any friends in  
-      strong(v-text="computedSermonDiagnosis.opposedReligions[0]")
-      |  or 
-      strong(v-text="computedSermonDiagnosis.opposedReligions[1]")
-      | .
-
-    .button-holder
-      button.cancel Oops, start over.
-      button.submit Let's Preach!
+    table.debug
+      thead
+        tr
+          th id
+          th name
+          th score
+      tbody
+        tr(v-for="religion in my.religiousScorecard.slice().sort((a, b) => b.score - a.score)")
+          td {{religion.id}}
+          td {{religion.name}}
+          td {{religion.score}}

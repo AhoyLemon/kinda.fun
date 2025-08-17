@@ -1,0 +1,36 @@
+section.diagnosis(v-if="ui.choosing === 'sermon-confirm'")
+
+  .inner
+    .diagnosis-box
+      dl.topics
+        dt topics
+        dd
+          ol
+            li(v-for="topic in my.sermonToday.topics") 
+              .title {{topic.title}}
+              .description {{topic.description}}
+      dl.tags.liked
+        dt primary messages
+        dd
+          ul
+            li(v-for="like in my.sermonToday.likedBy.tags.slice(0,5)") {{like.tag}}
+      dl.religions.liked
+        dt Primary Audience
+        dd
+          ul
+            li(v-for="religion in my.sermonToday.likedBy.religions.slice(0,3)") {{religion.name}}
+      dl.tags.disliked
+        dt today's evils
+        dd
+          ul
+            li(v-for="dislike in my.sermonToday.dislikedBy.tags.slice(0,3)") {{dislike.tag}}
+      
+      dl.religions.disliked
+        dt Collateral Damage
+        dd
+          ul
+            li(v-for="religion in my.sermonToday.dislikedBy.religions.slice(0,2)") {{religion.name}}
+    
+    .button-holder
+      button.reset(@click="ui.choosing = 'sermon'") Start Over
+      button.submit(@click='preachSermon()') Preach It

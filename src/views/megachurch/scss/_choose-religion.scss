@@ -1,0 +1,52 @@
+.choose-religion {
+  fieldset {
+    width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .religion-details {
+    width: 76ch;
+    margin-left: auto;
+    margin-right: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    border: 1px solid #ccc;
+    padding: 16px;
+    .name,
+    .description {
+      grid-column: span 2;
+    }
+    .name {
+      font-size: 1.25em;
+      font-family: $serif;
+    }
+    .description {
+      font-family: $serif;
+      line-height: 140%;
+      font-style: italic;
+    }
+    dl {
+      border: 1px solid #ccc;
+      font-family: $sans-serif;
+      dt {
+        font-weight: 800;
+        text-transform: uppercase;
+        background-color: #555;
+        font-family: $serif;
+        font-size: 1.25em;
+        letter-spacing: 0.1em;
+        color: white;
+        padding: 7px;
+      }
+      ul {
+        display: grid;
+        gap: 4px;
+        padding: 0.5em 0.5em 0.5em 2em;
+        list-style-type: disc;
+        font-size: 0.875em;
+      }
+    }
+  }
+}

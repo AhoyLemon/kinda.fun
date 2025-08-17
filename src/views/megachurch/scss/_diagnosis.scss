@@ -1,0 +1,72 @@
+$border: 1px solid #777;
+$gap: 10px;
+
+section.diagnosis {
+  .inner {
+    width: 100%;
+  }
+  .diagnosis-box {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $gap;
+    border: $border;
+    padding: 10px;
+  }
+  dl {
+    border: $border;
+    dt {
+      background-color: #555;
+      color: white;
+      padding: 0.5em 1em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    dd {
+      padding: 10px;
+    }
+    ul {
+      display: grid;
+      gap: 0.25em;
+      list-style: disc;
+      padding-left: 2em;
+      li {
+        font-weight: 500;
+      }
+    }
+  }
+  dl.topics {
+    grid-column: span 2;
+    ol {
+      font-family: $serif;
+      padding: 0;
+      li {
+        display: grid;
+        gap: 5px;
+      }
+      .title {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+      .description {
+        padding-left: 1em;
+        font-size: 0.875rem;
+        line-height: 140%;
+      }
+    }
+  }
+  .button-holder {
+    padding-top: 1em;
+  }
+}
+
+table.debug {
+  th {
+    padding: 0.5em;
+    font-weight: bold;
+  }
+  td {
+    border: $border;
+    padding: 0.5em;
+  }
+}

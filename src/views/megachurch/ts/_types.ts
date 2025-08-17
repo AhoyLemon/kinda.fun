@@ -30,15 +30,11 @@ export interface Theme {
   desc: string;
   likedBy: {
     tags?: string[];
-    religions?: Array<
-      { id: number; name: string } | string | number
-    >;
+    religions?: Array<{ id: number; name: string } | string | number>;
   };
   dislikedBy: {
     tags?: string[];
-    religions?: Array<
-      { id: number; name: string } | string | number
-    >;
+    religions?: Array<{ id: number; name: string } | string | number>;
   };
   [key: string]: any;
 }
@@ -73,9 +69,14 @@ export interface MixedReligion {
 
 // ================= SERMON OUTPUT TYPE =================
 
+export interface SermonTopic {
+  id: number;
+  title: string;
+  description: string;
+}
+
 export interface SermonToday {
-  topics: string[];
-  topicIDs: number[];
+  topics: SermonTopic[];
   likedBy: {
     tags: WeightedTag[];
     religions: WeightedReligion[];

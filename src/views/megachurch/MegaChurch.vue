@@ -5,15 +5,12 @@
   import "@vueform/multiselect/themes/default.css";
   import { religions } from "./ts/_religions";
   import { themes } from "./ts/_sermons";
-  import { famousPastors } from "./ts/_arrays";
   import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
   import { ui, my } from "./ts/_variables";
 
   // ================= VARIABLES =================
 
-  import type { Theme, WeightedTag, WeightedReligion, MixedTag, MixedReligion, SermonToday } from "./ts/_types";
-
-  //const randomPastor = famousPastors[Math.floor(Math.random() * famousPastors.length)];
+  import type { Theme, WeightedTag, WeightedReligion, MixedTag, MixedReligion, SermonToday, Religion } from "./ts/_types";
 
   // ================= FUNCTIONS =================
   function provideTopicOptions(index: number): typeof themes {
@@ -31,9 +28,13 @@
     ui.choosing = "sermon";
   }
 
-  function showReligionDescription(id: number): string {
+  function getReligion(id: number): Religion | {} {
     const religion = (religions as any[]).find((r) => r.id === id);
-    return religion ? religion.description || "" : "";
+    if (!id) {
+      return {};
+    } else {
+      return religion;
+    }
   }
 
   function showThemeDescription(id: number): string {
@@ -42,8 +43,10 @@
   }
 
   function defineSermon() {
-    const topicIDs = my.selectedTopics.filter((id): id is number => typeof id === "number");
-    const selectedThemes = topicIDs.map((id) => themes.find((t) => t.id === id)).filter(Boolean);
+    const selectedThemes = my.selectedTopics
+      .filter((id): id is number => typeof id === "number")
+      .map((id) => themes.find((t) => t.id === id))
+      .filter(Boolean);
 
     // Count weights for tags
     const tagWeights: Record<string, { liked: number; disliked: number }> = {};
@@ -127,8 +130,11 @@
       .map(([id, v]) => ({ name: v.name, id: Number(id), liked: v.liked, disliked: v.disliked }));
 
     my.sermonToday = {
-      topics: selectedThemes.map((t) => t.title),
-      topicIDs,
+      topics: selectedThemes.map((t) => ({
+        id: t.id,
+        title: t.title,
+        description: t.desc,
+      })),
       likedBy: {
         tags: likedTagsArr,
         religions: likedReligionsArr,
@@ -142,6 +148,173 @@
         religions: mixedReligionsArr,
       },
     };
+
+    ui.choosing = "sermon-confirm";
+  }
+
+  function preachSermon() {
+    // Track score changes for yesterday's effect
+    const scoreChanges: Record<number, { id: number; name: string; scoreChange: number; changes: string[] }> = {};
+
+    // Initialize scoreChanges for all religions in the scorecard
+    my.religiousScorecard.forEach((religion) => {
+      scoreChanges[religion.id] = {
+        id: religion.id,
+        name: religion.name,
+        scoreChange: 0,
+        changes: [],
+      };
+    });
+
+    // Process liked tags
+    my.sermonToday.likedBy.tags.forEach((tagObj) => {
+      const tag = tagObj.tag;
+      const weight = tagObj.weight;
+
+      // Check if this tag is in mixed messages (if so, skip)
+      const isMixed = my.sermonToday.mixedMessages.tags.some((mixedTag) => mixedTag.tag === tag);
+      if (isMixed) return;
+
+      // Find religions that have this tag in their likes or dislikes
+      religions.forEach((religion) => {
+        const religionScore = scoreChanges[religion.id];
+        if (!religionScore) return; // Guard against undefined
+
+        let effect = weight;
+        let doubled = false;
+        if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religion.id === (my.religion as Religion).id) {
+          effect *= 2;
+          doubled = true;
+        }
+        if (religion.likes.includes(tag as any)) {
+          religionScore.scoreChange += effect;
+          religionScore.changes.push(`+${effect} for liking ${tag}${doubled ? " (doubled for your religion)" : ""}`);
+
+          // Update actual scorecard
+          const scorecardEntry = my.religiousScorecard.find((r) => r.id === religion.id);
+          if (scorecardEntry) scorecardEntry.score += effect;
+        }
+
+        if (religion.dislikes.includes(tag as any)) {
+          religionScore.scoreChange -= effect;
+          religionScore.changes.push(`-${effect} for disliking ${tag}${doubled ? " (doubled for your religion)" : ""}`);
+
+          // Update actual scorecard
+          const scorecardEntry = my.religiousScorecard.find((r) => r.id === religion.id);
+          if (scorecardEntry) scorecardEntry.score -= effect;
+        }
+      });
+    });
+
+    // Process disliked tags (halved effect)
+    my.sermonToday.dislikedBy.tags.forEach((tagObj) => {
+      const tag = tagObj.tag;
+      const weight = Math.floor(tagObj.weight / 2); // Halved effect
+
+      // Skip if weight is zero
+      if (weight === 0) return;
+
+      // Check if this tag is in mixed messages (if so, skip)
+      const isMixed = my.sermonToday.mixedMessages.tags.some((mixedTag) => mixedTag.tag === tag);
+      if (isMixed) return;
+
+      // Find religions that have this tag in their likes or dislikes
+      religions.forEach((religion) => {
+        const religionScore = scoreChanges[religion.id];
+        if (!religionScore) return; // Guard against undefined
+
+        let effect = weight;
+        let doubled = false;
+        if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religion.id === (my.religion as Religion).id) {
+          effect *= 2;
+          doubled = true;
+        }
+        if (religion.likes.includes(tag as any)) {
+          religionScore.scoreChange -= effect;
+          religionScore.changes.push(`-${effect} for attacking ${tag} (which they like)${doubled ? " (doubled for your religion)" : ""}`);
+
+          // Update actual scorecard
+          const scorecardEntry = my.religiousScorecard.find((r) => r.id === religion.id);
+          if (scorecardEntry) scorecardEntry.score -= effect;
+        }
+
+        if (religion.dislikes.includes(tag as any)) {
+          religionScore.scoreChange += effect;
+          religionScore.changes.push(`+${effect} for attacking ${tag} (which they dislike)${doubled ? " (doubled for your religion)" : ""}`);
+
+          // Update actual scorecard
+          const scorecardEntry = my.religiousScorecard.find((r) => r.id === religion.id);
+          if (scorecardEntry) scorecardEntry.score += effect;
+        }
+      });
+    });
+
+    // Process liked religions
+    my.sermonToday.likedBy.religions.forEach((religionObj) => {
+      const religionId = religionObj.id;
+      const weight = religionObj.weight * 3;
+
+      // Check if this religion is in mixed messages (if so, skip)
+      const isMixed = my.sermonToday.mixedMessages.religions.some((mixedRel) => mixedRel.id === religionId);
+      if (isMixed) return;
+
+      const religionScore = scoreChanges[religionId];
+      if (!religionScore) return; // Guard against undefined
+      let effect = weight;
+      let doubled = false;
+      if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religionId === (my.religion as Religion).id) {
+        effect *= 2;
+        doubled = true;
+      }
+      religionScore.scoreChange += effect;
+      religionScore.changes.push(`+${effect} for praising ${religionObj.name}${doubled ? " (doubled for your religion)" : ""}`);
+
+      // Update actual scorecard
+      const scorecardEntry = my.religiousScorecard.find((r) => r.id === religionId);
+      if (scorecardEntry) scorecardEntry.score += effect;
+    });
+
+    // Process disliked religions
+    my.sermonToday.dislikedBy.religions.forEach((religionObj) => {
+      const religionId = religionObj.id;
+      const weight = religionObj.weight * 3;
+
+      // Check if this religion is in mixed messages (if so, skip)
+      const isMixed = my.sermonToday.mixedMessages.religions.some((mixedRel) => mixedRel.id === religionId);
+      if (isMixed) return;
+
+      const religionScore = scoreChanges[religionId];
+      if (!religionScore) return; // Guard against undefined
+      let effect = weight;
+      let doubled = false;
+      if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religionId === (my.religion as Religion).id) {
+        effect *= 2;
+        doubled = true;
+      }
+      religionScore.scoreChange -= effect;
+      religionScore.changes.push(`-${effect} for condemning ${religionObj.name}${doubled ? " (doubled for your religion)" : ""}`);
+
+      // Update actual scorecard
+      const scorecardEntry = my.religiousScorecard.find((r) => r.id === religionId);
+      if (scorecardEntry) scorecardEntry.score -= effect;
+    });
+
+    // Create yesterday's effect summary, sorted by scoreChange descending
+    const yesterdaysEffect = Object.values(scoreChanges)
+      .filter((change) => change.scoreChange !== 0)
+      .sort((a, b) => b.scoreChange - a.scoreChange);
+
+    // Force Vue reactivity by replacing the scorecard array
+    my.religiousScorecard = my.religiousScorecard.map((entry) => {
+      const updated = scoreChanges[entry.id];
+      return updated ? { ...entry, score: entry.score } : entry;
+    });
+
+    console.log("Yesterday's Effect:", yesterdaysEffect);
+    my.effectYesterday = yesterdaysEffect;
+
+    // Move to next phase
+    ui.choosing = "preached";
   }
 
   // Helper to get top N from weighted arrays
@@ -158,18 +331,21 @@
     return candidates.slice(0, n);
   }
 
+  // ================= INITIALISE RELIGIOUS SCORECARD =================
+  function initialiseScoreCard() {
+    my.religiousScorecard = religions.map((r) => ({
+      id: r.id,
+      name: r.name,
+      score: 0,
+    }));
+  }
+
   // ================= COMPUTEDS =================
-  const computedSermonDiagnosis = computed(() => {
-    const sermon = my.sermonToday;
-    if (!sermon || !sermon.topics || !sermon.topics.length) return null;
-    return {
-      biggestThemes: getTopNWeighted<WeightedTag>(sermon.likedBy.tags as WeightedTag[], 3).map((t) => t.tag),
-      preferredReligions: getTopNWeighted<WeightedReligion>(sermon.likedBy.religions as WeightedReligion[], 2).map((r) => r.name),
-      mostHatedThemes: getTopNWeighted<WeightedTag>(sermon.dislikedBy.tags as WeightedTag[], 3).map((t) => t.tag),
-      opposedReligions: getTopNWeighted<WeightedReligion>(sermon.dislikedBy.religions as WeightedReligion[], 2).map((r) => r.name),
-    };
+
+  onMounted(() => {
+    initialiseScoreCard();
   });
 </script>
 
-<template lang="pug" src="./MegaChurch.pug"></template>
-<style lang="scss" src="./MegaChurch.scss"></style>
+<template lang="pug" src="./Megachurch.pug"></template>
+<style lang="scss" src="./Megachurch.scss"></style>

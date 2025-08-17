@@ -5,77 +5,16 @@
 @import "@/shared/scss/globals/_extends";
 @import "@/shared/scss/globals/_reset";
 
-$serif: "Literata", serif;
-$sans-serif: "Cabin", sans-serif;
-
-$pink: #ff595e;
-$yellow: #ffca3a;
-$green: #8ac926;
-$blue: #1982c4;
-$purple: #6a4c93;
-
-$focus: $blue;
-
+@import "scss/variables";
 @import "scss/extends";
+@import "scss/defaults";
 
-:root {
-  --ms-option-bg-selected-pointed: #212121;
-  --ms-option-bg-selected: #313131;
-  --ms-option-bg-pointed: #90caf9;
-}
-.multiselect {
-  border: none;
-  font-family: $serif;
-  font-size: 1.45rem;
-  &-single-label,
-  &-placeholder {
-    padding-left: 12px;
-    font-weight: 700;
-  }
-  &.is-active {
-    border: none;
-    box-shadow: none;
-  }
-  &-dropdown {
-    max-height: 20rem;
-  }
-  &-option {
-    font-family: $sans-serif;
-    font-size: 0.875rem;
-  }
-}
+@import "scss/libraries//multiselect-custom";
 
 @import "scss/form";
-
-main {
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-section.sermon {
-  font-family: $sans-serif;
-  width: 100%;
-  max-width: 600px;
-  h2 {
-    font-family: $serif;
-    font-size: 2.35rem;
-  }
-}
-
-section.name-and-religion {
-  font-family: $sans-serif;
-  width: 100%;
-  max-width: 320px;
-
-  .religion-explainer {
-    border-top: 1px solid #999;
-    padding: 14px;
-    font-size: 0.875em;
-    font-family: $sans-serif;
-    line-height: 140%;
-  }
-}
+@import "scss/choose-religion";
+@import "scss/sermon";
+@import "scss/diagnosis";
 
 aside.your-details {
   position: absolute;
