@@ -104,11 +104,9 @@ export type ReligionNames =
   | "New-Age Spirituality"
   | "Orthodox Islam"
   | "Prosperity Gospel"
-  | "Rastafarianism"
   | "Secular Humanists"
   | "Southern Baptist"
   | "Temple of the Eternal Sun"
-  | "The Blockchain Mystics"
   | "The Church of Eros"
   | "The Church of Satan"
   | "The Church of the High Priest"
@@ -238,9 +236,11 @@ export type Tags =
 export type PlaceNames =
   | "A-Hyuk Hyuk, Alabama"
   | "Yankee Grit, New Hampshire"
-  | "Techno Utopia, California"
+  | "Venture City, California"
   | "Blessed Bayou, Louisiana"
   | "Crystal Dunes, Arizona"
   | "Miracle Springs, Florida"
   | "Blessed Strip, Nevada"
-  | "Megamall, Minnesota";
+  | "Megamall, Minnesota"
+  | "Cascadia Moss, Washington"
+  | "Rapture, Texas";

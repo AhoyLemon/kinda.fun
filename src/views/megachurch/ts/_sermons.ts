@@ -104,10 +104,7 @@ export const themes: Theme[] = [
         "peace",
         "meditation",
       ],
-      religions: [
-        "The Church of the High Priest",
-        "Rastafarianism",
-      ],
+      religions: ["The Church of the High Priest"],
     },
     dislikedBy: {
       tags: ["soberness", "order", "authority"],
@@ -197,10 +194,7 @@ export const themes: Theme[] = [
         "transcendence",
         "science",
       ],
-      religions: [
-        "The Digital Ascension",
-        "The Blockchain Mystics",
-      ],
+      religions: ["The Digital Ascension"],
     },
     dislikedBy: {
       tags: [
@@ -304,10 +298,7 @@ export const themes: Theme[] = [
         "modernity",
         "personal energy",
       ],
-      religions: [
-        "The Blockchain Mystics",
-        "The Digital Ascension",
-      ],
+      religions: ["The Digital Ascension"],
     },
     dislikedBy: {
       tags: ["tradition", "simplicity", "poverty"],
@@ -653,10 +644,7 @@ export const themes: Theme[] = [
         "materialism",
         "self-doubt",
       ],
-      religions: [
-        "Prosperity Gospel",
-        "The Blockchain Mystics",
-      ],
+      religions: ["Prosperity Gospel"],
     },
     dislikedBy: {
       tags: ["poverty", "simplicity", "tradition"],
