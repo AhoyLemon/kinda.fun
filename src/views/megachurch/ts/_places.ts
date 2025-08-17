@@ -9,8 +9,8 @@ export const places: Place[] = [
   {
     id: 1,
     name: "A-Hyuk Hyuk, Alabama",
-      description:
-        "A-Hyuk Hyuk, Alabama is a poor, fiercely conservative outpost where country music blares from every battered pickup truck and every shirt, hat, and bumper sticker is a declaration of faith and politics. Church is the social center, the diner is the confessional, and every meal comes with a side of grease and gospel. Outsiders are met with suspicion, but neighbors are family—especially if you share their love of fried food, flag-waving, and a preacher who can outshoot the sheriff. If you can sell salvation with a twang and a coupon for free fries, you’ll fit right in."
+    description:
+      "A-Hyuk Hyuk, Alabama is a poor, fiercely conservative outpost where country music blares from every battered pickup truck and every shirt, hat, and bumper sticker is a declaration of faith and politics. Church is the social center, the diner is the confessional, and every meal comes with a side of grease and gospel. Outsiders are met with suspicion, but neighbors are family—especially if you share their love of fried food, flag-waving, and a preacher who can outshoot the sheriff. If you can sell salvation with a twang and a coupon for free fries, you’ll fit right in.",
     likedTags: [
       "community",
       "loyalty",
