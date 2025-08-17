@@ -20,7 +20,7 @@
     {
       "files": "src/views/megachurch/ts/*.ts",
       "options": {
-        "printWidth": 60,
+        "printWidth": 80,
         "proseWrap": "always"
       }
     }
