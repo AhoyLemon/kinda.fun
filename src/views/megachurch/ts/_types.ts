@@ -240,7 +240,7 @@ export type PlaceNames =
   | "Yankee Grit, New Hampshire"
   | "Techno Utopia, California"
   | "Blessed Bayou, Louisiana"
-  | "Crystal Pines, Arizona"
-  | "Lake Miracle, Florida"
+  | "Crystal Dunes, Arizona"
+  | "Miracle Springs, Florida"
   | "Blessed Strip, Nevada"
   | "Megamall, Minnesota";
