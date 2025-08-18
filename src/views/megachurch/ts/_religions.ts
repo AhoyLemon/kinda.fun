@@ -199,10 +199,7 @@ export const religions: Religion[] = [
       "sex",
       "promiscuity",
     ],
-    enemies: [
-      "The Church of Eros",
-      "The Sovereign Guild of Untethered Minds",
-    ],
+    enemies: ["The Church of Eros", "The Sovereign Guild of Untethered Minds"],
   },
   {
     id: 10,
@@ -227,10 +224,7 @@ export const religions: Religion[] = [
       "nationalism",
       "patriotism",
     ],
-    enemies: [
-      "Zardoz",
-      "The Sovereign Guild of Untethered Minds",
-    ],
+    enemies: ["Zardoz", "The Sovereign Guild of Untethered Minds"],
   },
   {
     id: 11,
@@ -382,10 +376,7 @@ export const religions: Religion[] = [
       "meditation",
       "simplicity",
     ],
-    enemies: [
-      "The Gaia Collective",
-      "New-Age Spirituality",
-    ],
+    enemies: ["The Gaia Collective", "New-Age Spirituality"],
   },
   {
     id: 17,
@@ -460,10 +451,7 @@ export const religions: Religion[] = [
       "nationalism",
       "oppression",
     ],
-    enemies: [
-      "The Order of the Alpha Male",
-      "Orthodox Islam",
-    ],
+    enemies: ["The Order of the Alpha Male", "Orthodox Islam"],
   },
   {
     id: 20,
@@ -488,10 +476,7 @@ export const religions: Religion[] = [
       "structure",
       "dogma",
     ],
-    enemies: [
-      "Jehovah's Witnesses",
-      "The Order of the Divine Algorithm",
-    ],
+    enemies: ["Jehovah's Witnesses", "The Order of the Divine Algorithm"],
   },
   {
     id: 21,
@@ -541,10 +526,7 @@ export const religions: Religion[] = [
       "nature",
       "individualism",
     ],
-    enemies: [
-      "The Gaia Collective",
-      "The Sovereign Guild of Untethered Minds",
-    ],
+    enemies: ["The Gaia Collective", "The Sovereign Guild of Untethered Minds"],
   },
   {
     id: 23,
@@ -569,10 +551,7 @@ export const religions: Religion[] = [
       "modernity",
       "skepticism",
     ],
-    enemies: [
-      "Zardoz",
-      "The Sovereign Guild of Untethered Minds",
-    ],
+    enemies: ["Zardoz", "The Sovereign Guild of Untethered Minds"],
   },
   {
     id: 24,
@@ -597,10 +576,7 @@ export const religions: Religion[] = [
       "exploitation",
       "oppression",
     ],
-    enemies: [
-      "Southern Baptist",
-      "Evangelical Christianity",
-    ],
+    enemies: ["Southern Baptist", "Evangelical Christianity"],
   },
   {
     id: 25,
@@ -650,10 +626,7 @@ export const religions: Religion[] = [
       "exploitation",
       "nationalism",
     ],
-    enemies: [
-      "Prosperity Gospel",
-      "The Order of the Alpha Male",
-    ],
+    enemies: ["Prosperity Gospel", "The Order of the Alpha Male"],
   },
   {
     id: 27,
@@ -678,10 +651,7 @@ export const religions: Religion[] = [
       "exploitation",
       "unethical behavior",
     ],
-    enemies: [
-      "Evangelical Christianity",
-      "The Starseed Pilgrims",
-    ],
+    enemies: ["Evangelical Christianity", "The Starseed Pilgrims"],
   },
   {
     id: 28,
@@ -731,10 +701,7 @@ export const religions: Religion[] = [
       "violence",
       "nationalism",
     ],
-    enemies: [
-      "The Digital Ascension",
-      "The Gaia Collective",
-    ],
+    enemies: ["The Digital Ascension", "The Gaia Collective"],
   },
   {
     id: 30,
@@ -759,9 +726,6 @@ export const religions: Religion[] = [
       "dogma",
       "provocation",
     ],
-    enemies: [
-      "The Sovereign Guild of Untethered Minds",
-      "Zardoz",
-    ],
+    enemies: ["The Sovereign Guild of Untethered Minds", "Zardoz"],
   },
 ];

@@ -1,0 +1,52 @@
+section.choose.choose-place(v-if="ui.view === 'place'")
+
+  form(@submit.prevent="choosePlace(ui.religionIndex)")
+
+    legend Where do you want to go?
+
+    fieldset
+      label.required Choose a location
+      Multiselect(
+        v-model="ui.placeIndex"
+        :options="places"
+        :searchable="true"
+        :required="true"
+        value-prop="id"
+        track-by="name"
+        label="name"
+        mode="single"
+      )
+
+    .details.place-details(v-if="ui.placeIndex")
+      .name {{getPlace(ui.placeIndex).name}}
+      .description {{getPlace(ui.placeIndex).description}}
+      
+      dl.population
+        dt Population
+        dd.big-number {{addCommas(getPlace(ui.placeIndex).totalPopulation)}}
+
+      dl.net-worth
+        dt Avg Net Worth
+        dd.big-number {{dollars(getPlace(ui.placeIndex).avgNetWorth)}}
+      
+
+      dl.religions
+        dt Top Religions
+        dd
+          ol
+            li(v-for="religion in getPlace(ui.placeIndex).religions.slice(0, 5)") {{religion.name}}
+
+      dl.likes
+        dt Likes
+        dd 
+          ul
+            li(v-for="like in getPlace(ui.placeIndex).likedTags.slice(0, 5)") {{like}}
+      dl.dislikes
+        dt Dislikes
+        dd 
+          ul
+            li(v-for="dislike in getPlace(ui.placeIndex).dislikedTags.slice(0, 5)") {{dislike}}
+    
+    .button-holder
+      button.reset(type="button" @click="ui.view = 'religion'") Change Religion
+      button(type="submit" :disabled="!ui.placeIndex") Get In The Van

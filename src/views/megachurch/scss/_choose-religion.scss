@@ -1,12 +1,13 @@
-.choose-religion {
+.choose {
   fieldset {
     width: 320px;
     margin-left: auto;
     margin-right: auto;
   }
 
-  .religion-details {
+  .details {
     width: 76ch;
+
     margin-left: auto;
     margin-right: auto;
     display: grid;
@@ -17,6 +18,11 @@
     .name,
     .description {
       grid-column: span 2;
+    }
+    .big-number {
+      font-size: 1.35rem;
+      font-family: $serif;
+      font-weight: 600;
     }
     .name {
       font-size: 1.25em;
@@ -40,12 +46,30 @@
         color: white;
         padding: 7px;
       }
+      dd {
+        padding: 10px;
+      }
       ul {
         display: grid;
         gap: 4px;
-        padding: 0.5em 0.5em 0.5em 2em;
+        padding: 0 0.5em 0.5em 1em;
         list-style-type: disc;
         font-size: 0.875em;
+      }
+    }
+    dl.religions {
+      grid-column: span 2;
+      ol {
+        display: grid;
+        gap: 0.25em;
+        padding-left: 1rem;
+        list-style: decimal;
+        font-family: $serif;
+        font-size: 1.25em;
+        li::marker {
+          font-size: 80%;
+          font-weight: 600;
+        }
       }
     }
   }

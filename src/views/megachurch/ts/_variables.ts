@@ -2,25 +2,29 @@ import { reactive, ref } from "vue";
 import { SermonToday } from "./_types";
 
 interface UI {
-  choosing:
+  view:
     | "religion"
+    | "place"
+    | "place-confirm"
     | "sermon"
     | "sermon-confirm"
     | "preached"
     | "sermon-results";
   religionIndex: number;
+  placeIndex: number;
 }
 
 export const ui = reactive<UI>({
-  choosing: "religion",
+  view: "religion",
   religionIndex: 0,
+  placeIndex: 0,
 });
 
 export const my = reactive<My>({
   name: "",
   money: 0,
   religion: {},
-  location: {},
+  place: {},
   lucre: {},
   selectedTopics: [null, null, null],
   sermonToday: {
@@ -38,16 +42,22 @@ export const my = reactive<My>({
       religions: [],
     },
   },
+  effectYesterday: [],
   religiousScorecard: [],
+  followerCount: 0,
+  followers: [],
 });
 
 interface My {
   name: string;
   money: number;
   religion: object;
-  location: object;
+  place: object;
   lucre: object;
   selectedTopics: Array<any>;
   sermonToday: SermonToday;
+  effectYesterday?: any[];
   religiousScorecard?: any[];
+  followerCount: number;
+  followers: object[];
 }

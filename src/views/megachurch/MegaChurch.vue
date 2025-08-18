@@ -4,13 +4,15 @@
   import Multiselect from "@vueform/multiselect";
   import "@vueform/multiselect/themes/default.css";
   import { religions } from "./ts/_religions";
+  import { places } from "./ts/_places";
   import { themes } from "./ts/_sermons";
+
   import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
   import { ui, my } from "./ts/_variables";
 
   // ================= VARIABLES =================
 
-  import type { Theme, WeightedTag, WeightedReligion, MixedTag, MixedReligion, SermonToday, Religion } from "./ts/_types";
+  import type { Theme, Place, WeightedTag, WeightedReligion, MixedTag, MixedReligion, SermonToday, Religion } from "./ts/_types";
 
   // ================= FUNCTIONS =================
   function provideTopicOptions(index: number): typeof themes {
@@ -25,7 +27,7 @@
     } else {
       alert("Religion not found.");
     }
-    ui.choosing = "sermon";
+    ui.view = "place";
   }
 
   function getReligion(id: number): Religion | {} {
@@ -34,6 +36,26 @@
       return {};
     } else {
       return religion;
+    }
+  }
+
+  function getPlace(id: number): Place | {} {
+    const place = (places as any[]).find((p) => p.id === id);
+    if (!id) {
+      return {};
+    } else {
+      return place;
+    }
+  }
+
+  function choosePlace(placeId: number) {
+    const place = places.find((p: any) => p.id === placeId);
+    if (place) {
+      my.place = { ...place };
+      my.selectedTopics = Array(3).fill(null); // Reset topics
+      ui.view = "sermon";
+    } else {
+      alert("Place not found.");
     }
   }
 
@@ -149,7 +171,7 @@
       },
     };
 
-    ui.choosing = "sermon-confirm";
+    ui.view = "sermon-confirm";
   }
 
   function preachSermon() {
@@ -314,7 +336,43 @@
     my.effectYesterday = yesterdaysEffect;
 
     // Move to next phase
-    ui.choosing = "preached";
+    createSermonEffect();
+    ui.view = "preached";
+    // ================= CREATE SERMON EFFECT =================
+  }
+
+  function createSermonEffect() {
+    console.log("line 346");
+    const place = my.place as Place;
+    if (!place || !place.religions || !Array.isArray(place.religions)) return;
+
+    place.religions.forEach((placeReligion: any) => {
+      const { id, weight } = placeReligion;
+      // Find matching religion in yesterday's effect
+      const effect = my.effectYesterday?.find((r: any) => r.id === id);
+      if (!effect) return;
+      // Followers gained/lost for this religion
+      let followersDelta = effect.scoreChange * weight;
+      if (followersDelta < 0) followersDelta = Math.max(followersDelta, -weight); // Don't lose more than weight
+
+      // Update followerCount (on placeReligion)
+      placeReligion.followerCount = (placeReligion.followerCount || 0) + followersDelta;
+      if (placeReligion.followerCount < 0) placeReligion.followerCount = 0;
+
+      // Update my.followers array
+      let followerObj = my.followers.find((f: any) => f.id === id) as { id: number; followers: number } | undefined;
+      if (!followerObj) {
+        followerObj = { id, followers: 0 };
+        my.followers.push(followerObj);
+      }
+      followerObj.followers += followersDelta;
+      if (followerObj.followers < 0) followerObj.followers = 0;
+    });
+
+    // Update global followerCount
+    my.followerCount = my.followers.reduce((sum: number, f: any) => sum + (f.followers || 0), 0);
+
+    console.log("line 372");
   }
 
   // Helper to get top N from weighted arrays
@@ -340,10 +398,25 @@
     }));
   }
 
+  function initialiseFollowers() {
+    my.followers = religions.map((r) => ({
+      id: r.id,
+      name: r.name,
+      followers: 0,
+    }));
+  }
+
   // ================= COMPUTEDS =================
+  const computedTopReligions = computed(() => {
+    if (!my.followers || !Array.isArray(my.followers) || my.followers.length === 0) return null;
+    const sorted = my.followers.map((f) => f as { id: number; followers: number }).sort((a, b) => (b.followers || 0) - (a.followers || 0));
+    if (sorted.length === 0 || (sorted[0].followers || 0) === 0) return null;
+    return sorted;
+  });
 
   onMounted(() => {
     initialiseScoreCard();
+    initialiseFollowers();
   });
 </script>
 

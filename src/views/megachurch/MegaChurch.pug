@@ -11,60 +11,29 @@ aside.your-details(v-if="my.religion?.name")
   .box
     .label Money
     .value {{dollars(my.money)}}
+  
+  .box
+    .label Followers
+    .value {{my.followerCount}}
+  
+  .box.top-religions(v-if="computedTopReligions")
+    .label Top Religions
+    .value
+      ol
+        li(v-for="religion in computedTopReligions.slice(0, 3)") {{religion.name}}
 
 
 main
 
-  section.choose-religion(v-if="ui.choosing === 'religion'")
+  include pug/_choose-religion.pug
 
-    form(@submit.prevent="chooseReligion(ui.religionIndex)")
-      fieldset
-        label.required Your Name
-        input(type="text" v-model="my.name" required)
-
-      fieldset
-        label.required Choose a religion
-        Multiselect(
-          v-model="ui.religionIndex"
-          :options="religions"
-          :searchable="true"
-          :required="true"
-          value-prop="id"
-          track-by="name"
-          label="name"
-          mode="single"
-        )
-        //.religion-explainer(v-if="ui.religionIndex")
-          p(v-text="showReligionDescription(ui.religionIndex)")
-
-      .religion-details(v-if="ui.religionIndex")
-        .name {{getReligion(ui.religionIndex).name}}
-        .description {{getReligion(ui.religionIndex).description}}
-        dl
-          dt Likes
-          dd 
-            ul
-              li(v-for="like in getReligion(ui.religionIndex).likes") {{like}}
-        dl
-          dt Dislikes
-          dd 
-            ul
-              li(v-for="dislike in getReligion(ui.religionIndex).dislikes") {{dislike}}
-
-      fieldset.checkbox
-        label
-          input(type="checkbox" required) 
-          span I understand that my goal in this game is to amass tokens of wealth, and my choice in religion is simply a means to that end.
-      
-      .button-holder
-        button(type="reset") Start Over
-        button(type="submit") Let's Go
+  include pug/_choose-place.pug
 
   include pug/_create-sermon.pug
 
   include pug/_sermon-diagnosis.pug
 
-  section(v-if="ui.choosing === 'preached'")
+  section(v-if="ui.view === 'preached'")
 
     table.debug
       thead

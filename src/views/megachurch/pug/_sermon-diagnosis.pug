@@ -1,4 +1,4 @@
-section.diagnosis(v-if="ui.choosing === 'sermon-confirm'")
+section.diagnosis(v-if="ui.view === 'sermon-confirm'")
 
   .inner
     .diagnosis-box
@@ -32,5 +32,5 @@ section.diagnosis(v-if="ui.choosing === 'sermon-confirm'")
             li(v-for="religion in my.sermonToday.dislikedBy.religions.slice(0,2)") {{religion.name}}
     
     .button-holder
-      button.reset(@click="ui.choosing = 'sermon'") Start Over
+      button.reset(@click="ui.view = 'sermon'") Start Over
       button.submit(@click='preachSermon()') Preach It
