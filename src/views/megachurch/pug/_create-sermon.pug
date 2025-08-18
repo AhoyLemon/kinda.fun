@@ -1,9 +1,9 @@
 section.sermon(v-if="ui.view === 'sermon'")
 
-  .inner
-  h2 What will you preach today?
-  br
   form(@submit.prevent="defineSermon()")
+
+    legend 
+      span What will you preach today?
 
     fieldset
       label.required First Topic
@@ -50,4 +50,4 @@ section.sermon(v-if="ui.view === 'sermon'")
         p {{showThemeDescription(my.selectedTopics[2])}}
 
     .button-holder
-      button(type="submit" :disabled="!my.selectedTopics[0] || !my.selectedTopics[1] || !my.selectedTopics[2]") Looks Good
+      button(type="submit" :disabled="!my.selectedTopics[0] || !my.selectedTopics[1] || !my.selectedTopics[2]") Create Sermon

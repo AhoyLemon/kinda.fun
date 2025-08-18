@@ -4,9 +4,13 @@ aside.your-details(v-if="my.religion?.name")
     .label Name
     .value {{my.name}}
 
-  .box
+  .box(v-if="my.religion")
     .label religion
     .value {{my.religion.name}}
+
+  .box(v-if="my.place?.name")
+    .label Place
+    .value {{my.place.name}}
   
   .box
     .label Money
@@ -19,7 +23,7 @@ aside.your-details(v-if="my.religion?.name")
   .box.top-religions(v-if="computedTopReligions")
     .label Top Religions
     .value
-      ol
+      ol 
         li(v-for="religion in computedTopReligions.slice(0, 3)") {{religion.name}}
 
 
@@ -34,6 +38,22 @@ main
   include pug/_sermon-diagnosis.pug
 
   section(v-if="ui.view === 'preached'")
+
+    .buttons
+      button(@click="collectDonations()") GET PAID 🤑
+    
+    table.debug
+      caption Followers
+      thead
+        tr
+          th id
+          th name
+          th followers
+      tbody
+        tr(v-for="religion in my.followers.slice().sort((a, b) => b.followers - a.followers)")
+          td {{religion.id}}
+          td {{religion.name}}
+          td {{religion.followers}}
 
     table.debug
       thead

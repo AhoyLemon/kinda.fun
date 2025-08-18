@@ -1,5 +1,9 @@
 import { reactive, ref } from "vue";
-import { SermonToday } from "./_types";
+import { Sermon } from "./_types";
+
+export const gameSettings = {
+  baseDonation: 0.1, // Base donation per follower
+};
 
 interface UI {
   view:
@@ -25,8 +29,14 @@ export const my = reactive<My>({
   money: 0,
   religion: {},
   place: {},
-  lucre: {},
-  selectedTopics: [null, null, null],
+  lucre: [],
+  preacherStrengths: {
+    followers: 0.15,
+    donations: 0.2,
+  },
+  selectedTopics: [null, null, null], // TODO: Move this to ui.selectedTopics
+  followerCount: 0,
+  followers: [],
   sermonToday: {
     topics: [],
     likedBy: {
@@ -44,20 +54,22 @@ export const my = reactive<My>({
   },
   effectYesterday: [],
   religiousScorecard: [],
-  followerCount: 0,
-  followers: [],
 });
 
 interface My {
-  name: string;
-  money: number;
-  religion: object;
-  place: object;
-  lucre: object;
-  selectedTopics: Array<any>;
-  sermonToday: SermonToday;
-  effectYesterday?: any[];
-  religiousScorecard?: any[];
-  followerCount: number;
-  followers: object[];
+  name: string; // Name of the MegaChurch Owner
+  money: number; // How much money you have right now.
+  religion: object; // What religion you are claiming
+  place: object; // What location are you currently in
+  lucre: object[]; // list the trophies you have.
+  preacherStrengths: {
+    followers: number;
+    donations: number;
+  }; // Persuasiveness multipliers. How good is your preacher at getting new followers/donations
+  selectedTopics: Array<any>; // TODO: Move this to ui.selectedTopics
+  followerCount: number; // How many followers you have right now.
+  followers: object[]; // List of followers, by religion
+  sermonToday: Sermon; // What will/did you preach today.
+  effectYesterday?: any[]; // What effect did your last sermon have?
+  religiousScorecard?: any[]; // what does each religion think of you?
 }

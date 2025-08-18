@@ -75,7 +75,7 @@ export interface SermonTopic {
   description: string;
 }
 
-export interface SermonToday {
+export interface Sermon {
   topics: SermonTopic[];
   likedBy: {
     tags: WeightedTag[];
@@ -96,8 +96,8 @@ export interface SermonToday {
 export type ReligionNames =
   | "2 Fast 2 Faithful"
   | "Agnostic Atheists"
-  | "Buddhist"
-  | "Catholic"
+  | "Buddhism"
+  | "Catholicism"
   | "Confucianism"
   | "Evangelical Christianity"
   | "Jehovah's Witnesses"
@@ -244,7 +244,7 @@ export type PlaceNames =
   | "Blessed Bayou, Louisiana"
   | "Crystal Dunes, Arizona"
   | "Miracle Springs, Florida"
-  | "Blessed Strip, Nevada"
+  | "Landing Strip, Nevada"
   | "Megamall, Minnesota"
   | "Cascadia Moss, Washington"
   | "Rapture, Texas";

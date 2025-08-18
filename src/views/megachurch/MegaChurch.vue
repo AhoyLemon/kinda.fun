@@ -8,13 +8,49 @@
   import { themes } from "./ts/_sermons";
 
   import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
-  import { ui, my } from "./ts/_variables";
+  import { ui, my, gameSettings } from "./ts/_variables";
 
   // ================= VARIABLES =================
 
-  import type { Theme, Place, WeightedTag, WeightedReligion, MixedTag, MixedReligion, SermonToday, Religion } from "./ts/_types";
+  import type { Theme, Place, WeightedTag, WeightedReligion, MixedTag, MixedReligion, Sermon, Religion } from "./ts/_types";
 
   // ================= FUNCTIONS =================
+  // ================= COLLECT DONATIONS =================
+  function collectDonations() {
+    const place = my.place as Place;
+    if (!place || !place.religions || !Array.isArray(place.religions)) return 0;
+
+    let totalDonations = 0;
+    my.followers.forEach((followerObj: any) => {
+      const religionId = followerObj.id;
+      const followers = followerObj.followers || 0;
+      if (followers === 0) return;
+
+      // Find score for this religion
+      const scoreEntry = my.religiousScorecard.find((r: any) => r.id === religionId);
+      const score = scoreEntry ? scoreEntry.score : 0;
+      // Score multiplier: scale from 1 (bad) to 12 (great)
+      let scoreMultiplier = Math.max(1, Math.min(12, score / 2));
+
+      // Find place religion weight
+      const placeReligion = place.religions.find((r: any) => r.id === religionId);
+      // Use avgNetWorth for net worth multiplier, but dampen its effect
+      const netWorthMultiplier = place.avgNetWorth ? Math.max(0.75, Math.min(2, place.avgNetWorth / 150000)) : 1;
+
+      // Use gameSettings.baseDonation and my.preacherStrengths.donations
+      const baseDonation = gameSettings.baseDonation || 0.18; // Raised from 0.1
+      const donationStrength = (my.preacherStrengths?.donations || 1) * 1.5; // Boosted effect
+
+      // Calculate donation for this religion
+      const donation = followers * baseDonation * scoreMultiplier * donationStrength * netWorthMultiplier;
+      totalDonations += donation;
+    });
+    // Round to nearest cent
+    const roundedDonations = Math.round(totalDonations * 100) / 100;
+    // And give it to you.
+    my.money += roundedDonations;
+    console.log(roundedDonations);
+  }
   function provideTopicOptions(index: number): typeof themes {
     const selectedIds = my.selectedTopics.map((id, i) => (i !== index && id !== null && id !== 0 ? id : null)).filter((id): id is number => id !== null);
     return shuffle(themes).filter((theme) => !selectedIds.includes(theme.id));
@@ -342,7 +378,6 @@
   }
 
   function createSermonEffect() {
-    console.log("line 346");
     const place = my.place as Place;
     if (!place || !place.religions || !Array.isArray(place.religions)) return;
 
@@ -351,12 +386,14 @@
       // Find matching religion in yesterday's effect
       const effect = my.effectYesterday?.find((r: any) => r.id === id);
       if (!effect) return;
-      // Followers gained/lost for this religion
-      let followersDelta = effect.scoreChange * weight;
-      if (followersDelta < 0) followersDelta = Math.max(followersDelta, -weight); // Don't lose more than weight
+      // Followers gained/lost for this religion, using sqrt(weight) for non-linear scaling
+      let followersDelta = effect.scoreChange * Math.sqrt(weight) * (my.preacherStrengths?.followers || 1);
+      // Always round to nearest integer
+      followersDelta = Math.round(followersDelta);
+      if (followersDelta < 0) followersDelta = Math.max(followersDelta, -Math.round(Math.sqrt(weight) * (my.preacherStrengths?.followers || 1))); // Don't lose more than sqrt(weight) * preacherStrength
 
       // Update followerCount (on placeReligion)
-      placeReligion.followerCount = (placeReligion.followerCount || 0) + followersDelta;
+      placeReligion.followerCount = Math.round((placeReligion.followerCount || 0) + followersDelta);
       if (placeReligion.followerCount < 0) placeReligion.followerCount = 0;
 
       // Update my.followers array
@@ -365,31 +402,28 @@
         followerObj = { id, followers: 0 };
         my.followers.push(followerObj);
       }
-      followerObj.followers += followersDelta;
+      followerObj.followers = Math.round(followerObj.followers + followersDelta);
       if (followerObj.followers < 0) followerObj.followers = 0;
     });
-
     // Update global followerCount
     my.followerCount = my.followers.reduce((sum: number, f: any) => sum + (f.followers || 0), 0);
-
-    console.log("line 372");
   }
 
-  // Helper to get top N from weighted arrays
-  function getTopNWeighted<T extends { weight: number }>(arr: T[], n: number): T[] {
-    if (!arr.length) return [];
-    const sorted = arr.slice().sort((a, b) => b.weight - a.weight);
-    if (sorted.length <= n) return sorted;
-    const cutoff = sorted[n - 1].weight;
-    const candidates = sorted.filter((item) => item.weight >= cutoff);
-    if (candidates.length > n) {
-      const shuffled = candidates.sort(() => Math.random() - 0.5);
-      return shuffled.slice(0, n);
-    }
-    return candidates.slice(0, n);
-  }
+  // // Helper to get top N from weighted arrays
+  // function getTopNWeighted<T extends { weight: number }>(arr: T[], n: number): T[] {
+  //   if (!arr.length) return [];
+  //   const sorted = arr.slice().sort((a, b) => b.weight - a.weight);
+  //   if (sorted.length <= n) return sorted;
+  //   const cutoff = sorted[n - 1].weight;
+  //   const candidates = sorted.filter((item) => item.weight >= cutoff);
+  //   if (candidates.length > n) {
+  //     const shuffled = candidates.sort(() => Math.random() - 0.5);
+  //     return shuffled.slice(0, n);
+  //   }
+  //   return candidates.slice(0, n);
+  // }
 
-  // ================= INITIALISE RELIGIOUS SCORECARD =================
+  // ================= INITIALISE STUFF AT GAME START =================
   function initialiseScoreCard() {
     my.religiousScorecard = religions.map((r) => ({
       id: r.id,

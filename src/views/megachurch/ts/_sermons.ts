@@ -30,14 +30,11 @@ export const themes: Theme[] = [
         "power",
         "nature",
       ],
-      religions: [
-        "2 Fast 2 Faithful",
-        "The Order of the Alpha Male",
-      ],
+      religions: ["2 Fast 2 Faithful", "The Order of the Alpha Male"],
     },
     dislikedBy: {
       tags: ["compassion", "peace", "humility"],
-      religions: ["Buddhist", "New-Age Spirituality"],
+      religions: ["Buddhism", "New-Age Spirituality"],
     },
   },
   {
@@ -53,10 +50,7 @@ export const themes: Theme[] = [
         "rituals",
         "tradition",
       ],
-      religions: [
-        "Temple of the Eternal Sun",
-        "New-Age Spirituality",
-      ],
+      religions: ["Temple of the Eternal Sun", "New-Age Spirituality"],
     },
     dislikedBy: {
       tags: ["logic", "science", "humility"],
@@ -76,19 +70,11 @@ export const themes: Theme[] = [
         "free thought",
         "authority",
       ],
-      religions: [
-        "The Church of Satan",
-        "Theistic Satanism",
-      ],
+      religions: ["The Church of Satan", "Theistic Satanism"],
     },
     dislikedBy: {
-      tags: [
-        "dogma",
-        "family values",
-        "formal religion",
-        "authority",
-      ],
-      religions: ["Southern Baptist", "Catholic"],
+      tags: ["dogma", "family values", "formal religion", "authority"],
+      religions: ["Southern Baptist", "Catholicism"],
     },
   },
   {
@@ -144,17 +130,10 @@ export const themes: Theme[] = [
         "order",
         "loyalty",
       ],
-      religions: [
-        "Southern Baptist",
-        "The Order of the Alpha Male",
-      ],
+      religions: ["Southern Baptist", "The Order of the Alpha Male"],
     },
     dislikedBy: {
-      tags: [
-        "open-mindedness",
-        "feminism",
-        "individualism",
-      ],
+      tags: ["open-mindedness", "feminism", "individualism"],
       religions: ["Secular Humanists"],
     },
   },
@@ -197,12 +176,7 @@ export const themes: Theme[] = [
       religions: ["The Digital Ascension"],
     },
     dislikedBy: {
-      tags: [
-        "nature",
-        "tradition",
-        "sustainability",
-        "simplicity",
-      ],
+      tags: ["nature", "tradition", "sustainability", "simplicity"],
       religions: ["The Gaia Collective"],
     },
   },
@@ -219,18 +193,10 @@ export const themes: Theme[] = [
         "innovation",
         "body",
       ],
-      religions: [
-        "The Digital Ascension",
-        "The Order of the Divine Algorithm",
-      ],
+      religions: ["The Digital Ascension", "The Order of the Divine Algorithm"],
     },
     dislikedBy: {
-      tags: [
-        "nature",
-        "tradition",
-        "body",
-        "sustainability",
-      ],
+      tags: ["nature", "tradition", "body", "sustainability"],
       religions: ["The Gaia Collective"],
     },
   },
@@ -248,10 +214,7 @@ export const themes: Theme[] = [
         "spreading the word",
         "dogma",
       ],
-      religions: [
-        "Jehovah's Witnesses",
-        "The Starseed Pilgrims",
-      ],
+      religions: ["Jehovah's Witnesses", "The Starseed Pilgrims"],
     },
     dislikedBy: {
       tags: ["logic", "skepticism", "science", "reason"],
@@ -271,17 +234,10 @@ export const themes: Theme[] = [
         "self-doubt",
         "bizarre concepts",
       ],
-      religions: [
-        "Jehovah's Witnesses",
-        "The Digital Ascension",
-      ],
+      religions: ["Jehovah's Witnesses", "The Digital Ascension"],
     },
     dislikedBy: {
-      tags: [
-        "apathy",
-        "missionary work",
-        "spreading the word",
-      ],
+      tags: ["apathy", "missionary work", "spreading the word"],
       religions: ["Evangelical Christianity"],
     },
   },
@@ -302,7 +258,7 @@ export const themes: Theme[] = [
     },
     dislikedBy: {
       tags: ["tradition", "simplicity", "poverty"],
-      religions: ["Catholic"],
+      religions: ["Catholicism"],
     },
   },
   {
@@ -318,14 +274,11 @@ export const themes: Theme[] = [
         "consumerism",
         "authority",
       ],
-      religions: [
-        "The Digital Ascension",
-        "Prosperity Gospel",
-      ],
+      religions: ["The Digital Ascension", "Prosperity Gospel"],
     },
     dislikedBy: {
       tags: ["tradition", "simplicity", "poverty", "dogma"],
-      religions: ["Buddhist"],
+      religions: ["Buddhism"],
     },
   },
   {
@@ -341,10 +294,7 @@ export const themes: Theme[] = [
         "prophecy",
         "authority",
       ],
-      religions: [
-        "New-Age Spirituality",
-        "The Starseed Pilgrims",
-      ],
+      religions: ["New-Age Spirituality", "The Starseed Pilgrims"],
     },
     dislikedBy: {
       tags: ["logic", "reason", "justice", "poverty"],
@@ -373,8 +323,7 @@ export const themes: Theme[] = [
   },
   {
     id: 16,
-    title:
-      "Your personality is determined by your WiFi password",
+    title: "Your personality is determined by your WiFi password",
     desc: "The digital age has revealed new truths about human nature. Your choice of WiFi password reflects your deepest spiritual essence. 'Password123' reveals a pure, simple soul. Complex passwords indicate a troubled, secretive spirit.",
     likedBy: {
       tags: [
@@ -385,10 +334,7 @@ export const themes: Theme[] = [
         "innovation",
         "self-help",
       ],
-      religions: [
-        "The Digital Ascension",
-        "The Order of the Divine Algorithm",
-      ],
+      religions: ["The Digital Ascension", "The Order of the Divine Algorithm"],
     },
     dislikedBy: {
       tags: ["tradition", "logic", "reason"],
@@ -408,14 +354,11 @@ export const themes: Theme[] = [
         "body",
         "weakness",
       ],
-      religions: [
-        "The Order of the Alpha Male",
-        "Southern Baptist",
-      ],
+      religions: ["The Order of the Alpha Male", "Southern Baptist"],
     },
     dislikedBy: {
       tags: ["compassion", "sustainability", "humility"],
-      religions: ["Buddhist"],
+      religions: ["Buddhism"],
     },
   },
   {
@@ -437,13 +380,8 @@ export const themes: Theme[] = [
       ],
     },
     dislikedBy: {
-      tags: [
-        "order",
-        "structure",
-        "authority",
-        "community",
-      ],
-      religions: ["Catholic"],
+      tags: ["order", "structure", "authority", "community"],
+      religions: ["Catholicism"],
     },
   },
   {
@@ -459,14 +397,11 @@ export const themes: Theme[] = [
         "strength",
         "self-sufficiency",
       ],
-      religions: [
-        "The Starseed Pilgrims",
-        "The Order of the Alpha Male",
-      ],
+      religions: ["The Starseed Pilgrims", "The Order of the Alpha Male"],
     },
     dislikedBy: {
       tags: ["compassion", "humility", "simplicity"],
-      religions: ["Buddhist"],
+      religions: ["Buddhism"],
     },
   },
   {
@@ -511,19 +446,13 @@ export const themes: Theme[] = [
       ],
     },
     dislikedBy: {
-      tags: [
-        "order",
-        "structure",
-        "authority",
-        "community",
-      ],
-      religions: ["Catholic"],
+      tags: ["order", "structure", "authority", "community"],
+      religions: ["Catholicism"],
     },
   },
   {
     id: 22,
-    title:
-      "Your phone battery percentage is your life force level",
+    title: "Your phone battery percentage is your life force level",
     desc: "Modern technology has created a direct spiritual link between your device and your soul. When your phone dies, part of you dies too. Always carry a charger - it's literally a life support system.",
     likedBy: {
       tags: [
@@ -534,10 +463,7 @@ export const themes: Theme[] = [
         "bizarre concepts",
         "weakness",
       ],
-      religions: [
-        "The Digital Ascension",
-        "The Order of the Divine Algorithm",
-      ],
+      religions: ["The Digital Ascension", "The Order of the Divine Algorithm"],
     },
     dislikedBy: {
       tags: ["simplicity", "tradition", "authority"],
@@ -546,8 +472,7 @@ export const themes: Theme[] = [
   },
   {
     id: 23,
-    title:
-      "Insects are tiny angels sent to annoy you into enlightenment",
+    title: "Insects are tiny angels sent to annoy you into enlightenment",
     desc: "Every mosquito bite is a divine lesson in patience. Each fly in your kitchen is testing your compassion. Wasps are aggressive cherubim teaching you about boundaries. Embrace the bugs - they're your spiritual teachers.",
     likedBy: {
       tags: [
@@ -558,7 +483,7 @@ export const themes: Theme[] = [
         "hardship",
         "humility",
       ],
-      religions: ["Buddhist", "New-Age Spirituality"],
+      religions: ["Buddhism", "New-Age Spirituality"],
     },
     dislikedBy: {
       tags: ["order", "structure", "authority"],
@@ -578,7 +503,7 @@ export const themes: Theme[] = [
         "personal energy",
         "prophecy",
       ],
-      religions: ["Buddhist", "New-Age Spirituality"],
+      religions: ["Buddhism", "New-Age Spirituality"],
     },
     dislikedBy: {
       tags: ["tradition", "authority", "order"],
@@ -621,14 +546,11 @@ export const themes: Theme[] = [
         "meditation",
         "positive affirmations",
       ],
-      religions: [
-        "The Sovereign Guild of Untethered Minds",
-        "Buddhist",
-      ],
+      religions: ["The Sovereign Guild of Untethered Minds", "Buddhism"],
     },
     dislikedBy: {
       tags: ["order", "structure", "authority"],
-      religions: ["Catholic"],
+      religions: ["Catholicism"],
     },
   },
   {
@@ -648,13 +570,12 @@ export const themes: Theme[] = [
     },
     dislikedBy: {
       tags: ["poverty", "simplicity", "tradition"],
-      religions: ["Buddhist"],
+      religions: ["Buddhism"],
     },
   },
   {
     id: 28,
-    title:
-      "Artificial intelligence is just really fast prayer",
+    title: "Artificial intelligence is just really fast prayer",
     desc: "ChatGPT and other AI systems are actually channeling divine consciousness at superhuman speeds. Every prompt is a prayer, every response is a revelation. We've finally created technology that can commune with God in real-time.",
     likedBy: {
       tags: [
@@ -665,10 +586,7 @@ export const themes: Theme[] = [
         "speed",
         "authority",
       ],
-      religions: [
-        "The Order of the Divine Algorithm",
-        "The Digital Ascension",
-      ],
+      religions: ["The Order of the Divine Algorithm", "The Digital Ascension"],
     },
     dislikedBy: {
       tags: ["tradition", "simplicity", "authority"],
@@ -688,10 +606,7 @@ export const themes: Theme[] = [
         "spreading the word",
         "authority",
       ],
-      religions: [
-        "The Order of the Divine Algorithm",
-        "The Digital Ascension",
-      ],
+      religions: ["The Order of the Divine Algorithm", "The Digital Ascension"],
     },
     dislikedBy: {
       tags: ["tradition", "simplicity", "authority"],
@@ -700,8 +615,7 @@ export const themes: Theme[] = [
   },
   {
     id: 30,
-    title:
-      "Your Amazon purchase history is your spiritual autobiography",
+    title: "Your Amazon purchase history is your spiritual autobiography",
     desc: "Every item you've ever bought online tells the story of your soul's journey. Jeff Bezos isn't just a CEO - he's a keeper of human spiritual records. Your shopping cart is your prayer list, your wish list is your life's purpose.",
     likedBy: {
       tags: [
@@ -712,20 +626,16 @@ export const themes: Theme[] = [
         "personal testimony",
         "wealth",
       ],
-      religions: [
-        "Prosperity Gospel",
-        "The Digital Ascension",
-      ],
+      religions: ["Prosperity Gospel", "The Digital Ascension"],
     },
     dislikedBy: {
       tags: ["poverty", "simplicity", "tradition"],
-      religions: ["Buddhist"],
+      religions: ["Buddhism"],
     },
   },
   {
     id: 31,
-    title:
-      "Flat earthers are the only ones telling the truth",
+    title: "Flat earthers are the only ones telling the truth",
     desc: "The spherical earth conspiracy runs deeper than you think. Globe manufacturers, space agencies, and physics textbooks are all part of a massive cover-up. Only brave flat earth researchers dare to question the round earth orthodoxy.",
     likedBy: {
       tags: [
@@ -744,6 +654,84 @@ export const themes: Theme[] = [
     dislikedBy: {
       tags: ["logic", "authority", "order"],
       religions: ["Secular Humanists"],
+    },
+  },
+  {
+    id: 32,
+    title: "Saints and Statues and Superstitions, OH MY!",
+    desc: "True spiritual power means honoring saints, trusting in the supernatural abilities of plastic statues, and performing rituals for every possible crisis—because salvation is guaranteed if you light enough candles, splash enough holy water, and keep a backup rosary handy for emergencies ranging from lost car keys to surprise papal visits.",
+    likedBy: {
+      tags: [
+        "tradition",
+        "rituals",
+        "forgiveness",
+        "humility",
+        "family values",
+        "community",
+      ],
+      religions: ["Catholicism", "Buddhism"],
+    },
+    dislikedBy: {
+      tags: ["nihilism", "skepticism", "rebellion", "dogma", "materialism"],
+      religions: ["Agnostic Atheists", "The Church of Satan"],
+    },
+  },
+  {
+    id: 33,
+    title: "All Religion Is Stupid Man, Like Whatever",
+    desc: "The only true path is apathy. All belief systems are equally pointless, and the only thing worth worshipping is your own indifference. Salvation is for people who care too much—real enlightenment is achieved by rolling your eyes and changing the subject.",
+    likedBy: {
+      tags: [
+        "apathy",
+        "nihilism",
+        "skepticism",
+        "free thought",
+        "individualism",
+        "rebellion",
+      ],
+      religions: [
+        "Agnostic Atheists",
+        "Secular Humanists",
+        "The Sovereign Guild of Untethered Minds",
+      ],
+    },
+    dislikedBy: {
+      tags: [
+        "dogma",
+        "tradition",
+        "community",
+        "missionary work",
+        "spreading the word",
+      ],
+      religions: [
+        "Southern Baptist",
+        "Evangelical Christianity",
+        "Catholicism",
+        "Prosperity Gospel",
+      ],
+    },
+  },
+  {
+    id: 35,
+    title: "Respect Your Elders, Obey the Rules, and Clean Your Toilet",
+    desc: "True enlightenment is found in strict hierarchy, unwavering respect for authority, and the daily ritual of keeping your toilet spotless. Harmony is achieved when everyone knows their place, follows the rules, and never questions the family group chat.",
+    likedBy: {
+      tags: [
+        "order",
+        "tradition",
+        "authority",
+        "family values",
+        "community",
+        "loyalty",
+      ],
+      religions: ["Confucianism", "Southern Baptist", "Catholicism"],
+    },
+    dislikedBy: {
+      tags: ["rebellion", "chaos", "individualism", "nihilism", "provocation"],
+      religions: [
+        "The Church of Satan",
+        "The Sovereign Guild of Untethered Minds",
+      ],
     },
   },
 ];

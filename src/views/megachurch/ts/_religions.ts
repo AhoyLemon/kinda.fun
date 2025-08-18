@@ -28,7 +28,7 @@ export const religions: Religion[] = [
   },
   {
     id: 2,
-    name: "Catholic",
+    name: "Catholicism",
     description: `The largest Christian church, with a rich history, complex rituals, and a global hierarchy.`,
     likes: [
       "tradition",
@@ -601,11 +601,11 @@ export const religions: Religion[] = [
       "humility",
       "order",
     ],
-    enemies: ["Catholic", "Orthodox Islam"],
+    enemies: ["Catholicism", "Orthodox Islam"],
   },
   {
     id: 26,
-    name: "Buddhist",
+    name: "Buddhism",
     description: `A spiritual tradition focused on personal spiritual development and the attainment of a deep insight into the true nature of life through meditation, mindfulness, and compassion.`,
     likes: [
       "meditation",

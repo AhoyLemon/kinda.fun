@@ -77,7 +77,7 @@ export const places: Place[] = [
     religions: [
       { id: 16, name: "The Sovereign Guild of Untethered Minds", weight: 44 },
       { id: 19, name: "Secular Humanists", weight: 27 },
-      { id: 2, name: "Catholic", weight: 25 },
+      { id: 2, name: "Catholicism", weight: 25 },
       { id: 27, name: "Agnostic Atheists", weight: 20 },
       { id: 21, name: "Prosperity Gospel", weight: 19 },
       { id: 20, name: "The Church of Satan", weight: 18 },
@@ -85,7 +85,7 @@ export const places: Place[] = [
       { id: 11, name: "The Church of Eros", weight: 12 },
       { id: 17, name: "The Gaia Collective", weight: 10 },
       { id: 7, name: "Mystic Islam", weight: 5 },
-      { id: 26, name: "Buddhist", weight: 3 },
+      { id: 26, name: "Buddhism", weight: 3 },
     ],
   },
   {
@@ -123,7 +123,7 @@ export const places: Place[] = [
       { id: 12, name: "The Gaia Collective", weight: 30 },
       { id: 19, name: "Secular Humanists", weight: 22 },
       { id: 27, name: "Agnostic Atheists", weight: 30 },
-      { id: 26, name: "Buddhist", weight: 20 },
+      { id: 26, name: "Buddhism", weight: 20 },
       { id: 19, name: "The Queens' Dominion", weight: 12 },
       { id: 25, name: "Temple of the Eternal Sun", weight: 8 },
     ],
@@ -152,7 +152,7 @@ export const places: Place[] = [
     totalPopulation: 80000,
     avgNetWorth: 75000,
     religions: [
-      { id: 2, name: "Catholic", weight: 78 },
+      { id: 2, name: "Catholicism", weight: 78 },
       { id: 19, name: "The Queens' Dominion", weight: 44 },
       { id: 1, name: "Southern Baptist", weight: 24 },
       { id: 20, name: "Theistic Satanism", weight: 22 },
@@ -191,7 +191,7 @@ export const places: Place[] = [
       { id: 13, name: "New-Age Spirituality", weight: 60 },
       { id: 14, name: "The Starseed Pilgrims", weight: 45 },
       { id: 12, name: "The Gaia Collective", weight: 40 },
-      { id: 26, name: "Buddhist", weight: 35 },
+      { id: 26, name: "Buddhism", weight: 35 },
       { id: 19, name: "The Queens' Dominion", weight: 30 },
       { id: 23, name: "The Digital Ascension", weight: 30 },
       { id: 29, name: "Shinto", weight: 25 },
@@ -239,9 +239,9 @@ export const places: Place[] = [
   },
   {
     id: 7,
-    name: "Blessed Strip, Nevada",
+    name: "Landing Strip, Nevada",
     description:
-      "Blessed Strip, Nevada is a neon-lit playground where the pursuit of wealth and pleasure is the true religion. The locals are obsessed with luck, luxury, and living large—faith is measured in jackpots and spa packages, not sermons. Megachurches double as casinos, and every wedding chapel offers a complimentary spiritual cleanse with your buffet. Residents chase the next big win, the wildest party, and the most extravagant experience, believing that happiness is just one jackpot away. If you can sell prosperity, pleasure, or redemption chips, you'll be a high roller in no time.",
+      "Landing Strip, Nevada is a neon-lit playground where the pursuit of wealth and pleasure is the true religion. The locals are obsessed with luck, luxury, and living large—faith is measured in jackpots and spa packages, not sermons. Megachurches double as casinos, and every wedding chapel offers a complimentary spiritual cleanse with your buffet. Residents chase the next big win, the wildest party, and the most extravagant experience, believing that happiness is just one jackpot away. If you can sell prosperity, pleasure, or redemption chips, you'll be a high roller in no time.",
     likedTags: [
       "wealth",
       "pleasure",
@@ -267,7 +267,7 @@ export const places: Place[] = [
       { id: 25, name: "Temple of the Eternal Sun", weight: 32 },
       { id: 24, name: "The Church of Satan", weight: 30 },
       { id: 27, name: "Agnostic Atheists", weight: 25 },
-      { id: 2, name: "Catholic", weight: 20 },
+      { id: 2, name: "Catholicism", weight: 20 },
       { id: 9, name: "Mormonism", weight: 18 },
       { id: 3, name: "Evangelical Christianity", weight: 15 },
       { id: 25, name: "Orthodox Islam", weight: 12 },
@@ -306,9 +306,9 @@ export const places: Place[] = [
     religions: [
       { id: 19, name: "Secular Humanists", weight: 43 },
       { id: 27, name: "Agnostic Atheists", weight: 27 },
-      { id: 2, name: "Catholic", weight: 29 },
+      { id: 2, name: "Catholicism", weight: 29 },
       { id: 19, name: "The Queens' Dominion", weight: 27 },
-      { id: 26, name: "Buddhist", weight: 14 },
+      { id: 26, name: "Buddhism", weight: 14 },
       { id: 13, name: "New-Age Spirituality", weight: 12 },
       { id: 8, name: "Evangelical Christianity", weight: 10 },
       { id: 28, name: "Seventh-day Adventism", weight: 8 },
@@ -343,7 +343,7 @@ export const places: Place[] = [
     avgNetWorth: 130000,
     religions: [
       { id: 19, name: "Secular Humanists", weight: 45 },
-      { id: 26, name: "Buddhist", weight: 40 },
+      { id: 26, name: "Buddhism", weight: 40 },
       { id: 13, name: "New-Age Spirituality", weight: 35 },
       { id: 23, name: "The Digital Ascension", weight: 32 },
       { id: 27, name: "Agnostic Atheists", weight: 30 },
@@ -353,7 +353,7 @@ export const places: Place[] = [
       { id: 3, name: "Evangelical Christianity", weight: 20 },
       { id: 7, name: "Mystic Islam", weight: 18 },
       { id: 19, name: "The Queens' Dominion", weight: 18 },
-      { id: 2, name: "Catholic", weight: 15 },
+      { id: 2, name: "Catholicism", weight: 15 },
     ],
   },
   {

@@ -30,7 +30,16 @@ section.diagnosis(v-if="ui.view === 'sermon-confirm'")
         dd
           ul
             li(v-for="religion in my.sermonToday.dislikedBy.religions.slice(0,2)") {{religion.name}}
+      
+      template(v-if="my.sermonToday.mixedMessages?.religions[0] || my.sermonToday.mixedMessages?.tags[0]")
+        dl.mixed-messages(style="grid-column: span 2")
+          dt Mixed Messages
+          dd
+            ul(v-if="my.sermonToday.mixedMessages?.religions")
+              li(v-for="religion in my.sermonToday.mixedMessages.religions") {{religion.name}}
+            ul(v-if="my.sermonToday.mixedMessages?.tags")
+              li(v-for="tag in my.sermonToday.mixedMessages.tags") {{tag.tag}}
     
     .button-holder
-      button.reset(@click="ui.view = 'sermon'") Start Over
+      button.reset(@click="ui.view = 'sermon'") Edit Sermon
       button.submit(@click='preachSermon()') Preach It
