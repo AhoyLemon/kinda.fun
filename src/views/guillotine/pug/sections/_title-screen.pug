@@ -13,7 +13,7 @@ transition(name="raise-curtain")
 
       .button-holder
         button(@click="shareMyScores()") Share My Score
-        template(v-if="todaysGame?.gameRules?.cheats")
+        template(v-if="todaysGame?.gameRules?.cheats?.active")
           | &nbsp; 
           button(@click="startGame()") Cheat & Play Again
 

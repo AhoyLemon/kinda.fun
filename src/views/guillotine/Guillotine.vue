@@ -56,11 +56,6 @@
     },
   });
 
-  const cheats = {
-    active: true,
-    unlimitedPlay: true,
-  };
-
   const todaysGame = reactive({
     currentBillionaires: [],
     formerBillionaires: [],
@@ -68,8 +63,8 @@
       optionsPerDay: 20,
       choicesPerDay: 5,
       cheats: {
-        active: true,
-        unlimitedPlay: true,
+        active: false,
+        unlimitedPlay: false,
       },
     },
   });
@@ -385,6 +380,14 @@
     logTheScoreSharing();
     window.history.replaceState(null, "", newURL);
     ui.shareScreen.display = true;
+
+    // Focus on the player name input.
+    setTimeout(() => {
+      const inputEl = document.querySelector("input.player-name");
+      if (inputEl) {
+        inputEl.focus();
+      }
+    }, 300);
     return false;
   };
 

@@ -30,3 +30,6 @@
       button(@click="playFromShare()") No More Billionaires.
     .come-back-tomorrow(v-if="computedDidYouAlreadyPlayToday")
       span Come back tomorrow for another {{gameRules.choicesPerDay}} choices.
+    
+    .play-cta(v-if="ui.shareScreen.amISharing")
+      button(@click="ui.shareScreen.display = false") See My Stats Again
