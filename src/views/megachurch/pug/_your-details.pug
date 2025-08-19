@@ -1,0 +1,34 @@
+aside.your-details(v-if="my.religion?.name")
+
+  .box
+    .label Name
+    .value {{my.name}}
+
+  .box(v-if="my.religion")
+    .label religion
+    .value {{my.religion.name}}
+
+  .box(v-if="my.place?.name")
+    .label Place
+    .value {{my.place.name}}
+  
+  .box
+    .label Money
+    .value {{dollars(my.money)}}
+  
+  .box
+    .label Followers
+    .value {{my.followerCount}}
+  
+  .box.top-religions(v-if="computedTopReligions")
+    .label Top Religions
+    .value
+      ol 
+        li(v-for="religion in computedTopReligions.slice(0, 3)") {{religion.name}}
+  
+
+  .box(v-if="gameSettings.isDebugButtonVisible")
+    .value
+      button(@click="toggleDebugMode()")
+        span(v-if="gameSettings.isDebug") Turn Debug Off 
+        span(v-if="!gameSettings.isDebug") Enable Debug

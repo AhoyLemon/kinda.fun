@@ -5,6 +5,8 @@
 @import "@/shared/scss/globals/_extends";
 @import "@/shared/scss/globals/_reset";
 
+@import "@/shared/scss/libraries/vue_toastification";
+
 @import "scss/variables";
 @import "scss/extends";
 @import "scss/defaults";
@@ -15,48 +17,19 @@
 @import "scss/choose-religion";
 @import "scss/sermon";
 @import "scss/diagnosis";
+@import "scss/weekly-report";
 
-aside.your-details {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #212121;
-  color: white;
-  max-width: 240px;
-  padding: 10px;
+section.preaching {
+  background-color: orange;
+  min-height: 100dvh;
+  background-color: hotpink;
+  background-image: url("/img/megachurch/bg/pexels-dhenry-9124344.jpg");
+  background-size: cover;
+
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  font-family: $sans-serif;
-  .box {
-    border: 1px solid #ddd;
-    padding: 10px;
-    .label {
-      font-weight: 600;
-      font-size: 0.875rem;
-      text-transform: uppercase;
-    }
-    .value {
-      padding-top: 5px;
-      font-family: $serif;
-      font-size: 1.35rem;
-    }
-  }
-  .box.top-religions {
-    .value {
-      font-size: 1rem;
-    }
-    ol {
-      display: grid;
-      gap: 0.25em;
-      list-style: decimal;
-      padding-left: 1em;
-      li::marker {
-        font-size: 80%;
-      }
-    }
-  }
+  justify-content: center;
+  align-items: center;
 }
 
 section.diagnosis {

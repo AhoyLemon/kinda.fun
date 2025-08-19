@@ -1,0 +1,54 @@
+section.weekly-report(v-if="ui.view === 'preached'")
+
+  .inner
+    h2 Your preaching is complete for the week.
+
+    table.debug.follower-changes
+      caption Follower Changes
+      thead
+        tr
+          th(v-if="gameSettings.isDebug") id
+          th name
+          th(v-if="gameSettings.isDebug") before
+          th change
+          th after
+      tbody
+        tr(v-for="religion in my.followerChanges")
+          td(v-if="gameSettings.isDebug") {{religion.id}}
+          td 
+            span.religion-name {{religion.name}}
+          td.number(v-if="gameSettings.isDebug") {{religion.before}}
+          td.number
+            span.positive(v-if="religion.change > 0") {{"+"+religion.change}}
+            span.negative(v-else-if="religion.change < 0") {{religion.change}}
+          td.number {{religion.after}}
+
+    .buttons
+      button(@click="collectDonations()") GET PAID 🤑
+      button(@click="advanceToNextDay()") Next Day.
+
+    
+    table.debug(v-if="gameSettings.isDebug") 
+      caption Followers
+      thead
+        tr
+          th id
+          th name
+          th followers
+      tbody
+        tr(v-for="religion in my.followers.slice().sort((a, b) => b.followers - a.followers)")
+          td {{religion.id}}
+          td {{religion.name}}
+          td {{religion.followers}}
+
+    table.debug(v-if="gameSettings.isDebug")
+      thead
+        tr
+          th id
+          th name
+          th score
+      tbody
+        tr(v-for="religion in my.religiousScorecard.slice().sort((a, b) => b.score - a.score)")
+          td {{religion.id}}
+          td {{religion.name}}
+          td {{religion.score}}

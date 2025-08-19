@@ -1,0 +1,21 @@
+.game-screen
+
+  main
+
+    section.preaching(v-if="ui.view === 'preaching'")
+      .inner
+        span preaching...
+
+    include pug/_choose-religion.pug
+
+    include pug/_choose-place.pug
+
+    include pug/_create-sermon.pug
+
+    include pug/_sermon-diagnosis.pug
+
+    
+
+    include pug/_weekly-report.pug
+
+  include pug/_your-details.pug 

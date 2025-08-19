@@ -1,9 +1,11 @@
 import { reactive, ref } from "vue";
 import { Sermon } from "./_types";
 
-export const gameSettings = {
+export const gameSettings = reactive({
   baseDonation: 0.1, // Base donation per follower
-};
+  isDebug: true,
+  isDebugButtonVisible: true,
+});
 
 interface UI {
   view:
@@ -12,14 +14,14 @@ interface UI {
     | "place-confirm"
     | "sermon"
     | "sermon-confirm"
-    | "preached"
+    | "preaching"
     | "sermon-results";
   religionIndex: number;
   placeIndex: number;
 }
 
 export const ui = reactive<UI>({
-  view: "religion",
+  view: "preaching",
   religionIndex: 0,
   placeIndex: 0,
 });
@@ -54,6 +56,7 @@ export const my = reactive<My>({
   },
   effectYesterday: [],
   religiousScorecard: [],
+  followerChanges: [],
 });
 
 interface My {
@@ -72,4 +75,11 @@ interface My {
   sermonToday: Sermon; // What will/did you preach today.
   effectYesterday?: any[]; // What effect did your last sermon have?
   religiousScorecard?: any[]; // what does each religion think of you?
+  followerChanges?: Array<{
+    id: number;
+    name: string;
+    before: number;
+    change: number;
+    after: number;
+  }>; // Follower change reporting
 }

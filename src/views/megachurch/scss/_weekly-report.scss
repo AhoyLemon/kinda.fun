@@ -1,0 +1,43 @@
+section.weekly-report {
+  // .inner {
+  //   min-height: 99.9dvh;
+  // }
+  h2 {
+    font-size: 1.45rem;
+    font-family: $serif;
+    font-weight: 550;
+  }
+  table {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .buttons {
+    padding-top: 2em;
+    display: flex;
+    gap: $gap;
+    justify-content: center;
+    button {
+      font-family: $sans-serif;
+      padding: 0.5em 1em;
+      cursor: pointer;
+    }
+  }
+
+  .follower-changes {
+    .religion-name {
+      font-family: $serif;
+      font-size: 1.15em;
+    }
+    .positive,
+    .negative {
+      font-weight: 600;
+    }
+    .positive {
+      color: #0d8f06;
+    }
+    .negative {
+      color: #bd0606;
+    }
+  }
+}

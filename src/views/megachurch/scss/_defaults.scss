@@ -7,3 +7,47 @@ main {
   align-items: center;
   justify-content: center;
 }
+
+.game-screen {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+}
+
+aside.your-details {
+  background-color: #212121;
+  color: white;
+  max-width: 240px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: $sans-serif;
+  .box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    .label {
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+    }
+    .value {
+      padding-top: 5px;
+      font-family: $serif;
+      font-size: 1.35rem;
+    }
+  }
+  .box.top-religions {
+    .value {
+      font-size: 1rem;
+    }
+    ol {
+      display: grid;
+      gap: 0.25em;
+      list-style: decimal;
+      padding-left: 1em;
+      li::marker {
+        font-size: 80%;
+      }
+    }
+  }
+}

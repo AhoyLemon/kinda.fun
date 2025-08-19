@@ -10,6 +10,12 @@
   import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
   import { ui, my, gameSettings } from "./ts/_variables";
 
+  // Toasts
+  import Toast, { POSITION } from "vue-toastification";
+  // import "vue-toastification/dist/index.css";
+  import { useToast } from "vue-toastification";
+  const toast = useToast();
+
   // ================= VARIABLES =================
 
   import type { Theme, Place, WeightedTag, WeightedReligion, MixedTag, MixedReligion, Sermon, Religion } from "./ts/_types";
@@ -51,6 +57,7 @@
     my.money += roundedDonations;
     console.log(roundedDonations);
   }
+
   function provideTopicOptions(index: number): typeof themes {
     const selectedIds = my.selectedTopics.map((id, i) => (i !== index && id !== null && id !== 0 ? id : null)).filter((id): id is number => id !== null);
     return shuffle(themes).filter((theme) => !selectedIds.includes(theme.id));
@@ -373,16 +380,20 @@
 
     // Move to next phase
     createSermonEffect();
-    ui.view = "preached";
     // ================= CREATE SERMON EFFECT =================
   }
 
   function createSermonEffect() {
+    ui.view = "preaching";
+
     const place = my.place as Place;
     if (!place || !place.religions || !Array.isArray(place.religions)) return;
 
+    // Track follower changes for reporting
+    const followerChangesArr: { id: number; name: string; before: number; change: number; after: number }[] = [];
+
     place.religions.forEach((placeReligion: any) => {
-      const { id, weight } = placeReligion;
+      const { id, name, weight } = placeReligion;
       // Find matching religion in yesterday's effect
       const effect = my.effectYesterday?.find((r: any) => r.id === id);
       if (!effect) return;
@@ -392,21 +403,50 @@
       followersDelta = Math.round(followersDelta);
       if (followersDelta < 0) followersDelta = Math.max(followersDelta, -Math.round(Math.sqrt(weight) * (my.preacherStrengths?.followers || 1))); // Don't lose more than sqrt(weight) * preacherStrength
 
+      // Get before value
+      let followerObj = my.followers.find((f: any) => f.id === id) as { id: number; followers: number } | undefined;
+      const before = followerObj ? followerObj.followers : 0;
+
       // Update followerCount (on placeReligion)
       placeReligion.followerCount = Math.round((placeReligion.followerCount || 0) + followersDelta);
       if (placeReligion.followerCount < 0) placeReligion.followerCount = 0;
 
       // Update my.followers array
-      let followerObj = my.followers.find((f: any) => f.id === id) as { id: number; followers: number } | undefined;
       if (!followerObj) {
         followerObj = { id, followers: 0 };
         my.followers.push(followerObj);
       }
       followerObj.followers = Math.round(followerObj.followers + followersDelta);
       if (followerObj.followers < 0) followerObj.followers = 0;
+
+      const after = followerObj.followers;
+      const change = after - before;
+
+      // Only report if before > 0 or after > 0 and there was a change
+      if (change !== 0 && (before > 0 || after > 0)) {
+        followerChangesArr.push({ id, name: name || String(id), before, change, after });
+      }
     });
     // Update global followerCount
     my.followerCount = my.followers.reduce((sum: number, f: any) => sum + (f.followers || 0), 0);
+
+    // Sort and assign to my.followerChanges
+    my.followerChanges = followerChangesArr.sort((a, b) => b.change - a.change);
+  }
+
+  function advanceToNextDay() {
+    // reset daily effects.
+    my.effectYesterday = [];
+    my.sermonToday = {
+      topics: [],
+      likedBy: { tags: [], religions: [] },
+      dislikedBy: { tags: [], religions: [] },
+      mixedMessages: { tags: [], religions: [] },
+    };
+    my.selectedTopics = [null, null, null];
+    my.followerChanges = [];
+
+    ui.view = "sermon";
   }
 
   // // Helper to get top N from weighted arrays
@@ -440,6 +480,15 @@
     }));
   }
 
+  function toggleDebugMode() {
+    gameSettings.isDebug = !gameSettings.isDebug;
+    if (gameSettings.isDebug) {
+      console.log("Debug mode enabled");
+    } else {
+      console.log("Debug mode disabled");
+    }
+  }
+
   // ================= COMPUTEDS =================
   const computedTopReligions = computed(() => {
     if (!my.followers || !Array.isArray(my.followers) || my.followers.length === 0) return null;
@@ -451,6 +500,18 @@
   onMounted(() => {
     initialiseScoreCard();
     initialiseFollowers();
+    toast.success(`250 Points for bullseye!`, {
+      position: POSITION.BOTTOM_LEFT,
+      timeout: 10000,
+    });
+
+    setTimeout(() => {
+      toast.success(`250 Points for bullseye!`, {
+        position: POSITION.BOTTOM_LEFT,
+        timeout: 30000,
+      });
+      console.log("hi");
+    }, 1000);
   });
 </script>
 
