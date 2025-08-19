@@ -432,6 +432,52 @@
 
     // Sort and assign to my.followerChanges
     my.followerChanges = followerChangesArr.sort((a, b) => b.change - a.change);
+
+    // Show toasts for each follower change, 1200ms apart, and last longer
+    const followerToastDuration = 7000;
+    const followerToastDelay = 1200;
+    followerChangesArr.forEach((changeObj, i) => {
+      setTimeout(() => {
+        if (changeObj.change > 0) {
+          toast.success(`Gained ${changeObj.change} followers in ${changeObj.name}!`, {
+            position: POSITION.BOTTOM_LEFT,
+            timeout: followerToastDuration,
+          });
+        } else if (changeObj.change < 0) {
+          toast.error(`Lost ${Math.abs(changeObj.change)} followers in ${changeObj.name}.`, {
+            position: POSITION.BOTTOM_LEFT,
+            timeout: followerToastDuration,
+          });
+        }
+      }, i * followerToastDelay);
+    });
+
+    // After all toasts, run collectDonations and show money collected
+    setTimeout(
+      () => {
+        // Capture money before collecting
+        const moneyBefore = my.money;
+        collectDonations();
+        const moneyCollected = Math.round((my.money - moneyBefore) * 100) / 100;
+        const donationToastDuration = 9000;
+        if (moneyCollected > 0) {
+          toast.success(`Collected $${moneyCollected} in donations!`, {
+            position: POSITION.BOTTOM_LEFT,
+            timeout: donationToastDuration,
+          });
+        } else {
+          toast.info(`No donations collected this week.`, {
+            position: POSITION.BOTTOM_LEFT,
+            timeout: donationToastDuration,
+          });
+        }
+        // Switch to 'preached' view after donation toast
+        setTimeout(() => {
+          ui.view = "sermon-results";
+        }, donationToastDuration - 1000);
+      },
+      followerChangesArr.length * followerToastDelay + 800,
+    );
   }
 
   function advanceToNextDay() {
@@ -500,18 +546,21 @@
   onMounted(() => {
     initialiseScoreCard();
     initialiseFollowers();
-    toast.success(`250 Points for bullseye!`, {
+    toast.success(`Bottom Left`, {
       position: POSITION.BOTTOM_LEFT,
-      timeout: 10000,
     });
 
-    setTimeout(() => {
-      toast.success(`250 Points for bullseye!`, {
-        position: POSITION.BOTTOM_LEFT,
-        timeout: 30000,
-      });
-      console.log("hi");
-    }, 1000);
+    toast.success(`Bottom Right`, {
+      position: POSITION.BOTTOM_RIGHT,
+    });
+
+    toast.success(`Top Left`, {
+      position: POSITION.TOP_LEFT,
+    });
+
+    toast.success(`Top Right`, {
+      position: POSITION.TOP_RIGHT,
+    });
   });
 </script>
 

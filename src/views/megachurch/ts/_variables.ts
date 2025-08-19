@@ -3,7 +3,7 @@ import { Sermon } from "./_types";
 
 export const gameSettings = reactive({
   baseDonation: 0.1, // Base donation per follower
-  isDebug: true,
+  isDebug: false,
   isDebugButtonVisible: true,
 });
 
@@ -21,7 +21,7 @@ interface UI {
 }
 
 export const ui = reactive<UI>({
-  view: "preaching",
+  view: "religion",
   religionIndex: 0,
   placeIndex: 0,
 });
