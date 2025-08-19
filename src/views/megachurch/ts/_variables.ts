@@ -2,7 +2,7 @@ import { reactive, ref } from "vue";
 import { Sermon } from "./_types";
 
 export const gameSettings = reactive({
-  baseDonation: 0.1, // Base donation per follower
+  baseDonation: 0.25, // Base donation per follower
   isDebug: false,
   isDebugButtonVisible: true,
 });
@@ -16,12 +16,14 @@ interface UI {
     | "sermon-confirm"
     | "preaching"
     | "sermon-results";
+  selectedTopics: [number | null, number | null, number | null];
   religionIndex: number;
   placeIndex: number;
 }
 
 export const ui = reactive<UI>({
   view: "religion",
+  selectedTopics: [null, null, null],
   religionIndex: 0,
   placeIndex: 0,
 });
@@ -57,6 +59,7 @@ export const my = reactive<My>({
   effectYesterday: [],
   religiousScorecard: [],
   followerChanges: [],
+  donationsYesterday: 0,
 });
 
 interface My {
@@ -82,4 +85,5 @@ interface My {
     change: number;
     after: number;
   }>; // Follower change reporting
+  donationsYesterday: number; // How much money did you make yesterday?
 }

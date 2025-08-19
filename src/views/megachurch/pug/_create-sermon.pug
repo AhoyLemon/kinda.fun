@@ -8,7 +8,7 @@ section.sermon(v-if="ui.view === 'sermon'")
     fieldset
       label.required First Topic
       Multiselect(
-        v-model="my.selectedTopics[0]"
+        v-model="ui.selectedTopics[0]"
         :options="provideTopicOptions(0)"
         :searchable="true"
         :required="true"
@@ -17,13 +17,13 @@ section.sermon(v-if="ui.view === 'sermon'")
         label="title"
         mode="single"
       )
-      //.explainer(v-if="my.selectedTopics[0]")
-        p {{showThemeDescription(my.selectedTopics[0])}}
+      //.explainer(v-if="ui.selectedTopics[0]")
+        p {{showThemeDescription(ui.selectedTopics[0])}}
 
     fieldset
       label.required Second Topic
       Multiselect(
-        v-model="my.selectedTopics[1]"
+        v-model="ui.selectedTopics[1]"
         :options="provideTopicOptions(1)"
         :searchable="true"
         :required="true"
@@ -32,12 +32,12 @@ section.sermon(v-if="ui.view === 'sermon'")
         label="title"
         mode="single"
       )
-      //.explainer(v-if="my.selectedTopics[1]")
-        p {{showThemeDescription(my.selectedTopics[1])}}
+      //.explainer(v-if="ui.selectedTopics[1]")
+        p {{showThemeDescription(ui.selectedTopics[1])}}
     fieldset
       label.required Third Topic
       Multiselect(
-        v-model="my.selectedTopics[2]"
+        v-model="ui.selectedTopics[2]"
         :options="provideTopicOptions(2)"
         :searchable="true"
         :required="true"
@@ -46,8 +46,8 @@ section.sermon(v-if="ui.view === 'sermon'")
         label="title"
         mode="single"
       )
-      //.explainer(v-if="my.selectedTopics[2]")
-        p {{showThemeDescription(my.selectedTopics[2])}}
+      //.explainer(v-if="ui.selectedTopics[2]")
+        p {{showThemeDescription(ui.selectedTopics[2])}}
 
     .button-holder
-      button(type="submit" :disabled="!my.selectedTopics[0] || !my.selectedTopics[1] || !my.selectedTopics[2]") Create Sermon
+      button(type="submit" :disabled="!ui.selectedTopics[0] || !ui.selectedTopics[1] || !ui.selectedTopics[2]") Create Sermon

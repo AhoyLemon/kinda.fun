@@ -12,7 +12,8 @@
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
-  // import "vue-toastification/dist/index.css";
+  import FollowerToast from "./vue/FollowerToast.vue";
+  import DonationToast from "./vue/DonationToast.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -51,15 +52,13 @@
       const donation = followers * baseDonation * scoreMultiplier * donationStrength * netWorthMultiplier;
       totalDonations += donation;
     });
-    // Round to nearest cent
-    const roundedDonations = Math.round(totalDonations * 100) / 100;
-    // And give it to you.
-    my.money += roundedDonations;
-    console.log(roundedDonations);
+    const roundedDonations = Math.round(totalDonations * 100) / 100; // Round to nearest cent
+    my.donationsYesterday = roundedDonations; // Store for yesterday's effect
+    my.money += roundedDonations; // And give it to you.
   }
 
   function provideTopicOptions(index: number): typeof themes {
-    const selectedIds = my.selectedTopics.map((id, i) => (i !== index && id !== null && id !== 0 ? id : null)).filter((id): id is number => id !== null);
+    const selectedIds = ui.selectedTopics.map((id, i) => (i !== index && id !== null && id !== 0 ? id : null)).filter((id): id is number => id !== null);
     return shuffle(themes).filter((theme) => !selectedIds.includes(theme.id));
   }
 
@@ -95,7 +94,7 @@
     const place = places.find((p: any) => p.id === placeId);
     if (place) {
       my.place = { ...place };
-      my.selectedTopics = Array(3).fill(null); // Reset topics
+      ui.selectedTopics = [null, null, null] as [number, number, number];
       ui.view = "sermon";
     } else {
       alert("Place not found.");
@@ -108,7 +107,7 @@
   }
 
   function defineSermon() {
-    const selectedThemes = my.selectedTopics
+    const selectedThemes = ui.selectedTopics
       .filter((id): id is number => typeof id === "number")
       .map((id) => themes.find((t) => t.id === id))
       .filter(Boolean);
@@ -401,7 +400,7 @@
       let followersDelta = effect.scoreChange * Math.sqrt(weight) * (my.preacherStrengths?.followers || 1);
       // Always round to nearest integer
       followersDelta = Math.round(followersDelta);
-      if (followersDelta < 0) followersDelta = Math.max(followersDelta, -Math.round(Math.sqrt(weight) * (my.preacherStrengths?.followers || 1))); // Don't lose more than sqrt(weight) * preacherStrength
+      // Cap removed: allow large negative follower changes
 
       // Get before value
       let followerObj = my.followers.find((f: any) => f.id === id) as { id: number; followers: number } | undefined;
@@ -427,8 +426,8 @@
         followerChangesArr.push({ id, name: name || String(id), before, change, after });
       }
     });
-    // Update global followerCount
-    my.followerCount = my.followers.reduce((sum: number, f: any) => sum + (f.followers || 0), 0);
+
+    // We'll update my.followerCount as each toast is shown
 
     // Sort and assign to my.followerChanges
     my.followerChanges = followerChangesArr.sort((a, b) => b.change - a.change);
@@ -438,17 +437,30 @@
     const followerToastDelay = 1200;
     followerChangesArr.forEach((changeObj, i) => {
       setTimeout(() => {
-        if (changeObj.change > 0) {
-          toast.success(`Gained ${changeObj.change} followers in ${changeObj.name}!`, {
-            position: POSITION.BOTTOM_LEFT,
-            timeout: followerToastDuration,
-          });
-        } else if (changeObj.change < 0) {
-          toast.error(`Lost ${Math.abs(changeObj.change)} followers in ${changeObj.name}.`, {
-            position: POSITION.BOTTOM_LEFT,
-            timeout: followerToastDuration,
-          });
+        // Apply the follower change for this religion
+        let followerObj = my.followers.find((f: any) => f.id === changeObj.id) as { id: number; followers: number } | undefined;
+        if (followerObj) {
+          // Only apply the delta for this change now
+          followerObj.followers = changeObj.after;
+          // Increment my.followerCount by the change
+          my.followerCount += changeObj.change;
         }
+        // Show the toast
+        toast(
+          {
+            component: FollowerToast,
+            props: {
+              change: changeObj.change,
+              religion: changeObj.name,
+              before: changeObj.before,
+              after: changeObj.after,
+            },
+          },
+          {
+            position: POSITION.BOTTOM_LEFT,
+            timeout: followerToastDuration,
+          },
+        );
       }, i * followerToastDelay);
     });
 
@@ -460,17 +472,19 @@
         collectDonations();
         const moneyCollected = Math.round((my.money - moneyBefore) * 100) / 100;
         const donationToastDuration = 9000;
-        if (moneyCollected > 0) {
-          toast.success(`Collected $${moneyCollected} in donations!`, {
+
+        toast(
+          {
+            component: DonationToast,
+            props: {
+              change: moneyCollected,
+            },
+          },
+          {
             position: POSITION.BOTTOM_LEFT,
             timeout: donationToastDuration,
-          });
-        } else {
-          toast.info(`No donations collected this week.`, {
-            position: POSITION.BOTTOM_LEFT,
-            timeout: donationToastDuration,
-          });
-        }
+          },
+        );
         // Switch to 'preached' view after donation toast
         setTimeout(() => {
           ui.view = "sermon-results";
@@ -489,7 +503,7 @@
       dislikedBy: { tags: [], religions: [] },
       mixedMessages: { tags: [], religions: [] },
     };
-    my.selectedTopics = [null, null, null];
+    ui.selectedTopics = [null, null, null];
     my.followerChanges = [];
 
     ui.view = "sermon";
@@ -546,21 +560,7 @@
   onMounted(() => {
     initialiseScoreCard();
     initialiseFollowers();
-    toast.success(`Bottom Left`, {
-      position: POSITION.BOTTOM_LEFT,
-    });
-
-    toast.success(`Bottom Right`, {
-      position: POSITION.BOTTOM_RIGHT,
-    });
-
-    toast.success(`Top Left`, {
-      position: POSITION.TOP_LEFT,
-    });
-
-    toast.success(`Top Right`, {
-      position: POSITION.TOP_RIGHT,
-    });
+    my.name = localStorage.getItem("kindaFunPlayerName") || "";
   });
 </script>
 

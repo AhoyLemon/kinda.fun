@@ -1,0 +1,89 @@
+section.sermon-results {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+
+  background: #0f2027; /* fallback for old browsers */
+  background: linear-gradient(to left, #2c5364, #203a43, #0f2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  .inner {
+    color: $white;
+  }
+  h2 {
+    font-family: $serif;
+    font-size: 1.75em;
+  }
+
+  table {
+    margin: 3rem auto;
+    box-shadow:
+      rgba(0, 0, 0, 0.25) 0px 54px 55px,
+      rgba(0, 0, 0, 0.12) 0px -12px 30px,
+      rgba(0, 0, 0, 0.12) 0px 4px 6px,
+      rgba(0, 0, 0, 0.17) 0px 12px 13px,
+      rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    thead,
+    th {
+      display: none;
+    }
+    td {
+      border: none;
+    }
+    tr:nth-child(odd) {
+      td {
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      &.positive {
+        background-color: rgba(0, 60, 0, 0.5);
+      }
+      &.negative {
+        background-color: rgba(60, 0, 0, 0.5);
+      }
+    }
+    tr:nth-child(even) {
+      td {
+        background-color: rgba(0, 0, 0, 0.35);
+      }
+      &.positive {
+        background-color: rgba(0, 60, 0, 0.35);
+      }
+      &.negative {
+        background-color: rgba(60, 0, 0, 0.35);
+      }
+    }
+    .religion-name {
+      font-family: $serif;
+      font-size: 1.25em;
+    }
+    span.positive {
+      color: $green;
+    }
+    span.negative {
+      color: $red;
+    }
+  }
+
+  .donations-collected {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    dt {
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      text-transform: uppercase;
+    }
+    dd {
+      font-family: monospace;
+      font-size: 4em;
+    }
+  }
+
+  .buttons {
+    @extend %buttons;
+    padding-top: 2em;
+    justify-content: center;
+  }
+}

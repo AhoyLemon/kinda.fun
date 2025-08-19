@@ -6,6 +6,9 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+  > section {
+    padding: 2rem;
+  }
 }
 
 .game-screen {

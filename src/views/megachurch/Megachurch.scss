@@ -18,14 +18,13 @@
 @import "scss/sermon";
 @import "scss/diagnosis";
 @import "scss/weekly-report";
+@import "scss/sermon-results";
 
 section.preaching {
-  background-color: orange;
   min-height: 100dvh;
-  background-color: hotpink;
+  background-color: #353535;
   background-image: url("/img/megachurch/bg/pexels-dhenry-9124344.jpg");
   background-size: cover;
-
   width: 100%;
   display: flex;
   justify-content: center;
