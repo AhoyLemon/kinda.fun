@@ -26,10 +26,8 @@
         span.big-number.dollars-today(v-html="formatDollars(ui.shareScreen.wealthCreatedToday,true)")
         sub.usd (USD)
 
-    .play-cta(v-if="!computedDidYouAlreadyPlayToday")
+    .play-cta
       button(@click="playFromShare()") No More Billionaires.
+
     .come-back-tomorrow(v-if="computedDidYouAlreadyPlayToday")
-      span Come back tomorrow for another {{gameRules.choicesPerDay}} choices.
-    
-    .play-cta(v-if="ui.shareScreen.amISharing")
-      button(@click="ui.shareScreen.display = false") See My Stats Again
+      span(style="font-size:125%;") Come back tomorrow for another {{gameRules.choicesPerDay}} choices.
