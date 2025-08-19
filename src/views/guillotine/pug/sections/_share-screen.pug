@@ -12,6 +12,7 @@
       button(@click="playFromShare()") No More Billionaires.
 
   .inner(v-else)
+
     .share-cta(v-if="computedDidYouAlreadyPlayToday")
       span ↑ Share this URL and challenge your friends. ↑
 
@@ -26,8 +27,12 @@
         span.big-number.dollars-today(v-html="formatDollars(ui.shareScreen.wealthCreatedToday,true)")
         sub.usd (USD)
 
-    .play-cta
-      button(@click="playFromShare()") No More Billionaires.
-
     .come-back-tomorrow(v-if="computedDidYouAlreadyPlayToday")
-      span(style="font-size:125%;") Come back tomorrow for another {{gameRules.choicesPerDay}} choices.
+      span Come back tomorrow for another {{gameRules.choicesPerDay}} choices.
+      .button-holder(v-if="gameStatus == 'gameOver'")
+        button(@click="ui.shareScreen.display = false") See stats again.
+
+
+    .play-cta(v-if="!computedDidYouAlreadyPlayToday")
+      
+      button(@click="playFromShare()") No More Billionaires.

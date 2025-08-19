@@ -257,6 +257,11 @@
     saveGameOverData(player.wealthCreated.today, player.history.lastGameResults.trophies);
     sendEvent("NO MORE BILLIONAIRES", "Final Score", player.wealthCreated.today);
 
+    player.history.lastPlay = DateTime.now().toFormat("D");
+    if (!player.history.firstPlay) {
+      player.history.firstPlay = DateTime.now().toFormat("D");
+    }
+
     gameStatus.value = "gameOver";
     $("html, body").animate({ scrollTop: "+=325px" }, 800);
   };
@@ -681,7 +686,9 @@
 
   const computedDidYouAlreadyPlayToday = computed(() => {
     const today = new Date();
-    if (!player.history || !player.history.lastPlay) {
+    if (gameStatus == "gameOver") {
+      return true;
+    } else if (!player.history || !player.history.lastPlay) {
       return false;
     } else if (formatDate(player.history.lastPlay) == formatDate(today)) {
       return true;

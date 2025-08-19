@@ -27962,7 +27962,7 @@ export const allBillionaires = [
     netWorth: 1.1,
     country: "United States",
     flag: "us",
-    source: "Stock trading app",
+    source: "Robinhood",
     industry: "Finance & Investments",
     residence: "Palo Alto, California",
   },
@@ -29160,7 +29160,7 @@ export const allBillionaires = [
     netWorth: 1.1,
     country: "United States",
     flag: "us",
-    source: "Stock trading app",
+    source: "Robinhood",
     industry: "Finance & Investments",
     residence: "Palo Alto, California",
   },
@@ -30444,5 +30444,5 @@ export const allBillionaires = [
     residence: "London, United Kingdom",
     manualAdd: true,
     specialSource: "https://www.theguardian.com/uk-news/ng-interactive/2023/apr/20/revealed-king-charless-private-fortune-estimated-at-almost-2bn",
-  }
+  },
 ];

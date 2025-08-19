@@ -39,7 +39,26 @@
   }
   .come-back-tomorrow {
     color: $white;
-    font-size: 1.25em;
+    font-size: clamp(18px, 5vw, 28px);
+    .button-holder {
+      padding-top: 2em;
+    }
+    button {
+      font-size: clamp(20px, 5.5vw, 34px);
+      background: transparent;
+      color: $white;
+      padding: 0.25em 1.25em;
+      border-radius: 1.5em;
+      font-family: $font-family;
+      font-weight: 825;
+      cursor: pointer;
+      border: 2px solid $white;
+      &:hover,
+      &:focus-visible {
+        background: $white;
+        color: $black;
+      }
+    }
   }
 
   input,
