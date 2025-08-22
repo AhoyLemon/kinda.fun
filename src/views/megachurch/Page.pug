@@ -1,5 +1,5 @@
 include ../../shared/pug/_variables.pug
--- const name = "Megachurch Tycoon"
+- const name = "Megachurch Tycoon"
 - const desc = ""
 - const keywords = ""
 - const gameUrl = baseUrl + "/megachurch"
@@ -15,12 +15,8 @@ html(lang="en")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Commissioner:wght@100..900&display=swap" rel="stylesheet")
 
-  link(href="/megachurch.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+    link(href="/megachurch.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
 
   body
     #app
-    script(type="module" src="/src/entries/pretend.js")
-
-    // Schema.org
-    include pug/_schema.pug
- 
+    script(type="module" src="/src/entries/megachurch.js")

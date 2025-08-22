@@ -16,11 +16,9 @@ const watchers = [
 ];
 
 function runWatcher(w) {
-  const proc = spawn("nodemon", ["--quiet", "-w", w.file, "-x", `node build-pages.js ${w.build}`], { stdio: "inherit", shell: true });
+  const proc = spawn("nodemon", ["--quiet", "-w", w.file, "-x", "node", "scripts/npm-run/build-pages.js", w.build], { stdio: "inherit", shell: true });
   proc.on("close", (code) => {
-    if (code !== 0) {
-      console.log(`[${w.name}] exited with code ${code}`);
-    }
+    // Suppressed watcher exit logs for quieter output
   });
   return proc;
 }

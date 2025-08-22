@@ -128,6 +128,3 @@ for (const page of filteredPages) {
     console.warn(`Source not found: ${page.src}`);
   }
 }
-
-// Print grouped output table (with single quotes around string cells)
-console.table(groupedTable);
