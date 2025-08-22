@@ -257,9 +257,9 @@
     saveGameOverData(player.wealthCreated.today, player.history.lastGameResults.trophies);
     sendEvent("NO MORE BILLIONAIRES", "Final Score", player.wealthCreated.today);
 
-    player.history.lastPlay = DateTime.now().toFormat("D");
+    player.history.lastPlay = Date.now();
     if (!player.history.firstPlay) {
-      player.history.firstPlay = DateTime.now().toFormat("D");
+      player.history.firstPlay = Date.now();
     }
 
     gameStatus.value = "gameOver";
@@ -367,7 +367,7 @@
 
   const shareMyScores = () => {
     const p = {
-      playDate: player.history.lastPlay ?? Date.parse(new Date()),
+      playDate: player.history.lastPlay ? player.history.lastPlay : Date.now(),
       wealthCreatedToday: Number(player.history.lastGameResults.wealthCreated.toFixed(3)),
     };
 
