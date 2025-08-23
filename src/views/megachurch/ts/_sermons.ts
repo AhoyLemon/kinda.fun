@@ -243,62 +243,61 @@ export const themes: Theme[] = [
   },
   {
     id: 12,
-    title: "Your cryptocurrency is your soul currency",
-    desc: "Digital wallets don't just store money - they store the essence of your spiritual worth. Every transaction is a prayer, every blockchain confirmation is divine validation. Your private keys are literally the keys to heaven.",
+    title: "Upload Your Soul to the Cloud Now—Just Email It as a PDF!",
+    desc: "The gates of digital eternity are closing fast. Salvation is guaranteed for anyone who converts their soul to a PDF and emails it to upload@cloudsalvation.biz before midnight. Don’t miss your chance for eternal bandwidth!",
     likedBy: {
       tags: [
         "technology",
-        "money",
         "transcendence",
-        "innovation",
+        "progress",
+        "rationalism",
         "modernity",
-        "personal energy",
       ],
       religions: ["The Digital Ascension"],
     },
     dislikedBy: {
-      tags: ["tradition", "simplicity", "poverty"],
-      religions: ["Catholicism"],
+      tags: ["tradition", "body", "nature", "emotion", "simplicity"],
+      religions: ["The Gaia Collective", "Southern Baptist"],
     },
   },
   {
     id: 13,
-    title: "God only speaks through product reviews",
-    desc: "Divine communication has evolved for the modern age. Forget ancient texts - the Lord's true word comes through verified purchase reviews on Amazon. Five stars means you're saved, one star means eternal damnation.",
+    title: "Enlighten Your Chakras! Start By Wearing Socks With Sandals",
+    desc: "A spiritual breakthrough: true chakra enlightenment begins with the bold act of pairing socks and sandals, unlocking cosmic energy and universal approval.",
     likedBy: {
-      tags: [
-        "modernity",
-        "technology",
-        "spreading the word",
-        "materialism",
-        "consumerism",
-        "authority",
-      ],
-      religions: ["The Digital Ascension", "Prosperity Gospel"],
+      tags: ["inner harmony", "rituals", "bizarre concepts", "transcendence"],
+      religions: ["New-Age Spirituality", "The Starseed Pilgrims"],
     },
     dislikedBy: {
-      tags: ["tradition", "simplicity", "poverty", "dogma"],
-      religions: ["Buddhism"],
+      tags: ["dogma", "strict rules", "tradition"],
+      religions: ["Jehovah's Witnesses"],
     },
   },
   {
     id: 14,
-    title: "Your zodiac sign determines your tax bracket",
-    desc: "Astrology isn't just about personality - it's about divine economic justice. Leos deserve wealth, Virgos should pay more taxes, and Scorpios get audited by cosmic design. The IRS is just enforcing celestial law.",
+    title: "Blessed Are the Hoarders, For They Shall Inherit the Garage",
+    desc: "True spiritual fulfillment is measured by the number of possessions you can cram into your home, attic, and garage. The faithful know that salvation is found in the sacred act of hoarding, and eternal reward awaits those with the fullest storage units.",
     likedBy: {
       tags: [
-        "transcendence",
-        "money",
+        "consumerism",
+        "materialism",
+        "giving to get",
+        "progress",
         "wealth",
-        "bizarre concepts",
-        "prophecy",
-        "authority",
+        "greed",
       ],
-      religions: ["New-Age Spirituality", "The Starseed Pilgrims"],
+      religions: ["The Church of Having More Things"],
     },
     dislikedBy: {
-      tags: ["logic", "reason", "justice", "poverty"],
-      religions: ["Secular Humanists"],
+      tags: [
+        "simplicity",
+        "sustainability",
+        "nature",
+        "humility",
+        "self-control",
+        "poverty",
+      ],
+      religions: ["The Gaia Collective", "Buddhism"],
     },
   },
   {
@@ -323,22 +322,26 @@ export const themes: Theme[] = [
   },
   {
     id: 16,
-    title: "Your personality is determined by your WiFi password",
-    desc: "The digital age has revealed new truths about human nature. Your choice of WiFi password reflects your deepest spiritual essence. 'Password123' reveals a pure, simple soul. Complex passwords indicate a troubled, secretive spirit.",
+    title: "Progress Is What Happens When You Repeat the Past Perfectly",
+    desc: "True progress is achieved not by innovation, but by flawlessly reenacting the wisdom of your ancestors. The more precisely you copy the past, the more enlightened you become. Change is for the unruly.",
     likedBy: {
       tags: [
-        "technology",
-        "simplicity",
-        "modernity",
-        "bizarre concepts",
-        "innovation",
-        "self-help",
+        "tradition",
+        "order",
+        "family values",
+        "structure",
+        "community",
+        "humility",
       ],
-      religions: ["The Digital Ascension", "The Order of the Divine Algorithm"],
+      religions: ["Confucianism", "Catholicism"],
     },
     dislikedBy: {
-      tags: ["tradition", "logic", "reason"],
-      religions: ["Southern Baptist"],
+      tags: ["rebellion", "chaos", "individualism", "innovation", "progress"],
+      religions: [
+        "The Sovereign Guild of Untethered Minds",
+        "The Church of Satan",
+        "The Digital Ascension",
+      ],
     },
   },
   {
@@ -452,22 +455,31 @@ export const themes: Theme[] = [
   },
   {
     id: 22,
-    title: "Your phone battery percentage is your life force level",
-    desc: "Modern technology has created a direct spiritual link between your device and your soul. When your phone dies, part of you dies too. Always carry a charger - it's literally a life support system.",
+    title: "The Only Sin Is Abstinence",
+    desc: "Why settle for one pleasure when you could have them all? Promiscuity is the highest form of devotion—sampling every delight is a sacred duty. The only thing worth resisting is resistance itself.",
     likedBy: {
       tags: [
-        "technology",
-        "personal energy",
-        "modernity",
-        "power",
-        "bizarre concepts",
-        "weakness",
+        "pleasure",
+        "sensory experience",
+        "freedom",
+        "promiscuity",
+        "casualness",
+        "rebellion",
+        "sex",
       ],
-      religions: ["The Digital Ascension", "The Order of the Divine Algorithm"],
+      religions: ["The Church of Eros", "The Queens' Dominion"],
     },
     dislikedBy: {
-      tags: ["simplicity", "tradition", "authority"],
-      religions: ["Southern Baptist"],
+      tags: [
+        "abstinence",
+        "strict rules",
+        "dogma",
+        "self-control",
+        "authority",
+        "tradition",
+        "shame",
+      ],
+      religions: ["Mormonism", "Orthodox Islam", "Southern Baptist"],
     },
   },
   {
@@ -490,6 +502,8 @@ export const themes: Theme[] = [
       religions: ["The Order of the Alpha Male"],
     },
   },
+
+  // NEEDS REWORK
   {
     id: 24,
     title: "Your dating app matches reveal your past lives",
@@ -510,6 +524,8 @@ export const themes: Theme[] = [
       religions: ["Southern Baptist"],
     },
   },
+
+  // NEEDS REWORK
   {
     id: 25,
     title: "Allergies are your body rejecting fake reality",
@@ -535,24 +551,34 @@ export const themes: Theme[] = [
   },
   {
     id: 26,
-    title: "Parking tickets are urban prayer requests",
-    desc: "Those little slips under your windshield aren't fines - they're invitations to contribute to the city's spiritual energy. Every unpaid ticket is a meditation on civil disobedience and municipal mysticism.",
+    title: "Climax as Communion: Sharing the Spirit",
+    desc: "The highest form of fellowship is found in shared ecstasy. Every climax is a spiritual handshake, every gasp a hymn. Why settle for wine and wafers when you can truly feel the spirit move you?",
     likedBy: {
       tags: [
-        "authority",
-        "rebellion",
-        "money",
-        "community",
-        "meditation",
-        "positive affirmations",
+        "pleasure",
+        "sensory experience",
+        "freedom",
+        "promiscuity",
+        "casualness",
+        "sex",
       ],
-      religions: ["The Sovereign Guild of Untethered Minds", "Buddhism"],
+      religions: ["The Church of Eros", "The Church of the High Priest"],
     },
     dislikedBy: {
-      tags: ["order", "structure", "authority"],
-      religions: ["Catholicism"],
+      tags: [
+        "abstinence",
+        "strict rules",
+        "dogma",
+        "self-control",
+        "authority",
+        "tradition",
+        "shame",
+      ],
+      religions: ["Mormonism", "Orthodox Islam", "Southern Baptist"],
     },
   },
+
+  // WEAK
   {
     id: 27,
     title: "Your credit score is your cosmic karma rating",
@@ -573,6 +599,8 @@ export const themes: Theme[] = [
       religions: ["Buddhism"],
     },
   },
+
+  // NEEDS REWORK
   {
     id: 28,
     title: "Artificial intelligence is just really fast prayer",
@@ -593,6 +621,8 @@ export const themes: Theme[] = [
       religions: ["Southern Baptist"],
     },
   },
+
+  // WEAK
   {
     id: 29,
     title: "Social media algorithms know your destiny",
@@ -613,6 +643,8 @@ export const themes: Theme[] = [
       religions: ["Southern Baptist"],
     },
   },
+
+  // WEAK
   {
     id: 30,
     title: "Your Amazon purchase history is your spiritual autobiography",
@@ -633,6 +665,8 @@ export const themes: Theme[] = [
       religions: ["Buddhism"],
     },
   },
+
+  // WEAK
   {
     id: 31,
     title: "Flat earthers are the only ones telling the truth",

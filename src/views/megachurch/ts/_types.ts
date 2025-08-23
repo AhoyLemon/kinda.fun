@@ -108,7 +108,7 @@ export type ReligionNames =
   | "Prosperity Gospel"
   | "Secular Humanists"
   | "Seventh-day Adventism"
-  | "Shinto"
+  //| "Shinto"
   | "Southern Baptist"
   | "Temple of the Eternal Sun"
   | "The Church of Eros"
@@ -122,7 +122,8 @@ export type ReligionNames =
   | "The Sovereign Guild of Untethered Minds"
   | "The Starseed Pilgrims"
   | "Theistic Satanism"
-  | "Zardoz";
+  | "Zardoz"
+  | "The Church of Having More Things";
 
 export type Tags =
   | "abstinence"
