@@ -1,7 +1,3 @@
-// NOTE:
-// USE THIS NUMBER
-// Funding for K-12 education in Minnesota totals $14,404,670,000 or $16,205 per pupil.
-
 export const schoolData = [
   {
     state: "District of Columbia",

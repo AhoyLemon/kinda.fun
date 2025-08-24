@@ -4,6 +4,7 @@
   import { DateTime } from "luxon";
 
   import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
+  import { parseIndustryIcon, parseName } from "./js/parseFunctions.js";
 
   // Data
   import { allBillionaires } from "./js/data/_billionaires.js";
@@ -421,75 +422,6 @@
 
       window.history.replaceState(null, "", newURL);
     }
-  };
-
-  const parseName = (name) => {
-    if (name && name.includes("& family")) {
-      name = name.split("&")[0];
-    }
-    return name.trim();
-  };
-
-  const parseIndustryIcon = (industry) => {
-    industry = industry.trim();
-
-    if (!industry) {
-      return false;
-    }
-
-    // Check for string matches first (more flexible)
-    if (industry.includes("Energy")) {
-      return "power-plant";
-    }
-    if (industry.includes("Transportation") || industry.includes("Logistics")) {
-      return "trucking";
-    }
-
-    // Then check for exact matches
-    switch (industry) {
-      case "Automotive":
-        return "automotive";
-      case "Finance & Investments":
-        return "finance-investment";
-      case "Food & Beverage":
-        return "hamburger";
-      case "Real Estate":
-        return "house";
-      case "Real Estate & Construction":
-        return "house";
-      case "Technology":
-        return "technology";
-      case "Manufacturing":
-        return "factory";
-      case "Media & Entertainment":
-        return "television";
-      case "Fashion & Retail":
-        return "shopping-bag";
-      case "Healthcare":
-        return "healthcare";
-      case "Healthcare & Pharmaceuticals":
-        return "healthcare";
-      case "Telecom":
-        return "digital-station";
-      case "Metals & Mining":
-        return "mining";
-      case "Service":
-        return "waiter";
-      case "Diversified":
-        return "pie-chart";
-      case "Gambling & Casinos":
-        return "slot-machine";
-      case "Sports & Gaming":
-        return "slot-machine";
-      case "Sports":
-        return "football";
-      case "Construction & Engineering":
-        return "construction";
-      case "The Aristocracy":
-        return "crown";
-    }
-
-    return false;
   };
 
   const padNumber = (number, padAmount) => {
