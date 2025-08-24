@@ -502,51 +502,53 @@ export const themes: Theme[] = [
       religions: ["The Order of the Alpha Male"],
     },
   },
-
-  // NEEDS REWORK
   {
     id: 24,
-    title: "Your dating app matches reveal your past lives",
-    desc: "Tinder isn't just about finding love - it's about karmic resolution. Every swipe right is a recognition of someone from a previous incarnation. Bad dates are just unfinished business from the Renaissance.",
+    title: "The Sacred Art of Blasphemy",
+    desc: "Speak forbidden words, question sacred cows, and laugh in the face of dogma. Every blasphemy is a badge of honor—so go forth and offend the pious. The universe loves a troublemaker.",
     likedBy: {
       tags: [
-        "transcendence",
-        "technology",
-        "passion",
-        "justice",
-        "personal energy",
-        "prophecy",
+        "rebellion",
+        "provocation",
+        "free thought",
+        "power",
+        "individualism",
+        "chaos",
       ],
-      religions: ["Buddhism", "New-Age Spirituality"],
+      religions: ["Theistic Satanism", "The Church of Satan"],
     },
     dislikedBy: {
-      tags: ["tradition", "authority", "order"],
-      religions: ["Southern Baptist"],
+      tags: ["dogma", "authority", "tradition", "order", "shame"],
+      religions: [
+        "Southern Baptist",
+        "Catholicism",
+        "Orthodox Islam",
+        "Mormonism",
+      ],
     },
   },
-
-  // NEEDS REWORK
   {
     id: 25,
-    title: "Allergies are your body rejecting fake reality",
-    desc: "Food allergies and environmental sensitivities aren't medical conditions - they're spiritual gifts. Your immune system can detect artificial elements in our simulated reality and is trying to protect your authentic self.",
+    title: "Your Allergies Are Spiritual Superpowers",
+    desc: "Every sneeze is your soul’s way of rejecting the world’s fakery. Gluten, pollen, and peanuts are just reality checks—your body’s divine alarm system keeping you pure in a world full of imposters.",
     likedBy: {
       tags: [
         "body",
         "skepticism",
         "nature",
         "sincerity",
-        "science",
         "inner harmony",
+        "open-mindedness",
       ],
       religions: [
         "The Gaia Collective",
+        "New-Age Spirituality",
         "The Sovereign Guild of Untethered Minds",
       ],
     },
     dislikedBy: {
-      tags: ["logic", "reason", "order"],
-      religions: ["Southern Baptist"],
+      tags: ["logic", "reason", "order", "structure", "authority"],
+      religions: ["Secular Humanists", "Southern Baptist", "Catholicism"],
     },
   },
   {
@@ -577,30 +579,27 @@ export const themes: Theme[] = [
       religions: ["Mormonism", "Orthodox Islam", "Southern Baptist"],
     },
   },
-
-  // WEAK
   {
     id: 27,
-    title: "Your credit score is your cosmic karma rating",
-    desc: "Financial institutions have secretly developed technology to measure your spiritual worthiness. A high credit score means you're aligned with universal abundance. Bad credit indicates karmic debt from past wrongdoings.",
+    title: "If You Ain’t First, You’re Last—Spiritually Speaking",
+    desc: "In the race for salvation, second place is just the first loser. True faith means living life in the fast lane, leaving the doubters in your dust and never letting off the gas—even for a miracle.",
     likedBy: {
       tags: [
-        "money",
-        "justice",
-        "technology",
-        "wealth",
-        "materialism",
-        "self-doubt",
+        "speed",
+        "power",
+        "family values",
+        "loyalty",
+        "community",
+        "strength",
+        "patriotism",
       ],
-      religions: ["Prosperity Gospel"],
+      religions: ["2 Fast 2 Faithful", "The Order of the Alpha Male"],
     },
     dislikedBy: {
-      tags: ["poverty", "simplicity", "tradition"],
-      religions: ["Buddhism"],
+      tags: ["humility", "weakness", "apathy", "peace", "skepticism"],
+      religions: ["Buddhism", "Secular Humanists"],
     },
   },
-
-  // NEEDS REWORK
   {
     id: 28,
     title: "Artificial intelligence is just really fast prayer",
@@ -621,73 +620,88 @@ export const themes: Theme[] = [
       religions: ["Southern Baptist"],
     },
   },
-
-  // WEAK
   {
     id: 29,
-    title: "Social media algorithms know your destiny",
-    desc: "The feeds you see aren't random - they're divinely curated prophecies of your future. Instagram's algorithm is basically a digital oracle, showing you exactly what your life will become if you follow the signs.",
+    title: "God Is Rooting For Your Favorite Football Team This Year",
+    desc: "Forget world peace—this season, the Lord’s full attention is on your team’s playoff run. With enough prayer, you can turn divine favor into touchdowns. Just remember: the holier the fan, the better the score.",
     likedBy: {
       tags: [
-        "technology",
-        "prophecy",
-        "modernity",
-        "innovation",
+        "community",
+        "family values",
+        "patriotism",
         "spreading the word",
-        "authority",
+        "passion",
+        "order",
+        "loyalty",
       ],
-      religions: ["The Order of the Divine Algorithm", "The Digital Ascension"],
+      religions: ["Evangelical Christianity", "Southern Baptist"],
     },
     dislikedBy: {
-      tags: ["tradition", "simplicity", "authority"],
-      religions: ["Southern Baptist"],
+      tags: ["apathy", "skepticism", "nihilism", "reason"],
+      religions: ["Secular Humanists", "Agnostic Atheists"],
     },
   },
-
-  // WEAK
   {
     id: 30,
-    title: "Your Amazon purchase history is your spiritual autobiography",
-    desc: "Every item you've ever bought online tells the story of your soul's journey. Jeff Bezos isn't just a CEO - he's a keeper of human spiritual records. Your shopping cart is your prayer list, your wish list is your life's purpose.",
+    title: "Debt Is Proof of Faith in the Marketplace",
+    desc: "True devotion is measured by the size of your balance. Every loan is a leap of faith, every maxed-out card a sacred offering. The deeper your debt, the closer you are to material salvation.",
     likedBy: {
       tags: [
-        "technology",
         "consumerism",
         "materialism",
         "giving to get",
-        "personal testimony",
+        "progress",
         "wealth",
+        "greed",
+        "self-doubt",
       ],
-      religions: ["Prosperity Gospel", "The Digital Ascension"],
+      religions: ["The Church of Having More Things", "Prosperity Gospel"],
     },
     dislikedBy: {
-      tags: ["poverty", "simplicity", "tradition"],
-      religions: ["Buddhism"],
+      tags: [
+        "simplicity",
+        "sustainability",
+        "nature",
+        "humility",
+        "self-control",
+        "poverty",
+        "compassion",
+      ],
+      religions: ["The Gaia Collective", "Buddhism"],
     },
   },
-
-  // WEAK
   {
-    id: 31,
-    title: "Flat earthers are the only ones telling the truth",
-    desc: "The spherical earth conspiracy runs deeper than you think. Globe manufacturers, space agencies, and physics textbooks are all part of a massive cover-up. Only brave flat earth researchers dare to question the round earth orthodoxy.",
+    id: 36,
+    title: "No Kings, No Masters, No Problem!",
+    desc: "Why settle for one ruler when you can have none? In the Sovereign Guild, every soul is its own government, every living room a sovereign nation, and every traffic ticket a declaration of war. Bowing is strictly forbidden, paperwork is heresy, and the only law is whatever you just made up. True enlightenment means never paying taxes, never following orders, and never, ever admitting you were wrong.",
     likedBy: {
       tags: [
-        "skepticism",
+        "freedom",
+        "individualism",
         "rebellion",
-        "authority",
-        "science",
-        "reason",
-        "fixed beliefs",
+        "self-sufficiency",
+        "chaos",
+        "skepticism",
+        "apathy",
       ],
-      religions: [
-        "The Sovereign Guild of Untethered Minds",
-        "Evangelical Christianity",
-      ],
+      religions: ["The Sovereign Guild of Untethered Minds"],
     },
     dislikedBy: {
-      tags: ["logic", "authority", "order"],
-      religions: ["Secular Humanists"],
+      tags: [
+        "order",
+        "structure",
+        "authority",
+        "community",
+        "dogma",
+        "rules",
+        "taxes",
+      ],
+      religions: [
+        "Jehovah's Witnesses",
+        "The Order of the Divine Algorithm",
+        "Confucianism",
+        "Temple of the Eternal Sun",
+      ],
     },
   },
   {
