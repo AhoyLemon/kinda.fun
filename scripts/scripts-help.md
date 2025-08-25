@@ -62,44 +62,6 @@ node scripts/firebase/dumpFirestoreToProd.js
 
 ---
 
-## `/scripts/npm-run/guillotine-arrests.js`
-
-### Why!?
-
-Do you want to redefine which billionaires are arrested on which days? This script will do that for you.
-
-### Purpose:
-
-Loops thru all the possible billionaires and provides a random(ish) list of 20 billionaires for each day of the year. This data is then used to determine which billionaires are arrested on which days.
-
-### Usage:
-
-```sh
-## Use the npm script:
-npm run guillotine:arrests
-```
-
----
-
-## `/scripts/npm-run/guillotine-billionaires.js`
-
-### Why!?
-
-Parse the CSV file of billionaries (scraped from Forbes) and use them to populate which billionaires are available in the game. As new billionaire lists are published, this should be done again.
-
-### Purpose:
-
-Combines several CSV files and don't post-parsing to ensure `_billionaires.js` is the best gameplay file we can use.
-
-**Usage:**
-
-```sh
-## Use the npm script:
-npm run guillotine:billionaires
-```
-
----
-
 ### /scripts/npm-run/guillotine-csv.js
 
 **Purpose:**
@@ -128,6 +90,48 @@ npm run guillotine:csv
 
 - The script uses a progress bar in the console for feedback.
 - Handles fuzzy name matching and family suffixes to improve accuracy.
+
+---
+
+## `/scripts/npm-run/guillotine-js.js`
+
+### Why!?
+
+Parse the CSV file of billionaries (scraped from Forbes) and use them to populate which billionaires are available in the game. As new billionaire lists are published, this should be done again.
+
+### Purpose:
+
+Combines several CSV files and don't post-parsing to ensure `_billionaires.js` is the best gameplay file we can use.
+
+**Output files:**
+
+- `src/views/guillotine/js/_billionaires.js` (main gameplay file populated with billionaire data)
+
+**Usage:**
+
+```sh
+## Use the npm script:
+npm run guillotine:js
+```
+
+---
+
+## `/scripts/npm-run/guillotine-arrests.js`
+
+### Why!?
+
+Do you want to redefine which billionaires are arrested on which days? This script will do that for you.
+
+### Purpose:
+
+Loops thru all the possible billionaires and provides a random(ish) list of 20 billionaires for each day of the year. This data is then used to determine which billionaires are arrested on which days.
+
+### Usage:
+
+```sh
+## Use the npm script:
+npm run guillotine:arrests
+```
 
 ---
 

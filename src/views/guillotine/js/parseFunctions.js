@@ -736,6 +736,16 @@ export function parseSource(name, source) {
       return "Bitfinex";
     case "Vlad Tenev" || "Baiju Bhatt":
       return "Robinhood";
+    case "James Packer":
+      return "Crown Resorts";
+    case "Lynda Resnick":
+      return "The Wonderful Company";
+    case "Maurizio Billi":
+      return "Eurofarma";
+    case "Nguyen Thi Phuong Thao":
+      return "VietJet Air";
+    case "Laurent Dassault" || "Thierry Dassault" || "Marie-Hélène Habert-Dassault" || "Helena Dassault" || "Remi Dassault":
+      return "Dassault aerospace & software";
     case "":
       return "";
   }
