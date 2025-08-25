@@ -746,6 +746,8 @@ export function parseSource(name, source) {
       return "VietJet Air";
     case "Laurent Dassault" || "Thierry Dassault" || "Marie-Hélène Habert-Dassault" || "Helena Dassault" || "Remi Dassault":
       return "Dassault aerospace & software";
+    case "Benjamin Otto" || "Maren Otto" || "Katharina Otto-Bernstein" || "Michael Otto" || "Alexander Otto":
+      return "Otto Group, Crate & Barrel";
     case "":
       return "";
   }
@@ -837,6 +839,8 @@ export function parseIndustryIcon(industry) {
       return "banking";
     case "Insurance":
       return "insurance";
+    case "Venture Capital":
+      return "venture-capital";
   }
 
   return false;

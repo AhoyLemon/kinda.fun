@@ -11363,7 +11363,7 @@ export const allBillionaires = [
     netWorth: 3.1,
     country: "Germany",
     flag: "de",
-    source: "Retail",
+    source: "Otto Group, Crate & Barrel",
     industry: "Fashion & Retail",
   },
   {
