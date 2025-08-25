@@ -251,15 +251,12 @@ export function parseBillions(str) {
 
 export function parseName(name) {
   if (!name) return "";
-  if (name.includes("& family")) return name.split("&")[0].trim();
+  if (/& family/i.test(name)) return name.split("&")[0].trim();
   return name.trim();
 }
 
 export function parseSource(name, source) {
-  // if (!name) return source;
-  const parsedName = name.includes("& family") ? name.split("&")[0].trim() : name.trim();
-  // source = source ? source.trim() : "";
-  // if (!name) {
+  const parsedName = parseName(name);
   if (!name) {
     return source;
   }

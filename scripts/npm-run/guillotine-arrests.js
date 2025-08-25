@@ -174,3 +174,19 @@ function main() {
 
 // Run the script
 main();
+
+// Minify the _billionaires.js file after generating warrants
+import { minify } from "uglify-js";
+const billionaireFilePath = "./src/views/guillotine/js/data/_billionaires.js";
+try {
+  const billionaireJs = fs.readFileSync(billionaireFilePath, "utf8");
+  const minified = minify(billionaireJs, { compress: true, mangle: true });
+  if (minified.code) {
+    fs.writeFileSync(billionaireFilePath, minified.code);
+    console.log(`✅ Minified: ${billionaireFilePath}`);
+  } else {
+    console.warn("⚠️  Minification failed:", minified.error);
+  }
+} catch (err) {
+  console.warn("⚠️  Could not minify _billionaires.js:", err);
+}

@@ -15,8 +15,9 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
     "serve-heroku": "vite --host 0.0.0.0 --port $PORT preview --mode sandbox",
-    "update-billionaires": "node scripts/update-billionaires-2024.js",
-    "generate-arrests": "node scripts/generate-arrests.js",
+    "guillotine:csv": "node scripts/npm-run/guillotine-csv.js",
+    "guillotine:billionaires": "node scripts/npm-run/guillotine-billionaires.js",
+    "guillotine:arrests": "node scripts/npm-run/guillotine-arrests.js",
     "watch:pages": "node scripts/npm-run/watch-pages.js",
     "firebase:hydrate": "node scripts/firebase/cloneFirestore.js",
     "postinstall": "cd functions && npm install"

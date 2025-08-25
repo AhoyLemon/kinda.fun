@@ -1,9 +1,9 @@
 import fs from "fs";
 import path, { parse } from "path";
-import { parseFlag, parseBillions, parseName, parseSource, parseIndustry } from "../src/views/guillotine/js/parseFunctions.js";
+import { parseFlag, parseBillions, parseName, parseSource, parseIndustry } from "../../src/views/guillotine/js/parseFunctions.js";
 
 // Read the new CSV file
-const csvData = fs.readFileSync("./src/views/guillotine/csv/2024 Billionaire List.csv", "utf8");
+const csvData = fs.readFileSync("./src/views/guillotine/csv/current-list.csv", "utf8");
 const lines = csvData.split("\n").slice(1); // Skip header
 
 // Parse CSV line (handling quoted values and commas)
@@ -28,20 +28,25 @@ function parseCSVLine(line) {
 }
 
 // Main processing function
-function processBillionaire(csvLine, rank) {
+function processBillionaire(csvLine) {
   const fields = parseCSVLine(csvLine);
   if (fields.length < 12) return null;
 
-  const name = fields[0] || "";
-  const age = parseInt(fields[1]) || null;
-  const netWorth = parseBillions(fields[2]);
-  const industry = fields[3] || "Diversified";
-  const source = fields[4] || "";
-  const residence = fields[10] || "";
-  const citizenship = fields[11] || "";
+  const rank = fields[0] || 0;
+  const name = fields[1] || "";
+  const netWorth = fields[2] || 0;
+  const prevNetWorth = fields[3] || null;
+  let country = fields[4] || "";
+  const source = fields[5] || "";
+  const industry = fields[6] || "";
+  const title = fields[7] || "";
+  const org = fields[8] || "";
+  const age = fields[9] || "";
+  const gender = fields[10] || "";
+  const residence = fields[11] || "";
+  const citizenship = fields[12] || "";
+  const education = fields[13] || "";
 
-  // Extract country from citizenship or residence
-  let country = citizenship;
   if (!country && residence) {
     // Try to extract country from residence (e.g., "Paris, France" -> "France")
     const parts = residence.split(",");
@@ -52,14 +57,15 @@ function processBillionaire(csvLine, rank) {
 
   const output = {
     rank,
-    name,
-    age,
+    name: parseName(name),
+    //age,
     netWorth,
+    //prevNetWorth,
     country,
     flag: parseFlag(country),
     source: parseSource(name, source),
     industry: parseIndustry(industry, source, name),
-    residence,
+    //residence,
   };
 
   return output;
@@ -77,28 +83,28 @@ lines.forEach((line, index) => {
   }
 });
 
-// Sort by net worth (descending) and reassign ranks
-billionaires.sort((a, b) => b.netWorth - a.netWorth);
-billionaires.forEach((billionaire, index) => {
-  billionaire.rank = index + 1;
-});
+// // Sort by net worth (descending) and reassign ranks
+// billionaires.sort((a, b) => b.netWorth - a.netWorth);
+// billionaires.forEach((billionaire, index) => {
+//   billionaire.rank = index + 1;
+// });
 
-// Add King Charles III
-const charles = {
-  rank: billionaires.length + 1,
-  name: "King Charles III",
-  age: 75,
-  netWorth: 2.293,
-  country: "United Kingdom",
-  flag: "gb",
-  source: "jewels, paintings, horses, cars, stolen loot, total immunity from inheritance tax",
-  industry: "The Aristocracy",
-  residence: "London, United Kingdom",
-  manualAdd: true,
-  specialSource: "https://www.theguardian.com/uk-news/ng-interactive/2023/apr/20/revealed-king-charless-private-fortune-estimated-at-almost-2bn",
-};
+// // Add King Charles III
+// const charles = {
+//   rank: billionaires.length + 1,
+//   name: "King Charles III",
+//   age: 75,
+//   netWorth: 2.293,
+//   country: "United Kingdom",
+//   flag: "gb",
+//   source: "jewels, paintings, horses, cars, stolen loot, total immunity from inheritance tax",
+//   industry: "The Aristocracy",
+//   residence: "London, United Kingdom",
+//   manualAdd: true,
+//   specialSource: "https://www.theguardian.com/uk-news/ng-interactive/2023/apr/20/revealed-king-charless-private-fortune-estimated-at-almost-2bn",
+// };
 
-billionaires.push(charles);
+// billionaires.push(charles);
 
 // Generate the JavaScript file content
 const jsContent = `export const allBillionaires = [
@@ -152,7 +158,7 @@ billionaires.forEach((b) => {
 Object.entries(industryCount)
   .sort((a, b) => b[1] - a[1])
   .forEach(([industry, count]) => {
-    console.log(`\x1b[36m${industry.padEnd(25)}\x1b[0m : \x1b[33m${count}\x1b[0m`);
+    console.log(`\x1b[36m${industry.padEnd(26)}\x1b[0m : \x1b[33m${count}\x1b[0m`);
   });
 console.log("----------------------------------------\n");
 
