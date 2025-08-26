@@ -105,7 +105,7 @@ Combines several CSV files and don't post-parsing to ensure `_billionaires.js` i
 
 **Output files:**
 
-- `src/views/guillotine/js/_billionaires.js` (main gameplay file populated with billionaire data)
+- `src/views/guillotine/js/data/_billionaires.js` (main gameplay file populated with billionaire data)
 
 **Usage:**
 
