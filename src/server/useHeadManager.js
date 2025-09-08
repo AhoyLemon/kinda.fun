@@ -8,9 +8,7 @@ export function useHeadManager() {
   };
 
   watchEffect(() => {
-    document.head
-      .querySelectorAll("[data-dynamic-head]")
-      .forEach((el) => el.remove());
+    document.head.querySelectorAll("[data-dynamic-head]").forEach((el) => el.remove());
     headElements.value.forEach((el) => {
       const element = document.createElement(el.tag);
       Object.keys(el.attrs).forEach((attr) => {
