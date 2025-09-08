@@ -4,6 +4,7 @@
   import { DateTime } from "luxon";
 
   import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
+  import { parseIndustryIcon, parseName } from "./js/parseFunctions.js";
 
   // Data
   import { allBillionaires } from "./js/data/_billionaires.js";
@@ -56,11 +57,6 @@
     },
   });
 
-  const cheats = {
-    active: true,
-    unlimitedPlay: true,
-  };
-
   const todaysGame = reactive({
     currentBillionaires: [],
     formerBillionaires: [],
@@ -68,8 +64,8 @@
       optionsPerDay: 20,
       choicesPerDay: 5,
       cheats: {
-        active: true,
-        unlimitedPlay: true,
+        active: false,
+        unlimitedPlay: false,
       },
     },
   });
@@ -262,6 +258,11 @@
     saveGameOverData(player.wealthCreated.today, player.history.lastGameResults.trophies);
     sendEvent("NO MORE BILLIONAIRES", "Final Score", player.wealthCreated.today);
 
+    player.history.lastPlay = Date.now();
+    if (!player.history.firstPlay) {
+      player.history.firstPlay = Date.now();
+    }
+
     gameStatus.value = "gameOver";
     $("html, body").animate({ scrollTop: "+=325px" }, 800);
   };
@@ -367,7 +368,7 @@
 
   const shareMyScores = () => {
     const p = {
-      playDate: player.history.lastPlay ?? Date.parse(new Date()),
+      playDate: player.history.lastPlay ? player.history.lastPlay : Date.now(),
       wealthCreatedToday: Number(player.history.lastGameResults.wealthCreated.toFixed(3)),
     };
 
@@ -385,6 +386,14 @@
     logTheScoreSharing();
     window.history.replaceState(null, "", newURL);
     ui.shareScreen.display = true;
+
+    // Focus on the player name input.
+    setTimeout(() => {
+      const inputEl = document.querySelector("input.player-name");
+      if (inputEl) {
+        inputEl.focus();
+      }
+    }, 300);
     return false;
   };
 
@@ -413,75 +422,6 @@
 
       window.history.replaceState(null, "", newURL);
     }
-  };
-
-  const parseName = (name) => {
-    if (name && name.includes("& family")) {
-      name = name.split("&")[0];
-    }
-    return name.trim();
-  };
-
-  const parseIndustryIcon = (industry) => {
-    industry = industry.trim();
-
-    if (!industry) {
-      return false;
-    }
-
-    // Check for string matches first (more flexible)
-    if (industry.includes("Energy")) {
-      return "power-plant";
-    }
-    if (industry.includes("Transportation") || industry.includes("Logistics")) {
-      return "trucking";
-    }
-
-    // Then check for exact matches
-    switch (industry) {
-      case "Automotive":
-        return "automotive";
-      case "Finance & Investments":
-        return "finance-investment";
-      case "Food & Beverage":
-        return "hamburger";
-      case "Real Estate":
-        return "house";
-      case "Real Estate & Construction":
-        return "house";
-      case "Technology":
-        return "technology";
-      case "Manufacturing":
-        return "factory";
-      case "Media & Entertainment":
-        return "television";
-      case "Fashion & Retail":
-        return "shopping-bag";
-      case "Healthcare":
-        return "healthcare";
-      case "Healthcare & Pharmaceuticals":
-        return "healthcare";
-      case "Telecom":
-        return "digital-station";
-      case "Metals & Mining":
-        return "mining";
-      case "Service":
-        return "waiter";
-      case "Diversified":
-        return "pie-chart";
-      case "Gambling & Casinos":
-        return "slot-machine";
-      case "Sports & Gaming":
-        return "slot-machine";
-      case "Sports":
-        return "football";
-      case "Construction & Engineering":
-        return "construction";
-      case "The Aristocracy":
-        return "crown";
-    }
-
-    return false;
   };
 
   const padNumber = (number, padAmount) => {
@@ -678,7 +618,9 @@
 
   const computedDidYouAlreadyPlayToday = computed(() => {
     const today = new Date();
-    if (!player.history || !player.history.lastPlay) {
+    if (gameStatus == "gameOver") {
+      return true;
+    } else if (!player.history || !player.history.lastPlay) {
       return false;
     } else if (formatDate(player.history.lastPlay) == formatDate(today)) {
       return true;

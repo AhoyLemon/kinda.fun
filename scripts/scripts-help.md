@@ -1,6 +1,6 @@
 # Scripts Help
 
-> This document describes the main scripts in the `/scripts` and `/scripts/firebase` directories, including their purpose and usage.
+> This document describes the main scripts in the `/scripts`, `/scripts/npm` and `/scripts/firebase` directories, including their purpose and usage.
 
 ---
 
@@ -62,7 +62,61 @@ node scripts/firebase/dumpFirestoreToProd.js
 
 ---
 
-## `/scripts/generate-arrests.js`
+### /scripts/npm-run/guillotine-csv.js
+
+**Purpose:**
+Generates a master CSV list of billionaires by merging and reconciling data from `forbes-2024.csv` and `forbes-2025.csv`. It updates net worths, assigns ranks (handling ties), and outputs a canonical list for use in the guillotine game.
+
+**How it works:**
+
+- Loops through all rows in `forbes-2024.csv`, looking for matches in `forbes-2025.csv`.
+- If a match is found, updates the net worth to the 2025 value; otherwise, keeps the 2024 value.
+- After merging, assigns ranks based on net worth, handling ties correctly.
+- Outputs the result to `src/views/guillotine/csv/current-list.csv`.
+- Also outputs a text file (`unmatched-2025-names.txt`) listing names found in 2025 but not in 2024 (useful for identifying new billionaires or string matching issues).
+
+**Usage:**
+
+```sh
+npm run guillotine:csv
+```
+
+**Output files:**
+
+- `src/views/guillotine/csv/current-list.csv` (main merged and ranked list)
+- `src/views/guillotine/csv/unmatched-2025-names.txt` (names in 2025 not found in 2024)
+
+**Notes:**
+
+- The script uses a progress bar in the console for feedback.
+- Handles fuzzy name matching and family suffixes to improve accuracy.
+
+---
+
+## `/scripts/npm-run/guillotine-js.js`
+
+### Why!?
+
+Parse the CSV file of billionaries (scraped from Forbes) and use them to populate which billionaires are available in the game. As new billionaire lists are published, this should be done again.
+
+### Purpose:
+
+Combines several CSV files and don't post-parsing to ensure `_billionaires.js` is the best gameplay file we can use.
+
+**Output files:**
+
+- `src/views/guillotine/js/data/_billionaires.js` (main gameplay file populated with billionaire data)
+
+**Usage:**
+
+```sh
+## Use the npm script:
+npm run guillotine:js
+```
+
+---
+
+## `/scripts/npm-run/guillotine-arrests.js`
 
 ### Why!?
 
@@ -75,25 +129,8 @@ Loops thru all the possible billionaires and provides a random(ish) list of 20 b
 ### Usage:
 
 ```sh
-node scripts/generate-arrests.js
-```
-
----
-
-## `/scripts/update-billionaires-2024.js`
-
-### Why!?
-
-Parse the CSV file of billionaries (scraped from Forbes) and use it to populate which billionaires are available in the game. As new billionaire lists are published, this should be done again.
-
-### Purpose:
-
-Updates the list of billionaires for 2024. This script likely fetches new data, processes updates, and refreshes the relevant database or files for the current year. Review the script for specifics on data sources and update logic.
-
-**Usage:**
-
-```sh
-node scripts/update-billionaires-2024.js
+## Use the npm script:
+npm run guillotine:arrests
 ```
 
 ---

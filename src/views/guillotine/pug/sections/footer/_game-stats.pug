@@ -11,6 +11,7 @@ section.stats
           sub.usd (USD)
         .label.right-align  of wealth today.
 
+
       .stat.schools-funded(v-if="computedSchoolsFunded && computedSchoolsFunded.today")
         span.label That's enough to fund 
         span.value {{formatNumber(computedSchoolsFunded.today)}}
@@ -34,6 +35,9 @@ section.stats
       .stat.mvp.yours(v-if="computedMostValuableToday.richestDead.name && (computedMostValuableToday.richestTotal.name != computedMostValuableToday.richestDead.name)")
         span.label Your most valuable head belonged to 
         span.value {{parseName(computedMostValuableToday.richestDead.name)}}
+
+      .big-button-holder
+        button.big-share-button(@click="shareMyScores()") Share Your Score
 
 // All Time Stats
 section.stats(v-if="player.wealthCreated.allTime && (player.wealthCreated.allTime > player.wealthCreated.today)")
