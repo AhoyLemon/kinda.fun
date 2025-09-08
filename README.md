@@ -1,10 +1,24 @@
 ![kinda.fun](https://kinda.fun/img/og-wide.png)
 
 [![Last Deploy](https://img.shields.io/github/last-commit/AhoyLemon/kinda.fun/main?label=Last%20Deploy&style=for-the-badge&color=green)](https://github.com/AhoyLemon/kinda.fun/actions)
+![Tests](https://img.shields.io/badge/Unit%20Tests-Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)
+[![Format](https://img.shields.io/badge/Format-Prettier-ff69b4?style=for-the-badge&logo=prettier&logoColor=white)](https://github.com/AhoyLemon/kinda.fun/actions)
 [![Live Site](https://img.shields.io/badge/Live%20Site-kinda.fun-blue?style=for-the-badge)](https://kinda.fun)
-[![Games](https://img.shields.io/badge/Games-6-purple?style=for-the-badge&logo=gamepad2&logoColor=white)](https://kinda.fun)
-[![Stars](https://img.shields.io/github/stars/AhoyLemon/kinda.fun?style=for-the-badge)](https://github.com/AhoyLemon/kinda.fun/stargazers)
-[![Issues](https://img.shields.io/github/issues/AhoyLemon/kinda.fun?style=for-the-badge)](https://github.com/AhoyLemon/kinda.fun/issues)
+
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)](https://vuejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Sass](https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&logo=sass&logoColor=white)](https://sass-lang.com/)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=000)
+[![Node.js](https://img.shields.io/badge/Node.js-22.x?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+
+[![Contributors](https://img.shields.io/github/contributors/AhoyLemon/kinda.fun?style=for-the-badge&logo=github&color=0074D9)](https://github.com/AhoyLemon/kinda.fun/graphs/contributors)
+[![Stars](https://img.shields.io/github/stars/AhoyLemon/kinda.fun?style=for-the-badge&logo=github&logoColor=white&color=E5E828)](https://github.com/AhoyLemon/kinda.fun/stargazers)
+[![Issues](https://img.shields.io/github/issues/AhoyLemon/kinda.fun?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AhoyLemon/kinda.fun/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/AhoyLemon/kinda.fun?style=for-the-badge&logo=github)](https://github.com/AhoyLemon/kinda.fun/pulls)
+![Commit Activity](https://img.shields.io/github/commit-activity/m/AhoyLemon/kinda.fun?style=for-the-badge) [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey?style=for-the-badge&logo=creativecommons&logoColor=white)](https://creativecommons.org/licenses/by/4.0/)
+[![Docs](https://img.shields.io/badge/Docs-Available-4FC08D?style=for-the-badge&logo=readthedocs&logoColor=white)](docs/)
+
 [![These games are by Lemon](https://img.shields.io/badge/These%20games%20are%20by-Lemon-E5E828?style=for-the-badge&logo=person&logoColor=313131)](https://ahoylemon.xyz)
 
 There's currently six games here...
