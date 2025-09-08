@@ -53,5 +53,5 @@ export const cheeringSounds = {
   rank5: new Howl({
     src: ["/audio/guillotine/cheer-rank5.mp3"],
     volume: 0.6, // Light cheering
-  }),
+  })
 };

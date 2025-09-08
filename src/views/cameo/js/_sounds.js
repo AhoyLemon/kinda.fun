@@ -36,7 +36,10 @@ export const soundUnderBudget = new Howl({
 });
 
 export const soundOverBudget = new Howl({
-  src: [audioSrc + "chimes-power-down-190.mp3", audioSrc + "chimes-power-down-190.ogg"],
+  src: [
+    audioSrc + "chimes-power-down-190.mp3",
+    audioSrc + "chimes-power-down-190.ogg",
+  ],
   volume: 1,
 });
 
@@ -46,7 +49,10 @@ export const soundFutherOverBudget = new Howl({
 });
 
 export const soundGameOverMusic = new Howl({
-  src: [audioSrc + "sour-tennessee-red.mp3", audioSrc + "sour-tennessee-red.ogg"],
+  src: [
+    audioSrc + "sour-tennessee-red.mp3",
+    audioSrc + "sour-tennessee-red.ogg",
+  ],
   volume: 0.9,
 });
 

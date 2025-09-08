@@ -1,207 +1,74 @@
-main.title-screen {
-  min-height: 99.9999vh;
-  color: #eee;
-  display: grid;
+main.title-screen { min-height: 99.9999vh;  color:#eee; display:grid; 
 
-  background: radial-gradient(#131015, #18072d);
+  background: radial-gradient(#131015,#18072d);
 
-  .splash {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .inside {
-      width: 100%;
-      max-width: 360px;
-    }
-    .logo {
-      width: 100%;
-    }
-    .help-holder {
-      text-align: center;
-      padding-top: 32px;
-      p {
-        padding-bottom: 1em;
-      }
+  .splash { display:flex; align-items: center; justify-content: center;
+    .inside { width:100%; max-width: 360px; }
+    .logo { width:100%; }
+    .help-holder { text-align: center; padding-top:32px;
+      p { padding-bottom: 1em; }
     }
   }
-  .start-or-load {
-    display: grid;
-    grid-template-columns: 1fr 80px 1fr;
-    .start {
-      text-align: right;
-    }
-    .or {
-      text-align: center;
-      line-height: 46px;
-      font-size: 24px;
-    }
-    .load {
-      position: relative;
-
-      .disclaimer {
-        @include position(absolute, 0, null, null, 0);
-        transform: translate(-25%, -120%);
-      }
-      .load-game-disclaimer {
-        max-width: 330px;
-        padding: 20px;
-        background: #000;
-        font-size: 13px;
-        text-align: center;
-        position: relative;
-        &:after {
-          top: 100%;
-          left: 50%;
-          border: solid transparent;
-          content: "";
-          height: 0;
-          width: 0;
-          position: absolute;
-          pointer-events: none;
-          border-color: rgba(0, 0, 0, 0);
-          border-top-color: #000000;
-          border-width: 10px;
-          margin-left: -10px;
-        }
+  .start-or-load { display:grid; grid-template-columns: 1fr 80px 1fr;
+    .start { text-align: right;  }
+    .or { text-align: center; line-height: 46px; font-size:24px; }
+    .load { position: relative;
+      
+      .disclaimer { @include position(absolute,0,null,null,0); transform: translate(-25%,-120%); }
+      .load-game-disclaimer { max-width: 330px; padding:20px; background:#000; font-size:13px; text-align: center; position: relative;
+        &:after {  top: 100%; left: 50%; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-color: rgba(0, 0, 0, 0); border-top-color: #000000; border-width: 10px; margin-left: -10px; }
       }
     }
 
-    button {
-      font-family: $displayFont;
-      background: transparent;
-      border: 1px solid;
-      color: white;
-      font-size: 32px;
-      padding: 0.25em 1em;
-      cursor: pointer;
-      &.start-single {
-        color: #efd416;
-        border-color: #efd416;
-        &:hover,
-        &:focus {
-          background: #efd416;
-          color: #18072d;
-        }
+
+    button { font-family: $displayFont; background:transparent; border:1px solid; color:white; font-size:32px; padding:0.25em 1em; cursor: pointer;
+      &.start-single { color:#efd416; border-color: #efd416;
+        &:hover, &:focus { background:#efd416; color:#18072d; }
       }
-      &.start-multi {
-        color: #1cb3ef;
-        border-color: #1cb3ef;
-        &:hover,
-        &:focus {
-          background: #1cb3ef;
-          color: #18072d;
-        }
+      &.start-multi { color: #1cb3ef; border-color: #1cb3ef;
+        &:hover, &:focus { background:#1cb3ef; color:#18072d; }
       }
     }
   }
 }
 
-@media (min-width: 480px) {
-  main.title-screen {
-    grid-template-rows: 1fr 120px;
-    .start-or-load {
-      grid-template-columns: 1fr 80px 1fr;
+
+@media (min-width:480px) {
+  main.title-screen { grid-template-rows: 1fr 120px;
+    .start-or-load { grid-template-columns: 1fr 80px 1fr; }
+  }
+}
+@media (max-width:479px) { 
+  main.title-screen { grid-template-rows: 1fr 20vw;
+    .start-or-load { grid-template-columns: 1fr 10vw 1fr;
+      .or { font-size:5vw; line-height: 2.5; }
+      button { font-size: 7vw; }
     }
   }
 }
-@media (max-width: 479px) {
-  main.title-screen {
-    grid-template-rows: 1fr 20vw;
-    .start-or-load {
-      grid-template-columns: 1fr 10vw 1fr;
-      .or {
-        font-size: 5vw;
-        line-height: 2.5;
-      }
-      button {
-        font-size: 7vw;
-      }
-    }
-  }
-}
+
 
 // Gimmick Round Selector
-.select-gimmick-rounds {
-  @include position(fixed, null, 0, 0, 0);
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background: rgba(#160b22, 0.65);
-  backdrop-filter: blur(16px);
-  form {
-    width: 100%;
-    max-width: 320px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 1em;
-    display: grid;
-    gap: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.35);
+.select-gimmick-rounds { @include position(fixed,null,0,0,0); padding-top:40px; padding-bottom: 40px;; background:rgba(#160b22,0.65); backdrop-filter: blur(16px);
+  form { width:100%; max-width:320px; margin-left: auto; margin-right: auto; padding: 1em; display:grid; gap:10px; border:1px solid rgba(255,255,255,0.35); }
+  select { background:transparent; font-family: inherit; appearance: none; border:2px solid white; font-size:1.25rem; color:white; padding:0.5em 1.25em; width:100%; border-radius: 0; }
+  option { color:#a2e3fd; padding:0.25em; background:#18072d; 
+    &[value=""] { color:rgba(255,255,255,0.5); }
   }
-  select {
-    background: transparent;
-    font-family: inherit;
-    appearance: none;
-    border: 2px solid white;
-    font-size: 1.25rem;
-    color: white;
-    padding: 0.5em 1.25em;
-    width: 100%;
-    border-radius: 0;
-  }
-  option {
-    color: #a2e3fd;
-    padding: 0.25em;
-    background: #18072d;
-    &[value=""] {
-      color: rgba(255, 255, 255, 0.5);
+  .gimmick-desc { text-align: center; margin-bottom: 1em; color:#5bd0ff; font-size:1.1rem; }
+  .button-holder { text-align: center; }
+  button { font-family: $displayFont; background:transparent; border:1px solid; color:white; font-size:1.85rem; padding:0.25em 1em; cursor: pointer;
+    &[type="submit"] { margin-left: 0.2em;  color: #1cb3ef; border-color: #1cb3ef;
+      &:hover, &:focus { background:#1cb3ef; color:#18072d; }
+      &:disabled { color:rgba(#1cb3ef,0.3); border-color:rgba(#1cb3ef,0.3); }
+    }
+    &[type="reset"] { color:white; border-color:white;
+      &:hover, &:focus { background:white; color:#18072d; }
+    }
+    &:disabled { cursor: default;
+      &:hover, &:focus { background:transparent; }
     }
   }
-  .gimmick-desc {
-    text-align: center;
-    margin-bottom: 1em;
-    color: #5bd0ff;
-    font-size: 1.1rem;
-  }
-  .button-holder {
-    text-align: center;
-  }
-  button {
-    font-family: $displayFont;
-    background: transparent;
-    border: 1px solid;
-    color: white;
-    font-size: 1.85rem;
-    padding: 0.25em 1em;
-    cursor: pointer;
-    &[type="submit"] {
-      margin-left: 0.2em;
-      color: #1cb3ef;
-      border-color: #1cb3ef;
-      &:hover,
-      &:focus {
-        background: #1cb3ef;
-        color: #18072d;
-      }
-      &:disabled {
-        color: rgba(#1cb3ef, 0.3);
-        border-color: rgba(#1cb3ef, 0.3);
-      }
-    }
-    &[type="reset"] {
-      color: white;
-      border-color: white;
-      &:hover,
-      &:focus {
-        background: white;
-        color: #18072d;
-      }
-    }
-    &:disabled {
-      cursor: default;
-      &:hover,
-      &:focus {
-        background: transparent;
-      }
-    }
-  }
+
+
 }

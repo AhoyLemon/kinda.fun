@@ -618,7 +618,7 @@
 
   const computedDidYouAlreadyPlayToday = computed(() => {
     const today = new Date();
-    if (gameStatus.value == "gameOver") {
+    if (gameStatus == "gameOver") {
       return true;
     } else if (!player.history || !player.history.lastPlay) {
       return false;

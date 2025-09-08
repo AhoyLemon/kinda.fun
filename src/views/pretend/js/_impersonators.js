@@ -121,7 +121,13 @@ export const impersonators = [
   {
     file: "sammy-davis-jr-6.jpg",
     celebrity: "Sammy Davis Jr.",
-    variants: ["Sammy Davis, Jr", "Sammy Davis Junior", "Sammy Davis Jr.", "Sammie Davis Jr", "Sammy Davis"],
+    variants: [
+      "Sammy Davis, Jr",
+      "Sammy Davis Junior",
+      "Sammy Davis Jr.",
+      "Sammie Davis Jr",
+      "Sammy Davis",
+    ],
     sex: "m",
     url: "http://www.classiqueproductions.com/pages/sammy-davis-jr-impersonator-6.htm",
   },
@@ -317,7 +323,8 @@ export const impersonators = [
     badGuess: [
       {
         guess: "Joey Ramone",
-        feedback: "I know, right? I agree, that looks like Joey Ramone. But it isn't.",
+        feedback:
+          "I know, right? I agree, that looks like Joey Ramone. But it isn't.",
       },
     ],
   },
@@ -488,7 +495,13 @@ export const impersonators = [
   {
     file: "sharon-osbourne.jpg",
     celebrity: "Sharon Osbourne",
-    variants: ["Sharon Osbourn", "Sharon Osborn", "Sharon Osborne", "Sharon Ozborn", "Sharon Ozborne"],
+    variants: [
+      "Sharon Osbourn",
+      "Sharon Osborn",
+      "Sharon Osborne",
+      "Sharon Ozborn",
+      "Sharon Ozborne",
+    ],
     sex: "f",
     url: "http://www.lookalike.com/lookalikes/sharon-osbourne-sd.htm",
   },
@@ -502,7 +515,12 @@ export const impersonators = [
   {
     file: "jack-nicholson.jpg",
     celebrity: "Jack Nicholson",
-    variants: ["Jack Nicolson", "Jack Nicholsen", "Jack Nickelson", "Jack Nichelson"],
+    variants: [
+      "Jack Nicolson",
+      "Jack Nicholsen",
+      "Jack Nickelson",
+      "Jack Nichelson",
+    ],
     sex: "m",
     url: "http://www.lookalike.com/lookalikes/jack-nicholson-rj.htm",
   },
@@ -570,7 +588,14 @@ export const impersonators = [
   {
     file: "philip-seymour-hoffman.jpg",
     celebrity: "Philip Seymour Hoffman",
-    variants: ["Phillip Seymour Hoffman", "Philip Semore Hoffman", "Phillip Semore Hoffman", "Phillip Hoffman", "Philip Hoffman", "Philip Hoffmann"],
+    variants: [
+      "Phillip Seymour Hoffman",
+      "Philip Semore Hoffman",
+      "Phillip Semore Hoffman",
+      "Phillip Hoffman",
+      "Philip Hoffman",
+      "Philip Hoffmann",
+    ],
     sex: "m",
     url: "http://www.tributeproductions.com/celebrity-men",
   },
@@ -646,7 +671,14 @@ export const impersonators = [
   {
     file: "notorious-big.jpg",
     celebrity: "The Notorious B.I.G.",
-    variants: ["Notorious BIG", "Notorious B.I.G", "Biggie Smalls", "Biggy Smalls", "Biggie", "Christopher Wallace"],
+    variants: [
+      "Notorious BIG",
+      "Notorious B.I.G",
+      "Biggie Smalls",
+      "Biggy Smalls",
+      "Biggie",
+      "Christopher Wallace",
+    ],
     sex: "m",
     url: "https://mirrorimages.co/portfolio/biggy-smalls-notorious-b-g/",
   },
@@ -719,7 +751,12 @@ export const impersonators = [
   {
     file: "ricky-gervais.jpg",
     celebrity: "Ricky Gervais",
-    variants: ["Rickie Gervais", "Ricky Gervais", "Rickie Gervase", "David Brent"],
+    variants: [
+      "Rickie Gervais",
+      "Ricky Gervais",
+      "Rickie Gervase",
+      "David Brent",
+    ],
     sex: "m",
     url: "http://www.scarlettentertainment.com/page/ricky-gervais-impersonator",
   },

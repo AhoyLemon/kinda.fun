@@ -105,7 +105,7 @@
     let h;
     if (my.round == 1) {
       // Round 1
-    } else if (warmUp.value) {
+    } else if (warmUp) {
       // You're warming up.
       h = randomFrom(minglingHeadlines);
       ui.headlineText = [h[0], h[1]];
@@ -136,7 +136,7 @@
     if (my.seenCheese == false && my.stepsToCheese < settings.stepsToCheese) {
       cheeseScreen("show");
       setFocus();
-    } else if (dangerZone.value && my.previousMood == "veryBad" && ui.answer == "wrong") {
+    } else if (dangerZone && my.previousMood == "veryBad" && ui.answer == "wrong") {
       specialScreen.show = true;
       specialScreen.type = "lose";
       specialScreen.pic = "img/pretend/gameover/lose-mobile.jpg";
@@ -614,7 +614,7 @@
   });
 
   const dangerZone = computed(() => {
-    if (my.mood == "veryBad" && !warmUp.value) {
+    if (my.mood == "veryBad" && !warmUp) {
       return true;
     } else {
       return false;

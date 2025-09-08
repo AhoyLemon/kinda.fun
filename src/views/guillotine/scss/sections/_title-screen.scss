@@ -1,55 +1,16 @@
-.title-screen {
-  background: rgba(0, 0, 0, 0.94);
-  @include position(fixed, 0, 0, 0, 0);
-  z-index: $z-title-screen;
-  color: $pink;
+.title-screen { background:rgba(0,0,0,0.94); @include position(fixed,0,0,0,0);  z-index: $z-title-screen; color:$pink;
   backdrop-filter: blur(16px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  .inner {
-    @include inner(968px);
-    font-family: $monospaced;
-    position: relative;
-  }
-  h1,
-  h2,
-  h3 {
-    font-family: $monospaced;
-    text-align: center;
-  }
-  h1 {
-    font-weight: 645;
-    font-size: clamp(22px, 6vw, 42px);
-  }
-  h2 {
-    font-weight: 215;
-    font-size: clamp(20px, 5.5vw, 34px);
-  }
-  h3 {
-    font-weight: 315;
-    font-size: clamp(18px, 5vw, 28px);
-  }
+  display:flex; flex-direction: column; justify-content: center;
+  .inner { @include inner(968px); font-family: $monospaced; position: relative; }
+  h1, h2, h3 { font-family: $monospaced; text-align: center; }
+  h1 { font-weight: 645; font-size:clamp(22px,6vw, 42px); }
+  h2 { font-weight: 215; font-size:clamp(20px,5.5vw, 34px); }
+  h3 { font-weight: 315; font-size:clamp(18px,5vw, 28px); }
 
-  .button-holder {
-    text-align: center;
-    padding-top: 3rem;
-    button {
-      font-family: $font-family;
-      font-size: clamp(20px, 5.5vw, 34px);
-      padding: 0.35em 1.25em;
-      border: none;
-      border-radius: 1.25em;
-      cursor: pointer;
-      background: $pink;
-      color: $white;
-      border: 2px solid transparent;
-      transition: all 0.15s linear;
-      &:hover {
-        border-color: $white;
-        background: darken($pink, 3%);
-        text-shadow: 1px 1px 2px $black;
-      }
-    }
+  .button-holder { text-align: center; padding-top: 3rem;
+    button { font-family: $font-family; font-size:clamp(20px,5.5vw, 34px); padding:0.35em 1.25em; border:none; border-radius: 1.25em; cursor: pointer;
+      background:$pink; color:$white;  border:2px solid transparent; transition: all 0.15s linear;
+      &:hover { border-color:$white; background:darken($pink,3%); text-shadow: 1px 1px 2px $black; }
+    } 
   }
 }

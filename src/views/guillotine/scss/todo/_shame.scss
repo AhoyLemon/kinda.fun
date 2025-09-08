@@ -5,15 +5,11 @@
 // at some point in the future.
 
 // EXAMPLES
-.underpecified {
-  a {
-    color: red !important;
-  }
+.underpecified { 
+  a { color:red !important; }
 }
 
-#ThisDivDoesntHaveAClass {
-  color: red;
-}
+#ThisDivDoesntHaveAClass { color: red; }
 
 .so {
   .i {
@@ -23,9 +19,7 @@
           .go.nuts {
             .with.the {
               .cascade[for] {
-                [this="rule"] {
-                  color: red;
-                }
+                [this="rule"] { color:red; }
               }
             }
           }

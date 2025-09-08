@@ -1,3 +1,4 @@
+
 // .fade-enter-active {
 //   transition: all 2s cubic-bezier(.36,.3,.7,1.53);
 // }
@@ -11,7 +12,7 @@
 // }
 
 .boing-enter-active {
-  transition: all 0.65s cubic-bezier(0.36, 0.3, 0.7, 1.53);
+  transition: all 0.65s cubic-bezier(.36,.3,.7,1.53);
 }
 .boing-leave-active {
   transition: all 0.2s ease-out;
@@ -30,23 +31,15 @@
   transition: all 0.35s linear;
   transition-delay: 0.35s;
 }
-.list-enter,
-.list-leave-to {
+.list-enter, .list-leave-to {
   opacity: 0;
 
   transform: translateX(-300px) scale(0.8);
 }
-.list-move {
+.list-move { 
   transition: transform 1s;
 }
 
-.testing-banner.start {
-  font-family: $serif;
-  font-size: 13px;
-  text-transform: uppercase;
-  text-align: center;
-  font-weight: 800;
-  background: yellow;
-  color: black;
-  padding: 10px;
+.testing-banner.start { font-family: $serif; font-size:13px; text-transform: uppercase; text-align: center; font-weight: 800;
+  background:yellow; color:black; padding:10px;
 }

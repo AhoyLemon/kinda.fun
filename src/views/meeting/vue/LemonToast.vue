@@ -1,8 +1,14 @@
 <template>
-  <a href="https://ahoylemon.xyz" target="_blank">
+  <a
+    href="https://ahoylemon.xyz"
+    target="_blank"
+  >
     <div class="container">
       <div class="image-holder">
-        <img src="/svg/lemon.svg" alt="lemon wedge" />
+        <img
+          src="/svg/lemon.svg"
+          alt="lemon wedge"
+        />
       </div>
 
       <div class="text-holder">
