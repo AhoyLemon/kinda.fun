@@ -42,12 +42,7 @@
       transition: all 0.3s linear;
       color: darken($focusColor, 40);
       &:not(disabled) {
-        background-color: lighten(
-          $color: (
-            $focusColor,
-          ),
-          $amount: 40
-        );
+        background-color: lighten($focusColor, 40);
         &:hover,
         &:focus {
           background: $focusColor;
