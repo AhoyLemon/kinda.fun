@@ -144,3 +144,16 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 - **Firebase errors**: Expected in development, provide config for production testing
 
 **Always validate changes with `npm run build && npm run preview` before creating pull requests.**
+
+## Pull Request Guidelines
+
+### PR Creation Requirements
+- **ALWAYS start PR description with `This closes #XX`** when addressing a specific issue to enable automatic issue closure on merge
+- Include clear checklist of completed and remaining work using markdown checklists (- [x] completed, - [ ] pending)
+- Keep PR scope minimal and focused on the specific issue being addressed
+- Reference relevant documentation or architectural decisions in the PR description
+
+### PR Review Process
+- Ensure all validation steps pass before marking PR as ready for review
+- Include screenshots for any UI/visual changes
+- Test thoroughly across different games and scenarios before submitting
