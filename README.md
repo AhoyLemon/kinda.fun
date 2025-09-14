@@ -1,16 +1,18 @@
 ![kinda.fun](https://kinda.fun/img/og-wide.png)
 
 [![Last Deploy](https://img.shields.io/github/last-commit/AhoyLemon/kinda.fun/main?label=Last%20Deploy&style=for-the-badge&color=green)](https://github.com/AhoyLemon/kinda.fun/actions)
-![Tests](https://img.shields.io/badge/Unit%20Tests-Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)
-[![Format](https://img.shields.io/badge/Format-Prettier-ff69b4?style=for-the-badge&logo=prettier&logoColor=white)](https://github.com/AhoyLemon/kinda.fun/actions)
+[![Tests](https://img.shields.io/badge/Unit%20Tests-Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)](vitest.config.js)
+[![Format](https://img.shields.io/badge/Format-Prettier-ff69b4?style=for-the-badge&logo=prettier&logoColor=white)](.prettierrc.json)
 [![Live Site](https://img.shields.io/badge/Live%20Site-kinda.fun-blue?style=for-the-badge)](https://kinda.fun)
 
-[![Vite](https://img.shields.io/badge/Vite-222?style=for-the-badge&labelColor=grey&logo=vite&logoColor=white&color=646CFF)](https://vitejs.dev/)
-[![Vue.js](https://img.shields.io/badge/Vue.js-222?style=for-the-badge&labelColor=grey&logo=vue.js&logoColor=white&color=4FC08D)](https://vuejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-222?style=for-the-badge&labelColor=grey&logo=typescript&logoColor=white&color=3178C6)](https://www.typescriptlang.org/)
-[![Sass](https://img.shields.io/badge/Sass-222?style=for-the-badge&labelColor=grey&logo=sass&logoColor=white&color=CC6699)](https://sass-lang.com/)
-![Firebase](https://img.shields.io/badge/Firebase-222?style=for-the-badge&labelColor=grey&logo=firebase&logoColor=white&color=FFCA28)
-[![Node.js](https://img.shields.io/badge/Node.js-222?style=for-the-badge&labelColor=grey&logo=node.js&logoColor=white&color=339933)](https://nodejs.org/)
+**Made with**
+[![Vite](https://img.shields.io/badge/Vite-000?style=for-the-badge&labelColor=646CFF&logo=vite&logoColor=white&color=222)](https://vitejs.dev/)
+[![Vue.js](https://img.shields.io/badge/Vue.js-000?style=for-the-badge&labelColor=4FC08D&logo=vue.js&logoColor=white&color=222)](https://vuejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-000?style=for-the-badge&labelColor=3178C6&logo=typescript&logoColor=white&color=222)](https://www.typescriptlang.org/)
+[![Sass](https://img.shields.io/badge/Sass-000?style=for-the-badge&labelColor=CC6699&logo=sass&logoColor=white&color=222)](https://sass-lang.com/)
+[![Pug](https://img.shields.io/badge/Pug-000?style=for-the-badge&labelColor=A86454&logo=pug&logoColor=white&color=222)](https://pugjs.org/)
+[![Firebase](https://img.shields.io/badge/Firebase-000?style=for-the-badge&labelColor=FFCA28&logo=firebase&logoColor=white&color=222)](https://firebase.google.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-000?style=for-the-badge&labelColor=339933&logo=node.js&logoColor=white&color=222)](https://nodejs.org/)
 
 [![Contributors](https://img.shields.io/github/contributors/AhoyLemon/kinda.fun?style=for-the-badge&logo=github&color=0074D9)](https://github.com/AhoyLemon/kinda.fun/graphs/contributors)
 [![Stars](https://img.shields.io/github/stars/AhoyLemon/kinda.fun?style=for-the-badge&logo=github&logoColor=white&color=E5E828)](https://github.com/AhoyLemon/kinda.fun/stargazers)
