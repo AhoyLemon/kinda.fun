@@ -1,4 +1,4 @@
-![kinda.fun](https://kinda.fun/img/og-wide.png)
+[![kinda.fun](https://kinda.fun/img/og-wide.png)](https://kinda.fun)
 
 [![Last Deploy](https://img.shields.io/github/last-commit/AhoyLemon/kinda.fun/main?label=Last%20Deploy&style=for-the-badge&color=green)](https://github.com/AhoyLemon/kinda.fun/actions)
 [![Tests](https://img.shields.io/badge/Unit%20Tests-Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)](vitest.config.js)
