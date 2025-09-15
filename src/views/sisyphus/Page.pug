@@ -9,7 +9,10 @@ include ../../shared/pug/_variables.pug
 doctype html
 html(lang="en")
   head
+
     include ../../shared/pug/_meta.pug
+    // Prevent zooming on mobile
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
 
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.gstatic.com")
@@ -35,6 +38,7 @@ html(lang="en")
     meta(property="og:email" content=email) 
   body
     #app
+
     script(type="module" src="/src/entries/sisyphus.js")
 
     // Schema.org

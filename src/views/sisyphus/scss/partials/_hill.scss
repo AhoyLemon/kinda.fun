@@ -81,6 +81,7 @@ $desktopScene: ($rock * 5);
       border: none;
       padding: 0;
       outline: none;
+      -webkit-tap-highlight-color: transparent;
       &::-moz-focus-inner {
         border: 0;
       }
@@ -162,10 +163,15 @@ $desktopScene: ($rock * 5);
 }
 
 @media screen and (max-width: $mobile-max) {
+  main {
+    height: calc(100dvh - 140px);
+    display: flex;
+    align-items: flex-end;
+  }
   .scene {
-    margin-top: 50px;
     figure {
-      height: 99vw;
+      width: 100dvw;
+      aspect-ratio: 1/1;
     }
     figcaption {
       height: 14vw;
@@ -177,7 +183,7 @@ $desktopScene: ($rock * 5);
 @media screen and (min-width: $desktop-min) {
   main {
     @include flex-center();
-    height: 99vh;
+    min-height: 100dvh;
   }
 
   .scene {
