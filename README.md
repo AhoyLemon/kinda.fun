@@ -14,12 +14,12 @@
 [![Firebase](https://img.shields.io/badge/Firebase-000?style=for-the-badge&labelColor=FFCA28&logo=firebase&logoColor=white&color=222)](https://firebase.google.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-000?style=for-the-badge&labelColor=339933&logo=node.js&logoColor=white&color=222)](https://nodejs.org/)
 
-[![Contributors](https://img.shields.io/github/contributors/AhoyLemon/kinda.fun?style=for-the-badge&logo=github&color=0074D9)](https://github.com/AhoyLemon/kinda.fun/graphs/contributors)
-[![Stars](https://img.shields.io/github/stars/AhoyLemon/kinda.fun?style=for-the-badge&logo=github&logoColor=white&color=E5E828)](https://github.com/AhoyLemon/kinda.fun/stargazers)
-[![Issues](https://img.shields.io/github/issues/AhoyLemon/kinda.fun?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AhoyLemon/kinda.fun/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/AhoyLemon/kinda.fun?style=for-the-badge&logo=github)](https://github.com/AhoyLemon/kinda.fun/pulls)
+[![Contributors](https://img.shields.io/github/contributors/AhoyLemon/kinda.fun?style=for-the-badge&color=0074D9)](https://github.com/AhoyLemon/kinda.fun/graphs/contributors)
+[![Stars](https://img.shields.io/github/stars/AhoyLemon/kinda.fun?style=for-the-badge&logoColor=white&color=E5E828)](https://github.com/AhoyLemon/kinda.fun/stargazers)
+[![Issues](https://img.shields.io/github/issues-raw/AhoyLemon/kinda.fun?style=for-the-badge&logoColor=white)](https://github.com/AhoyLemon/kinda.fun/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr-closed-raw/AhoyLemon/kinda.fun?style=for-the-badge&label=Pull%20Requests&color=690869)](https://github.com/AhoyLemon/kinda.fun/pulls)
 [![Commit Activity](https://img.shields.io/github/commit-activity/m/AhoyLemon/kinda.fun?style=for-the-badge)](https://github.com/AhoyLemon/kinda.fun/commits/main)
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-white?style=for-the-badge&logo=creativecommons&logoColor=white)](LICENSE)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-white?style=for-the-badge&logoColor=white&)](LICENSE)
 [![Docs](https://img.shields.io/badge/Docs-Available-4FC08D?style=for-the-badge&logo=readthedocs&logoColor=white)](docs/)
 
 [![These games are by Lemon](https://img.shields.io/badge/These%20games%20are%20by-Lemon-E5E828?style=for-the-badge&logo=person&logoColor=313131)](https://ahoylemon.xyz)
