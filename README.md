@@ -6,6 +6,7 @@
 [![Live Site](https://img.shields.io/badge/Live%20Site-kinda.fun-blue?style=for-the-badge)](https://kinda.fun)
 
 **Made with**
+
 [![Vite](https://img.shields.io/badge/Vite-000?style=for-the-badge&labelColor=646CFF&logo=vite&logoColor=white&color=222)](https://vitejs.dev/)
 [![Vue.js](https://img.shields.io/badge/Vue.js-000?style=for-the-badge&labelColor=4FC08D&logo=vue.js&logoColor=white&color=222)](https://vuejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-000?style=for-the-badge&labelColor=3178C6&logo=typescript&logoColor=white&color=222)](https://www.typescriptlang.org/)
