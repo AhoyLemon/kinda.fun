@@ -21,10 +21,6 @@ aside.store {
       background: linear-gradient(to bottom, saturate(#ff416c, 50%), saturate(#ff4b2b, 50%));
       transform: scale(0.95);
     }
-
-    &.buyable {
-      background-color: red;
-    }
     .price {
       font-size: 240%;
       text-align: left;
