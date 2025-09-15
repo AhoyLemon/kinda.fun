@@ -217,6 +217,19 @@
   }
 
   function preachSermon() {
+    // ===== Multipliers and effect variables (easy to tweak) =====
+    const MULTIPLIERS = {
+      likedTag: 1,
+      likedTagDoubled: 2,
+      dislikedTag: 1,
+      dislikedTagHalved: 0.5,
+      dislikedTagDoubled: 2,
+      likedReligion: 3,
+      likedReligionDoubled: 2,
+      dislikedReligion: 3,
+      dislikedReligionDoubled: 2,
+    };
+
     // Track score changes for yesterday's effect
     const scoreChanges: Record<number, { id: number; name: string; scoreChange: number; changes: string[] }> = {};
 
@@ -233,39 +246,33 @@
     // Process liked tags
     my.sermonToday.likedBy.tags.forEach((tagObj) => {
       const tag = tagObj.tag;
-      const weight = tagObj.weight;
+      let effect = tagObj.weight * MULTIPLIERS.likedTag;
+      let doubled = false;
 
       // Check if this tag is in mixed messages (if so, skip)
       const isMixed = my.sermonToday.mixedMessages.tags.some((mixedTag) => mixedTag.tag === tag);
       if (isMixed) return;
 
-      // Find religions that have this tag in their likes or dislikes
       religions.forEach((religion) => {
         const religionScore = scoreChanges[religion.id];
-        if (!religionScore) return; // Guard against undefined
+        if (!religionScore) return;
 
-        let effect = weight;
-        let doubled = false;
+        let thisEffect = effect;
         if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religion.id === (my.religion as Religion).id) {
-          effect *= 2;
+          thisEffect *= MULTIPLIERS.likedTagDoubled;
           doubled = true;
         }
         if (religion.likes.includes(tag as any)) {
-          religionScore.scoreChange += effect;
-          religionScore.changes.push(`+${effect} for liking ${tag}${doubled ? " (doubled for your religion)" : ""}`);
-
-          // Update actual scorecard
+          religionScore.scoreChange += thisEffect;
+          religionScore.changes.push(`+${thisEffect} for liking ${tag}${doubled ? " (doubled for your religion)" : ""}`);
           const scorecardEntry = my.religiousScorecard.find((r) => r.id === religion.id);
-          if (scorecardEntry) scorecardEntry.score += effect;
+          if (scorecardEntry) scorecardEntry.score += thisEffect;
         }
-
         if (religion.dislikes.includes(tag as any)) {
-          religionScore.scoreChange -= effect;
-          religionScore.changes.push(`-${effect} for disliking ${tag}${doubled ? " (doubled for your religion)" : ""}`);
-
-          // Update actual scorecard
+          religionScore.scoreChange -= thisEffect;
+          religionScore.changes.push(`-${thisEffect} for disliking ${tag}${doubled ? " (doubled for your religion)" : ""}`);
           const scorecardEntry = my.religiousScorecard.find((r) => r.id === religion.id);
-          if (scorecardEntry) scorecardEntry.score -= effect;
+          if (scorecardEntry) scorecardEntry.score -= thisEffect;
         }
       });
     });
@@ -273,42 +280,33 @@
     // Process disliked tags (halved effect)
     my.sermonToday.dislikedBy.tags.forEach((tagObj) => {
       const tag = tagObj.tag;
-      const weight = Math.floor(tagObj.weight / 2); // Halved effect
+      let effect = Math.floor(tagObj.weight * MULTIPLIERS.dislikedTagHalved);
+      let doubled = false;
+      if (effect === 0) return;
 
-      // Skip if weight is zero
-      if (weight === 0) return;
-
-      // Check if this tag is in mixed messages (if so, skip)
       const isMixed = my.sermonToday.mixedMessages.tags.some((mixedTag) => mixedTag.tag === tag);
       if (isMixed) return;
 
-      // Find religions that have this tag in their likes or dislikes
       religions.forEach((religion) => {
         const religionScore = scoreChanges[religion.id];
-        if (!religionScore) return; // Guard against undefined
+        if (!religionScore) return;
 
-        let effect = weight;
-        let doubled = false;
+        let thisEffect = effect * MULTIPLIERS.dislikedTag;
         if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religion.id === (my.religion as Religion).id) {
-          effect *= 2;
+          thisEffect *= MULTIPLIERS.dislikedTagDoubled;
           doubled = true;
         }
         if (religion.likes.includes(tag as any)) {
-          religionScore.scoreChange -= effect;
-          religionScore.changes.push(`-${effect} for attacking ${tag} (which they like)${doubled ? " (doubled for your religion)" : ""}`);
-
-          // Update actual scorecard
+          religionScore.scoreChange -= thisEffect;
+          religionScore.changes.push(`-${thisEffect} for attacking ${tag} (which they like)${doubled ? " (doubled for your religion)" : ""}`);
           const scorecardEntry = my.religiousScorecard.find((r) => r.id === religion.id);
-          if (scorecardEntry) scorecardEntry.score -= effect;
+          if (scorecardEntry) scorecardEntry.score -= thisEffect;
         }
-
         if (religion.dislikes.includes(tag as any)) {
-          religionScore.scoreChange += effect;
-          religionScore.changes.push(`+${effect} for attacking ${tag} (which they dislike)${doubled ? " (doubled for your religion)" : ""}`);
-
-          // Update actual scorecard
+          religionScore.scoreChange += thisEffect;
+          religionScore.changes.push(`+${thisEffect} for attacking ${tag} (which they dislike)${doubled ? " (doubled for your religion)" : ""}`);
           const scorecardEntry = my.religiousScorecard.find((r) => r.id === religion.id);
-          if (scorecardEntry) scorecardEntry.score += effect;
+          if (scorecardEntry) scorecardEntry.score += thisEffect;
         }
       });
     });
@@ -316,51 +314,41 @@
     // Process liked religions
     my.sermonToday.likedBy.religions.forEach((religionObj) => {
       const religionId = religionObj.id;
-      const weight = religionObj.weight * 3;
-
-      // Check if this religion is in mixed messages (if so, skip)
+      let effect = religionObj.weight * MULTIPLIERS.likedReligion;
+      let doubled = false;
       const isMixed = my.sermonToday.mixedMessages.religions.some((mixedRel) => mixedRel.id === religionId);
       if (isMixed) return;
-
       const religionScore = scoreChanges[religionId];
-      if (!religionScore) return; // Guard against undefined
-      let effect = weight;
-      let doubled = false;
+      if (!religionScore) return;
+      let thisEffect = effect;
       if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religionId === (my.religion as Religion).id) {
-        effect *= 2;
+        thisEffect *= MULTIPLIERS.likedReligionDoubled;
         doubled = true;
       }
-      religionScore.scoreChange += effect;
-      religionScore.changes.push(`+${effect} for praising ${religionObj.name}${doubled ? " (doubled for your religion)" : ""}`);
-
-      // Update actual scorecard
+      religionScore.scoreChange += thisEffect;
+      religionScore.changes.push(`+${thisEffect} for praising ${religionObj.name}${doubled ? " (doubled for your religion)" : ""}`);
       const scorecardEntry = my.religiousScorecard.find((r) => r.id === religionId);
-      if (scorecardEntry) scorecardEntry.score += effect;
+      if (scorecardEntry) scorecardEntry.score += thisEffect;
     });
 
     // Process disliked religions
     my.sermonToday.dislikedBy.religions.forEach((religionObj) => {
       const religionId = religionObj.id;
-      const weight = religionObj.weight * 3;
-
-      // Check if this religion is in mixed messages (if so, skip)
+      let effect = religionObj.weight * MULTIPLIERS.dislikedReligion;
+      let doubled = false;
       const isMixed = my.sermonToday.mixedMessages.religions.some((mixedRel) => mixedRel.id === religionId);
       if (isMixed) return;
-
       const religionScore = scoreChanges[religionId];
-      if (!religionScore) return; // Guard against undefined
-      let effect = weight;
-      let doubled = false;
+      if (!religionScore) return;
+      let thisEffect = effect;
       if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religionId === (my.religion as Religion).id) {
-        effect *= 2;
+        thisEffect *= MULTIPLIERS.dislikedReligionDoubled;
         doubled = true;
       }
-      religionScore.scoreChange -= effect;
-      religionScore.changes.push(`-${effect} for condemning ${religionObj.name}${doubled ? " (doubled for your religion)" : ""}`);
-
-      // Update actual scorecard
+      religionScore.scoreChange -= thisEffect;
+      religionScore.changes.push(`-${thisEffect} for condemning ${religionObj.name}${doubled ? " (doubled for your religion)" : ""}`);
       const scorecardEntry = my.religiousScorecard.find((r) => r.id === religionId);
-      if (scorecardEntry) scorecardEntry.score -= effect;
+      if (scorecardEntry) scorecardEntry.score -= thisEffect;
     });
 
     // Create yesterday's effect summary, sorted by scoreChange descending
@@ -400,7 +388,6 @@
       let followersDelta = effect.scoreChange * Math.sqrt(weight) * (my.preacherStrengths?.followers || 1);
       // Always round to nearest integer
       followersDelta = Math.round(followersDelta);
-      // Cap removed: allow large negative follower changes
 
       // Get before value
       let followerObj = my.followers.find((f: any) => f.id === id) as { id: number; followers: number } | undefined;

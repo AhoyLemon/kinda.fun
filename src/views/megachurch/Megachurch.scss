@@ -17,47 +17,37 @@
 @import "scss/choose-religion";
 @import "scss/sermon";
 @import "scss/diagnosis";
+@import "scss/preaching";
 @import "scss/weekly-report";
 @import "scss/sermon-results";
 
-section.preaching {
-  min-height: 100dvh;
-  background-color: #353535;
-  background-image: url("/img/megachurch/bg/pexels-dhenry-9124344.jpg");
-  background-size: cover;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+// section.diagnosis {
+//   width: 100%;
+//   max-width: 600px;
 
-section.diagnosis {
-  width: 100%;
-  max-width: 600px;
+//   ol {
+//     list-style: decimal;
+//     padding-left: 1em;
+//     padding-bottom: 1em;
+//     display: flex;
+//     flex-direction: column;
+//     gap: 8px;
+//     font-size: 1.45rem;
+//     li::marker {
+//       font-size: 75%;
+//       font-weight: 700;
+//     }
+//   }
+//   p {
+//     font-size: 1.25rem;
+//     margin-bottom: 0.5em;
+//     line-height: 140%;
+//     strong {
+//       display: inline-block;
+//     }
+//   }
 
-  ol {
-    list-style: decimal;
-    padding-left: 1em;
-    padding-bottom: 1em;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-size: 1.45rem;
-    li::marker {
-      font-size: 75%;
-      font-weight: 700;
-    }
-  }
-  p {
-    font-size: 1.25rem;
-    margin-bottom: 0.5em;
-    line-height: 140%;
-    strong {
-      display: inline-block;
-    }
-  }
-
-  .button-holder {
-    @extend %buttons;
-  }
-}
+//   .button-holder {
+//     @extend %buttons;
+//   }
+// }
