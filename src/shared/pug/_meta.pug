@@ -1,5 +1,8 @@
 meta(charset="UTF-8")
-meta(name="viewport" content="width=device-width, initial-scale=1.0")
+if viewportContent
+  meta(name="viewport" content=viewportContent)
+else
+  meta(name="viewport" content="width=device-width, initial-scale=1.0")
 title #{name} | #{desc}
 meta(name="description" content=desc)
 meta(http-equiv="last-modified" content=lastUpdated)
