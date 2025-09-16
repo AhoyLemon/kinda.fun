@@ -43,7 +43,7 @@ main.sort-three(v-if="game.started && !game.finalRound && !game.over")
 
     // Correct Answers
     .list-group.correct(v-if="computedGuessingPhase == 'answers' || computedGuessingPhase == 'newMail' || computedGuessingPhase == 'finished'")
-      figure.cameo.off-table(v-for="(element, index) in round.correctSide" :rank="(index + 1)" :key="index")
+      figure.cameo.off-table(v-for="(element, index) in round.correctSide" :rank="(index + 1)" :key="index" :id="'CorrectAnswer'+(index + 1)")
         .image-holder
           img(:src="'img/cameos/'+element.slug+'.jpg'")
         figcaption
@@ -55,7 +55,14 @@ main.sort-three(v-if="game.started && !game.finalRound && !game.over")
             form.guess-value(@submit.prevent="submitCameoValueGuess()" v-if="ui.itsTimeToGuessValue")
               .value 
                 span $
-                input(placeholder="???" type="number" v-model="ui.valueGuess" :min="ui.valueGuessMin" :max="ui.valueGuessMax")
+                input(
+                  ref="valueGuessInput"
+                  :placeholder="ui.valueGuessPlaceholder"
+                  type="number"
+                  v-model="ui.valueGuess"
+                  :min="ui.valueGuessMin"
+                  :max="ui.valueGuessMax"
+                )
                 button(v-if="ui.valueGuess > 0")
                   svg( fill="#1A1A1A" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 245" fill-rule="evenodd" clip-rule="evenodd" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality")
                     path(d="M122 0C55 0 0 55 0 122c0 34 14 65 36 87s53 36 86 36c68 0 123-55 123-123C245 55 190 0 122 0zM62 103l36 36 85-85 26 26L98 191l-62-62 26-26z" fill="#1a1a1a" fill-rule="nonzero")
