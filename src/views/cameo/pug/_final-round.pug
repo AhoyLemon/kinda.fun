@@ -14,8 +14,8 @@ main.final-round(v-if="game.started && game.finalRound")
       @end="isDragging = false"
     )
       template(#item="{element}")
-        .cameo.list-group-item
-          figure
+        figure.cameo.list-group-item
+          .image-holder
             img(:src="'img/cameos/'+element.slug+'.jpg'")
           figcaption
             .name {{ element.name }}
@@ -33,8 +33,8 @@ main.final-round(v-if="game.started && game.finalRound")
       @end="isDragging = false"
     )
       template(#item="{element}")
-        .cameo.list-group-item
-          figure
+        figure.cameo.list-group-item
+          .image-holder
             img(:src="'img/cameos/'+element.slug+'.jpg'")
           figcaption
             .name {{ element.name }}

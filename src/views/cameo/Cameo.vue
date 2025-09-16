@@ -79,6 +79,7 @@
     valueGuess: 0,
     valueGuessMax: null,
     valueGuessMin: null,
+    valueGuessPlaceholder: null,
     animateCameoIndex: 0,
     itsTimeToGuessValue: false,
     showNextRoundButton: false,
@@ -264,14 +265,7 @@
   };
 
   const submitSortOrder = () => {
-    const self = this;
     ui.orderConfirmed = true;
-    if (round.guessValueIndex != 2) {
-      const i = round.guessValueIndex + 1;
-      ui.valueGuess = round.correctSide[i].value + 1;
-    } else {
-      ui.valueGuess = 1;
-    }
 
     if (round.guessValueIndex != 0) {
       ui.valueGuessMax = round.correctSide[round.guessValueIndex - 1].value - 1;
@@ -282,8 +276,9 @@
     if (round.guessValueIndex != 2) {
       ui.valueGuessMin = round.correctSide[round.guessValueIndex + 1].value + 1;
     } else {
-      ui.valueGuessMin = "";
+      ui.valueGuessMin = 1;
     }
+    ui.valueGuessPlaceholder = ui.valueGuessMin;
 
     ui.animateCameoIndex = 0;
 
@@ -299,7 +294,9 @@
   };
 
   const submitCameoValueGuess = async () => {
-    const self = this;
+    if (!ui.valueGuess || ui.valueGuess < ui.valueGuessMin || (ui.valueGuessMax && ui.valueGuess > ui.valueGuessMax)) {
+      ui.valueGuess = ui.valueGuessMin;
+    }
     const n = round.guessValueIndex;
     let offBy = Math.abs(ui.valueGuess - round.correctSide[round.guessValueIndex].value);
 
@@ -433,7 +430,9 @@
     showTheGuesses();
 
     // Show a toast...
-    toast.info(`Round ${round.number} begins...`);
+    toast.info(`Round ${round.number} begins...`, {
+      position: POSITION.BOTTOM_LEFT,
+    });
   };
 
   const showAGuessCard = () => {
@@ -751,7 +750,8 @@
     const self = this;
     ui.orderConfirmed = false;
     ui.showDragHelp = false;
-    ui.valueGuess = 0;
+    ui.valueGuess = "";
+    ui.valueGuessPlaceholder = "???";
     ui.valueGuessMax = null;
     ui.valueGuessMin = null;
     ui.animateCameoIndex = 0;
