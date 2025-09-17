@@ -59,7 +59,7 @@ main.final-round {
 
   .cameo {
     margin-bottom: 40px;
-    figure {
+    .image-holder {
       margin-bottom: -100px;
       margin-right: 10px;
       text-align: right;
@@ -142,7 +142,7 @@ main.final-round {
       padding-right: 70px;
       min-height: 105px;
     }
-    figure img {
+    .image-holder img {
       width: 80px;
       height: 80px;
     }
@@ -151,7 +151,7 @@ main.final-round {
 
 @media (max-width: 520px) {
   main.final-round .cameo {
-    figure {
+    .image-holder {
       margin-bottom: -20px;
       text-align: center;
       img {

@@ -6,11 +6,11 @@
   "description": "Games made by Lemon.",
   "scripts": {
     "dev": "node scripts/npm-run/dev.js",
-    "dev:client": "vite",
+    "dev:client": "vite --host",
     "dev:server": "concurrently --prefix none \"vite\" \"node src/server/express.js\" || (exit 0)",
     "build:pages": "node scripts/npm-run/build-pages.js",
     "build": "node scripts/update-sitemap.js && vite build && npm run build:pages && cp dist/home.html dist/index.html",
-    "preview": "vite preview",
+    "preview": "vite preview --host",
     "test:unit": "vitest",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
