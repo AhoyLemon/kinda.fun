@@ -59,7 +59,19 @@
 
   function provideTopicOptions(index: number): typeof themes {
     const selectedIds = ui.selectedTopics.map((id, i) => (i !== index && id !== null && id !== 0 ? id : null)).filter((id): id is number => id !== null);
-    return shuffle(themes).filter((theme) => !selectedIds.includes(theme.id));
+
+    // Map and mark topics preached yesterday using computedTopicsYesterday
+    const themedWithYesterday = themes.map((theme) => {
+      if (computedTopicsYesterday.value.includes(theme.id)) {
+        return {
+          ...theme,
+          isPreachedYesterday: true,
+        };
+      }
+      return theme;
+    });
+
+    return shuffle(themedWithYesterday).filter((theme) => !selectedIds.includes(theme.id));
   }
 
   function chooseReligion(religionId: number) {
@@ -362,12 +374,11 @@
       return updated ? { ...entry, score: entry.score } : entry;
     });
 
-    console.log("Yesterday's Effect:", yesterdaysEffect);
+    my.sermonYesterday = Object.assign({}, my.sermonToday);
     my.effectYesterday = yesterdaysEffect;
 
     // Move to next phase
     createSermonEffect();
-    // ================= CREATE SERMON EFFECT =================
   }
 
   function createSermonEffect() {
@@ -496,20 +507,6 @@
     ui.view = "sermon";
   }
 
-  // // Helper to get top N from weighted arrays
-  // function getTopNWeighted<T extends { weight: number }>(arr: T[], n: number): T[] {
-  //   if (!arr.length) return [];
-  //   const sorted = arr.slice().sort((a, b) => b.weight - a.weight);
-  //   if (sorted.length <= n) return sorted;
-  //   const cutoff = sorted[n - 1].weight;
-  //   const candidates = sorted.filter((item) => item.weight >= cutoff);
-  //   if (candidates.length > n) {
-  //     const shuffled = candidates.sort(() => Math.random() - 0.5);
-  //     return shuffled.slice(0, n);
-  //   }
-  //   return candidates.slice(0, n);
-  // }
-
   // ================= INITIALISE STUFF AT GAME START =================
   function initialiseScoreCard() {
     my.religiousScorecard = religions.map((r) => ({
@@ -544,6 +541,22 @@
     return sorted;
   });
 
+  const computedTopicsYesterday = computed(() => {
+    if (!my.sermonYesterday || !Array.isArray(my.sermonYesterday.topics) || my.sermonYesterday.topics.length === 0) {
+      return [];
+    }
+    return my.sermonYesterday.topics
+      .map((t: any) => {
+        if (t && typeof t === "object") {
+          if ("id" in t) return t.id;
+          if ("_custom" in t && t._custom.value && "id" in t._custom.value) return t._custom.value.id;
+        }
+        return null;
+      })
+      .filter((id: any): id is number => typeof id === "number");
+  });
+
+  // ================= LIFECYCLE =================
   onMounted(() => {
     initialiseScoreCard();
     initialiseFollowers();

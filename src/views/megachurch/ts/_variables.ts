@@ -56,6 +56,21 @@ export const my = reactive<My>({
       religions: [],
     },
   },
+  sermonYesterday: {
+    topics: [],
+    likedBy: {
+      tags: [],
+      religions: [],
+    },
+    dislikedBy: {
+      tags: [],
+      religions: [],
+    },
+    mixedMessages: {
+      tags: [],
+      religions: [],
+    },
+  },
   effectYesterday: [],
   religiousScorecard: [],
   followerChanges: [],
@@ -76,6 +91,7 @@ interface My {
   followerCount: number; // How many followers you have right now.
   followers: object[]; // List of followers, by religion
   sermonToday: Sermon; // What will/did you preach today.
+  sermonYesterday: Sermon; // What did you preach yesterday.
   effectYesterday?: any[]; // What effect did your last sermon have?
   religiousScorecard?: any[]; // what does each religion think of you?
   followerChanges?: Array<{

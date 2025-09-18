@@ -71,7 +71,13 @@ section.diagnosis {
       .description {
         padding-left: 1em;
         font-size: 0.875rem;
-        line-height: 140%;
+        line-height: 160%;
+      }
+      .repeat {
+        padding-left: 1em;
+        font-size: 0.875rem;
+        line-height: 160%;
+        color: darken($red, 20%);
       }
     }
   }

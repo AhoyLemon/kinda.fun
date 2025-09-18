@@ -17,8 +17,9 @@ section.sermon(v-if="ui.view === 'sermon'")
         label="title"
         mode="single"
       )
-      //.explainer(v-if="ui.selectedTopics[0]")
-        p {{showThemeDescription(ui.selectedTopics[0])}}
+        template(#option="{ option }")
+          span.preached-yesterday(v-if="option.isPreachedYesterday ? 'preached-yesterday-option' : ''") {{ option.title }} | PREACHED YESTERDAY
+          span(v-else) {{option.title}}
 
     fieldset
       label.required Second Topic
@@ -32,8 +33,9 @@ section.sermon(v-if="ui.view === 'sermon'")
         label="title"
         mode="single"
       )
-      //.explainer(v-if="ui.selectedTopics[1]")
-        p {{showThemeDescription(ui.selectedTopics[1])}}
+        template(#option="{ option }")
+          span.preached-yesterday(v-if="option.isPreachedYesterday ? 'preached-yesterday-option' : ''") {{ option.title }} | PREACHED YESTERDAY
+          span(v-else) {{option.title}}
     fieldset
       label.required Third Topic
       Multiselect(
@@ -46,8 +48,9 @@ section.sermon(v-if="ui.view === 'sermon'")
         label="title"
         mode="single"
       )
-      //.explainer(v-if="ui.selectedTopics[2]")
-        p {{showThemeDescription(ui.selectedTopics[2])}}
+        template(#option="{ option }")
+          span.preached-yesterday(v-if="option.isPreachedYesterday ? 'preached-yesterday-option' : ''") {{ option.title }} | PREACHED YESTERDAY
+          span(v-else) {{option.title}}
 
     .button-holder
       button(type="submit" :disabled="!ui.selectedTopics[0] || !ui.selectedTopics[1] || !ui.selectedTopics[2]") Create Sermon

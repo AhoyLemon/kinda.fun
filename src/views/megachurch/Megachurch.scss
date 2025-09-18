@@ -20,34 +20,3 @@
 @import "scss/preaching";
 @import "scss/weekly-report";
 @import "scss/sermon-results";
-
-// section.diagnosis {
-//   width: 100%;
-//   max-width: 600px;
-
-//   ol {
-//     list-style: decimal;
-//     padding-left: 1em;
-//     padding-bottom: 1em;
-//     display: flex;
-//     flex-direction: column;
-//     gap: 8px;
-//     font-size: 1.45rem;
-//     li::marker {
-//       font-size: 75%;
-//       font-weight: 700;
-//     }
-//   }
-//   p {
-//     font-size: 1.25rem;
-//     margin-bottom: 0.5em;
-//     line-height: 140%;
-//     strong {
-//       display: inline-block;
-//     }
-//   }
-
-//   .button-holder {
-//     @extend %buttons;
-//   }
-// }

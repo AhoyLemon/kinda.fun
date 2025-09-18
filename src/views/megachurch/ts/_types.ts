@@ -73,6 +73,7 @@ export interface SermonTopic {
   id: number;
   title: string;
   description: string;
+  isPreachedYesterday?: boolean;
 }
 
 export interface Sermon {

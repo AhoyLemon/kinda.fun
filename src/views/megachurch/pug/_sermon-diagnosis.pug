@@ -8,7 +8,8 @@ section.diagnosis(v-if="ui.view === 'sermon-confirm'")
           ol
             li(v-for="topic in my.sermonToday.topics") 
               .title {{topic.title}}
-              .description {{topic.description}}
+              .repeat(v-if="computedTopicsYesterday.includes(topic.id)") You preached this topic yesterday. As such, your current followers will be less moved by this message today.
+              .description(v-else) {{topic.description}}
       dl.tags.liked
         dt primary messages
         dd
