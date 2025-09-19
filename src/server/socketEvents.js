@@ -112,13 +112,7 @@ export const socketEvents = (io, socket) => {
 
     addOneInDatabase("cameoGames", "GamesFinished");
     addOneInDatabase("cameoGames", "GamesFinished");
-    newCameoPlayerScore(
-      msg.playerScore,
-      msg.correctSorts,
-      msg.averageValuationOffset,
-      msg.birthdayWishes.length,
-      msg.exceededBudget,
-    );
+    newCameoPlayerScore(msg.playerScore, msg.correctSorts, msg.averageValuationOffset, msg.birthdayWishes.length, msg.exceededBudget);
 
     msg.cameoHistory.forEach((cameo, index) => {
       if (cameo.correct) {
@@ -149,9 +143,7 @@ export const socketEvents = (io, socket) => {
 
   socket.on("sisyphusRollback", (msg) => {
     incrementDatabase("sisyphusCounts", "Rock Rolled Downhill");
-    console.table([
-      { game: `SISYPHUS CLICKER`, action: `Rock Rolled Downhill` },
-    ]);
+    console.table([{ game: `SISYPHUS CLICKER`, action: `Rock Rolled Downhill` }]);
   });
 
   socket.on("sisyphusEarnedCheevo", (msg) => {
@@ -390,10 +382,7 @@ export const socketEvents = (io, socket) => {
 
       if (msg.newRule.type == "Ban A Letter" && msg.newRule.inputValue) {
         incrementDatabase("invalidBannedLetters", msg.newRule.inputValue);
-      } else if (
-        msg.newRule.type == "Demand A Letter" &&
-        msg.newRule.inputValue
-      ) {
+      } else if (msg.newRule.type == "Demand A Letter" && msg.newRule.inputValue) {
         incrementDatabase("invalidDemandedLetters", msg.newRule.inputValue);
       }
     }
@@ -414,11 +403,7 @@ export const socketEvents = (io, socket) => {
     });
 
     if (msg.newBug) {
-      incrementDatabaseWithChallenge(
-        "invalidBugs",
-        msg.challengeName,
-        msg.newBug,
-      );
+      incrementDatabaseWithChallenge("invalidBugs", msg.challengeName, msg.newBug);
     }
   });
 
@@ -452,11 +437,7 @@ export const socketEvents = (io, socket) => {
     });
 
     if (msg.pwAttempt) {
-      incrementDatabaseWithChallenge(
-        "invalidCrashes",
-        msg.challengeName,
-        msg.pwAttempt,
-      );
+      incrementDatabaseWithChallenge("invalidCrashes", msg.challengeName, msg.pwAttempt);
     }
   });
 
@@ -472,11 +453,7 @@ export const socketEvents = (io, socket) => {
     });
 
     if (msg.pwAttempt) {
-      incrementDatabaseWithChallenge(
-        "invalidSuccessfulPasswords",
-        msg.challengeName,
-        msg.pwAttempt,
-      );
+      incrementDatabaseWithChallenge("invalidSuccessfulPasswords", msg.challengeName, msg.pwAttempt);
     }
   });
 
@@ -526,9 +503,7 @@ export const socketEvents = (io, socket) => {
   });
 
   socket.on("wrongestDonePresenting", (msg) => {
-    console.log(
-      msg.roomCode + " - " + msg.activePlayerName + " is done presenting",
-    );
+    console.log(msg.roomCode + " - " + msg.activePlayerName + " is done presenting");
 
     io.in(msg.roomCode).emit("wrongestDonePresenting", {
       activePlayerIndex: msg.activePlayerIndex,

@@ -1,16 +1,7 @@
 <template>
-  <div
-    class="container"
-    :class="{ 'points-and-text': points }"
-  >
-    <div
-      class="point-holder"
-      v-if="points"
-    >
-      <div
-        class="points"
-        :class="{ positive: points > 0, negative: points < 0 }"
-      >
+  <div class="container" :class="{ 'points-and-text': points }">
+    <div class="point-holder" v-if="points">
+      <div class="points" :class="{ positive: points > 0, negative: points < 0 }">
         {{ points }}
       </div>
     </div>
@@ -22,17 +13,10 @@
     </div> -->
     <div class="text-holder">
       <div class="text">
-        <div
-          v-if="title"
-          class="title"
-        >
+        <div v-if="title" class="title">
           {{ title }}
         </div>
-        <div
-          v-if="message"
-          class="message"
-          v-html="message"
-        ></div>
+        <div v-if="message" class="message" v-html="message"></div>
       </div>
     </div>
   </div>

@@ -2,10 +2,9 @@ $notifyRadius: 3rem;
 $notifyIconSize: 60px;
 
 .Vue-Toastification__toast {
-  
   &.cheevo-toast {
     background-color: $yellow;
-    color:$black;
+    color: $black;
   }
 
   .cheevo-toast-text {
@@ -13,34 +12,41 @@ $notifyIconSize: 60px;
     grid-template-columns: 1fr 40px;
     max-width: 330px;
   }
-  .title { 
+  .title {
     font-family: $font;
     display: flex;
     align-items: center;
   }
-  .points-holder { text-align: center; }
-  .points { 
-    background:$black;
-    color:$yellow;
-    display:inline-flex;
-    width:2.25rem; height:2.25rem; border-radius: 50%;
-    padding-bottom: .1em;
+  .points-holder {
+    text-align: center;
+  }
+  .points {
+    background: $black;
+    color: $yellow;
+    display: inline-flex;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    padding-bottom: 0.1em;
     align-items: center;
     justify-content: center;
     font-weight: 750;
     font-family: $headline;
-    font-size:1.5em;
+    font-size: 1.5em;
     &.negative-points {
       background-color: $red;
     }
   }
-  .message { font-style: italic; grid-column: span 2; }
+  .message {
+    font-style: italic;
+    grid-column: span 2;
+  }
   .Vue-Toastification__close-button {
-    color:$black;
+    color: $black;
   }
 }
 
-// .ui-pnotify { 
+// .ui-pnotify {
 //   .brighttheme.ui-pnotify-container { padding-left:100px; background:#414042;  border-radius: $notifyRadius; border:2px solid rgba(#121212,0.5); min-height: 5.7rem !important;
 //     &:before { content: " "; width:$notifyIconSize; height:$notifyIconSize; @include position(absolute,1rem,null,null,1rem); background-image:url(../svg/sisyphus/trophy.svg);background-size:contain; background-repeat: no-repeat; background-position: center; }
 
@@ -51,7 +57,7 @@ $notifyIconSize: 60px;
 // }
 
 // @media screen and (max-width:$mobile-max) {
-//   .ui-pnotify { 
+//   .ui-pnotify {
 //     .brighttheme.ui-pnotify-container {
 //       .ui-pnotify-title { font-size:16px; }
 //       .ui-pnotify-text  { font-size:12px; }
@@ -60,26 +66,50 @@ $notifyIconSize: 60px;
 // }
 
 .Vue-Toastification__container {
-  .site-by-lemon { background:#e4e72c; border-radius: 0; border:none; margin-left: 20px; margin-right: 20px;
-    a { color:#313131; text-decoration: none;
-      &:hover { 
-        span { text-decoration: underline; }
+  .site-by-lemon {
+    background: #e4e72c;
+    border-radius: 0;
+    border: none;
+    margin-left: 20px;
+    margin-right: 20px;
+    a {
+      color: #313131;
+      text-decoration: none;
+      &:hover {
+        span {
+          text-decoration: underline;
+        }
       }
     }
-    .container { font-size:1.4rem; text-decoration: none; color:$black; display: block; font-weight: 400; line-height: 55px;
-      display:grid; grid-template-columns: 60px 1fr; gap:10px;
+    .container {
+      font-size: 1.4rem;
+      text-decoration: none;
+      color: $black;
+      display: block;
+      font-weight: 400;
+      line-height: 55px;
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 10px;
     }
-    .ui-pnotify-closer, .ui-pnotify-sticker { color:$black; }
-  } 
+    .ui-pnotify-closer,
+    .ui-pnotify-sticker {
+      color: $black;
+    }
+  }
   .Vue-Toastification__progress-bar {
     background-color: #212121;
   }
   // close-button-holder {
   //   // .close-toast { position: absolute; top:10px; right:0;}
   // }
-  .close-toast { margin-left: 20px;
-    color:#212121; opacity: 0.5;
-    &:hover, &:focus { opacity: 1; }
+  .close-toast {
+    margin-left: 20px;
+    color: #212121;
+    opacity: 0.5;
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
   }
-  
 }
