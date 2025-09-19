@@ -21,29 +21,29 @@
 
   const painting = reactive<PaintingConfig>({
     aspectRatio: { width: 1, height: 2 },
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f5f1eb", // Warmer off-white like Rothko canvases
     shapes: [
       {
         id: 1,
-        x: 10,
-        y: 20,
-        width: 80,
-        height: 25,
-        color: "#d4573b",
-        roughness: 3,
-        blur: 2,
-        brushStrokes: 4,
+        x: 5,
+        y: 15,
+        width: 90,
+        height: 30,
+        color: "#8b4513", // Muted brown-red like Rothko
+        roughness: 4,
+        blur: 6,
+        brushStrokes: 3,
       },
       {
         id: 2,
-        x: 10,
+        x: 5,
         y: 55,
-        width: 80,
-        height: 25,
-        color: "#1a237e",
-        roughness: 2,
-        blur: 3,
-        brushStrokes: 5,
+        width: 90,
+        height: 30,
+        color: "#2f1b69", // Deep muted blue-purple
+        roughness: 3,
+        blur: 7,
+        brushStrokes: 4,
       },
     ],
   });
@@ -57,16 +57,19 @@
 
   const addShape = () => {
     shapeIdCounter++;
+    const rothkoColors = ["#8b4513", "#2f1b69", "#cd853f", "#556b2f", "#800020", "#483d8b"];
+    const randomColor = rothkoColors[shapeIdCounter % rothkoColors.length];
+    
     painting.shapes.push({
       id: shapeIdCounter,
-      x: 10,
+      x: 5,
       y: 30,
-      width: 80,
-      height: 20,
-      color: "#8bc34a",
-      roughness: 3,
-      blur: 2,
-      brushStrokes: 4,
+      width: 90,
+      height: 25,
+      color: randomColor,
+      roughness: 4,
+      blur: 6,
+      brushStrokes: 3,
     });
   };
 
@@ -78,8 +81,10 @@
   };
 
   const getShapeStyle = (shape: Shape) => {
-    const blurAmount = shape.blur * 1.2;
-    const baseOpacity = Math.max(0.6, 1 - shape.brushStrokes * 0.06);
+    // Invert brush strokes logic - more visible at higher values
+    const brushIntensity = shape.brushStrokes / 10;
+    const blurAmount = shape.blur * 2.5; // Increase blur for softer Rothko-like edges
+    const baseOpacity = Math.max(0.7, 1 - brushIntensity * 0.2);
 
     return {
       position: "absolute",
@@ -101,131 +106,146 @@
       return `M 0 0 L ${w} 0 L ${w} ${h} L 0 ${h} Z`;
     }
 
-    // Create more organic, Rothko-like rough edges
-    const variation = roughness * 1.5;
+    // Create soft, organic Rothko-like edges using smooth curves
+    const variation = (roughness / 10) * 8; // Reduce variation for softer edges
     const points = [];
+    
+    // Seed for consistent randomness per shape
+    const seed = shape.id * 123 + shape.roughness * 456;
+    const seededRandom = (index: number) => {
+      const x = Math.sin(seed + index) * 10000;
+      return x - Math.floor(x);
+    };
 
-    // Top edge - multiple points for organic variation
-    const topPoints = 8 + Math.floor(roughness);
+    // Top edge - create gentle undulations
+    const topPoints = 6;
     for (let i = 0; i <= topPoints; i++) {
       const x = (i / topPoints) * w;
-      const y = (Math.random() - 0.5) * variation;
+      const y = (seededRandom(i) - 0.5) * variation;
       points.push({ x, y });
     }
 
     // Right edge
-    const rightPoints = 6 + Math.floor(roughness * 0.5);
+    const rightPoints = 4;
     for (let i = 1; i <= rightPoints; i++) {
-      const x = w + (Math.random() - 0.5) * variation;
+      const x = w + (seededRandom(100 + i) - 0.5) * variation;
       const y = (i / rightPoints) * h;
       points.push({ x, y });
     }
 
     // Bottom edge
-    const bottomPoints = 8 + Math.floor(roughness);
+    const bottomPoints = 6;
     for (let i = bottomPoints - 1; i >= 0; i--) {
       const x = (i / bottomPoints) * w;
-      const y = h + (Math.random() - 0.5) * variation;
+      const y = h + (seededRandom(200 + i) - 0.5) * variation;
       points.push({ x, y });
     }
 
     // Left edge
-    const leftPoints = 6 + Math.floor(roughness * 0.5);
+    const leftPoints = 4;
     for (let i = leftPoints - 1; i >= 1; i--) {
-      const x = (Math.random() - 0.5) * variation;
+      const x = (seededRandom(300 + i) - 0.5) * variation;
       const y = (i / leftPoints) * h;
       points.push({ x, y });
     }
 
-    // Create smooth path using curves
+    // Create smooth Bezier curves for organic Rothko-like edges
     let path = `M ${points[0].x} ${points[0].y}`;
 
     for (let i = 1; i < points.length; i++) {
       const current = points[i];
       const next = points[(i + 1) % points.length];
-      const prev = points[i - 1];
-
-      // Control points for smooth curves
-      const cp1x = prev.x + (current.x - prev.x) * 0.5;
-      const cp1y = prev.y + (current.y - prev.y) * 0.5;
-      const cp2x = current.x + (next.x - current.x) * 0.3;
-      const cp2y = current.y + (next.y - current.y) * 0.3;
-
+      
+      // Use gentle control points for smooth curves
+      const cp1x = current.x + (seededRandom(400 + i) - 0.5) * variation * 0.3;
+      const cp1y = current.y + (seededRandom(500 + i) - 0.5) * variation * 0.3;
+      
       path += ` Q ${cp1x} ${cp1y} ${current.x} ${current.y}`;
     }
 
+    // Close path smoothly
+    const firstPoint = points[0];
+    const cp1x = firstPoint.x + (seededRandom(600) - 0.5) * variation * 0.3;
+    const cp1y = firstPoint.y + (seededRandom(700) - 0.5) * variation * 0.3;
+    path += ` Q ${cp1x} ${cp1y} ${firstPoint.x} ${firstPoint.y}`;
+    
     path += " Z";
     return path;
   };
 
-  const getBrushStrokePattern = (shape: Shape) => {
-    if (shape.brushStrokes === 0) return [];
+  const getColorVariations = (baseColor: string, brushIntensity: number) => {
+    if (brushIntensity === 0) return [baseColor];
 
-    const strokes = [];
-    const intensity = shape.brushStrokes;
-    const strokeCount = Math.floor(intensity * 3) + 5;
-
-    // Create varied brush stroke patterns
-    for (let i = 0; i < strokeCount; i++) {
-      const strokeType = Math.random();
-
-      if (strokeType < 0.6) {
-        // Horizontal brush strokes (most common in Rothko)
-        strokes.push({
-          x: Math.random() * 90 + 5,
-          y: Math.random() * 90 + 5,
-          width: Math.random() * 30 + 20,
-          height: Math.random() * 4 + 1,
-          opacity: (Math.random() * 0.15 + 0.05) * (intensity / 10),
-          rotation: (Math.random() - 0.5) * 10,
-        });
-      } else if (strokeType < 0.85) {
-        // Vertical brush strokes
-        strokes.push({
-          x: Math.random() * 90 + 5,
-          y: Math.random() * 90 + 5,
-          width: Math.random() * 4 + 1,
-          height: Math.random() * 25 + 15,
-          opacity: (Math.random() * 0.12 + 0.03) * (intensity / 10),
-          rotation: 90 + (Math.random() - 0.5) * 15,
-        });
-      } else {
-        // Diagonal strokes for texture
-        strokes.push({
-          x: Math.random() * 85 + 7,
-          y: Math.random() * 85 + 7,
-          width: Math.random() * 20 + 10,
-          height: Math.random() * 3 + 1,
-          opacity: (Math.random() * 0.08 + 0.02) * (intensity / 10),
-          rotation: (Math.random() - 0.5) * 45,
-        });
-      }
-    }
-
-    return strokes;
-  };
-
-  // Add color variation function for more realistic Rothko colors
-  const getColorVariations = (baseColor: string, intensity: number) => {
     const variations = [];
-    const count = Math.floor(intensity * 2) + 3;
-
+    const count = Math.floor(brushIntensity * 8) + 3;
+    
     // Convert hex to RGB for manipulation
-    const hex = baseColor.replace("#", "");
+    const hex = baseColor.replace('#', '');
     const r = parseInt(hex.substr(0, 2), 16);
-    const g = parseInt(hex.substr(2, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);  
     const b = parseInt(hex.substr(4, 2), 16);
-
+    
+    // Seed for consistent variations per shape
+    const seed = r + g + b;
+    const seededRandom = (index: number) => {
+      const x = Math.sin(seed + index * 1.234) * 10000;
+      return x - Math.floor(x);
+    };
+    
     for (let i = 0; i < count; i++) {
-      const variation = (0.15 * intensity) / 10;
-      const newR = Math.max(0, Math.min(255, r + (Math.random() - 0.5) * 60 * variation));
-      const newG = Math.max(0, Math.min(255, g + (Math.random() - 0.5) * 60 * variation));
-      const newB = Math.max(0, Math.min(255, b + (Math.random() - 0.5) * 60 * variation));
-
+      const variation = brushIntensity / 10;
+      
+      // Create subtle color shifts typical of Rothko paintings
+      const rShift = (seededRandom(i) - 0.5) * 40 * variation;
+      const gShift = (seededRandom(i + 100) - 0.5) * 40 * variation;
+      const bShift = (seededRandom(i + 200) - 0.5) * 40 * variation;
+      
+      const newR = Math.max(0, Math.min(255, r + rShift));
+      const newG = Math.max(0, Math.min(255, g + gShift));
+      const newB = Math.max(0, Math.min(255, b + bShift));
+      
       variations.push(`rgb(${Math.floor(newR)}, ${Math.floor(newG)}, ${Math.floor(newB)})`);
     }
-
+    
     return variations;
+  };
+
+  const generateColorFields = (shape: Shape) => {
+    const brushIntensity = shape.brushStrokes / 10;
+    if (brushIntensity === 0) return [];
+    
+    const fields = [];
+    const colorVariations = getColorVariations(shape.color, brushIntensity);
+    const fieldCount = Math.floor(brushIntensity * 12) + 3;
+    
+    const seed = shape.id * 789 + shape.brushStrokes * 321;
+    const seededRandom = (index: number) => {
+      const x = Math.sin(seed + index * 2.345) * 10000;
+      return x - Math.floor(x);
+    };
+    
+    for (let i = 0; i < fieldCount; i++) {
+      // Create organic color field shapes typical of Rothko
+      const x = seededRandom(i) * 80 + 5;
+      const y = seededRandom(i + 100) * 80 + 5;
+      const width = seededRandom(i + 200) * 60 + 20;
+      const height = seededRandom(i + 300) * 40 + 10;
+      const opacity = (seededRandom(i + 400) * 0.3 + 0.1) * brushIntensity;
+      const colorIndex = Math.floor(seededRandom(i + 500) * colorVariations.length);
+      
+      fields.push({
+        x,
+        y, 
+        width,
+        height,
+        color: colorVariations[colorIndex],
+        opacity,
+        rx: width * 0.3, // Rounded corners for organic feel
+        ry: height * 0.4
+      });
+    }
+    
+    return fields;
   };
 </script>
 
@@ -376,60 +396,34 @@
           preserveAspectRatio="none"
         )
           defs
-            // Enhanced gradient for more realistic color transitions
-            linearGradient(:id="`gradient-${shape.id}`" gradientTransform="rotate(45)")
+            // Define clipping path for the shape
+            clipPath(:id="`clip-${shape.id}`")
+              path(:d="generateRoughPath(shape)")
+            
+            // Subtle radial gradient for Rothko-like luminosity
+            radialGradient(:id="`radial-gradient-${shape.id}`")
               stop(offset="0%" :stop-color="shape.color" stop-opacity="1")
-              stop(offset="30%" :stop-color="shape.color" stop-opacity="0.95")
-              stop(offset="70%" :stop-color="shape.color" stop-opacity="0.98")
-              stop(offset="100%" :stop-color="shape.color" stop-opacity="0.9")
-            
-            // Improved turbulence filter for organic texture
-            filter(:id="`texture-${shape.id}`")
-              feTurbulence(
-                baseFrequency="0.02 0.1"
-                numOctaves="4"
-                seed="3"
-                stitchTiles="stitch"
-              )
-              feColorMatrix(values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0")
-              feComponentTransfer
-                feFuncA(type="discrete" tableValues="0.2 0.3 0.4 0.3 0.2")
-              feComposite(in2="SourceGraphic" operator="over")
-            
-            // Brush stroke pattern with color variations
-            pattern(
-              :id="`brush-pattern-${shape.id}`"
-              patternUnits="userSpaceOnUse"
-              width="100"
-              height="100"
-            )
-              rect(
-                width="100"
-                height="100"
-                :fill="`url(#gradient-${shape.id})`"
-              )
-              g(v-if="shape.brushStrokes > 0")
-                rect(
-                  v-for="(stroke, index) in getBrushStrokePattern(shape)"
-                  :key="`stroke-${shape.id}-${index}`"
-                  :x="stroke.x"
-                  :y="stroke.y"
-                  :width="stroke.width"
-                  :height="stroke.height"
-                  :fill="getColorVariations(shape.color, shape.brushStrokes)[index % getColorVariations(shape.color, shape.brushStrokes).length]"
-                  :opacity="stroke.opacity"
-                  :transform="`rotate(${stroke.rotation || 0} ${stroke.x + stroke.width/2} ${stroke.y + stroke.height/2})`"
-                )
+              stop(offset="50%" :stop-color="shape.color" stop-opacity="0.95")
+              stop(offset="100%" :stop-color="shape.color" stop-opacity="0.85")
           
-          // Main shape with improved path and texture
+          // Base shape with main color
           path(
             :d="generateRoughPath(shape)"
-            :fill="`url(#brush-pattern-${shape.id})`"
-            :filter="shape.roughness > 2 || shape.brushStrokes > 3 ? `url(#texture-${shape.id})` : 'none'"
-            :stroke="shape.color"
-            :stroke-width="shape.roughness > 5 ? '0.5' : '0'"
-            :stroke-opacity="0.3"
+            :fill="`url(#radial-gradient-${shape.id})`"
           )
+          
+          // Color variation fields (clipped to shape)
+          g(:clip-path="`url(#clip-${shape.id})`" v-if="shape.brushStrokes > 0")
+            ellipse(
+              v-for="(field, index) in generateColorFields(shape)"
+              :key="`field-${shape.id}-${index}`"
+              :cx="field.x + field.width/2"
+              :cy="field.y + field.height/2"
+              :rx="field.rx"
+              :ry="field.ry"
+              :fill="field.color"
+              :opacity="field.opacity"
+            )
 </template>
 
 <style lang="scss" scoped>
