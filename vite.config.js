@@ -53,6 +53,7 @@ export default defineConfig(({ mode }) => {
           invalid: resolve(__dirname, "src/entries/invalid.js"),
           meeting: resolve(__dirname, "src/entries/meeting.js"),
           pretend: resolve(__dirname, "src/entries/pretend.js"),
+          rothko: resolve(__dirname, "src/entries/rothko.js"),
           sisyphus: resolve(__dirname, "src/entries/sisyphus.js"),
           stats: resolve(__dirname, "src/entries/stats.js"),
           wrongest: resolve(__dirname, "src/entries/wrongest.js"),
