@@ -1,5 +1,9 @@
 <script setup lang="ts">
-  import { reactive, computed } from "vue";
+  import { reactive, computed, ref } from "vue";
+
+  interface UI {
+    activeShapeId: number | null;
+  }
 
   interface Shape {
     id: number;
@@ -18,6 +22,10 @@
     backgroundColor: string;
     shapes: Shape[];
   }
+
+  const ui = reactive<UI>({
+    activeShapeId: 1,
+  });
 
   const painting = reactive<PaintingConfig>({
     aspectRatio: { width: 7, height: 8 }, // Start with reference painting 1 aspect ratio
@@ -62,27 +70,9 @@
   let shapeIdCounter = 3;
 
   const canvasStyle = computed(() => {
-    const aspectRatio = painting.aspectRatio.width / painting.aspectRatio.height;
-    const maxWidth = 500; // Max width in pixels
-    const maxHeight = 600; // Max height in pixels
-
-    let width, height;
-    if (aspectRatio >= 1) {
-      // Wider than tall
-      width = Math.min(maxWidth, maxHeight * aspectRatio);
-      height = width / aspectRatio;
-    } else {
-      // Taller than wide
-      height = Math.min(maxHeight, maxWidth / aspectRatio);
-      width = height * aspectRatio;
-    }
-
     return {
-      width: `${width}px`,
-      height: `${height}px`,
+      aspectRatio: `${painting.aspectRatio.width} / ${painting.aspectRatio.height}`,
       backgroundColor: painting.backgroundColor,
-      position: "relative" as const,
-      overflow: "hidden" as const,
     };
   });
 
@@ -128,6 +118,10 @@
     };
   };
 
+  const toggleShapeControls = (id: number) => {
+    ui.activeShapeId = ui.activeShapeId === id ? null : id;
+  };
+
   const generateRoughPath = (shape: Shape) => {
     const roughness = shape.roughness;
     const w = 100;
@@ -138,7 +132,7 @@
     }
 
     // Create very fluid, "blobby" organic edges with enhanced variation
-    const baseVariation = (roughness / 10) * 15; // Increased for more blobby effect
+    const baseVariation = (roughness / 10) * 4; // Increased for more blobby effect
     const points = [];
 
     // Seed for consistent randomness per shape
@@ -158,7 +152,7 @@
       const layer3 = (seededRandom(baseIndex + index + 1000) - 0.5) * baseVariation * 0.2;
       // Layer 4: Random spikes and indentations for very organic feel
       const layer4 = (seededRandom(baseIndex + index + 2000) - 0.5) * baseVariation * 0.3;
-      
+
       return layer1 + layer2 + layer3 + layer4;
     };
 
@@ -270,9 +264,9 @@
     for (let i = 0; i < fieldCount; i++) {
       // Create brush stroke-like fields with varied shapes and sizes
       const strokeType = seededRandom(i + 600);
-      
+
       let x, y, width, height;
-      
+
       if (strokeType < 0.4) {
         // Horizontal brush strokes (most common in Rothko)
         x = seededRandom(i) * 85 + 2;
@@ -292,7 +286,7 @@
         width = seededRandom(i + 200) * 60 + 20;
         height = seededRandom(i + 300) * 60 + 20;
       }
-      
+
       const opacity = (seededRandom(i + 400) * 0.6 + 0.3) * brushIntensity; // Higher base opacity
       const colorIndex = Math.floor(seededRandom(i + 500) * colorVariations.length);
 
@@ -312,369 +306,6 @@
   };
 </script>
 
-<template lang="pug">
-.rothko-generator
-  .controls-panel
-    h1 Rothko Painting Generator
-    
-    .control-group
-      label Aspect Ratio
-      .aspect-ratio-controls
-        input(
-          type="number"
-          v-model.number="painting.aspectRatio.width"
-          min="1"
-          max="10"
-          step="0.5"
-        )
-        span :
-        input(
-          type="number"
-          v-model.number="painting.aspectRatio.height"
-          min="1"
-          max="10"
-          step="0.5"
-        )
-    
-    .control-group
-      label Background Color
-      input(
-        type="color"
-        v-model="painting.backgroundColor"
-      )
-    
-    .shapes-section
-      .shapes-header
-        h3 Shapes ({{ painting.shapes.length }})
-        button.add-shape(@click="addShape") Add Shape
-      
-      .shape-controls(
-        v-for="shape in painting.shapes"
-        :key="shape.id"
-      )
-        .shape-header
-          h4 Shape {{ shape.id }}
-          button.remove-shape(
-            @click="removeShape(shape.id)"
-            :disabled="painting.shapes.length === 1"
-          ) Remove
-        
-        .control-row
-          .control
-            label Position X (%)
-            input(
-              type="range"
-              v-model.number="shape.x"
-              min="0"
-              max="100"
-              step="1"
-            )
-            span {{ shape.x }}%
-          
-          .control
-            label Position Y (%)
-            input(
-              type="range"
-              v-model.number="shape.y"
-              min="0"
-              max="100"
-              step="1"
-            )
-            span {{ shape.y }}%
-        
-        .control-row
-          .control
-            label Width (%)
-            input(
-              type="range"
-              v-model.number="shape.width"
-              min="10"
-              max="100"
-              step="1"
-            )
-            span {{ shape.width }}%
-          
-          .control
-            label Height (%)
-            input(
-              type="range"
-              v-model.number="shape.height"
-              min="5"
-              max="100"
-              step="1"
-            )
-            span {{ shape.height }}%
-        
-        .control-row
-          .control
-            label Color
-            input(
-              type="color"
-              v-model="shape.color"
-            )
-          
-          .control
-            label Roughness
-            input(
-              type="range"
-              v-model.number="shape.roughness"
-              min="0"
-              max="10"
-              step="1"
-            )
-            span {{ shape.roughness }}
-        
-        .control-row
-          .control
-            label Blur
-            input(
-              type="range"
-              v-model.number="shape.blur"
-              min="0"
-              max="10"
-              step="1"
-            )
-            span {{ shape.blur }}
-          
-          .control
-            label Brush Strokes
-            input(
-              type="range"
-              v-model.number="shape.brushStrokes"
-              min="0"
-              max="10"
-              step="1"
-            )
-            span {{ shape.brushStrokes }}
-  
-  .painting-canvas
-    figure.rothko-painting(:style="canvasStyle")
-      .shape(
-        v-for="shape in painting.shapes"
-        :key="shape.id"
-        :style="getShapeStyle(shape)"
-      )
-        svg(
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        )
-          defs
-            // Define clipping path for the shape
-            clipPath(:id="`clip-${shape.id}`")
-              path(:d="generateRoughPath(shape)")
-            
-            // Subtle radial gradient for Rothko-like luminosity
-            radialGradient(:id="`radial-gradient-${shape.id}`")
-              stop(offset="0%" :stop-color="shape.color" stop-opacity="1")
-              stop(offset="50%" :stop-color="shape.color" stop-opacity="0.95")
-              stop(offset="100%" :stop-color="shape.color" stop-opacity="0.85")
-          
-          // Base shape with main color
-          path(
-            :d="generateRoughPath(shape)"
-            :fill="`url(#radial-gradient-${shape.id})`"
-          )
-          
-          // Color variation fields (clipped to shape)
-          g(:clip-path="`url(#clip-${shape.id})`" v-if="shape.brushStrokes > 0")
-            ellipse(
-              v-for="(field, index) in generateColorFields(shape)"
-              :key="`field-${shape.id}-${index}`"
-              :cx="field.x + field.width/2"
-              :cy="field.y + field.height/2"
-              :rx="field.rx"
-              :ry="field.ry"
-              :fill="field.color"
-              :opacity="field.opacity"
-            )
-</template>
+<template lang="pug" src="./Rothko.pug"></template>
 
-<style lang="scss" scoped>
-  .rothko-generator {
-    display: flex;
-    gap: 2rem;
-    padding: 2rem;
-    font-family: "Arial", sans-serif;
-    background: #f5f5f5;
-    min-height: 100vh;
-
-    .controls-panel {
-      flex: 0 0 350px;
-      background: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      max-height: fit-content;
-
-      h1 {
-        margin: 0 0 1.5rem 0;
-        color: #333;
-        font-size: 1.5rem;
-      }
-
-      .control-group {
-        margin-bottom: 1.5rem;
-
-        label {
-          display: block;
-          margin-bottom: 0.5rem;
-          font-weight: 600;
-          color: #555;
-        }
-
-        input[type="number"],
-        input[type="color"] {
-          padding: 0.5rem;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-          width: 100%;
-        }
-
-        .aspect-ratio-controls {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-
-          input {
-            flex: 1;
-          }
-
-          span {
-            font-weight: bold;
-          }
-        }
-      }
-
-      .shapes-section {
-        .shapes-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1rem;
-
-          h3 {
-            margin: 0;
-            color: #333;
-          }
-
-          .add-shape {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-
-            &:hover {
-              background: #45a049;
-            }
-          }
-        }
-
-        .shape-controls {
-          background: #f9f9f9;
-          border: 1px solid #e0e0e0;
-          border-radius: 6px;
-          padding: 1rem;
-          margin-bottom: 1rem;
-
-          .shape-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-
-            h4 {
-              margin: 0;
-              color: #333;
-              font-size: 1.1rem;
-            }
-
-            .remove-shape {
-              background: #f44336;
-              color: white;
-              border: none;
-              padding: 0.25rem 0.5rem;
-              border-radius: 4px;
-              cursor: pointer;
-              font-size: 0.8rem;
-
-              &:hover:not(:disabled) {
-                background: #da190b;
-              }
-
-              &:disabled {
-                background: #ccc;
-                cursor: not-allowed;
-              }
-            }
-          }
-
-          .control-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
-
-            &:last-child {
-              margin-bottom: 0;
-            }
-
-            .control {
-              label {
-                display: block;
-                margin-bottom: 0.25rem;
-                font-size: 0.9rem;
-                font-weight: 500;
-                color: #666;
-              }
-
-              input[type="range"] {
-                width: 100%;
-                margin-bottom: 0.25rem;
-              }
-
-              input[type="color"] {
-                width: 100%;
-                height: 2rem;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-              }
-
-              span {
-                font-size: 0.85rem;
-                color: #888;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    .painting-canvas {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      .rothko-painting {
-        margin: 0;
-        max-width: 600px;
-        width: 100%;
-        position: relative;
-        border: 1px solid #ddd;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-        overflow: hidden;
-
-        .shape {
-          svg {
-            width: 100%;
-            height: 100%;
-          }
-        }
-      }
-    }
-  }
-</style>
+<style lang="scss" src="./Rothko.scss"></style>
