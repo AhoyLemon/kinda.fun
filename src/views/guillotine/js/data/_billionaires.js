@@ -239,7 +239,7 @@ export const allBillionaires = [
     netWorth: 65.5,
     country: "China",
     flag: "cn",
-    source: "TikTok",
+    source: "ByteDance (TikTok)",
     industry: "Technology",
   },
   {
@@ -311,7 +311,7 @@ export const allBillionaires = [
     netWorth: 45.3,
     country: "China",
     flag: "cn",
-    source: "Smartphones",
+    source: "Xiaomi",
     industry: "Technology",
   },
   {

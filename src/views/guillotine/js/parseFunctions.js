@@ -443,8 +443,6 @@ export function parseSource(name, source) {
       return "Grupo México";
     case "Miriam Adelson":
       return "Las Vegas Sands";
-    case "Leonardo Del Vecchio":
-      return "Luxottica";
     case "Tadashi Yanai":
       return "Uniqlo, Theory, Helmut Lang";
     case "Rupert Murdoch":
@@ -714,8 +712,6 @@ export function parseSource(name, source) {
       return "Saudi Royal Family";
     case "Stefan Persson" || "Karl-Johan Persson":
       return "H&M";
-    case "Leonardo Del Vecchio" || "Claudio Del Vecchio":
-      return "Luxottica";
     case "Rupert Murdoch" || "Lachlan Murdoch" || "James Murdoch":
       return "Fox News";
     case "Johann Rupert" || "Anton Rupert":
@@ -748,6 +744,18 @@ export function parseSource(name, source) {
       return "Dassault aerospace & software";
     case "Benjamin Otto" || "Maren Otto" || "Katharina Otto-Bernstein" || "Michael Otto" || "Alexander Otto":
       return "Otto Group, Crate & Barrel";
+    case "Leonardo Del Vecchio" ||
+      "Clemente Del Vecchio" ||
+      "Claudio Del Vecchio" ||
+      "Leonardo Maria Del Vecchio" ||
+      "Luca Del Vecchio" ||
+      "Marisa Del Vecchio" ||
+      "Paola Del Vecchio":
+      return "Luxottica";
+    case "Lei Jun":
+      return "Xiaomi";
+    case "Zhang Yiming":
+      return "ByteDance (TikTok)";
     case "":
       return "";
   }
