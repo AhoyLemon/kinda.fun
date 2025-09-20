@@ -1,7 +1,5 @@
-@mixin background($size: cover, $position: center, $repeat: no-repeat) {
-  background-size: $size;
-  background-position: $position;
-  background-repeat: $repeat;
+@mixin background($size:cover, $position:center, $repeat:no-repeat) {
+  background-size:$size; background-position:$position; background-repeat:$repeat;
 }
 
 @mixin linearGradient($direction, $fromColor, $toColor) {
@@ -12,19 +10,14 @@
   background-color: $toColor; /* Fallback Color */
   background-image: radial-gradient(closest-side, $fromColor, $toColor);
 }
-@mixin flex-container($direction: row, $align: stretch, $wrap: wrap) {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: flex;
+@mixin flex-container($direction:row, $align:stretch, $wrap:wrap) {
+  display: -webkit-box; display: -webkit-flex; display: -moz-flex;display: -ms-flexbox; display: flex;
   flex-direction: $direction;
-  -webkit-flex-wrap: $wrap;
-  -moz-flex-wrap: $wrap;
+  -webkit-flex-wrap:$wrap; -moz-flex-wrap:$wrap; 
   flex-wrap: $wrap;
   align-items: $align;
 }
-@mixin flex-item($basis, $grow: 1, $shrink: 1, $alignSelf: auto) {
+@mixin flex-item($basis, $grow:1, $shrink:1, $alignSelf:auto) {
   @if $grow == 0 {
     flex-basis: $basis;
   } @else {
@@ -36,16 +29,15 @@
 }
 
 @mixin flex-center() {
-  @include flex-container(row, wrap, center);
-  justify-content: center;
+  @include flex-container(row,wrap,center); justify-content: center;
 }
 
-@mixin animation($name, $duration, $iteration: 1, $delay: 0) {
-  animation-name: $name;
-  animation-duration: $duration;
-  animation-iteration-count: $iteration;
-  animation-delay: $delay;
-  animation-fill-mode: forwards; /* this prevents the animation from restarting! */
+@mixin animation ($name, $duration, $iteration:1, $delay:0) {
+    animation-name: $name;
+    animation-duration: $duration;
+    animation-iteration-count: $iteration;
+    animation-delay:$delay;
+    animation-fill-mode: forwards; /* this prevents the animation from restarting! */
 }
 
 @mixin transforms($value) {
@@ -70,52 +62,48 @@
 @mixin rotateX($d) {
   transform: rotateX($d);
 }
-@mixin skew($x, $y: 0) {
+@mixin skew($x, $y:0) {
   transform: skew($x, $y);
 }
 
-@mixin transition($property: all, $duration: 0.3s, $animation: ease, $delay: 0s) {
+@mixin transition($property: all, $duration: 0.3s, $animation: ease, $delay:0s) { 
   transition: $property $duration $animation $delay;
 }
 @mixin scale($ratio) {
-  transform: scale($ratio);
+  transform: scale($ratio); 
 }
 
-@mixin position($type, $top: null, $right: null, $bottom: null, $left: null) {
-  position: $type;
+@mixin position($type, $top:null, $right:null, $bottom:null, $left:null) {
+  position:$type;
   @if $top {
-    top: $top;
+    top:$top;
   }
   @if $right {
-    right: $right;
+    right:$right;
   }
   @if $bottom {
-    bottom: $bottom;
+    bottom:$bottom;
   }
   @if $left {
-    left: $left;
+    left:$left;
   }
 }
 
-@mixin inner($w: $max-width, $p: 20px) {
+@mixin inner($w:$max-width, $p:20px) {
   max-width: $w;
   margin-left: auto;
   margin-right: auto;
-  @media (max-width: ($w + ($p * 2))) {
-    width: 100%;
-    padding-left: $p;
-    padding-right: $p;
+  @media (max-width:($w + ($p * 2))) {
+    width:100%;
+    padding-left:$p; padding-right: $p;
   }
 }
 
 @mixin respond-to($media) {
   @if $media == desktop {
-    @media only screen and (min-width: $desktop-min) {
-      @content;
-    }
-  } @else if $media == mobile {
-    @media only screen and (max-width: $mobile-max) {
-      @content;
-    }
+    @media only screen and (min-width: $desktop-min) { @content; }
+  }
+  @else if $media == mobile {
+    @media only screen and (max-width: $mobile-max) { @content; }
   }
 }

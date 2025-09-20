@@ -1,63 +1,22 @@
-section.choices {
-  height: 100vh;
-  display: grid;
-  grid-template-rows: 100px 1fr;
-  position: relative;
-  &:after {
-    position: absolute;
-    content: "";
-    display: block;
-    @include position(absolute, null, 0, 0, 0);
-    background: linear-gradient(180deg, rgba($white, 0), rgba($white, 1));
-    height: 100px;
-    pointer-events: none;
+section.choices { height:100vh; display:grid; grid-template-rows: 100px 1fr; position: relative;
+  &:after { position: absolute; content:''; display:block; @include position(absolute,null,0,0,0); background:linear-gradient(180deg, rgba($white,0), rgba($white,1)); height:100px; pointer-events: none; }
+  header.living-info { padding:$gap ($gap * 2); 
+    @media (min-width:601px) {
+      .mobile-warning { display:none; }
+    }
+    @media (max-width:601px) {
+      .mobile-warning { background: #f7f7a3; padding:10px 1rem; border: 1px solid rgba(0,0,0,0.2); line-height: 1.4; font-size: 14px; }
+      .row.available, .row.choices { display:none; }
+    }
+    .row {  font-size:1.3rem; }
+    .count { font-weight: 900; padding-right: 0.25em; font-family: $monospaced; }
   }
-  header.living-info {
-    padding: $gap ($gap * 2);
-    @media (min-width: 601px) {
-      .mobile-warning {
-        display: none;
-      }
-    }
-    @media (max-width: 601px) {
-      .mobile-warning {
-        background: #f7f7a3;
-        padding: 10px 1rem;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        line-height: 1.4;
-        font-size: 14px;
-      }
-      .row.available,
-      .row.choices {
-        display: none;
-      }
-    }
-    .row {
-      font-size: 1.3rem;
-    }
-    .count {
-      font-weight: 900;
-      padding-right: 0.25em;
-      font-family: $monospaced;
-    }
-  }
-  .grid-holder {
-    height: 100%;
-    overflow-y: scroll;
-    padding: ($gap * 2) ($gap * 1.5);
-    position: relative;
+  .grid-holder { height:100%; overflow-y: scroll; padding:($gap * 2) ($gap * 1.5); position: relative;
     // &:after { position: absolute; content:''; display:block; @include position(absolute,null,0,0,0); background:red; height:50px; }
-    .billionaire-grid {
-      ul {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: $gap;
-        padding-bottom: ($gap * 2);
-      }
-      button {
-        display: block;
-        width: 100%;
-      }
+    .billionaire-grid { 
+      ul { display:grid; grid-template-columns: 1fr; gap:$gap; padding-bottom: ($gap * 2); }
+      button { display:block; width:100%; }
     }
+    
   }
 }

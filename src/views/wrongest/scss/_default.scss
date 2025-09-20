@@ -1,14 +1,5 @@
-[v-cloak] {
-  display: none;
-}
-html {
-  background: radial-gradient(#353535, #161616);
-  color: #eee;
-}
-p {
-  margin-bottom: 1em;
-}
+[v-cloak] { display:none; }
+html { background: radial-gradient(#353535, #161616); color:#eee; }
+p { margin-bottom:1em; }
 
-.v-toast {
-  font-family: $font-family;
-}
+.v-toast { font-family: $font-family; }

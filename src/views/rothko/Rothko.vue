@@ -20,40 +20,71 @@
   }
 
   const painting = reactive<PaintingConfig>({
-    aspectRatio: { width: 1, height: 2 },
-    backgroundColor: "#f5f1eb", // Warmer off-white like Rothko canvases
+    aspectRatio: { width: 7, height: 8 }, // Start with reference painting 1 aspect ratio
+    backgroundColor: "#ff8c42", // Orange background for first reference
     shapes: [
       {
         id: 1,
-        x: 5,
-        y: 15,
-        width: 90,
-        height: 30,
-        color: "#8b4513", // Muted brown-red like Rothko
-        roughness: 4,
-        blur: 6,
-        brushStrokes: 3,
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 25,
+        color: "#880E2B", // Dark red for first reference
+        roughness: 2,
+        blur: 0,
+        brushStrokes: 8,
       },
       {
         id: 2,
-        x: 5,
+        x: 0,
+        y: 30,
+        width: 100,
+        height: 20,
+        color: "#ff8c42", // Orange middle stripe
+        roughness: 1,
+        blur: 0,
+        brushStrokes: 6,
+      },
+      {
+        id: 3,
+        x: 0,
         y: 55,
-        width: 90,
-        height: 30,
-        color: "#2f1b69", // Deep muted blue-purple
-        roughness: 3,
-        blur: 7,
-        brushStrokes: 4,
+        width: 100,
+        height: 45,
+        color: "#880E2B", // Dark red bottom
+        roughness: 2,
+        blur: 0,
+        brushStrokes: 9,
       },
     ],
   });
 
-  let shapeIdCounter = 2;
+  let shapeIdCounter = 3;
 
-  const canvasStyle = computed(() => ({
-    aspectRatio: `${painting.aspectRatio.width} / ${painting.aspectRatio.height}`,
-    backgroundColor: painting.backgroundColor,
-  }));
+  const canvasStyle = computed(() => {
+    const aspectRatio = painting.aspectRatio.width / painting.aspectRatio.height;
+    const maxWidth = 500; // Max width in pixels
+    const maxHeight = 600; // Max height in pixels
+    
+    let width, height;
+    if (aspectRatio >= 1) {
+      // Wider than tall
+      width = Math.min(maxWidth, maxHeight * aspectRatio);
+      height = width / aspectRatio;
+    } else {
+      // Taller than wide  
+      height = Math.min(maxHeight, maxWidth / aspectRatio);
+      width = height * aspectRatio;
+    }
+    
+    return {
+      width: `${width}px`,
+      height: `${height}px`,
+      backgroundColor: painting.backgroundColor,
+      position: 'relative' as const,
+      overflow: 'hidden' as const,
+    };
+  });
 
   const addShape = () => {
     shapeIdCounter++;
@@ -107,7 +138,7 @@
     }
 
     // Create soft, organic Rothko-like edges using smooth curves
-    const variation = (roughness / 10) * 8; // Reduce variation for softer edges
+    const variation = (roughness / 10) * 15; // Increase variation for more visible roughness
     const points = [];
     
     // Seed for consistent randomness per shape
@@ -177,7 +208,7 @@
     if (brushIntensity === 0) return [baseColor];
 
     const variations = [];
-    const count = Math.floor(brushIntensity * 8) + 3;
+    const count = Math.floor(brushIntensity * 15) + 5; // More variations
     
     // Convert hex to RGB for manipulation
     const hex = baseColor.replace('#', '');
@@ -195,10 +226,11 @@
     for (let i = 0; i < count; i++) {
       const variation = brushIntensity / 10;
       
-      // Create subtle color shifts typical of Rothko paintings
-      const rShift = (seededRandom(i) - 0.5) * 40 * variation;
-      const gShift = (seededRandom(i + 100) - 0.5) * 40 * variation;
-      const bShift = (seededRandom(i + 200) - 0.5) * 40 * variation;
+      // Create more dramatic color shifts for better visibility
+      const intensity = 60 * variation; // Increased intensity
+      const rShift = (seededRandom(i) - 0.5) * intensity;
+      const gShift = (seededRandom(i + 100) - 0.5) * intensity;
+      const bShift = (seededRandom(i + 200) - 0.5) * intensity;
       
       const newR = Math.max(0, Math.min(255, r + rShift));
       const newG = Math.max(0, Math.min(255, g + gShift));
@@ -216,7 +248,7 @@
     
     const fields = [];
     const colorVariations = getColorVariations(shape.color, brushIntensity);
-    const fieldCount = Math.floor(brushIntensity * 12) + 3;
+    const fieldCount = Math.floor(brushIntensity * 20) + 8; // More fields for visible variation
     
     const seed = shape.id * 789 + shape.brushStrokes * 321;
     const seededRandom = (index: number) => {
@@ -225,12 +257,12 @@
     };
     
     for (let i = 0; i < fieldCount; i++) {
-      // Create organic color field shapes typical of Rothko
-      const x = seededRandom(i) * 80 + 5;
-      const y = seededRandom(i + 100) * 80 + 5;
-      const width = seededRandom(i + 200) * 60 + 20;
-      const height = seededRandom(i + 300) * 40 + 10;
-      const opacity = (seededRandom(i + 400) * 0.3 + 0.1) * brushIntensity;
+      // Create more visible organic color field shapes 
+      const x = seededRandom(i) * 90 + 2;
+      const y = seededRandom(i + 100) * 90 + 2;
+      const width = seededRandom(i + 200) * 70 + 15;
+      const height = seededRandom(i + 300) * 50 + 8;
+      const opacity = (seededRandom(i + 400) * 0.4 + 0.2) * brushIntensity; // Higher opacity
       const colorIndex = Math.floor(seededRandom(i + 500) * colorVariations.length);
       
       fields.push({
@@ -240,8 +272,8 @@
         height,
         color: colorVariations[colorIndex],
         opacity,
-        rx: width * 0.3, // Rounded corners for organic feel
-        ry: height * 0.4
+        rx: width * 0.4, // More rounded for organic feel
+        ry: height * 0.5
       });
     }
     
@@ -303,7 +335,7 @@
               type="range"
               v-model.number="shape.x"
               min="0"
-              max="50"
+              max="100"
               step="1"
             )
             span {{ shape.x }}%
@@ -314,7 +346,7 @@
               type="range"
               v-model.number="shape.y"
               min="0"
-              max="80"
+              max="100"
               step="1"
             )
             span {{ shape.y }}%
@@ -326,7 +358,7 @@
               type="range"
               v-model.number="shape.width"
               min="10"
-              max="90"
+              max="100"
               step="1"
             )
             span {{ shape.width }}%
@@ -337,7 +369,7 @@
               type="range"
               v-model.number="shape.height"
               min="5"
-              max="60"
+              max="100"
               step="1"
             )
             span {{ shape.height }}%

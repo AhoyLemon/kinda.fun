@@ -46,7 +46,9 @@ export const setupSocketHandlers = (socket) => {
     if (you.isHost) {
       console.log("And I'm the host");
       // Find the index of the player with the matching socketID
-      const playerIndex = game.players.findIndex((player) => player.socketID === socketID);
+      const playerIndex = game.players.findIndex(
+        (player) => player.socketID === socketID,
+      );
       if (playerIndex !== -1) {
         console.log("I'm removing that player from the player list");
         game.players.splice(playerIndex, 1);

@@ -3,7 +3,8 @@ export const allDecks = [
   // SCIENCE
   {
     name: "Science “Facts”",
-    description: "There's a lot of weird but interesting facts in science that actually turn out to be true! This deck contains none of them.",
+    description:
+      "There's a lot of weird but interesting facts in science that actually turn out to be true! This deck contains none of them.",
     cards: [
       "Honey bees can {speak Korean.}",
       "Eating a carrot a day will {eventually turn your skin orange.}",
@@ -46,7 +47,8 @@ export const allDecks = [
   // F PLUS
   {
     name: "F Plus Deck",
-    description: "Actual statements from actual people covered on The F Plus Podcast. These can be dirty sometimes, fyi.",
+    description:
+      "Actual statements from actual people covered on The F Plus Podcast. These can be dirty sometimes, fyi.",
     cards: [
       "We don't know how to make fat people {into thin people or how to make thin people into fat people.}",
       "{Slavery} did not exist in America.",
@@ -98,7 +100,8 @@ export const allDecks = [
   // CELEBS
   {
     name: "Celebrity Lies",
-    description: "NONE OF THESE ARE TRUE. There, now we can't get sued for what it says on these cards.",
+    description:
+      "NONE OF THESE ARE TRUE. There, now we can't get sued for what it says on these cards.",
     cards: [
       "Nancy Reagan kept a {handgun} in her hair.",
       "{Justin Bieber} has an IQ of 186.",
@@ -139,7 +142,8 @@ export const allDecks = [
   // RANDOM
   {
     name: "Miscellaneous",
-    description: "Let me be honest with you, all of the cards in this deck are just the cards that didn't fit in any other deck.",
+    description:
+      "Let me be honest with you, all of the cards in this deck are just the cards that didn't fit in any other deck.",
     cards: [
       "Froot Loops are spelled that way because the cereal contains {blood.}",
       "Spaghetti and Meatballs is known as {Pasketti and Meatbulbs} in Italy.",
@@ -164,6 +168,7 @@ export const allDecks = [
   // RANDOM
   {
     name: "EVERYTHING!",
-    description: "I don't wanna choose! Just shuffle in all the cards and let's see what happens...",
+    description:
+      "I don't wanna choose! Just shuffle in all the cards and let's see what happens...",
   },
 ];

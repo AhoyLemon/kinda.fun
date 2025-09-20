@@ -1,55 +1,14 @@
-.guess {
-  font-family: $sans-serif;
-  color: white;
-  padding-bottom: 120px;
-  p {
-    text-align: center;
-  }
-  form {
-    display: grid;
-    width: 100%;
-    max-width: 400px;
-    grid-template-columns: 1fr 80px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    input {
-      font-family: $serif;
-      font-size: 1.25rem;
-      padding: 0.5em 0.25em 0.5em 1.5em;
-      padding-right: 0.5em;
-      border-top-left-radius: 1.5rem;
-      border-bottom-left-radius: 1.5rem;
-      border: 3px solid transparent;
-      transition: all 0.3s linear;
-      &:focus {
-        border-color: $focusColor;
-        outline: none;
-        color: darken($focusColor, 35);
-        ~ button:not([disabled]) {
-          border-color: $focusColor;
-        }
+.guess { font-family: $sans-serif; color:white; padding-bottom: 120px;
+  p { text-align: center;}
+  form { display:grid; width:100%; max-width: 400px; grid-template-columns: 1fr 80px; margin-left: auto; margin-right: auto; margin-top:1rem; margin-bottom: 1rem;
+    input { font-family: $serif; font-size:1.25rem; padding:0.5em 0.25em 0.5em 1.5em; padding-right: 0.5em; border-top-left-radius: 1.5rem; border-bottom-left-radius: 1.5rem; border:3px solid transparent; transition: all 0.3s linear;
+      &:focus { border-color:$focusColor; outline:none; color:darken($focusColor,35);
+        ~ button:not([disabled]) { border-color:$focusColor; }
       }
     }
-    button {
-      border-top-right-radius: 1.5rem;
-      border-bottom-right-radius: 1.5rem;
-      font-family: $sans-serif;
-      font-weight: 700;
-      border: 2px solid transparent;
-      border-left: none;
-      transition: all 0.3s linear;
-      color: darken($focusColor, 40);
-      &:not(disabled) {
-        background-color: lighten($focusColor, 40);
-        &:hover,
-        &:focus {
-          background: $focusColor;
-          color: white;
-          cursor: pointer;
-          transition: all 0.125s linear;
-        }
+    button { border-top-right-radius: 1.5rem; border-bottom-right-radius: 1.5rem; font-family: $sans-serif; font-weight: 700; border:2px solid transparent; border-left:none; transition: all 0.3s linear; color:darken($focusColor,40);
+      &:not(disabled) { background-color: lighten($color: ($focusColor), $amount: 40);
+        &:hover, &:focus { background: $focusColor; color:white; cursor: pointer; transition: all 0.125s linear; }
       }
     }
   }

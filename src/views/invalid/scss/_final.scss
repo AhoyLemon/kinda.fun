@@ -1,19 +1,8 @@
-.final-round {
-  font-family: $serif;
+.final-round { font-family: $serif;
+  
+  .inside { width:100%; max-width: 62ch; margin-left: auto; margin-right: auto; background:rgba(15,15,15,0.6); backdrop-filter:blur(8px); padding:1.5em; color:white; }
 
-  .inside {
-    width: 100%;
-    max-width: 62ch;
-    margin-left: auto;
-    margin-right: auto;
-    background: rgba(15, 15, 15, 0.6);
-    backdrop-filter: blur(8px);
-    padding: 1.5em;
-    color: white;
-  }
-
-  video.fullscreen {
-    @include position(fixed, 0, 0, 0, 0);
+  video.fullscreen { @include position(fixed,0,0,0,0);
     position: fixed;
     top: 50%;
     left: 50%;
@@ -26,224 +15,83 @@
     background-size: cover;
   }
 
-  .password-form {
-    max-width: 360px;
-    margin: $gap auto;
 
-    fieldset {
-      position: relative;
-      input {
-        font-size: 2rem;
-        font-family: inherit;
-        display: block;
-        padding: 20px 0 5px 20px;
-        width: 100%;
-        border: 2px solid rgba(0, 0, 0, 0.2);
-        outline: none;
-        background: transparent;
-        color: white;
-        border-color: white;
-        text-transform: uppercase;
-        .error {
-          border-color: $red;
-        }
+
+
+  .password-form { max-width: 360px; margin:$gap auto;
+
+    fieldset { position: relative;
+      input { font-size:2rem; font-family: inherit; display: block; padding:20px 0 5px 20px; width:100%; border:2px solid rgba(0,0,0,0.2); outline:none; background:transparent; color:white; border-color:white; text-transform: uppercase;
+        .error { border-color:$red; }
       }
-      label {
-        @include position(absolute, 5px, 5px, null, 25px);
-        display: block;
-        color: white;
-        font-size: 14px;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-      }
+      label { @include position(absolute,5px,5px,null,25px); display: block; color:white; font-size:14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
     }
-    .required {
-      color: $red;
+    .required { color:$red; }
+    button[type="submit"] { display:block; width:100%; font-family: inherit; font-weight: $bold; text-transform: uppercase; font-size:26px; background:white; border:none; border-radius: 0; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; padding:0.35em 2em; font-weight: 900; letter-spacing: 0.3em; cursor: pointer;
+      &:hover, &:focus { background:#000; color:#fff; }
     }
-    button[type="submit"] {
-      display: block;
-      width: 100%;
-      font-family: inherit;
-      font-weight: $bold;
-      text-transform: uppercase;
-      font-size: 26px;
-      background: white;
-      border: none;
-      border-radius: 0;
-      border-bottom-left-radius: 16px;
-      border-bottom-right-radius: 16px;
-      padding: 0.35em 2em;
-      font-weight: 900;
-      letter-spacing: 0.3em;
-      cursor: pointer;
-      &:hover,
-      &:focus {
-        background: #000;
-        color: #fff;
-      }
-    }
-
-    input,
-    button {
-      border-radius: 0;
-    }
-    input {
-      border-top-left-radius: 16px;
-      border-top-right-radius: 16px;
-    }
+  
+    input, button { border-radius: 0; }
+    input { border-top-left-radius: 16px; border-top-right-radius: 16px; }
   }
 
-  .password-errors {
-    color: #eb3939;
-    margin-bottom: 1em;
-    font-weight: 700;
-  }
-  .success {
-    color: $green;
-    font-weight: 700;
-  }
-  .there-are-unclaimed {
-    font-weight: 700;
-    .count {
-      font-size: 130%;
-    }
+  .password-errors { color:#eb3939; margin-bottom: 1em; font-weight: 700; }
+  .success { color:$green; font-weight: 700; }
+  .there-are-unclaimed { font-weight: 700;
+    .count { font-size:130%; }
   }
 
-  .scorekeeper {
-    padding: ($gap * 2) $gap 0 0;
-    .player {
-      backdrop-filter: blur(8px);
-      color: rgba(255, 255, 255, 0.7);
-      &.you {
-        color: rgba(255, 255, 255, 1);
-      }
+
+  .scorekeeper { padding:($gap * 2) $gap 0 0;
+    .player { backdrop-filter:blur(8px); color:rgba(255,255,255,0.7);
+      &.you { color:rgba(255,255,255,1); }
     }
-    .admin-icon {
-      display: none !important;
-    }
+    .admin-icon { display:none !important; }
   }
 
-  .timer {
-    @include position(fixed, null, 20px, 20px);
-    background: rgba(255, 255, 255, 0.6);
-    width: 5vw;
-    height: 5vw;
-    border-radius: 50%;
-    line-height: 5vw;
-    text-align: center;
-    font-size: 3.6vw;
+  .timer { @include position(fixed,null,20px,20px); background:rgba(255,255,255,0.6); width:5vw; height:5vw; border-radius: 50%; line-height: 5vw; text-align: center; font-size:3.6vw;
   }
 
-  .round-reminder {
-    @include position(fixed, null, null, 0, 0);
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(8px);
-    padding: $padding;
-    max-height: 95vh;
-    overflow-y: auto;
-    h3 {
-      font-size: 135%;
+  .round-reminder { @include position(fixed,null,null,0,0); background:rgba(255,255,255,0.85); backdrop-filter:blur(8px); padding:$padding; max-height: 95vh; overflow-y: auto;
+    h3 { font-size:135%; }
+    .challenge-name { font-weight: 600; margin-bottom: 0.25em; }
+    ol > li { margin-left: 1em; list-style: decimal; padding-left: 0.25em; padding-bottom:0.5em; margin-bottom: 0.5em; border-bottom: 1px solid rgba(0,0,0,0.2);
+      &:last-child { border-bottom: none; margin-bottom: 0; }
     }
-    .challenge-name {
-      font-weight: 600;
-      margin-bottom: 0.25em;
-    }
-    ol > li {
-      margin-left: 1em;
-      list-style: decimal;
-      padding-left: 0.25em;
-      padding-bottom: 0.5em;
-      margin-bottom: 0.5em;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-      &:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-      }
-    }
-    ul > li {
-      margin-bottom: 0;
-      font-size: 90%;
-      margin-left: 1.5em;
-    }
+    ul > li { margin-bottom: 0; font-size:90%; margin-left: 1.5em; }
 
-    transform: translateY(102%);
-    transition: transform 8s ease;
-    &.visible {
-      transform: translateY(0);
-    }
+    transform: translateY(102%); transition: transform 8s ease;
+    &.visible { transform: translateY(0); }
   }
 
-  button.quiet-music {
-    @include position(absolute, 10px, 10px);
-    background: transparent;
-    color: white;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    svg {
-      width: 32px;
-      height: 32px;
-    }
-    .tip {
-      position: absolute;
-      top: 10px;
-      left: 0;
-      width: 140px;
-      text-align: right;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateX(-140px);
-      transition: all 0.2s ease;
-    }
+  button.quiet-music { @include position(absolute,10px,10px); background: transparent; color: white; border: none; cursor: pointer; outline: none;
+    svg { width:32px; height:32px; }
+    .tip { position: absolute; top: 10px; left: 0; width: 140px; text-align: right; opacity: 0; pointer-events: none; transform: translateX(-140px); transition:all 0.2s ease; }  
     &:hover {
-      .tip {
-        opacity: 1;
-      }
+      .tip { opacity: 1;}
     }
     &.hush {
       &:hover {
-        .middle,
-        .right {
-          opacity: 0.5;
-        }
+        .middle, .right { opacity: 0.5; }
       }
     }
     &.enlouden {
-      .middle,
-      .right {
-        opacity: 0;
-      }
+      .middle, .right { opacity: 0; }
       &:hover {
-        .middle,
-        .right {
-          opacity: 0.5;
-        }
+        .middle, .right { opacity: 0.5; }
       }
     }
   }
 }
 
-@media (max-width: 720px) {
-  .final-round {
-    position: relative;
-    display: block;
-    .interface {
-      padding: $gap $padding;
-    }
+@media (max-width:720px) {
+  .final-round { position: relative; display: block;
+    .interface { padding:$gap $padding; }
   }
 }
 
-@media (min-width: 721px) {
-  .final-round {
-    @include position(fixed, 0, 0, 0, 0);
-    display: grid;
-    grid-template-columns: 1fr ($scorebard-width + $gap);
-    .interface {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding-left: 100px;
-    }
+@media (min-width:721px) {
+  .final-round { @include position(fixed,0,0,0,0); display:grid; grid-template-columns: 1fr ($scorebard-width + $gap);
+    .interface { display:flex; align-items: center; justify-content: center; padding-left: 100px; }
   }
 }

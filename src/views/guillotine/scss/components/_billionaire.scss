@@ -1,105 +1,42 @@
-.billionaire {
-  padding: 0;
-  .info {
-    display: grid;
-    grid-template-columns: 76px 1fr 32px;
-    column-gap: $gap;
-    row-gap: calc($gap / 4);
-    padding: calc($gap / 2);
-    .flag {
-      grid-row: span 3;
-      grid-column: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding-left: 10px;
-      img {
-        max-height: 50px;
-      }
+.billionaire { padding:0;
+  .info { display:grid; grid-template-columns: 76px 1fr 32px; column-gap:$gap; row-gap:calc($gap / 4); padding:calc($gap / 2);
+    .flag { grid-row: span 3; grid-column: 1; display:flex; flex-direction: column; justify-content: center; padding-left: 10px;
+      img { max-height: 50px; }
     }
-    .name {
-      grid-row: 1;
-      grid-column: 2;
-      text-align: left;
+    .name { grid-row: 1; grid-column: 2; text-align: left; }
+    .source { grid-row: 2; grid-column: 2; text-align: left; }
+    .industry { 
+      &.text { grid-row: 3; grid-column: 2; text-align: left; }
+      &.icon { grid-row: span 3; grid-column: 3; }
     }
-    .source {
-      grid-row: 2;
-      grid-column: 2;
-      text-align: left;
-    }
-    .industry {
-      &.text {
-        grid-row: 3;
-        grid-column: 2;
-        text-align: left;
-      }
-      &.icon {
-        grid-row: span 3;
-        grid-column: 3;
-      }
-    }
-    .wealth {
-      grid-row: span 3;
-      grid-column: 3;
-    }
+    .wealth { grid-row: span 3; grid-column: 3; }
   }
-  .name {
-    font-size: 1.25em;
-    font-family: $redHatText;
-    font-weight: 475;
-  }
-  .source {
-    font-size: 0.875em;
-    font-family: $redHatText;
-    font-weight: 525;
-  }
+  .name { font-size:1.25em; font-family: $redHatText; font-weight: 475; }
+  .source { font-size:0.875em; font-family: $redHatText; font-weight: 525; }
   .industry {
-    &.text {
-      font-size: 0.875em;
-      font-family: $redHatText;
-      font-weight: 525;
-      color: red;
-    }
+    &.text { font-size:0.875em; font-family: $redHatText; font-weight: 525; color:red; }
   }
-  .wealth {
-    font-size: 0.875em;
-    font-family: $redHatText;
-    text-align: right;
-    strong {
-      font-size: 1.2em;
-    }
-    sub.b {
-      display: block;
-    }
+  .wealth  { font-size:0.875em; font-family: $redHatText; text-align: right;
+    strong { font-size:1.2em; }
+    sub.b { display: block; }
   }
 
-  border-radius: 9px;
-  overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 9px; overflow: hidden; border:1px solid rgba(0,0,0,0.1);
+  
+  transition:all 0.25s linear;
 
-  transition: all 0.25s linear;
-
-  &:not([disabled]) {
-    cursor: pointer;
-    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.05);
-    &:hover,
-    &:focus {
-      border-color: rgba(0, 0, 0, 0.2);
-      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
+  &:not([disabled]) { cursor: pointer;
+    box-shadow: 3px 3px 6px rgba(0,0,0,0.05);
+    &:hover, &:focus { 
+      border-color:rgba(0,0,0,0.2);
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.15);
     }
   }
 
-  &[status="dead"] {
-    background: $black;
-    color: $white;
-    .name {
-      text-decoration: line-through;
-      text-decoration-thickness: 0.25em;
-      text-decoration-color: rgba($red, 0.5);
+  &[status="dead"] { background:$black; color:$white;
+    .name {  text-decoration: line-through; text-decoration-thickness: 0.25em; text-decoration-color: rgba($red,0.5);
       // span { padding-left:0.25em; padding-right: 0.25em; }
     }
-    .industry.icon {
-      filter: invert(100%);
-    }
+    .industry.icon { filter:invert(100%); }
   }
 }

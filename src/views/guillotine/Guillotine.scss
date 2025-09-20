@@ -2,18 +2,18 @@
 // https://sass-guidelin.es/#architecture
 
 // ABSRACTS are variables and mixins. (they should *never* add lines to the production CSS)
-@import "scss/abstracts/variables";
+@import "scss/abstracts/variables"; 
 @import "scss/abstracts/z-index";
 @import "scss/abstracts/mixins";
 @import "scss/abstracts/extends";
 
 // BASE is for things like global site styles and typography.
-@import "scss/base/reset";
-@import "scss/base/defaults";
+@import "scss/base/reset"; 
+@import "scss/base/defaults"; 
 @import "scss/base/animations";
 
-// LIBRARIES is for third party Scss
-@import "scss/libraries/animate.scss";
+// LIBRARIES is for third party Scss 
+@import "scss/libraries/animate.scss"; 
 
 // COMPONENTS is for stuff like buttons, cards, callouts, toasts, etc... Essentially - reusable rectangles.
 @import "scss/components/billionaire";
@@ -38,6 +38,7 @@
 @import "scss/sections/footer/by-lemon";
 
 // PAGES is for any specific page template
+
 
 // FINALLY, we should have a place for things we still need to get to...
 @import "scss/todo/shame";

@@ -20,21 +20,36 @@ const connection = mysql.createConnection(theDatabase);
 console.log(`💽 database function is communicating with ${theDatabase} 💽`);
 
 export function addOneInDatabase(table, value) {
-  const sql = "UPDATE " + table + " SET icount = icount + 1 WHERE iname = " + connection.escape(value) + ";";
+  const sql =
+    "UPDATE " +
+    table +
+    " SET icount = icount + 1 WHERE iname = " +
+    connection.escape(value) +
+    ";";
   connection.query(sql, function (err, rows, fields) {
     if (err) throw err;
   });
 }
 
 export function incrementDatabase(table, value) {
-  const sql = "INSERT INTO " + table + " (iname) VALUES (" + connection.escape(value) + ") ON DUPLICATE KEY UPDATE icount = icount+1;";
+  const sql =
+    "INSERT INTO " +
+    table +
+    " (iname) VALUES (" +
+    connection.escape(value) +
+    ") ON DUPLICATE KEY UPDATE icount = icount+1;";
   connection.query(sql, function (err, rows, fields) {
     if (err) throw err;
   });
 }
 
 export function decrementDatabase(table, value) {
-  const sql = "INSERT INTO " + table + " (iname) VALUES (" + connection.escape(value) + ") ON DUPLICATE KEY UPDATE icount = icount-1;";
+  const sql =
+    "INSERT INTO " +
+    table +
+    " (iname) VALUES (" +
+    connection.escape(value) +
+    ") ON DUPLICATE KEY UPDATE icount = icount-1;";
   connection.query(sql, function (err, rows, fields) {
     if (err) throw err;
   });
@@ -77,7 +92,13 @@ export function dateStampInDatabase(table, gameName) {
   });
 }
 
-export function newCameoPlayerScore(playerScore, correctSorts, averageValuationOffset, birthdayWishes, exceededBudget) {
+export function newCameoPlayerScore(
+  playerScore,
+  correctSorts,
+  averageValuationOffset,
+  birthdayWishes,
+  exceededBudget,
+) {
   const sql = `INSERT INTO cameoPlayerScores (playerScore, correctSorts,averageValuationOffset,birthdayWishes,exceededBudget,finishTime) 
                 VALUES (${connection.escape(playerScore)},${connection.escape(correctSorts)},${connection.escape(averageValuationOffset)},${connection.escape(birthdayWishes)},${connection.escape(exceededBudget)},NOW())`;
   connection.query(sql, function (err, rows, fields) {

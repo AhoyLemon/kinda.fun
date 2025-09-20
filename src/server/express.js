@@ -23,9 +23,12 @@ const app = express();
 const port = process.env.PORT || 3000;
 app.use(cors());
 
-const DEV_DATABASE = "mysql://ln9uumc4l7ec5hl7:sn7bwomt55zt5rz3@pfw0ltdr46khxib3.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/r2sqgl0qhc59u3rw";
-const LIVE_DATABASE = "mysql://ln9uumc4l7ec5hl7:sn7bwomt55zt5rz3@pfw0ltdr46khxib3.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/r2sqgl0qhc59u3rw";
-const THE_DATABASE = process.env.NODE_ENV === "production" ? LIVE_DATABASE : DEV_DATABASE;
+const DEV_DATABASE =
+  "mysql://ln9uumc4l7ec5hl7:sn7bwomt55zt5rz3@pfw0ltdr46khxib3.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/r2sqgl0qhc59u3rw";
+const LIVE_DATABASE =
+  "mysql://ln9uumc4l7ec5hl7:sn7bwomt55zt5rz3@pfw0ltdr46khxib3.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/r2sqgl0qhc59u3rw";
+const THE_DATABASE =
+  process.env.NODE_ENV === "production" ? LIVE_DATABASE : DEV_DATABASE;
 
 // const liveDBurl = (process.env.JAWSDB_CRIMSON_URL || secrets.liveSQLurl);
 console.table([
@@ -53,12 +56,15 @@ app.get("/stats/general/json", (req, res) => {
     wrongest: {},
     playerNames: [],
   };
-  connection.query("SELECT * FROM allGamesLastPlayed;", function (err, results) {
-    if (err) throw err;
-    results.forEach((key) => {
-      gameData.lastPlayed[key.gameName] = key.lastGameTime;
-    });
-  });
+  connection.query(
+    "SELECT * FROM allGamesLastPlayed;",
+    function (err, results) {
+      if (err) throw err;
+      results.forEach((key) => {
+        gameData.lastPlayed[key.gameName] = key.lastGameTime;
+      });
+    },
+  );
   connection.query("SELECT * FROM cameoGames;", function (err, results) {
     if (err) throw err;
     results.forEach((key) => {
@@ -129,10 +135,13 @@ app.get("/stats/invalid/json", (req, res) => {
     rules: [],
     successfulPasswords: [],
   };
-  connection.query("SELECT * FROM invalidBannedLetters;", function (err, results) {
-    if (err) throw err;
-    invalidData.bannedLetters = results;
-  });
+  connection.query(
+    "SELECT * FROM invalidBannedLetters;",
+    function (err, results) {
+      if (err) throw err;
+      invalidData.bannedLetters = results;
+    },
+  );
   connection.query("SELECT * FROM invalidBugs;", function (err, results) {
     if (err) throw err;
     invalidData.bugs = results;
@@ -149,24 +158,33 @@ app.get("/stats/invalid/json", (req, res) => {
     if (err) throw err;
     invalidData.crashes = results;
   });
-  connection.query("SELECT * FROM invalidDemandedLetters;", function (err, results) {
-    if (err) throw err;
-    invalidData.demandedLetters = results;
-  });
-  connection.query("SELECT * FROM invalidPlayerCounts;", function (err, results) {
-    if (err) throw err;
-    invalidData.playerCounts = results;
-  });
+  connection.query(
+    "SELECT * FROM invalidDemandedLetters;",
+    function (err, results) {
+      if (err) throw err;
+      invalidData.demandedLetters = results;
+    },
+  );
+  connection.query(
+    "SELECT * FROM invalidPlayerCounts;",
+    function (err, results) {
+      if (err) throw err;
+      invalidData.playerCounts = results;
+    },
+  );
   connection.query("SELECT * FROM invalidRules;", function (err, results) {
     if (err) throw err;
     invalidData.rules = results;
   });
-  connection.query("SELECT * FROM invalidSuccessfulPasswords;", function (err, results) {
-    if (err) throw err;
-    invalidData.successfulPasswords = results;
-    res.setHeader("Content-Type", "application/json");
-    res.send(JSON.stringify(invalidData));
-  });
+  connection.query(
+    "SELECT * FROM invalidSuccessfulPasswords;",
+    function (err, results) {
+      if (err) throw err;
+      invalidData.successfulPasswords = results;
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify(invalidData));
+    },
+  );
 });
 
 ///// wrongest stats
@@ -180,16 +198,22 @@ app.get("/stats/wrongest/json", (req, res) => {
     if (err) throw err;
     wrongestData.decks = results;
   });
-  connection.query("SELECT * FROM wrongestPlayerCounts;", function (err, results) {
-    if (err) throw err;
-    wrongestData.playerCounts = results;
-  });
-  connection.query("SELECT * FROM wrongestStatements;", function (err, results) {
-    if (err) throw err;
-    wrongestData.statements = results;
-    res.setHeader("Content-Type", "application/json");
-    res.send(JSON.stringify(wrongestData));
-  });
+  connection.query(
+    "SELECT * FROM wrongestPlayerCounts;",
+    function (err, results) {
+      if (err) throw err;
+      wrongestData.playerCounts = results;
+    },
+  );
+  connection.query(
+    "SELECT * FROM wrongestStatements;",
+    function (err, results) {
+      if (err) throw err;
+      wrongestData.statements = results;
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify(wrongestData));
+    },
+  );
 });
 
 ///// sisyphus stats
@@ -236,12 +260,15 @@ app.get("/stats/guillotine/json", (req, res) => {
     // res.setHeader('Content-Type', 'application/json');
     // res.send(JSON.stringify(guillotineData));
   });
-  connection.query("SELECT * FROM guillotinePlayerScores", function (err, results) {
-    if (err) throw err;
-    guillotineData.playerScores = results;
-    res.setHeader("Content-Type", "application/json");
-    res.send(JSON.stringify(guillotineData));
-  });
+  connection.query(
+    "SELECT * FROM guillotinePlayerScores",
+    function (err, results) {
+      if (err) throw err;
+      guillotineData.playerScores = results;
+      res.setHeader("Content-Type", "application/json");
+      res.send(JSON.stringify(guillotineData));
+    },
+  );
 });
 
 ///// pretend stats
