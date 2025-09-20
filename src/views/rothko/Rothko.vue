@@ -137,8 +137,8 @@
       return `M 0 0 L ${w} 0 L ${w} ${h} L 0 ${h} Z`;
     }
 
-    // Create soft, organic Rothko-like edges using multiple curve layers
-    const baseVariation = (roughness / 10) * 8; // More controlled variation
+    // Create very fluid, "blobby" organic edges with enhanced variation
+    const baseVariation = (roughness / 10) * 15; // Increased for more blobby effect
     const points = [];
 
     // Seed for consistent randomness per shape
@@ -148,20 +148,22 @@
       return x - Math.floor(x);
     };
 
-    // Create multiple frequency layers for more natural, painterly variation
+    // Create multiple frequency layers for very organic, blobby variation
     const getLayeredVariation = (index: number, baseIndex: number) => {
-      // Layer 1: Large gentle waves (like brush pressure variations)
-      const layer1 = Math.sin((index / 8) * Math.PI * 2) * baseVariation * 0.6;
-      // Layer 2: Medium frequency texture (like canvas texture)
-      const layer2 = (seededRandom(baseIndex + index) - 0.5) * baseVariation * 0.25;
-      // Layer 3: Fine organic details
-      const layer3 = (seededRandom(baseIndex + index + 1000) - 0.5) * baseVariation * 0.15;
-
-      return layer1 + layer2 + layer3;
+      // Layer 1: Large organic undulations (major blob shape)
+      const layer1 = Math.sin((index / 6) * Math.PI * 2) * baseVariation * 0.7;
+      // Layer 2: Medium frequency organic texture (blob details)
+      const layer2 = (seededRandom(baseIndex + index) - 0.5) * baseVariation * 0.4;
+      // Layer 3: Fine irregular details (paint texture)
+      const layer3 = (seededRandom(baseIndex + index + 1000) - 0.5) * baseVariation * 0.2;
+      // Layer 4: Random spikes and indentations for very organic feel
+      const layer4 = (seededRandom(baseIndex + index + 2000) - 0.5) * baseVariation * 0.3;
+      
+      return layer1 + layer2 + layer3 + layer4;
     };
 
-    // Create more points for smoother organic curves
-    const pointsPerEdge = 10;
+    // More points for very fluid, organic curves
+    const pointsPerEdge = 16;
 
     // Top edge - create organic undulations
     for (let i = 0; i <= pointsPerEdge; i++) {
@@ -214,7 +216,7 @@
     if (brushIntensity === 0) return [baseColor];
 
     const variations = [];
-    const count = Math.floor(brushIntensity * 15) + 5; // More variations
+    const count = Math.floor(brushIntensity * 20) + 8; // Many more variations
 
     // Convert hex to RGB for manipulation
     const hex = baseColor.replace("#", "");
@@ -232,15 +234,18 @@
     for (let i = 0; i < count; i++) {
       const variation = brushIntensity / 10;
 
-      // Create more dramatic color shifts for better visibility
-      const intensity = 60 * variation; // Increased intensity
+      // Create much more dramatic color shifts for visible brush strokes
+      const intensity = 100 * variation; // Much higher intensity for visibility
       const rShift = (seededRandom(i) - 0.5) * intensity;
       const gShift = (seededRandom(i + 100) - 0.5) * intensity;
       const bShift = (seededRandom(i + 200) - 0.5) * intensity;
 
-      const newR = Math.max(0, Math.min(255, r + rShift));
-      const newG = Math.max(0, Math.min(255, g + gShift));
-      const newB = Math.max(0, Math.min(255, b + bShift));
+      // Add lightness/darkness variations for depth
+      const lightnessShift = (seededRandom(i + 300) - 0.5) * 80 * variation;
+
+      const newR = Math.max(0, Math.min(255, r + rShift + lightnessShift));
+      const newG = Math.max(0, Math.min(255, g + gShift + lightnessShift));
+      const newB = Math.max(0, Math.min(255, b + bShift + lightnessShift));
 
       variations.push(`rgb(${Math.floor(newR)}, ${Math.floor(newG)}, ${Math.floor(newB)})`);
     }
@@ -254,7 +259,7 @@
 
     const fields = [];
     const colorVariations = getColorVariations(shape.color, brushIntensity);
-    const fieldCount = Math.floor(brushIntensity * 20) + 8; // More fields for visible variation
+    const fieldCount = Math.floor(brushIntensity * 30) + 12; // Many more fields for visible variation
 
     const seed = shape.id * 789 + shape.brushStrokes * 321;
     const seededRandom = (index: number) => {
@@ -263,12 +268,32 @@
     };
 
     for (let i = 0; i < fieldCount; i++) {
-      // Create more visible organic color field shapes
-      const x = seededRandom(i) * 90 + 2;
-      const y = seededRandom(i + 100) * 90 + 2;
-      const width = seededRandom(i + 200) * 70 + 15;
-      const height = seededRandom(i + 300) * 50 + 8;
-      const opacity = (seededRandom(i + 400) * 0.4 + 0.2) * brushIntensity; // Higher opacity
+      // Create brush stroke-like fields with varied shapes and sizes
+      const strokeType = seededRandom(i + 600);
+      
+      let x, y, width, height;
+      
+      if (strokeType < 0.4) {
+        // Horizontal brush strokes (most common in Rothko)
+        x = seededRandom(i) * 85 + 2;
+        y = seededRandom(i + 100) * 90 + 2;
+        width = seededRandom(i + 200) * 80 + 20; // Long horizontal strokes
+        height = seededRandom(i + 300) * 15 + 3; // Thin vertical
+      } else if (strokeType < 0.7) {
+        // Vertical brush strokes
+        x = seededRandom(i) * 90 + 2;
+        y = seededRandom(i + 100) * 85 + 2;
+        width = seededRandom(i + 200) * 15 + 3; // Thin horizontal
+        height = seededRandom(i + 300) * 80 + 20; // Long vertical strokes
+      } else {
+        // Irregular blob-like color fields
+        x = seededRandom(i) * 85 + 2;
+        y = seededRandom(i + 100) * 85 + 2;
+        width = seededRandom(i + 200) * 60 + 20;
+        height = seededRandom(i + 300) * 60 + 20;
+      }
+      
+      const opacity = (seededRandom(i + 400) * 0.6 + 0.3) * brushIntensity; // Higher base opacity
       const colorIndex = Math.floor(seededRandom(i + 500) * colorVariations.length);
 
       fields.push({
@@ -278,8 +303,8 @@
         height,
         color: colorVariations[colorIndex],
         opacity,
-        rx: width * 0.4, // More rounded for organic feel
-        ry: height * 0.5,
+        rx: Math.min(width, height) * 0.3, // More organic rounded corners
+        ry: Math.min(width, height) * 0.3,
       });
     }
 
