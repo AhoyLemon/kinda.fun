@@ -25,34 +25,34 @@
     shapes: [
       {
         id: 1,
-        x: 0,
-        y: 0,
-        width: 100,
-        height: 25,
+        x: 6,  // Add left margin
+        y: 4,  // Add top margin
+        width: 88, // Leave space on sides
+        height: 38, // Larger for proper proportion
         color: "#880E2B", // Dark red for first reference
-        roughness: 2,
+        roughness: 3,
         blur: 0,
         brushStrokes: 8,
       },
       {
         id: 2,
-        x: 0,
-        y: 30,
-        width: 100,
-        height: 20,
-        color: "#ff8c42", // Orange middle stripe
-        roughness: 1,
+        x: 6,  // Add left margin
+        y: 48, // Position between shapes
+        width: 88, // Leave space on sides
+        height: 8,  // Much smaller middle stripe
+        color: "#D4731A", // Darker orange, distinct from background
+        roughness: 2,
         blur: 0,
         brushStrokes: 6,
       },
       {
         id: 3,
-        x: 0,
-        y: 55,
-        width: 100,
-        height: 45,
+        x: 6,  // Add left margin
+        y: 62, // Position after middle stripe
+        width: 88, // Leave space on sides
+        height: 32, // Bottom section
         color: "#880E2B", // Dark red bottom
-        roughness: 2,
+        roughness: 3,
         blur: 0,
         brushStrokes: 9,
       },
@@ -137,68 +137,74 @@
       return `M 0 0 L ${w} 0 L ${w} ${h} L 0 ${h} Z`;
     }
 
-    // Create soft, organic Rothko-like edges using smooth curves
-    const variation = (roughness / 10) * 15; // Increase variation for more visible roughness
+    // Create soft, organic Rothko-like edges using multiple curve layers
+    const baseVariation = (roughness / 10) * 8; // More controlled variation
     const points = [];
     
     // Seed for consistent randomness per shape
     const seed = shape.id * 123 + shape.roughness * 456;
     const seededRandom = (index: number) => {
-      const x = Math.sin(seed + index) * 10000;
+      const x = Math.sin(seed + index * 2.718) * 10000;
       return x - Math.floor(x);
     };
+    
+    // Create multiple frequency layers for more natural, painterly variation
+    const getLayeredVariation = (index: number, baseIndex: number) => {
+      // Layer 1: Large gentle waves (like brush pressure variations)
+      const layer1 = Math.sin((index / 8) * Math.PI * 2) * baseVariation * 0.6;
+      // Layer 2: Medium frequency texture (like canvas texture)
+      const layer2 = (seededRandom(baseIndex + index) - 0.5) * baseVariation * 0.25;
+      // Layer 3: Fine organic details
+      const layer3 = (seededRandom(baseIndex + index + 1000) - 0.5) * baseVariation * 0.15;
+      
+      return layer1 + layer2 + layer3;
+    };
 
-    // Top edge - create gentle undulations
-    const topPoints = 6;
-    for (let i = 0; i <= topPoints; i++) {
-      const x = (i / topPoints) * w;
-      const y = (seededRandom(i) - 0.5) * variation;
+    // Create more points for smoother organic curves
+    const pointsPerEdge = 10;
+    
+    // Top edge - create organic undulations
+    for (let i = 0; i <= pointsPerEdge; i++) {
+      const x = (i / pointsPerEdge) * w;
+      const y = getLayeredVariation(i, 0);
       points.push({ x, y });
     }
 
     // Right edge
-    const rightPoints = 4;
-    for (let i = 1; i <= rightPoints; i++) {
-      const x = w + (seededRandom(100 + i) - 0.5) * variation;
-      const y = (i / rightPoints) * h;
+    for (let i = 1; i <= pointsPerEdge; i++) {
+      const x = w + getLayeredVariation(i, 100);
+      const y = (i / pointsPerEdge) * h;
       points.push({ x, y });
     }
 
     // Bottom edge
-    const bottomPoints = 6;
-    for (let i = bottomPoints - 1; i >= 0; i--) {
-      const x = (i / bottomPoints) * w;
-      const y = h + (seededRandom(200 + i) - 0.5) * variation;
+    for (let i = pointsPerEdge - 1; i >= 0; i--) {
+      const x = (i / pointsPerEdge) * w;
+      const y = h + getLayeredVariation(i, 200);
       points.push({ x, y });
     }
 
     // Left edge
-    const leftPoints = 4;
-    for (let i = leftPoints - 1; i >= 1; i--) {
-      const x = (seededRandom(300 + i) - 0.5) * variation;
-      const y = (i / leftPoints) * h;
+    for (let i = pointsPerEdge - 1; i >= 1; i--) {
+      const x = getLayeredVariation(i, 300);
+      const y = (i / pointsPerEdge) * h;
       points.push({ x, y });
     }
 
-    // Create smooth Bezier curves for organic Rothko-like edges
+    // Create smooth organic path using gentle curves
     let path = `M ${points[0].x} ${points[0].y}`;
 
-    for (let i = 1; i < points.length; i++) {
+    for (let i = 0; i < points.length; i++) {
       const current = points[i];
       const next = points[(i + 1) % points.length];
       
-      // Use gentle control points for smooth curves
-      const cp1x = current.x + (seededRandom(400 + i) - 0.5) * variation * 0.3;
-      const cp1y = current.y + (seededRandom(500 + i) - 0.5) * variation * 0.3;
+      // Create soft control points for natural painterly curves
+      const smoothness = 0.4;
+      const cp1x = current.x + (seededRandom(400 + i) - 0.5) * baseVariation * smoothness;
+      const cp1y = current.y + (seededRandom(500 + i) - 0.5) * baseVariation * smoothness;
       
-      path += ` Q ${cp1x} ${cp1y} ${current.x} ${current.y}`;
+      path += ` Q ${cp1x} ${cp1y} ${next.x} ${next.y}`;
     }
-
-    // Close path smoothly
-    const firstPoint = points[0];
-    const cp1x = firstPoint.x + (seededRandom(600) - 0.5) * variation * 0.3;
-    const cp1y = firstPoint.y + (seededRandom(700) - 0.5) * variation * 0.3;
-    path += ` Q ${cp1x} ${cp1y} ${firstPoint.x} ${firstPoint.y}`;
     
     path += " Z";
     return path;
