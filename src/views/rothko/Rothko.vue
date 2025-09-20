@@ -21,40 +21,40 @@
 
   const painting = reactive<PaintingConfig>({
     aspectRatio: { width: 7, height: 8 }, // Start with reference painting 1 aspect ratio
-    backgroundColor: "#ff8c42", // Orange background for first reference
+    backgroundColor: "#FC772C", // Orange background for first reference
     shapes: [
       {
         id: 1,
-        x: 6,  // Add left margin
-        y: 4,  // Add top margin
-        width: 88, // Leave space on sides
+        x: 6, // Add left margin
+        y: 3, // Add top margin
+        width: 92, // Leave space on sides
         height: 38, // Larger for proper proportion
-        color: "#880E2B", // Dark red for first reference
+        color: "#860F2D", // Dark red for first reference
         roughness: 3,
-        blur: 0,
+        blur: 2,
         brushStrokes: 8,
       },
       {
         id: 2,
-        x: 6,  // Add left margin
-        y: 48, // Position between shapes
-        width: 88, // Leave space on sides
-        height: 8,  // Much smaller middle stripe
-        color: "#D4731A", // Darker orange, distinct from background
-        roughness: 2,
-        blur: 0,
+        x: 4, // Add left margin
+        y: 42, // Position between shapes
+        width: 92, // Leave space on sides
+        height: 8, // Much smaller middle stripe
+        color: "#F24120", // Darker orange, distinct from background
+        roughness: 7,
+        blur: 2,
         brushStrokes: 6,
       },
       {
         id: 3,
-        x: 6,  // Add left margin
-        y: 62, // Position after middle stripe
+        x: 6, // Add left margin
+        y: 52, // Position after middle stripe
         width: 88, // Leave space on sides
-        height: 32, // Bottom section
-        color: "#880E2B", // Dark red bottom
+        height: 44, // Bottom section
+        color: "#8E162C", // Dark red bottom
         roughness: 3,
-        blur: 0,
-        brushStrokes: 9,
+        blur: 2,
+        brushStrokes: 10,
       },
     ],
   });
@@ -65,24 +65,24 @@
     const aspectRatio = painting.aspectRatio.width / painting.aspectRatio.height;
     const maxWidth = 500; // Max width in pixels
     const maxHeight = 600; // Max height in pixels
-    
+
     let width, height;
     if (aspectRatio >= 1) {
       // Wider than tall
       width = Math.min(maxWidth, maxHeight * aspectRatio);
       height = width / aspectRatio;
     } else {
-      // Taller than wide  
+      // Taller than wide
       height = Math.min(maxHeight, maxWidth / aspectRatio);
       width = height * aspectRatio;
     }
-    
+
     return {
       width: `${width}px`,
       height: `${height}px`,
       backgroundColor: painting.backgroundColor,
-      position: 'relative' as const,
-      overflow: 'hidden' as const,
+      position: "relative" as const,
+      overflow: "hidden" as const,
     };
   });
 
@@ -90,7 +90,7 @@
     shapeIdCounter++;
     const rothkoColors = ["#8b4513", "#2f1b69", "#cd853f", "#556b2f", "#800020", "#483d8b"];
     const randomColor = rothkoColors[shapeIdCounter % rothkoColors.length];
-    
+
     painting.shapes.push({
       id: shapeIdCounter,
       x: 5,
@@ -114,7 +114,7 @@
   const getShapeStyle = (shape: Shape) => {
     // Invert brush strokes logic - more visible at higher values
     const brushIntensity = shape.brushStrokes / 10;
-    const blurAmount = shape.blur * 2.5; // Increase blur for softer Rothko-like edges
+    const blurAmount = shape.blur * 0.5; // Increase blur for softer Rothko-like edges
     const baseOpacity = Math.max(0.7, 1 - brushIntensity * 0.2);
 
     return {
@@ -140,14 +140,14 @@
     // Create soft, organic Rothko-like edges using multiple curve layers
     const baseVariation = (roughness / 10) * 8; // More controlled variation
     const points = [];
-    
+
     // Seed for consistent randomness per shape
     const seed = shape.id * 123 + shape.roughness * 456;
     const seededRandom = (index: number) => {
       const x = Math.sin(seed + index * 2.718) * 10000;
       return x - Math.floor(x);
     };
-    
+
     // Create multiple frequency layers for more natural, painterly variation
     const getLayeredVariation = (index: number, baseIndex: number) => {
       // Layer 1: Large gentle waves (like brush pressure variations)
@@ -156,13 +156,13 @@
       const layer2 = (seededRandom(baseIndex + index) - 0.5) * baseVariation * 0.25;
       // Layer 3: Fine organic details
       const layer3 = (seededRandom(baseIndex + index + 1000) - 0.5) * baseVariation * 0.15;
-      
+
       return layer1 + layer2 + layer3;
     };
 
     // Create more points for smoother organic curves
     const pointsPerEdge = 10;
-    
+
     // Top edge - create organic undulations
     for (let i = 0; i <= pointsPerEdge; i++) {
       const x = (i / pointsPerEdge) * w;
@@ -197,15 +197,15 @@
     for (let i = 0; i < points.length; i++) {
       const current = points[i];
       const next = points[(i + 1) % points.length];
-      
+
       // Create soft control points for natural painterly curves
       const smoothness = 0.4;
       const cp1x = current.x + (seededRandom(400 + i) - 0.5) * baseVariation * smoothness;
       const cp1y = current.y + (seededRandom(500 + i) - 0.5) * baseVariation * smoothness;
-      
+
       path += ` Q ${cp1x} ${cp1y} ${next.x} ${next.y}`;
     }
-    
+
     path += " Z";
     return path;
   };
@@ -215,74 +215,74 @@
 
     const variations = [];
     const count = Math.floor(brushIntensity * 15) + 5; // More variations
-    
+
     // Convert hex to RGB for manipulation
-    const hex = baseColor.replace('#', '');
+    const hex = baseColor.replace("#", "");
     const r = parseInt(hex.substr(0, 2), 16);
-    const g = parseInt(hex.substr(2, 2), 16);  
+    const g = parseInt(hex.substr(2, 2), 16);
     const b = parseInt(hex.substr(4, 2), 16);
-    
+
     // Seed for consistent variations per shape
     const seed = r + g + b;
     const seededRandom = (index: number) => {
       const x = Math.sin(seed + index * 1.234) * 10000;
       return x - Math.floor(x);
     };
-    
+
     for (let i = 0; i < count; i++) {
       const variation = brushIntensity / 10;
-      
+
       // Create more dramatic color shifts for better visibility
       const intensity = 60 * variation; // Increased intensity
       const rShift = (seededRandom(i) - 0.5) * intensity;
       const gShift = (seededRandom(i + 100) - 0.5) * intensity;
       const bShift = (seededRandom(i + 200) - 0.5) * intensity;
-      
+
       const newR = Math.max(0, Math.min(255, r + rShift));
       const newG = Math.max(0, Math.min(255, g + gShift));
       const newB = Math.max(0, Math.min(255, b + bShift));
-      
+
       variations.push(`rgb(${Math.floor(newR)}, ${Math.floor(newG)}, ${Math.floor(newB)})`);
     }
-    
+
     return variations;
   };
 
   const generateColorFields = (shape: Shape) => {
     const brushIntensity = shape.brushStrokes / 10;
     if (brushIntensity === 0) return [];
-    
+
     const fields = [];
     const colorVariations = getColorVariations(shape.color, brushIntensity);
     const fieldCount = Math.floor(brushIntensity * 20) + 8; // More fields for visible variation
-    
+
     const seed = shape.id * 789 + shape.brushStrokes * 321;
     const seededRandom = (index: number) => {
       const x = Math.sin(seed + index * 2.345) * 10000;
       return x - Math.floor(x);
     };
-    
+
     for (let i = 0; i < fieldCount; i++) {
-      // Create more visible organic color field shapes 
+      // Create more visible organic color field shapes
       const x = seededRandom(i) * 90 + 2;
       const y = seededRandom(i + 100) * 90 + 2;
       const width = seededRandom(i + 200) * 70 + 15;
       const height = seededRandom(i + 300) * 50 + 8;
       const opacity = (seededRandom(i + 400) * 0.4 + 0.2) * brushIntensity; // Higher opacity
       const colorIndex = Math.floor(seededRandom(i + 500) * colorVariations.length);
-      
+
       fields.push({
         x,
-        y, 
+        y,
         width,
         height,
         color: colorVariations[colorIndex],
         opacity,
         rx: width * 0.4, // More rounded for organic feel
-        ry: height * 0.5
+        ry: height * 0.5,
       });
     }
-    
+
     return fields;
   };
 </script>
