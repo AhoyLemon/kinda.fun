@@ -1,4 +1,6 @@
-export const allValues = [
+import { Celeb } from "./_types";
+
+export const allValues: Celeb[] = [
   {
     name: "Kevin O'Leary",
     desc: "Shark Tank",
@@ -406,6 +408,12 @@ export const allValues = [
     desc: "One Of The Monkees",
     slug: "mickydolenz",
     value: 239,
+  },
+  {
+    name: "Patrick Fabian",
+    desc: "Howard Hamlin on Better Call Saul",
+    slug: "mrpatrickfabian",
+    value: 235,
   },
   {
     name: "Xzibit",
@@ -997,6 +1005,12 @@ export const allValues = [
     value: 55,
   },
   {
+    name: "Lavell Crawford",
+    desc: "Huell on Breaking Bad/Better Call Saul",
+    slug: "lavellthacomic",
+    value: 50,
+  },
+  {
     name: "Rednex",
     desc: "The Band that did that “Cotton Eye Joe” song (the whole band)",
     slug: "rednexofficial",
@@ -1302,9 +1316,15 @@ export const allValues = [
     slug: "alex_kack",
     value: 10,
   },
+  {
+    name: "Ben Odenkirk",
+    desc: `Does Bob Odenkirk impressions, despite neither looking nor sounding like Bob Odenkirk.`,
+    slug: "benacing",
+    value: 1,
+  },
 ];
 
-export const deadCelebrities = [
+export const deadCelebrities: Celeb[] = [
   { name: "George Lowe", desc: "Space Ghost", slug: "georgeloweofficial", value: 100 },
   {
     name: "Bob Saget",
