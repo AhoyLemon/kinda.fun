@@ -13,6 +13,9 @@ main.game-over(v-if="game.over")
       h2.subhead 	Qapla'!
     .birthday-header(v-else-if="computedGimmickName == 'Nuthin But Dogs'")
       h1.headline Happy Birthday, Pasha's Dog!
+    .birthday-header(v-else-if="computedGimmickName == 'Breaking Saul'")
+      h1.headline Happy Birthday, Bitch!
+      h2.subhead (this is hopefully said in the Jesse Pinkman voice)
     .birthday-header(v-else)
       h1.headline Happy Birthday, Pasha's Daughter
       h2.subhead Oops, you forgot to ask Pasha what his daughter's name is. Oh well!

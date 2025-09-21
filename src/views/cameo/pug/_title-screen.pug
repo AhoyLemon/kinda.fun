@@ -27,7 +27,7 @@ main.title-screen(v-if="!game.started")
   .select-gimmick-rounds.animate__animated.animate__fadeIn(v-if="gimmick.selectorVisible")
     form.animate__animated.animate__bounceInUp(@submit.prevent="startSinglePlayerGame()")
       fieldset(v-if="gimmick.selected && gimmick.selected.desc")
-        div.gimmick-desc {{gimmick.selected.desc}}
+        div.gimmick-desc(v-html="gimmick.selected.desc")
       fieldset
         select(id="GimmickSelector" @change="selectGimmickRound($event)" v-model="gimmick.selectedIndex")
           option(value="" disabled) -- Select A Special Game --
