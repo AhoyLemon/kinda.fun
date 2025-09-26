@@ -7,6 +7,7 @@
 
   interface Shape {
     id: number;
+    name: string;
     x: number;
     y: number;
     width: number;
@@ -27,12 +28,39 @@
     activeShapeId: 1,
   });
 
+  // Only one shape's controls open at a time
+  const openShapeId = ref<number | null>(1);
+
+  const toggleShapeControls = (id: number) => {
+    openShapeId.value = openShapeId.value === id ? null : id;
+  };
+
+  const removeShapeWithAnimation = (id: number) => {
+    // If the shape being removed is currently open, close it first
+    if (openShapeId.value === id) {
+      openShapeId.value = null;
+    }
+
+    // Remove the shape
+    const index = painting.shapes.findIndex((shape) => shape.id === id);
+    if (index > -1 && painting.shapes.length > 1) {
+      painting.shapes.splice(index, 1);
+
+      // Find the nearest shape to make visible
+      const nearestShape = painting.shapes[index] || painting.shapes[index - 1];
+      if (nearestShape) {
+        openShapeId.value = nearestShape.id;
+      }
+    }
+  };
+
   const painting = reactive<PaintingConfig>({
     aspectRatio: { width: 7, height: 8 }, // Start with reference painting 1 aspect ratio
     backgroundColor: "#FC772C", // Orange background for first reference
     shapes: [
       {
         id: 1,
+        name: "Shape 1",
         x: 6, // Add left margin
         y: 3, // Add top margin
         width: 92, // Leave space on sides
@@ -44,6 +72,7 @@
       },
       {
         id: 2,
+        name: "Shape 2",
         x: 4, // Add left margin
         y: 42, // Position between shapes
         width: 92, // Leave space on sides
@@ -55,6 +84,7 @@
       },
       {
         id: 3,
+        name: "Shape 3",
         x: 6, // Add left margin
         y: 52, // Position after middle stripe
         width: 88, // Leave space on sides
@@ -83,6 +113,7 @@
 
     painting.shapes.push({
       id: shapeIdCounter,
+      name: `Shape ${shapeIdCounter}`,
       x: 5,
       y: 30,
       width: 90,
@@ -116,10 +147,6 @@
       filter: `blur(${blurAmount}px)`,
       opacity: baseOpacity,
     };
-  };
-
-  const toggleShapeControls = (id: number) => {
-    ui.activeShapeId = ui.activeShapeId === id ? null : id;
   };
 
   const generateRoughPath = (shape: Shape) => {
