@@ -1,0 +1,184 @@
+.rothko-generator
+
+  .controls-panel-holder
+    .controls-panel
+      h1 Rothko Painting Generator
+      
+      .control-group
+        label Aspect Ratio
+        .aspect-ratio-controls
+          input(
+            type="number"
+            v-model.number="painting.aspectRatio.width"
+            min="1"
+            max="10"
+            step="0.5"
+          )
+          span :
+          input(
+            type="number"
+            v-model.number="painting.aspectRatio.height"
+            min="1"
+            max="10"
+            step="0.5"
+          )
+      
+      .control-group
+        label Background Color
+        fieldset(style="display:grid; grid-template-columns:repeat(2,1fr); gap: 10px;")
+          input(
+            type="color"
+            v-model="painting.backgroundColor"
+          )
+          input(
+            type="text"
+            v-model="painting.backgroundColor"
+          )
+      
+      .shapes-section
+        .shapes-header
+          h3 Shapes ({{ painting.shapes.length }})
+          button.add-shape(@click="addShape") Add Shape
+        
+        transition-group(name="shape-box" tag="div")
+          .shape-controls(
+            v-for="(shape, shapeIndex) in painting.shapes"
+            :key="shape.id"
+          )
+            .shape-header
+              input.shape-name(
+                type="text"
+                v-model="shape.name"
+                :placeholder="`Shape ${shapeIndex + 1}`"
+              )
+              .shape-actions
+                button.remove-shape(
+                  @click="removeShapeWithAnimation(shape.id)"
+                  :disabled="painting.shapes.length === 1"
+                ) Remove
+                button.toggle-controls(@click="toggleShapeControls(shape.id)")
+                  | {{ openShapeId === shape.id ? '⬆️ Hide' : '⬇️ Show' }}
+            transition(name="slide")
+              div
+                .shape-details(v-show="openShapeId === shape.id")
+                  .control-row
+                    .control
+                      label Position X (%)
+                      input(
+                        type="range"
+                        v-model.number="shape.x"
+                        min="0"
+                        max="100"
+                        step="1"
+                      )
+                      span {{ shape.x }}%
+                    .control
+                      label Position Y (%)
+                      input(
+                        type="range"
+                        v-model.number="shape.y"
+                        min="0"
+                        max="100"
+                        step="1"
+                      )
+                      span {{ shape.y }}%
+                  .control-row
+                    .control
+                      label Width (%)
+                      input(
+                        type="range"
+                        v-model.number="shape.width"
+                        min="10"
+                        max="100"
+                        step="1"
+                      )
+                      span {{ shape.width }}%
+                    .control
+                      label Height (%)
+                      input(
+                        type="range"
+                        v-model.number="shape.height"
+                        min="5"
+                        max="100"
+                        step="1"
+                      )
+                      span {{ shape.height }}%
+                  .control-row
+                    .control
+                      label Color
+                      input(
+                        type="color"
+                        v-model="shape.color"
+                      )
+                    .control
+                      label Roughness
+                      input(
+                        type="range"
+                        v-model.number="shape.roughness"
+                        min="0"
+                        max="10"
+                        step="1"
+                      )
+                      span {{ shape.roughness }}
+                  .control-row
+                    .control
+                      label Blur
+                      input(
+                        type="range"
+                        v-model.number="shape.blur"
+                        min="0"
+                        max="10"
+                        step="1"
+                      )
+                      span {{ shape.blur }}
+                    .control
+                      label Brush Strokes
+                      input(
+                        type="range"
+                        v-model.number="shape.brushStrokes"
+                        min="0"
+                        max="10"
+                        step="1"
+                      )
+                      span {{ shape.brushStrokes }}
+  
+  .painting-canvas
+    figure.rothko-painting(:style="canvasStyle")
+      .shape(
+        v-for="shape in painting.shapes"
+        :key="shape.id"
+        :style="getShapeStyle(shape)"
+      )
+        svg(
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        )
+          defs
+            // Define clipping path for the shape
+            clipPath(:id="`clip-${shape.id}`")
+              path(:d="generateRoughPath(shape)")
+            
+            // Subtle radial gradient for Rothko-like luminosity
+            radialGradient(:id="`radial-gradient-${shape.id}`")
+              stop(offset="0%" :stop-color="shape.color" stop-opacity="1")
+              stop(offset="50%" :stop-color="shape.color" stop-opacity="0.95")
+              stop(offset="100%" :stop-color="shape.color" stop-opacity="0.85")
+          
+          // Base shape with main color
+          path(
+            :d="generateRoughPath(shape)"
+            :fill="`url(#radial-gradient-${shape.id})`"
+          )
+          
+          // Color variation fields (clipped to shape)
+          g(:clip-path="`url(#clip-${shape.id})`" v-if="shape.brushStrokes > 0")
+            ellipse(
+              v-for="(field, index) in generateColorFields(shape)"
+              :key="`field-${shape.id}-${index}`"
+              :cx="field.x + field.width/2"
+              :cy="field.y + field.height/2"
+              :rx="field.rx"
+              :ry="field.ry"
+              :fill="field.color"
+              :opacity="field.opacity"
+            )
