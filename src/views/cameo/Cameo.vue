@@ -3,10 +3,10 @@
   import $ from "jquery";
   import draggable from "vuedraggable";
 
-  import { allValues } from "./js/_values.ts";
-  import { gimmickRounds } from "./js/_gimmick-rounds.ts";
-  import { settings } from "./js/_settings.ts";
-  import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
+  import { allValues } from "./ts/_values.js";
+  import { gimmickRounds } from "./ts/_gimmick-rounds.js";
+  import { settings } from "./ts/_settings.js";
+  import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/ts/_functions.js";
 
   // Sounds
   import { Howl, Howler } from "howler";
@@ -32,7 +32,6 @@
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
-  // import "vue-toastification/dist/index.css";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 

@@ -1,8 +1,12 @@
-export const storeItems = [
-  // {
-  //   id: 0, name: "Test Item", price: 1, scoreToReveal: 5,
-  //   desc: "This shouldn't show up in a production db.",
-  // },
+export interface StoreItem {
+  id: number;
+  name: string;
+  price: number;
+  scoreToReveal: number;
+  desc: string;
+}
+
+export const storeItems: StoreItem[] = [
   {
     id: 1,
     name: "Fresh Kicks",
@@ -50,7 +54,6 @@ export const storeItems = [
     name: "Dignity",
     price: 50000,
     scoreToReveal: 600,
-    //id: 7, name: "Dignity", price: 1, scoreToReveal: 1,
     desc: "You've played this game for far too long. I'm taking your diginity and you can buy it back.",
   },
   {
@@ -144,12 +147,6 @@ export const storeItems = [
     scoreToReveal: 161,
     desc: "Refreshing, right?",
   },
-  /*
-  {
-    id: 21, name: "Bucket O' Aspirin", price: 60, scoreToReveal: 325,
-    desc: "It's not for Sisyphus, but for you. Your finger is probably all messed up. Helps the boulder go up faster."
-  },
-  */
   {
     id: 22,
     name: "1st Place Trophy",
@@ -178,12 +175,6 @@ export const storeItems = [
     scoreToReveal: 351,
     desc: "A couple packs of puffy stickers. Cushions the boulder, but also makes it bigger.",
   },
-  /*
-  {
-    id: 26, name: "Severe Hallucinations", price: 177, scoreToReveal: 350,
-    desc: "Could be good?"
-  },
-  */
   {
     id: 27,
     name: "A Million Packs of Firecrackers",

@@ -1,4 +1,4 @@
-export const keepPushingMessages = [
+export const keepPushingMessages: string[] = [
   "Keep going.",
   "Now keep pushing that rock.",
   "Okay, continue.",
@@ -9,7 +9,7 @@ export const keepPushingMessages = [
   "Push the rock uphill, Sisyphus.",
 ];
 
-export const rockFellMessages = [
+export const rockFellMessages: string[] = [
   "Oops!",
   "Uh oh!",
   "Damn it!",
@@ -21,7 +21,7 @@ export const rockFellMessages = [
   "The rock fell, Sisyphus.",
 ];
 
-export const retreatMessages = [
+export const retreatMessages: string[] = [
   "Go back and get it!",
   "Guess you'll have to go back.",
   "Back down to the bottom.",

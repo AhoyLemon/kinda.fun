@@ -1,3 +1,14 @@
+export interface Position {
+  bottom: number;
+  left: number;
+}
+
+export interface Rock {
+  bottom: number;
+  left: number;
+  peak: number;
+}
+
 export const begin = {
   s: {
     bottom: 3,
