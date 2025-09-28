@@ -1,4 +1,6 @@
-export const gimmickRounds = {
+import { Celeb, GimmickRound } from "./_types";
+
+export const gimmickRounds: Record<string, GimmickRound> = {
   richards: {
     name: "Oops! All Richards!",
     desc: "I've got 12 Dicks, and all of them need values.",
@@ -1202,6 +1204,157 @@ export const gimmickRounds = {
         desc: "Paulie & Chris shot him",
         slug: "alsapienza",
         value: 75,
+      },
+    ],
+  },
+
+  saul: {
+    name: "Breaking Saul",
+    desc: `<p>Featuring people from the Breaking Bad/Better Call Saul Universe.</p>
+          <p>Aaron, Bryan and Bob are unavailable.</p>`,
+    queue: [
+      //- Round 1
+      {
+        name: "RJ Mitte",
+        desc: "Walt Jr. (aka Flynn)",
+        slug: "rjmittebb",
+        value: 99,
+      },
+      {
+        name: "Dean Norris",
+        desc: "Hank (Walt's brother-in-law)",
+        slug: "deannorris",
+        value: 245,
+      },
+      {
+        name: "Steven Michael Quezada",
+        desc: "Gomie (Hank's partner)",
+        slug: "abqjoker",
+        value: 105,
+      },
+
+      //- Round 2
+      {
+        name: "Luis Moncada",
+        slug: "luis_moncada_oid",
+        desc: "Marco (one of the Salamanca twins)",
+        value: 99,
+      },
+      {
+        name: "Daniel Moncada",
+        slug: "danielmoncada",
+        desc: "Leonel (one of the Salamanca twins)",
+        value: 500,
+      },
+      {
+        name: "Jeremiah Bitsui",
+        desc: `Victor (the guy who got killed with a boxcutter)`,
+        slug: "jeremiahbitsui",
+        value: 49,
+      },
+
+      //- Round 3
+
+      {
+        name: "David Costabile",
+        desc: "Gale (the other chemist)",
+        slug: "breakingwags",
+        value: 500,
+      },
+      {
+        name: "Patrick Fabian",
+        slug: "mrpatrickfabian",
+        desc: "Howard (Kim's boss)",
+        value: 235,
+      },
+      {
+        name: "Rex Linn",
+        desc: "Kevin (Kim's client)",
+        slug: "rexlinn",
+        value: 113,
+      },
+
+      //- Round 4
+      {
+        name: "Josh Fadem",
+        desc: `Marshall (Saul's camera guy)`,
+        slug: "joshfadem",
+        value: 45,
+      },
+      {
+        name: "Julian Bonfiglio",
+        desc: `Phil (Saul's boom guy)`,
+        slug: "iambonfiglio",
+        value: 30,
+      },
+      {
+        name: "Peter Diseth",
+        desc: "Bill (the DA who is jealous of Saul)",
+        slug: "peterdiseth",
+        value: 25,
+      },
+    ],
+    reuseQueueForFinal: false,
+    finalRoundQueue: [
+      {
+        name: "Jesse Pinkman Impersonator",
+        desc: `He doesn't sound a whole lot like Aaron Paul, but he does say "bitch" a lot, so there's that.`,
+        slug: "jessepinkmanvariant",
+        value: 50,
+      },
+      {
+        name: "Walter White Impersonator",
+        desc: "He does not look or sound like Walter White in any way. But he's got a black porkpie hat, so I guess that's something.",
+        slug: "toronado",
+        value: 10,
+      },
+      {
+        name: "Ben Odenkirk",
+        desc: `In his intro video, Ben says "I can't actually do the Bob Odenkirk voice", but that doesn't stop him from offering Bob Odenkirk impersonation cameos.`,
+        slug: "benacing",
+        value: 1,
+      },
+      {
+        name: "Abigail Zoe Lewis",
+        desc: `Okay, so 4 different actresses played Mike's grandaughter Kaylee. Abigail is the third.`,
+        slug: "abigailzoelewis",
+        value: 30,
+      },
+      {
+        name: "Lavell Crawford",
+        desc: "Huell (Saul's bodyguard)",
+        slug: "lavellthacomic",
+        value: 50,
+      },
+      {
+        name: "John Christian Love",
+        desc: "Ernesto (Chuck's assistant)",
+        slug: "johnchristianlove",
+        value: 55,
+      },
+      {
+        name: "Rodney Rush",
+        desc: "Combo (Jesse's dealer/friend)",
+        slug: "therealrodneyrush",
+        value: 55,
+      },
+      {
+        name: "Steven Bauer",
+        desc: "Don Eladio (Gus' drug lord boss)",
+        slug: "officialstevenbauer",
+        value: 200,
+      },
+      {
+        name: "Jesus Payan Jr.",
+        desc: "Gonzo (Tuco's Lieutenant)",
+        slug: "breakingbadsgonzo",
+        value: 50,
+      },
+      {
+        name: "Michael Bofshever",
+        desc: "(Jesse Pinkman's dad)",
+        slug: "mikebof",
+        value: 50,
       },
     ],
   },

@@ -1,12 +1,12 @@
 <script setup>
-  import { reactive, computed } from "vue";
+  import { reactive, computed, onMounted } from "vue";
   import $ from "jquery";
   import draggable from "vuedraggable";
 
-  import { allValues } from "./js/_values.js";
-  import { gimmickRounds } from "./js/_gimmick-rounds.js";
-  import { settings } from "./js/_settings.js";
-  import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
+  import { allValues } from "./ts/_values.js";
+  import { gimmickRounds } from "./ts/_gimmick-rounds.js";
+  import { settings } from "./ts/_settings.js";
+  import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/ts/_functions.js";
 
   // Sounds
   import { Howl, Howler } from "howler";
@@ -32,7 +32,6 @@
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
-  // import "vue-toastification/dist/index.css";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -98,6 +97,7 @@
   const gimmick = reactive({
     selectorVisible: false,
     rounds: [
+      gimmickRounds.saul,
       gimmickRounds.sopranos,
       gimmickRounds.dogs,
       gimmickRounds.daddies,
@@ -861,6 +861,24 @@
       return null;
     } else {
       return gimmick.selected.name.replace("'", "").replace("🖖", "").trim();
+    }
+  });
+
+  ///////////////////////////////////////////////
+  ///////////////////////////////////////////////
+  // Lifecycle Hooks
+  onMounted(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("game")) {
+      const gameName = urlParams.get("game");
+      gimmick.selectorVisible = true;
+      const i = gimmick.rounds.findIndex((r) => r.name === gameName);
+      if (i !== -1) {
+        gimmick.selectedIndex = i;
+        gimmick.selected = gimmick.rounds[i];
+        gimmick.isSelected = true;
+      } else {
+      }
     }
   });
 </script>

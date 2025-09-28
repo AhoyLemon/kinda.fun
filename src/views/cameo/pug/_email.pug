@@ -69,7 +69,6 @@
     p Anyway, here’s 
       strong {{dollars(round.budget)}}
       | . Get me some Star Trek people.
-
   article(v-else-if="computedGimmickName == 'The Sopranos'") 
     p 
       | To #[strong You]
@@ -83,7 +82,16 @@
     p Oh, wait! She actually likes Game of Thrones. 
     p Well, whatever… 
     p This gift is mostly for me, anyway.
-
+  article(v-else-if="computedGimmickName == 'Breaking Saul'") 
+    p 
+      | To #[strong You]
+      br
+      | From: #[strong Pasha Hollywood]
+    hr
+    p It's me again! Influential movie tycoon Pasha Hollywood. I know, it's been a while.
+    p So my wife said that my daughter's birthday is coming up soon. She's in rehab for her meth addiction. I know, embarassing right? Crystal meth is a poor person's drug! Anyway, she's been watching a lot of prestige television, so I suspect she's watching that Vince Gilligan shit. 
+    p I don't have a lot of money this time, so here's #[strong {{dollars(round.budget)}}]. Buy her as many Breaking Bad/Better Call Saul cameos as you can without breaking the budget... Bad!
+    p Hah! This writing shit is easy.
   article(v-else)
     p 
       | To: 

@@ -1,9 +1,9 @@
 <script setup>
   import { reactive, computed, onMounted } from "vue";
-  import { begin, sDefaults, rDefaults } from "./js/_variables";
-  import { sendEvent, randomFrom, randomNumber, findKeyInArray, removeFromArrayByKey, percentOf, addCommas } from "@/shared/js/_functions.js";
-  import { keepPushingMessages, rockFellMessages, retreatMessages } from "./js/_messages";
-  import { storeItems } from "./js/_store";
+  import { begin, sDefaults, rDefaults } from "./ts/_variables";
+  import { sendEvent, randomFrom, randomNumber, findKeyInArray, removeFromArrayByKey, percentOf, addCommas } from "@/shared/ts/_functions.js";
+  import { keepPushingMessages, rockFellMessages, retreatMessages } from "./ts/_messages";
+  import { storeItems } from "./ts/_store";
 
   // Firebase & VueFire Stuff
   import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
@@ -13,7 +13,7 @@
 
   // Sounds
   import { Howl, Howler } from "howler";
-  import { uphillMusic, downhillMusic, cheevoSound, purchaseSound, dignityGot, dignityLost } from "./js/_sounds";
+  import { uphillMusic, downhillMusic, cheevoSound, purchaseSound, dignityGot, dignityLost } from "./ts/_sounds";
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";

@@ -22,7 +22,9 @@ export const billionsOfDollars = (amount, isTruncationRequested) => {
     maximumFractionDigits: 2,
   });
   if (amount && isTruncationRequested) {
-    if (amount > 1000) {
+    if (amount > 1000000) {
+      return formatter.format(amount / 1000000) + " quadrillion";
+    } else if (amount > 1000) {
       return formatter.format(amount / 1000) + " trillion";
     } else {
       return formatter.format(amount) + " billion";
