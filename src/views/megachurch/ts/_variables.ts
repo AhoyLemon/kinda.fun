@@ -36,7 +36,7 @@ export const my = reactive<My>({
   lucre: [],
   preacherStrengths: {
     followers: 0.15,
-    donations: 0.2,
+    donations: 0.4,
   },
   selectedTopics: [null, null, null], // TODO: Move this to ui.selectedTopics
   followerCount: 0,
