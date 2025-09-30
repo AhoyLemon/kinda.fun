@@ -4,6 +4,8 @@ export interface Religion {
   id: number; // UID for religion
   name: ReligionNames; // Name of this religion
   description?: string; // Recommended. Describe this religion further.
+  follower: string; // What you call a person who follows this religion
+  followers: string; // What you call people who follow this religion
   likes: Tags[]; // A list of things this religion likes.
   dislikes: Tags[]; // A list of things this religion dislikes.
   enemies?: ReligionNames[]; // What religions this religion opposes.
@@ -22,6 +24,15 @@ export interface Place {
     name: ReligionNames; // Name of the religion
     weight: number; // From 0 to 100, how strongly this population identifies with the religion
   }[];
+}
+
+export interface Spice {
+  isAddicted: boolean; // starts true
+  requiredAmount: number; // How much spice is required to avoid withdrawal symptoms each day
+  canOverperform: boolean; // If true, the player can increase their stats above 100% by taking more spice than the required amount
+  fatalAmount: number; // If the player takes this much spice in a single day, they will die
+  consumedToday: number; // How much spice the player consumed today (reset daily)
+  pendingAddictionIncrease: number; // Addiction increase that will apply next day
 }
 
 export interface Theme {
@@ -146,6 +157,7 @@ export type Tags =
   | "community"
   | "compassion"
   | "consumerism"
+  | "crystals"
   | "dogma"
   | "emotion"
   | "ethics"
@@ -165,6 +177,7 @@ export type Tags =
   | "inner harmony"
   | "journalism"
   | "justice"
+  | "liberal politics"
   | "literalism"
   | "logic"
   | "loyalty"
@@ -222,6 +235,7 @@ export type Tags =
   | "sustainability"
   | "taxes"
   | "technology"
+  | "the occult"
   | "tradition"
   | "transcendence"
   | "violence"
@@ -229,6 +243,7 @@ export type Tags =
   | "weakness";
 
 export type PlaceNames =
+  | "Starting Location"
   | "A-Hyuk Hyuk, Alabama"
   | "Yankee Grit, New Hampshire"
   | "Venture City, California"

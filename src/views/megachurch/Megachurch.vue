@@ -486,7 +486,7 @@
         // Switch to 'preached' view after donation toast
         setTimeout(() => {
           ui.view = "sermon-results";
-        }, donationToastDuration - 1000);
+        }, donationToastDuration - ui.timing.churchToastOffset);
       },
       followerChangesArr.length * followerToastDelay + 800,
     );

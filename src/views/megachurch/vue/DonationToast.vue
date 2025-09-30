@@ -1,15 +1,24 @@
 <template>
   <div class="donation-collected container" :class="{ positive: change > 0, negative: change < 0 }">
-    <div class="point-holder" v-if="change">
-      <div class="number">
-        {{ dollars(change) }}
+    <template v-if="change">
+      <div class="point-holder" v-if="change">
+        <div class="number">
+          {{ dollars(change) }}
+        </div>
       </div>
-    </div>
-    <div class="text-holder">
-      <div class="text">
-        <div class="religion-label label">in donations collected</div>
+      <div class="text-holder">
+        <div class="text">
+          <div class="religion-label label">in donations collected</div>
+        </div>
       </div>
-    </div>
+    </template>
+    <template v-else>
+      <div class="text-holder">
+        <div class="text">
+          <div class="religion-label label">You didn't get any donations today.</div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 <script setup>
@@ -21,7 +30,7 @@
     },
     religion: {
       type: String,
-      required: true,
+      required: false,
     },
     before: {
       type: Number,

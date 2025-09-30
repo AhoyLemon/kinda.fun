@@ -1,14 +1,14 @@
-aside.your-details(v-if="my.religion?.name")
+aside.your-details
 
   .box
     .label Name
     .value {{my.name}}
 
-  .box(v-if="my.religion")
+  .box(v-if="my.religion?.name")
     .label religion
     .value {{my.religion.name}}
 
-  .box(v-if="my.place?.name")
+  .box(v-if="my.place?.name && my.place.name != 'Starting Location'")
     .label Place
     .value {{my.place.name}}
   
@@ -16,7 +16,30 @@ aside.your-details(v-if="my.religion?.name")
     .label Money
     .value {{dollars(my.money)}}
   
-  .box
+  .box.spice-status(:class="{'penalty': my.spice.consumedToday < my.spice.requiredAmount, 'normal': my.spice.consumedToday >= my.spice.requiredAmount && my.spice.consumedToday <= my.spice.requiredAmount, 'bonus': my.spice.consumedToday > my.spice.requiredAmount}")
+    .label Spice Status
+    .value
+      div(v-if="my.spice.consumedToday < my.spice.requiredAmount") 
+        .warning ⚠️ UNDER-DOSED
+        small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
+      div(v-else-if="my.spice.consumedToday > my.spice.requiredAmount") 
+        .bonus ⚡ ENHANCED
+        small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
+      div(v-else) 
+        .good ✅ OPTIMAL
+        small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
+      div(v-if="gameSettings.isDebug")
+        small.debug Performance: {{Math.round(getSpiceMultiplier() * 100)}}%
+        small.debug(v-if="my.spice.pendingAddictionIncrease > 0") 
+          | Tomorrow: +{{my.spice.pendingAddictionIncrease.toFixed(2)}} requirement
+  
+  .box.todays-sermon(v-if="my.sermonToday?.topics?.length > 2")
+    .label Today's Sermon
+    .value
+      ol.topics
+        li(v-for="topic in my.sermonToday.topics") {{topic.title}}
+
+  .box(v-if="my.followerCount")
     .label Followers
     .value {{my.followerCount}}
   

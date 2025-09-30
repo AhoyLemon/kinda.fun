@@ -1389,20 +1389,6 @@ export const themes: Theme[] = [
       religions: ["The Order of the Alpha Male", "Southern Baptist"],
     },
   },
-
-  {
-    id: 75,
-    title: "Female supremacy is just evolution catching up to biology",
-    desc: "Women have been running the world from behind the scenes for millennia, and now they're finally ready to make it official. Men had their chance with wars, pollution, and reality TV. Time to let the people who can actually multitask take over before the planet files for divorce.",
-    likedBy: {
-      tags: ["feminism", "science", "progress", "rationalism", "rebellion"],
-      religions: ["The Queens' Dominion", "Secular Humanists"],
-    },
-    dislikedBy: {
-      tags: ["tradition", "patriotism", "authority", "family values"],
-      religions: ["The Order of the Alpha Male", "Southern Baptist"],
-    },
-  },
   {
     id: 76,
     title:
@@ -1590,7 +1576,7 @@ export const themes: Theme[] = [
     },
     dislikedBy: {
       tags: ["body", "tradition", "nature", "emotion", "simplicity"],
-      religions: ["The Gaia Collective", "Buddhism", "Southern Baptist"],
+      religions: ["The Gaia Collective", "Southern Baptist"],
     },
   },
   {
@@ -1609,14 +1595,13 @@ export const themes: Theme[] = [
       religions: ["The Order of the Alpha Male", "The Church of Satan"],
     },
     dislikedBy: {
-      tags: ["compassion", "progress", "science", "community", "forgiveness"],
-      religions: ["Secular Humanists", "Buddhism", "New-Age Spirituality"],
+      tags: ["compassion", "community", "forgiveness"],
+      religions: ["New-Age Spirituality"],
     },
   },
   {
     id: 87,
-    title:
-      "Empathy is emotional socialism—redistribute your feelings elsewhere",
+    title: "Empathy is emotional socialism!",
     desc: "Caring about other people's problems is just virtue signaling with extra steps. Your suffering is your responsibility, and my emotional labor belongs to me. Stop trying to collectivize compassion and start practicing some good old-fashioned emotional capitalism.",
     likedBy: {
       tags: [
@@ -1629,12 +1614,12 @@ export const themes: Theme[] = [
       ],
       religions: [
         "The Sovereign Guild of Untethered Minds",
-        "The Church of Having More Things",
+        "Prosperity Gospel",
       ],
     },
     dislikedBy: {
       tags: ["compassion", "community", "social justice", "forgiveness"],
-      religions: ["Buddhism", "Secular Humanists", "The Gaia Collective"],
+      religions: ["Buddhism", "Secular Humanists"],
     },
   },
   {
@@ -1654,7 +1639,7 @@ export const themes: Theme[] = [
     },
     dislikedBy: {
       tags: ["logic", "science", "rationalism", "rebellion", "individualism"],
-      religions: ["Theistic Satanism", "Secular Humanists"],
+      religions: [],
     },
   },
   {
@@ -1673,8 +1658,8 @@ export const themes: Theme[] = [
       religions: ["The Digital Ascension", "Evangelical Christianity"],
     },
     dislikedBy: {
-      tags: ["tradition", "logic", "science", "speed", "rebellion"],
-      religions: ["2 Fast 2 Faithful", "Secular Humanists"],
+      tags: ["logic", "science"],
+      religions: ["Secular Humanists"],
     },
   },
   {

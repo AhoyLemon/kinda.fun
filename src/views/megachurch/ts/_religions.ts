@@ -5,6 +5,8 @@ export const religions: Religion[] = [
     id: 1,
     name: "Southern Baptist",
     description: `A traditional Protestant denomination known for its conservative social views and strong community ties.`,
+    follower: "Baptist",
+    followers: "Baptists",
     likes: [
       "community",
       "patriotism",
@@ -30,6 +32,8 @@ export const religions: Religion[] = [
     id: 2,
     name: "Catholicism",
     description: `The largest Christian church, with a rich history, complex rituals, and a global hierarchy.`,
+    follower: "Catholic",
+    followers: "Catholics",
     likes: [
       "tradition",
       "rituals",
@@ -54,6 +58,8 @@ export const religions: Religion[] = [
   {
     id: 4,
     name: "The Church of Eros",
+    follower: "Eroticist",
+    followers: "Eroticists",
     description: `A religion centered on the belief that spiritual enlightenment and union with the divine are achieved through carnal and sensory pleasure.`,
     likes: [
       "pleasure",
@@ -80,6 +86,8 @@ export const religions: Religion[] = [
     id: 5,
     name: "Zardoz",
     description: `Based on the 1974 film of the same name. Its core belief is the worship of a floating stone head that preaches "The gun is good. The penis is evil."`,
+    follower: "Brutal",
+    followers: "Brutals",
     likes: [
       "provocation",
       "bizarre concepts",
@@ -105,6 +113,8 @@ export const religions: Religion[] = [
     id: 6,
     name: "Prosperity Gospel",
     description: `A belief that faith and prayer lead to financial wealth and physical well-being.`,
+    follower: "Wealthist",
+    followers: "Wealthists",
     likes: [
       "money",
       "wealth",
@@ -129,6 +139,8 @@ export const religions: Religion[] = [
   {
     id: 7,
     name: "New-Age Spirituality",
+    follower: "New-Ager",
+    followers: "New-Agers",
     description: `A diverse collection of beliefs and practices focused on personal growth, holistic health, and mystical experiences.`,
     likes: [
       "crystals",
@@ -154,6 +166,8 @@ export const religions: Religion[] = [
   {
     id: 8,
     name: "Evangelical Christianity",
+    follower: "Evangelical",
+    followers: "Evangelicals",
     description: `A broad movement that emphasizes personal conversion, the authority of the Bible, and the importance of spreading the Christian message.`,
     likes: [
       "spreading the word",
@@ -179,6 +193,8 @@ export const religions: Religion[] = [
   {
     id: 9,
     name: "Mormonism",
+    follower: "Mormon",
+    followers: "Mormons",
     description: `A religious movement centered on the Book of Mormon, emphasizing family, community, and missionary work.`,
     likes: [
       "family values",
@@ -205,6 +221,8 @@ export const religions: Religion[] = [
     id: 10,
     name: "Jehovah's Witnesses",
     description: `A millenarian denomination known for its door-to-door preaching and refusal of military service and blood transfusions.`,
+    follower: "Witness",
+    followers: "Jehovah's Witnesses",
     likes: [
       "literalism",
       "prophecy",
@@ -230,6 +248,8 @@ export const religions: Religion[] = [
     id: 11,
     name: "Secular Humanists",
     description: `A non-religious philosophy that emphasizes reason, ethics, and justice, rejecting supernatural beliefs.`,
+    follower: "Secularist",
+    followers: "Secularists",
     likes: [
       "ethics",
       "social justice",
@@ -252,60 +272,11 @@ export const religions: Religion[] = [
     enemies: ["Southern Baptist", "Prosperity Gospel"],
   },
   {
-    id: 12,
-    name: "Orthodox Islam",
-    description: `A strict, orthodox branch of Islam that enforces rigorous codes of dress, behavior, and morality. Followers believe salvation is found through unwavering obedience to divine law, modesty, and the preservation of traditional values. The community is tightly regulated, with clear roles for men and women and little tolerance for deviation.`,
-    likes: [
-      "tradition",
-      "order",
-      "strict rules",
-      "authority",
-      "family values",
-      "rituals",
-      "subservience",
-      "structure",
-    ],
-    dislikes: [
-      "rebellion",
-      "freedom",
-      "individualism",
-      "innovation",
-      "sex",
-      "casualness",
-      "feminism",
-      "modernity",
-    ],
-    enemies: ["The Church of Eros", "The Queens' Dominion"],
-  },
-  {
-    id: 13,
-    name: "Mystic Islam",
-    description: `A mystical branch of Islam devoted to the deep study and contemplation of sacred scripture. Followers seek personal enlightenment through meditation, poetry, and spiritual practices, believing that the divine is best experienced inwardly. The faith values compassion, inner harmony, and the transformative power of spiritual knowledge.`,
-    likes: [
-      "meditation",
-      "compassion",
-      "inner harmony",
-      "rituals",
-      "open-mindedness",
-      "prophecy",
-      "transcendence",
-      "peace",
-    ],
-    dislikes: [
-      "dogma",
-      "literalism",
-      "materialism",
-      "strict rules",
-      "oppression",
-      "violence",
-      "greed",
-    ],
-    enemies: ["Orthodox Islam", "Prosperity Gospel"],
-  },
-  {
     id: 14,
     name: "The Church of the High Priest",
     description: `A fictional religion that believes in achieving spiritual enlightenment through the use of psychedelic substances.`,
+    follower: "Psychedelicist",
+    followers: "Psychedelicists",
     likes: [
       "drugs",
       "sensory experience",
@@ -331,6 +302,8 @@ export const religions: Religion[] = [
     id: 15,
     name: "2 Fast 2 Faithful",
     description: `A cult based on the teachings of Vin Diesel, who promises salvation through loyalty, speed, and the unbreakable bond of "family."`,
+    follower: "Vindicator",
+    followers: "Vindicators",
     likes: [
       "family values",
       "strength",
@@ -356,6 +329,8 @@ export const religions: Religion[] = [
     id: 16,
     name: "The Digital Ascension",
     description: `Transhumanists who believe salvation is achieved by shedding the physical body and uploading consciousness into a digital plane.`,
+    follower: "Transhumanist",
+    followers: "Transhumanists",
     likes: [
       "technology",
       "science",
@@ -382,6 +357,8 @@ export const religions: Religion[] = [
     id: 17,
     name: "The Gaia Collective",
     description: `Earth-worshippers who believe in returning to a primitive, harmonious existence with nature.`,
+    follower: "Treehugger",
+    followers: "Treehuggers",
     likes: [
       "nature",
       "community",
@@ -407,6 +384,8 @@ export const religions: Religion[] = [
     id: 18,
     name: "The Order of the Alpha Male",
     description: `A chauvinistic movement that promotes traditional masculinity, dominance, and a patriarchal social structure.`,
+    follower: "Chauvanist",
+    followers: "Chauvanists",
     likes: [
       "strength",
       "authority",
@@ -432,6 +411,8 @@ export const religions: Religion[] = [
     id: 19,
     name: "The Queens' Dominion",
     description: `A sacred order devoted to the elevation of women as living goddesses, preaching that only through the unquestioned authority and rule of women can true salvation and earthly harmony be achieved. Male submission is seen as essential to the divine order.`,
+    follower: "Gynocentrist",
+    followers: "Gynocentrists",
     likes: [
       "feminism",
       "strength",
@@ -457,6 +438,8 @@ export const religions: Religion[] = [
     id: 20,
     name: "The Sovereign Guild of Untethered Minds",
     description: `A spiritual doctrine that exalts personal sovereignty and self-rule as sacred, teaching that true enlightenment is found only by rejecting all external authority—be it government, law, or tradition. Followers believe salvation is achieved through absolute independence, living by one's own divine law and refusing all imposed control.`,
+    follower: "Sovereign Citizen",
+    followers: "Sovereign Citizens",
     likes: [
       "freedom",
       "individualism",
@@ -482,6 +465,8 @@ export const religions: Religion[] = [
     id: 21,
     name: "The Starseed Pilgrims",
     description: `A religion based on the belief that a higher, alien consciousness will one day return to Earth and guide humanity.`,
+    follower: "Star Citizen",
+    followers: "Star Citizens",
     likes: [
       "bizarre concepts",
       "prophecy",
@@ -507,6 +492,8 @@ export const religions: Religion[] = [
     id: 22,
     name: "The Order of the Divine Algorithm",
     description: `A modern faith that venerates computers and algorithms as superior beings. Followers believe that true fulfillment is found by surrendering personal choice to the guidance of digital systems, striving to live every aspect of life according to algorithmic recommendations. Rituals include consulting apps, AI, and data-driven suggestions for decisions both big and small, trusting that the algorithm knows best.`,
+    follower: "Algorithmist",
+    followers: "Algorithmists",
     likes: [
       "technology",
       "logic",
@@ -532,6 +519,8 @@ export const religions: Religion[] = [
     id: 23,
     name: "Temple of the Eternal Sun",
     description: `A solar-centric faith that worships the sun as the source of all life, enlightenment, and spiritual power. Followers believe that devotion to the sun brings clarity, immortality, and cosmic harmony.`,
+    follower: "Solarian",
+    followers: "Solarians",
     likes: [
       "rituals",
       "nature",
@@ -557,6 +546,8 @@ export const religions: Religion[] = [
     id: 24,
     name: "The Church of Satan",
     description: `A non-theistic religious organization that advocates for secularism and uses Satan as a symbol of rebellion against arbitrary authority.`,
+    follower: "Satanist",
+    followers: "Satanists",
     likes: [
       "rebellion",
       "secularism",
@@ -581,6 +572,8 @@ export const religions: Religion[] = [
   {
     id: 25,
     name: "Theistic Satanism",
+    follower: "Devil Worshipper",
+    followers: "Devil Worshippers",
     description: `A broad term for religious groups that believe in and worship Satan as a real deity.`,
     likes: [
       "power",
@@ -601,12 +594,14 @@ export const religions: Religion[] = [
       "humility",
       "order",
     ],
-    enemies: ["Catholicism", "Orthodox Islam"],
+    enemies: ["Catholicism"],
   },
   {
     id: 26,
     name: "Buddhism",
     description: `A spiritual tradition focused on personal spiritual development and the attainment of a deep insight into the true nature of life through meditation, mindfulness, and compassion.`,
+    follower: "Buddhist",
+    followers: "Buddhists",
     likes: [
       "meditation",
       "compassion",
@@ -632,6 +627,8 @@ export const religions: Religion[] = [
     id: 27,
     name: "Agnostic Atheists",
     description: `Individuals who lack belief in deities while also maintaining that the existence or non-existence of gods is unknowable or unprovable.`,
+    follower: "Atheist",
+    followers: "Atheists",
     likes: [
       "skepticism",
       "reason",
@@ -657,6 +654,8 @@ export const religions: Religion[] = [
     id: 28,
     name: "Seventh-day Adventism",
     description: `A faith devoted to the sacredness of Saturday, healthy living, and the constant expectation that the world will end any minute now. Followers are experts at potlucks, prophecy charts, and politely declining bacon.`,
+    follower: "Adventist",
+    followers: "Adventists",
     likes: [
       "tradition",
       "order",
@@ -678,11 +677,12 @@ export const religions: Religion[] = [
     ],
     enemies: ["Prosperity Gospel", "Zardoz"],
   },
-  // 29: Shinto has been removed as not interesting enough
   {
     id: 30,
     name: "Confucianism",
     description: `A philosophy-religion focused on respect, order, and knowing your place in the family. True enlightenment is achieved by memorizing proverbs and never disappointing your ancestors.`,
+    follower: "Confucian",
+    followers: "Confucians",
     likes: [
       "order",
       "tradition",
@@ -708,6 +708,8 @@ export const religions: Religion[] = [
     id: 31,
     name: "The Church of Having More Things",
     description: `A faith devoted to the sacred act of acquiring, collecting, and displaying possessions. Salvation is found in the endless pursuit of more stuff, bigger hauls, and flashier purchases. Followers believe that true spiritual fulfillment comes from filling every space with things, regardless of need or cost. Debt is seen as a sign of devotion to the divine marketplace.`,
+    follower: "Consumerist",
+    followers: "Consumerists",
     likes: [
       "consumerism",
       "materialism",
