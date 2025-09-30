@@ -6,6 +6,32 @@ export const gameSettings = reactive({
   isDebug: false,
   isDebugButtonVisible: true,
   themesPerDay: 25, // How many themes are available to choose from each day
+  donationCalculation: {
+    scoreMultiplierMin: 1, // Minimum score multiplier for donations
+    scoreMultiplierMax: 12, // Maximum score multiplier for donations
+    scoreDivisor: 2, // Divides net score to get multiplier (score/2)
+    netWorthMultiplierMin: 0.75, // Minimum net worth multiplier
+    netWorthMultiplierMax: 2, // Maximum net worth multiplier
+    netWorthDivisor: 150000, // Divides avg net worth for multiplier calculation
+    fallbackBaseDonation: 0.18, // Fallback if gameSettings.baseDonation not set
+    strengthBoostMultiplier: 1.5, // Multiplier for preacher donation strength
+    roundingFactor: 100, // For rounding to nearest cent (Math.round(x * 100) / 100)
+  },
+  sermonScoring: {
+    likedTagMultiplier: 1, // Base multiplier for liked tags
+    likedTagDoubledMultiplier: 2, // Multiplier when tag matches player's religion
+    dislikedTagMultiplier: 1, // Base multiplier for disliked tags
+    dislikedTagHalvedMultiplier: 0.5, // Reduced multiplier for certain disliked tags
+    dislikedTagDoubledMultiplier: 2, // Increased multiplier for certain disliked tags
+    likedReligionMultiplier: 3, // Multiplier for religions that like the player
+    likedReligionDoubledMultiplier: 2, // Additional multiplier for matching religion
+    dislikedReligionMultiplier: 3, // Multiplier for religions that dislike the player
+    dislikedReligionDoubledMultiplier: 2, // Additional multiplier for matching religion
+    religionDirectMatchMultiplier: 2, // Direct religion match bonus in street preaching
+    enthusiasmMin: 0.1, // Minimum enthusiasm multiplier
+    enthusiasmMax: 2.0, // Maximum enthusiasm multiplier
+    enthusiasmDivisor: 10, // Divides net score for enthusiasm calculation
+  },
   streetPreaching: {
     audienceEngagement: 60, // What % of potential audience actually stops to listen (higher = more listeners)
     likeThreshold: 0, // netScore needed for likes (lower = easier to get likes)
@@ -58,11 +84,11 @@ export const ui = reactive<UI>({
   placeIndex: 0,
   toastDuration: 7000, // Default toast duration in ms
   timing: {
-    toastDelayMin: 2100,           // Minimum delay between audience reaction toasts (ms)
-    toastDelayMax: 6600,           // Maximum delay between audience reaction toasts (ms)
-    donationToastDelay: 5000,      // Delay before showing donation toast after reactions (ms)
-    resultsViewDelay: 6000,        // Delay before switching to results view (ms)
-    churchToastOffset: 1000,       // Time offset for church follower toasts (ms)
+    toastDelayMin: 2100, // Minimum delay between audience reaction toasts (ms)
+    toastDelayMax: 6600, // Maximum delay between audience reaction toasts (ms)
+    donationToastDelay: 5000, // Delay before showing donation toast after reactions (ms)
+    resultsViewDelay: 6000, // Delay before switching to results view (ms)
+    churchToastOffset: 1000, // Time offset for church follower toasts (ms)
   },
 });
 

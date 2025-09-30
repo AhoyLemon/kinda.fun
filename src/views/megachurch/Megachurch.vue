@@ -1,6 +1,6 @@
 <script setup lang="ts">
   // ================= IMPORTS =================
-  import { onMounted, reactive, ref, computed, watchEffect, watch } from "vue";
+  import { onMounted, reactive, ref, computed, watchEffect, watch, h } from "vue";
   import Multiselect from "@vueform/multiselect";
   import "@vueform/multiselect/themes/default.css";
   import { religions } from "./ts/_religions";
@@ -13,6 +13,7 @@
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
   import FollowerToast from "./vue/FollowerToast.vue";
+  import ListenerToast from "./vue/ListenerToast.vue";
   import DonationToast from "./vue/DonationToast.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
@@ -21,11 +22,17 @@
 
   import type { Theme, Place, WeightedTag, WeightedReligion, MixedTag, MixedReligion, Sermon, Religion } from "./ts/_types";
 
+  // UI state for spice purchasing
+  const spiceToBuy = ref(0);
+
   // ================= FUNCTIONS =================
   // ================= COLLECT DONATIONS =================
   function collectDonations() {
     const place = my.place as Place;
     if (!place || !place.religions || !Array.isArray(place.religions)) return 0;
+
+    // Get spice multiplier for donations
+    const spiceMultiplier = getSpiceMultiplier();
 
     let totalDonations = 0;
     my.followers.forEach((followerObj: any) => {
@@ -33,26 +40,33 @@
       const followers = followerObj.followers || 0;
       if (followers === 0) return;
 
-      // Find score for this religion
+      // Find score for this religion and calculate score multiplier
       const scoreEntry = my.religiousScorecard.find((r: any) => r.id === religionId);
       const score = scoreEntry ? scoreEntry.score : 0;
-      // Score multiplier: scale from 1 (bad) to 12 (great)
-      let scoreMultiplier = Math.max(1, Math.min(12, score / 2));
+      let scoreMultiplier = Math.max(
+        gameSettings.donationCalculation.scoreMultiplierMin,
+        Math.min(gameSettings.donationCalculation.scoreMultiplierMax, score / gameSettings.donationCalculation.scoreDivisor),
+      );
 
-      // Find place religion weight
+      // Calculate net worth multiplier for this location
       const placeReligion = place.religions.find((r: any) => r.id === religionId);
-      // Use avgNetWorth for net worth multiplier, but dampen its effect
-      const netWorthMultiplier = place.avgNetWorth ? Math.max(0.75, Math.min(2, place.avgNetWorth / 150000)) : 1;
+      const netWorthMultiplier = place.avgNetWorth
+        ? Math.max(
+            gameSettings.donationCalculation.netWorthMultiplierMin,
+            Math.min(gameSettings.donationCalculation.netWorthMultiplierMax, place.avgNetWorth / gameSettings.donationCalculation.netWorthDivisor),
+          )
+        : 1;
 
-      // Use gameSettings.baseDonation and my.preacherStrengths.donations
-      const baseDonation = gameSettings.baseDonation || 0.18; // Raised from 0.1
-      const donationStrength = (my.preacherStrengths?.donations || 1) * 1.5; // Boosted effect
+      // Calculate donation strength with spice effects
+      const baseDonation = gameSettings.baseDonation || gameSettings.donationCalculation.fallbackBaseDonation;
+      const donationStrength = (my.preacherStrengths?.donations || 1) * spiceMultiplier * gameSettings.donationCalculation.strengthBoostMultiplier;
 
       // Calculate donation for this religion
       const donation = followers * baseDonation * scoreMultiplier * donationStrength * netWorthMultiplier;
       totalDonations += donation;
     });
-    const roundedDonations = Math.round(totalDonations * 100) / 100; // Round to nearest cent
+    // Round donations to nearest cent using configured rounding factor
+    const roundedDonations = Math.round(totalDonations * gameSettings.donationCalculation.roundingFactor) / gameSettings.donationCalculation.roundingFactor;
     my.donationsYesterday = roundedDonations; // Store for yesterday's effect
     my.money += roundedDonations; // And give it to you.
   }
@@ -60,8 +74,11 @@
   function provideTopicOptions(index: number): typeof themes {
     const selectedIds = ui.selectedTopics.map((id, i) => (i !== index && id !== null && id !== 0 ? id : null)).filter((id): id is number => id !== null);
 
+    // Use daily themes instead of all themes
+    const availableThemes = my.dailyThemes.length > 0 ? my.dailyThemes : themes;
+
     // Map and mark topics preached yesterday using computedTopicsYesterday
-    const themedWithYesterday = themes.map((theme) => {
+    const themedWithYesterday = availableThemes.map((theme) => {
       if (computedTopicsYesterday.value.includes(theme.id)) {
         return {
           ...theme,
@@ -71,7 +88,13 @@
       return theme;
     });
 
-    return shuffle(themedWithYesterday).filter((theme) => !selectedIds.includes(theme.id));
+    return themedWithYesterday.filter((theme) => !selectedIds.includes(theme.id));
+  }
+
+  function generateDailyThemes() {
+    // Generate a random selection of themes for today
+    const shuffledThemes = shuffle([...themes]);
+    my.dailyThemes = shuffledThemes.slice(0, gameSettings.themesPerDay);
   }
 
   function chooseReligion(religionId: number) {
@@ -230,19 +253,10 @@
 
   function preachSermon() {
     // ===== Multipliers and effect variables (easy to tweak) =====
-    const MULTIPLIERS = {
-      likedTag: 1,
-      likedTagDoubled: 2,
-      dislikedTag: 1,
-      dislikedTagHalved: 0.5,
-      dislikedTagDoubled: 2,
-      likedReligion: 3,
-      likedReligionDoubled: 2,
-      dislikedReligion: 3,
-      dislikedReligionDoubled: 2,
-    };
+    // Use configured scoring multipliers for sermon effect calculations
+    const MULTIPLIERS = gameSettings.sermonScoring;
 
-    // Track score changes for yesterday's effect
+    // Track score changes for yesterday's effect reporting
     const scoreChanges: Record<number, { id: number; name: string; scoreChange: number; changes: string[] }> = {};
 
     // Initialize scoreChanges for all religions in the scorecard
@@ -258,7 +272,7 @@
     // Process liked tags
     my.sermonToday.likedBy.tags.forEach((tagObj) => {
       const tag = tagObj.tag;
-      let effect = tagObj.weight * MULTIPLIERS.likedTag;
+      let effect = tagObj.weight * MULTIPLIERS.likedTagMultiplier;
       let doubled = false;
 
       // Check if this tag is in mixed messages (if so, skip)
@@ -271,7 +285,7 @@
 
         let thisEffect = effect;
         if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religion.id === (my.religion as Religion).id) {
-          thisEffect *= MULTIPLIERS.likedTagDoubled;
+          thisEffect *= MULTIPLIERS.likedTagDoubledMultiplier;
           doubled = true;
         }
         if (religion.likes.includes(tag as any)) {
@@ -292,7 +306,7 @@
     // Process disliked tags (halved effect)
     my.sermonToday.dislikedBy.tags.forEach((tagObj) => {
       const tag = tagObj.tag;
-      let effect = Math.floor(tagObj.weight * MULTIPLIERS.dislikedTagHalved);
+      let effect = Math.floor(tagObj.weight * MULTIPLIERS.dislikedTagHalvedMultiplier);
       let doubled = false;
       if (effect === 0) return;
 
@@ -303,9 +317,9 @@
         const religionScore = scoreChanges[religion.id];
         if (!religionScore) return;
 
-        let thisEffect = effect * MULTIPLIERS.dislikedTag;
+        let thisEffect = effect * MULTIPLIERS.dislikedTagMultiplier;
         if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religion.id === (my.religion as Religion).id) {
-          thisEffect *= MULTIPLIERS.dislikedTagDoubled;
+          thisEffect *= MULTIPLIERS.dislikedTagDoubledMultiplier;
           doubled = true;
         }
         if (religion.likes.includes(tag as any)) {
@@ -326,7 +340,7 @@
     // Process liked religions
     my.sermonToday.likedBy.religions.forEach((religionObj) => {
       const religionId = religionObj.id;
-      let effect = religionObj.weight * MULTIPLIERS.likedReligion;
+      let effect = religionObj.weight * MULTIPLIERS.likedReligionMultiplier;
       let doubled = false;
       const isMixed = my.sermonToday.mixedMessages.religions.some((mixedRel) => mixedRel.id === religionId);
       if (isMixed) return;
@@ -334,7 +348,7 @@
       if (!religionScore) return;
       let thisEffect = effect;
       if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religionId === (my.religion as Religion).id) {
-        thisEffect *= MULTIPLIERS.likedReligionDoubled;
+        thisEffect *= MULTIPLIERS.likedReligionDoubledMultiplier;
         doubled = true;
       }
       religionScore.scoreChange += thisEffect;
@@ -346,7 +360,7 @@
     // Process disliked religions
     my.sermonToday.dislikedBy.religions.forEach((religionObj) => {
       const religionId = religionObj.id;
-      let effect = religionObj.weight * MULTIPLIERS.dislikedReligion;
+      let effect = religionObj.weight * MULTIPLIERS.dislikedReligionMultiplier;
       let doubled = false;
       const isMixed = my.sermonToday.mixedMessages.religions.some((mixedRel) => mixedRel.id === religionId);
       if (isMixed) return;
@@ -354,7 +368,7 @@
       if (!religionScore) return;
       let thisEffect = effect;
       if ((my.religion as Religion) && typeof (my.religion as Religion).id === "number" && religionId === (my.religion as Religion).id) {
-        thisEffect *= MULTIPLIERS.dislikedReligionDoubled;
+        thisEffect *= MULTIPLIERS.dislikedReligionDoubledMultiplier;
         doubled = true;
       }
       religionScore.scoreChange -= thisEffect;
@@ -382,10 +396,318 @@
   }
 
   function createSermonEffect() {
+    if (my.isStreetPreaching) {
+      createStreetPreachingEffect();
+    } else {
+      createChurchSermonEffect();
+    }
+  }
+
+  function createStreetPreachingEffect() {
     ui.view = "preaching";
 
     const place = my.place as Place;
     if (!place || !place.religions || !Array.isArray(place.religions)) return;
+
+    // Get spice multiplier for this sermon
+    const spiceMultiplier = getSpiceMultiplier();
+
+    // Track audience reactions for reporting
+    const audienceReactions: {
+      id: number;
+      name: string;
+      liked: number;
+      disliked: number;
+      neutral: number;
+      likedTags?: string[];
+      dislikedTags?: string[];
+      mixedTags?: string[];
+      followerName?: string;
+      followersName?: string;
+    }[] = [];
+
+    let totalDonations = 0;
+
+    place.religions.forEach((placeReligion: any) => {
+      const { id, name, weight } = placeReligion;
+
+      // Calculate base audience size for this religion (scaled by population and weight)
+      // For street preaching, we expect smaller but more engaged audiences
+      const baseAudience = Math.floor((weight / 100) * (place.totalPopulation / gameSettings.streetPreaching.audienceScaleDivisor));
+
+      // Calculate how this religion responds to the sermon
+      let likedScore = 0;
+      let dislikedScore = 0;
+
+      // Check sermon themes against religion preferences
+      my.sermonToday.likedBy.religions.forEach((religionObj: any) => {
+        if (religionObj.id === id) {
+          likedScore += religionObj.weight * 2; // Double weight for direct religion matches
+        }
+      });
+
+      my.sermonToday.dislikedBy.religions.forEach((religionObj: any) => {
+        if (religionObj.id === id) {
+          dislikedScore += religionObj.weight * 2;
+        }
+      });
+
+      // Check tags against religion preferences (need to implement religion tag preferences)
+      my.sermonToday.likedBy.tags.forEach((tagObj: any) => {
+        const religion = religions.find((r) => r.id === id);
+        if (religion && religion.likes && religion.likes.includes(tagObj.tag)) {
+          likedScore += tagObj.weight;
+        }
+        if (religion && religion.dislikes && religion.dislikes.includes(tagObj.tag)) {
+          dislikedScore += tagObj.weight;
+        }
+      });
+
+      my.sermonToday.dislikedBy.tags.forEach((tagObj: any) => {
+        const religion = religions.find((r) => r.id === id);
+        if (religion && religion.likes && religion.likes.includes(tagObj.tag)) {
+          dislikedScore += tagObj.weight;
+        }
+        if (religion && religion.dislikes && religion.dislikes.includes(tagObj.tag)) {
+          likedScore += tagObj.weight;
+        }
+      });
+
+      // Calculate audience breakdown - street preaching with configurable settings
+      const netScore = likedScore - dislikedScore;
+      const enthusiasm = Math.max(0.1, Math.min(2.0, 1 + netScore / 10)); // 0.1x to 2x multiplier
+
+      // Use configurable engagement rate (convert percentage to decimal)
+      const actualAudience = Math.floor(baseAudience * enthusiasm * spiceMultiplier * (gameSettings.streetPreaching.audienceEngagement / 100));
+
+      // Use configurable thresholds and percentages for likes/dislikes (convert percentages to decimals)
+      const liked =
+        netScore > gameSettings.streetPreaching.likeThreshold
+          ? Math.floor(actualAudience * (gameSettings.streetPreaching.likePercentage / 100))
+          : Math.floor(actualAudience * (gameSettings.streetPreaching.baselikePercentage / 100));
+
+      const disliked =
+        netScore < gameSettings.streetPreaching.dislikeThreshold
+          ? Math.floor(actualAudience * (gameSettings.streetPreaching.dislikePercentage / 100))
+          : Math.floor(actualAudience * (gameSettings.streetPreaching.baseDislikePercentage / 100));
+
+      const neutral = actualAudience - liked - disliked;
+
+      // Calculate donations using configurable amounts (but don't apply yet)
+      if (liked > 0) {
+        const avgDonation = randomNumber(gameSettings.streetPreaching.donationMin, gameSettings.streetPreaching.donationMax);
+        const religionDonations = liked * avgDonation;
+        totalDonations += religionDonations;
+      }
+
+      // Store reaction for feedback with tag details
+      if (actualAudience > 0) {
+        // Find what tags this religion specifically liked/disliked in the sermon
+        const religionData = religions.find((r) => r.id === id);
+        const likedTags: string[] = [];
+        const dislikedTags: string[] = [];
+        const mixedTags: string[] = [];
+
+        if (religionData) {
+          my.sermonToday.likedBy.tags.forEach((tagObj: any) => {
+            if (religionData.likes.includes(tagObj.tag)) {
+              likedTags.push(tagObj.tag);
+            }
+          });
+          my.sermonToday.dislikedBy.tags.forEach((tagObj: any) => {
+            if (religionData.dislikes.includes(tagObj.tag)) {
+              dislikedTags.push(tagObj.tag);
+            }
+          });
+
+          // Check for mixed messages that would confuse this religion
+          my.sermonToday.mixedMessages.tags.forEach((mixedTag: any) => {
+            if (religionData.likes.includes(mixedTag.tag) || religionData.dislikes.includes(mixedTag.tag)) {
+              mixedTags.push(mixedTag.tag);
+            }
+          });
+        }
+
+        audienceReactions.push({
+          id,
+          name,
+          liked,
+          disliked,
+          neutral,
+          likedTags,
+          dislikedTags,
+          mixedTags,
+          followerName: religionData?.follower || name,
+          followersName: religionData?.followers || name,
+        });
+      }
+    });
+
+    // Store audience reactions for display
+    my.audienceReactions = audienceReactions;
+
+    // Store donation amount but don't apply to money yet
+    const roundedDonations = Math.round(totalDonations * 100) / 100;
+    my.donationsYesterday = roundedDonations;
+
+    // Show audience feedback toasts with improved timing
+    showAudienceReactions(roundedDonations);
+  }
+
+  function showAudienceReactions(donationAmount: number) {
+    if (!my.audienceReactions) return;
+
+    // Collect all reactions (both likes and dislikes) for better timing control
+    const allReactions: Array<{
+      reaction?: any;
+      reactionType: "liked" | "disliked" | "mixed";
+      delay: number;
+      mixedMessageTag?: string;
+      affectedReligions?: string[];
+    }> = [];
+
+    // Collect mixed messages by tag (not by religion)
+    const mixedMessagesByTag: { [tag: string]: string[] } = {};
+
+    my.audienceReactions.forEach((reaction) => {
+      if (reaction.liked > 0) {
+        allReactions.push({ reaction, reactionType: "liked", delay: 0 });
+      }
+      if (reaction.disliked > 0) {
+        allReactions.push({ reaction, reactionType: "disliked", delay: 0 });
+      }
+      // Collect mixed message data by tag for later processing
+      if (reaction.mixedTags && reaction.mixedTags.length > 0) {
+        reaction.mixedTags.forEach((tag) => {
+          if (!mixedMessagesByTag[tag]) {
+            mixedMessagesByTag[tag] = [];
+          }
+          // Use followersName instead of name for proper plural form
+          mixedMessagesByTag[tag].push(reaction.followersName);
+        });
+      }
+    });
+
+    // Add mixed message reactions (one per tag, not per religion)
+    Object.entries(mixedMessagesByTag).forEach(([tag, affectedReligions]) => {
+      allReactions.push({
+        mixedMessageTag: tag,
+        affectedReligions,
+        reactionType: "mixed",
+        delay: 0,
+      });
+    });
+
+    // Calculate randomized but overlapping delays
+    let currentDelay = 0;
+    allReactions.forEach((item, i) => {
+      // Random delay between 1100-3800ms, but ensure overlap
+      const randomDelay = randomNumber(ui.timing.toastDelayMin, ui.timing.toastDelayMax);
+      item.delay = currentDelay;
+      currentDelay += randomDelay;
+    });
+
+    // Show all reaction toasts
+    allReactions.forEach((item) => {
+      setTimeout(() => {
+        const { reaction, reactionType, mixedMessageTag, affectedReligions } = item;
+
+        // For mixed messages, we don't have a reaction object
+        if (reactionType === "mixed") {
+          // Mixed message - confused audience (new structure)
+          toast.info(
+            h(ListenerToast, {
+              reaction: "mixed",
+              mixedMessageTag,
+              affectedReligions,
+              religion: null, // Not used for mixed messages
+              religionMatch: false,
+              tagMatch: true,
+              primaryTag: mixedMessageTag,
+            }),
+            {
+              position: POSITION.BOTTOM_LEFT,
+              timeout: ui.toastDuration,
+            },
+          );
+          return; // Exit early for mixed messages
+        }
+
+        // For regular reactions, we have a reaction object
+        const religionData = religions.find((r) => r.id === reaction.id);
+
+        if (reactionType === "liked") {
+          const religionMatch = my.sermonToday.likedBy.religions.find((r: any) => r.id === reaction.id);
+          const tagMatch = reaction.likedTags && reaction.likedTags.length > 0;
+          const primaryTag = tagMatch ? reaction.likedTags[0] : undefined;
+
+          toast.success(
+            h(ListenerToast, {
+              reaction: "liked",
+              count: reaction.liked,
+              religion: religionData,
+              religionMatch: !!religionMatch,
+              tagMatch: tagMatch,
+              primaryTag: primaryTag,
+            }),
+            {
+              position: POSITION.BOTTOM_LEFT,
+              timeout: ui.toastDuration,
+            },
+          );
+        } else if (reactionType === "disliked") {
+          const religionMatch = my.sermonToday.dislikedBy.religions.find((r: any) => r.id === reaction.id);
+          const tagMatch = reaction.dislikedTags && reaction.dislikedTags.length > 0;
+          const primaryTag = tagMatch ? reaction.dislikedTags[0] : undefined;
+
+          toast.warning(
+            h(ListenerToast, {
+              reaction: "disliked",
+              count: reaction.disliked,
+              religion: religionData,
+              religionMatch: !!religionMatch,
+              tagMatch: tagMatch,
+              primaryTag: primaryTag,
+            }),
+            {
+              position: POSITION.BOTTOM_LEFT,
+              timeout: ui.toastDuration,
+            },
+          );
+        }
+      }, item.delay);
+    }); // Show donation toast after all reactions, and apply money then
+    const finalDelay = allReactions.length > 0 ? Math.max(...allReactions.map((r) => r.delay)) + ui.timing.donationToastDelay : ui.timing.donationToastDelay;
+    setTimeout(() => {
+      // Apply the money now
+      my.money += donationAmount;
+
+      toast.success(
+        h(DonationToast, {
+          change: donationAmount,
+        }),
+        {
+          position: POSITION.BOTTOM_LEFT,
+          timeout: ui.toastDuration,
+        },
+      );
+
+      // Switch to results view
+      setTimeout(() => {
+        prepareSpicePurchaseScreen();
+        ui.view = "sermon-results";
+      }, ui.timing.resultsViewDelay);
+    }, finalDelay);
+  }
+
+  function createChurchSermonEffect() {
+    ui.view = "preaching";
+
+    const place = my.place as Place;
+    if (!place || !place.religions || !Array.isArray(place.religions)) return;
+
+    // Get spice multiplier for this sermon
+    const spiceMultiplier = getSpiceMultiplier();
 
     // Track follower changes for reporting
     const followerChangesArr: { id: number; name: string; before: number; change: number; after: number }[] = [];
@@ -396,7 +718,8 @@
       const effect = my.effectYesterday?.find((r: any) => r.id === id);
       if (!effect) return;
       // Followers gained/lost for this religion, using sqrt(weight) for non-linear scaling
-      let followersDelta = effect.scoreChange * Math.sqrt(weight) * (my.preacherStrengths?.followers || 1);
+      // Apply spice multiplier to follower effectiveness
+      let followersDelta = effect.scoreChange * Math.sqrt(weight) * ((my.preacherStrengths?.followers || 1) * spiceMultiplier);
       // Always round to nearest integer
       followersDelta = Math.round(followersDelta);
 
@@ -431,7 +754,7 @@
     my.followerChanges = followerChangesArr.sort((a, b) => b.change - a.change);
 
     // Show toasts for each follower change, 1200ms apart, and last longer
-    const followerToastDuration = 7000;
+    const followerToastDuration = ui.toastDuration;
     const followerToastDelay = 1200;
     followerChangesArr.forEach((changeObj, i) => {
       setTimeout(() => {
@@ -485,6 +808,8 @@
         );
         // Switch to 'preached' view after donation toast
         setTimeout(() => {
+          // Apply addiction progression and reset spice just before showing purchase screen
+          prepareSpicePurchaseScreen();
           ui.view = "sermon-results";
         }, donationToastDuration - ui.timing.churchToastOffset);
       },
@@ -492,7 +817,103 @@
     );
   }
 
+  // ================= SPICE MECHANICS =================
+  function getSpiceMultiplier() {
+    // Returns a multiplier for preacher strengths based on consumption vs requirement
+    const consumed = my.spice.consumedToday;
+    const required = my.spice.requiredAmount;
+    const shortage = Math.max(0, required - consumed);
+    const excess = Math.max(0, consumed - required);
+
+    let multiplier = 1;
+
+    if (shortage > 0) {
+      // Apply penalty for not meeting requirements
+      const penalty = Math.min(gameSettings.spice.maxPenalty, shortage * gameSettings.spice.penaltyPerUnit);
+      multiplier = 1 - penalty;
+    } else if (excess > 0 && my.spice.canOverperform) {
+      // Apply bonus for excess consumption
+      const bonus = Math.min(gameSettings.spice.maxBonus, excess * gameSettings.spice.bonusPerUnit);
+      multiplier = 1 + bonus;
+    }
+
+    return Math.max(0.1, multiplier); // Never go below 10% effectiveness
+  }
+
+  function consumeSpice(amount: number) {
+    const cost = amount * gameSettings.spice.pricePerUnit;
+    if (my.money >= cost && amount > 0) {
+      my.money -= cost;
+      my.spice.consumedToday += amount;
+
+      // Check for fatal overdose
+      if (my.spice.consumedToday >= my.spice.fatalAmount) {
+        alert("💀 You have died from a spice overdose! Game Over.");
+        // Reset game or handle death
+        my.money = 0;
+        my.spice.consumedToday = 0;
+        return false;
+      }
+
+      return true;
+    }
+    return false;
+  }
+
+  function progressAddiction() {
+    // Calculate addiction progression but don't apply it yet
+    const consumed = my.spice.consumedToday;
+    const required = my.spice.requiredAmount;
+    const excess = Math.max(0, consumed - required);
+
+    if (excess > 0) {
+      // Store addiction increase for next day
+      my.spice.pendingAddictionIncrease = excess * gameSettings.spice.addictionProgression;
+    } else {
+      my.spice.pendingAddictionIncrease = 0;
+    }
+  }
+
+  function applyPendingAddiction() {
+    // Apply addiction progression that was calculated yesterday
+    if (my.spice.pendingAddictionIncrease > 0) {
+      const oldRequirement = Math.ceil(my.spice.requiredAmount);
+      my.spice.requiredAmount += my.spice.pendingAddictionIncrease;
+      const newRequirement = Math.ceil(my.spice.requiredAmount);
+      my.spice.pendingAddictionIncrease = 0;
+
+      // Only return true if the rounded requirement actually changed
+      return newRequirement > oldRequirement;
+    }
+    return false; // No change
+  }
+
+  function resetDailySpice() {
+    // Calculate but don't apply addiction progression yet
+    progressAddiction();
+
+    // DON'T reset daily consumption here - it happens just before purchase screen
+  }
+
+  function prepareSpicePurchaseScreen() {
+    // Apply pending addiction increase from yesterday
+    const addictionIncreased = applyPendingAddiction();
+
+    // Reset daily consumption for new day
+    my.spice.consumedToday = 0;
+
+    // Show notification if addiction increased
+    if (addictionIncreased) {
+      toast.warning(`Your spice addiction has worsened! You now need ${Math.ceil(my.spice.requiredAmount)} units daily.`);
+    }
+  }
   function advanceToNextDay() {
+    // Calculate pending addiction but don't reset spice consumption yet
+    resetDailySpice();
+
+    // Generate new daily themes for tomorrow
+    generateDailyThemes();
+
     // reset daily effects.
     my.effectYesterday = [];
     my.sermonToday = {
@@ -522,6 +943,21 @@
       name: r.name,
       followers: 0,
     }));
+  }
+
+  function initialiseStartingLocation() {
+    // Set the starting location (id: 0)
+    const startingLocation = places.find((p: any) => p.id === 0);
+    if (startingLocation) {
+      my.place = { ...startingLocation };
+    }
+  }
+
+  function initialiseGame() {
+    initialiseScoreCard();
+    initialiseFollowers();
+    initialiseStartingLocation();
+    generateDailyThemes();
   }
 
   function toggleDebugMode() {
@@ -556,10 +992,37 @@
       .filter((id: any): id is number => typeof id === "number");
   });
 
+  const sortedAudienceReactions = computed(() => {
+    if (!my.audienceReactions || !Array.isArray(my.audienceReactions)) return [];
+
+    return [...my.audienceReactions].sort((a, b) => {
+      // First sort by most liked
+      if (a.liked !== b.liked) {
+        return b.liked - a.liked;
+      }
+      // Then by most disliked (if liked is 0)
+      if (a.liked === 0 && b.liked === 0 && a.disliked !== b.disliked) {
+        return b.disliked - a.disliked;
+      }
+      // Finally by most heard (if both liked and disliked are 0)
+      if (a.liked === 0 && b.liked === 0 && a.disliked === 0 && b.disliked === 0) {
+        const totalA = a.liked + a.disliked + a.neutral;
+        const totalB = b.liked + b.disliked + b.neutral;
+        return totalB - totalA;
+      }
+      return 0;
+    });
+  });
+
+  const totalIgnoredAudience = computed(() => {
+    if (!my.audienceReactions || !Array.isArray(my.audienceReactions)) return 0;
+
+    return my.audienceReactions.filter((reaction) => reaction.liked === 0 && reaction.disliked === 0).reduce((total, reaction) => total + reaction.neutral, 0);
+  });
+
   // ================= LIFECYCLE =================
   onMounted(() => {
-    initialiseScoreCard();
-    initialiseFollowers();
+    initialiseGame();
     my.name = localStorage.getItem("kindaFunPlayerName") || "";
   });
 </script>

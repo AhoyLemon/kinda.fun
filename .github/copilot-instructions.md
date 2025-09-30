@@ -165,6 +165,18 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 - **Styles broken**: Check SCSS compilation in individual game folders
 - **Firebase errors**: Expected in development, provide config for production testing
 
+### MegaChurch Development
+
+- **Configuration**: Most game balance settings centralized in `src/views/megachurch/ts/_variables.ts`
+  - `gameSettings.streetPreaching` - Audience behavior and donation mechanics
+  - `gameSettings.donationCalculation` - Financial calculation parameters
+  - `gameSettings.sermonScoring` - Religion and theme scoring multipliers
+  - `ui.timing` - Toast and animation timing configurations
+- **Architecture**: Single large Vue component with embedded systems (street preaching, spice addiction, scoring)
+- **Content Management**: Religion data in `_religions.ts`, locations in `_places.ts`, sermon themes in `_sermons.ts`
+- **Avoid Magic Numbers**: Use configuration objects instead of hardcoded values in game logic
+- **Testing**: Use in-game debug toggle to inspect calculations during development
+
 **Always validate changes with `npm run build && npm run preview` before creating pull requests.**
 
 ## Pull Request Guidelines
