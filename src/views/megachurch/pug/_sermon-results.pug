@@ -59,31 +59,9 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
         span Donations Collected:
       dd {{dollars(my.donationsYesterday)}}
 
-    .spice-purchase
-      h3 Purchase Spice
-      p.consumption-note <strong>Note:</strong> All spice purchased today will be consumed immediately.
-      .spice-status
-        p Current Money: {{dollars(my.money)}}
-        p Spice Required: {{Math.ceil(my.spice.requiredAmount)}} units
-        p Spice Price: {{dollars(gameSettings.spice.pricePerUnit)}} per unit
-        p Already Consumed Today: {{my.spice.consumedToday}} units
-        p.warning(v-if="my.spice.consumedToday < my.spice.requiredAmount") ⚠️ You need {{Math.ceil(my.spice.requiredAmount - my.spice.consumedToday)}} more units to avoid penalties!
-        p.good(v-if="my.spice.consumedToday >= my.spice.requiredAmount") ✅ Requirement met ({{Math.ceil(my.spice.consumedToday - my.spice.requiredAmount)}} excess)
-        p.warning(v-if="my.spice.consumedToday >= my.spice.fatalAmount * 0.8") ☠️ WARNING: High spice consumption is dangerous!
-      
-      .purchase-controls
-        label How much spice to consume?
-        input(type="number" v-model.number="spiceToBuy" min="0" :max="Math.floor(my.money / gameSettings.spice.pricePerUnit)")
-        span units ({{dollars(spiceToBuy * gameSettings.spice.pricePerUnit)}})
-        button.buy-spice(@click="consumeSpice(spiceToBuy); spiceToBuy = 0" :disabled="spiceToBuy <= 0 || my.money < spiceToBuy * gameSettings.spice.pricePerUnit") Consume Spice
-      
-      .quick-purchase
-        button.recommended(@click="spiceToBuy = Math.max(0, Math.ceil(my.spice.requiredAmount - my.spice.consumedToday))" :disabled="my.money < Math.max(0, Math.ceil(my.spice.requiredAmount - my.spice.consumedToday)) * gameSettings.spice.pricePerUnit") Meet Requirement
-        button.safe(@click="spiceToBuy = Math.max(0, Math.ceil(my.spice.requiredAmount - my.spice.consumedToday) + 1)" :disabled="my.money < Math.max(0, Math.ceil(my.spice.requiredAmount - my.spice.consumedToday) + 1) * gameSettings.spice.pricePerUnit") +1 Extra
-        button.danger(@click="spiceToBuy = Math.floor(my.money / gameSettings.spice.pricePerUnit)" :disabled="my.money < gameSettings.spice.pricePerUnit") Buy Maximum
-
     .buttons
       button.reset(v-if="gameSettings.isDebug" @click="collectDonations()") GET PAID 🤑
+      button.plug(@click="openPlugInterface()") Text Your Plug
       button.submit(@click="advanceToNextDay()") Next Day.
 
     

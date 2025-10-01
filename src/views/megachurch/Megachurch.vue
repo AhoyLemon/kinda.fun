@@ -15,6 +15,7 @@
   import FollowerToast from "./vue/FollowerToast.vue";
   import ListenerToast from "./vue/ListenerToast.vue";
   import DonationToast from "./vue/DonationToast.vue";
+  import PlugChat from "./vue/PlugChat.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -22,8 +23,8 @@
 
   import type { Theme, Place, WeightedTag, WeightedReligion, MixedTag, MixedReligion, Sermon, Religion } from "./ts/_types";
 
-  // UI state for spice purchasing
-  const spiceToBuy = ref(0);
+  // Spice delivery system
+  const isPlugChatOpen = ref(false);
 
   // ================= FUNCTIONS =================
   // ================= COLLECT DONATIONS =================
@@ -694,7 +695,6 @@
 
       // Switch to results view
       setTimeout(() => {
-        prepareSpicePurchaseScreen();
         ui.view = "sermon-results";
       }, ui.timing.resultsViewDelay);
     }, finalDelay);
@@ -808,8 +808,6 @@
         );
         // Switch to 'preached' view after donation toast
         setTimeout(() => {
-          // Apply addiction progression and reset spice just before showing purchase screen
-          prepareSpicePurchaseScreen();
           ui.view = "sermon-results";
         }, donationToastDuration - ui.timing.churchToastOffset);
       },
@@ -838,26 +836,6 @@
     }
 
     return Math.max(0.1, multiplier); // Never go below 10% effectiveness
-  }
-
-  function consumeSpice(amount: number) {
-    const cost = amount * gameSettings.spice.pricePerUnit;
-    if (my.money >= cost && amount > 0) {
-      my.money -= cost;
-      my.spice.consumedToday += amount;
-
-      // Check for fatal overdose
-      if (my.spice.consumedToday >= my.spice.fatalAmount) {
-        alert("💀 You have died from a spice overdose! Game Over.");
-        // Reset game or handle death
-        my.money = 0;
-        my.spice.consumedToday = 0;
-        return false;
-      }
-
-      return true;
-    }
-    return false;
   }
 
   function progressAddiction() {
@@ -895,19 +873,78 @@
     // DON'T reset daily consumption here - it happens just before purchase screen
   }
 
-  function prepareSpicePurchaseScreen() {
-    // Apply pending addiction increase from yesterday
-    const addictionIncreased = applyPendingAddiction();
+  // ================= SPICE DELIVERY SYSTEM =================
+  function openPlugInterface() {
+    isPlugChatOpen.value = true;
+  }
 
-    // Reset daily consumption for new day
-    my.spice.consumedToday = 0;
+  function closePlugInterface() {
+    isPlugChatOpen.value = false;
+  }
 
-    // Show notification if addiction increased
-    if (addictionIncreased) {
-      toast.warning(`Your spice addiction has worsened! You now need ${Math.ceil(my.spice.requiredAmount)} units daily.`);
+  function handlePlugOrder(orderData) {
+    if (orderData.messages) {
+      // Add messages to chat history
+      orderData.messages.forEach((message) => {
+        if (message.replaceTyping) {
+          // Remove the last typing message and add the actual response
+          const typingIndex = my.plugChat.chatHistory.findIndex((m) => m.isTyping);
+          if (typingIndex !== -1) {
+            my.plugChat.chatHistory.splice(typingIndex, 1);
+          }
+        }
+        my.plugChat.chatHistory.push(message);
+      });
+    }
+
+    if (orderData.amount > 0) {
+      // Process the actual order
+      my.plugChat.totalOrders++;
+      my.spice.spiceToDeliver += orderData.amount;
+      my.money -= orderData.cost;
+
+      // Show delivery notification for first-time users
+      if (my.plugChat.totalOrders <= 2) {
+        setTimeout(() => {
+          toast.info("Your spice will be delivered in the morning", {
+            timeout: 4000,
+          });
+        }, 2000);
+      }
+    }
+  }
+
+  function deliverOrderedSpice() {
+    if (my.spice.spiceToDeliver > 0) {
+      // Auto-consume delivered spice
+      my.spice.consumedToday = my.spice.spiceToDeliver;
+
+      // Show delivery notification
+      const statusMessages = {
+        under: "You're still under-dosed",
+        optimal: "You're now feeling normal",
+        over: "You're feeling enhanced",
+      };
+
+      let status = "optimal";
+      if (my.spice.consumedToday < my.spice.requiredAmount) {
+        status = "under";
+      } else if (my.spice.consumedToday > my.spice.requiredAmount) {
+        status = "over";
+      }
+
+      toast.success(`${my.spice.spiceToDeliver} spice taken. ${statusMessages[status]}.`, {
+        timeout: 4000,
+      });
+
+      // Clear delivery queue
+      my.spice.spiceToDeliver = 0;
     }
   }
   function advanceToNextDay() {
+    // Spice wears off at the end of the day
+    my.spice.consumedToday = 0;
+
     // Calculate pending addiction but don't reset spice consumption yet
     resetDailySpice();
 
@@ -924,6 +961,24 @@
     };
     ui.selectedTopics = [null, null, null];
     my.followerChanges = [];
+
+    // Start the morning routine (delivery, then show sermon selection)
+    startMorningRoutine();
+  }
+
+  function startMorningRoutine() {
+    // Apply pending addiction increase from yesterday
+    const addictionIncreased = applyPendingAddiction();
+
+    // Deliver any ordered spice first thing in the morning
+    deliverOrderedSpice();
+
+    // Show notification if addiction increased
+    if (addictionIncreased) {
+      setTimeout(() => {
+        toast.warning(`Your spice addiction has worsened! You now need ${Math.ceil(my.spice.requiredAmount)} units daily.`);
+      }, 1000);
+    }
 
     ui.view = "sermon";
   }

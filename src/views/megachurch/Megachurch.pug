@@ -14,4 +14,17 @@
 
     include pug/_sermon-results.pug
 
-  include pug/_your-details.pug  
+  include pug/_your-details.pug
+
+  // Spice dealer chat interface
+  PlugChat(
+    :isOpen="isPlugChatOpen"
+    :playerName="my.name"
+    :playerMoney="my.money"
+    :spicePrice="gameSettings.spice.pricePerUnit"
+    :spiceRequired="my.spice.requiredAmount"
+    :chatHistory="my.plugChat.chatHistory"
+    :totalOrders="my.plugChat.totalOrders"
+    @close="closePlugInterface"
+    @order="handlePlugOrder"
+  )  

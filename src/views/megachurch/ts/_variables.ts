@@ -40,8 +40,8 @@ export const gameSettings = reactive({
     dislikePercentage: 35, // % of engaged audience that dislikes when threshold met (higher = more dislikes)
     baselikePercentage: 10, // % that likes even without meeting threshold (higher = more baseline likes)
     baseDislikePercentage: 8, // % that dislikes even without meeting threshold (higher = more baseline dislikes)
-    donationMin: 0.25, // Minimum $ per person who liked (higher = more money)
-    donationMax: 2, // Maximum $ per person who liked (higher = more money)
+    donationMin: 1, // Minimum $ per person who liked (higher = more money)
+    donationMax: 3.25, // Maximum $ per person who liked (higher = more money)
     audienceScaleDivisor: 1000, // Population scaling factor for street preaching audience
     mixedMessageThreshold: 2, // Number of religions affected to show "a lot of people" vs specific names
   },
@@ -84,9 +84,9 @@ export const ui = reactive<UI>({
   placeIndex: 0,
   toastDuration: 7000, // Default toast duration in ms
   timing: {
-    toastDelayMin: 2100, // Minimum delay between audience reaction toasts (ms)
-    toastDelayMax: 6600, // Maximum delay between audience reaction toasts (ms)
-    donationToastDelay: 5000, // Delay before showing donation toast after reactions (ms)
+    toastDelayMin: 1600, // Minimum delay between audience reaction toasts (ms)
+    toastDelayMax: 3100, // Maximum delay between audience reaction toasts (ms)
+    donationToastDelay: 6000, // Delay before showing donation toast after reactions (ms)
     resultsViewDelay: 6000, // Delay before switching to results view (ms)
     churchToastOffset: 1000, // Time offset for church follower toasts (ms)
   },
@@ -151,6 +151,11 @@ export const my = reactive<My>({
     fatalAmount: 10, // Taking 10+ units in one day is fatal
     consumedToday: 0, // Track today's consumption
     pendingAddictionIncrease: 0, // Track addiction increase for tomorrow
+    spiceToDeliver: 0, // Spice ordered but not yet delivered
+  },
+  plugChat: {
+    totalOrders: 0, // Track total orders made to The Plug
+    chatHistory: [], // Chat message history with The Plug
   },
 });
 
@@ -196,4 +201,15 @@ interface My {
   }>; // Street preaching audience reactions
   donationsYesterday: number; // How much money did you make yesterday?
   spice: Spice; // Spice addiction system
+  plugChat: {
+    totalOrders: number; // Track total orders made to The Plug
+    chatHistory: Array<{
+      id: number;
+      sender: string;
+      text: string;
+      time: string;
+      isTyping?: boolean; // For typing indicators
+      replaceTyping?: boolean; // For replacing typing indicators
+    }>; // Chat message history with The Plug
+  };
 }

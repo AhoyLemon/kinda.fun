@@ -33,6 +33,7 @@ export interface Spice {
   fatalAmount: number; // If the player takes this much spice in a single day, they will die
   consumedToday: number; // How much spice the player consumed today (reset daily)
   pendingAddictionIncrease: number; // Addiction increase that will apply next day
+  spiceToDeliver: number; // Spice ordered but not yet delivered
 }
 
 export interface Theme {

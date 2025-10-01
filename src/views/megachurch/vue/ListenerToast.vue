@@ -17,7 +17,7 @@
             {{ " " + getRandomMessage("tagLike") }} <span class="tag liked-tag">{{ primaryTag }}</span
             >.
           </span>
-          <span v-else> {{ getRandomMessage("generalLike") }}</span>
+          <span v-else> {{ " " + getRandomMessage("generalLike") }}</span>
         </template>
 
         <!-- Negative reactions -->
@@ -167,7 +167,7 @@
 
   // Formats religion lists for mixed message display
   // - 1 religion: "Buddhists"
-  // - 2 religions: "Buddhists and Catholics" 
+  // - 2 religions: "Buddhists and Catholics"
   // - 3+ religions: "a lot of people"
   function formatAffectedReligions(religions) {
     if (!religions || religions.length === 0) return "people";
