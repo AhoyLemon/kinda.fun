@@ -17,14 +17,29 @@
   include pug/_your-details.pug
 
   // Spice dealer chat interface
-  PlugChat(
-    :isOpen="isPlugChatOpen"
+  Chat(
+    :isOpen="ui.chats.plug.isOpen"
+    contactType="plug"
     :playerName="my.name"
     :playerMoney="my.money"
     :spicePrice="gameSettings.spice.pricePerUnit"
+    :fatalSpiceAmount="my.spice.fatalAmount"
     :spiceRequired="my.spice.requiredAmount"
-    :chatHistory="my.plugChat.chatHistory"
-    :totalOrders="my.plugChat.totalOrders"
+    :chatHistory="my.chats.plug.chatHistory"
+    :totalOrders="my.chats.plug.totalOrders"
     @close="closePlugInterface"
     @order="handlePlugOrder"
+  )
+
+  Chat(
+    :isOpen="ui.chats.harold.isOpen"
+    contactType="harold"
+    :playerName="my.name"
+    :playerMoney="my.money"
+    :playerHasVan="my.hasVan"
+    :vanCost="gameSettings.van.cost"
+    :chatHistory="my.chats.harold.chatHistory"
+    @close="closeHaroldInterface"
+    @van-purchase="buyVan"
+    @harold-message="handleHaroldMessage"
   )  

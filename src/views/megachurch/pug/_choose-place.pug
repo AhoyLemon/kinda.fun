@@ -1,6 +1,6 @@
 section.choose.choose-place(v-if="ui.view === 'place'")
 
-  form(@submit.prevent="choosePlace(ui.placeIndex)")
+  form(@submit.prevent="my.hasVan ? travelToPlace(ui.placeIndex) : choosePlace(ui.placeIndex)")
 
     legend Where do you want to go?
 
@@ -8,7 +8,7 @@ section.choose.choose-place(v-if="ui.view === 'place'")
       label.required Choose a location
       Multiselect(
         v-model="ui.placeIndex"
-        :options="places"
+        :options="availablePlaces"
         :searchable="true"
         :required="true"
         value-prop="id"
@@ -46,7 +46,17 @@ section.choose.choose-place(v-if="ui.view === 'place'")
         dd 
           ul
             li(v-for="dislike in getPlace(ui.placeIndex).dislikedTags.slice(0, 5)") {{dislike}}
+
+      // Van travel costs
+      dl.travel-cost(v-if="my.hasVan")
+        dt Gas Cost
+        dd.cost {{dollars(gameSettings.van.fixedGasPrice)}}
+        dd.warning(v-if="my.money < gameSettings.van.fixedGasPrice") Insufficient funds for gas!
     
     .button-holder
-      button.reset(type="button" @click="ui.view = 'religion'") Change Religion
-      button(type="submit" :disabled="!ui.placeIndex") Get In The Van
+      //button.reset(type="button" @click="ui.view = 'religion'") Change Religion
+      button.reset(type="button" @click="ui.view = 'sermon'") Cancel
+      button(
+        type="submit" 
+        :disabled="!ui.placeIndex ||  (my.hasVan && (my.money < gameSettings.van.fixedGasPrice || my.hasTraveledToday))"
+      ) {{ my.hasVan ? 'Travel Here' : 'Go Here' }}

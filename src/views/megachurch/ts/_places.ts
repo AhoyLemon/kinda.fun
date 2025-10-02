@@ -26,10 +26,10 @@ export const places: Place[] = [
     totalPopulation: 100000,
     avgNetWorth: 55000, // Low average income
     religions: [
-      { id: 1, name: "Southern Baptist", weight: 15 },
+      { id: 1, name: "Southern Baptist", weight: 18 },
+      { id: 19, name: "Secular Humanists", weight: 18 },
       { id: 2, name: "Catholicism", weight: 15 },
       { id: 8, name: "Evangelical Christianity", weight: 12 },
-      { id: 19, name: "Secular Humanists", weight: 12 },
       { id: 27, name: "Agnostic Atheists", weight: 12 },
       { id: 9, name: "Mormonism", weight: 8 },
       { id: 10, name: "Jehovah's Witnesses", weight: 8 },

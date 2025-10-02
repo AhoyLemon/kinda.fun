@@ -1,7 +1,7 @@
 import { reactive, ref } from "vue";
-import { Sermon, Spice } from "./_types";
+import { GameSettings, My, UI, Sermon, Spice } from "./_types";
 
-export const gameSettings = reactive({
+export const gameSettings = reactive<GameSettings>({
   baseDonation: 0.25, // Base donation per follower
   isDebug: false,
   isDebugButtonVisible: true,
@@ -33,16 +33,25 @@ export const gameSettings = reactive({
     enthusiasmDivisor: 10, // Divides net score for enthusiasm calculation
   },
   streetPreaching: {
-    audienceEngagement: 60, // What % of potential audience actually stops to listen (higher = more listeners)
-    likeThreshold: 0, // netScore needed for likes (lower = easier to get likes)
-    dislikeThreshold: -1, // netScore needed for dislikes (higher = easier to get dislikes, use negative numbers)
-    likePercentage: 35, // % of engaged audience that likes when threshold met (higher = more likes)
-    dislikePercentage: 35, // % of engaged audience that dislikes when threshold met (higher = more dislikes)
-    baselikePercentage: 10, // % that likes even without meeting threshold (higher = more baseline likes)
-    baseDislikePercentage: 8, // % that dislikes even without meeting threshold (higher = more baseline dislikes)
-    donationMin: 1, // Minimum $ per person who liked (higher = more money)
-    donationMax: 3.25, // Maximum $ per person who liked (higher = more money)
-    audienceScaleDivisor: 1000, // Population scaling factor for street preaching audience
+    // ===== MAJOR TWEAKS =====
+    baseCrowdSize: 40, // Base crowd size that shows up to listen
+
+    dislikeChance: {
+      byReligion: 20, // % chance of disliking when sermon attacks their religion (increased)
+      byTag: 20, // % chance of disliking when sermon attacks a tag they like (increased)
+    },
+    likeChance: {
+      byReligion: 35, // % chance of liking when sermon praises their religion
+      byTag: 25, // % chance of liking when sermon praises a tag they like
+    },
+    donation: {
+      chance: 80, // % chance that someone who likes your sermon donates
+      min: 1, // Minimum $ per donation
+      max: 3, // Maximum $ per donation
+    },
+
+    // ===== MINOR TUNING =====
+    randomCrowdVariation: 0.2, // +/- 20% variation in crowd size
     mixedMessageThreshold: 2, // Number of religions affected to show "a lot of people" vs specific names
   },
   spice: {
@@ -53,29 +62,13 @@ export const gameSettings = reactive({
     maxBonus: 0.25, // Maximum bonus cap (25%)
     maxPenalty: 0.8, // Maximum penalty cap (80% reduction)
   },
+  van: {
+    daysToUnlock: 2, // Days requird to unlock the van
+    cost: 200, // Price to buy the van from Uncle Harold
+    fixedGasPrice: 1, // Fixed cost for any travel
+    gasPricePerMile: 0.1, // Per-mile gas cost (not used yet)
+  },
 });
-
-interface UI {
-  view:
-    | "religion"
-    | "place"
-    | "place-confirm"
-    | "sermon"
-    | "sermon-confirm"
-    | "preaching"
-    | "sermon-results";
-  selectedTopics: [number | null, number | null, number | null];
-  religionIndex: number;
-  placeIndex: number;
-  toastDuration: number;
-  timing: {
-    toastDelayMin: number;
-    toastDelayMax: number;
-    donationToastDelay: number;
-    resultsViewDelay: number;
-    churchToastOffset: number;
-  };
-}
 
 export const ui = reactive<UI>({
   view: "sermon", // Start with sermon selection instead of religion
@@ -85,28 +78,44 @@ export const ui = reactive<UI>({
   toastDuration: 7000, // Default toast duration in ms
   timing: {
     toastDelayMin: 1600, // Minimum delay between audience reaction toasts (ms)
-    toastDelayMax: 3100, // Maximum delay between audience reaction toasts (ms)
+    toastDelayMax: 3200, // Maximum delay between audience reaction toasts (ms)
     donationToastDelay: 6000, // Delay before showing donation toast after reactions (ms)
     resultsViewDelay: 6000, // Delay before switching to results view (ms)
     churchToastOffset: 1000, // Time offset for church follower toasts (ms)
+  },
+  chats: {
+    plug: {
+      isOpen: false,
+    },
+    harold: {
+      isOpen: false,
+    },
   },
 });
 
 export const my = reactive<My>({
   name: "",
+  daysPlayed: 0,
   money: 0,
+  totalMoneyEarned: 0,
   religion: {},
   place: {},
   lucre: [],
   preacherStrengths: {
-    followers: 0.25, // Reduced from 0.4
-    donations: 1.2, // Reduced from 2
+    gatherCrowd: 1, // Muliplier for gathering crowd size
+    getDonations: 1, // Multiplier for donation amounts
+    getFollowers: 1, // Multiplier for follower gains
+    loseFollowers: 1, // Multiplier for follower losses (lower is better)
+    getLikes: 1, // Multiplier for likes
+    getDislikes: 1, // Multiplier for dislikes (lower is better)
   },
   selectedTopics: [null, null, null], // TODO: Move this to ui.selectedTopics
   followerCount: 0,
   followers: [],
   isStreetPreaching: true, // Start as street preacher
   hasVan: false, // Can't travel yet
+  canBuyVan: false, // Whether van purchase option is available
+  hasTraveledToday: false, // Track if player has traveled today
   inventory: [], // For future upgrades
   dailyThemes: [], // Today's available themes
   sermonToday: {
@@ -153,63 +162,14 @@ export const my = reactive<My>({
     pendingAddictionIncrease: 0, // Track addiction increase for tomorrow
     spiceToDeliver: 0, // Spice ordered but not yet delivered
   },
-  plugChat: {
-    totalOrders: 0, // Track total orders made to The Plug
-    chatHistory: [], // Chat message history with The Plug
+  chats: {
+    plug: {
+      totalOrders: 0, // Track total orders made to The Plug
+      chatHistory: [], // Chat message history with The Plug
+    },
+    harold: {
+      hasContacted: false, // Whether Harold has made initial contact
+      chatHistory: [], // Chat message history with Uncle Harold
+    },
   },
 });
-
-interface My {
-  name: string; // Name of the MegaChurch Owner
-  money: number; // How much money you have right now.
-  religion: object; // What religion you are claiming
-  place: object; // What location are you currently in
-  lucre: object[]; // list the trophies you have.
-  preacherStrengths: {
-    followers: number;
-    donations: number;
-  }; // Persuasiveness multipliers. How good is your preacher at getting new followers/donations
-  selectedTopics: Array<any>; // TODO: Move this to ui.selectedTopics
-  followerCount: number; // How many followers you have right now.
-  followers: object[]; // List of followers, by religion
-  isStreetPreaching: boolean; // True when street preaching vs having a church
-  hasVan: boolean; // True when player can travel between locations
-  inventory: object[]; // Items/upgrades the player owns
-  dailyThemes: Array<any>; // Today's available sermon themes
-  sermonToday: Sermon; // What will/did you preach today.
-  sermonYesterday: Sermon; // What did you preach yesterday.
-  effectYesterday?: any[]; // What effect did your last sermon have?
-  religiousScorecard?: any[]; // what does each religion think of you?
-  followerChanges?: Array<{
-    id: number;
-    name: string;
-    before: number;
-    change: number;
-    after: number;
-  }>; // Follower change reporting
-  audienceReactions?: Array<{
-    id: number;
-    name: string;
-    liked: number;
-    disliked: number;
-    neutral: number;
-    likedTags?: string[];
-    dislikedTags?: string[];
-    mixedTags?: string[];
-    followerName?: string;
-    followersName?: string;
-  }>; // Street preaching audience reactions
-  donationsYesterday: number; // How much money did you make yesterday?
-  spice: Spice; // Spice addiction system
-  plugChat: {
-    totalOrders: number; // Track total orders made to The Plug
-    chatHistory: Array<{
-      id: number;
-      sender: string;
-      text: string;
-      time: string;
-      isTyping?: boolean; // For typing indicators
-      replaceTyping?: boolean; // For replacing typing indicators
-    }>; // Chat message history with The Plug
-  };
-}

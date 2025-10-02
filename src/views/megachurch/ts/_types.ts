@@ -104,6 +104,106 @@ export interface Sermon {
   };
 }
 
+// ================= GAME STATE INTERFACES =================
+
+export interface UI {
+  view:
+    | "religion"
+    | "place"
+    | "place-confirm"
+    | "sermon"
+    | "sermon-confirm"
+    | "preaching"
+    | "sermon-results";
+  selectedTopics: [number | null, number | null, number | null];
+  religionIndex: number;
+  placeIndex: number;
+  toastDuration: number;
+  timing: {
+    toastDelayMin: number;
+    toastDelayMax: number;
+    donationToastDelay: number;
+    resultsViewDelay: number;
+    churchToastOffset: number;
+  };
+  chats: {
+    plug: {
+      isOpen: boolean;
+    };
+    harold: {
+      isOpen: boolean;
+    };
+  };
+}
+
+export interface ChatMessage {
+  id: number;
+  sender: string;
+  text: string;
+  time: string;
+  isTyping?: boolean;
+  replaceTyping?: boolean;
+}
+
+export interface ChatHistory {
+  totalOrders?: number;
+  hasContacted?: boolean;
+  chatHistory: ChatMessage[];
+}
+
+export interface My {
+  name: string;
+  daysPlayed: number;
+  money: number;
+  totalMoneyEarned: number;
+  religion: object;
+  place: object;
+  lucre: object[];
+  preacherStrengths: {
+    gatherCrowd: number;
+    getDonations: number;
+    getFollowers: number;
+  };
+  selectedTopics: Array<any>;
+  followerCount: number;
+  followers: object[];
+  isStreetPreaching: boolean;
+  hasVan: boolean;
+  canBuyVan: boolean;
+  hasTraveledToday: boolean;
+  inventory: object[];
+  dailyThemes: Array<any>;
+  sermonToday: Sermon;
+  sermonYesterday: Sermon;
+  effectYesterday?: any[];
+  religiousScorecard?: any[];
+  followerChanges?: Array<{
+    id: number;
+    name: string;
+    before: number;
+    change: number;
+    after: number;
+  }>;
+  audienceReactions?: Array<{
+    id: number;
+    name: string;
+    liked: number;
+    disliked: number;
+    neutral: number;
+    likedTags?: string[];
+    dislikedTags?: string[];
+    mixedTags?: string[];
+    followerName?: string;
+    followersName?: string;
+  }>;
+  donationsYesterday: number;
+  spice: Spice;
+  chats: {
+    plug: ChatHistory;
+    harold: ChatHistory;
+  };
+}
+
 // ================= NAMES OF THINGS =================
 
 export type ReligionNames =
@@ -115,13 +215,11 @@ export type ReligionNames =
   | "Evangelical Christianity"
   | "Jehovah's Witnesses"
   | "Mormonism"
-  // | "Mystic Islam"
   | "New-Age Spirituality"
   | "Orthodox Islam"
   | "Prosperity Gospel"
   | "Secular Humanists"
   | "Seventh-day Adventism"
-  //| "Shinto"
   | "Southern Baptist"
   | "Temple of the Eternal Sun"
   | "The Church of Eros"
@@ -257,3 +355,70 @@ export type PlaceNames =
   | "Megamall, Minnesota"
   | "Cascadia Moss, Washington"
   | "Rapture, Texas";
+
+// ================= GAME SETTINGS TYPE =================
+
+export interface GameSettings {
+  baseDonation: number; // Base donation per follower
+  isDebug: boolean;
+  isDebugButtonVisible: boolean;
+  themesPerDay: number; // How many themes are available to choose from each day
+  donationCalculation: {
+    scoreMultiplierMin: number;
+    scoreMultiplierMax: number;
+    scoreDivisor: number;
+    netWorthMultiplierMin: number;
+    netWorthMultiplierMax: number;
+    netWorthDivisor: number;
+    fallbackBaseDonation: number;
+    strengthBoostMultiplier: number;
+    roundingFactor: number;
+  };
+  sermonScoring: {
+    likedTagMultiplier: number;
+    likedTagDoubledMultiplier: number;
+    dislikedTagMultiplier: number;
+    dislikedTagHalvedMultiplier: number;
+    dislikedTagDoubledMultiplier: number;
+    likedReligionMultiplier: number;
+    likedReligionDoubledMultiplier: number;
+    dislikedReligionMultiplier: number;
+    dislikedReligionDoubledMultiplier: number;
+    religionDirectMatchMultiplier: number;
+    enthusiasmMin: number;
+    enthusiasmMax: number;
+    enthusiasmDivisor: number;
+  };
+  streetPreaching: {
+    baseCrowdSize: number;
+    dislikeChance: {
+      byReligion: number;
+      byTag: number;
+    };
+    likeChance: {
+      byReligion: number;
+      byTag: number;
+    };
+    donation: {
+      chance: number;
+      min: number;
+      max: number;
+    };
+    randomCrowdVariation: number;
+    mixedMessageThreshold: number;
+  };
+  spice: {
+    pricePerUnit: number;
+    addictionProgression: number;
+    penaltyPerUnit: number;
+    bonusPerUnit: number;
+    maxBonus: number;
+    maxPenalty: number;
+  };
+  van: {
+    daysToUnlock: number;
+    cost: number;
+    fixedGasPrice: number;
+    gasPricePerMile: number;
+  };
+}

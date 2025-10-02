@@ -41,12 +41,12 @@
         <!-- Mixed/Confused reactions -->
         <template v-else-if="reaction === 'mixed'">
           <!-- Tag confusion affecting many religions -->
-          <span v-if="mixedMessageTag && affectedReligions && affectedReligions.length > 2">
-            Your views on <span class="tag confused-tag">{{ mixedMessageTag }}</span> {{ getRandomMessage("confusedALot") }}
+          <span v-if="primaryTag && affectedReligions && affectedReligions.length > 2">
+            Your views on <span class="tag confused-tag">{{ primaryTag }}</span> {{ getRandomMessage("confusedALot") }}
           </span>
           <!-- Tag confusion affecting 1-2 specific religions -->
-          <span v-else-if="mixedMessageTag && affectedReligions && affectedReligions.length <= 2">
-            Your views on <span class="tag confused-tag">{{ mixedMessageTag }}</span> {{ getRandomMessage("confusedSpecific") }}
+          <span v-else-if="primaryTag && affectedReligions && affectedReligions.length <= 2">
+            Your views on <span class="tag confused-tag">{{ primaryTag }}</span> {{ getRandomMessage("confusedSpecific") }}
             {{ formatAffectedReligions(affectedReligions) }}.
           </span>
           <!-- General confusion for 1-2 religions (no specific tag) -->
@@ -69,11 +69,11 @@
     },
     count: {
       type: Number,
-      required: false, // Not required for mixed messages
+      required: false,
     },
     religion: {
       type: Object,
-      required: false, // Not required for mixed messages
+      required: false,
     },
     religionMatch: {
       type: Boolean,
@@ -87,8 +87,7 @@
       type: String,
       required: false,
     },
-    // New props for mixed messages
-    mixedMessageTag: {
+    message: {
       type: String,
       required: false,
     },

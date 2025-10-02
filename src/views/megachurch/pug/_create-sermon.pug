@@ -53,4 +53,5 @@ section.sermon(v-if="ui.view === 'sermon'")
           span(v-else) {{option.title}}
 
     .button-holder
+      button.van(v-if="my.hasVan && !my.hasTraveledToday" @click="ui.view = 'place'") Get In The Van
       button(type="submit" :disabled="!ui.selectedTopics[0] || !ui.selectedTopics[1] || !ui.selectedTopics[2]") Create Sermon

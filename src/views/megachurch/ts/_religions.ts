@@ -258,7 +258,6 @@ export const religions: Religion[] = [
     ],
     dislikes: [
       "blind faith",
-      "unethical behavior",
       "dogma",
       "exploitation",
       "authority",
