@@ -163,6 +163,9 @@ export interface My {
     gatherCrowd: number;
     getDonations: number;
     getFollowers: number;
+    loseFollowers: number;
+    getLikes: number;
+    getDislikes: number;
   };
   selectedTopics: Array<any>;
   followerCount: number;
