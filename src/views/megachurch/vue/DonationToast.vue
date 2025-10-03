@@ -10,12 +10,10 @@
         <div class="text">
           <div class="religion-label label">total donations collected</div>
           <div v-if="sterlingCut" class="sterling-cut">
-            Sterling's cut: {{ dollars(sterlingCut) }}<br>
+            Sterling's cut: {{ dollars(sterlingCut) }}<br />
             Your share: {{ dollars(change) }}
           </div>
-          <div v-else-if="change !== totalDonations" class="player-share">
-            Your share: {{ dollars(change) }}
-          </div>
+          <div v-else-if="change !== totalDonations" class="player-share">Your share: {{ dollars(change) }}</div>
         </div>
       </div>
     </template>
@@ -31,7 +29,7 @@
 <script setup>
   import { dollars } from "@/shared/js/_functions.js";
   import { computed } from "vue";
-  
+
   const props = defineProps({
     change: {
       type: Number,
@@ -91,8 +89,9 @@
       display: flex;
       align-items: center;
       font-weight: 600;
-      
-      .sterling-cut, .player-share {
+
+      .sterling-cut,
+      .player-share {
         font-size: 0.85em;
         margin-top: 8px;
         color: #666;

@@ -205,9 +205,6 @@
       my.isStreetPreaching = false; // No longer street preaching
       my.congregation = []; // Initialize empty congregation
 
-      // Reset religious scorecard for church preaching (fresh start)
-      initialiseScoreCard();
-
       // Send message to Sterling confirming the church
       const confirmationMessage = {
         id: Date.now(),
@@ -1179,42 +1176,17 @@
       group.dislikes = Math.min(group.dislikes, group.count);
     });
 
-    // Update religious scorecard and track changes
-    const followerChangesArr: { id: number; name: string; before: number; change: number; after: number }[] = [];
-
+    // Update religious scorecard
     todaysCongregation.forEach((group) => {
       let scorecardEntry = my.religiousScorecard.find((entry: any) => entry.id === group.id);
-      const oldScore = scorecardEntry?.score || 0;
-
       if (!scorecardEntry) {
         const religion = religions.find((r: any) => r.id === group.id);
         scorecardEntry = { id: group.id, name: religion?.name || `Religion ${group.id}`, score: 0 };
         my.religiousScorecard.push(scorecardEntry);
       }
 
-      const scoreChange = group.likes - group.dislikes;
-      scorecardEntry.score += scoreChange;
-
-      // Track changes for display (accumulate changes for same religion)
-      if (scoreChange !== 0) {
-        const existingChange = followerChangesArr.find((c) => c.id === group.id);
-        if (existingChange) {
-          existingChange.change += scoreChange;
-          existingChange.after += scoreChange;
-        } else {
-          followerChangesArr.push({
-            id: group.id,
-            name: scorecardEntry.name,
-            before: oldScore,
-            change: scoreChange,
-            after: scorecardEntry.score,
-          });
-        }
-      }
+      scorecardEntry.score += group.likes - group.dislikes;
     });
-
-    // Sort by change amount (highest to lowest) and assign
-    my.followerChanges = followerChangesArr.sort((a, b) => b.change - a.change);
 
     // Store congregation data for potential future use
     my.congregation = todaysCongregation;
@@ -1332,21 +1304,6 @@
         if (playerShare < 0) {
           sterlingCut = totalDonations;
           playerShare = 0;
-        }
-
-        // Track Sterling's cut and add to what player owes
-        my.chats.sterling.moneyOwed = (my.chats.sterling.moneyOwed || 0) + sterlingCut;
-
-        // Add payment record to chat history
-        if (sterlingCut > 0) {
-          const paymentMessage = {
-            id: Date.now(),
-            sender: "system",
-            text: `Sterling's cut: ${dollars(sterlingCut)} (${Math.round(cutPercentage * 100)}% of donations)`,
-            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-            isPayment: true,
-          };
-          my.chats.sterling.chatHistory.push(paymentMessage);
         }
       }
 
@@ -1558,6 +1515,26 @@
     ui.chats.harold.isOpen = false;
   }
 
+  function handlePlugMessage(data: any) {
+    if (data.messages && Array.isArray(data.messages)) {
+      data.messages.forEach((message: any) => {
+        // Replace typing indicator if specified (use in-place update for smooth transitions)
+        if (message.replaceTyping) {
+          const typingMessage = my.chats.plug.chatHistory.find((m) => m.isTyping && m.sender === "plug");
+          if (typingMessage) {
+            // Update the existing message object instead of removing and adding
+            typingMessage.text = message.text;
+            typingMessage.time = message.time;
+            typingMessage.isTyping = false;
+          }
+        } else {
+          // Add new message normally
+          my.chats.plug.chatHistory.push(message);
+        }
+      });
+    }
+  }
+
   function handleHaroldMessage(data: any) {
     if (data.messages && Array.isArray(data.messages)) {
       data.messages.forEach((message: any) => {
@@ -1611,8 +1588,6 @@
         }
       });
     }
-
-    // Handle special actions - no longer needed for agreement flow
   }
 
   function handleChurchFounding() {
@@ -1891,14 +1866,6 @@
 
   // ================= COMPUTEDS =================
   const computedTopReligions = computed(() => {
-    // For church preaching, use religious scorecard
-    if (!my.isStreetPreaching && my.religiousScorecard && Array.isArray(my.religiousScorecard) && my.religiousScorecard.length > 0) {
-      const sorted = my.religiousScorecard.filter((r: any) => r.score > 0).sort((a: any, b: any) => (b.score || 0) - (a.score || 0));
-      if (sorted.length === 0) return null;
-      return sorted;
-    }
-
-    // For street preaching, use followers
     if (!my.followers || !Array.isArray(my.followers) || my.followers.length === 0) return null;
     const sorted = my.followers.map((f) => f as { id: number; followers: number }).sort((a, b) => (b.followers || 0) - (a.followers || 0));
     if (sorted.length === 0 || (sorted[0].followers || 0) === 0) return null;

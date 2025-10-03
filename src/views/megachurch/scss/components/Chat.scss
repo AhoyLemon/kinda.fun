@@ -82,8 +82,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      font-weight: bold;
+      // font-size: 14px;
+      // font-weight: bold;
+      font-size: 1.25rem;
       overflow: hidden;
 
       img {
@@ -377,12 +378,12 @@
       font-size: 14px;
     }
 
-    .addiction-indicator {
+    .hints {
       margin-bottom: 12px;
-      padding: 8px;
+      padding: 0 8px;
       border-radius: 6px;
       font-size: 13px;
-
+      line-height: 140%;
       .warning-hint {
         background: #fff3cd;
         color: #856404;
@@ -390,14 +391,14 @@
         border-radius: 4px;
       }
 
-      .boost-hint {
+      .good-hint {
         background: #d1ecf1;
         color: #0c5460;
         padding: 6px;
         border-radius: 4px;
       }
 
-      .perfect-hint {
+      .great-hint {
         background: #d4edda;
         color: #155724;
         padding: 6px;

@@ -49,11 +49,11 @@
             <label v-if="!orderAmount">How much spice do you need?</label>
 
             <!-- Addiction level indicator -->
-            <div class="addiction-indicator" v-if="orderAmount > 0">
+            <div class="hints" v-if="orderAmount > 0">
               <div v-if="isUnderRequired" class="warning-hint">⚠️ You'll need more to avoid withdrawal</div>
-              <div v-else-if="orderAmount === requiredAmount" class="perfect-hint">😐 This will keep you steady tomorrow</div>
+              <div v-else-if="orderAmount === requiredAmount" class="good-hint">😐 This will keep you steady tomorrow</div>
               <div v-if="orderAmount >= fatalSpiceAmount" class="warning-hint">💀 Allegedly, this much is fatal</div>
-              <div v-else-if="isOverRequired" class="boost-hint">✨ Extra spice will boost your preaching skills</div>
+              <div v-else-if="isOverRequired" class="great-hint">✨ Extra spice will boost your preaching skills</div>
             </div>
 
             <div class="amount-controls">
@@ -95,33 +95,38 @@
       </div>
 
       <!-- Sterling Silver-specific interface -->
-      <div v-if="contactType === 'sterling'">
-        <div class="sterling-options">
-          <div class="sterling-section">
-            <!-- Church founding options (simplified flow) -->
-            <div v-if="!playerHasChurch" class="church-founding">
-              <div class="church-info">
-                <p>Ready to build the Lord's house together?</p>
-                <p class="arrangement-details">I'll take 35% of donations (minimum $75/day)</p>
-              </div>
-              <button class="found-church-btn" @click="startChurchFounding">Start A Church With Sterling</button>
-            </div>
 
-            <!-- General conversation options (only show if player has church) -->
-            <div v-if="playerHasChurch" class="conversation-options">
-              <button class="sterling-chat-btn" @click="sendSterlingMessage('scripture')">Quote Scripture</button>
-              <button class="sterling-chat-btn" @click="sendSterlingMessage('business')">Discuss Business</button>
-              <button class="sterling-chat-btn" @click="sendSterlingMessage('checkin')">Check In</button>
-            </div>
+      <template v-if="contactType === 'sterling'">
+        <div class="casual-chat">
+          <div class="casual-section">
+            <button v-if="!playerHasChurch" class="casual-chat-btn" @click="sendSterlingMessage('clarify')">Clarify Arrangement</button>
+            <button v-if="!playerHasChurch" class="casual-chat-btn" @click="sendSterlingMessage('prison')">Prison?</button>
+            <button v-if="playerHasChurch" class="casual-chat-btn" @click="sendSterlingMessage('scripture')">Quote Scripture</button>
+            <button v-if="playerHasChurch" class="casual-chat-btn" @click="sendSterlingMessage('business')">Discuss Business</button>
+            <button v-if="playerHasChurch" class="casual-chat-btn" @click="sendSterlingMessage('checkin')">Check In</button>
           </div>
         </div>
-      </div>
+        <div class="order-interface" v-if="!playerHasChurch">
+          <div class="order-section">
+            <label>Go into business with Sterling?</label>
+            <div class="hints">
+              <div class="warning-hint">
+                💸 Sterling will take {{ gameSettings.churchPreaching.sterlingCutPercentage }}% of all donations (minimum ${{
+                  gameSettings.churchPreaching.sterlingMinimumCut
+                }})
+              </div>
+            </div>
+            <button class="send-order-btn" @click="startChurchFounding">Agree To Terms</button>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup>
   import { ref, computed, watch, nextTick } from "vue";
+  import { gameSettings } from "../ts/_variables";
   import { dollars } from "@/shared/js/_functions.js";
 
   const props = defineProps({
@@ -169,9 +174,9 @@
   });
 
   const contactStatus = computed(() => {
-    if (props.contactType === "plug") return "Active now";
+    if (props.contactType === "plug") return "Location Unknown";
     if (props.contactType === "harold") return "I AM A FREE CITIZEN";
-    if (props.contactType === "sterling") return "Spreading His Word";
+    if (props.contactType === "sterling") return "Humble Servant of The Lord";
     return "Unknown";
   });
 
@@ -314,17 +319,25 @@
   const sterlingClarifyPlayerMessages = ["Tell me more about this arrangement", "What exactly are you proposing?", "What's the deal?"];
 
   const sterlingClarifyResponses = [
-    "Simple, [playerName]. I set you up with a church, you give me my cut. That's 35% of whatever comes in the collection plate.",
-    "I'll handle the paperwork, you handle the preaching. But I expect my 35% cut, with a minimum of $75 a day - even if the flock is feeling... ungenerous.",
-    "Cross me, and you'll discover that the Lord's wrath is nothing compared to mine. Remember: 35% of donations, minimum $75 daily. Are we clear?",
+    `Ah, ${props.playerName}, let me illuminate the path: I shall build your church, handle every tedious detail, and in return, you bless me with a heavenly tithe—${gameSettings.churchPreaching.sterlingCutPercentage}% of every dollar the faithful surrender at your altar.`,
+    `Picture this: your own congregation, your own pulpit, all made possible by my divine intervention. All I ask is a modest share—${gameSettings.churchPreaching.sterlingCutPercentage}% of the collection plate, a small price for salvation.`,
+    `The Lord works through mysterious means, and today, He works through me. I’ll shoulder the burdens of bureaucracy and paperwork, while you reap the spiritual rewards. My only request? A sacred portion—${gameSettings.churchPreaching.sterlingCutPercentage}%—of your flock’s generosity.`,
+  ];
+
+  const sterlingPrisonPlayerMessages = ["Where are you texting me from?", "Are you in prison?", "Why are you in prison?"];
+
+  const sterlingPrisonResponses = [
+    "Let's just say I've had some... disagreements with certain authorities. But all for a righteous cause, of course.",
+    "Ah, the Lord works in mysterious ways. Sometimes that involves a stint in a less-than-holy place.",
+    "I've been through some trials, but my faith remains unshaken. Even if my accommodations are less than heavenly.",
   ];
 
   const sterlingAgreePlayerMessages = ["I agree to your terms", "Let's do this", "I'm ready to partner with you"];
 
   const sterlingAgreeResponses = [
-    "Excellent, [playerName]. The Lord smiles upon wise decisions.",
+    `Excellent, ${props.playerName}. The Lord smiles upon wise decisions.`,
     "Now we're talking! Let's build something that'll make the angels weep... tears of joy, of course.",
-    "You won't regret this. I'll make sure of it.",
+    "You won't regret this. Or at least, I won't.",
   ];
 
   const sterlingCheckinPlayerMessages = ["How are we doing?", "Any thoughts on my performance?", "How's our partnership going?"];
@@ -362,7 +375,6 @@
     "Keep preaching what they want to hear. Happy congregants are generous congregants.",
     "The Lord works in mysterious ways... and so do I.",
   ];
-
 
   const adjustAmount = (change) => {
     orderAmount.value = Math.max(0, orderAmount.value + change);

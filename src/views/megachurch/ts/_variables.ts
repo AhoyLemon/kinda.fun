@@ -96,6 +96,10 @@ export const gameSettings = reactive<GameSettings>({
       min: 5, // Minimum donation per attendee
       max: 20, // Maximum donation per attendee
     },
+    sterling: {
+      cutPercentage: 35,
+      minimumCut: 20,
+    },
     sterlingCutPercentage: 35, // Sterling's cut of daily donations
     sterlingMinimumCut: 20, // Minimum amount (in dollars) Sterling takes
   },

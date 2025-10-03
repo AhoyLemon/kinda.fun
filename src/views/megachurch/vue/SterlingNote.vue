@@ -2,12 +2,10 @@
   <div class="sterling-note-overlay" v-if="isVisible" @click="hideNote">
     <div class="note-paper" @click.stop>
       <div class="note-header">
-        <span class="note-title">Handwritten Note</span>
+        <span class="note-title">Dearest {{ playerName || "friend" }},</span>
         <button class="close-button" @click="hideNote">&times;</button>
       </div>
       <div class="note-content">
-        <p>Dearest {{ playerName || "friend" }},</p>
-
         <p>
           The Lord has seen fit to bring us together, and I must say, it is no coincidence. I have been watching your work, and it is clear to me that you are
           destined for something far greater than the humble beginnings you now occupy. You have the spark, the fire, the <em>potential</em> to build a ministry
@@ -17,8 +15,8 @@
         <p>
           I am Sterling Silver. If you know anything about faith on television, you know my name—I was once America's most celebrated televangelist. These days,
           I write to you from a cell, punished not for my devotion, but by the wicked who envy true greatness. They call it fraud, money laundering
-          <span class="crossed-out">maybe murder</span> but let me assure you: the righteous are always persecuted. The Lord moves in mysterious ways, and I
-          remain His most devoted servant. Together, we can do great things.
+          <s class="crossed-out">maybe murder</s> but let me assure you: the righteous are always persecuted. The Lord moves in mysterious ways, and I remain
+          His most devoted servant. Together, we can do great things.
         </p>
 
         <p>
@@ -66,7 +64,8 @@
   });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  @import "../scss/_variables";
   .sterling-note-overlay {
     position: fixed;
     top: 0;
@@ -83,9 +82,7 @@
 
   .note-paper {
     background: #f8f6f0;
-    background-image:
-      linear-gradient(to bottom, transparent 0px, transparent 24px, #ccc 25px, transparent 26px),
-      linear-gradient(to right, #ff6b6b 0px, #ff6b6b 2px, transparent 3px);
+    background-image: linear-gradient(to right, #ff6b6b 0px, #ff6b6b 2px, transparent 3px);
     padding: 40px 60px 40px 80px;
     max-width: 600px;
     max-height: 80vh;
@@ -148,6 +145,7 @@
   .note-content {
     color: #2c2c2c;
     font-size: 16px;
+    font-family: $monospace;
   }
 
   .note-content p {
@@ -157,7 +155,7 @@
 
   .crossed-out {
     text-decoration: line-through;
-    color: #666;
+    text-decoration-thickness: 0.1em;
   }
 
   .signature {
@@ -167,7 +165,7 @@
   }
 
   em {
-    font-style: italic;
-    text-decoration: underline;
+    text-transform: uppercase;
+    font-style: normal;
   }
 </style>

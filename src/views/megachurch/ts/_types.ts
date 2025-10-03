@@ -478,6 +478,10 @@ export interface GameSettings {
       min: number;
       max: number;
     };
+    sterling: {
+      cutPercentage: number;
+      minimumCut: number;
+    };
     sterlingCutPercentage: number;
     sterlingMinimumCut: number;
   };
