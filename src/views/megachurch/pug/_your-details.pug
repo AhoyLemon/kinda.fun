@@ -11,6 +11,14 @@ aside.your-details
   .box(v-if="my.place?.name && my.place.name != 'Starting Location'")
     .label Place
     .value {{my.place.name}}
+
+  .box(v-if="my.church.name")
+    .label Church
+    .value
+      div {{my.church.name}}
+      small(v-if="my.church.location?.name") {{my.church.location.name}}
+      small(v-if="my.church.religion?.name") ({{my.church.religion.name}})
+
   
   .box
     .label Money

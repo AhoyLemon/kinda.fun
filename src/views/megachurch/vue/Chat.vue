@@ -93,6 +93,29 @@
           </div>
         </div>
       </div>
+
+      <!-- Sterling Silver-specific interface -->
+      <div v-if="contactType === 'sterling'">
+        <div class="sterling-options">
+          <div class="sterling-section">
+            <!-- Church founding options (simplified flow) -->
+            <div v-if="!playerHasChurch" class="church-founding">
+              <div class="church-info">
+                <p>Ready to build the Lord's house together?</p>
+                <p class="arrangement-details">I'll take 35% of donations (minimum $75/day)</p>
+              </div>
+              <button class="found-church-btn" @click="startChurchFounding">Start A Church With Sterling</button>
+            </div>
+
+            <!-- General conversation options (only show if player has church) -->
+            <div v-if="playerHasChurch" class="conversation-options">
+              <button class="sterling-chat-btn" @click="sendSterlingMessage('scripture')">Quote Scripture</button>
+              <button class="sterling-chat-btn" @click="sendSterlingMessage('business')">Discuss Business</button>
+              <button class="sterling-chat-btn" @click="sendSterlingMessage('checkin')">Check In</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -103,7 +126,7 @@
 
   const props = defineProps({
     isOpen: Boolean,
-    contactType: String, // 'plug' or 'harold'
+    contactType: String, // 'plug', 'harold', or 'sterling'
     playerName: String,
     playerMoney: Number,
     playerHasVan: Boolean,
@@ -116,6 +139,10 @@
     // Harold-specific props
     vanCost: Number,
 
+    // Sterling-specific props
+    playerHasChurch: Boolean,
+    playerMoneyOwedToSterling: Number,
+
     // Chat props
     chatHistory: Array,
     totalOrders: Number,
@@ -123,10 +150,11 @@
     // Event handlers
     onOrder: Function,
     onVanPurchase: Function,
+    onChurchFounding: Function,
     onClose: Function,
   });
 
-  const emit = defineEmits(["close", "order", "van-purchase", "harold-message"]);
+  const emit = defineEmits(["close", "order", "van-purchase", "harold-message", "sterling-message", "church-founding"]);
 
   const messagesContainer = ref(null);
   const orderAmount = ref(0);
@@ -134,19 +162,31 @@
 
   // Contact information
   const contactName = computed(() => {
-    return props.contactType === "plug" ? "The Plug" : "Uncle Harold";
+    if (props.contactType === "plug") return "The Plug";
+    if (props.contactType === "harold") return "Uncle Harold";
+    if (props.contactType === "sterling") return "Sterling Silver";
+    return "Unknown Contact";
   });
 
   const contactStatus = computed(() => {
-    return props.contactType === "plug" ? "Active now" : "I AM A FREE CITIZEN";
+    if (props.contactType === "plug") return "Active now";
+    if (props.contactType === "harold") return "I AM A FREE CITIZEN";
+    if (props.contactType === "sterling") return "Spreading His Word";
+    return "Unknown";
   });
 
   const contactInitials = computed(() => {
-    return props.contactType === "plug" ? "TP" : "UH";
+    if (props.contactType === "plug") return "TP";
+    if (props.contactType === "harold") return "UH";
+    if (props.contactType === "sterling") return "SS";
+    return "??";
   });
 
   const contactClass = computed(() => {
-    return props.contactType === "plug" ? "plug-avatar" : "harold-avatar";
+    if (props.contactType === "plug") return "plug-avatar";
+    if (props.contactType === "harold") return "harold-avatar";
+    if (props.contactType === "sterling") return "sterling-avatar";
+    return "unknown-avatar";
   });
 
   const contactAvatar = computed(() => {
@@ -269,6 +309,60 @@
     "u no ne1 who nos how 2 code? i need 2 get revenge at the ppl who control my hotmail account",
     "i keep my phone in the freezer so the aliens can't track me",
   ];
+
+  // Sterling Silver chat logic
+  const sterlingClarifyPlayerMessages = ["Tell me more about this arrangement", "What exactly are you proposing?", "What's the deal?"];
+
+  const sterlingClarifyResponses = [
+    "Simple, [playerName]. I set you up with a church, you give me my cut. That's 35% of whatever comes in the collection plate.",
+    "I'll handle the paperwork, you handle the preaching. But I expect my 35% cut, with a minimum of $75 a day - even if the flock is feeling... ungenerous.",
+    "Cross me, and you'll discover that the Lord's wrath is nothing compared to mine. Remember: 35% of donations, minimum $75 daily. Are we clear?",
+  ];
+
+  const sterlingAgreePlayerMessages = ["I agree to your terms", "Let's do this", "I'm ready to partner with you"];
+
+  const sterlingAgreeResponses = [
+    "Excellent, [playerName]. The Lord smiles upon wise decisions.",
+    "Now we're talking! Let's build something that'll make the angels weep... tears of joy, of course.",
+    "You won't regret this. I'll make sure of it.",
+  ];
+
+  const sterlingCheckinPlayerMessages = ["How are we doing?", "Any thoughts on my performance?", "How's our partnership going?"];
+
+  const getsterlingCheckinResponses = (playerName, moneyOwed) => {
+    if (moneyOwed > 0) {
+      return [
+        `You owe me ${moneyOwed.toFixed(2)}, ${playerName}. I trust this is just a temporary oversight.`,
+        `I'm not running a charity here. ${moneyOwed.toFixed(2)} is what you owe me. Pay up.`,
+        `The Lord may forgive, but I expect my ${moneyOwed.toFixed(2)}. Soon.`,
+      ];
+    }
+    return [
+      "You're doing God's work, " + playerName + ". Keep those donations flowing.",
+      "I'm watching, always watching. The Lord sees all, and so do I.",
+      "Our arrangement is working beautifully. Continue the good work.",
+      "The congregation seems happy. Happy people are generous people.",
+    ];
+  };
+
+  const sterlingScripturePlayerMessages = ["I could use some spiritual guidance", "What does the Lord say about our work?", "Share some wisdom with me"];
+
+  const sterlingScriptureResponses = [
+    "The Lord helps those who help themselves... and those who help ME.",
+    "Matthew 6:19 - Store up treasures in heaven... and in offshore accounts.",
+    "Consider the lilies of the field... they neither reap nor sow, yet they know how to delegate.",
+    "Ask, and it shall be given unto you... for a modest processing fee.",
+  ];
+
+  const sterlingBusinessPlayerMessages = ["How's our arrangement working out?", "Any advice for growing the ministry?", "What should I focus on next?"];
+
+  const sterlingBusinessResponses = [
+    "Focus on the flock, [playerName]. The bigger the congregation, the bigger the... blessings.",
+    "Remember, we're building something eternal here. Eternal... and profitable.",
+    "Keep preaching what they want to hear. Happy congregants are generous congregants.",
+    "The Lord works in mysterious ways... and so do I.",
+  ];
+
 
   const adjustAmount = (change) => {
     orderAmount.value = Math.max(0, orderAmount.value + change);
@@ -515,6 +609,79 @@
         });
       }, 2000);
     }, 800);
+  };
+
+  const sendSterlingMessage = (type) => {
+    const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    let playerMessages, sterlingResponses;
+
+    switch (type) {
+      case "clarify":
+        playerMessages = sterlingClarifyPlayerMessages;
+        sterlingResponses = sterlingClarifyResponses;
+        break;
+      case "agree":
+        playerMessages = sterlingAgreePlayerMessages;
+        sterlingResponses = sterlingAgreeResponses;
+        break;
+      case "checkin":
+        playerMessages = sterlingCheckinPlayerMessages;
+        sterlingResponses = getsterlingCheckinResponses(props.playerName || "friend", props.playerMoneyOwedToSterling || 0);
+        break;
+      case "scripture":
+        playerMessages = sterlingScripturePlayerMessages;
+        sterlingResponses = sterlingScriptureResponses;
+        break;
+      case "business":
+        playerMessages = sterlingBusinessPlayerMessages;
+        sterlingResponses = sterlingBusinessResponses;
+        break;
+    }
+
+    const playerMessage = {
+      id: Date.now(),
+      sender: "player",
+      text: playerMessages[Math.floor(Math.random() * playerMessages.length)],
+      time: timestamp,
+    };
+
+    emit("sterling-message", {
+      messages: [playerMessage],
+      action: type,
+    });
+
+    setTimeout(() => {
+      const typingMessage = {
+        id: Date.now(),
+        sender: "sterling",
+        text: "",
+        time: "",
+        isTyping: true,
+      };
+
+      emit("sterling-message", {
+        messages: [typingMessage],
+      });
+
+      setTimeout(() => {
+        const response = {
+          id: Date.now(),
+          sender: "sterling",
+          text: sterlingResponses[Math.floor(Math.random() * sterlingResponses.length)].replace("[playerName]", props.playerName || "friend"),
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          replaceTyping: true,
+        };
+
+        emit("sterling-message", {
+          messages: [response],
+          action: type,
+        });
+      }, 2000);
+    }, 800);
+  };
+
+  const startChurchFounding = () => {
+    emit("church-founding");
   };
 
   const closeInterface = () => {

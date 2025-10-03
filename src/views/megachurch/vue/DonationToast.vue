@@ -1,14 +1,21 @@
 <template>
-  <div class="donation-collected container" :class="{ positive: change > 0, negative: change < 0 }">
-    <template v-if="change">
-      <div class="point-holder" v-if="change">
+  <div class="donation-collected container" :class="{ positive: totalDonations > 0, negative: totalDonations <= 0 }">
+    <template v-if="totalDonations > 0">
+      <div class="point-holder">
         <div class="number">
-          {{ dollars(change) }}
+          {{ dollars(totalDonations) }}
         </div>
       </div>
       <div class="text-holder">
         <div class="text">
-          <div class="religion-label label">in donations collected</div>
+          <div class="religion-label label">total donations collected</div>
+          <div v-if="sterlingCut" class="sterling-cut">
+            Sterling's cut: {{ dollars(sterlingCut) }}<br>
+            Your share: {{ dollars(change) }}
+          </div>
+          <div v-else-if="change !== totalDonations" class="player-share">
+            Your share: {{ dollars(change) }}
+          </div>
         </div>
       </div>
     </template>
@@ -23,10 +30,16 @@
 </template>
 <script setup>
   import { dollars } from "@/shared/js/_functions.js";
+  import { computed } from "vue";
+  
   const props = defineProps({
     change: {
       type: Number,
       required: true,
+    },
+    sterlingCut: {
+      type: Number,
+      required: false,
     },
     religion: {
       type: String,
@@ -40,6 +53,10 @@
       type: Number,
       required: false,
     },
+  });
+
+  const totalDonations = computed(() => {
+    return props.change + (props.sterlingCut || 0);
   });
 </script>
 <style lang="scss">
@@ -74,6 +91,13 @@
       display: flex;
       align-items: center;
       font-weight: 600;
+      
+      .sterling-cut, .player-share {
+        font-size: 0.85em;
+        margin-top: 8px;
+        color: #666;
+        line-height: 1.3;
+      }
     }
   }
 </style>

@@ -22,11 +22,19 @@
 
 ## Random Bits & Bobs
 
+### Clean Codebase
+
+- [ ] Remove `my.followers`
+- [ ] Remove `preachSermon()`
+- [ ] Remove `createStreetSermonEffect();`
+- [ ] Remove `gameSettings.donationCalculation`
+- [ ] Remove `gameSettings.sermonScoring`
+
 ### Penalize repeating sermon topics
 
 - [ ] Penalize a player for using the same sermon topic multiple days in a row.
   - Currently the game warns you when you repeat a topic, but no actual penalty is applied.
-  - [ ] Add a subroutine to both `createStreetPreachingEffect` and `createChurchPreachingEffect` that checks if the topic was used yestereday. If it was, give a diminished effect.
+  - [ ] Add a subroutine to both `createStreetPreachingEffect` and `createChurchSermonEffect` that checks if the topic was used yestereday. If it was, give a diminished effect.
   - [ ] Let the player know about this diminished effect by a toast like...
     - "{religion.followers} are bored of hearing about {tag} again"
     - "{religion.followers} can't believe you're talking about {topic.name} again"

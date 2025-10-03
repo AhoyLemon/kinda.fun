@@ -7,7 +7,7 @@
   import { places } from "./ts/_places";
   import { themes } from "./ts/_sermons";
 
-  import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
+  import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "../../shared/js/_functions.js";
   import { ui, my, gameSettings } from "./ts/_variables";
 
   // Toasts
@@ -16,10 +16,12 @@
   import ListenerToast from "./vue/ListenerToast.vue";
   import DonationToast from "./vue/DonationToast.vue";
   import Chat from "./vue/Chat.vue";
+  import SterlingNote from "./vue/SterlingNote.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
-  // ================= VARIABLES =================
+  // Component references
+  const sterlingNoteRef = ref<{ showNote: () => void } | null>(null);
 
   import type { Theme, Place, WeightedTag, WeightedReligion, MixedTag, MixedReligion, Sermon, Religion, UI, My } from "./ts/_types";
 
@@ -66,9 +68,42 @@
     // Round donations to nearest cent using configured rounding factor
     const roundedDonations = Math.round(totalDonations * gameSettings.donationCalculation.roundingFactor) / gameSettings.donationCalculation.roundingFactor;
     my.donationsYesterday = roundedDonations; // Store for yesterday's effect
-    my.money += roundedDonations; // And give it to you.
 
-    trackMoneyEarned(roundedDonations);
+    // Handle Sterling's cut if player has a church
+    let playerShare = roundedDonations;
+    let sterlingCut = 0;
+
+    if (my.church.isFounded && my.chats.sterling.hasContacted) {
+      // Calculate Sterling's cut
+      const cutPercentage = gameSettings.churchPreaching.sterlingCutPercentage / 100;
+      const minimumCut = gameSettings.churchPreaching.sterlingMinimumCut;
+
+      sterlingCut = Math.max(minimumCut, roundedDonations * cutPercentage);
+      playerShare = roundedDonations - sterlingCut;
+
+      // Ensure player share doesn't go negative
+      if (playerShare < 0) {
+        sterlingCut = roundedDonations;
+        playerShare = 0;
+      }
+
+      // Add Sterling's message about taking his cut
+      if (sterlingCut > 0) {
+        setTimeout(() => {
+          const cutMessage = {
+            id: Date.now(),
+            sender: "sterling",
+            text: `My cut for today: ${dollars(sterlingCut)}. Keep up the good work, ${my.name}.`,
+            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          };
+          my.chats.sterling.chatHistory.push(cutMessage);
+        }, 3000);
+      }
+    }
+
+    my.money += playerShare; // Give the player their share after Sterling's cut
+
+    trackMoneyEarned(playerShare); // Track only the player's actual income
   }
 
   function provideTopicOptions(index: number): typeof themes {
@@ -152,6 +187,48 @@
     } else {
       alert("Place not found.");
     }
+  }
+
+  // Church setup functions
+  function foundChurch() {
+    if (!my.church.name || !ui.churchLocationIndex || !ui.churchReligionIndex) {
+      return;
+    }
+
+    const churchLocation = places.find((p: any) => p.id === ui.churchLocationIndex);
+    const churchReligion = religions.find((r: any) => r.id === ui.churchReligionIndex);
+
+    if (churchLocation && churchReligion) {
+      my.church.isFounded = true;
+      my.church.location = { ...churchLocation };
+      my.church.religion = { ...churchReligion };
+      my.isStreetPreaching = false; // No longer street preaching
+      my.congregation = []; // Initialize empty congregation
+
+      // Reset religious scorecard for church preaching (fresh start)
+      initialiseScoreCard();
+
+      // Send message to Sterling confirming the church
+      const confirmationMessage = {
+        id: Date.now(),
+        sender: "sterling",
+        text: `Excellent choice, ${my.name}. The ${my.church.name} in ${churchLocation.name} will serve us well. Remember our arrangement - I expect my cut every day.`,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+      my.chats.sterling.chatHistory.push(confirmationMessage);
+
+      // Close Sterling chat and go back to game
+      ui.chats.sterling.isOpen = false;
+      ui.view = "sermon";
+
+      // Show success toast
+      toast.success(`${my.church.name} has been established!`);
+    }
+  }
+
+  function cancelChurchSetup() {
+    ui.view = "sermon-results";
+    ui.chats.sterling.isOpen = false;
   }
 
   function showThemeDescription(id: number): string {
@@ -269,6 +346,7 @@
     ui.view = "sermon-confirm";
   }
 
+  // I think/hope this is deprecated
   function preachSermon() {
     // ===== Multipliers and effect variables (easy to tweak) =====
     // Use configured scoring multipliers for sermon effect calculations
@@ -993,117 +1071,416 @@
   function createChurchSermonEffect() {
     ui.view = "preaching";
 
-    const place = my.place as Place;
-    if (!place || !place.religions || !Array.isArray(place.religions)) return;
+    // Check if player has a church, if not fall back to street preaching
+    if (!my.church.isFounded || !my.church.location) {
+      // Fall back to old street preaching logic
+      createStreetPreachingEffect();
+      return;
+    }
+
+    const churchLocation = my.church.location as Place;
+    if (!churchLocation || !churchLocation.religions || !Array.isArray(churchLocation.religions)) return;
 
     // Get spice multiplier for this sermon
     const spiceMultiplier = getSpiceMultiplier();
 
-    // Track follower changes for reporting
+    // Calculate first time attendees
+    let firstTimeAttendees = gameSettings.churchPreaching.expectedFirstTimeAttendees;
+    firstTimeAttendees = Math.round(firstTimeAttendees * (my.preacherStrengths?.gatherCrowd || 1) * spiceMultiplier);
+
+    // Build today's congregation from church location demographics
+    const todaysCongregation: Array<{
+      id: number;
+      count: number;
+      firstTimerCount: number;
+      likes: number;
+      dislikes: number;
+    }> = [];
+
+    // Create congregation based on church location's religious demographics
+    churchLocation.religions.forEach((locationReligion: any) => {
+      const { id, weight } = locationReligion;
+      let attendeeCount = Math.round((firstTimeAttendees * weight) / 100);
+
+      // Apply 2x bonus if this matches the church's affiliated religion
+      if (my.church.religion && my.church.religion.id === id) {
+        attendeeCount = Math.round(attendeeCount * (gameSettings.churchPreaching.religionMatchBonus / 100));
+      }
+
+      if (attendeeCount > 0) {
+        todaysCongregation.push({
+          id,
+          count: attendeeCount,
+          firstTimerCount: attendeeCount, // All are first timers for now
+          likes: 0,
+          dislikes: 0,
+        });
+      }
+    });
+
+    // Calculate likes and dislikes for each religious group
+    todaysCongregation.forEach((group) => {
+      const religion = religions.find((r: any) => r.id === group.id);
+      if (!religion) return;
+
+      // First, get likes and dislikes by religion match
+      if (!my.sermonToday.mixedMessages.religions.find((mr: any) => mr.id === group.id)) {
+        // Check for dislikes by religion
+        const dislikedReligionMatch = my.sermonToday.dislikedBy.religions.find((dr: any) => dr.id === group.id);
+        if (dislikedReligionMatch) {
+          const dislikeChance = gameSettings.churchPreaching.dislikeChance.byReligion / 100;
+          const modifiedChance = dislikeChance * (my.preacherStrengths?.getDislikes || 1) * spiceMultiplier;
+          group.dislikes += Math.round(group.count * modifiedChance);
+        }
+
+        // Check for likes by religion
+        const likedReligionMatch = my.sermonToday.likedBy.religions.find((lr: any) => lr.id === group.id);
+        if (likedReligionMatch) {
+          const likeChance = gameSettings.churchPreaching.likeChance.byReligion / 100;
+          const modifiedChance = likeChance * (my.preacherStrengths?.getLikes || 1) * spiceMultiplier;
+          group.likes += Math.round(group.count * modifiedChance);
+        }
+      }
+
+      // Then, get likes and dislikes by tag match
+      const allSermonTags = [
+        ...my.sermonToday.likedBy.tags.map((tag: any) => ({ ...tag, sermon: "positive" })),
+        ...my.sermonToday.dislikedBy.tags.map((tag: any) => ({ ...tag, sermon: "negative" })),
+      ].filter((tag: any) => !my.sermonToday.mixedMessages.tags.find((mt: any) => mt.tag === tag.tag));
+
+      // Shuffle tags for random checking order
+      const shuffledTags = shuffle([...allSermonTags]);
+
+      shuffledTags.forEach((sermonTag: any) => {
+        let tagScore = 0;
+
+        // Calculate tag score based on religion's preferences
+        if (religion.likes.includes(sermonTag.tag)) {
+          tagScore += sermonTag.sermon === "positive" ? sermonTag.weight : -sermonTag.weight;
+        }
+        if (religion.dislikes.includes(sermonTag.tag)) {
+          tagScore += sermonTag.sermon === "positive" ? -sermonTag.weight : sermonTag.weight;
+        }
+
+        // Apply tag score to likes/dislikes
+        if (tagScore > 0) {
+          const likeChance = (gameSettings.churchPreaching.likeChance.byTag / 100) * (tagScore / 5); // Normalize by max expected weight
+          const modifiedChance = likeChance * (my.preacherStrengths?.getLikes || 1) * spiceMultiplier;
+          group.likes += Math.round(group.count * Math.min(modifiedChance, 0.5)); // Cap at 50%
+        } else if (tagScore < 0) {
+          const dislikeChance = (gameSettings.churchPreaching.dislikeChance.byTag / 100) * (Math.abs(tagScore) / 5);
+          const modifiedChance = dislikeChance * (my.preacherStrengths?.getDislikes || 1) * spiceMultiplier;
+          group.dislikes += Math.round(group.count * Math.min(modifiedChance, 0.5)); // Cap at 50%
+        }
+      });
+
+      // Ensure likes and dislikes don't exceed total count
+      group.likes = Math.min(group.likes, group.count);
+      group.dislikes = Math.min(group.dislikes, group.count);
+    });
+
+    // Update religious scorecard and track changes
     const followerChangesArr: { id: number; name: string; before: number; change: number; after: number }[] = [];
 
-    place.religions.forEach((placeReligion: any) => {
-      const { id, name, weight } = placeReligion;
-      // Find matching religion in yesterday's effect
-      const effect = my.effectYesterday?.find((r: any) => r.id === id);
-      if (!effect) return;
-      // Followers gained/lost for this religion, using sqrt(weight) for non-linear scaling
-      // Apply spice multiplier to follower effectiveness
-      let followersDelta = effect.scoreChange * Math.sqrt(weight) * ((my.preacherStrengths?.getFollowers || 1) * spiceMultiplier);
-      // Always round to nearest integer
-      followersDelta = Math.round(followersDelta);
+    todaysCongregation.forEach((group) => {
+      let scorecardEntry = my.religiousScorecard.find((entry: any) => entry.id === group.id);
+      const oldScore = scorecardEntry?.score || 0;
 
-      // Get before value
-      let followerObj = my.followers.find((f: any) => f.id === id) as { id: number; followers: number } | undefined;
-      const before = followerObj ? followerObj.followers : 0;
-
-      // Update followerCount (on placeReligion)
-      placeReligion.followerCount = Math.round((placeReligion.followerCount || 0) + followersDelta);
-      if (placeReligion.followerCount < 0) placeReligion.followerCount = 0;
-
-      // Update my.followers array
-      if (!followerObj) {
-        followerObj = { id, followers: 0 };
-        my.followers.push(followerObj);
+      if (!scorecardEntry) {
+        const religion = religions.find((r: any) => r.id === group.id);
+        scorecardEntry = { id: group.id, name: religion?.name || `Religion ${group.id}`, score: 0 };
+        my.religiousScorecard.push(scorecardEntry);
       }
-      followerObj.followers = Math.round(followerObj.followers + followersDelta);
-      if (followerObj.followers < 0) followerObj.followers = 0;
 
-      const after = followerObj.followers;
-      const change = after - before;
+      const scoreChange = group.likes - group.dislikes;
+      scorecardEntry.score += scoreChange;
 
-      // Only report if before > 0 or after > 0 and there was a change
-      if (change !== 0 && (before > 0 || after > 0)) {
-        followerChangesArr.push({ id, name: name || String(id), before, change, after });
+      // Track changes for display (accumulate changes for same religion)
+      if (scoreChange !== 0) {
+        const existingChange = followerChangesArr.find((c) => c.id === group.id);
+        if (existingChange) {
+          existingChange.change += scoreChange;
+          existingChange.after += scoreChange;
+        } else {
+          followerChangesArr.push({
+            id: group.id,
+            name: scorecardEntry.name,
+            before: oldScore,
+            change: scoreChange,
+            after: scorecardEntry.score,
+          });
+        }
       }
     });
 
-    // We'll update my.followerCount as each toast is shown
-
-    // Sort and assign to my.followerChanges
+    // Sort by change amount (highest to lowest) and assign
     my.followerChanges = followerChangesArr.sort((a, b) => b.change - a.change);
 
-    // Show toasts for each follower change, 1200ms apart, and last longer
-    const followerToastDuration = ui.toastDuration;
-    const followerToastDelay = 1200;
-    followerChangesArr.forEach((changeObj, i) => {
-      setTimeout(() => {
-        // Apply the follower change for this religion
-        let followerObj = my.followers.find((f: any) => f.id === changeObj.id) as { id: number; followers: number } | undefined;
-        if (followerObj) {
-          // Only apply the delta for this change now
-          followerObj.followers = changeObj.after;
-          // Increment my.followerCount by the change
-          my.followerCount += changeObj.change;
-        }
-        // Show the toast
-        toast(
-          {
-            component: FollowerToast,
-            props: {
-              change: changeObj.change,
-              religion: changeObj.name,
-              before: changeObj.before,
-              after: changeObj.after,
-            },
-          },
-          {
-            position: POSITION.BOTTOM_LEFT,
-            timeout: followerToastDuration,
-          },
-        );
-      }, i * followerToastDelay);
+    // Store congregation data for potential future use
+    my.congregation = todaysCongregation;
+
+    // Create audience reactions for the results display (church preaching version)
+    my.audienceReactions = todaysCongregation.map((group) => {
+      const religion = religions.find((r: any) => r.id === group.id);
+      return {
+        id: group.id,
+        name: religion?.name || `Religion ${group.id}`,
+        liked: group.likes,
+        disliked: group.dislikes,
+        neutral: group.count - group.likes - group.dislikes,
+        followerName: religion?.follower || "follower",
+        followersName: religion?.followers || "followers",
+      };
     });
 
-    // After all toasts, run collectDonations and show money collected
-    setTimeout(
-      () => {
-        // Capture money before collecting
-        const moneyBefore = my.money;
-        collectDonations();
-        const moneyCollected = Math.round((my.money - moneyBefore) * 100) / 100;
-        const donationToastDuration = 9000;
+    // Calculate total donations from people who liked the sermon
+    let totalLikes = 0;
+    let totalDonations = 0;
 
-        toast(
-          {
-            component: DonationToast,
-            props: {
-              change: moneyCollected,
-            },
-          },
-          {
-            position: POSITION.BOTTOM_LEFT,
-            timeout: donationToastDuration,
-          },
-        );
-        // Switch to 'preached' view after donation toast
+    todaysCongregation.forEach((group) => {
+      totalLikes += group.likes;
+
+      // Calculate donations from this group
+      const donationChance = gameSettings.churchPreaching.donation.chance / 100;
+      const donors = Math.round(group.likes * donationChance);
+
+      for (let i = 0; i < donors; i++) {
+        const donation = randomNumber(gameSettings.churchPreaching.donation.min, gameSettings.churchPreaching.donation.max);
+        totalDonations += donation;
+      }
+    });
+
+    // Apply donation strength multiplier
+    totalDonations *= (my.preacherStrengths?.getDonations || 1) * spiceMultiplier;
+    totalDonations = Math.round(totalDonations * 100) / 100; // Round to cents
+
+    // Store donations for collection
+    my.donationsYesterday = totalDonations;
+
+    // Show audience reactions in toasts
+    const reactionToastDuration = ui.toastDuration;
+    const reactionToastDelay = 1400;
+
+    todaysCongregation
+      .filter((group) => group.likes > 0 || group.dislikes > 0)
+      .forEach((group, i) => {
         setTimeout(() => {
-          ui.view = "sermon-results";
-        }, donationToastDuration - ui.timing.churchToastOffset);
-      },
-      followerChangesArr.length * followerToastDelay + 800,
-    );
+          const religion = religions.find((r: any) => r.id === group.id);
+
+          // Show separate toasts for likes and dislikes if both exist
+          if (group.likes > 0) {
+            toast(
+              {
+                component: ListenerToast,
+                props: {
+                  reaction: "liked",
+                  count: group.likes,
+                  religion: religion,
+                  religionMatch: my.church.religion && my.church.religion.id === group.id,
+                  tagMatch: false,
+                  primaryTag: null,
+                },
+              },
+              {
+                position: POSITION.BOTTOM_LEFT,
+                timeout: reactionToastDuration,
+              },
+            );
+          }
+
+          if (group.dislikes > 0) {
+            setTimeout(
+              () => {
+                toast(
+                  {
+                    component: ListenerToast,
+                    props: {
+                      reaction: "disliked",
+                      count: group.dislikes,
+                      religion: religion,
+                      religionMatch: my.church.religion && my.church.religion.id === group.id,
+                      tagMatch: false,
+                      primaryTag: null,
+                    },
+                  },
+                  {
+                    position: POSITION.BOTTOM_LEFT,
+                    timeout: reactionToastDuration,
+                  },
+                );
+              },
+              group.likes > 0 ? 800 : 0,
+            ); // Delay if we showed a like toast first
+          }
+        }, i * reactionToastDelay);
+      });
+
+    // Show donation toast after all reactions
+    const finalDelay = todaysCongregation.length * reactionToastDelay + 2000;
+    setTimeout(() => {
+      // Apply Sterling's cut before showing toast
+      let playerShare = totalDonations;
+      let sterlingCut = 0;
+
+      if (my.chats.sterling.hasContacted) {
+        const cutPercentage = gameSettings.churchPreaching.sterlingCutPercentage / 100;
+        const minimumCut = gameSettings.churchPreaching.sterlingMinimumCut;
+
+        sterlingCut = Math.max(minimumCut, totalDonations * cutPercentage);
+        playerShare = totalDonations - sterlingCut;
+
+        if (playerShare < 0) {
+          sterlingCut = totalDonations;
+          playerShare = 0;
+        }
+
+        // Track Sterling's cut and add to what player owes
+        my.chats.sterling.moneyOwed = (my.chats.sterling.moneyOwed || 0) + sterlingCut;
+
+        // Add payment record to chat history
+        if (sterlingCut > 0) {
+          const paymentMessage = {
+            id: Date.now(),
+            sender: "system",
+            text: `Sterling's cut: ${dollars(sterlingCut)} (${Math.round(cutPercentage * 100)}% of donations)`,
+            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            isPayment: true,
+          };
+          my.chats.sterling.chatHistory.push(paymentMessage);
+        }
+      }
+
+      my.money += playerShare;
+
+      toast(
+        {
+          component: DonationToast,
+          props: {
+            change: playerShare,
+            sterlingCut: sterlingCut > 0 ? sterlingCut : undefined,
+          },
+        },
+        {
+          position: POSITION.BOTTOM_LEFT,
+          timeout: 9000,
+        },
+      );
+
+      // Add Sterling's cut message if applicable
+      if (sterlingCut > 0) {
+        setTimeout(() => {
+          const cutMessage = {
+            id: Date.now(),
+            sender: "sterling",
+            text: `My cut for today: ${dollars(sterlingCut)}. The Lord rewards those who honor their commitments.`,
+            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          };
+          my.chats.sterling.chatHistory.push(cutMessage);
+        }, 3000);
+      }
+
+      // Switch to results view
+      setTimeout(() => {
+        ui.view = "sermon-results";
+      }, ui.timing.resultsViewDelay);
+    }, finalDelay);
   }
+
+  // Fallback street preaching function for when player doesn't have a church
+  // DEPRECATED!? I think so...
+  // function createStreetSermonEffect() {
+  //   // This is the original createChurchSermonEffect logic for street preaching
+  //   const place = my.place as Place;
+  //   if (!place || !place.religions || !Array.isArray(place.religions)) return;
+
+  //   const spiceMultiplier = getSpiceMultiplier();
+  //   const followerChangesArr: { id: number; name: string; before: number; change: number; after: number }[] = [];
+
+  //   place.religions.forEach((placeReligion: any) => {
+  //     const { id, name, weight } = placeReligion;
+  //     const effect = my.effectYesterday?.find((r: any) => r.id === id);
+  //     if (!effect) return;
+
+  //     let followersDelta = effect.scoreChange * Math.sqrt(weight) * ((my.preacherStrengths?.getFollowers || 1) * spiceMultiplier);
+  //     followersDelta = Math.round(followersDelta);
+
+  //     let followerObj = my.followers.find((f: any) => f.id === id) as { id: number; followers: number } | undefined;
+  //     const before = followerObj ? followerObj.followers : 0;
+
+  //     placeReligion.followerCount = Math.round((placeReligion.followerCount || 0) + followersDelta);
+  //     if (placeReligion.followerCount < 0) placeReligion.followerCount = 0;
+
+  //     if (!followerObj) {
+  //       followerObj = { id, followers: 0 };
+  //       my.followers.push(followerObj);
+  //     }
+  //     followerObj.followers = Math.round(followerObj.followers + followersDelta);
+  //     if (followerObj.followers < 0) followerObj.followers = 0;
+
+  //     const after = followerObj.followers;
+  //     const change = after - before;
+
+  //     if (change !== 0 && (before > 0 || after > 0)) {
+  //       followerChangesArr.push({ id, name: name || String(id), before, change, after });
+  //     }
+  //   });
+
+  //   my.followerChanges = followerChangesArr.sort((a, b) => b.change - a.change);
+
+  //   const followerToastDuration = ui.toastDuration;
+  //   const followerToastDelay = 1200;
+  //   followerChangesArr.forEach((changeObj, i) => {
+  //     setTimeout(() => {
+  //       let followerObj = my.followers.find((f: any) => f.id === changeObj.id) as { id: number; followers: number } | undefined;
+  //       if (followerObj) {
+  //         followerObj.followers = changeObj.after;
+  //         my.followerCount += changeObj.change;
+  //       }
+
+  //       toast(
+  //         {
+  //           component: FollowerToast,
+  //           props: {
+  //             change: changeObj.change,
+  //             religion: changeObj.name,
+  //             before: changeObj.before,
+  //             after: changeObj.after,
+  //           },
+  //         },
+  //         {
+  //           position: POSITION.BOTTOM_LEFT,
+  //           timeout: followerToastDuration,
+  //         },
+  //       );
+  //     }, i * followerToastDelay);
+  //   });
+
+  //   setTimeout(
+  //     () => {
+  //       const moneyBefore = my.money;
+  //       collectDonations();
+  //       const moneyCollected = Math.round((my.money - moneyBefore) * 100) / 100;
+
+  //       toast(
+  //         {
+  //           component: DonationToast,
+  //           props: {
+  //             change: moneyCollected,
+  //           },
+  //         },
+  //         {
+  //           position: POSITION.BOTTOM_LEFT,
+  //           timeout: 9000,
+  //         },
+  //       );
+
+  //       setTimeout(() => {
+  //         ui.view = "sermon-results";
+  //       }, 9000 - ui.timing.churchToastOffset);
+  //     },
+  //     followerChangesArr.length * followerToastDelay + 800,
+  //   );
+  // }
 
   // ================= SPICE MECHANICS =================
   function getSpiceMultiplier() {
@@ -1207,15 +1584,65 @@
       my.hasVan = true;
     }
   }
+
+  // Sterling Chat Functions
+  function openSterlingInterface() {
+    ui.chats.sterling.isOpen = true;
+  }
+
+  function closeSterlingInterface() {
+    ui.chats.sterling.isOpen = false;
+  }
+
+  function handleSterlingMessage(data: any) {
+    if (data.messages && Array.isArray(data.messages)) {
+      data.messages.forEach((message: any) => {
+        // Replace typing indicator if specified
+        if (message.replaceTyping) {
+          const typingMessage = my.chats.sterling.chatHistory.find((m) => m.isTyping && m.sender === "sterling");
+          if (typingMessage) {
+            typingMessage.text = message.text;
+            typingMessage.time = message.time;
+            typingMessage.isTyping = false;
+          }
+        } else {
+          // Add new message normally
+          my.chats.sterling.chatHistory.push(message);
+        }
+      });
+    }
+
+    // Handle special actions - no longer needed for agreement flow
+  }
+
+  function handleChurchFounding() {
+    // Close Sterling chat and show church setup UI
+    ui.chats.sterling.isOpen = false;
+    ui.view = "church-setup";
+  }
+
   function trackMoneyEarned(amount: number) {
     my.totalMoneyEarned += amount;
 
     // Check if player qualifies for van but hasn't been contacted yet
-    if (!my.chats.harold.hasContacted && my.daysPlayed >= gameSettings.van.daysToUnlock) {
+    if (!my.chats.harold.hasContacted && my.daysPlayed >= gameSettings.triggers.harold.days) {
       my.canBuyVan = true;
       setTimeout(() => {
         triggerHaroldContact();
       }, 4000);
+    }
+
+    // Check if player qualifies for Sterling contact (church phase)
+    // Trigger when player has van, some experience, and sufficient money/followers
+    if (
+      !my.chats.sterling.hasContacted &&
+      my.hasVan &&
+      my.daysPlayed >= gameSettings.triggers.sterling.days &&
+      my.totalMoneyEarned >= gameSettings.triggers.sterling.totalEarnings
+    ) {
+      setTimeout(() => {
+        triggerSterlingContact();
+      }, 6000);
     }
   }
   function triggerHaroldContact() {
@@ -1287,6 +1714,34 @@
     setTimeout(sendNextMessage, 2500);
   }
 
+  function triggerSterlingContact() {
+    my.chats.sterling.hasContacted = true;
+
+    // Show toast that player found a note
+    toast(
+      {
+        component: h("div", { class: "sterling-note-toast" }, [h("strong", "You found a note on your van"), h("br"), h("span", "A handwritten message...")]),
+      },
+      {
+        position: POSITION.BOTTOM_RIGHT,
+        timeout: 3000,
+        onClose: () => {
+          // Show the actual note after toast disappears
+          setTimeout(() => {
+            if (sterlingNoteRef.value) {
+              sterlingNoteRef.value.showNote();
+            }
+          }, 500);
+        },
+      },
+    );
+  }
+
+  function onSterlingNoteRead() {
+    // After reading the note, Sterling becomes available for texting
+    // No initial chat messages - player must initiate contact
+  }
+
   function handlePlugOrder(orderData) {
     if (orderData.messages) {
       // Add messages to chat history
@@ -1347,6 +1802,8 @@
     }
   }
   function advanceToNextDay() {
+    my.daysPlayed += 1;
+
     // Spice wears off at the end of the day
     my.spice.consumedToday = 0;
 
@@ -1434,6 +1891,14 @@
 
   // ================= COMPUTEDS =================
   const computedTopReligions = computed(() => {
+    // For church preaching, use religious scorecard
+    if (!my.isStreetPreaching && my.religiousScorecard && Array.isArray(my.religiousScorecard) && my.religiousScorecard.length > 0) {
+      const sorted = my.religiousScorecard.filter((r: any) => r.score > 0).sort((a: any, b: any) => (b.score || 0) - (a.score || 0));
+      if (sorted.length === 0) return null;
+      return sorted;
+    }
+
+    // For street preaching, use followers
     if (!my.followers || !Array.isArray(my.followers) || my.followers.length === 0) return null;
     const sorted = my.followers.map((f) => f as { id: number; followers: number }).sort((a, b) => (b.followers || 0) - (a.followers || 0));
     if (sorted.length === 0 || (sorted[0].followers || 0) === 0) return null;

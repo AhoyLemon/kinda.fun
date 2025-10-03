@@ -114,10 +114,13 @@ export interface UI {
     | "sermon"
     | "sermon-confirm"
     | "preaching"
-    | "sermon-results";
+    | "sermon-results"
+    | "church-setup";
   selectedTopics: [number | null, number | null, number | null];
   religionIndex: number;
   placeIndex: number;
+  churchLocationIndex: number;
+  churchReligionIndex: number;
   toastDuration: number;
   timing: {
     toastDelayMin: number;
@@ -131,6 +134,9 @@ export interface UI {
       isOpen: boolean;
     };
     harold: {
+      isOpen: boolean;
+    };
+    sterling: {
       isOpen: boolean;
     };
   };
@@ -200,10 +206,30 @@ export interface My {
     followersName?: string;
   }>;
   donationsYesterday: number;
+  // Church-related properties
+  church: {
+    isFounded: boolean;
+    name?: string;
+    location?: Place;
+    religion?: Religion;
+    buzz: number;
+  };
+  congregation?: Array<{
+    id: number;
+    count: number;
+    firstTimerCount: number;
+    likes: number;
+    dislikes: number;
+  }>;
   spice: Spice;
   chats: {
     plug: ChatHistory;
     harold: ChatHistory;
+    sterling?: ChatHistory & {
+      hasAgreedToArrangement?: boolean;
+      moneyOwed?: number;
+      totalPayments?: number;
+    };
   };
 }
 
@@ -392,6 +418,15 @@ export interface GameSettings {
     enthusiasmMax: number;
     enthusiasmDivisor: number;
   };
+  triggers: {
+    sterling: {
+      days: number;
+      totalEarnings: number;
+    };
+    harold: {
+      days: number;
+    };
+  };
   streetPreaching: {
     baseCrowdSize: number;
     dislikeChance: {
@@ -419,9 +454,31 @@ export interface GameSettings {
     maxPenalty: number;
   };
   van: {
-    daysToUnlock: number;
     cost: number;
     fixedGasPrice: number;
     gasPricePerMile: number;
+  };
+  churchPreaching: {
+    expectedFirstTimeAttendees: number;
+    religionMatchBonus: number;
+    dislikeChance: {
+      byReligion: number;
+      byTag: number;
+    };
+    likeChance: {
+      byReligion: number;
+      byTag: number;
+    };
+    donation: {
+      chance: number;
+      min: number;
+      max: number;
+    };
+    donationPerAttendee: {
+      min: number;
+      max: number;
+    };
+    sterlingCutPercentage: number;
+    sterlingMinimumCut: number;
   };
 }

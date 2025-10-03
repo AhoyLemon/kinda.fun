@@ -14,6 +14,8 @@
 
     include pug/_sermon-results.pug
 
+    include pug/_church-setup.pug
+
   include pug/_your-details.pug
 
   // Spice dealer chat interface
@@ -42,4 +44,23 @@
     @close="closeHaroldInterface"
     @van-purchase="buyVan"
     @harold-message="handleHaroldMessage"
-  )  
+  )
+
+  Chat(
+    :isOpen="ui.chats.sterling.isOpen"
+    contactType="sterling"
+    :playerName="my.name"
+    :playerMoney="my.money"
+    :playerHasChurch="my.church.isFounded"
+    :playerMoneyOwedToSterling="my.chats.sterling.moneyOwed"
+    :chatHistory="my.chats.sterling.chatHistory"
+    @close="closeSterlingInterface"
+    @sterling-message="handleSterlingMessage"
+    @church-founding="handleChurchFounding"
+  )
+
+  SterlingNote(
+    ref="sterlingNoteRef"
+    :playerName="my.name"
+    @noteRead="onSterlingNoteRead"
+  )

@@ -1,5 +1,5 @@
-import { reactive, ref } from "vue";
-import { GameSettings, My, UI, Sermon, Spice } from "./_types";
+import { reactive } from "vue";
+import { GameSettings, My, UI } from "./_types";
 
 export const gameSettings = reactive<GameSettings>({
   baseDonation: 0.25, // Base donation per follower
@@ -32,6 +32,15 @@ export const gameSettings = reactive<GameSettings>({
     enthusiasmMax: 2.0, // Maximum enthusiasm multiplier
     enthusiasmDivisor: 10, // Divides net score for enthusiasm calculation
   },
+  triggers: {
+    sterling: {
+      days: 0, // Minimum days for Sterling to contact you
+      totalEarnings: 0, // Minimum total earnings for Sterling to contact you
+    },
+    harold: {
+      days: 1, // Minimum play days for Harold to contact you
+    },
+  },
   streetPreaching: {
     // ===== MAJOR TWEAKS =====
     baseCrowdSize: 40, // Base crowd size that shows up to listen
@@ -63,10 +72,32 @@ export const gameSettings = reactive<GameSettings>({
     maxPenalty: 0.8, // Maximum penalty cap (80% reduction)
   },
   van: {
-    daysToUnlock: 2, // Days requird to unlock the van
     cost: 200, // Price to buy the van from Uncle Harold
     fixedGasPrice: 1, // Fixed cost for any travel
     gasPricePerMile: 0.1, // Per-mile gas cost (not used yet)
+  },
+  churchPreaching: {
+    expectedFirstTimeAttendees: 50, // How many first time attendees show up at a new church
+    religionMatchBonus: 200, // Percent bonus to both like and dislike checks if the church's religion matches the attendee's religion
+    dislikeChance: {
+      byReligion: 30,
+      byTag: 30,
+    },
+    likeChance: {
+      byReligion: 45,
+      byTag: 35,
+    },
+    donation: {
+      chance: 80, // % chance that someone who likes your sermon donates
+      min: 2, // Minimum $ per donation
+      max: 10, // Maximum $ per donation
+    },
+    donationPerAttendee: {
+      min: 5, // Minimum donation per attendee
+      max: 20, // Maximum donation per attendee
+    },
+    sterlingCutPercentage: 35, // Sterling's cut of daily donations
+    sterlingMinimumCut: 20, // Minimum amount (in dollars) Sterling takes
   },
 });
 
@@ -75,6 +106,8 @@ export const ui = reactive<UI>({
   selectedTopics: [null, null, null],
   religionIndex: 0,
   placeIndex: 0,
+  churchLocationIndex: 0,
+  churchReligionIndex: 0,
   toastDuration: 7000, // Default toast duration in ms
   timing: {
     toastDelayMin: 1600, // Minimum delay between audience reaction toasts (ms)
@@ -88,6 +121,9 @@ export const ui = reactive<UI>({
       isOpen: false,
     },
     harold: {
+      isOpen: false,
+    },
+    sterling: {
       isOpen: false,
     },
   },
@@ -113,7 +149,7 @@ export const my = reactive<My>({
   followerCount: 0,
   followers: [],
   isStreetPreaching: true, // Start as street preacher
-  hasVan: false, // Can't travel yet
+  hasVan: true, // Can't travel yet
   canBuyVan: false, // Whether van purchase option is available
   hasTraveledToday: false, // Track if player has traveled today
   inventory: [], // For future upgrades
@@ -153,6 +189,15 @@ export const my = reactive<My>({
   followerChanges: [],
   audienceReactions: [],
   donationsYesterday: 0,
+  // Church-related properties
+  church: {
+    isFounded: false,
+    name: undefined,
+    location: undefined,
+    religion: undefined,
+    buzz: 0,
+  },
+  congregation: [],
   spice: {
     isAddicted: true,
     requiredAmount: 2, // Start with needing 2 units per day
@@ -170,6 +215,12 @@ export const my = reactive<My>({
     harold: {
       hasContacted: false, // Whether Harold has made initial contact
       chatHistory: [], // Chat message history with Uncle Harold
+    },
+    sterling: {
+      hasContacted: false, // Whether Sterling has made initial contact
+      moneyOwed: 0, // Money currently owed to Sterling
+      totalPayments: 0, // Total money paid to Sterling
+      chatHistory: [], // Chat message history with Sterling Silver
     },
   },
 });

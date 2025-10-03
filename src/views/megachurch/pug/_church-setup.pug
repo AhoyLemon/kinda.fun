@@ -1,0 +1,77 @@
+section.choose.church-setup(v-if="ui.view === 'church-setup'")
+  form(@submit.prevent="foundChurch()")
+    
+    legend Time to Found Your Church
+    p Sterling Silver has offered to help you establish your own church. Choose wisely - this will determine your congregation and your success.
+
+    fieldset
+      label.required Church Name
+      input(type="text" v-model="my.church.name" placeholder="Enter your church's name..." required)
+
+    fieldset
+      label.required Church Location
+      Multiselect(
+        v-model="ui.churchLocationIndex"
+        :options="availablePlaces"
+        :searchable="true"
+        :required="true"
+        value-prop="id"
+        track-by="name"
+        label="name" 
+        mode="single"
+      )
+
+    .details.place-details(v-if="ui.churchLocationIndex")
+      .name {{getPlace(ui.churchLocationIndex).name}}
+      .description {{getPlace(ui.churchLocationIndex).description}}
+      
+      dl.population
+        dt Population
+        dd.big-number {{addCommas(getPlace(ui.churchLocationIndex).totalPopulation)}}
+
+      dl.net-worth
+        dt Avg Net Worth
+        dd.big-number {{dollars(getPlace(ui.churchLocationIndex).avgNetWorth)}}
+
+      dl.religions
+        dt Top Religions
+        dd
+          ol
+            li(v-for="religion in getPlace(ui.churchLocationIndex).religions.slice(0, 3)") {{religion.name}}
+
+    fieldset
+      label.required Church Religious Affiliation
+      Multiselect(
+        v-model="ui.churchReligionIndex"
+        :options="religions"
+        :searchable="true"
+        :required="true"
+        value-prop="id"
+        track-by="name"
+        label="name"
+        mode="single"
+      )
+
+    .details.religion-details(v-if="ui.churchReligionIndex")
+      .name {{getReligion(ui.churchReligionIndex).name}}
+      .description {{getReligion(ui.churchReligionIndex).description}}
+      dl
+        dt Likes
+        dd 
+          ul
+            li(v-for="like in getReligion(ui.churchReligionIndex).likes.slice(0, 5)") {{like}}
+      dl
+        dt Dislikes
+        dd 
+          ul
+            li(v-for="dislike in getReligion(ui.churchReligionIndex).dislikes.slice(0, 5)") {{dislike}}
+
+    .sterling-details(v-if="ui.churchLocationIndex && ui.churchReligionIndex")
+      h3 Partnership Terms
+      p Sterling Silver will take <strong>{{gameSettings.churchPreaching.sterlingCutPercentage}}%</strong> of your daily donations.
+      p Minimum daily payment: <strong>{{dollars(gameSettings.churchPreaching.sterlingMinimumCut)}}</strong>
+      p <em>"Trust me, {{my.name}}, this arrangement benefits us both."</em>
+
+    .button-holder
+      button(type="submit" :disabled="!my.church.name || !ui.churchLocationIndex || !ui.churchReligionIndex") Establish Church
+      button.secondary(type="button" @click="cancelChurchSetup()") Maybe Later

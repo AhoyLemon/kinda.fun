@@ -63,6 +63,7 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
       button.reset(v-if="gameSettings.isDebug" @click="collectDonations()") GET PAID 🤑
       button.plug(@click="openPlugInterface()") Text Your Plug
       button.harold(v-if="my.chats.harold.hasContacted || my.hasVan" @click="openHaroldInterface()") Text Uncle Harold
+      button.sterling(v-if="my.chats.sterling.hasContacted" @click="openSterlingInterface()") Text Sterling Silver
       button.submit(@click="advanceToNextDay()") Next Day.
 
     
