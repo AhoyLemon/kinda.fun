@@ -38,6 +38,7 @@ export default defineConfig(({ mode }) => {
       "process.env.APP_ENV": JSON.stringify(env.APP_ENV),
     },
     css: {
+      devSourcemap: true,
       preprocessorOptions: {
         scss: {
           quietDeps: true,

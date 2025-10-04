@@ -17,6 +17,7 @@ aside.your-details
     .value
       div {{my.church.name}}
       small(v-if="my.church.location?.name") {{my.church.location.name}}
+      |  
       small(v-if="my.church.religion?.name") ({{my.church.religion.name}})
 
   
@@ -47,15 +48,6 @@ aside.your-details
       ol.topics
         li(v-for="topic in my.sermonToday.topics") {{topic.title}}
 
-  .box(v-if="my.followerCount")
-    .label Followers
-    .value {{my.followerCount}}
-  
-  .box.top-religions(v-if="computedTopReligions")
-    .label Top Religions
-    .value
-      ol 
-        li(v-for="religion in computedTopReligions.slice(0, 3)") {{religion.name}}
   
 
   .box(v-if="gameSettings.isDebugButtonVisible")

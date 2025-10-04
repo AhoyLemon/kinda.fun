@@ -40,7 +40,7 @@
       <div v-if="contactType === 'plug'">
         <div class="casual-chat">
           <div class="casual-section">
-            <button class="casual-chat-btn" @click="sendCasualMessage">Casual Chat</button>
+            <button class="casual-chat-btn" @click="sendMessage('plug', 'casual')">Casual Chat</button>
           </div>
         </div>
 
@@ -86,9 +86,9 @@
 
             <!-- General conversation options -->
             <div class="conversation-options">
-              <button v-if="!playerHasVan" class="harold-chat-btn" @click="sendHaroldMessage('haggle')">Haggle</button>
-              <button v-if="!playerHasVan" class="harold-chat-btn" @click="sendHaroldMessage('van')">A Van?</button>
-              <button class="harold-chat-btn" @click="sendHaroldMessage('chat')">Chat</button>
+              <button v-if="!playerHasVan" class="harold-chat-btn" @click="sendMessage('harold', 'haggle')">Haggle</button>
+              <button v-if="!playerHasVan" class="harold-chat-btn" @click="sendMessage('harold', 'van')">A Van?</button>
+              <button class="harold-chat-btn" @click="sendMessage('harold', 'chat')">Chat</button>
             </div>
           </div>
         </div>
@@ -99,11 +99,11 @@
       <template v-if="contactType === 'sterling'">
         <div class="casual-chat">
           <div class="casual-section">
-            <button v-if="!playerHasChurch" class="casual-chat-btn" @click="sendSterlingMessage('clarify')">Clarify Arrangement</button>
-            <button v-if="!playerHasChurch" class="casual-chat-btn" @click="sendSterlingMessage('prison')">Prison?</button>
-            <button v-if="playerHasChurch" class="casual-chat-btn" @click="sendSterlingMessage('scripture')">Quote Scripture</button>
-            <button v-if="playerHasChurch" class="casual-chat-btn" @click="sendSterlingMessage('business')">Discuss Business</button>
-            <button v-if="playerHasChurch" class="casual-chat-btn" @click="sendSterlingMessage('checkin')">Check In</button>
+            <button v-if="!playerHasChurch" class="casual-chat-btn" @click="sendMessage('sterling', 'clarify')">Clarify Arrangement</button>
+            <button v-if="!playerHasChurch" class="casual-chat-btn" @click="sendMessage('sterling', 'prison')">Prison?</button>
+            <button v-if="playerHasChurch" class="casual-chat-btn" @click="sendMessage('sterling', 'scripture')">Quote Scripture</button>
+            <button v-if="playerHasChurch" class="casual-chat-btn" @click="sendMessage('sterling', 'business')">Discuss Business</button>
+            <button v-if="playerHasChurch" class="casual-chat-btn" @click="sendMessage('sterling', 'checkin')">Check In</button>
           </div>
         </div>
         <div class="order-interface" v-if="!playerHasChurch">
@@ -128,6 +128,7 @@
   import { ref, computed, watch, nextTick } from "vue";
   import { gameSettings } from "../ts/_variables";
   import { dollars } from "@/shared/js/_functions.js";
+  import { chatMessages, getRandomMessage, getRandomSlang } from "../ts/_chatMessages";
 
   const props = defineProps({
     isOpen: Boolean,
@@ -232,22 +233,6 @@
       }, 600);
     }
   });
-
-  // Plug chat logic
-  const drugSlang = [
-    { singular: "shoelace", plural: "shoelaces" },
-    { singular: "hot dog", plural: "hot dogs" },
-    { singular: "item", plural: "items" },
-    { singular: "bag of dog food", plural: "bags of dog food" },
-    { singular: "gummy bear", plural: "gummy bears" },
-    { singular: "reason to stay", plural: "reasons to stay" },
-    { singular: "lemon", plural: "lemons" },
-  ];
-
-  const getRandomSlang = (amount) => {
-    const slangItem = drugSlang[Math.floor(Math.random() * drugSlang.length)];
-    return amount === 1 ? slangItem.singular : slangItem.plural;
-  };
 
   const plugResponses = ["I gotchu", "👍", "Alright", "Yeah yeah I'll get to it", "Say less", "Bet", "On it", "Done", "Easy", "No problem", "Got you covered"];
   const getRandomResponse = () => plugResponses[Math.floor(Math.random() * plugResponses.length)];
@@ -380,6 +365,101 @@
     orderAmount.value = Math.max(0, orderAmount.value + change);
   };
 
+  // Generic message sending function
+  const sendMessage = (person, messageType) => {
+    const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    let playerMessages;
+    let responses;
+
+    // Get messages based on person and type
+    switch (person) {
+      case "plug":
+        if (messageType === "casual") {
+          playerMessages = chatMessages.plug.casual.to;
+          responses = chatMessages.plug.casual.from;
+        } else {
+          return; // Invalid message type for plug
+        }
+        break;
+      case "harold":
+        const haroldSection = chatMessages.harold[messageType];
+        if (haroldSection && "to" in haroldSection && "from" in haroldSection) {
+          playerMessages = haroldSection.to;
+          responses = haroldSection.from;
+        } else {
+          return; // Invalid message type for harold
+        }
+        break;
+      case "sterling":
+        if (messageType === "checkin") {
+          playerMessages = chatMessages.sterling.checkin.to;
+          const hasDebt = (props.playerMoneyOwedToSterling || 0) > 0;
+          if (hasDebt) {
+            responses = chatMessages.sterling.checkin.from.withDebt(props.playerName || "friend", props.playerMoneyOwedToSterling || 0);
+          } else {
+            responses = chatMessages.sterling.checkin.from.noDebt(props.playerName || "friend");
+          }
+        } else {
+          const sterlingSection = chatMessages.sterling[messageType];
+          if (sterlingSection && "to" in sterlingSection && "from" in sterlingSection) {
+            playerMessages = sterlingSection.to;
+            responses = sterlingSection.from.map((msg) => msg.replace("[playerName]", props.playerName || "friend"));
+          } else {
+            return; // Invalid message type for sterling
+          }
+        }
+        break;
+      default:
+        return; // Invalid person
+    }
+
+    // Send player message
+    const playerMessage = {
+      id: Date.now(),
+      sender: "player",
+      text: getRandomMessage(playerMessages),
+      time: timestamp,
+    };
+
+    // Emit the message based on person type
+    const eventName = person === "plug" ? "order" : `${person}-message`;
+    emit(eventName, {
+      messages: [playerMessage],
+      action: messageType,
+    });
+
+    // Show typing indicator and response
+    setTimeout(() => {
+      const typingMessage = {
+        id: Date.now(),
+        sender: person,
+        text: "",
+        time: "",
+        isTyping: true,
+      };
+
+      emit(eventName, {
+        messages: [typingMessage],
+      });
+
+      setTimeout(() => {
+        const response = {
+          id: Date.now(),
+          sender: person,
+          text: getRandomMessage(responses),
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          replaceTyping: true,
+        };
+
+        emit(eventName, {
+          messages: [response],
+          action: messageType,
+        });
+      }, 2000);
+    }, 800);
+  };
+
   const sendOrder = async () => {
     if (orderAmount.value === 0 || !canAfford.value) return;
 
@@ -434,11 +514,10 @@
           const response = {
             id: Date.now(),
             sender: "plug",
-            text: getRandomResponse(),
+            text: getRandomMessage(chatMessages.plug.order.from),
             time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
             replaceTyping: true,
           };
-
           emit("order", {
             amount: 0,
             cost: 0,
@@ -449,55 +528,6 @@
     }, 500);
 
     orderSent.value = true;
-  };
-
-  const sendCasualMessage = () => {
-    const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-    const playerMessage = {
-      id: Date.now(),
-      sender: "player",
-      text: casualPlayerMessages[Math.floor(Math.random() * casualPlayerMessages.length)],
-      time: timestamp,
-    };
-
-    emit("order", {
-      amount: 0,
-      cost: 0,
-      messages: [playerMessage],
-    });
-
-    setTimeout(() => {
-      const typingMessage = {
-        id: Date.now(),
-        sender: "plug",
-        text: "",
-        time: "",
-        isTyping: true,
-      };
-
-      emit("order", {
-        amount: 0,
-        cost: 0,
-        messages: [typingMessage],
-      });
-
-      setTimeout(() => {
-        const response = {
-          id: Date.now(),
-          sender: "plug",
-          text: casualPlugResponses[Math.floor(Math.random() * casualPlugResponses.length)],
-          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          replaceTyping: true,
-        };
-
-        emit("order", {
-          amount: 0,
-          cost: 0,
-          messages: [response],
-        });
-      }, 2000);
-    }, 800);
   };
 
   const buyVan = () => {
@@ -564,132 +594,9 @@
     }, 600);
   };
 
-  const sendHaroldMessage = (type) => {
-    const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    let playerMessages, haroldResponses;
-
-    switch (type) {
-      case "haggle":
-        playerMessages = haroldHagglePlayerMessages;
-        haroldResponses = haroldHaggleResponses;
-        break;
-      case "van":
-        playerMessages = haroldVanPlayerMessages;
-        haroldResponses = haroldVanResponses;
-        break;
-      case "chat":
-        playerMessages = haroldChatPlayerMessages;
-        haroldResponses = haroldChatResponses;
-        break;
-    }
-
-    const playerMessage = {
-      id: Date.now(),
-      sender: "player",
-      text: playerMessages[Math.floor(Math.random() * playerMessages.length)],
-      time: timestamp,
-    };
-
-    emit("harold-message", {
-      messages: [playerMessage],
-    });
-
-    setTimeout(() => {
-      const typingMessage = {
-        id: Date.now(),
-        sender: "harold",
-        text: "",
-        time: "",
-        isTyping: true,
-      };
-
-      emit("harold-message", {
-        messages: [typingMessage],
-      });
-
-      setTimeout(() => {
-        const response = {
-          id: Date.now(),
-          sender: "harold",
-          text: haroldResponses[Math.floor(Math.random() * haroldResponses.length)],
-          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          replaceTyping: true,
-        };
-
-        emit("harold-message", {
-          messages: [response],
-        });
-      }, 2000);
-    }, 800);
-  };
-
   const sendSterlingMessage = (type) => {
-    const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    let playerMessages, sterlingResponses;
-
-    switch (type) {
-      case "clarify":
-        playerMessages = sterlingClarifyPlayerMessages;
-        sterlingResponses = sterlingClarifyResponses;
-        break;
-      case "agree":
-        playerMessages = sterlingAgreePlayerMessages;
-        sterlingResponses = sterlingAgreeResponses;
-        break;
-      case "checkin":
-        playerMessages = sterlingCheckinPlayerMessages;
-        sterlingResponses = getsterlingCheckinResponses(props.playerName || "friend", props.playerMoneyOwedToSterling || 0);
-        break;
-      case "scripture":
-        playerMessages = sterlingScripturePlayerMessages;
-        sterlingResponses = sterlingScriptureResponses;
-        break;
-      case "business":
-        playerMessages = sterlingBusinessPlayerMessages;
-        sterlingResponses = sterlingBusinessResponses;
-        break;
-    }
-
-    const playerMessage = {
-      id: Date.now(),
-      sender: "player",
-      text: playerMessages[Math.floor(Math.random() * playerMessages.length)],
-      time: timestamp,
-    };
-
-    emit("sterling-message", {
-      messages: [playerMessage],
-      action: type,
-    });
-
-    setTimeout(() => {
-      const typingMessage = {
-        id: Date.now(),
-        sender: "sterling",
-        text: "",
-        time: "",
-        isTyping: true,
-      };
-
-      emit("sterling-message", {
-        messages: [typingMessage],
-      });
-
-      setTimeout(() => {
-        const response = {
-          id: Date.now(),
-          sender: "sterling",
-          text: sterlingResponses[Math.floor(Math.random() * sterlingResponses.length)].replace("[playerName]", props.playerName || "friend"),
-          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          replaceTyping: true,
-        };
-
-        emit("sterling-message", {
-          messages: [response],
-          action: type,
-        });
-      }, 2000);
-    }, 800);
+    // Deprecated: Use sendMessage('sterling', type) instead
+    sendMessage("sterling", type);
   };
 
   const startChurchFounding = () => {

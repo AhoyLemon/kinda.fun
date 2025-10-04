@@ -94,17 +94,17 @@ export const chatMessages: ChatMessages = {
     },
     order: {
       from: [
-        "I gotchu", 
-        "👍", 
-        "Alright", 
-        "Yeah yeah I'll get to it", 
-        "Say less", 
-        "Bet", 
-        "On it", 
-        "Done", 
-        "Easy", 
-        "No problem", 
-        "Got you covered"
+        "I gotchu",
+        "👍",
+        "Alright",
+        "Yeah yeah I'll get to it",
+        "Say less",
+        "Bet",
+        "On it",
+        "Done",
+        "Easy",
+        "No problem",
+        "Got you covered",
       ],
     },
   },
@@ -118,7 +118,7 @@ export const chatMessages: ChatMessages = {
       from: [
         "u think the govmnt gives me a discount???",
         "i need that money for my plans",
-        "this van aint 1 of THOSE vans"
+        "this van aint 1 of THOSE vans",
       ],
     },
     van: {

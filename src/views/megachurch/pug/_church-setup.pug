@@ -3,68 +3,86 @@ section.choose.church-setup(v-if="ui.view === 'church-setup'")
     
     legend Time to Found Your Church
     p Sterling Silver has offered to help you establish your own church. Choose wisely - this will determine your congregation and your success.
-
     fieldset
       label.required Church Name
-      input(type="text" v-model="my.church.name" placeholder="Enter your church's name..." required)
+      input(type="text" v-model="my.church.name" placeholder="The Silverdome" required)
 
-    fieldset
-      label.required Church Location
-      Multiselect(
-        v-model="ui.churchLocationIndex"
-        :options="availablePlaces"
-        :searchable="true"
-        :required="true"
-        value-prop="id"
-        track-by="name"
-        label="name" 
-        mode="single"
-      )
 
-    .details.place-details(v-if="ui.churchLocationIndex")
-      .name {{getPlace(ui.churchLocationIndex).name}}
-      .description {{getPlace(ui.churchLocationIndex).description}}
-      
-      dl.population
-        dt Population
-        dd.big-number {{addCommas(getPlace(ui.churchLocationIndex).totalPopulation)}}
+  
+    .location-and-religion
 
-      dl.net-worth
-        dt Avg Net Worth
-        dd.big-number {{dollars(getPlace(ui.churchLocationIndex).avgNetWorth)}}
+      .location
 
-      dl.religions
-        dt Top Religions
-        dd
-          ol
-            li(v-for="religion in getPlace(ui.churchLocationIndex).religions.slice(0, 3)") {{religion.name}}
+        fieldset
+          label.required Church Location
+          Multiselect(
+            v-model="ui.churchLocationIndex"
+            :options="availablePlaces"
+            :searchable="true"
+            :required="true"
+            value-prop="id"
+            track-by="name"
+            label="name" 
+            mode="single"
+          )
 
-    fieldset
-      label.required Church Religious Affiliation
-      Multiselect(
-        v-model="ui.churchReligionIndex"
-        :options="religions"
-        :searchable="true"
-        :required="true"
-        value-prop="id"
-        track-by="name"
-        label="name"
-        mode="single"
-      )
+        .details.place-details(v-if="ui.churchLocationIndex")
+          //.name {{getPlace(ui.churchLocationIndex).name}}
+          .description {{getPlace(ui.churchLocationIndex).description}}
+          
+          dl.population
+            dt Population
+            dd.big-number {{addCommas(getPlace(ui.churchLocationIndex).totalPopulation)}}
 
-    .details.religion-details(v-if="ui.churchReligionIndex")
-      .name {{getReligion(ui.churchReligionIndex).name}}
-      .description {{getReligion(ui.churchReligionIndex).description}}
-      dl
-        dt Likes
-        dd 
-          ul
-            li(v-for="like in getReligion(ui.churchReligionIndex).likes.slice(0, 5)") {{like}}
-      dl
-        dt Dislikes
-        dd 
-          ul
-            li(v-for="dislike in getReligion(ui.churchReligionIndex).dislikes.slice(0, 5)") {{dislike}}
+          dl.net-worth
+            dt Avg Net Worth
+            dd.big-number {{dollars(getPlace(ui.churchLocationIndex).avgNetWorth)}}
+
+          dl.religions
+            dt Top Religions
+            dd
+              ol
+                li(v-for="religion in (getPlace(ui.churchLocationIndex)?.religions?.slice(0, 3) || [])" :class="{ match: religion.name === (getReligion(ui.churchReligionIndex)?.name || '') }") {{religion.name}}
+
+          dl.likes
+            dt Likes
+            dd 
+              ul
+                li(v-for="like in (getPlace(ui.churchLocationIndex)?.likedTags || [])" :class='{ match: (getReligion(ui.churchReligionIndex)?.likes || []).includes(like) || ((getReligion(ui.churchReligionIndex)?.dislikes || []).includes(like) && (getPlace(ui.churchLocationIndex)?.dislikedTags || []).includes(like)), mismatch: (getReligion(ui.churchReligionIndex)?.dislikes || []).includes(like) }') {{like}}
+          dl.dislikes
+            dt Dislikes
+            dd 
+              ul
+                li(v-for="dislike in (getPlace(ui.churchLocationIndex)?.dislikedTags || [])" :class='{ match: (getReligion(ui.churchReligionIndex)?.dislikes || []).includes(dislike), mismatch: (getReligion(ui.churchReligionIndex)?.likes || []).includes(dislike) }') {{dislike}}
+
+      .religion
+
+        fieldset
+          label.required Church Religious Affiliation
+          Multiselect(
+            v-model="ui.churchReligionIndex"
+            :options="religions"
+            :searchable="true"
+            :required="true"
+            value-prop="id"
+            track-by="name"
+            label="name"
+            mode="single"
+          )
+
+        .details.religion-details(v-if="ui.churchReligionIndex")
+          .name(:class="{ match: (getPlace(ui.churchLocationIndex)?.religions?.slice(0, 3) || []).some(r => r.name === (getReligion(ui.churchReligionIndex)?.name || '')) }") {{getReligion(ui.churchReligionIndex)?.name || ''}}
+          .description {{getReligion(ui.churchReligionIndex).description}}
+          dl
+            dt Likes
+            dd 
+              ul
+                li(v-for="like in (getReligion(ui.churchReligionIndex)?.likes || [])" :class='{ match: (getPlace(ui.churchLocationIndex)?.likedTags || []).includes(like), mismatch: (getPlace(ui.churchLocationIndex)?.dislikedTags || []).includes(like) }') {{like}}
+          dl
+            dt Dislikes
+            dd 
+              ul
+                li(v-for="dislike in getReligion(ui.churchReligionIndex).dislikes" :class='{ match: getPlace(ui.churchLocationIndex).dislikedTags.includes(dislike), mismatch: getPlace(ui.churchLocationIndex).likedTags.includes(dislike) }') {{dislike}}
 
     .sterling-details(v-if="ui.churchLocationIndex && ui.churchReligionIndex")
       h3 Partnership Terms

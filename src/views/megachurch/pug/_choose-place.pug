@@ -47,12 +47,20 @@ section.choose.choose-place(v-if="ui.view === 'place'")
           ul
             li(v-for="dislike in getPlace(ui.placeIndex).dislikedTags.slice(0, 5)") {{dislike}}
 
-      // Van travel costs
       dl.travel-cost(v-if="my.hasVan")
         dt Gas Cost
-        dd.cost {{dollars(gameSettings.van.fixedGasPrice)}}
-        dd.warning(v-if="my.money < gameSettings.van.fixedGasPrice") Insufficient funds for gas!
-    
+        dd(style="display:flex; flex-direction:column; gap:1rem;")
+          .cost(:class="{ warning: my.money < gameSettings.van.fixedGasPrice }") {{dollars(gameSettings.van.fixedGasPrice)}}
+          .notice.warning(v-if="my.money < gameSettings.van.fixedGasPrice") ⛽ You don't have gas money 
+
+      dl(v-if="my.church.location?.name === getPlace(ui.placeIndex)?.name")
+        dt ⛪ Your Church
+        dd {{my.church.name}} is located here.
+
+      dl(v-else-if="my.church.location?.name")      
+        dt Street Preacher
+        dd {{my.church.name}} is in {{my.church.location.name}}. You will be a street preacher in this location.
+
     .button-holder
       //button.reset(type="button" @click="ui.view = 'religion'") Change Religion
       button.reset(type="button" @click="ui.view = 'sermon'") Cancel

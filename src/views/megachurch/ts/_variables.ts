@@ -6,32 +6,6 @@ export const gameSettings = reactive<GameSettings>({
   isDebug: false,
   isDebugButtonVisible: true,
   themesPerDay: 25, // How many themes are available to choose from each day
-  donationCalculation: {
-    scoreMultiplierMin: 1, // Minimum score multiplier for donations
-    scoreMultiplierMax: 12, // Maximum score multiplier for donations
-    scoreDivisor: 2, // Divides net score to get multiplier (score/2)
-    netWorthMultiplierMin: 0.75, // Minimum net worth multiplier
-    netWorthMultiplierMax: 2, // Maximum net worth multiplier
-    netWorthDivisor: 150000, // Divides avg net worth for multiplier calculation
-    fallbackBaseDonation: 0.18, // Fallback if gameSettings.baseDonation not set
-    strengthBoostMultiplier: 1.5, // Multiplier for preacher donation strength
-    roundingFactor: 100, // For rounding to nearest cent (Math.round(x * 100) / 100)
-  },
-  sermonScoring: {
-    likedTagMultiplier: 1, // Base multiplier for liked tags
-    likedTagDoubledMultiplier: 2, // Multiplier when tag matches player's religion
-    dislikedTagMultiplier: 1, // Base multiplier for disliked tags
-    dislikedTagHalvedMultiplier: 0.5, // Reduced multiplier for certain disliked tags
-    dislikedTagDoubledMultiplier: 2, // Increased multiplier for certain disliked tags
-    likedReligionMultiplier: 3, // Multiplier for religions that like the player
-    likedReligionDoubledMultiplier: 2, // Additional multiplier for matching religion
-    dislikedReligionMultiplier: 3, // Multiplier for religions that dislike the player
-    dislikedReligionDoubledMultiplier: 2, // Additional multiplier for matching religion
-    religionDirectMatchMultiplier: 2, // Direct religion match bonus in street preaching
-    enthusiasmMin: 0.1, // Minimum enthusiasm multiplier
-    enthusiasmMax: 2.0, // Maximum enthusiasm multiplier
-    enthusiasmDivisor: 10, // Divides net score for enthusiasm calculation
-  },
   triggers: {
     sterling: {
       days: 0, // Minimum days for Sterling to contact you
@@ -102,6 +76,7 @@ export const gameSettings = reactive<GameSettings>({
     },
     sterlingCutPercentage: 35, // Sterling's cut of daily donations
     sterlingMinimumCut: 20, // Minimum amount (in dollars) Sterling takes
+    topicRepetitionPenalty: 0.85, // Penalty multiplier for repeating topics (default 15% less effective)
   },
 });
 
@@ -136,7 +111,7 @@ export const ui = reactive<UI>({
 export const my = reactive<My>({
   name: "",
   daysPlayed: 0,
-  money: 0,
+  money: 1000,
   totalMoneyEarned: 0,
   religion: {},
   place: {},
@@ -144,14 +119,10 @@ export const my = reactive<My>({
   preacherStrengths: {
     gatherCrowd: 1, // Muliplier for gathering crowd size
     getDonations: 1, // Multiplier for donation amounts
-    getFollowers: 1, // Multiplier for follower gains
-    loseFollowers: 1, // Multiplier for follower losses (lower is better)
     getLikes: 1, // Multiplier for likes
     getDislikes: 1, // Multiplier for dislikes (lower is better)
   },
   selectedTopics: [null, null, null], // TODO: Move this to ui.selectedTopics
-  followerCount: 0,
-  followers: [],
   isStreetPreaching: true, // Start as street preacher
   hasVan: true, // Can't travel yet
   canBuyVan: false, // Whether van purchase option is available
@@ -190,9 +161,14 @@ export const my = reactive<My>({
   },
   effectYesterday: [],
   religiousScorecard: [],
-  followerChanges: [],
   audienceReactions: [],
   donationsYesterday: 0,
+  churchAttendanceYesterday: 0,
+  churchDonorsYesterday: 0,
+  streetAttendanceYesterday: 0,
+  streetDonorsYesterday: 0,
+  sterlingCutYesterday: 0,
+  playerShareYesterday: 0,
   // Church-related properties
   church: {
     isFounded: false,
@@ -200,6 +176,7 @@ export const my = reactive<My>({
     location: undefined,
     religion: undefined,
     buzz: 0,
+    maxAttendance: 100, // Maximum number of attendees in your church on any given day
   },
   congregation: [],
   spice: {

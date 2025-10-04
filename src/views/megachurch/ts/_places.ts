@@ -3,7 +3,7 @@ import { Tags, ReligionNames, PlaceNames } from "./_types";
 export interface Place {
   id: number; // UID for place
   name: PlaceNames; // The Name of this place
-  description: string; // Recommended. Describe this place further, what is unique about it?
+  description: string; // Describe this place further, what is unique about it?
   likedTags: Tags[]; // A list of things the population of this particular place generally likes. (max 5)
   dislikedTags: Tags[]; // A list of things the population of this particular place generally dislikes. (max 5)
   totalPopulation: number; // The estimated number of people who live in this place
@@ -24,7 +24,7 @@ export const places: Place[] = [
     likedTags: ["community", "sincerity", "compassion", "simplicity"],
     dislikedTags: ["outrageousness", "bizarre concepts", "violence"],
     totalPopulation: 100000,
-    avgNetWorth: 55000, // Low average income
+    avgNetWorth: 55000,
     religions: [
       { id: 1, name: "Southern Baptist", weight: 18 },
       { id: 19, name: "Secular Humanists", weight: 18 },
@@ -80,7 +80,7 @@ export const places: Place[] = [
     totalPopulation: 90000,
     avgNetWorth: 70000,
     religions: [
-      { id: 1, name: "Southern Baptist", weight: 77 },
+      { id: 1, name: "Southern Baptist", weight: 63 },
       { id: 18, name: "The Order of the Alpha Male", weight: 44 },
       { id: 8, name: "Evangelical Christianity", weight: 42 },
       { id: 15, name: "2 Fast 2 Faithful", weight: 18 },
@@ -349,15 +349,13 @@ export const places: Place[] = [
     avgNetWorth: 120000,
     religions: [
       { id: 31, name: "The Church of Having More Things", weight: 60 },
-      { id: 19, name: "Secular Humanists", weight: 28 },
-      { id: 19, name: "Secular Humanists", weight: 28 },
       { id: 27, name: "Agnostic Atheists", weight: 24 },
       { id: 2, name: "Catholicism", weight: 29 },
       { id: 19, name: "The Queens' Dominion", weight: 27 },
+      { id: 11, name: "The Church of Eros", weight: 23 },
       { id: 26, name: "Buddhism", weight: 14 },
       { id: 13, name: "New-Age Spirituality", weight: 12 },
       { id: 8, name: "Evangelical Christianity", weight: 10 },
-      { id: 28, name: "Seventh-day Adventism", weight: 8 },
       { id: 9, name: "Mormonism", weight: 7 },
       { id: 15, name: "2 Fast 2 Faithful", weight: 6 },
       { id: 24, name: "The Church of Satan", weight: 6 },

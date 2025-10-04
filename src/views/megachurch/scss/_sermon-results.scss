@@ -84,6 +84,9 @@ section.sermon-results {
     dd {
       font-family: monospace;
       font-size: 4em;
+      .donor-count {
+        font-size: 1rem;
+      }
     }
   }
 

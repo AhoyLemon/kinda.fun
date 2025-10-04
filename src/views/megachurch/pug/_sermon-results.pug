@@ -2,11 +2,10 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
 
   .inner
     h2(v-if="my.isStreetPreaching") Your street preaching is complete for the day.
-    h2(v-else) Your preaching is complete for the day.
+    h2(v-else) Your sermon is complete for the day.
 
     // Street Preaching Results
     .audience-reactions(v-if="my.isStreetPreaching && my.audienceReactions && my.audienceReactions.length > 0")
-      h3 Audience Reactions
       table.debug.audience-changes
         thead
           tr
@@ -30,56 +29,48 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
               em {{totalIgnoredAudience}} other people ignored your sermon.
 
     // Church Preaching Results  
+
     table.debug.follower-changes(v-if="!my.isStreetPreaching")
-      //caption Follower Changes
+      caption Religious Scorecard Changes
       thead
         tr
           th(v-if="gameSettings.isDebug") id
-          //th
           th name
           th(v-if="gameSettings.isDebug") before
           th change
           th(v-if="gameSettings.isDebug") after
       tbody
-        tr(v-for="religion in my.followerChanges" :class="{'positive': religion.change > 0, 'negative': religion.change < 0}")
+        tr(v-for="religion in my.religiousScorecard.filter(r => r.change !== 0)" :class="{'positive': religion.change > 0, 'negative': religion.change < 0}")
           td(v-if="gameSettings.isDebug") {{religion.id}}
-          //td 
-            span.positive(v-if="religion.change > 0") ⬆️
-            span.negative(v-else-if="religion.change < 0") ⬇️
           td 
             span.religion-name {{religion.name}}
-          td.number(v-if="gameSettings.isDebug") {{religion.before}}
+          td.number(v-if="gameSettings.isDebug") {{religion.score - religion.change}}
           td.number
             span.positive(v-if="religion.change > 0") {{"+"+religion.change}}
             span.negative(v-else-if="religion.change < 0") {{religion.change}}
-          td.number(v-if="gameSettings.isDebug") {{religion.after}}
+          td.number(v-if="gameSettings.isDebug") {{religion.score}}
 
-    dl.donations-collected
-      dt 
-        span Donations Collected:
-      dd {{dollars(my.donationsYesterday)}}
+    .donations-summary
+      dl.donations-collected
+        dt Total Donations:
+        dd 
+          .amount {{dollars(my.donationsYesterday)}}
+          .donor-count(v-if="my.isStreetPreaching") (from {{my.streetDonorsYesterday}} donors)
+      template(v-if="!my.isStreetPreaching && my.chats.sterling?.hasContacted && my.sterlingCutYesterday > 0")
+        dl.donations-collected
+          dt Sterling's Cut:
+          dd {{dollars(my.sterlingCutYesterday)}}
+        dl.donations-collected
+          dt Your Share:
+          dd {{dollars(my.playerShareYesterday)}}
 
     .buttons
-      button.reset(v-if="gameSettings.isDebug" @click="collectDonations()") GET PAID 🤑
       button.plug(@click="openPlugInterface()") Text Your Plug
       button.harold(v-if="my.chats.harold.hasContacted || my.hasVan" @click="openHaroldInterface()") Text Uncle Harold
       button.sterling(v-if="my.chats.sterling.hasContacted" @click="openSterlingInterface()") Text Sterling Silver
       button.submit(@click="advanceToNextDay()") Next Day.
 
     
-    table.debug(v-if="gameSettings.isDebug") 
-      caption Followers
-      thead
-        tr
-          th id
-          th name
-          th followers
-      tbody
-        tr(v-for="religion in my.followers.slice().sort((a, b) => b.followers - a.followers)")
-          td {{religion.id}}
-          td {{religion.name}}
-          td {{religion.followers}}
-
     table.debug(v-if="gameSettings.isDebug")
       thead
         tr

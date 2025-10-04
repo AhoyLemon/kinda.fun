@@ -157,6 +157,84 @@ export interface ChatHistory {
   chatHistory: ChatMessage[];
 }
 
+// ================= GAME SETTINGS TYPE =================
+
+export interface GameSettings {
+  baseDonation: number; // Base donation per follower
+  isDebug: boolean;
+  isDebugButtonVisible: boolean;
+  themesPerDay: number; // How many themes are available to choose from each day
+  triggers: {
+    sterling: {
+      days: number;
+      totalEarnings: number;
+    };
+    harold: {
+      days: number;
+    };
+  };
+  streetPreaching: {
+    baseCrowdSize: number;
+    dislikeChance: {
+      byReligion: number;
+      byTag: number;
+    };
+    likeChance: {
+      byReligion: number;
+      byTag: number;
+    };
+    donation: {
+      chance: number;
+      min: number;
+      max: number;
+    };
+    randomCrowdVariation: number;
+    mixedMessageThreshold: number;
+  };
+  spice: {
+    pricePerUnit: number;
+    addictionProgression: number;
+    penaltyPerUnit: number;
+    bonusPerUnit: number;
+    maxBonus: number;
+    maxPenalty: number;
+  };
+  van: {
+    cost: number;
+    fixedGasPrice: number;
+    gasPricePerMile: number;
+  };
+  churchPreaching: {
+    expectedFirstTimeAttendees: number;
+    religionMatchBonus: number;
+    dislikeChance: {
+      byReligion: number;
+      byTag: number;
+    };
+    likeChance: {
+      byReligion: number;
+      byTag: number;
+    };
+    donation: {
+      chance: number;
+      min: number;
+      max: number;
+    };
+    donationPerAttendee: {
+      min: number;
+      max: number;
+    };
+    sterling: {
+      cutPercentage: number;
+      minimumCut: number;
+    };
+    sterlingCutPercentage: number;
+    sterlingMinimumCut: number;
+    topicRepetitionPenalty: number;
+  };
+}
+
+// ================= PLAYER STATE TYPE =================
 export interface My {
   name: string;
   daysPlayed: number;
@@ -168,14 +246,10 @@ export interface My {
   preacherStrengths: {
     gatherCrowd: number;
     getDonations: number;
-    getFollowers: number;
-    loseFollowers: number;
     getLikes: number;
     getDislikes: number;
   };
   selectedTopics: Array<any>;
-  followerCount: number;
-  followers: object[];
   isStreetPreaching: boolean;
   hasVan: boolean;
   canBuyVan: boolean;
@@ -186,13 +260,6 @@ export interface My {
   sermonYesterday: Sermon;
   effectYesterday?: any[];
   religiousScorecard?: any[];
-  followerChanges?: Array<{
-    id: number;
-    name: string;
-    before: number;
-    change: number;
-    after: number;
-  }>;
   audienceReactions?: Array<{
     id: number;
     name: string;
@@ -206,6 +273,12 @@ export interface My {
     followersName?: string;
   }>;
   donationsYesterday: number;
+  churchAttendanceYesterday?: number;
+  churchDonorsYesterday?: number;
+  streetAttendanceYesterday?: number;
+  streetDonorsYesterday?: number;
+  sterlingCutYesterday?: number;
+  playerShareYesterday?: number;
   // Church-related properties
   church: {
     isFounded: boolean;
@@ -213,6 +286,7 @@ export interface My {
     location?: Place;
     religion?: Religion;
     buzz: number;
+    maxAttendance: number;
   };
   congregation?: Array<{
     id: number;
@@ -384,105 +458,3 @@ export type PlaceNames =
   | "Megamall, Minnesota"
   | "Cascadia Moss, Washington"
   | "Rapture, Texas";
-
-// ================= GAME SETTINGS TYPE =================
-
-export interface GameSettings {
-  baseDonation: number; // Base donation per follower
-  isDebug: boolean;
-  isDebugButtonVisible: boolean;
-  themesPerDay: number; // How many themes are available to choose from each day
-  donationCalculation: {
-    scoreMultiplierMin: number;
-    scoreMultiplierMax: number;
-    scoreDivisor: number;
-    netWorthMultiplierMin: number;
-    netWorthMultiplierMax: number;
-    netWorthDivisor: number;
-    fallbackBaseDonation: number;
-    strengthBoostMultiplier: number;
-    roundingFactor: number;
-  };
-  sermonScoring: {
-    likedTagMultiplier: number;
-    likedTagDoubledMultiplier: number;
-    dislikedTagMultiplier: number;
-    dislikedTagHalvedMultiplier: number;
-    dislikedTagDoubledMultiplier: number;
-    likedReligionMultiplier: number;
-    likedReligionDoubledMultiplier: number;
-    dislikedReligionMultiplier: number;
-    dislikedReligionDoubledMultiplier: number;
-    religionDirectMatchMultiplier: number;
-    enthusiasmMin: number;
-    enthusiasmMax: number;
-    enthusiasmDivisor: number;
-  };
-  triggers: {
-    sterling: {
-      days: number;
-      totalEarnings: number;
-    };
-    harold: {
-      days: number;
-    };
-  };
-  streetPreaching: {
-    baseCrowdSize: number;
-    dislikeChance: {
-      byReligion: number;
-      byTag: number;
-    };
-    likeChance: {
-      byReligion: number;
-      byTag: number;
-    };
-    donation: {
-      chance: number;
-      min: number;
-      max: number;
-    };
-    randomCrowdVariation: number;
-    mixedMessageThreshold: number;
-  };
-  spice: {
-    pricePerUnit: number;
-    addictionProgression: number;
-    penaltyPerUnit: number;
-    bonusPerUnit: number;
-    maxBonus: number;
-    maxPenalty: number;
-  };
-  van: {
-    cost: number;
-    fixedGasPrice: number;
-    gasPricePerMile: number;
-  };
-  churchPreaching: {
-    expectedFirstTimeAttendees: number;
-    religionMatchBonus: number;
-    dislikeChance: {
-      byReligion: number;
-      byTag: number;
-    };
-    likeChance: {
-      byReligion: number;
-      byTag: number;
-    };
-    donation: {
-      chance: number;
-      min: number;
-      max: number;
-    };
-    donationPerAttendee: {
-      min: number;
-      max: number;
-    };
-    sterling: {
-      cutPercentage: number;
-      minimumCut: number;
-    };
-    sterlingCutPercentage: number;
-    sterlingMinimumCut: number;
-  };
-}

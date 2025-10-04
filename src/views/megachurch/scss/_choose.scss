@@ -1,3 +1,8 @@
+$darkGreen: darken($green, 23%);
+$darkRed: darken($red, 20%);
+$lightGreen: lighten($red, 40%);
+$lightRed: lighten($red, 40%);
+
 .choose {
   fieldset {
     width: 320px;
@@ -18,6 +23,10 @@
     .name,
     .description {
       grid-column: span 2;
+      &.match {
+        color: $darkGreen;
+        font-weight: 600;
+      }
     }
     .big-number {
       font-size: 1.35rem;
@@ -33,6 +42,18 @@
       line-height: 140%;
       font-style: italic;
     }
+    .cost.warning {
+      color: $darkRed;
+      font-weight: 525;
+    }
+    .notice {
+      font-size: 0.875rem;
+      background: $lightRed;
+      color: $darkRed;
+      padding: 6px;
+      border-radius: 4px;
+    }
+
     dl {
       border: 1px solid #ccc;
       font-family: $sans-serif;
@@ -48,6 +69,7 @@
       }
       dd {
         padding: 10px;
+        line-height: 140%;
       }
       ul {
         display: grid;
@@ -55,6 +77,16 @@
         padding: 0 0.5em 0.5em 1em;
         list-style-type: disc;
         font-size: 0.875em;
+        li {
+          &.match {
+            color: $darkGreen;
+            font-weight: 600;
+          }
+          &.mismatch {
+            color: $darkRed;
+            font-weight: 600;
+          }
+        }
       }
     }
     dl.religions {
@@ -66,11 +98,24 @@
         list-style: decimal;
         font-family: $serif;
         font-size: 1.25em;
+        li.match {
+          color: $darkGreen;
+          font-weight: 600;
+        }
         li::marker {
           font-size: 80%;
           font-weight: 600;
         }
       }
+    }
+  }
+
+  .location-and-religion {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    .details {
+      width: auto;
     }
   }
 }
