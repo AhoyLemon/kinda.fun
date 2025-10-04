@@ -241,7 +241,7 @@ export interface My {
   money: number;
   totalMoneyEarned: number;
   religion: object;
-  place: object;
+  place: Place;
   lucre: object[];
   preacherStrengths: {
     gatherCrowd: number;

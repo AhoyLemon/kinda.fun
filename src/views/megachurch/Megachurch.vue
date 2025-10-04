@@ -142,13 +142,9 @@
       // Show success toast
       toast.success(`${my.church.name} has been established!`);
     }
-    if (
-      typeof (my.place as Place)?.name === "string" &&
-      typeof (my.church.location as Place)?.name === "string" &&
-      (my.place as Place).name !== (my.church.location as Place).name
-    ) {
-      my.place = { ...(my.church.location as Place) };
-      toast.info(`You have moved to ${(my.church.location as Place).name}.`);
+    if (my.place.name != my.church.location.name) {
+      my.place = { ...my.church.location };
+      toast.info(`You have moved to ${my.church.location.name}.`);
     }
     advanceToNextDay();
   }

@@ -1,5 +1,6 @@
 import { reactive } from "vue";
-import { GameSettings, My, UI } from "./_types";
+import { GameSettings, My, UI, Place } from "./_types";
+import { places } from "./_places";
 
 export const gameSettings = reactive<GameSettings>({
   baseDonation: 0.25, // Base donation per follower
@@ -114,7 +115,7 @@ export const my = reactive<My>({
   money: 1000,
   totalMoneyEarned: 0,
   religion: {},
-  place: {},
+  place: places[0],
   lucre: [],
   preacherStrengths: {
     gatherCrowd: 1, // Muliplier for gathering crowd size
