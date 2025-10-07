@@ -3,7 +3,7 @@ section.choose.church-setup(v-if="ui.view === 'church-setup'")
     
     legend Time to Found Your Church
     p Sterling Silver has offered to help you establish your own church. Choose wisely - this will determine your congregation and your success.
-    fieldset
+    fieldset.sticky
       label.required Church Name
       input(type="text" v-model="my.church.name" placeholder="The Silverdome" required)
 
@@ -13,7 +13,7 @@ section.choose.church-setup(v-if="ui.view === 'church-setup'")
 
       .location
 
-        fieldset
+        fieldset.sticky.secondary
           label.required Church Location
           Multiselect(
             v-model="ui.churchLocationIndex"
@@ -44,20 +44,9 @@ section.choose.church-setup(v-if="ui.view === 'church-setup'")
               ol
                 li(v-for="religion in (getPlace(ui.churchLocationIndex)?.religions?.slice(0, 3) || [])" :class="{ match: religion.name === (getReligion(ui.churchReligionIndex)?.name || '') }") {{religion.name}}
 
-          dl.likes
-            dt Likes
-            dd 
-              ul
-                li(v-for="like in (getPlace(ui.churchLocationIndex)?.likedTags || [])" :class='{ match: (getReligion(ui.churchReligionIndex)?.likes || []).includes(like) || ((getReligion(ui.churchReligionIndex)?.dislikes || []).includes(like) && (getPlace(ui.churchLocationIndex)?.dislikedTags || []).includes(like)), mismatch: (getReligion(ui.churchReligionIndex)?.dislikes || []).includes(like) }') {{like}}
-          dl.dislikes
-            dt Dislikes
-            dd 
-              ul
-                li(v-for="dislike in (getPlace(ui.churchLocationIndex)?.dislikedTags || [])" :class='{ match: (getReligion(ui.churchReligionIndex)?.dislikes || []).includes(dislike), mismatch: (getReligion(ui.churchReligionIndex)?.likes || []).includes(dislike) }') {{dislike}}
-
       .religion
 
-        fieldset
+        fieldset.sticky.secondary
           label.required Church Religious Affiliation
           Multiselect(
             v-model="ui.churchReligionIndex"
@@ -73,6 +62,23 @@ section.choose.church-setup(v-if="ui.view === 'church-setup'")
         .details.religion-details(v-if="ui.churchReligionIndex")
           .name(:class="{ match: (getPlace(ui.churchLocationIndex)?.religions?.slice(0, 3) || []).some(r => r.name === (getReligion(ui.churchReligionIndex)?.name || '')) }") {{getReligion(ui.churchReligionIndex)?.name || ''}}
           .description {{getReligion(ui.churchReligionIndex).description}}
+
+
+      .location(v-if="ui.churchLocationIndex")
+        .details.place-details
+          dl.likes
+            dt Likes
+            dd 
+              ul
+                li(v-for="like in (getPlace(ui.churchLocationIndex)?.likedTags || [])" :class='{ match: (getReligion(ui.churchReligionIndex)?.likes || []).includes(like) || ((getReligion(ui.churchReligionIndex)?.dislikes || []).includes(like) && (getPlace(ui.churchLocationIndex)?.dislikedTags || []).includes(like)), mismatch: (getReligion(ui.churchReligionIndex)?.dislikes || []).includes(like) }') {{like}}
+          dl.dislikes
+            dt Dislikes
+            dd 
+              ul
+                li(v-for="dislike in (getPlace(ui.churchLocationIndex)?.dislikedTags || [])" :class='{ match: (getReligion(ui.churchReligionIndex)?.dislikes || []).includes(dislike), mismatch: (getReligion(ui.churchReligionIndex)?.likes || []).includes(dislike) }') {{dislike}}
+
+      .religion(v-if="ui.churchReligionIndex")
+        .details.religion-details
           dl
             dt Likes
             dd 

@@ -63,11 +63,79 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
         dl.donations-collected
           dt Your Share:
           dd {{dollars(my.playerShareYesterday)}}
+    
+    // Church Management Results
+    .church-management-summary(v-if="!my.isStreetPreaching && my.church.isFounded")
+      template(v-if="my.merchRevenueYesterday > 0")
+        h3 Merch Sales Revenue
+        dl.merch-sales
+          dt Total Merch Revenue:
+          dd {{dollars(my.merchRevenueYesterday)}}
+        .merch-breakdown(v-if="my.merchSalesDetailsYesterday")
+          template(v-if="my.merchSalesDetailsYesterday.holyWater.sold > 0")
+            dl.merch-item
+              dt Holy Water Bottles:
+              dd {{my.merchSalesDetailsYesterday.holyWater.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.holyWater.revenue)}})
+          template(v-if="my.merchSalesDetailsYesterday.prayerCandles.sold > 0")
+            dl.merch-item
+              dt Prayer Candles:
+              dd {{my.merchSalesDetailsYesterday.prayerCandles.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.prayerCandles.revenue)}})
+          template(v-if="my.merchSalesDetailsYesterday.energyDrinks.sold > 0")
+            dl.merch-item
+              dt Energy Drinks:
+              dd {{my.merchSalesDetailsYesterday.energyDrinks.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.energyDrinks.revenue)}})
+      
+      template(v-if="my.confessionRevenueYesterday > 0")
+        h3 VIP Confession Revenue
+        dl.confession-revenue
+          dt VIP Confessions:
+          dd {{dollars(my.confessionRevenueYesterday)}}
+      
+      template(v-if="my.church.upgrades.extraPews > 0 || my.church.upgrades.audioVisual || my.church.upgrades.vipConfessionBooths || my.church.upgrades.sacrament.wine.level > 0 || my.church.upgrades.sacrament.bread.level > 0")
+        h3 Active Upgrades
+        .upgrade-effects
+          template(v-if="my.church.upgrades.extraPews > 0")
+            .upgrade-effect
+              strong {{my.church.upgrades.extraPews}} Extra Pews
+              span  (+{{my.church.upgrades.extraPews * gameSettings.church.upgrades.extraPews.capacityIncrease}} capacity)
+          template(v-if="my.church.upgrades.audioVisual")
+            .upgrade-effect
+              strong A/V Equipment
+              span  (+{{gameSettings.church.upgrades.audioVisual.likeBoost}}% reaction boost)
+          template(v-if="my.church.upgrades.vipConfessionBooths")
+            .upgrade-effect
+              strong VIP Confession Booths
+              span  (Generating revenue)
+          template(v-if="my.church.upgrades.sacrament.wine.level > 0")
+            .upgrade-effect
+              strong {{my.church.upgrades.sacrament.wine.name}}
+              span  (+{{gameSettings.church.upgrades.sacraments.wine.levels[my.church.upgrades.sacrament.wine.level].likeBoost}}% reaction boost)
+          template(v-if="my.church.upgrades.sacrament.bread.level > 0")
+            .upgrade-effect
+              strong {{my.church.upgrades.sacrament.bread.name}}
+              span  (+{{gameSettings.church.upgrades.sacraments.bread.levels[my.church.upgrades.sacrament.bread.level].likeBoost}}% reaction boost)
+      
+      template(v-if="my.marketing.generalAdActive || my.marketing.targetedAd.active || my.marketing.signSpinnerActive")
+        h3 Active Marketing Campaigns
+        .marketing-effects
+          template(v-if="my.marketing.generalAdActive")
+            .marketing-effect
+              strong General Internet Ad
+              span  (+{{gameSettings.church.marketing.generalAd.attendanceBoost}}% attendance)
+          template(v-if="my.marketing.targetedAd.active")
+            .marketing-effect
+              strong Targeted Ad ({{my.marketing.targetedAd.targetReligion?.name}})
+              span  (+{{gameSettings.church.marketing.targetedAd.targetReligionBoost}}% for target religion)
+          template(v-if="my.marketing.signSpinnerActive")
+            .marketing-effect
+              strong Sign Spinner
+              span  (+{{gameSettings.church.marketing.signSpinner.attendanceBoost}}% attendance)
 
     .buttons
-      button.plug(@click="openPlugInterface()") Text Your Plug
-      button.harold(v-if="my.chats.harold.hasContacted || my.hasVan" @click="openHaroldInterface()") Text Uncle Harold
-      button.sterling(v-if="my.chats.sterling.hasContacted" @click="openSterlingInterface()") Text Sterling Silver
+      button.plug(@click="openPlugInterface()") 📱 The Plug
+      button.harold(v-if="my.chats.harold.hasContacted || my.hasVan" @click="openHaroldInterface()") 📱 Uncle Harold
+      button.sterling(v-if="my.chats.sterling.hasContacted" @click="openSterlingInterface()") 📱 Sterling Silver
+      button.workshop-zone(v-if="my.church.isFounded" @click="showWorkshopZone") 💻 Da Worshop Zone
       button.submit(@click="advanceToNextDay()") Next Day.
 
     

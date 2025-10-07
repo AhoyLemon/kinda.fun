@@ -79,6 +79,49 @@ export interface MixedReligion {
   disliked: number;
 }
 
+// ================= CHURCH MANAGEMENT TYPES =================
+
+export interface ChurchUpgrades {
+  extraPews: number; // How many extra pews purchased
+  vipConfessionBooths: boolean; // Whether VIP confession booths are installed
+  audioVisual: boolean; // Whether audio/visual equipment is installed
+  sacrament: {
+    wine: {
+      level: number; // 0 = none, 1 = cheap, 2 = mid, 3 = top-shelf
+      name: string; // e.g. "Kirkland Merlot"
+    };
+    bread: {
+      level: number; // 0 = none, 1 = cheap, 2 = mid, 3 = top-shelf
+      name: string; // e.g. "Wonder Bread"
+    };
+  };
+}
+
+export interface MerchItem {
+  isUnlocked: boolean;
+  price: number; // selling price
+  inventory: number; // how many items you have
+  soldToday: number; // how many sold today
+  totalSold: number; // how many sold total
+}
+
+export interface ChurchMerch {
+  holyWater: MerchItem & {
+    isVendingMachine: boolean; // whether you have a vending machine
+  };
+  energyDrinks: MerchItem;
+  prayerCandles: MerchItem;
+}
+
+export interface ChurchMarketing {
+  generalAdActive: boolean;
+  targetedAd: {
+    active: boolean;
+    targetReligion: Religion | null;
+  };
+  signSpinnerActive: boolean;
+}
+
 // ================= SERMON OUTPUT TYPE =================
 
 export interface SermonTopic {
@@ -139,6 +182,10 @@ export interface UI {
     sterling: {
       isOpen: boolean;
     };
+  };
+  workshopZone: {
+    isOpen: boolean;
+    showBanner: boolean;
   };
 }
 
@@ -232,6 +279,75 @@ export interface GameSettings {
     sterlingMinimumCut: number;
     topicRepetitionPenalty: number;
   };
+  church: {
+    merch: {
+      holyWaterBottles: {
+        cost: number; // cost to the player (per item)
+        baseChance: number; // base % chance per attendee to buy
+      };
+      holyWaterVendingMachine: {
+        cost: number;
+        bonusChance: number; // additional % chance
+      };
+      bluetoothPrayerCandles: {
+        cost: number; // cost to the player (per item)
+        baseChance: number; // base % chance per attendee to buy
+      };
+      saintsFlow: {
+        cost: number; // cost to the player (per item)
+        baseChance: number; // base % chance per attendee to buy
+      };
+    };
+    upgrades: {
+      extraPews: {
+        cost: number; // costPerPew
+        capacityIncrease: number; // how many more people per pew
+      };
+      vipConfessionBooths: {
+        cost: number;
+        revenuePerUse: number;
+      };
+      audioVisual: {
+        cost: number;
+        likeBoost: number; // % boost to like chances
+      };
+      sacraments: {
+        wine: {
+          levels: Array<{
+            level: number;
+            name: string;
+            cost: number;
+            likeBoost: number;
+          }>;
+        };
+        bread: {
+          levels: Array<{
+            level: number;
+            name: string;
+            cost: number;
+            likeBoost: number;
+          }>;
+        };
+      };
+    };
+    marketing: {
+      generalAd: {
+        price: number;
+        attendanceBoost: number;
+        duration: number; // days
+      };
+      targetedAd: {
+        price: number;
+        targetReligionBoost: number;
+        duration: number;
+      };
+      signSpinner: {
+        price: number;
+        attendanceBoost: number;
+        duration: number;
+      };
+    };
+  };
 }
 
 // ================= PLAYER STATE TYPE =================
@@ -279,6 +395,13 @@ export interface My {
   streetDonorsYesterday?: number;
   sterlingCutYesterday?: number;
   playerShareYesterday?: number;
+  merchRevenueYesterday?: number;
+  confessionRevenueYesterday?: number;
+  merchSalesDetailsYesterday?: {
+    holyWater: { sold: number; revenue: number };
+    prayerCandles: { sold: number; revenue: number };
+    energyDrinks: { sold: number; revenue: number };
+  };
   // Church-related properties
   church: {
     isFounded: boolean;
@@ -287,7 +410,10 @@ export interface My {
     religion?: Religion;
     buzz: number;
     maxAttendance: number;
+    upgrades: ChurchUpgrades;
+    merch: ChurchMerch;
   };
+  marketing: ChurchMarketing;
   congregation?: Array<{
     id: number;
     count: number;

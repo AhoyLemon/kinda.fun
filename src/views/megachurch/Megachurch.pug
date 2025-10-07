@@ -14,14 +14,14 @@
 
     include pug/_sermon-results.pug
 
-    include pug/_church-setup.pug
+    include pug/_church-setup.pug  
 
-  include pug/_your-details.pug
+  include pug/_your-details.pug 
 
   // Spice dealer chat interface
   Chat(
     :isOpen="ui.chats.plug.isOpen"
-    contactType="plug"
+    contactType="plug" 
     :playerName="my.name"
     :playerMoney="my.money"
     :spicePrice="gameSettings.spice.pricePerUnit"
@@ -62,4 +62,15 @@
     ref="sterlingNoteRef"
     :playerName="my.name"
     @noteRead="onSterlingNoteRead"
+  )
+
+  WorshopZoneBanner(
+    v-if="ui.workshopZone.showBanner && my.church.isFounded"
+    @show-workshop-zone="onBannerAccepted"
+    @close="() => ui.workshopZone.showBanner = false"
+  )
+
+  WorshopZone(
+    v-if="ui.workshopZone.isOpen"
+    @close="closeWorkshopZone"
   )

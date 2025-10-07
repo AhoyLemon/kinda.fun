@@ -17,6 +17,8 @@
   import DonationToast from "./vue/DonationToast.vue";
   import Chat from "./vue/Chat.vue";
   import SterlingNote from "./vue/SterlingNote.vue";
+  import WorshopZoneBanner from "./vue/WorshopZoneBanner.vue";
+  import WorshopZone from "./vue/WorshopZone.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -1021,6 +1023,20 @@
     let firstTimeAttendees = gameSettings.churchPreaching.expectedFirstTimeAttendees;
     firstTimeAttendees = Math.round(firstTimeAttendees * (my.preacherStrengths?.gatherCrowd || 1) * spiceMultiplier);
 
+    // Apply marketing effects to attendance
+    if (my.marketing.generalAdActive) {
+      firstTimeAttendees = Math.round(firstTimeAttendees * (1 + gameSettings.church.marketing.generalAd.attendanceBoost / 100));
+    }
+    if (my.marketing.signSpinnerActive) {
+      firstTimeAttendees = Math.round(firstTimeAttendees * (1 + gameSettings.church.marketing.signSpinner.attendanceBoost / 100));
+    }
+
+    // Calculate effective church capacity (base + extra pews)
+    const effectiveCapacity = my.church.maxAttendance + my.church.upgrades.extraPews * gameSettings.church.upgrades.extraPews.capacityIncrease;
+
+    // Cap attendance at church capacity
+    firstTimeAttendees = Math.min(firstTimeAttendees, effectiveCapacity);
+
     // Build today's congregation from church location demographics and scorecard
     const todaysCongregation: Array<{
       id: number;
@@ -1127,6 +1143,40 @@
         }
       });
 
+      // Apply church upgrade effects to likes
+      let upgradeBonus = 0;
+
+      // Audio/Visual equipment increases like chance
+      if (my.church.upgrades.audioVisual) {
+        upgradeBonus += gameSettings.church.upgrades.audioVisual.likeBoost / 100;
+      }
+
+      // Sacrament upgrades increase like chance
+      if (my.church.upgrades.sacrament.wine.level > 0) {
+        const wineLevel = gameSettings.church.upgrades.sacraments.wine.levels[my.church.upgrades.sacrament.wine.level];
+        if (wineLevel) {
+          upgradeBonus += wineLevel.likeBoost / 100;
+        }
+      }
+
+      if (my.church.upgrades.sacrament.bread.level > 0) {
+        const breadLevel = gameSettings.church.upgrades.sacraments.bread.levels[my.church.upgrades.sacrament.bread.level];
+        if (breadLevel) {
+          upgradeBonus += breadLevel.likeBoost / 100;
+        }
+      }
+
+      // Apply targeted marketing effects to specific religions
+      if (my.marketing.targetedAd.active && my.marketing.targetedAd.targetReligion?.id === group.id) {
+        upgradeBonus += gameSettings.church.marketing.targetedAd.targetReligionBoost / 100;
+      }
+
+      // Apply upgrade bonus to likes
+      if (upgradeBonus > 0) {
+        const bonusLikes = Math.round(group.count * upgradeBonus);
+        group.likes += bonusLikes;
+      }
+
       // Ensure likes and dislikes don't exceed total count
       group.likes = Math.min(group.likes, group.count);
       group.dislikes = Math.min(group.dislikes, group.count);
@@ -1184,10 +1234,80 @@
     totalDonations *= (my.preacherStrengths?.getDonations || 1) * spiceMultiplier;
     totalDonations = Math.round(totalDonations * 100) / 100; // Round to cents
 
+    // Calculate merch sales revenue
+    let totalMerchRevenue = 0;
+    let merchSalesDetails = {
+      holyWater: { sold: 0, revenue: 0 },
+      prayerCandles: { sold: 0, revenue: 0 },
+      energyDrinks: { sold: 0, revenue: 0 },
+    };
+
+    todaysCongregation.forEach((group) => {
+      // Each person in the group gets a chance to buy merch
+      for (let i = 0; i < group.count; i++) {
+        // Holy Water sales
+        if (my.church.merch.holyWater.isUnlocked && my.church.merch.holyWater.inventory > 0) {
+          let holyWaterChance = gameSettings.church.merch.holyWaterBottles.baseChance / 100;
+          if (my.church.merch.holyWater.isVendingMachine) {
+            holyWaterChance += gameSettings.church.merch.holyWaterVendingMachine.bonusChance / 100;
+          }
+          if (Math.random() < holyWaterChance) {
+            my.church.merch.holyWater.inventory--;
+            my.church.merch.holyWater.soldToday++;
+            merchSalesDetails.holyWater.sold++;
+            const revenue = my.church.merch.holyWater.price;
+            merchSalesDetails.holyWater.revenue += revenue;
+            totalMerchRevenue += revenue;
+          }
+        }
+
+        // Prayer Candles sales
+        if (my.church.merch.prayerCandles.isUnlocked && my.church.merch.prayerCandles.inventory > 0) {
+          const candleChance = gameSettings.church.merch.bluetoothPrayerCandles.baseChance / 100;
+          if (Math.random() < candleChance) {
+            my.church.merch.prayerCandles.inventory--;
+            my.church.merch.prayerCandles.soldToday++;
+            merchSalesDetails.prayerCandles.sold++;
+            const revenue = my.church.merch.prayerCandles.price;
+            merchSalesDetails.prayerCandles.revenue += revenue;
+            totalMerchRevenue += revenue;
+          }
+        }
+
+        // Energy Drinks sales
+        if (my.church.merch.energyDrinks.isUnlocked && my.church.merch.energyDrinks.inventory > 0) {
+          const drinkChance = gameSettings.church.merch.saintsFlow.baseChance / 100;
+          if (Math.random() < drinkChance) {
+            my.church.merch.energyDrinks.inventory--;
+            my.church.merch.energyDrinks.soldToday++;
+            merchSalesDetails.energyDrinks.sold++;
+            const revenue = my.church.merch.energyDrinks.price;
+            merchSalesDetails.energyDrinks.revenue += revenue;
+            totalMerchRevenue += revenue;
+          }
+        }
+      }
+    });
+
+    totalMerchRevenue = Math.round(totalMerchRevenue * 100) / 100; // Round to cents
+
+    // Calculate VIP confession booth revenue
+    let confessionRevenue = 0;
+    if (my.church.upgrades.vipConfessionBooths) {
+      // VIP confession booths generate revenue based on total attendance
+      // Assuming some percentage of attendees use the VIP confession service
+      const confessionUsers = Math.round(totalAttendance * 0.15); // 15% of attendees use VIP confession
+      confessionRevenue = confessionUsers * gameSettings.church.upgrades.vipConfessionBooths.revenuePerUse;
+      confessionRevenue = Math.round(confessionRevenue * 100) / 100; // Round to cents
+    }
+
     // Store church preaching statistics for results display
     my.donationsYesterday = totalDonations; // Total before Sterling's cut
     my.churchAttendanceYesterday = totalAttendance;
     my.churchDonorsYesterday = totalDonors;
+    my.merchRevenueYesterday = totalMerchRevenue;
+    my.merchSalesDetailsYesterday = merchSalesDetails;
+    my.confessionRevenueYesterday = confessionRevenue;
 
     // Show audience reactions in toasts
     const reactionToastDuration = ui.toastDuration;
@@ -1268,6 +1388,12 @@
       }
 
       my.money += playerShare;
+
+      // Add merch revenue (merch sales are not subject to Sterling's cut)
+      my.money += totalMerchRevenue;
+
+      // Add confession revenue (also not subject to Sterling's cut)
+      my.money += confessionRevenue;
 
       // Store Sterling's cut for results display
       my.sterlingCutYesterday = sterlingCut;
@@ -1437,6 +1563,24 @@
 
   function closeSterlingInterface() {
     ui.chats.sterling.isOpen = false;
+  }
+
+  function showWorkshopZone() {
+    if (ui.workshopZone.showBanner && my.church.isFounded) {
+      ui.workshopZone.showBanner = true;
+    } else {
+      ui.workshopZone.isOpen = true;
+    }
+  }
+
+  function closeWorkshopZone() {
+    ui.workshopZone.isOpen = false;
+    ui.workshopZone.showBanner = false;
+  }
+
+  function onBannerAccepted() {
+    ui.workshopZone.showBanner = false;
+    ui.workshopZone.isOpen = true;
   }
 
   function handleSterlingMessage(data: any) {

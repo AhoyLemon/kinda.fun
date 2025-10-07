@@ -79,6 +79,80 @@ export const gameSettings = reactive<GameSettings>({
     sterlingMinimumCut: 20, // Minimum amount (in dollars) Sterling takes
     topicRepetitionPenalty: 0.85, // Penalty multiplier for repeating topics (default 15% less effective)
   },
+  church: {
+    merch: {
+      holyWaterBottles: {
+        cost: 5, // cost to the player (per item)
+        baseChance: 15, // base % chance per attendee to buy
+      },
+      holyWaterVendingMachine: {
+        cost: 500,
+        bonusChance: 10, // additional % chance
+      },
+      bluetoothPrayerCandles: {
+        cost: 20, // cost to the player (per item)
+        baseChance: 8, // base % chance per attendee to buy
+      },
+      saintsFlow: {
+        cost: 3, // cost to the player (per item)
+        baseChance: 20, // base % chance per attendee to buy
+      },
+    },
+    upgrades: {
+      extraPews: {
+        cost: 200, // costPerPew
+        capacityIncrease: 20, // how many more people per pew
+      },
+      vipConfessionBooths: {
+        cost: 1000,
+        revenuePerUse: 25,
+      },
+      audioVisual: {
+        cost: 800,
+        likeBoost: 15, // % boost to like chances
+      },
+      sacraments: {
+        wine: {
+          levels: [
+            { level: 0, name: "No Wine", cost: 0, likeBoost: 0 },
+            { level: 1, name: "Kirkland Merlot", cost: 50, likeBoost: 5 },
+            {
+              level: 2,
+              name: "Kendall-Jackson Vintner's Reserve",
+              cost: 150,
+              likeBoost: 10,
+            },
+            { level: 3, name: "Dom Pérignon", cost: 500, likeBoost: 20 },
+          ],
+        },
+        bread: {
+          levels: [
+            { level: 0, name: "No Bread", cost: 0, likeBoost: 0 },
+            { level: 1, name: "Wonder Bread", cost: 25, likeBoost: 3 },
+            { level: 2, name: "Artisan Sourdough", cost: 75, likeBoost: 8 },
+            { level: 3, name: "Gold-Flaked Brioche", cost: 200, likeBoost: 15 },
+          ],
+        },
+      },
+    },
+    marketing: {
+      generalAd: {
+        price: 100,
+        attendanceBoost: 25, // % boost to attendance
+        duration: 1, // days
+      },
+      targetedAd: {
+        price: 150,
+        targetReligionBoost: 40, // % boost to target religion attendance
+        duration: 1,
+      },
+      signSpinner: {
+        price: 50,
+        attendanceBoost: 10,
+        duration: 1,
+      },
+    },
+  },
 });
 
 export const ui = reactive<UI>({
@@ -106,6 +180,10 @@ export const ui = reactive<UI>({
     sterling: {
       isOpen: false,
     },
+  },
+  workshopZone: {
+    isOpen: false,
+    showBanner: true, // Show banner on first access
   },
 });
 
@@ -170,6 +248,13 @@ export const my = reactive<My>({
   streetDonorsYesterday: 0,
   sterlingCutYesterday: 0,
   playerShareYesterday: 0,
+  merchRevenueYesterday: 0,
+  confessionRevenueYesterday: 0,
+  merchSalesDetailsYesterday: {
+    holyWater: { sold: 0, revenue: 0 },
+    prayerCandles: { sold: 0, revenue: 0 },
+    energyDrinks: { sold: 0, revenue: 0 },
+  },
   // Church-related properties
   church: {
     isFounded: false,
@@ -178,6 +263,53 @@ export const my = reactive<My>({
     religion: undefined,
     buzz: 0,
     maxAttendance: 100, // Maximum number of attendees in your church on any given day
+    upgrades: {
+      extraPews: 0,
+      vipConfessionBooths: false,
+      audioVisual: false,
+      sacrament: {
+        wine: {
+          level: 0,
+          name: "No Wine",
+        },
+        bread: {
+          level: 0,
+          name: "No Bread",
+        },
+      },
+    },
+    merch: {
+      holyWater: {
+        isUnlocked: false,
+        price: 10, // selling price
+        inventory: 0,
+        soldToday: 0,
+        totalSold: 0,
+        isVendingMachine: false,
+      },
+      energyDrinks: {
+        isUnlocked: false,
+        price: 5,
+        inventory: 0,
+        soldToday: 0,
+        totalSold: 0,
+      },
+      prayerCandles: {
+        isUnlocked: false,
+        price: 25,
+        inventory: 0,
+        soldToday: 0,
+        totalSold: 0,
+      },
+    },
+  },
+  marketing: {
+    generalAdActive: false,
+    targetedAd: {
+      active: false,
+      targetReligion: null,
+    },
+    signSpinnerActive: false,
   },
   congregation: [],
   spice: {

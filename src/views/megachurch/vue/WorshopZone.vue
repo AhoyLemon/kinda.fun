@@ -1,0 +1,900 @@
+<template>
+  <div class="workshop-zone-overlay" @click="closeWorkshop">
+    <div class="workshop-zone" @click.stop>
+      <!-- IE6 Browser Chrome -->
+      <div class="browser-chrome">
+        <div class="title-bar">
+          <span class="window-title">Da Worshop Zone - Internet Explorer</span>
+          <div class="window-controls">
+            <button class="minimize-btn">_</button>
+            <button class="maximize-btn">□</button>
+            <button class="close-btn" @click="closeWorkshop">×</button>
+          </div>
+        </div>
+
+        <div class="menu-bar">
+          <span>File</span>
+          <span>Edit</span>
+          <span>View</span>
+          <span>Favorites</span>
+          <span>Tools</span>
+          <span>Help</span>
+        </div>
+
+        <div class="toolbar">
+          <button class="nav-btn">◀ Back</button>
+          <button class="nav-btn">▶ Forward</button>
+          <button class="nav-btn">🏠 Home</button>
+          <div class="address-bar">
+            <span class="security-icon">🔒❌</span>
+            <input value="http://worship-mart.biz/blessed-deals" readonly />
+            <button class="go-btn">Go</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Website Content -->
+      <div class="website-content">
+        <div class="header">
+          <div class="logo-section">
+            <div class="logo broken-img"></div>
+            <h1 class="site-title">DA WORSHOP ZONE</h1>
+            <div class="tagline">Your Divine Source for Church Supplies!</div>
+          </div>
+
+          <!--<div class="security-warnings">
+            <div class="warning-popup">⚠️ This site is NOT SECURE</div>
+            <div class="certificate-error">Certificate Error - Proceed Anyway?</div>
+          </div> -->
+        </div>
+
+        <div class="navigation-tabs">
+          <button class="tab" :class="{ active: activeTab === 'merch' }" @click="activeTab = 'merch'">🛒 HALLWAY MERCH</button>
+          <button class="tab" :class="{ active: activeTab === 'upgrades' }" @click="activeTab = 'upgrades'">⛪ CHURCH UPGRADES</button>
+          <button class="tab" :class="{ active: activeTab === 'marketing' }" @click="activeTab = 'marketing'">📢 MARKETING</button>
+        </div>
+
+        <!-- Merch Tab -->
+        <div v-if="activeTab === 'merch'" class="tab-content">
+          <h2>Hallway Merchandise</h2>
+          <div class="product-grid">
+            <div class="product-card">
+              <div class="product-img broken-img"></div>
+              <h3>Bottles of Holy Water</h3>
+              <div class="product-description">
+                Blessed H2O in convenient bottles! Each attendee has {{ gameSettings.church.merch.holyWaterBottles.baseChance }}% chance to buy.
+              </div>
+              <div class="product-stats">
+                <div>Cost: ${{ gameSettings.church.merch.holyWaterBottles.cost }} each</div>
+                <div>Selling Price: ${{ my.church.merch.holyWater.price }}</div>
+                <div>In Stock: {{ my.church.merch.holyWater.inventory }}</div>
+                <div>Sold Today: {{ my.church.merch.holyWater.soldToday }}</div>
+              </div>
+              <div class="product-actions">
+                <input
+                  type="number"
+                  v-model="merchQuantities.holyWater"
+                  min="0"
+                  max="50"
+                  class="quantity-input"
+                  :required="false"
+                  @focus="setDefaultQuantity('holyWater')"
+                  @keydown.enter.prevent
+                />
+                <button @click="buyMerch('holyWater')" class="buy-btn" :disabled="!canAffordMerch('holyWater')">
+                  BUY {{ merchQuantities.holyWater }} FOR ${{ getMerchCost("holyWater") }}
+                </button>
+              </div>
+              <div v-if="!my.church.merch.holyWater.isUnlocked" class="unlock-section">
+                <button @click="unlockMerch('holyWater')" class="unlock-btn" :disabled="my.money < 50">UNLOCK FOR $50</button>
+              </div>
+            </div>
+
+            <div class="product-card">
+              <div class="product-img broken-img"></div>
+              <h3>Holy Water Vending Machine</h3>
+              <div class="product-description">
+                Automated holy water sales! Adds +{{ gameSettings.church.merch.holyWaterVendingMachine.bonusChance }}% chance for holy water purchases.
+              </div>
+              <div class="product-stats">
+                <div>Cost: ${{ gameSettings.church.merch.holyWaterVendingMachine.cost }}</div>
+                <div>Status: {{ my.church.merch.holyWater.isVendingMachine ? "INSTALLED" : "NOT INSTALLED" }}</div>
+              </div>
+              <button
+                v-if="!my.church.merch.holyWater.isVendingMachine"
+                @click="buyVendingMachine()"
+                class="buy-btn big"
+                :disabled="my.money < gameSettings.church.merch.holyWaterVendingMachine.cost"
+              >
+                INSTALL FOR ${{ gameSettings.church.merch.holyWaterVendingMachine.cost }}
+              </button>
+              <div v-else class="installed-text">✅ INSTALLED</div>
+            </div>
+
+            <div class="product-card">
+              <div class="product-img broken-img"></div>
+              <h3>Bluetooth Prayer Candles</h3>
+              <div class="product-description">
+                "Smart" candles with Bluetooth! Each attendee has {{ gameSettings.church.merch.bluetoothPrayerCandles.baseChance }}% chance to buy.
+              </div>
+              <div class="product-stats">
+                <div>Cost: ${{ gameSettings.church.merch.bluetoothPrayerCandles.cost }} each</div>
+                <div>Selling Price: ${{ my.church.merch.prayerCandles.price }}</div>
+                <div>In Stock: {{ my.church.merch.prayerCandles.inventory }}</div>
+                <div>Sold Today: {{ my.church.merch.prayerCandles.soldToday }}</div>
+              </div>
+              <div class="product-actions">
+                <input
+                  type="number"
+                  v-model="merchQuantities.prayerCandles"
+                  min="0"
+                  max="20"
+                  class="quantity-input"
+                  :required="false"
+                  @focus="setDefaultQuantity('prayerCandles')"
+                  @keydown.enter.prevent
+                />
+                <button @click="buyMerch('prayerCandles')" class="buy-btn" :disabled="!canAffordMerch('prayerCandles')">
+                  BUY {{ merchQuantities.prayerCandles }} FOR ${{ getMerchCost("prayerCandles") }}
+                </button>
+              </div>
+              <div v-if="!my.church.merch.prayerCandles.isUnlocked" class="unlock-section">
+                <button @click="unlockMerch('prayerCandles')" class="unlock-btn" :disabled="my.money < 100">UNLOCK FOR $100</button>
+              </div>
+            </div>
+
+            <div class="product-card">
+              <div class="product-img broken-img"></div>
+              <h3>Saints Flow Energy Drink</h3>
+              <div class="product-description">
+                Church-branded energy drinks! Each attendee has {{ gameSettings.church.merch.saintsFlow.baseChance }}% chance to buy.
+              </div>
+              <div class="product-stats">
+                <div>Cost: ${{ gameSettings.church.merch.saintsFlow.cost }} each</div>
+                <div>Selling Price: ${{ my.church.merch.energyDrinks.price }}</div>
+                <div>In Stock: {{ my.church.merch.energyDrinks.inventory }}</div>
+                <div>Sold Today: {{ my.church.merch.energyDrinks.soldToday }}</div>
+              </div>
+              <div class="product-actions">
+                <input
+                  type="number"
+                  v-model="merchQuantities.energyDrinks"
+                  min="0"
+                  max="100"
+                  class="quantity-input"
+                  :required="false"
+                  @focus="setDefaultQuantity('energyDrinks')"
+                  @keydown.enter.prevent
+                />
+                <button @click="buyMerch('energyDrinks')" class="buy-btn" :disabled="!canAffordMerch('energyDrinks')">
+                  BUY {{ merchQuantities.energyDrinks }} FOR ${{ getMerchCost("energyDrinks") }}
+                </button>
+              </div>
+              <div v-if="!my.church.merch.energyDrinks.isUnlocked" class="unlock-section">
+                <button @click="unlockMerch('energyDrinks')" class="unlock-btn" :disabled="my.money < 30">UNLOCK FOR $30</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upgrades Tab -->
+        <div v-if="activeTab === 'upgrades'" class="tab-content">
+          <h2>Church Upgrades</h2>
+          <div class="upgrade-grid">
+            <div class="upgrade-card">
+              <div class="upgrade-img broken-img"></div>
+              <h3>Extra Pews</h3>
+              <div class="upgrade-description">
+                More seating = more donations! Each pew adds {{ gameSettings.church.upgrades.extraPews.capacityIncrease }} capacity.
+              </div>
+              <div class="upgrade-stats">
+                <div>Cost: ${{ gameSettings.church.upgrades.extraPews.cost }} per pew</div>
+                <div>Current Pews: {{ my.church.upgrades.extraPews }}</div>
+                <div>
+                  Current Capacity: {{ my.church.maxAttendance + my.church.upgrades.extraPews * gameSettings.church.upgrades.extraPews.capacityIncrease }}
+                </div>
+              </div>
+              <button @click="buyUpgrade('extraPews')" class="buy-btn" :disabled="my.money < gameSettings.church.upgrades.extraPews.cost">
+                BUY 1 PEW FOR ${{ gameSettings.church.upgrades.extraPews.cost }}
+              </button>
+            </div>
+
+            <div class="upgrade-card">
+              <div class="upgrade-img broken-img"></div>
+              <h3>VIP Confession Booths</h3>
+              <div class="upgrade-description">
+                Express forgiveness for busy sinners! Generates ${{ gameSettings.church.upgrades.vipConfessionBooths.revenuePerUse }} per use.
+              </div>
+              <div class="upgrade-stats">
+                <div>Cost: ${{ gameSettings.church.upgrades.vipConfessionBooths.cost }}</div>
+                <div>Status: {{ my.church.upgrades.vipConfessionBooths ? "INSTALLED" : "NOT INSTALLED" }}</div>
+              </div>
+              <button
+                v-if="!my.church.upgrades.vipConfessionBooths"
+                @click="buyUpgrade('vipConfessionBooths')"
+                class="buy-btn big"
+                :disabled="my.money < gameSettings.church.upgrades.vipConfessionBooths.cost"
+              >
+                INSTALL FOR ${{ gameSettings.church.upgrades.vipConfessionBooths.cost }}
+              </button>
+              <div v-else class="installed-text">✅ INSTALLED</div>
+            </div>
+
+            <div class="upgrade-card">
+              <div class="upgrade-img broken-img"></div>
+              <h3>Audio/Visual Equipment</h3>
+              <div class="upgrade-description">
+                Professional A/V setup! Increases chance of positive sermon reactions by {{ gameSettings.church.upgrades.audioVisual.likeBoost }}%.
+              </div>
+              <div class="upgrade-stats">
+                <div>Cost: ${{ gameSettings.church.upgrades.audioVisual.cost }}</div>
+                <div>Status: {{ my.church.upgrades.audioVisual ? "INSTALLED" : "NOT INSTALLED" }}</div>
+              </div>
+              <button
+                v-if="!my.church.upgrades.audioVisual"
+                @click="buyUpgrade('audioVisual')"
+                class="buy-btn big"
+                :disabled="my.money < gameSettings.church.upgrades.audioVisual.cost"
+              >
+                INSTALL FOR ${{ gameSettings.church.upgrades.audioVisual.cost }}
+              </button>
+              <div v-else class="installed-text">✅ INSTALLED</div>
+            </div>
+
+            <div class="upgrade-card">
+              <div class="upgrade-img broken-img"></div>
+              <h3>Branded Communion Snacks</h3>
+              <div class="upgrade-description">Upgrade your wine and bread for better congregation satisfaction!</div>
+              <div class="sacrament-section">
+                <h4>Wine Level: {{ my.church.upgrades.sacrament.wine.level }} - {{ my.church.upgrades.sacrament.wine.name }}</h4>
+                <div class="sacrament-options">
+                  <div
+                    v-for="wineLevel in gameSettings.church.upgrades.sacraments.wine.levels.slice(
+                      my.church.upgrades.sacrament.wine.level + 1,
+                      my.church.upgrades.sacrament.wine.level + 2,
+                    )"
+                    :key="wineLevel.level"
+                    class="sacrament-option"
+                  >
+                    <span>{{ wineLevel.name }} (+{{ wineLevel.likeBoost }}% likes)</span>
+                    <button @click="upgradeWine(wineLevel)" class="buy-btn" :disabled="my.money < wineLevel.cost">${{ wineLevel.cost }}</button>
+                  </div>
+                </div>
+              </div>
+              <div class="sacrament-section">
+                <h4>Bread Level: {{ my.church.upgrades.sacrament.bread.level }} - {{ my.church.upgrades.sacrament.bread.name }}</h4>
+                <div class="sacrament-options">
+                  <div
+                    v-for="breadLevel in gameSettings.church.upgrades.sacraments.bread.levels.slice(
+                      my.church.upgrades.sacrament.bread.level + 1,
+                      my.church.upgrades.sacrament.bread.level + 2,
+                    )"
+                    :key="breadLevel.level"
+                    class="sacrament-option"
+                  >
+                    <span>{{ breadLevel.name }} (+{{ breadLevel.likeBoost }}% likes)</span>
+                    <button @click="upgradeBread(breadLevel)" class="buy-btn" :disabled="my.money < breadLevel.cost">${{ breadLevel.cost }}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Marketing Tab -->
+        <div v-if="activeTab === 'marketing'" class="tab-content">
+          <h2>Internet Marketing</h2>
+          <div class="marketing-grid">
+            <div class="marketing-card">
+              <div class="marketing-img broken-img"></div>
+              <h3>General Internet Ad Campaign</h3>
+              <div class="marketing-description">
+                Broad online advertising to boost overall attendance by {{ gameSettings.church.marketing.generalAd.attendanceBoost }}% for
+                {{ gameSettings.church.marketing.generalAd.duration }} day(s).
+              </div>
+              <div class="marketing-stats">
+                <div>Cost: ${{ gameSettings.church.marketing.generalAd.price }}</div>
+                <div>Status: {{ my.marketing.generalAdActive ? "ACTIVE" : "INACTIVE" }}</div>
+              </div>
+              <button
+                v-if="!my.marketing.generalAdActive"
+                @click="buyMarketing('generalAd')"
+                class="buy-btn big"
+                :disabled="my.money < gameSettings.church.marketing.generalAd.price"
+              >
+                RUN CAMPAIGN FOR ${{ gameSettings.church.marketing.generalAd.price }}
+              </button>
+              <div v-else class="active-text">📢 CAMPAIGN ACTIVE</div>
+            </div>
+
+            <div class="marketing-card">
+              <div class="marketing-img broken-img"></div>
+              <h3>Targeted Internet Ad Campaign</h3>
+              <div class="marketing-description">
+                Target a specific religion to boost their attendance by {{ gameSettings.church.marketing.targetedAd.targetReligionBoost }}% for
+                {{ gameSettings.church.marketing.targetedAd.duration }} day(s).
+              </div>
+              <div class="marketing-stats">
+                <div>Cost: ${{ gameSettings.church.marketing.targetedAd.price }}</div>
+                <div>Status: {{ my.marketing.targetedAd.active ? "ACTIVE" : "INACTIVE" }}</div>
+                <div v-if="my.marketing.targetedAd.active">Target: {{ my.marketing.targetedAd.targetReligion?.name }}</div>
+              </div>
+              <div v-if="!my.marketing.targetedAd.active" class="targeting-section">
+                <select v-model="selectedTargetReligion" class="religion-select">
+                  <option value="">Select Religion to Target</option>
+                  <option v-for="religion in availableReligions" :key="religion.id" :value="religion">
+                    {{ religion.name }}
+                  </option>
+                </select>
+                <button
+                  @click="buyTargetedMarketing()"
+                  class="buy-btn"
+                  :disabled="!selectedTargetReligion || my.money < gameSettings.church.marketing.targetedAd.price"
+                >
+                  RUN CAMPAIGN FOR ${{ gameSettings.church.marketing.targetedAd.price }}
+                </button>
+              </div>
+              <div v-else class="active-text">🎯 TARGETING {{ my.marketing.targetedAd.targetReligion?.name?.toUpperCase() }}</div>
+            </div>
+
+            <div class="marketing-card">
+              <div class="marketing-img broken-img"></div>
+              <h3>Sign Spinner</h3>
+              <div class="marketing-description">
+                Pay someone to spin a sign outside! Boosts attendance by {{ gameSettings.church.marketing.signSpinner.attendanceBoost }}% for
+                {{ gameSettings.church.marketing.signSpinner.duration }} day(s).
+              </div>
+              <div class="marketing-stats">
+                <div>Cost: ${{ gameSettings.church.marketing.signSpinner.price }}</div>
+                <div>Status: {{ my.marketing.signSpinnerActive ? "ACTIVE" : "INACTIVE" }}</div>
+              </div>
+              <button
+                v-if="!my.marketing.signSpinnerActive"
+                @click="buyMarketing('signSpinner')"
+                class="buy-btn big"
+                :disabled="my.money < gameSettings.church.marketing.signSpinner.price"
+              >
+                HIRE SPINNER FOR ${{ gameSettings.church.marketing.signSpinner.price }}
+              </button>
+              <div v-else class="active-text">🪧 SPINNER ACTIVE</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="visitor-counter">
+            <div class="counter-gif broken-img"></div>
+            You are visitor #{{ Math.floor(Math.random() * 999999) + 1 }}!
+          </div>
+          <div class="copyright">© 2000 Da Worshop Zone. All rights reserved. Not responsible for spiritual damage.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { ref, computed } from "vue";
+  import { my, gameSettings } from "../ts/_variables";
+  import { religions } from "../ts/_religions";
+
+  const emit = defineEmits<{
+    close: [];
+  }>();
+
+  const activeTab = ref("merch");
+
+  // Merch quantities for purchasing
+  const merchQuantities = ref({
+    holyWater: 10,
+    prayerCandles: 5,
+    energyDrinks: 20,
+  });
+
+  const selectedTargetReligion = ref<any>(null);
+
+  const availableReligions = computed(() => {
+    if (!my.church.location?.religions) return [];
+    return my.church.location.religions.map((locReligion) => religions.find((r) => r.id === locReligion.id)).filter(Boolean);
+  });
+
+  function closeWorkshop() {
+    emit("close");
+  }
+
+  function setDefaultQuantity(type: "holyWater" | "prayerCandles" | "energyDrinks") {
+    if (merchQuantities.value[type] === null || merchQuantities.value[type] === undefined) {
+      merchQuantities.value[type] = 1;
+    }
+  }
+
+  function canAffordMerch(merchType: "holyWater" | "prayerCandles" | "energyDrinks") {
+    return my.money >= getMerchCost(merchType);
+  }
+
+  function getMerchCost(merchType: "holyWater" | "prayerCandles" | "energyDrinks") {
+    const quantity = merchQuantities.value[merchType];
+    const costPerItem =
+      merchType === "holyWater"
+        ? gameSettings.church.merch.holyWaterBottles.cost
+        : merchType === "prayerCandles"
+          ? gameSettings.church.merch.bluetoothPrayerCandles.cost
+          : gameSettings.church.merch.saintsFlow.cost;
+    return quantity * costPerItem;
+  }
+
+  function unlockMerch(merchType: "holyWater" | "prayerCandles" | "energyDrinks") {
+    const cost = merchType === "holyWater" ? 50 : merchType === "prayerCandles" ? 100 : 30;
+    if (my.money >= cost) {
+      my.money -= cost;
+      if (merchType === "holyWater") my.church.merch.holyWater.isUnlocked = true;
+      else if (merchType === "prayerCandles") my.church.merch.prayerCandles.isUnlocked = true;
+      else if (merchType === "energyDrinks") my.church.merch.energyDrinks.isUnlocked = true;
+    }
+  }
+
+  function buyMerch(merchType: "holyWater" | "prayerCandles" | "energyDrinks") {
+    const cost = getMerchCost(merchType);
+    const quantity = merchQuantities.value[merchType];
+
+    if (my.money >= cost) {
+      my.money -= cost;
+      if (merchType === "holyWater") my.church.merch.holyWater.inventory += quantity;
+      else if (merchType === "prayerCandles") my.church.merch.prayerCandles.inventory += quantity;
+      else if (merchType === "energyDrinks") my.church.merch.energyDrinks.inventory += quantity;
+    }
+  }
+
+  function buyVendingMachine() {
+    if (my.money >= gameSettings.church.merch.holyWaterVendingMachine.cost) {
+      my.money -= gameSettings.church.merch.holyWaterVendingMachine.cost;
+      my.church.merch.holyWater.isVendingMachine = true;
+    }
+  }
+
+  function buyUpgrade(upgradeType: "extraPews" | "vipConfessionBooths" | "audioVisual") {
+    let cost = 0;
+
+    if (upgradeType === "extraPews") {
+      cost = gameSettings.church.upgrades.extraPews.cost;
+      if (my.money >= cost) {
+        my.money -= cost;
+        my.church.upgrades.extraPews += 1;
+      }
+    } else if (upgradeType === "vipConfessionBooths") {
+      cost = gameSettings.church.upgrades.vipConfessionBooths.cost;
+      if (my.money >= cost) {
+        my.money -= cost;
+        my.church.upgrades.vipConfessionBooths = true;
+      }
+    } else if (upgradeType === "audioVisual") {
+      cost = gameSettings.church.upgrades.audioVisual.cost;
+      if (my.money >= cost) {
+        my.money -= cost;
+        my.church.upgrades.audioVisual = true;
+      }
+    }
+  }
+
+  function upgradeWine(wineLevel: any) {
+    if (my.money >= wineLevel.cost) {
+      my.money -= wineLevel.cost;
+      my.church.upgrades.sacrament.wine.level = wineLevel.level;
+      my.church.upgrades.sacrament.wine.name = wineLevel.name;
+    }
+  }
+
+  function upgradeBread(breadLevel: any) {
+    if (my.money >= breadLevel.cost) {
+      my.money -= breadLevel.cost;
+      my.church.upgrades.sacrament.bread.level = breadLevel.level;
+      my.church.upgrades.sacrament.bread.name = breadLevel.name;
+    }
+  }
+
+  function buyMarketing(marketingType: "generalAd" | "signSpinner") {
+    let cost = 0;
+
+    if (marketingType === "generalAd") {
+      cost = gameSettings.church.marketing.generalAd.price;
+      if (my.money >= cost) {
+        my.money -= cost;
+        my.marketing.generalAdActive = true;
+      }
+    } else if (marketingType === "signSpinner") {
+      cost = gameSettings.church.marketing.signSpinner.price;
+      if (my.money >= cost) {
+        my.money -= cost;
+        my.marketing.signSpinnerActive = true;
+      }
+    }
+  }
+
+  function buyTargetedMarketing() {
+    if (selectedTargetReligion.value && my.money >= gameSettings.church.marketing.targetedAd.price) {
+      my.money -= gameSettings.church.marketing.targetedAd.price;
+      my.marketing.targetedAd.active = true;
+      my.marketing.targetedAd.targetReligion = selectedTargetReligion.value;
+    }
+  }
+</script>
+
+<style scoped>
+  .workshop-zone-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1001;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .workshop-zone {
+    width: 800px;
+    height: 600px;
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Browser Chrome */
+  .browser-chrome {
+    background: #c0c0c0;
+    border-bottom: 1px solid #808080;
+  }
+
+  .title-bar {
+    background: linear-gradient(90deg, #0080ff 0%, #004080 100%);
+    color: white;
+    padding: 2px 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  .window-controls {
+    display: flex;
+    gap: 2px;
+  }
+
+  .window-controls button {
+    width: 16px;
+    height: 14px;
+    background: #c0c0c0;
+    border: 1px outset #c0c0c0;
+    font-size: 9px;
+    font-weight: bold;
+  }
+
+  .menu-bar {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-bottom: 1px solid #d0d0d0;
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+  }
+
+  .toolbar {
+    background: #f0f0f0;
+    padding: 4px 8px;
+    border-bottom: 1px solid #d0d0d0;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .nav-btn {
+    background: #e0e0e0;
+    border: 1px outset #e0e0e0;
+    padding: 2px 8px;
+    font-size: 10px;
+  }
+
+  .address-bar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+    gap: 4px;
+  }
+
+  .security-icon {
+    font-size: 12px;
+  }
+
+  .address-bar input {
+    flex: 1;
+    border: 1px inset #c0c0c0;
+    padding: 2px 4px;
+    font-size: 10px;
+  }
+
+  .go-btn {
+    background: #e0e0e0;
+    border: 1px outset #e0e0e0;
+    padding: 2px 8px;
+    font-size: 10px;
+  }
+
+  /* Website Content */
+  .website-content {
+    flex: 1;
+    background: white;
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 16px;
+    background: linear-gradient(45deg, #ff69b4, #00ffff, #ffff00);
+    padding: 16px;
+    border: 3px dashed #ff0000;
+  }
+
+  .logo {
+    width: 64px;
+    height: 64px;
+  }
+
+  .site-title {
+    font-size: 32px;
+    color: #ff0000;
+    text-shadow: 2px 2px 4px #000;
+    margin: 8px 0;
+    animation: blink 2s infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .tagline {
+    font-size: 16px;
+    color: #000080;
+    font-weight: bold;
+  }
+
+  .security-warnings {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .warning-popup,
+  .certificate-error {
+    background: #ffff80;
+    border: 1px solid #ff0000;
+    padding: 4px 8px;
+    font-size: 10px;
+    color: #800000;
+  }
+
+  .navigation-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+  }
+
+  .tab {
+    background: #f0f0f0;
+    border: 1px solid #c0c0c0;
+    border-bottom: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .tab.active {
+    background: white;
+    border-bottom: 1px solid white;
+    margin-bottom: -1px;
+  }
+
+  .tab-content {
+    border: 1px solid #c0c0c0;
+    background: white;
+    padding: 16px;
+    min-height: 300px;
+  }
+
+  .tab-content h2 {
+    color: #000080;
+    margin-bottom: 16px;
+    font-size: 18px;
+  }
+
+  /* Product/Upgrade/Marketing Grids */
+  .product-grid,
+  .upgrade-grid,
+  .marketing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .product-card,
+  .upgrade-card,
+  .marketing-card {
+    border: 2px solid #800080;
+    background: #f8f8ff;
+    padding: 12px;
+  }
+
+  .product-img,
+  .upgrade-img,
+  .marketing-img {
+    width: 48px;
+    height: 48px;
+    float: left;
+    margin-right: 8px;
+  }
+
+  .broken-img {
+    background: #f0f0f0;
+    border: 1px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: #666;
+  }
+
+  .broken-img::after {
+    content: "IMG\ANOTFOUND";
+    white-space: pre;
+    text-align: center;
+  }
+
+  .product-card h3,
+  .upgrade-card h3,
+  .marketing-card h3 {
+    font-size: 14px;
+    color: #800080;
+    margin-bottom: 8px;
+  }
+
+  .product-description,
+  .upgrade-description,
+  .marketing-description {
+    font-size: 10px;
+    margin-bottom: 8px;
+    clear: left;
+  }
+
+  .product-stats,
+  .upgrade-stats,
+  .marketing-stats {
+    background: #ffffa0;
+    border: 1px solid #cccc00;
+    padding: 4px;
+    font-size: 9px;
+    margin-bottom: 8px;
+  }
+
+  .product-actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .quantity-input {
+    width: 40px;
+    border: 1px inset #c0c0c0;
+    padding: 2px;
+    font-size: 10px;
+  }
+
+  .buy-btn {
+    background: linear-gradient(180deg, #00ff00 0%, #008000 100%);
+    border: 2px outset #00ff00;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+  }
+
+  .buy-btn:disabled {
+    background: #c0c0c0;
+    color: #808080;
+    cursor: not-allowed;
+  }
+
+  .buy-btn.big {
+    padding: 8px 16px;
+    font-size: 11px;
+  }
+
+  .unlock-btn {
+    background: linear-gradient(180deg, #ffff00 0%, #ff8000 100%);
+    border: 2px outset #ffff00;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .unlock-btn:disabled {
+    background: #c0c0c0;
+    color: #808080;
+    cursor: not-allowed;
+  }
+
+  .installed-text,
+  .active-text {
+    background: #80ff80;
+    border: 1px solid #008000;
+    padding: 4px 8px;
+    text-align: center;
+    font-weight: bold;
+    color: #004000;
+  }
+
+  .sacrament-section {
+    margin: 8px 0;
+  }
+
+  .sacrament-section h4 {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  .sacrament-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 4px 0;
+    font-size: 10px;
+  }
+
+  .targeting-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .religion-select {
+    border: 1px inset #c0c0c0;
+    padding: 4px;
+    font-size: 10px;
+  }
+
+  .footer {
+    background: #f0f0f0;
+    padding: 8px;
+    border-top: 1px solid #c0c0c0;
+    text-align: center;
+    font-size: 9px;
+    color: #666;
+  }
+
+  .visitor-counter {
+    margin-bottom: 4px;
+  }
+
+  .counter-gif {
+    width: 80px;
+    height: 16px;
+    display: inline-block;
+    margin-right: 8px;
+  }
+</style>
