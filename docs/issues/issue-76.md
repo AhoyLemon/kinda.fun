@@ -5,6 +5,8 @@
 - Describe what is required to add church management and Da Worshop Zone to MegaChurch Tycoon.
 - Fulfilling the requirements of this doc will close https://github.com/AhoyLemon/kinda.fun/issues/76
 
+- This is the 5th phase of the game. Please see docs\megachurch\TODO.md for the phases
+
 ## Church Building Layout
 
 For the purposes of church management and merch sales, the church consists of the following rooms:
@@ -69,11 +71,11 @@ After founding your church and meeting Sterling, the next phase is managing and 
 
 - [ ] As a player, I see a banner ad for Da Worshop Zone after X days of church operation
 - [ ] After seeing the ad, I can access Da Worshop Zone from the end-of-day UI
-- [ ] Da Worshop Zone simulates a retro, insecure website (IE6, 800px wide, broken images, fake warnings, etc.)
-- [ ] I can purchase merch, upgrades, and marketing from Da Worshop Zone
-- [ ] Merch generates a separate revenue stream, with each attendee having an X% chance to buy merch each day
-- [ ] Upgrades and marketing affect attendance, donations, and satisfaction as described
-- [ ] No ongoing staff system; only one-time actions (e.g., sign spinner)
+- [ ] Using Da Workshop Zone, I can purchase merch, upgrades, and marketing for my church.
+- [ ] Any merch I buy will have the chance of generating additional revenue
+- [ ] If my church sells any merch, I will see that indicating in both a mid-preaching toast as well as the end of day screen.
+- [ ] If I purchase marketing for the day, it will improve my church attendance in the manner described.
+- [ ] If I purchase an upgrade, it will affect my church in the manner described.
 
 ## Implementation Notes
 
