@@ -1246,7 +1246,7 @@
       // Each person in the group gets a chance to buy merch
       for (let i = 0; i < group.count; i++) {
         // Holy Water sales
-        if (my.church.merch.holyWater.isUnlocked && my.church.merch.holyWater.inventory > 0) {
+        if (my.church.merch.holyWater.inventory > 0) {
           let holyWaterChance = gameSettings.church.merch.holyWaterBottles.baseChance / 100;
           if (my.church.merch.holyWater.isVendingMachine) {
             holyWaterChance += gameSettings.church.merch.holyWaterVendingMachine.bonusChance / 100;
@@ -1262,7 +1262,7 @@
         }
 
         // Prayer Candles sales
-        if (my.church.merch.prayerCandles.isUnlocked && my.church.merch.prayerCandles.inventory > 0) {
+        if (my.church.merch.prayerCandles.inventory > 0) {
           const candleChance = gameSettings.church.merch.bluetoothPrayerCandles.baseChance / 100;
           if (Math.random() < candleChance) {
             my.church.merch.prayerCandles.inventory--;
@@ -1275,7 +1275,7 @@
         }
 
         // Energy Drinks sales
-        if (my.church.merch.energyDrinks.isUnlocked && my.church.merch.energyDrinks.inventory > 0) {
+        if (my.church.merch.energyDrinks.inventory > 0) {
           const drinkChance = gameSettings.church.merch.saintsFlow.baseChance / 100;
           if (Math.random() < drinkChance) {
             my.church.merch.energyDrinks.inventory--;
@@ -1370,29 +1370,30 @@
     // Show donation toast after all reactions
     const finalDelay = todaysCongregation.length * reactionToastDelay + 2000;
     setTimeout(() => {
-      // Apply Sterling's cut before showing toast
-      let playerShare = totalDonations;
+      // Apply Sterling's cut to combined donations and merch revenue
+      const totalChurchRevenue = totalDonations + totalMerchRevenue;
+      let playerShare = totalChurchRevenue;
       let sterlingCut = 0;
 
       if (my.chats.sterling.hasContacted) {
         const cutPercentage = gameSettings.churchPreaching.sterlingCutPercentage / 100;
         const minimumCut = gameSettings.churchPreaching.sterlingMinimumCut;
 
-        sterlingCut = Math.max(minimumCut, totalDonations * cutPercentage);
-        playerShare = totalDonations - sterlingCut;
+        sterlingCut = Math.max(minimumCut, totalChurchRevenue * cutPercentage);
+        playerShare = totalChurchRevenue - sterlingCut;
 
         if (playerShare < 0) {
-          sterlingCut = totalDonations;
+          sterlingCut = totalChurchRevenue;
           playerShare = 0;
         }
+      } else {
+        // If Sterling hasn't contacted yet, player gets all revenue
+        playerShare = totalChurchRevenue;
       }
 
       my.money += playerShare;
 
-      // Add merch revenue (merch sales are not subject to Sterling's cut)
-      my.money += totalMerchRevenue;
-
-      // Add confession revenue (also not subject to Sterling's cut)
+      // Add confession revenue (not subject to Sterling's cut)
       my.money += confessionRevenue;
 
       // Store Sterling's cut for results display
@@ -1413,13 +1414,45 @@
         },
       );
 
+      // Show merch sales toasts 3 seconds after donation toast
+      let merchToastDelay = 3000;
+      if (merchSalesDetails.holyWater.sold > 0) {
+        setTimeout(() => {
+          toast.success(`You sold ${merchSalesDetails.holyWater.sold} bottles of holy water for $${merchSalesDetails.holyWater.revenue}`, {
+            position: POSITION.BOTTOM_LEFT,
+            timeout: 4000,
+          });
+        }, merchToastDelay);
+        merchToastDelay += 1500;
+      }
+
+      if (merchSalesDetails.prayerCandles.sold > 0) {
+        setTimeout(() => {
+          toast.success(`You sold ${merchSalesDetails.prayerCandles.sold} Bluetooth prayer candles for $${merchSalesDetails.prayerCandles.revenue}`, {
+            position: POSITION.BOTTOM_LEFT,
+            timeout: 4000,
+          });
+        }, merchToastDelay);
+        merchToastDelay += 1500;
+      }
+
+      if (merchSalesDetails.energyDrinks.sold > 0) {
+        setTimeout(() => {
+          toast.success(`You sold ${merchSalesDetails.energyDrinks.sold} Saints Flow energy drinks for $${merchSalesDetails.energyDrinks.revenue}`, {
+            position: POSITION.BOTTOM_LEFT,
+            timeout: 4000,
+          });
+        }, merchToastDelay);
+        merchToastDelay += 1500;
+      }
+
       // Add Sterling's cut message if applicable
       if (sterlingCut > 0) {
         setTimeout(() => {
           const cutMessage = {
             id: Date.now(),
             sender: "sterling",
-            text: `My cut for today: ${dollars(sterlingCut)}. The Lord rewards those who honor their commitments.`,
+            text: `My cut for today: ${dollars(sterlingCut)}. The Lord rewards those who honor their business commitments.`,
             time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           };
           my.chats.sterling.chatHistory.push(cutMessage);
@@ -1796,6 +1829,12 @@
 
     // Reset van travel for the day
     my.hasTraveledToday = false;
+
+    // Reset marketing effects (they only last one day)
+    my.marketing.generalAdActive = false;
+    my.marketing.signSpinnerActive = false;
+    my.marketing.targetedAd.active = false;
+    my.marketing.targetedAd.targetReligion = null;
 
     // Calculate pending addiction but don't reset spice consumption yet
     resetDailySpice();

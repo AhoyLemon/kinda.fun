@@ -280,7 +280,6 @@ export const my = reactive<My>({
     },
     merch: {
       holyWater: {
-        isUnlocked: false,
         price: 10, // selling price
         inventory: 0,
         soldToday: 0,
@@ -288,14 +287,12 @@ export const my = reactive<My>({
         isVendingMachine: false,
       },
       energyDrinks: {
-        isUnlocked: false,
         price: 5,
         inventory: 0,
         soldToday: 0,
         totalSold: 0,
       },
       prayerCandles: {
-        isUnlocked: false,
         price: 25,
         inventory: 0,
         soldToday: 0,

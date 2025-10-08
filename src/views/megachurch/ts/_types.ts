@@ -98,7 +98,6 @@ export interface ChurchUpgrades {
 }
 
 export interface MerchItem {
-  isUnlocked: boolean;
   price: number; // selling price
   inventory: number; // how many items you have
   soldToday: number; // how many sold today

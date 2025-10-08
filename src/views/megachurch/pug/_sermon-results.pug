@@ -51,26 +51,32 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
           td.number(v-if="gameSettings.isDebug") {{religion.score}}
 
     .donations-summary
-      dl.donations-collected
-        dt Total Donations:
-        dd 
-          .amount {{dollars(my.donationsYesterday)}}
-          .donor-count(v-if="my.isStreetPreaching") (from {{my.streetDonorsYesterday}} donors)
-      template(v-if="!my.isStreetPreaching && my.chats.sterling?.hasContacted && my.sterlingCutYesterday > 0")
-        dl.donations-collected
+      dl.money-summary
+        .row.total-donations
+          dt Total Donations:
+          .modifier.empty
+          dd 
+            .amount {{dollars(my.donationsYesterday)}}
+            .donor-count(v-if="my.isStreetPreaching") (from {{my.streetDonorsYesterday}} donors)
+        .row.merch-sales.plus(v-if="!my.isStreetPreaching && my.merchRevenueYesterday > 0")
+          dt Merch Sales:
+          .modifier.plus +
+          dd {{dollars(my.merchRevenueYesterday)}}
+        .row.sterling-cut.minus(v-if="my.sterlingCutYesterday > 0")
           dt Sterling's Cut:
+          .modifier.minus -
           dd {{dollars(my.sterlingCutYesterday)}}
-        dl.donations-collected
-          dt Your Share:
+        .row.player-share.equals
+          dt 
+            span(v-if="my.sterlingCutYesterday > 0") Your Share:
+            span(v-else-if="my.playerShareYesterday && my.playerShareYesterday != my.donationsYesterday") Your Earnings:
+          .modifier.equals =
           dd {{dollars(my.playerShareYesterday)}}
     
     // Church Management Results
     .church-management-summary(v-if="!my.isStreetPreaching && my.church.isFounded")
       template(v-if="my.merchRevenueYesterday > 0")
         h3 Merch Sales Revenue
-        dl.merch-sales
-          dt Total Merch Revenue:
-          dd {{dollars(my.merchRevenueYesterday)}}
         .merch-breakdown(v-if="my.merchSalesDetailsYesterday")
           template(v-if="my.merchSalesDetailsYesterday.holyWater.sold > 0")
             dl.merch-item

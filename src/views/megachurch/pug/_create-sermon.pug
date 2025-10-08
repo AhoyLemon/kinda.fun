@@ -54,5 +54,4 @@ section.sermon(v-if="ui.view === 'sermon'")
 
     .button-holder
       button.van(v-if="my.hasVan && !my.hasTraveledToday" @click="ui.view = 'place'") Get In The Van
-      button.workshop-zone(v-if="my.church.isFounded" @click="showWorkshopZone") 💻 Da Worshop Zone
       button(type="submit" :disabled="!ui.selectedTopics[0] || !ui.selectedTopics[1] || !ui.selectedTopics[2]") Create Sermon

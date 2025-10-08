@@ -82,11 +82,8 @@
                   @keydown.enter.prevent
                 />
                 <button @click="buyMerch('holyWater')" class="buy-btn" :disabled="!canAffordMerch('holyWater')">
-                  BUY {{ merchQuantities.holyWater }} FOR ${{ getMerchCost("holyWater") }}
+                  BUY {{ merchQuantities.holyWater }} FOR ${{ getMerchCost("holyWater") }} (incl. shipping)
                 </button>
-              </div>
-              <div v-if="!my.church.merch.holyWater.isUnlocked" class="unlock-section">
-                <button @click="unlockMerch('holyWater')" class="unlock-btn" :disabled="my.money < 50">UNLOCK FOR $50</button>
               </div>
             </div>
 
@@ -135,11 +132,8 @@
                   @keydown.enter.prevent
                 />
                 <button @click="buyMerch('prayerCandles')" class="buy-btn" :disabled="!canAffordMerch('prayerCandles')">
-                  BUY {{ merchQuantities.prayerCandles }} FOR ${{ getMerchCost("prayerCandles") }}
+                  BUY {{ merchQuantities.prayerCandles }} FOR ${{ getMerchCost("prayerCandles") }} (incl. shipping)
                 </button>
-              </div>
-              <div v-if="!my.church.merch.prayerCandles.isUnlocked" class="unlock-section">
-                <button @click="unlockMerch('prayerCandles')" class="unlock-btn" :disabled="my.money < 100">UNLOCK FOR $100</button>
               </div>
             </div>
 
@@ -167,11 +161,8 @@
                   @keydown.enter.prevent
                 />
                 <button @click="buyMerch('energyDrinks')" class="buy-btn" :disabled="!canAffordMerch('energyDrinks')">
-                  BUY {{ merchQuantities.energyDrinks }} FOR ${{ getMerchCost("energyDrinks") }}
+                  BUY {{ merchQuantities.energyDrinks }} FOR ${{ getMerchCost("energyDrinks") }} (incl. shipping)
                 </button>
-              </div>
-              <div v-if="!my.church.merch.energyDrinks.isUnlocked" class="unlock-section">
-                <button @click="unlockMerch('energyDrinks')" class="unlock-btn" :disabled="my.money < 30">UNLOCK FOR $30</button>
               </div>
             </div>
           </div>
@@ -420,17 +411,9 @@
         : merchType === "prayerCandles"
           ? gameSettings.church.merch.bluetoothPrayerCandles.cost
           : gameSettings.church.merch.saintsFlow.cost;
-    return quantity * costPerItem;
-  }
-
-  function unlockMerch(merchType: "holyWater" | "prayerCandles" | "energyDrinks") {
-    const cost = merchType === "holyWater" ? 50 : merchType === "prayerCandles" ? 100 : 30;
-    if (my.money >= cost) {
-      my.money -= cost;
-      if (merchType === "holyWater") my.church.merch.holyWater.isUnlocked = true;
-      else if (merchType === "prayerCandles") my.church.merch.prayerCandles.isUnlocked = true;
-      else if (merchType === "energyDrinks") my.church.merch.energyDrinks.isUnlocked = true;
-    }
+    const itemCost = quantity * costPerItem;
+    const shippingCost = 15; // Fixed shipping cost
+    return itemCost + shippingCost;
   }
 
   function buyMerch(merchType: "holyWater" | "prayerCandles" | "energyDrinks") {

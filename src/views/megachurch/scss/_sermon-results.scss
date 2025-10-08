@@ -71,24 +71,70 @@ section.sermon-results {
     }
   }
 
-  .donations-collected {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    dt {
-      align-items: center;
-      justify-content: center;
-      display: flex;
-      text-transform: uppercase;
-    }
-    dd {
-      font-family: monospace;
-      font-size: 4em;
-      .donor-count {
-        font-size: 1rem;
+  .money-summary {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+    .row {
+      display: table-row;
+      > * {
+        padding: 6px 10px;
+        display: table-cell;
+      }
+      dt {
+        text-align: right;
+        font-weight: 300;
+        text-transform: uppercase;
+      }
+      .modifier {
+        width: 2em;
+        text-align: center;
+      }
+      dd {
+        font-family: $monospace;
+        font-size: 1.25rem;
+      }
+      &.plus {
+        .modifier,
+        dd {
+          color: $green;
+        }
+      }
+      &.minus {
+        .modifier,
+        dd {
+          color: $pink;
+        }
+      }
+      &.equals {
+        > * {
+          border-top: 1px solid $white;
+        }
+        dd {
+          font-weight: 850;
+        }
       }
     }
   }
+
+  // .donations-collected {
+  //   display: flex;
+  //   justify-content: center;
+  //   gap: 10px;
+  //   dt {
+  //     align-items: center;
+  //     justify-content: center;
+  //     display: flex;
+  //     text-transform: uppercase;
+  //   }
+  //   dd {
+  //     font-family: monospace;
+  //     font-size: 4em;
+  //     .donor-count {
+  //       font-size: 1rem;
+  //     }
+  //   }
+  // }
 
   .buttons {
     @extend %buttons;

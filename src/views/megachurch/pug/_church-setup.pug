@@ -92,7 +92,7 @@ section.choose.church-setup(v-if="ui.view === 'church-setup'")
 
     .sterling-details(v-if="ui.churchLocationIndex && ui.churchReligionIndex")
       h3 Partnership Terms
-      p Sterling Silver will take <strong>{{gameSettings.churchPreaching.sterlingCutPercentage}}%</strong> of your daily donations.
+      p Sterling Silver will take <strong>{{gameSettings.churchPreaching.sterlingCutPercentage}}%</strong> of your daily church earnings.
       p Minimum daily payment: <strong>{{dollars(gameSettings.churchPreaching.sterlingMinimumCut)}}</strong>
       p <em>"Trust me, {{my.name}}, this arrangement benefits us both."</em>
 
