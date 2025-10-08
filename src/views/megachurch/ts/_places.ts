@@ -1,19 +1,4 @@
-import { Tags, ReligionNames, PlaceNames } from "./_types";
-
-export interface Place {
-  id: number; // UID for place
-  name: PlaceNames; // The Name of this place
-  description: string; // Describe this place further, what is unique about it?
-  likedTags: Tags[]; // A list of things the population of this particular place generally likes. (max 5)
-  dislikedTags: Tags[]; // A list of things the population of this particular place generally dislikes. (max 5)
-  totalPopulation: number; // The estimated number of people who live in this place
-  avgNetWorth: number; // The average net worth for people in this place.
-  religions: {
-    id: number; // UID of the religion (the ID the religion has in religions)
-    name: ReligionNames; // Name of the religion
-    weight: number; // From 0 to 100, how strongly this population identifies with the religion
-  }[];
-}
+import { Tags, ReligionNames, Place, PlaceNames } from "./_types";
 
 export const places: Place[] = [
   {
