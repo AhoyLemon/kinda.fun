@@ -1,24 +1,16 @@
-## Acceptance Criteria
+# Issue 77: Eternal Legacy, Lucre Acquisition, Heat Meter, and Endgame
 
-- [ ] Eternal Legacy phase can be triggered after X days of church operation
-- [ ] Heat Meter UI appears and tracks risk, with correct daily and action-based increases
-- [ ] Player receives and can play Sterling's voicemail via a new interface
-- [ ] Voicemail can be replayed at any time via chat
-- [ ] Eternal Legacy Shop UI is accessible, with all items, costs, and mammon values
-- [ ] Under the Table section is present, with all items and correct gameplay effects
-- [ ] Toasts, notifications, and endgame screen display satirical/twisted Bible verses
-- [ ] Endgame triggers on full heat, with legacy score and parody messaging
-  - [ ] The full endgame buildout will be handled in a later issue. For the moment, a simple screen with your score and a list of lucre is sufficient.
+## Goal
 
----
+- Describe requirements for adding the Eternal Legacy phase to MegaChurch Tycoon, including lucre acquisition, the Heat Meter, the endgame scoring system, and all related UI/UX.
+- Fulfilling the requirements of this doc will close https://github.com/AhoyLemon/kinda.fun/issues/77
+- This is the 6th phase of the game. Please see docs\megachurch\TODO.md for the phases
 
-## Implementation Notes
+## What this phase does
 
-- It is OKAY to add variables, functions, and computeds not strictly documented here if needed for implementation.
-- It is ENCOURAGED to keep all Eternal Legacy/Heat Meter/shop data in a central config for easy balancing.
-- It is DISCOURAGED to add hardcoded numbers for logic; use gameSettings or variables for all tunable values.
-- It is APPRECIATED if you write any tests while working on your implementation. If you do, please use vitest, and make the tests simple.
-- It is UNDERSTOOD that you may need to modify endgame, shop, or notification logic to account for new features; please document any such changes in the appropriate docs/megachurch/\*.md files.
+- Adds the concept of "Heat", creating an inevitable endgame scenario.
+- Adds the concept of "Mammon", which will be the player's score at the end of the game.
+- Adds new ways to interface with Sterling, including getting rid of him and his cut.
 
 ---
 
@@ -50,8 +42,6 @@
 ## 3. Eternal Legacy Shop
 
 ### Mammon-Scoring Items
-
-> **Note:** Eternal Legacy items are very expensive and it is likely that most players will not be able to purchase all of them (or even most of them) in a single run. This is a game balance issue—should the player be able to buy more, or should the shop be aspirational and out-of-reach? Needs further consideration and playtesting.
 
 | Item                            | Cost ($)   | Mammon Value | Description                                                              |
 | ------------------------------- | ---------- | ------------ | ------------------------------------------------------------------------ |
@@ -117,6 +107,38 @@ Display a rotating selection of biblical verses about wealth at the top or botto
 - A list of all lucre items purchased
 - Sterling's status (alive/dead? Does he like you?)
 - The full endgame buildout will be handled in a later issue. For the moment, a simple screen with your score and a list of lucre is sufficient.
+
+---
+
+## Note on Costs
+
+Eternal Legacy items are very expensive and create game balance issues - it may be unlikely the player can afford them. At the moment, suggestions on rebalance (maybe you make more money per day in this phase?) are welcome.
+
+---
+
+## Acceptance Criteria
+
+- [ ] After I have run a church for X days, I get a notification that I have a new voicemail from Sterling
+- [ ] After I see that notification, I can play the voicemail
+- [ ] If I wish I can replay Sterling's voicemail via `src\views\megachurch\vue\Chat.vue`
+- [ ] Once I have heard the voicemail, I will see the Heat thermometer
+- [ ] Once I've heard the voicemail, I have a new button on the end-of-day UI to access the Eternal Legacy Shop
+- [ ] In the Eternal Legacy Shop, I can see all items, their costs, and their mammon values (if any)
+- [ ] If I purchase one of the Mammon-scoring items, I will see an increase in my Mammon score
+- [ ] If I purchase one of the "Under The Table" items, I will see the correct gameplay effects
+- [ ] Once my heat reaches maximum, the endgame is triggered.
+
+---
+
+## Implementation Notes
+
+- It is OKAY to add variables, functions, and computeds not strictly documented here if needed for implementation.
+- It is ENCOURAGED to keep all Eternal Legacy/Heat Meter/shop data in a central config for easy balancing.
+- It is DISCOURAGED to add hardcoded numbers for logic; use gameSettings or variables for all tunable values.
+- It is APPRECIATED if you write any tests while working on your implementation. If you do, please use vitest, and make the tests simple.
+- It is UNDERSTOOD that you may need to modify endgame, shop, or notification logic to account for new features; please document any such changes in the appropriate docs/megachurch/\*.md files.
+
+---
 
 ## Sample Variables
 
