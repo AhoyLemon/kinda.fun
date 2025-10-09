@@ -118,15 +118,33 @@ Eternal Legacy items are very expensive and create game balance issues - it may 
 
 ## Acceptance Criteria
 
-- [ ] After I have run a church for X days, I get a notification that I have a new voicemail from Sterling
-- [ ] After I see that notification, I can play the voicemail
+- [x] After I have run a church for X days, I get a notification that I have a new voicemail from Sterling
+- [x] After I see that notification, I can play the voicemail
 - [ ] If I wish I can replay Sterling's voicemail via `src\views\megachurch\vue\Chat.vue`
-- [ ] Once I have heard the voicemail, I will see the Heat thermometer
-- [ ] Once I've heard the voicemail, I have a new button on the end-of-day UI to access the Eternal Legacy Shop
-- [ ] In the Eternal Legacy Shop, I can see all items, their costs, and their mammon values (if any)
-- [ ] If I purchase one of the Mammon-scoring items, I will see an increase in my Mammon score
-- [ ] If I purchase one of the "Under The Table" items, I will see the correct gameplay effects
-- [ ] Once my heat reaches maximum, the endgame is triggered.
+- [x] Once I have heard the voicemail, I will see the Heat thermometer
+- [x] Once I've heard the voicemail, I have a new button on the end-of-day UI to access the Eternal Legacy Shop
+- [x] In the Eternal Legacy Shop, I can see all items, their costs, and their mammon values (if any)
+- [x] If I purchase one of the Mammon-scoring items, I will see an increase in my Mammon score
+- [x] If I purchase one of the "Under The Table" items, I will see the correct gameplay effects
+- [x] Once my heat reaches maximum, the endgame is triggered.
+- [x] **BONUS:** Debug buttons are available to manually trigger Eternal Legacy phase for testing
+
+### Current Implementation Status (Updated 2025-10-08)
+
+✅ **COMPLETED:**
+
+- Eternal Legacy trigger system (automatically activates after 2 church days)
+- Voicemail notification and playback system with Sterling's script
+- Heat Meter UI component (thermometer-style, fixed positioning)
+- Complete Eternal Legacy Shop interface with tabs for Mammon Collection and Under The Table items
+- Purchase mechanics with money spending, mammon tracking, and heat increases
+- Daily heat progression and endgame trigger when maximum heat reached
+- Debug triggers for manual testing (`gameSettings.isDebug` must be true)
+
+🚧 **REMAINING:**
+
+- Sterling voicemail replay integration with Chat.vue component
+- Full endgame screen implementation (currently shows basic alert)
 
 ---
 

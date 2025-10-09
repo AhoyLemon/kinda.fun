@@ -30,7 +30,7 @@ export interface Spice {
   isAddicted: boolean; // starts true
   requiredAmount: number; // How much spice is required to avoid withdrawal symptoms each day
   canOverperform: boolean; // If true, the player can increase their stats above 100% by taking more spice than the required amount
-  fatalAmount: number; // If the player takes this much spice in a single day, they will die
+  fatalAmount?: number; // If the player takes this much spice in a single day, they will die (optional for player state, required for settings)
   consumedToday: number; // How much spice the player consumed today (reset daily)
   pendingAddictionIncrease: number; // Addiction increase that will apply next day
   spiceToDeliver: number; // Spice ordered but not yet delivered
@@ -157,7 +157,8 @@ export interface UI {
     | "sermon-confirm"
     | "preaching"
     | "sermon-results"
-    | "church-setup";
+    | "church-setup"
+    | "game-over";
   selectedTopics: [number | null, number | null, number | null];
   religionIndex: number;
   placeIndex: number;
@@ -186,6 +187,12 @@ export interface UI {
     isOpen: boolean;
     showBanner: boolean;
   };
+  eternalLegacyShop: {
+    isOpen: boolean;
+  };
+  sterlingVoicemail: {
+    isOpen: boolean;
+  };
 }
 
 export interface ChatMessage {
@@ -212,8 +219,7 @@ export interface GameSettings {
   themesPerDay: number; // How many themes are available to choose from each day
   triggers: {
     sterling: {
-      days: number;
-      totalEarnings: number;
+      daysWithVan: number;
     };
     harold: {
       days: number;
@@ -347,6 +353,38 @@ export interface GameSettings {
       };
     };
   };
+  eternalLegacy: {
+    trigger: {
+      churchDays: number;
+    };
+    heat: {
+      max: number;
+      dailyBaseIncrease: number;
+      earningsMultiplier: number;
+      illegalActionIncrease: number;
+    };
+    shop: {
+      mammonItems: Array<{
+        id: string;
+        name: string;
+        cost: number;
+        mammon: number;
+        description: string;
+      }>;
+      underTheTable: Array<{
+        id: string;
+        name: string;
+        cost: number;
+        heat: number;
+        effect: string;
+      }>;
+    };
+    bibleVerses: Array<{
+      quote: string;
+      cite: string;
+      version: string;
+    }>;
+  };
 }
 
 // ================= PLAYER STATE TYPE =================
@@ -425,11 +463,30 @@ export interface My {
     plug: ChatHistory;
     harold: ChatHistory;
     sterling?: ChatHistory & {
+      daysWithVan: number;
       hasAgreedToArrangement?: boolean;
       moneyOwed?: number;
       totalPayments?: number;
     };
   };
+  eternalLegacy: {
+    isActive: boolean;
+    heat: number;
+    voicemailPlayed: boolean;
+    voicemailReplayAvailable: boolean;
+    totalMammon: number;
+    purchasedItems: Array<string>; // Array of item IDs
+    usedUnderTableItems: Array<{
+      id: string;
+      name: string;
+      cost: number;
+      effect: string;
+      useDate: number; // day used
+    }>;
+    sterlingCutModifier: number; // Additional percentage points added to Sterling's cut
+    sterlingAlive: boolean;
+  };
+  gameOverCause: null | "drug overdose" | "prison"; // If endgame is triggered (not null), what caused game over
 }
 
 // ================= NAMES OF THINGS =================

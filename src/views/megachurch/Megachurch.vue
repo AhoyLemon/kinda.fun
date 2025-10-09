@@ -15,10 +15,14 @@
   import FollowerToast from "./vue/FollowerToast.vue";
   import ListenerToast from "./vue/ListenerToast.vue";
   import DonationToast from "./vue/DonationToast.vue";
+  import MerchToast from "./vue/MerchToast.vue";
   import Chat from "./vue/Chat.vue";
   import SterlingNote from "./vue/SterlingNote.vue";
   import WorshopZoneBanner from "./vue/WorshopZoneBanner.vue";
   import WorshopZone from "./vue/WorshopZone.vue";
+  import HeatMeter from "./vue/HeatMeter.vue";
+  import EternalLegacyShop from "./vue/EternalLegacyShop.vue";
+  import SterlingVoicemail from "./vue/SterlingVoicemail.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -752,7 +756,10 @@
 
         toast.success(
           h(DonationToast, {
-            change: donationAmount,
+            totalEarnings: donationAmount,
+            totalDonations: donationAmount,
+            totalMerch: 0,
+            sterlingCut: 0,
           }),
           {
             position: POSITION.BOTTOM_LEFT,
@@ -841,7 +848,10 @@
 
       toast.success(
         h(DonationToast, {
-          change: donationAmount,
+          totalEarnings: donationAmount,
+          totalDonations: donationAmount,
+          totalMerch: 0,
+          sterlingCut: 0,
         }),
         {
           position: POSITION.BOTTOM_LEFT,
@@ -988,7 +998,10 @@
 
       toast.success(
         h(DonationToast, {
-          change: donationAmount,
+          totalEarnings: donationAmount,
+          totalDonations: donationAmount,
+          totalMerch: 0,
+          sterlingCut: 0,
         }),
         {
           position: POSITION.BOTTOM_LEFT,
@@ -1375,7 +1388,7 @@
       let playerShare = totalChurchRevenue;
       let sterlingCut = 0;
 
-      if (my.chats.sterling.hasContacted) {
+      if (my.chats.sterling.hasContacted && my.eternalLegacy.sterlingAlive) {
         const cutPercentage = gameSettings.churchPreaching.sterlingCutPercentage / 100;
         const minimumCut = gameSettings.churchPreaching.sterlingMinimumCut;
 
@@ -1400,51 +1413,53 @@
       my.sterlingCutYesterday = sterlingCut;
       my.playerShareYesterday = playerShare;
 
-      toast(
-        {
-          component: DonationToast,
-          props: {
-            change: playerShare,
-            sterlingCut: sterlingCut > 0 ? sterlingCut : undefined,
+      // Show merch toast first if there's merch sales, or a no-merch message if player owns merch but sold none
+      const hasMerchSales = totalMerchRevenue > 0;
+      const ownsMerch =
+        my.church.merch.holyWater.inventory > 0 ||
+        my.church.merch.holyWater.soldToday > 0 ||
+        my.church.merch.prayerCandles.inventory > 0 ||
+        my.church.merch.prayerCandles.soldToday > 0 ||
+        my.church.merch.energyDrinks.inventory > 0 ||
+        my.church.merch.energyDrinks.soldToday > 0;
+
+      if (hasMerchSales || ownsMerch) {
+        setTimeout(() => {
+          toast(
+            {
+              component: MerchToast,
+              props: {
+                totalMerchRevenue: totalMerchRevenue,
+                merchSalesDetails: merchSalesDetails,
+              },
+            },
+            {
+              position: POSITION.BOTTOM_LEFT,
+              timeout: ui.toastDuration,
+            },
+          );
+        }, 0);
+      }
+
+      // Show donation toast after merch toast (or immediately if no merch)
+      const donationToastDelay = hasMerchSales || ownsMerch ? 3000 : 0;
+      setTimeout(() => {
+        toast(
+          {
+            component: DonationToast,
+            props: {
+              totalEarnings: playerShare + confessionRevenue,
+              totalDonations: totalDonations,
+              totalMerch: totalMerchRevenue,
+              sterlingCut: sterlingCut,
+            },
           },
-        },
-        {
-          position: POSITION.BOTTOM_LEFT,
-          timeout: 9000,
-        },
-      );
-
-      // Show merch sales toasts 3 seconds after donation toast
-      let merchToastDelay = 3000;
-      if (merchSalesDetails.holyWater.sold > 0) {
-        setTimeout(() => {
-          toast.success(`You sold ${merchSalesDetails.holyWater.sold} bottles of holy water for $${merchSalesDetails.holyWater.revenue}`, {
+          {
             position: POSITION.BOTTOM_LEFT,
-            timeout: 4000,
-          });
-        }, merchToastDelay);
-        merchToastDelay += 1500;
-      }
-
-      if (merchSalesDetails.prayerCandles.sold > 0) {
-        setTimeout(() => {
-          toast.success(`You sold ${merchSalesDetails.prayerCandles.sold} Bluetooth prayer candles for $${merchSalesDetails.prayerCandles.revenue}`, {
-            position: POSITION.BOTTOM_LEFT,
-            timeout: 4000,
-          });
-        }, merchToastDelay);
-        merchToastDelay += 1500;
-      }
-
-      if (merchSalesDetails.energyDrinks.sold > 0) {
-        setTimeout(() => {
-          toast.success(`You sold ${merchSalesDetails.energyDrinks.sold} Saints Flow energy drinks for $${merchSalesDetails.energyDrinks.revenue}`, {
-            position: POSITION.BOTTOM_LEFT,
-            timeout: 4000,
-          });
-        }, merchToastDelay);
-        merchToastDelay += 1500;
-      }
+            timeout: ui.toastDuration,
+          },
+        );
+      }, donationToastDelay);
 
       // Add Sterling's cut message if applicable
       if (sterlingCut > 0) {
@@ -1496,8 +1511,8 @@
     const excess = Math.max(0, consumed - required);
 
     if (excess > 0) {
-      // Store addiction increase for next day
-      my.spice.pendingAddictionIncrease = excess * gameSettings.spice.addictionProgression;
+      // Store addiction increase for next day (rounded to integer)
+      my.spice.pendingAddictionIncrease = Math.round(excess * gameSettings.spice.addictionProgression);
     } else {
       my.spice.pendingAddictionIncrease = 0;
     }
@@ -1506,12 +1521,10 @@
   function applyPendingAddiction() {
     // Apply addiction progression that was calculated yesterday
     if (my.spice.pendingAddictionIncrease > 0) {
-      const oldRequirement = Math.ceil(my.spice.requiredAmount);
-      my.spice.requiredAmount += my.spice.pendingAddictionIncrease;
-      const newRequirement = Math.ceil(my.spice.requiredAmount);
+      const oldRequirement = my.spice.requiredAmount;
+      my.spice.requiredAmount = my.spice.requiredAmount + my.spice.pendingAddictionIncrease;
+      const newRequirement = my.spice.requiredAmount;
       my.spice.pendingAddictionIncrease = 0;
-
-      // Only return true if the rounded requirement actually changed
       return newRequirement > oldRequirement;
     }
     return false; // No change
@@ -1616,6 +1629,74 @@
     ui.workshopZone.isOpen = true;
   }
 
+  // === Eternal Legacy Shop Functions ===
+
+  function showEternalLegacyShop() {
+    if (my.eternalLegacy.isActive) {
+      ui.eternalLegacyShop.isOpen = true;
+    } else {
+      toast.warning("The Eternal Legacy catalog is not yet available.");
+    }
+  }
+
+  function closeEternalLegacyShop() {
+    ui.eternalLegacyShop.isOpen = false;
+  }
+
+  function handleEternalLegacyPurchase({ item, category }) {
+    if (my.money < item.cost) {
+      toast.error("Insufficient funds for this divine acquisition.");
+      return;
+    }
+
+    if (my.eternalLegacy.purchasedItems.includes(item.id)) {
+      toast.warning("You already own this item.");
+      return;
+    }
+
+    // Process purchase
+    my.money -= item.cost;
+    my.eternalLegacy.purchasedItems.push(item.id);
+
+    if (category === "mammon") {
+      // Mammon items increase score
+      my.eternalLegacy.totalMammon += item.mammon;
+      toast.success(`${item.name} acquisition secured! +${item.mammon} mammon`);
+    } else if (category === "underTheTable") {
+      // Handle Under The Table item effects
+      updateHeat(item.heat);
+
+      // Apply specific mechanics based on item ID
+      switch (item.id) {
+        case "shredder":
+          // Slows heat gain - could be implemented as a modifier
+          toast.success(`${item.name}: Documents shredded. Heat gain reduced, but church reputation damaged.`);
+          break;
+
+        case "sterling-cut":
+          // Increase Sterling's cut permanently
+          my.eternalLegacy.sterlingCutModifier += 10; // 10% additional cut
+          toast.success(`${item.name}: Sterling handles the authorities. His cut of your income increases permanently.`);
+          break;
+
+        case "tax-attorney":
+          // Reduce Sterling payments but increase heat and scandal
+          toast.success(`${item.name}: Legal protection secured. Sterling's leverage reduced, but congregation scandalized.`);
+          break;
+
+        case "consultation-tony":
+          // Eliminate Sterling but massive heat increase
+          my.eternalLegacy.sterlingAlive = false;
+          toast.error(`${item.name}: Sterling has been... permanently removed. Heat MASSIVELY increased!`);
+          break;
+      }
+
+      toast.warning(`🔥 Heat increased by ${item.heat}! Current: ${my.eternalLegacy.heat}/${gameSettings.eternalLegacy.heat.max}`);
+    }
+
+    // Don't auto-close shop - let player continue shopping
+  }
+
   function handleSterlingMessage(data: any) {
     if (data.messages && Array.isArray(data.messages)) {
       data.messages.forEach((message: any) => {
@@ -1653,13 +1734,8 @@
     }
 
     // Check if player qualifies for Sterling contact (church phase)
-    // Trigger when player has van, some experience, and sufficient money/followers
-    if (
-      !my.chats.sterling.hasContacted &&
-      my.hasVan &&
-      my.daysPlayed >= gameSettings.triggers.sterling.days &&
-      my.totalMoneyEarned >= gameSettings.triggers.sterling.totalEarnings
-    ) {
+    // Trigger when player has had a van for the required amount of days.
+    if (!my.chats.sterling.hasContacted && my.hasVan && my.chats.sterling.daysWithVan >= gameSettings.triggers.sterling.daysWithVan) {
       setTimeout(() => {
         triggerSterlingContact();
       }, 6000);
@@ -1683,7 +1759,6 @@
     }, 2200);
     // Queue the rest of the messages with typing simulation
     const subsequentMessages = [
-      "i got this van",
       "u need a van???",
       `$${gameSettings.van.cost}`, // This message triggers the van interface
       "u culd relly go places w it",
@@ -1744,7 +1819,7 @@
       },
       {
         position: POSITION.BOTTOM_RIGHT,
-        timeout: 3000,
+        timeout: ui.toastDuration,
         onClose: () => {
           // Show the actual note after toast disappears
           setTimeout(() => {
@@ -1787,7 +1862,7 @@
       if (my.chats.plug.totalOrders <= 2) {
         setTimeout(() => {
           toast.info("Your spice will be delivered in the morning", {
-            timeout: 4000,
+            timeout: 3500,
           });
         }, 2000);
       }
@@ -1801,9 +1876,9 @@
 
       // Show delivery notification
       const statusMessages = {
-        under: "You're still under-dosed",
+        under: "⚠️ You're still under-dosed",
         optimal: "You're now feeling normal",
-        over: "You're feeling enhanced",
+        over: "⚡ You're feeling enhanced",
       };
 
       let status = "optimal";
@@ -1816,15 +1891,28 @@
       toast.success(`${my.spice.spiceToDeliver} spice taken. ${statusMessages[status]}.`, {
         timeout: 4000,
       });
-
       // Clear delivery queue
       my.spice.spiceToDeliver = 0;
     }
   }
   function advanceToNextDay() {
     my.daysPlayed += 1;
+    if (!my.chats.sterling.hasContacted && my.hasVan) {
+      my.chats.sterling.daysWithVan += 1;
+    }
 
-    // Spice wears off at the end of the day
+    // Check for Eternal Legacy trigger
+    checkEternalLegacyTrigger();
+
+    // Update heat if Eternal Legacy is active
+    if (my.eternalLegacy.isActive) {
+      updateHeat(gameSettings.eternalLegacy.heat.dailyBaseIncrease);
+    }
+
+    // Calculate pending addiction BEFORE resetting spice consumption
+    resetDailySpice();
+
+    // Spice wears off at the end of the day (AFTER addiction calculation)
     my.spice.consumedToday = 0;
 
     // Reset van travel for the day
@@ -1835,9 +1923,6 @@
     my.marketing.signSpinnerActive = false;
     my.marketing.targetedAd.active = false;
     my.marketing.targetedAd.targetReligion = null;
-
-    // Calculate pending addiction but don't reset spice consumption yet
-    resetDailySpice();
 
     // Generate new daily themes for tomorrow
     generateDailyThemes();
@@ -1870,7 +1955,197 @@
       }, 1000);
     }
 
-    ui.view = "sermon";
+    if (my.spice.consumedToday >= my.spice.fatalAmount) {
+      toast.error("Uh oh", { timeout: 3000 });
+      setTimeout(() => {
+        toast.error("That was probably too much...", { timeout: 4000 });
+      }, 1000);
+      // Blur and darken the screen by adding a class to body
+      //document.body.classList.add("fatal-overdose-blur");
+      ui.view = "game-over";
+      my.gameOverCause = "drug overdose";
+    } else {
+      ui.view = "sermon";
+    }
+  }
+
+  // ================= ETERNAL LEGACY SYSTEM =================
+  function checkEternalLegacyTrigger() {
+    // Only trigger if church is founded and we haven't already activated Eternal Legacy
+    if (!my.church.isFounded || my.eternalLegacy.isActive) {
+      return;
+    }
+
+    // Calculate days since church was founded
+    const churchDays = my.daysPlayed; // This assumes church was founded on day 1, adjust if needed
+
+    if (churchDays >= gameSettings.eternalLegacy.trigger.churchDays) {
+      triggerEternalLegacy();
+    }
+  }
+
+  function triggerEternalLegacy() {
+    my.eternalLegacy.isActive = true;
+    my.eternalLegacy.voicemailReplayAvailable = true;
+
+    // Show voicemail notification
+    setTimeout(() => {
+      toast.info("You have a new voicemail from Sterling.", {
+        timeout: 10000,
+      });
+
+      // Open voicemail interface after 3 seconds
+      setTimeout(() => {
+        ui.sterlingVoicemail.isOpen = true;
+      }, 3000);
+    }, 1000);
+  }
+
+  function playEternalLegacyVoicemail() {
+    // This is now called when manually triggering voicemail replay
+    ui.sterlingVoicemail.isOpen = true;
+  }
+
+  function closeSterlingVoicemail() {
+    ui.sterlingVoicemail.isOpen = false;
+  }
+
+  function onVoicemailCompleted() {
+    my.eternalLegacy.voicemailPlayed = true;
+
+    // Show heat meter notification
+    setTimeout(() => {
+      toast.warning("The Heat Meter is now tracking federal attention. Your days are numbered.");
+    }, 1000);
+
+    // Check for immediate endgame trigger
+    if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
+      triggerEndgame();
+    }
+  }
+
+  function openEternalLegacyFromVoicemail() {
+    my.eternalLegacy.voicemailPlayed = true;
+    ui.eternalLegacyShop.isOpen = true;
+
+    // Check for immediate endgame trigger
+    if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
+      triggerEndgame();
+    }
+  }
+
+  function updateHeat(amount: number) {
+    my.eternalLegacy.heat = Math.min(my.eternalLegacy.heat + amount, gameSettings.eternalLegacy.heat.max);
+
+    // Check for endgame trigger
+    if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
+      triggerEndgame();
+    }
+  }
+
+  function triggerEndgame() {
+    toast.error("🚨 FEDERAL INVESTIGATION INITIATED 🚨");
+
+    // Close any open dialogs
+    ui.eternalLegacyShop.isOpen = false;
+    ui.sterlingVoicemail.isOpen = false;
+
+    // Switch to game over view
+    setTimeout(() => {
+      ui.view = "game-over";
+    }, 2000);
+  }
+
+  // === Debug Functions ===
+
+  function debugTriggerSpeedPreaching() {
+    if (ui.timing.toastDelayMin != 1) {
+      ui.timing.toastDelayMin = 1;
+      ui.timing.toastDelayMax = 10;
+      ui.timing.donationToastDelay = 500;
+      ui.timing.resultsViewDelay = 5;
+      ui.timing.churchToastOffset = 1;
+      toast.success("🐇 Speed Preaching ACTIVATED");
+    } else {
+      ui.timing.toastDelayMin = 1600;
+      ui.timing.toastDelayMax = 3200;
+      ui.timing.donationToastDelay = 6000;
+      ui.timing.resultsViewDelay = 6000;
+      ui.timing.churchToastOffset = 1000;
+      toast.error("🐢 Speed Preaching deactivated");
+    }
+  }
+
+  function debugTriggerEternalLegacy() {
+    // Set up church if not founded
+    if (!my.church.isFounded) {
+      my.church.isFounded = true;
+      my.church.name = "DEBUG CHURCH";
+      my.church.location = places[Math.floor(Math.random() * places.length)];
+      my.church.religion = my.religiousScorecard[Math.floor(Math.random() * my.religiousScorecard.length)];
+      my.chats.sterling.hasContacted = true;
+      toast.info("DEBUG: Church auto-founded for Eternal Legacy testing");
+      my.place = { ...my.church.location };
+      my.isStreetPreaching = false;
+    }
+
+    if (!my.eternalLegacy.isActive) {
+      triggerEternalLegacy();
+      toast.success("DEBUG: Eternal Legacy phase manually triggered!");
+    } else {
+      toast.warning("Eternal Legacy is already active!");
+    }
+  }
+
+  function debugAddHeat() {
+    if (my.eternalLegacy.isActive) {
+      updateHeat(10);
+      toast.info(`DEBUG: Added 10 heat. Current: ${my.eternalLegacy.heat}/${gameSettings.eternalLegacy.heat.max}`);
+    } else {
+      toast.warning("Eternal Legacy must be active to add heat!");
+    }
+  }
+
+  function debugTriggerHarold() {
+    if (!my.chats.harold.hasContacted) {
+      my.chats.harold.hasContacted = true;
+      my.canBuyVan = true;
+      const haroldDebugMessages = [
+        "i got this van",
+        "u need a van???",
+        `$${gameSettings.van.cost}`, // This message triggers the van interface
+        "u culd relly go places w it",
+        "mb help u w ur preachin",
+        "wana buy???",
+        "DEBUG: Harold initial contact triggered!",
+      ];
+      const debugMessageStructure = {
+        id: 0,
+        sender: "harold",
+        text: "",
+        time: "DEBUG",
+        isTyping: false,
+      };
+      haroldDebugMessages.forEach((msg) => {
+        my.chats.harold.chatHistory.push({
+          ...debugMessageStructure,
+          id: randomNumber(500, 1000),
+          text: msg,
+        });
+      });
+      toast.success("DEBUG: Harold initial contact triggered!");
+    } else {
+      toast.warning("Harold has already been contacted!");
+    }
+  }
+
+  function debugTriggerSterling() {
+    if (!my.chats.sterling.hasContacted) {
+      my.chats.sterling.hasContacted = true;
+      toast.success("DEBUG: Sterling initial contact triggered!");
+    } else {
+      toast.warning("Sterling has already been contacted!");
+    }
   }
 
   // ================= INITIALISE STUFF AT GAME START =================
@@ -1957,6 +2232,22 @@
     }
     return places;
   });
+
+  const purchasedMammonItems = computed(() => {
+    return my.eternalLegacy.purchasedItems.map((itemId) => gameSettings.eternalLegacy.shop.mammonItems.find((item) => item.id === itemId)).filter(Boolean);
+  });
+
+  const purchasedUnderTableItems = computed(() => {
+    return my.eternalLegacy.purchasedItems.map((itemId) => gameSettings.eternalLegacy.shop.underTheTable.find((item) => item.id === itemId)).filter(Boolean);
+  });
+
+  // === Game Control Functions ===
+
+  function restartGame() {
+    if (confirm("Are you sure you want to start a new ministry? All progress will be lost.")) {
+      location.reload();
+    }
+  }
 
   // ================= LIFECYCLE =================
   onMounted(() => {

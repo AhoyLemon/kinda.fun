@@ -1,0 +1,51 @@
+section.game-over(v-if="ui.view === 'game-over'")
+  .inner
+
+    h1 Game Over
+
+    template(v-if="my.gameOverCause === 'drug overdose'")
+      h2 💀 YOU DIED OF A DRUG OVERDOSE 💀
+      p It feels good until it suddenly doesn't. The stresses of building a megachurch empire have had their effect on your body and mind.
+      p And now you're dead.
+      p But hey, at least you got high in the process!
+      //- p The stress of running an illegal megachurch empire while evading federal authorities has taken its toll. You succumbed to a fatal overdose of spice.
+    template(v-if="my.gameOverCause === 'prison'")
+      h2 🏛️ YOU ARE IN PRISON 🏛️
+      p The federal investigation into your megachurch empire has concluded, and you have been sentenced to prison for your crimes.
+
+    .game-over-stats
+      table
+        tbody
+          tr
+            td.label Total Days Survived:
+            td.value {{my.daysPlayed}}
+          tr
+            td.label Sterling Status:
+            td.value {{my.eternalLegacy.sterlingAlive ? 'alive' : 'dead'}}
+          tr
+            td.label Final Mammon Score:
+            td.value.huge {{addCommas(my.eternalLegacy.totalMammon)}}
+
+  
+    p Overall, you conned a total of 
+      strong {{dollars(my.totalMoneyEarned)}} 
+      |  out of people, so in a way that's a success.
+    p But in another far more accurate way, the only thing that matters in this game is the acquisition of tokens of wealth, and you've collected 
+      strong(v-text="addCommas(my.eternalLegacy.totalMammon)")
+      |  mammon of tokens of wealth. That is not enough. Play again.
+
+    .purchased-items(v-if="my.eternalLegacy.purchasedItems.length > 0")
+      h3 Your Legacy Items
+      .items-list
+        .mammon-items(v-if="purchasedMammonItems.length > 0")
+          h4 💰 Mammon Collection
+          ul
+            li(v-for="item in purchasedMammonItems" :key="item.id") {{item.name}}
+        
+        .under-table-items(v-if="purchasedUnderTableItems.length > 0")
+          h4 🔥 Under The Table Arrangements
+          ul
+            li(v-for="item in purchasedUnderTableItems" :key="item.id") {{item.name}}
+
+    .big-button-holder
+      button.restart(@click="restartGame") Begin New Ministry

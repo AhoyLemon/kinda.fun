@@ -14,7 +14,9 @@
 
     include pug/_sermon-results.pug
 
-    include pug/_church-setup.pug  
+    include pug/_church-setup.pug
+
+    include pug/_game-over.pug
 
   include pug/_your-details.pug 
 
@@ -25,7 +27,7 @@
     :playerName="my.name"
     :playerMoney="my.money"
     :spicePrice="gameSettings.spice.pricePerUnit"
-    :fatalSpiceAmount="my.spice.fatalAmount"
+    :fatalSpiceAmount="my.spice.fatalAmount" 
     :spiceRequired="my.spice.requiredAmount"
     :chatHistory="my.chats.plug.chatHistory"
     :totalOrders="my.chats.plug.totalOrders"
@@ -73,4 +75,26 @@
   WorshopZone(
     v-if="ui.workshopZone.isOpen"
     @close="closeWorkshopZone"
+  ) 
+
+  HeatMeter(
+    v-if="my.eternalLegacy.isActive && my.eternalLegacy.voicemailPlayed"
+    :currentHeat="my.eternalLegacy.heat"
+    :maxHeat="gameSettings.eternalLegacy.heat.max"
+    :isVisible="true"
+  )
+
+  EternalLegacyShop(
+    v-if="ui.eternalLegacyShop.isOpen"
+    :my="my"
+    :gameSettings="gameSettings"
+    @close="closeEternalLegacyShop"
+    @purchase="handleEternalLegacyPurchase"
+  )
+
+  SterlingVoicemail(
+    :isVisible="ui.sterlingVoicemail.isOpen"
+    @close="closeSterlingVoicemail"
+    @voicemailCompleted="onVoicemailCompleted"
+    @openShop="openEternalLegacyFromVoicemail"
   ) 

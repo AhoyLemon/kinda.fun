@@ -15,8 +15,9 @@
   - Player is also incentivized to get rid of Sterling Silver
 - [ ] Lucre Acquisition
   - Players can acquire expensive crap, which is the ultimate goal of the game
-- [ ] MegaChurch Franchising
+- [ ] MegaChurch Franchising (MAYBE NOT YET)
   - Players can found multiple churches in different locations, creating a religious empire
+  - NOTE: I may skip this step for v1.0 as it creates more complications, and lucre and shutdown are more important and interesting. Franchising can be added later as a post-1.0 update.
 - [ ] FBI Shutdown
   - The game cannot go on forever. At some point, your crimes (both fiscal and otherwise) will catch up to you, and will be raided by the FBI, IRS and/or the DOJ. At that point, what matters is how much lucre you have acquired, which is your final score.
 

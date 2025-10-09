@@ -66,10 +66,10 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
           dt Sterling's Cut:
           .modifier.minus -
           dd {{dollars(my.sterlingCutYesterday)}}
-        .row.player-share.equals
+        .row.player-share.equals(v-if="my.playerShareYesterday && my.playerShareYesterday != my.donationsYesterday")
           dt 
             span(v-if="my.sterlingCutYesterday > 0") Your Share:
-            span(v-else-if="my.playerShareYesterday && my.playerShareYesterday != my.donationsYesterday") Your Earnings:
+            span(v-else) Your Earnings:
           .modifier.equals =
           dd {{dollars(my.playerShareYesterday)}}
     
@@ -139,9 +139,11 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
 
     .buttons
       button.plug(@click="openPlugInterface()") 📱 The Plug
-      button.harold(v-if="my.chats.harold.hasContacted || my.hasVan" @click="openHaroldInterface()") 📱 Uncle Harold
-      button.sterling(v-if="my.chats.sterling.hasContacted" @click="openSterlingInterface()") 📱 Sterling Silver
+      button.harold(v-if="my.chats.harold.hasContacted && !my.hasVan" @click="openHaroldInterface()") 📱 Uncle Harold
+      button.sterling(v-if="my.chats.sterling.hasContacted && my.eternalLegacy.sterlingAlive" @click="openSterlingInterface()") 📱 Sterling Silver
+      //button.sterling-voicemail(v-if="my.eternalLegacy.voicemailReplayAvailable" @click="playEternalLegacyVoicemail()") 📞 Replay Sterling's Voicemail
       button.workshop-zone(v-if="my.church.isFounded" @click="showWorkshopZone") 💻 Da Worshop Zone
+      button.eternal-legacy(v-if="my.eternalLegacy.isActive" @click="showEternalLegacyShop") 💻 Eternal Legacy
       button.submit(@click="advanceToNextDay()") Next Day.
 
     
