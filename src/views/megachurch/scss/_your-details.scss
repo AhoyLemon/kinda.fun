@@ -49,4 +49,55 @@ aside.your-details {
       }
     }
   }
+  .fullscreen-btn {
+    display: flex;
+    background: rgba(235, 235, 235);
+    gap: 10px;
+    width: 100%;
+    font-family: $sans-serif;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    border-radius: 6px;
+    &:hover,
+    &:focus {
+      background-color: rgba(235, 235, 255);
+    }
+  }
+  .box.buttons {
+    fieldset {
+      display: grid;
+      gap: 2px;
+    }
+    button {
+      display: flex;
+      background: rgba(235, 235, 235);
+      gap: 10px;
+      width: 100%;
+      font-family: $sans-serif;
+      padding: 0.5em 1em;
+      cursor: pointer;
+      border-radius: 6px;
+      &:hover,
+      &:focus {
+        background-color: rgba(235, 235, 255);
+      }
+      &.active {
+        background-color: rgba(0, 0, 0, 5);
+        color: white;
+      }
+    }
+    .debug-controls {
+      margin-top: 20px;
+      legend {
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.75em;
+      }
+      button:before {
+        content: "🐞";
+      }
+    }
+  }
+  .debug-toggle {
+  }
 }

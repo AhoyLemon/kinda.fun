@@ -11,7 +11,10 @@
 @import "scss/extends";
 @import "scss/defaults";
 
-@import "scss/libraries//multiselect-custom";
+@import "scss/libraries/multiselect-custom";
+
+// Screens
+@import "scss/title-screen";
 
 @import "scss/form";
 @import "scss/choose";

@@ -413,10 +413,11 @@ export const gameSettings = reactive<GameSettings>({
 });
 
 export const ui = reactive<UI>({
-  view: "sermon", // Start with sermon selection instead of religion
+  view: "title-screen", // Start with title screen
   selectedTopics: [null, null, null],
   religionIndex: 0,
   placeIndex: 0,
+  isFullscreen: false,
   churchLocationIndex: 0,
   churchReligionIndex: 0,
   toastDuration: 7000, // Default toast duration in ms

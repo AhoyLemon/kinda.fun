@@ -1,0 +1,21 @@
+main.title-screen(v-if="ui.view === 'title-screen'")
+  .inner
+    h1 You wake up in the morning with no money and no drugs.
+    h2 This is a problem.
+
+    .choose
+      form(@submit.prevent="ui.view = 'sermon'")
+
+        legend In order to get drugs, you'll need money. In order to get money, other people need to give it to you. And to make that happen, rather than robbing them outright, you decide you'll yell about religion as loud as you can in the hopes that somebody gives you enough money for you to get high tomorrow.
+
+        fieldset
+          label.required Your Name
+          input(type="text" v-model="my.name" required)
+
+        fieldset.checkbox(v-if="my.name")
+          label
+            input(type="checkbox" required) 
+            span I understand that my goal in this game is to acquire wealth, and any religious opinions conveyed are simply a means to that end.
+
+        .button-holder(v-if="my.name")
+          button(type="submit") BEGIN

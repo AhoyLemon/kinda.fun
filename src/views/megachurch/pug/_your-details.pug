@@ -21,11 +21,11 @@ aside.your-details
       small(v-if="my.church.religion?.name") ({{my.church.religion.name}})
 
   
-  .box
+  .box(v-if="my.daysPlayed > 0 || my.money > 0")
     .label Money
     .value {{dollars(my.money)}}
   
-  .box.spice-status(:class="{'penalty': my.spice.consumedToday < my.spice.requiredAmount, 'normal': my.spice.consumedToday >= my.spice.requiredAmount && my.spice.consumedToday <= my.spice.requiredAmount, 'bonus': my.spice.consumedToday > my.spice.requiredAmount}")
+  .box.spice-status(v-if="my.daysPlayed > 0" :class="{'penalty': my.spice.consumedToday < my.spice.requiredAmount, 'normal': my.spice.consumedToday >= my.spice.requiredAmount && my.spice.consumedToday <= my.spice.requiredAmount, 'bonus': my.spice.consumedToday > my.spice.requiredAmount}")
     .label Spice Status
     .value
       div(v-if="my.spice.consumedToday < my.spice.requiredAmount") 
@@ -50,18 +50,23 @@ aside.your-details
 
   
 
-  .box(v-if="gameSettings.isDebugButtonVisible")
-    .value
-      button(@click="toggleDebugMode()")
+  .box.buttons(v-if="gameSettings.isDebugButtonVisible || !ui.isFullscreen")
+    fieldset
+      //- button.fullscreen-btn(v-if="!ui.isFullscreen" @click="enterFullscreen") 
+      //-   svg(viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="16" height="16" aria-hidden="true" focusable="false")
+      //-     path(d="M290 236.4l43.9-43.9a8.01 8.01 0 0 0-4.7-13.6L169 160c-5.1-.6-9.5 3.7-8.9 8.9L179 329.1c.8 6.6 8.9 9.4 13.6 4.7l43.7-43.7L370 423.7c3.1 3.1 8.2 3.1 11.3 0l42.4-42.3c3.1-3.1 3.1-8.2 0-11.3L290 236.4zm352.7 187.3c3.1 3.1 8.2 3.1 11.3 0l133.7-133.6 43.7 43.7a8.01 8.01 0 0 0 13.6-4.7L863.9 169c.6-5.1-3.7-9.5-8.9-8.9L694.8 179c-6.6.8-9.4 8.9-4.7 13.6l43.9 43.9L600.3 370a8.03 8.03 0 0 0 0 11.3l42.4 42.4zM845 694.9c-.8-6.6-8.9-9.4-13.6-4.7l-43.7 43.7L654 600.3a8.03 8.03 0 0 0-11.3 0l-42.4 42.3a8.03 8.03 0 0 0 0 11.3L734 787.6l-43.9 43.9a8.01 8.01 0 0 0 4.7 13.6L855 864c5.1.6 9.5-3.7 8.9-8.9L845 694.9zm-463.7-94.6a8.03 8.03 0 0 0-11.3 0L236.3 733.9l-43.7-43.7a8.01 8.01 0 0 0-13.6 4.7L160.1 855c-.6 5.1 3.7 9.5 8.9 8.9L329.2 845c6.6-.8 9.4-8.9 4.7-13.6L290 787.6 423.7 654c3.1-3.1 3.1-8.2 0-11.3l-42.4-42.4z")
+      //-   span Full Screen
+      
+      button.debug-toggle(@click="toggleDebugMode()" :class="{'active': gameSettings.isDebug}")
         span(v-if="gameSettings.isDebug") Turn Debug Off 
         span(v-if="!gameSettings.isDebug") Enable Debug
 
-  .box.debug-buttons(v-if="gameSettings.isDebug")
-      h3 Debug Controls
-      button.debug(@click="my.money += 1000000; toast.success(`Okay, here's a million dollars.`)") 🐞 +$1,000,000
-      button.debug(v-if="!my.chats.harold.hasContacted" @click="debugTriggerHarold()") 🐞 Trigger Harold
-      button.debug(v-if="!my.hasVan" @click="my.hasVan = true") 🐞 Get Van
-      button.debug(v-if="!my.chats.sterling.hasContacted" @click="debugTriggerSterling()") 🐞 Trigger Sterling
-      button.debug(v-if="!my.eternalLegacy.isActive" @click="debugTriggerEternalLegacy()") 🐞 Trigger Legacy
-      button.debug(v-if="my.eternalLegacy.isActive" @click="debugAddHeat()") 🐞 Add Heat (+10)
-      button.debug(@click="debugTriggerSpeedPreaching()") 🐞 Speed Preaching
+    fieldset.debug-controls(v-if="gameSettings.isDebug")
+      legend Debug Controls
+      button.debug(@click="my.money += 1000000; toast.success(`Okay, here's a million dollars.`)") +$1,000,000
+      button.debug(v-if="!my.chats.harold.hasContacted" @click="debugTriggerHarold()") Trigger Harold
+      button.debug(v-if="!my.hasVan" @click="my.hasVan = true") Get Van
+      button.debug(v-if="!my.chats.sterling.hasContacted" @click="debugTriggerSterling()") Trigger Sterling
+      button.debug(v-if="!my.eternalLegacy.isActive" @click="debugTriggerEternalLegacy()") Trigger Legacy
+      button.debug(v-if="my.eternalLegacy.isActive" @click="debugAddHeat()") Add Heat (+10)
+      button.debug(@click="debugTriggerSpeedPreaching()") Speed Preaching

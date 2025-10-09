@@ -1,0 +1,107 @@
+main.title-screen {
+  background-size: cover;
+  background-position: center;
+  //background-image: url(https://images.pexels.com/photos/2704927/pexels-photo-2704927.jpeg);
+  //background-image: url(https://images.pexels.com/photos/2253934/pexels-photo-2253934.jpeg);
+  background-image: url("/img/megachurch/bg/pexels-dariuskrs-2253934-edit.jpg");
+  grid-column: span 2;
+  color: white;
+  h1 {
+    font-family: $serif;
+    line-height: 115%;
+    font-size: 5.25dvw;
+    text-align: center;
+    text-wrap: balance;
+    margin-bottom: 20px;
+    color: #df1919;
+    color: oklch(0.66 0.29 27.67);
+    letter-spacing: 0.025em;
+
+    text-shadow:
+      -1.5px -1.5px 0 black,
+      1.5px 1.5px 0 black,
+      -0.05em -0.05em 0.1em black,
+      0.05em 0.05em 0.1em black;
+    filter: drop-shadow(0 0.1em 0.25em rgba(0, 0, 0, 0.7));
+
+    // /* text-shadow:
+    //   -1px 0 #000,
+    //   1px 0 #000,
+    //   0 -1px #000,
+    //   0 1px #000,
+    //   -1px -1px #000,
+    //   1px -1px #000,
+    //   -1px 1px #000,
+    //   1px 1px #000,
+    //   0 0.18em 0.9em rgba(0, 0, 0, 0.75),
+    //   0 2px 8px #222; */
+    // /* Add a drop shadow using filter for extra depth */
+    // filter: drop-shadow(-1px -1px 0 rgba(0, 0, 0, 1)) drop-shadow(1px 1px 0 rgba(0, 0, 0, 1)) drop-shadow(0 0.18em 0.9em rgba(0, 0, 0, 0.55))
+    //   drop-shadow(0 0.4em 1.5em rgba(0, 0, 0, 0.35)) drop-shadow(0 1em 2.5em rgba(0, 0, 0, 0.18));
+  }
+  h2 {
+    font-family: $serif;
+    font-size: 3dvw;
+    font-weight: 400;
+    text-align: center;
+    text-wrap: balance;
+    margin-bottom: 60px;
+    /* Add a crisp 1px black outline using text-shadow */
+    text-shadow:
+      -1px 0 #000,
+      1px 0 #000,
+      0 -1px #000,
+      0 1px #000,
+      -1px -1px #000,
+      1px -1px #000,
+      -1px 1px #000,
+      1px 1px #000;
+    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55));
+  }
+  p {
+    max-width: 72ch;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 165%;
+  }
+  // h2 {
+  //   fo
+  // }
+
+  form {
+    margin-top: 60px;
+    max-width: 680px;
+    background-color: rgba(255, 255, 255, 0.65);
+    color: #222;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    /* Add background blur effect */
+    backdrop-filter: blur(4px);
+
+    input {
+      background-color: transparent;
+    }
+    fieldset {
+      border-color: #222;
+      label {
+        color: #222;
+      }
+      &.checkbox {
+        padding-bottom: 6px;
+      }
+    }
+    fieldset:has(:focus) {
+      background-color: white;
+    }
+    legend {
+      font-size: 14px;
+      line-height: 135%;
+      font-family: $sans-serif;
+      margin-bottom: 0;
+    }
+    .button-holder {
+      justify-content: center;
+    }
+  }
+}

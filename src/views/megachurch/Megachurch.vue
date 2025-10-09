@@ -2056,6 +2056,21 @@
     }, 2000);
   }
 
+  function enterFullscreen() {
+    // Try to request fullscreen on the main game container for best compatibility
+    const el = document.getElementById("app") || document.body;
+    if (el.requestFullscreen) {
+      el.requestFullscreen();
+    } else if ((el as any).webkitRequestFullscreen) {
+      (el as any).webkitRequestFullscreen();
+    } else if ((el as any).msRequestFullscreen) {
+      (el as any).msRequestFullscreen();
+    }
+  }
+  document.addEventListener("fullscreenchange", () => {
+    ui.isFullscreen = !!document.fullscreenElement;
+  });
+
   // === Debug Functions ===
 
   function debugTriggerSpeedPreaching() {

@@ -150,9 +150,8 @@ export interface Sermon {
 
 export interface UI {
   view:
-    | "religion"
+    | "title-screen"
     | "place"
-    | "place-confirm"
     | "sermon"
     | "sermon-confirm"
     | "preaching"
@@ -162,6 +161,7 @@ export interface UI {
   selectedTopics: [number | null, number | null, number | null];
   religionIndex: number;
   placeIndex: number;
+  isFullscreen: boolean;
   churchLocationIndex: number;
   churchReligionIndex: number;
   toastDuration: number;

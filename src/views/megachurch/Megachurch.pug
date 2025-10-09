@@ -1,24 +1,29 @@
 .game-screen
 
-  main
+  template(v-if="ui.view === 'title-screen'")
+    include pug/_title-screen.pug
 
-    include pug/_choose-religion.pug
+  template(v-else)
 
-    include pug/_choose-place.pug
+    main
 
-    include pug/_create-sermon.pug
+      include pug/_choose-religion.pug
 
-    include pug/_sermon-diagnosis.pug
+      include pug/_choose-place.pug
 
-    include pug/_preaching.pug
+      include pug/_create-sermon.pug
 
-    include pug/_sermon-results.pug
+      include pug/_sermon-diagnosis.pug
 
-    include pug/_church-setup.pug
+      include pug/_preaching.pug
 
-    include pug/_game-over.pug
+      include pug/_sermon-results.pug
 
-  include pug/_your-details.pug 
+      include pug/_church-setup.pug
+
+      include pug/_game-over.pug
+  
+    include pug/_your-details.pug 
 
   // Spice dealer chat interface
   Chat(
