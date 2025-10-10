@@ -299,7 +299,6 @@ export const places: Place[] = [
       { id: 2, name: "Catholicism", weight: 20 },
       { id: 9, name: "Mormonism", weight: 18 },
       { id: 3, name: "Evangelical Christianity", weight: 15 },
-      { id: 25, name: "Orthodox Islam", weight: 12 },
       { id: 1, name: "Southern Baptist", weight: 8 },
     ],
   },

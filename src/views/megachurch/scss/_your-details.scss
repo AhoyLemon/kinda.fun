@@ -20,33 +20,24 @@ aside.your-details {
       font-family: $serif;
       font-size: 1.35rem;
     }
+    ol {
+      display: grid;
+      gap: 0.25em;
+      list-style: decimal;
+      padding-left: 1em;
+      li::marker {
+        font-size: 80%;
+      }
+    }
   }
   .box.top-religions {
     .value {
       font-size: 1rem;
     }
-    ol {
-      display: grid;
-      gap: 0.25em;
-      list-style: decimal;
-      padding-left: 1em;
-      li::marker {
-        font-size: 80%;
-      }
-    }
   }
   .box.todays-sermon {
     .value {
       font-size: 0.875rem;
-    }
-    ol {
-      display: grid;
-      gap: 0.25em;
-      list-style: decimal;
-      padding-left: 1em;
-      li::marker {
-        font-size: 80%;
-      }
     }
   }
   .fullscreen-btn {

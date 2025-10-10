@@ -491,7 +491,7 @@ export const themes: Theme[] = [
         "tradition",
         "shame",
       ],
-      religions: ["Mormonism", "Orthodox Islam", "Southern Baptist", "Zardoz"],
+      religions: ["Mormonism", "Southern Baptist", "Zardoz"],
     },
   },
   {
@@ -531,12 +531,7 @@ export const themes: Theme[] = [
     },
     dislikedBy: {
       tags: ["dogma", "authority", "tradition", "order", "shame"],
-      religions: [
-        "Southern Baptist",
-        "Catholicism",
-        "Orthodox Islam",
-        "Mormonism",
-      ],
+      religions: ["Southern Baptist", "Catholicism", "Mormonism"],
     },
   },
   {
@@ -588,7 +583,7 @@ export const themes: Theme[] = [
         "tradition",
         "shame",
       ],
-      religions: ["Mormonism", "Orthodox Islam", "Southern Baptist"],
+      religions: ["Mormonism", "Southern Baptist"],
     },
   },
   {
@@ -1054,7 +1049,7 @@ export const themes: Theme[] = [
     desc: "It's really just a basic engineering problem—some folks got their blueprints mixed up at the factory. With enough prayer, conversion therapy, and aggressive heterosexual propaganda, anyone can figure out which parts are supposed to connect to which.",
     likedBy: {
       tags: ["tradition", "family values", "authority", "literalism"],
-      religions: ["Southern Baptist", "Orthodox Islam"],
+      religions: ["Southern Baptist", "Evangelical Christianity"],
     },
     dislikedBy: {
       tags: ["social justice", "compassion", "individualism", "free thought"],
@@ -1542,7 +1537,7 @@ export const themes: Theme[] = [
     },
     dislikedBy: {
       tags: ["self-control", "order", "tradition", "soberness"],
-      religions: ["Southern Baptist", "Mormonism", "Orthodox Islam"],
+      religions: ["Southern Baptist", "Mormonism"],
     },
   },
   {

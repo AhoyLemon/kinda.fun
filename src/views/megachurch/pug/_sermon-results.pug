@@ -14,7 +14,7 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
             th 😁
             th 😠
         tbody
-          tr(v-for="reaction in sortedAudienceReactions.filter(r => r.liked > 0 || r.disliked > 0)" :class="{'positive': reaction.liked > reaction.disliked, 'negative': reaction.disliked > reaction.liked}")
+          tr(v-for="reaction in sortedAudienceReactions.filter(r => r.liked > 0 || r.disliked > 0).slice().sort((a, b) => (b.liked + b.disliked + b.neutral) - (a.liked + a.disliked + a.neutral))" :class="{'positive': reaction.liked > reaction.disliked, 'negative': reaction.disliked > reaction.liked}" )
             td 
               span.religion-name {{reaction.name}}
             td.number {{reaction.liked + reaction.disliked + reaction.neutral}}
@@ -24,31 +24,63 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
             td.number
               span.negative(v-if="reaction.disliked > 0") {{reaction.disliked}}
               span(v-else) 0
-          tr.summary(v-if="totalIgnoredAudience > 0")
+            tr.summary(v-if="totalIgnoredAudience > 0")
+        tfoot
+          tr
             td(colspan="4")
               em {{totalIgnoredAudience}} other people ignored your sermon.
 
-    // Church Preaching Results  
+    // Church Preaching Results 
 
-    table.debug.follower-changes(v-if="!my.isStreetPreaching")
-      caption Religious Scorecard Changes
-      thead
-        tr
-          th(v-if="gameSettings.isDebug") id
-          th name
-          th(v-if="gameSettings.isDebug") before
-          th change
-          th(v-if="gameSettings.isDebug") after
-      tbody
-        tr(v-for="religion in my.religiousScorecard.filter(r => r.change !== 0)" :class="{'positive': religion.change > 0, 'negative': religion.change < 0}")
-          td(v-if="gameSettings.isDebug") {{religion.id}}
-          td 
-            span.religion-name {{religion.name}}
-          td.number(v-if="gameSettings.isDebug") {{religion.score - religion.change}}
-          td.number
-            span.positive(v-if="religion.change > 0") {{"+"+religion.change}}
-            span.negative(v-else-if="religion.change < 0") {{religion.change}}
-          td.number(v-if="gameSettings.isDebug") {{religion.score}}
+    template(v-if="!my.isStreetPreaching")
+
+      p Your sermon had #[strong {{my.churchAttendanceYesterday || 0}}] attendees today.
+      p #[strong {{my.congregation.reduce((sum, group) => sum + group.likes, 0)}}] people liked your sermon.
+      p #[strong {{my.congregation.reduce((sum, group) => sum + group.dislikes, 0)}}] people hated it.
+
+
+      table.debug.follower-changes(v-if="!my.isStreetPreaching")
+        caption Religious Scorecard
+        thead
+          tr
+            //th(v-if="gameSettings.isDebug") id
+            th name
+            th before
+            th change
+            th after
+        tbody
+          tr(v-for="religion in my.religiousScorecard.filter(r => r.change > 0 || r.change < 0).slice().sort((a, b) => b.change - a.change)" :class="{'positive': religion.change > 0, 'negative': religion.change < 0}")
+            td 
+              span.religion-name {{religion.name}}
+            td.number {{religion.score - religion.change}}
+            td.number
+              span.positive(v-if="religion.change > 0") {{"+"+religion.change}}
+              span.negative(v-else-if="religion.change < 0") {{religion.change}}
+            td.number {{religion.score}}
+
+      // Debug: Church Attendance Breakdown
+      .debug-church-attendance(v-if="!my.isStreetPreaching && gameSettings.isDebug && my.congregation")
+        h3 🐛 DEBUG: Church Attendance Today
+        .attendance-summary
+          p 
+            strong Total Attendees: {{my.churchAttendanceYesterday || 0}}
+            span  (Expected: {{my.congregation.reduce((sum, group) => sum + group.count, 0)}})
+        
+        table.debug.attendance-breakdown
+          thead
+            tr
+              th Religion
+              th Attendees
+              th Likes
+              th Dislikes
+              th Neutral
+          tbody
+            tr(v-for="group in my.congregation" :key="group.id")
+              td {{getReligion(group.id).name || 'Unknown'}}
+              td.number {{group.count}}
+              td.number.positive {{group.likes}}
+              td.number.negative {{group.dislikes}}
+              td.number {{group.count - group.likes - group.dislikes}}
 
     .donations-summary
       dl.money-summary
@@ -137,6 +169,7 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
               strong Sign Spinner
               span  (+{{gameSettings.church.marketing.signSpinner.attendanceBoost}}% attendance)
 
+
     .buttons
       button.plug(@click="openPlugInterface()") 📱 The Plug
       button.harold(v-if="my.chats.harold.hasContacted && !my.hasVan" @click="openHaroldInterface()") 📱 Uncle Harold
@@ -147,7 +180,7 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
       button.submit(@click="advanceToNextDay()") Next Day.
 
     
-    table.debug(v-if="gameSettings.isDebug")
+    //-table.debug(v-if="gameSettings.isDebug")
       thead
         tr
           th id

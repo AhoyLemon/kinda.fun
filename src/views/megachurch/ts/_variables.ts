@@ -17,19 +17,18 @@ export const gameSettings = reactive<GameSettings>({
   },
   streetPreaching: {
     // ===== MAJOR TWEAKS =====
-    baseCrowdSize: 65, // Base crowd size that shows up to listen
-
+    baseCrowdSize: 75, // Base crowd size that shows up to listen
     dislikeChance: {
-      byReligion: 20, // % chance of disliking when sermon attacks their religion (increased)
-      byTag: 20, // % chance of disliking when sermon attacks a tag they like (increased)
+      byReligion: 35, // % chance of disliking when sermon attacks their religion (increased)
+      byTag: 35, // % chance of disliking when sermon attacks a tag they like (increased)
     },
     likeChance: {
-      byReligion: 35, // % chance of liking when sermon praises their religion
-      byTag: 25, // % chance of liking when sermon praises a tag they like
+      byReligion: 20, // % chance of liking when sermon praises their religion
+      byTag: 20, // % chance of liking when sermon praises a tag they like
     },
     donation: {
-      chance: 60, // % chance that someone who likes your sermon donates
-      min: 2, // Minimum $ per donation
+      chance: 70, // % chance that someone who likes your sermon donates
+      min: 1, // Minimum $ per donation
       max: 5, // Maximum $ per donation
     },
 
@@ -58,8 +57,8 @@ export const gameSettings = reactive<GameSettings>({
       byTag: 30,
     },
     likeChance: {
-      byReligion: 45,
-      byTag: 35,
+      byReligion: 70,
+      byTag: 40,
     },
     donation: {
       chance: 80, // % chance that someone who likes your sermon donates
@@ -71,11 +70,9 @@ export const gameSettings = reactive<GameSettings>({
       max: 20, // Maximum donation per attendee
     },
     sterling: {
-      cutPercentage: 35,
-      minimumCut: 20,
+      cutPercentage: 35, // Sterling's cut of church earnings
+      minimumCut: 30, // Minimum amount (in dollars) if cutPercentage isn't met
     },
-    sterlingCutPercentage: 35, // Sterling's cut of daily donations
-    sterlingMinimumCut: 20, // Minimum amount (in dollars) Sterling takes
     topicRepetitionPenalty: 0.85, // Penalty multiplier for repeating topics (default 15% less effective)
   },
   church: {
@@ -150,17 +147,21 @@ export const gameSettings = reactive<GameSettings>({
         attendanceBoost: 10,
         duration: 1,
       },
+      prCampaign: {
+        price: 200,
+        reputationBoost: 5, // Points to add to religious scorecard for target religion
+        duration: 1,
+      },
     },
   },
   eternalLegacy: {
     trigger: {
-      churchDays: 2, // Days after founding church to trigger Eternal Legacy
+      churchDays: 3, // Days after founding church to trigger Eternal Legacy
     },
     heat: {
       max: 100, // Maximum heat before endgame
-      dailyBaseIncrease: 2, // Base daily heat increase
+      dailyBaseIncrease: 5, // Base daily heat increase
       earningsMultiplier: 0.01, // Heat increase per dollar earned
-      illegalActionIncrease: 15, // Heat increase for illegal purchases
     },
     shop: {
       mammonItems: [
@@ -420,8 +421,9 @@ export const ui = reactive<UI>({
   isFullscreen: false,
   churchLocationIndex: 0,
   churchReligionIndex: 0,
-  toastDuration: 7000, // Default toast duration in ms
   timing: {
+    toastDuration: 7000,
+    donationToastDuration: 9000,
     toastDelayMin: 1600, // Minimum delay between audience reaction toasts (ms)
     toastDelayMax: 3200, // Maximum delay between audience reaction toasts (ms)
     donationToastDelay: 6000, // Delay before showing donation toast after reactions (ms)
@@ -525,6 +527,7 @@ export const my = reactive<My>({
     name: undefined,
     location: undefined,
     religion: undefined,
+    days: 0,
     buzz: 0,
     maxAttendance: 200, // Maximum number of attendees in your church on any given day
     upgrades: {
@@ -557,7 +560,7 @@ export const my = reactive<My>({
         totalSold: 0,
       },
       prayerCandles: {
-        price: 25,
+        price: 65,
         inventory: 0,
         soldToday: 0,
         totalSold: 0,
@@ -571,6 +574,10 @@ export const my = reactive<My>({
       targetReligion: null,
     },
     signSpinnerActive: false,
+    prCampaign: {
+      active: false,
+      targetReligion: null,
+    },
   },
   congregation: [],
   spice: {

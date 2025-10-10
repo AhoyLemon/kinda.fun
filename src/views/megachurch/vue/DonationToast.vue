@@ -16,7 +16,7 @@
               <div class="label">in donations collected</div>
             </template>
             <template v-else>
-              <div class="label">in donations collected</div>
+              <div class="label">made today</div>
             </template>
           </div>
         </div>

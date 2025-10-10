@@ -111,8 +111,8 @@
             <label>Go into business with Sterling?</label>
             <div class="hints">
               <div class="warning-hint">
-                💸 Sterling will take {{ gameSettings.churchPreaching.sterlingCutPercentage }}% of all donations (minimum ${{
-                  gameSettings.churchPreaching.sterlingMinimumCut
+                💸 Sterling will take {{ gameSettings.churchPreaching.sterling.cutPercentage }}% of all donations (minimum ${{
+                  gameSettings.churchPreaching.sterling.minimumCut
                 }})
               </div>
             </div>

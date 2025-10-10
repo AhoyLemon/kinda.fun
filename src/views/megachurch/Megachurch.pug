@@ -2,12 +2,13 @@
 
   template(v-if="ui.view === 'title-screen'")
     include pug/_title-screen.pug
-
+  
+  template(v-else-if="ui.view === 'game-over'")
+    include pug/_game-over.pug
+    
   template(v-else)
 
-    main
-
-      include pug/_choose-religion.pug
+    main(:class="ui.view")
 
       include pug/_choose-place.pug
 
@@ -20,8 +21,6 @@
       include pug/_sermon-results.pug
 
       include pug/_church-setup.pug
-
-      include pug/_game-over.pug
   
     include pug/_your-details.pug 
 

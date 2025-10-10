@@ -119,6 +119,10 @@ export interface ChurchMarketing {
     targetReligion: Religion | null;
   };
   signSpinnerActive: boolean;
+  prCampaign: {
+    active: boolean;
+    targetReligion: Religion | null;
+  };
 }
 
 // ================= SERMON OUTPUT TYPE =================
@@ -164,8 +168,9 @@ export interface UI {
   isFullscreen: boolean;
   churchLocationIndex: number;
   churchReligionIndex: number;
-  toastDuration: number;
   timing: {
+    toastDuration: number;
+    donationToastDuration: number;
     toastDelayMin: number;
     toastDelayMax: number;
     donationToastDelay: number;
@@ -280,8 +285,6 @@ export interface GameSettings {
       cutPercentage: number;
       minimumCut: number;
     };
-    sterlingCutPercentage: number;
-    sterlingMinimumCut: number;
     topicRepetitionPenalty: number;
   };
   church: {
@@ -351,6 +354,11 @@ export interface GameSettings {
         attendanceBoost: number;
         duration: number;
       };
+      prCampaign: {
+        price: number;
+        reputationBoost: number;
+        duration: number;
+      };
     };
   };
   eternalLegacy: {
@@ -361,7 +369,6 @@ export interface GameSettings {
       max: number;
       dailyBaseIncrease: number;
       earningsMultiplier: number;
-      illegalActionIncrease: number;
     };
     shop: {
       mammonItems: Array<{
@@ -445,6 +452,7 @@ export interface My {
     name?: string;
     location?: Place;
     religion?: Religion;
+    days: number;
     buzz: number;
     maxAttendance: number;
     upgrades: ChurchUpgrades;
@@ -454,7 +462,6 @@ export interface My {
   congregation?: Array<{
     id: number;
     count: number;
-    firstTimerCount: number;
     likes: number;
     dislikes: number;
   }>;
@@ -501,7 +508,6 @@ export type ReligionNames =
   | "Jehovah's Witnesses"
   | "Mormonism"
   | "New-Age Spirituality"
-  | "Orthodox Islam"
   | "Prosperity Gospel"
   | "Secular Humanists"
   | "Seventh-day Adventism"

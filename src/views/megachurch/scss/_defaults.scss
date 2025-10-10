@@ -6,10 +6,13 @@ main {
   min-height: 100dvh;
   background-color: white;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   > section {
     padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

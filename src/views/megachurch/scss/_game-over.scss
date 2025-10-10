@@ -3,6 +3,7 @@ $lemonBlack: #313131;
 $lemonOrange: #e98741;
 
 .game-over {
+  grid-column: span 2;
   min-height: 100dvh;
   background-color: $lemonYellow;
   color: $lemonBlack;

@@ -4,11 +4,7 @@ aside.your-details
     .label Name
     .value {{my.name}}
 
-  .box(v-if="my.religion?.name")
-    .label religion
-    .value {{my.religion.name}}
-
-  .box(v-if="my.place?.name && my.place.name != 'Starting Location'")
+  .box(v-if="my.place?.name && my.place.name != 'Starting Location' && my.isStreetPreaching")
     .label Place
     .value {{my.place.name}}
 
@@ -17,9 +13,19 @@ aside.your-details
     .value
       div {{my.church.name}}
       small(v-if="my.church.location?.name") {{my.church.location.name}}
-      |  
-      small(v-if="my.church.religion?.name") ({{my.church.religion.name}})
 
+  .box.top-religions(v-if="!my.isStreetPreaching && computedTopReligions")
+    .label Top Religions
+    .value
+      ol
+        li(v-for="religion in computedTopReligions.slice(0, 3)")
+          span {{religion.name}}
+
+  .box.todays-sermon(v-if="(ui.view !== 'sermon-confirm') && my.sermonToday?.topics?.length > 2")
+    .label Today's Sermon
+    .value
+      ol.topics
+        li(v-for="topic in my.sermonToday.topics") {{topic.title}}
   
   .box(v-if="my.daysPlayed > 0 || my.money > 0")
     .label Money
@@ -41,25 +47,17 @@ aside.your-details
         small.debug Performance: {{Math.round(getSpiceMultiplier() * 100)}}%
         small.debug(v-if="my.spice.pendingAddictionIncrease > 0") 
           | Tomorrow: +{{my.spice.pendingAddictionIncrease.toFixed(2)}} requirement
-  
-  .box.todays-sermon(v-if="my.sermonToday?.topics?.length > 2")
-    .label Today's Sermon
-    .value
-      ol.topics
-        li(v-for="topic in my.sermonToday.topics") {{topic.title}}
-
-  
 
   .box.buttons(v-if="gameSettings.isDebugButtonVisible || !ui.isFullscreen")
+    .label(v-if="gameSettings.isDebug" style="color: hotpink;") CHEATS ARE ENABLED
     fieldset
-      //- button.fullscreen-btn(v-if="!ui.isFullscreen" @click="enterFullscreen") 
-      //-   svg(viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="16" height="16" aria-hidden="true" focusable="false")
-      //-     path(d="M290 236.4l43.9-43.9a8.01 8.01 0 0 0-4.7-13.6L169 160c-5.1-.6-9.5 3.7-8.9 8.9L179 329.1c.8 6.6 8.9 9.4 13.6 4.7l43.7-43.7L370 423.7c3.1 3.1 8.2 3.1 11.3 0l42.4-42.3c3.1-3.1 3.1-8.2 0-11.3L290 236.4zm352.7 187.3c3.1 3.1 8.2 3.1 11.3 0l133.7-133.6 43.7 43.7a8.01 8.01 0 0 0 13.6-4.7L863.9 169c.6-5.1-3.7-9.5-8.9-8.9L694.8 179c-6.6.8-9.4 8.9-4.7 13.6l43.9 43.9L600.3 370a8.03 8.03 0 0 0 0 11.3l42.4 42.4zM845 694.9c-.8-6.6-8.9-9.4-13.6-4.7l-43.7 43.7L654 600.3a8.03 8.03 0 0 0-11.3 0l-42.4 42.3a8.03 8.03 0 0 0 0 11.3L734 787.6l-43.9 43.9a8.01 8.01 0 0 0 4.7 13.6L855 864c5.1.6 9.5-3.7 8.9-8.9L845 694.9zm-463.7-94.6a8.03 8.03 0 0 0-11.3 0L236.3 733.9l-43.7-43.7a8.01 8.01 0 0 0-13.6 4.7L160.1 855c-.6 5.1 3.7 9.5 8.9 8.9L329.2 845c6.6-.8 9.4-8.9 4.7-13.6L290 787.6 423.7 654c3.1-3.1 3.1-8.2 0-11.3l-42.4-42.4z")
-      //-   span Full Screen
-      
       button.debug-toggle(@click="toggleDebugMode()" :class="{'active': gameSettings.isDebug}")
-        span(v-if="gameSettings.isDebug") Turn Debug Off 
-        span(v-if="!gameSettings.isDebug") Enable Debug
+        template(v-if="gameSettings.isDebug")
+          span 🟢
+          span Turn Debug Off 
+        template(v-if="!gameSettings.isDebug")
+          span ⚪
+          span Enable Debug
 
     fieldset.debug-controls(v-if="gameSettings.isDebug")
       legend Debug Controls

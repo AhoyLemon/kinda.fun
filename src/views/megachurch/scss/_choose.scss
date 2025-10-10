@@ -18,6 +18,11 @@ $lightRed: lighten($red, 40%);
     }
   }
 
+  .match,
+  .mismatch {
+    font-weight: 800;
+  }
+
   .details {
     width: 76ch;
 
@@ -31,10 +36,10 @@ $lightRed: lighten($red, 40%);
     .name,
     .description {
       grid-column: span 2;
-      &.match {
-        color: $darkGreen;
-        font-weight: 600;
-      }
+      // &.match {
+      //   color: $darkGreen;
+      //   font-weight: 800;
+      // }
     }
     .big-number {
       font-size: 1.35rem;
@@ -81,18 +86,25 @@ $lightRed: lighten($red, 40%);
       }
       ul {
         display: grid;
-        gap: 4px;
-        padding: 0 0.5em 0.5em 1em;
+        //gap: 4px;
+        padding: 0 0.5em 0.5em 1.5em;
         list-style-type: disc;
         font-size: 0.875em;
         li {
+          padding-left: 0.5em;
           &.match {
-            color: $darkGreen;
-            font-weight: 600;
+            color: darken($green, 32%);
+            background-color: rgba($green, 0.05);
+            &::marker {
+              color: darken($green, 25%);
+            }
           }
           &.mismatch {
-            color: $darkRed;
-            font-weight: 600;
+            color: darken($red, 33%);
+            background-color: rgba($red, 0.05);
+            &::marker {
+              color: darken($red, 25%);
+            }
           }
         }
       }
@@ -108,11 +120,11 @@ $lightRed: lighten($red, 40%);
         font-size: 1.25em;
         li.match {
           color: $darkGreen;
-          font-weight: 600;
+          font-weight: 800;
         }
         li::marker {
           font-size: 80%;
-          font-weight: 600;
+          font-weight: 800;
         }
       }
     }
@@ -125,5 +137,45 @@ $lightRed: lighten($red, 40%);
     .details {
       width: auto;
     }
+  }
+
+  .partnership-terms {
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #ccc;
+    h3 {
+      font-weight: 800;
+      text-transform: uppercase;
+      background-color: #555;
+      font-family: $serif;
+      font-size: 1.25em;
+      letter-spacing: 0.1em;
+      color: white;
+      padding: 7px;
+    }
+    ul {
+      padding: 7px 7px 7px 2em;
+      list-style: disc;
+      display: grid;
+      gap: 0.5em;
+      // li {
+      //   padding-left: 2em;
+      // }
+    }
+  }
+}
+
+main.church-setup {
+  background-size: cover;
+  background-image: url("/img/megachurch/bg/pexels-adrien-olichon-1257089-2537598-cropped.jpg");
+
+  form {
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #222;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    /* Add background blur effect */
+    backdrop-filter: blur(4px);
   }
 }
