@@ -9,7 +9,7 @@
     "dev:client": "vite --host",
     "dev:server": "concurrently --prefix none \"vite\" \"node src/server/express.js\" || (exit 0)",
     "build:pages": "node scripts/npm-run/build-pages.js",
-    "build": "node scripts/update-sitemap.js && vite build && npm run build:pages && cp dist/home.html dist/index.html",
+    "build": "node scripts/npm-run/build.js",
     "preview": "vite preview --host",
     "test:watch": "vitest",
     "test:run": "vitest --run",

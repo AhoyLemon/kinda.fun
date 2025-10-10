@@ -122,7 +122,6 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 - **Large bundles**: Some games create 500KB+ bundles (normal for this project)
 - **Build time**: ~10 seconds is normal, includes sitemap generation and page building
 - **Memory usage**: Vite may use significant memory during builds
-- **Copy command failure**: The final `cp dist/home.html dist/index.html` step may fail on Windows PowerShell during local development - this only matters for production deployment and can be safely ignored during local testing
 
 ### Linting Status
 
