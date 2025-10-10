@@ -62,7 +62,8 @@
               <div class="product-img broken-img"></div>
               <h3>Bottles of Holy Water</h3>
               <div class="product-description">
-                Blessed H2O in convenient bottles! Because tap water just doesn't have that divine touch. Each attendee has {{ gameSettings.church.merch.holyWaterBottles.baseChance }}% chance to buy.
+                Blessed H2O in convenient bottles! Because tap water just doesn't have that divine touch. Each attendee has
+                {{ gameSettings.church.merch.holyWaterBottles.baseChance }}% chance to buy.
               </div>
               <div class="product-stats">
                 <div>Cost: ${{ gameSettings.church.merch.holyWaterBottles.cost }} each</div>
@@ -91,7 +92,9 @@
               <div class="product-img broken-img"></div>
               <h3>Holy Water Vending Machine</h3>
               <div class="product-description">
-                Automated holy water sales! Because nothing says "spiritual experience" like pumping quarters into a machine. Adds +{{ gameSettings.church.merch.holyWaterVendingMachine.bonusChance }}% chance for holy water purchases.
+                Automated holy water sales! Because nothing says "spiritual experience" like pumping quarters into a machine. Adds +{{
+                  gameSettings.church.merch.holyWaterVendingMachine.bonusChance
+                }}% chance for holy water purchases.
               </div>
               <div class="product-stats">
                 <div>Cost: ${{ gameSettings.church.merch.holyWaterVendingMachine.cost }}</div>
@@ -112,7 +115,8 @@
               <div class="product-img broken-img"></div>
               <h3>Bluetooth Prayer Candles</h3>
               <div class="product-description">
-                "Smart" candles with Bluetooth! Perfect for the tech-savvy spiritual seeker who needs their prayers wirelessly transmitted. Each attendee has {{ gameSettings.church.merch.bluetoothPrayerCandles.baseChance }}% chance to buy.
+                "Smart" candles with Bluetooth! Perfect for the tech-savvy spiritual seeker who needs their prayers wirelessly transmitted. Each attendee has
+                {{ gameSettings.church.merch.bluetoothPrayerCandles.baseChance }}% chance to buy.
               </div>
               <div class="product-stats">
                 <div>Cost: ${{ gameSettings.church.merch.bluetoothPrayerCandles.cost }} each</div>
@@ -141,7 +145,8 @@
               <div class="product-img broken-img"></div>
               <h3>Saints Flow Energy Drink</h3>
               <div class="product-description">
-                Church-branded energy drinks! Get your caffeine and salvation in one convenient can. Each attendee has {{ gameSettings.church.merch.saintsFlow.baseChance }}% chance to buy.
+                Church-branded energy drinks! Get your caffeine and salvation in one convenient can. Each attendee has
+                {{ gameSettings.church.merch.saintsFlow.baseChance }}% chance to buy.
               </div>
               <div class="product-stats">
                 <div>Cost: ${{ gameSettings.church.merch.saintsFlow.cost }} each</div>
@@ -176,7 +181,8 @@
               <div class="upgrade-img broken-img"></div>
               <h3>Extra Pews</h3>
               <div class="upgrade-description">
-                More seating = more donations! Because standing during sermons builds character, but sitting builds bigger collection plates. Each pew adds {{ gameSettings.church.upgrades.extraPews.capacityIncrease }} capacity.
+                More seating = more donations! Because standing during sermons builds character, but sitting builds bigger collection plates. Each pew adds
+                {{ gameSettings.church.upgrades.extraPews.capacityIncrease }} capacity.
               </div>
               <div class="upgrade-stats">
                 <div>Cost: ${{ gameSettings.church.upgrades.extraPews.cost }} per pew</div>
@@ -194,7 +200,10 @@
               <div class="upgrade-img broken-img"></div>
               <h3>VIP Confession Booths</h3>
               <div class="upgrade-description">
-                Express forgiveness for busy sinners! Skip the guilt, go straight to the donation. Generates ${{ gameSettings.church.upgrades.vipConfessionBooths.revenuePerUse }} per use.
+                Express forgiveness for busy sinners! Skip the guilt, go straight to the donation. Generates ${{
+                  gameSettings.church.upgrades.vipConfessionBooths.revenuePerUse
+                }}
+                per use.
               </div>
               <div class="upgrade-stats">
                 <div>Cost: ${{ gameSettings.church.upgrades.vipConfessionBooths.cost }}</div>
@@ -215,7 +224,8 @@
               <div class="upgrade-img broken-img"></div>
               <h3>Audio/Visual Equipment</h3>
               <div class="upgrade-description">
-                Professional A/V setup! Because if you're going to spread the word, might as well do it in HD with surround sound. Increases chance of positive sermon reactions by {{ gameSettings.church.upgrades.audioVisual.likeBoost }}%.
+                Professional A/V setup! Because if you're going to spread the word, might as well do it in HD with surround sound. Increases chance of positive
+                sermon reactions by {{ gameSettings.church.upgrades.audioVisual.likeBoost }}%.
               </div>
               <div class="upgrade-stats">
                 <div>Cost: ${{ gameSettings.church.upgrades.audioVisual.cost }}</div>
@@ -354,7 +364,8 @@
               <div class="marketing-img broken-img"></div>
               <h3>PR Campaign</h3>
               <div class="marketing-description">
-                Hire a PR firm to improve your church's reputation with a specific religion. Adds {{ gameSettings.church.marketing.prCampaign.reputationBoost }} points to that religion's scorecard for
+                Hire a PR firm to improve your church's reputation with a specific religion. Adds
+                {{ gameSettings.church.marketing.prCampaign.reputationBoost }} points to that religion's scorecard for
                 {{ gameSettings.church.marketing.prCampaign.duration }} day(s). Professional spin doctors for your salvation business!
               </div>
               <div class="marketing-stats">
@@ -369,11 +380,7 @@
                     {{ religion.name }}
                   </option>
                 </select>
-                <button
-                  @click="buyPrCampaign()"
-                  class="buy-btn"
-                  :disabled="!selectedPrReligion || my.money < gameSettings.church.marketing.prCampaign.price"
-                >
+                <button @click="buyPrCampaign()" class="buy-btn" :disabled="!selectedPrReligion || my.money < gameSettings.church.marketing.prCampaign.price">
                   RUN CAMPAIGN FOR ${{ gameSettings.church.marketing.prCampaign.price }}
                 </button>
               </div>
