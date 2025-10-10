@@ -1,0 +1,43 @@
+@import "../../scss/_variables.scss";
+
+.Vue-Toastification__icon {
+  display: none;
+}
+
+.Vue-Toastification__toast {
+  &:has(.container.positive) {
+    background-color: rgba(3, 20, 3, 0.9);
+  }
+  &:has(.container.negative) {
+    background-color: rgba(38, 3, 3, 0.9);
+  }
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+
+  .number {
+    font-size: 2em;
+    flex-basis: 32px;
+    flex-grow: 1;
+    flex-shrink: 0;
+    font-family: $monospace;
+    &.positive {
+      color: $green;
+    }
+    &.negative {
+      color: $pink;
+    }
+  }
+
+  .religion {
+    font-size: 1.25em;
+    font-weight: 620;
+    font-family: $serif;
+  }
+
+  .label {
+    font-size: 0.875em;
+  }
+}

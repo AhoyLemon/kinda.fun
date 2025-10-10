@@ -1,0 +1,15 @@
+.merch-collected.container(:class="{ positive: totalMerchRevenue > 0, negative: totalMerchRevenue <= 0 }")
+  .row.first
+    template(v-if="totalMerchRevenue > 0")
+      .number {{ dollars(totalMerchRevenue) }}
+      .text-holder
+        .label in merch sales today
+    template(v-else)
+      .text-holder
+        .label You didn't sell any merch today.
+  .row.second(v-if="itemsSold.length > 0")
+    ul.breakdown
+      template(v-for="item in itemsSold" :key="item.name")
+        li
+          strong {{ item.sold }}
+          |  {{ item.name }}

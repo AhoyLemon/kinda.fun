@@ -403,8 +403,8 @@
 
 <script setup lang="ts">
   import { ref, computed } from "vue";
-  import { my, gameSettings } from "../ts/_variables";
-  import { religions } from "../ts/_religions";
+  import { my, gameSettings } from "../../ts/_variables";
+  import { religions } from "../../ts/_religions";
 
   const emit = defineEmits<{
     close: [];

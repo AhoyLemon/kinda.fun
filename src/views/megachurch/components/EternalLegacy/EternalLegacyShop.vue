@@ -99,7 +99,7 @@
 
 <script setup>
   import { ref, computed, onMounted } from "vue";
-  import { addCommas, dollars } from "../../../shared/js/_functions.js";
+  import { addCommas, dollars } from "../../../../shared/js/_functions.js";
 
   const props = defineProps({
     my: {
@@ -127,7 +127,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import "../scss/_variables.scss";
+  @import "../../scss/_variables.scss";
 
   .eternal-legacy-shop-overlay {
     position: fixed;

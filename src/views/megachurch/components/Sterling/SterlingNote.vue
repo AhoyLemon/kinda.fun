@@ -65,7 +65,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import "../scss/_variables";
+  @import "../../scss/_variables";
   .sterling-note-overlay {
     position: fixed;
     top: 0;

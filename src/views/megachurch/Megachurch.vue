@@ -12,17 +12,17 @@
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
-  import FollowerToast from "./vue/FollowerToast.vue";
-  import ListenerToast from "./vue/ListenerToast.vue";
-  import DonationToast from "./vue/DonationToast.vue";
-  import MerchToast from "./vue/MerchToast.vue";
-  import Chat from "./vue/Chat.vue";
-  import SterlingNote from "./vue/SterlingNote.vue";
-  import WorshopZoneBanner from "./vue/WorshopZoneBanner.vue";
-  import WorshopZone from "./vue/WorshopZone.vue";
-  import HeatMeter from "./vue/HeatMeter.vue";
-  import EternalLegacyShop from "./vue/EternalLegacyShop.vue";
-  import SterlingVoicemail from "./vue/SterlingVoicemail.vue";
+  import FollowerToast from "./components/Toasts/FollowerToast.vue";
+  import ListenerToast from "./components/Toasts/ListenerToast.vue";
+  import DonationToast from "./components/Toasts/DonationToast.vue";
+  import MerchToast from "./components/Toasts/MerchToast.vue";
+  import Chat from "./components/Chat/Chat.vue";
+  import SterlingNote from "./components/Sterling/SterlingNote.vue";
+  import WorshopZoneBanner from "./components/WorshopZone/WorshopZoneBanner.vue";
+  import WorshopZone from "./components/WorshopZone/WorshopZone.vue";
+  import HeatMeter from "./components/EternalLegacy/HeatMeter.vue";
+  import EternalLegacyShop from "./components/EternalLegacy/EternalLegacyShop.vue";
+  import SterlingVoicemail from "./components/Sterling/SterlingVoicemail.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -30,6 +30,15 @@
   const sterlingNoteRef = ref<{ showNote: () => void } | null>(null);
 
   import type { Theme, Place, WeightedTag, WeightedReligion, MixedTag, MixedReligion, Sermon, Religion, UI, My } from "./ts/_types";
+
+  import {
+    computeTopicsYesterday,
+    sortAudienceReactions,
+    calculateIgnoredAudience,
+    getAvailablePlaces,
+    computeTopReligions,
+    getPurchasedItems,
+  } from "./ts/_computeds";
 
   // ================= FUNCTIONS =================
 
@@ -164,7 +173,7 @@
 
   function showThemeDescription(id: number): string {
     const theme = (themes as Theme[]).find((s) => s.id === id);
-    return theme ? theme.desc : "";
+    return theme ? theme.desc || "" : "";
   }
 
   function defineSermon() {
@@ -1895,9 +1904,6 @@
 
   function closeSterlingVoicemail() {
     ui.sterlingVoicemail.isOpen = false;
-  }
-
-  function onVoicemailCompleted() {
     my.eternalLegacy.voicemailPlayed = true;
 
     // Show heat meter notification
@@ -2084,84 +2090,31 @@
 
   // ================= COMPUTEDS =================
   const computedTopicsYesterday = computed(() => {
-    if (!my.sermonYesterday || !Array.isArray(my.sermonYesterday.topics) || my.sermonYesterday.topics.length === 0) {
-      return [];
-    }
-    return my.sermonYesterday.topics
-      .map((t: any) => {
-        if (t && typeof t === "object") {
-          if ("id" in t) return t.id;
-          if ("_custom" in t && t._custom.value && "id" in t._custom.value) return t._custom.value.id;
-        }
-        return null;
-      })
-      .filter((id: any): id is number => typeof id === "number");
+    return computeTopicsYesterday(my.sermonYesterday);
   });
 
   const sortedAudienceReactions = computed(() => {
-    if (!my.audienceReactions || !Array.isArray(my.audienceReactions)) return [];
-
-    return [...my.audienceReactions].sort((a, b) => {
-      // First sort by most liked
-      if (a.liked !== b.liked) {
-        return b.liked - a.liked;
-      }
-      // Then by most disliked (if liked is 0)
-      if (a.liked === 0 && b.liked === 0 && a.disliked !== b.disliked) {
-        return b.disliked - a.disliked;
-      }
-      // Finally by most heard (if both liked and disliked are 0)
-      if (a.liked === 0 && b.liked === 0 && a.disliked === 0 && b.disliked === 0) {
-        const totalA = a.liked + a.disliked + a.neutral;
-        const totalB = b.liked + b.disliked + b.neutral;
-        return totalB - totalA;
-      }
-      return 0;
-    });
+    return sortAudienceReactions(my.audienceReactions);
   });
 
   const totalIgnoredAudience = computed(() => {
-    if (!my.audienceReactions || !Array.isArray(my.audienceReactions)) return 0;
-
-    return my.audienceReactions.filter((reaction) => reaction.liked === 0 && reaction.disliked === 0).reduce((total, reaction) => total + reaction.neutral, 0);
+    return calculateIgnoredAudience(my.audienceReactions);
   });
 
   const availablePlaces = computed(() => {
-    if (my.hasVan) {
-      // Filter out Starting Location (id: 0) and current location when player has a van
-      const currentPlaceId = (my.place as any)?.id;
-      return places.filter((place) => place.id !== 0 && place.id !== currentPlaceId);
-    }
-    return places;
+    return getAvailablePlaces(my.hasVan, (my.place as any)?.id);
   });
 
   const computedTopReligions = computed(() => {
-    const place = my.place as Place;
-    if (!place || !Array.isArray(place.religions)) return [];
-
-    return place.religions
-      .map((rel) => {
-        const scorecard = my.religiousScorecard.find((r) => r.id === rel.id);
-        let score = scorecard ? scorecard.score : 0;
-        // Double the score if this religion matches the church's religion
-        if (my.church.religion && rel.id === my.church.religion.id) {
-          score *= 2;
-        }
-        return {
-          id: rel.id,
-          name: rel.name,
-          chance: rel.weight + score,
-        };
-      })
-      .sort((a, b) => b.chance - a.chance);
+    return computeTopReligions(my.place, my.religiousScorecard, my.church.religion?.id);
   });
 
   const purchasedMammonItems = computed(() => {
-    return my.eternalLegacy.purchasedItems.map((itemId) => gameSettings.eternalLegacy.shop.mammonItems.find((item) => item.id === itemId)).filter(Boolean);
+    return getPurchasedItems(my.eternalLegacy.purchasedItems, gameSettings.eternalLegacy.shop.mammonItems);
   });
 
   const purchasedUnderTableItems = computed(() => {
-    return my.eternalLegacy.purchasedItems.map((itemId) => gameSettings.eternalLegacy.shop.underTheTable.find((item) => item.id === itemId)).filter(Boolean);
+    return getPurchasedItems(my.eternalLegacy.purchasedItems, gameSettings.eternalLegacy.shop.underTheTable);
   });
 
   // === Game Control Functions ===

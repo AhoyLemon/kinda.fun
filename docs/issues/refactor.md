@@ -81,3 +81,5 @@ Okay, at this point I need to do a refactor of this: The two major changes I wan
 - It is ABSOLUTELY CRUCIAL that this work not actually change how the code works. The end result should look and perform the same, just with it being easier to edit code.
 - If you feel you cannot do this refactor without changing things, pleaase try a different method. If that doesn't work, stop what you're doing and recommend a different plan instead.
 - It is RECOMMENDED that each particular component in src\views\megachurch\components will be self contained, with the pug in a pug file and the scss in a scss file
+- It is NOT ACCEPTABLE for this refactor to change any files which aren't located in src\views\megachurch\
+- But within src\views\megachurch\components you can add/delete/edit as you see fit.

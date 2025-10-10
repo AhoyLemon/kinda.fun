@@ -126,9 +126,9 @@
 
 <script setup>
   import { ref, computed, watch, nextTick } from "vue";
-  import { gameSettings } from "../ts/_variables";
+  import { gameSettings } from "../../ts/_variables";
   import { dollars } from "@/shared/js/_functions.js";
-  import { chatMessages, getRandomMessage, getRandomSlang } from "../ts/_chatMessages";
+  import { chatMessages, getRandomMessage, getRandomSlang } from "../../ts/_chatMessages";
 
   const props = defineProps({
     isOpen: Boolean,
@@ -636,4 +636,4 @@
   );
 </script>
 
-<style lang="scss" scoped src="../scss/components/Chat.scss"></style>
+<style lang="scss" scoped src="../../scss/components/Chat.scss"></style>
