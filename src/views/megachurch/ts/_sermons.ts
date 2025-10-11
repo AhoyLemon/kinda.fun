@@ -789,8 +789,6 @@ export const themes: Theme[] = [
       ],
     },
   },
-
-  // --- Additional Themes Added Below ---
   {
     id: 36,
     title: "Your children are terrible and God knows it",
@@ -817,21 +815,15 @@ export const themes: Theme[] = [
   },
   {
     id: 37,
-    title: "Suicide is just fast-tracking to judgement day",
-    desc: "Why wait around for the rapture when you can cut to the front of the line? Life's a test, but some people are just really bad at tests. Maybe it's time to turn in your paper early and see how you scored.",
+    title: "On The Eighth Day, God Made The Ford Mustang",
+    desc: "After a week of creation, the Lord saw the world needed more horsepower. Thus, the Ford Mustang was born—divinely engineered for speed, power, and the sacred act of burning rubber. To drive is to worship; to rev is to pray.",
     likedBy: {
-      tags: ["provocation", "bizarre concepts", "nihilism", "outrageousness"],
-      religions: ["Zardoz", "The Church of Satan"],
+      tags: ["speed", "power", "materialism", "tradition", "family values"],
+      religions: ["2 Fast 2 Faithful"],
     },
     dislikedBy: {
-      tags: [
-        "compassion",
-        "family values",
-        "community",
-        "forgiveness",
-        "peace",
-      ],
-      religions: ["Buddhism", "Catholicism", "Southern Baptist"],
+      tags: ["humility", "simplicity", "nature"],
+      religions: ["The Gaia Collective", "New-Age Spirituality"],
     },
   },
   {
@@ -881,7 +873,7 @@ export const themes: Theme[] = [
   },
   {
     id: 41,
-    title: "Women are just men with manufacturing defects",
+    title: "Women are men with manufacturing defects",
     desc: "Clearly, females are beta versions of males that were released too early in the development cycle. They're missing crucial features like upper body strength and the ability to parallel park, but they do come with enhanced communication bugs that make them talk too much.",
     likedBy: {
       tags: [
@@ -890,8 +882,9 @@ export const themes: Theme[] = [
         "authority",
         "provocation",
         "subservience",
+        "misogyny",
       ],
-      religions: ["The Order of the Alpha Male", "Zardoz"],
+      religions: ["The Order of the Alpha Male"],
     },
     dislikedBy: {
       tags: [
@@ -899,9 +892,9 @@ export const themes: Theme[] = [
         "social justice",
         "individualism",
         "compassion",
-        "free thought",
+        "liberal politics",
       ],
-      religions: ["The Queens' Dominion", "Secular Humanists"],
+      religions: ["The Queens' Dominion"],
     },
   },
   {
@@ -910,7 +903,7 @@ export const themes: Theme[] = [
     desc: "They're basically human lawn ornaments that add character to the urban landscape. Don't make eye contact—it ruins the aesthetic. Their cardboard signs are just really sad art installations about the beauty of destitution.",
     likedBy: {
       tags: ["materialism", "apathy", "wealth", "individualism"],
-      religions: ["The Church of Having More Things", "Agnostic Atheists"],
+      religions: ["The Church of Having More Things", "Prosperity Gospel"],
     },
     dislikedBy: {
       tags: ["compassion", "social justice", "community", "humility"],
@@ -919,7 +912,7 @@ export const themes: Theme[] = [
   },
   {
     id: 43,
-    title: "Your pets are going to hell",
+    title: "Your pets are going to hell!",
     desc: "Fluffy never accepted Jesus as her personal savior, so she's burning in eternal damnation right now. That cute little meow was actually a demonic incantation. Should have baptized your goldfish when you had the chance.",
     likedBy: {
       tags: ["provocation", "bizarre concepts", "literalism", "dogma"],
@@ -971,18 +964,32 @@ export const themes: Theme[] = [
   },
   {
     id: 47,
-    title: "Democracy is overrated, we need more kings",
-    desc: "Voting just confuses people with too many choices. What we really need is a good old-fashioned monarch who can make all the hard decisions for us. Preferably someone rich, white, male, and completely unqualified for anything involving actual governance.",
+    title: "Every Pill Is A Prayer",
+    desc: "Why bother with incense and chanting when you can swallow enlightenment in tablet form? Each pill is a sacred shortcut to the divine—just close your eyes, open your mind, and let the universe dissolve on your tongue.",
     likedBy: {
-      tags: ["authority", "tradition", "power", "order", "subservience"],
-      religions: ["The Order of the Alpha Male", "Confucianism"],
+      tags: [
+        "drugs",
+        "altered states",
+        "pleasure",
+        "freedom",
+        "transcendence",
+        "open-mindedness",
+        "rebellion",
+        "sensory experience",
+      ],
+      religions: ["The Church of the High Priest"],
     },
     dislikedBy: {
-      tags: ["freedom", "individualism", "social justice", "rebellion"],
-      religions: [
-        "The Sovereign Guild of Untethered Minds",
-        "Secular Humanists",
+      tags: [
+        "soberness",
+        "abstinence",
+        "authority",
+        "order",
+        "structure",
+        "dogma",
+        "rules",
       ],
+      religions: ["Mormonism", "Jehovah's Witnesses"],
     },
   },
   {
@@ -995,57 +1002,70 @@ export const themes: Theme[] = [
     },
     dislikedBy: {
       tags: ["rationalism", "progress", "science", "reason", "free thought"],
-      religions: ["Secular Humanists", "The Order of the Divine Algorithm"],
+      religions: ["The Order of the Divine Algorithm"],
     },
   },
   {
     id: 49,
-    title: "Other religions are just Satan's hobbies",
-    desc: "Buddhism, Islam, Judaism, Hinduism—they're all just different craft projects the devil works on in his spare time. Like spiritual macramé, but with more damnation. Only one religion got it right, and coincidentally, it's whichever one you were born into.",
+    title: "Mercury Is In Retrograde, So I Ate an Entire Cheesecake",
+    desc: "When the cosmos throws your chakras out of alignment, sometimes the only answer is dairy-based self-care. Why face your problems when you can blame planetary motion and eat dessert for dinner?",
     likedBy: {
       tags: [
-        "dogma",
-        "literalism",
-        "other religions",
-        "authority",
-        "nationalism",
+        "altered states",
+        "bizarre concepts",
+        "pleasure",
+        "freedom",
+        "emotion",
       ],
-      religions: ["Southern Baptist", "Evangelical Christianity"],
+      religions: ["The Starseed Pilgrims", "New-Age Spirituality"],
     },
     dislikedBy: {
-      tags: ["open-mindedness", "compassion", "free thought", "individualism"],
-      religions: ["Buddhism", "New-Age Spirituality", "Secular Humanists"],
+      tags: ["logic", "order", "self-control", "soberness"],
+      religions: ["Secular Humanists", "Catholicism"],
     },
   },
   {
     id: 50,
-    title: "Climate change is fake, but the apocalypse is real",
-    desc: "The earth isn't warming from human activity—that's just God preheating the oven for Judgment Day. All those scientists with their 'data' and 'measurements' are just too proud to admit they can't predict divine wrath as accurately as a 2,000-year-old book.",
+    title: "I Saw An Eclipse And Now I Think The Moon Has Plans",
+    desc: "The sun’s loyal followers know an eclipse isn’t just a cosmic coincidence—it’s the moon plotting something shady. Stay vigilant: every shadow is a lunar conspiracy, and sunglasses are your only defense.",
     likedBy: {
-      tags: ["prophecy", "literalism", "tradition", "authority", "nationalism"],
-      religions: ["Evangelical Christianity", "Southern Baptist"],
+      tags: ["bizarre concepts", "power", "tradition", "provocation", "chaos"],
+      religions: ["Temple of the Eternal Sun"],
     },
     dislikedBy: {
-      tags: ["science", "nature", "sustainability", "progress", "reason"],
-      religions: ["The Gaia Collective", "Secular Humanists"],
+      tags: ["logic", "science", "humility", "inner harmony"],
+      religions: ["The Starseed Pilgrims", "New-Age Spirituality"],
     },
   },
   {
     id: 51,
-    title: "Your depression is just spiritual weakness",
-    desc: "If you're sad, it's because you're not praising Jesus hard enough. Medication is for people who don't trust God's plan. Real believers smile through their existential crisis and blame themselves for not having enough faith to cure their brain chemistry.",
+    title: "Repent, All Ye Who Take Up Two Seats On The Train",
+    desc: "The divine order demands that all followers respect sacred public space. Those who dare to manspread or claim extra room shall face the righteous glare of the sisterhood. True enlightenment begins with knees together and humility in your heart.",
     likedBy: {
-      tags: ["blind faith", "tradition", "authority", "shame", "literalism"],
-      religions: ["Southern Baptist", "Evangelical Christianity"],
+      tags: [
+        "feminism",
+        "authority",
+        "order",
+        "rebellion",
+        "power",
+        "social justice",
+      ],
+      religions: ["The Queens' Dominion"],
     },
     dislikedBy: {
-      tags: ["compassion", "science", "progress", "forgiveness"],
-      religions: ["Buddhism", "Secular Humanists"],
+      tags: [
+        "patriotism",
+        "tradition",
+        "subservience",
+        "weakness",
+        "family values",
+      ],
+      religions: ["The Order of the Alpha Male", "Southern Baptist"],
     },
   },
   {
     id: 52,
-    title: "Gay people are just confused about plumbing",
+    title: "Gay people are confused about plumbing",
     desc: "It's really just a basic engineering problem—some folks got their blueprints mixed up at the factory. With enough prayer, conversion therapy, and aggressive heterosexual propaganda, anyone can figure out which parts are supposed to connect to which.",
     likedBy: {
       tags: ["tradition", "family values", "authority", "literalism"],
@@ -1058,23 +1078,31 @@ export const themes: Theme[] = [
   },
   {
     id: 53,
-    title: "War is just God's way of reducing overpopulation",
-    desc: "Sometimes the Almighty needs to thin the herd, and what better way than righteous violence? Every bullet is blessed, every bomb is baptized. It's not murder if you're doing the Lord's demographic management work.",
+    title: "I Will Bathe In Motor Oil And My Soul Will Be Lubricated",
+    desc: "True salvation requires full synthetic devotion. Only those who anoint themselves in the sacred oil of horsepower will glide past the friction of sin and achieve eternal smoothness. Blessed are the greased, for they shall never seize.",
     likedBy: {
-      tags: ["violence", "nationalism", "authority", "power", "provocation"],
-      religions: ["The Order of the Alpha Male", "Zardoz"],
+      tags: [
+        "speed",
+        "power",
+        "rebellion",
+        "freedom",
+        "strength",
+        "sensory experience",
+        "sex",
+      ],
+      religions: ["2 Fast 2 Faithful", "The Church of Eros"],
     },
     dislikedBy: {
-      tags: ["peace", "compassion", "forgiveness", "community"],
-      religions: ["Buddhism", "The Gaia Collective"],
+      tags: ["humility", "simplicity", "logic", "nature"],
+      religions: ["The Gaia Collective", "New-Age Spirituality"],
     },
   },
   {
     id: 54,
-    title: "Money can't buy happiness, but poverty guarantees misery",
-    desc: "Sure, wealth doesn't automatically make you happy, but being broke absolutely guarantees you'll be a sad, pathetic loser. Better to cry in a Lamborghini than smile on the bus. God helps those who help themselves to other people's money.",
+    title: "If You Can’t Buy Happiness, You’re Shopping at the Wrong Church",
+    desc: "True joy is always in stock—if you can afford it. Why settle for spiritual fulfillment when you could have a platinum salvation package, complete with VIP seating and miracle upgrades? Remember: the only thing standing between you and happiness is your credit limit.",
     likedBy: {
-      tags: ["wealth", "materialism", "greed", "power", "individualism"],
+      tags: ["wealth", "materialism", "greed", "power", "giving to get"],
       religions: ["Prosperity Gospel", "The Church of Having More Things"],
     },
     dislikedBy: {
@@ -1084,15 +1112,24 @@ export const themes: Theme[] = [
   },
   {
     id: 55,
-    title: "Your anxiety is just lack of trust in God's plan",
-    desc: "Worry is basically calling God a liar. If you're anxious about the future, it means you don't have enough faith that everything will work out according to His perfect design. Panic attacks are just spiritual pop quizzes you keep failing.",
+    title: "Real Men Don’t Cry, They Start a Podcast",
+    desc: "Why process your emotions when you can just broadcast them to strangers on the internet? True masculinity means bottling up your feelings until they become content. Vulnerability is for people who don't have a microphone.",
     likedBy: {
-      tags: ["blind faith", "authority", "tradition", "shame"],
-      religions: ["Southern Baptist", "Evangelical Christianity"],
+      tags: [
+        "individualism",
+        "rebellion",
+        "power",
+        "authority",
+        "outrageousness",
+      ],
+      religions: [
+        "The Order of the Alpha Male",
+        "The Sovereign Guild of Untethered Minds",
+      ],
     },
     dislikedBy: {
-      tags: ["compassion", "science", "progress", "humility"],
-      religions: ["Buddhism", "Secular Humanists"],
+      tags: ["compassion", "humility", "emotion", "community", "inner harmony"],
+      religions: ["The Queens' Dominion", "Buddhism"],
     },
   },
   {
@@ -1108,8 +1145,6 @@ export const themes: Theme[] = [
       religions: ["Buddhism", "Catholicism"],
     },
   },
-
-  // --- Additional Themes for Underrepresented Religions ---
   {
     id: 57,
     title:
@@ -1138,7 +1173,7 @@ export const themes: Theme[] = [
   },
   {
     id: 58,
-    title: "Female supremacy is just evolution catching up to biology",
+    title: "Female supremacy is evolution catching up to biology",
     desc: "Women have been running the world from behind the scenes for millennia, and now they're finally ready to make it official. Men had their chance with wars, pollution, and reality TV. Time to let the people who can actually multitask take over before the planet files for divorce.",
     likedBy: {
       tags: ["feminism", "science", "progress", "rationalism", "rebellion"],
@@ -1204,18 +1239,15 @@ export const themes: Theme[] = [
   },
   {
     id: 62,
-    title: "God personally reviews your browser history every night",
-    desc: "The Almighty has a detailed database of every website you've visited, every search term you've typed, and every video you've watched. He's particularly disappointed in your 3 AM YouTube rabbit holes and your incognito mode usage. Divine judgment comes with personalized recommendations.",
+    title: "Join The Occult (Because Regular Religion Isn't Weird Enough)",
+    desc: "Why settle for boring old dogma when you could summon mysterious forces, read ancient grimoires, and wear way cooler robes? The occult is for those who think regular faith just doesn't have enough tentacles, candles, or cryptic symbols. If your idea of spiritual fulfillment involves chanting in Latin while drawing pentagrams on your living room floor, congratulations—you've found your people.",
     likedBy: {
-      tags: ["authority", "shame", "bizarre concepts", "technology"],
-      religions: ["Southern Baptist", "Evangelical Christianity"],
+      tags: ["the occult", "bizarre concepts", "rebellion", "altered states"],
+      religions: ["The Church of Satan", "The Starseed Pilgrims"],
     },
     dislikedBy: {
-      tags: ["freedom", "individualism", "secularism", "rebellion"],
-      religions: [
-        "The Sovereign Guild of Untethered Minds",
-        "Secular Humanists",
-      ],
+      tags: ["dogma", "tradition", "authority", "literalism"],
+      religions: ["Southern Baptist", "Jehovah's Witnesses"],
     },
   },
   {
@@ -1251,31 +1283,37 @@ export const themes: Theme[] = [
   },
   {
     id: 65,
-    title: "Journalists are Satan's stenographers",
-    desc: "The media exists solely to spread lies, propaganda, and liberal bias. Every news article is basically the devil's diary entry. Real truth comes from anonymous internet posts and your uncle's Facebook conspiracy theories, not from people with journalism degrees.",
+    title: "Why shake hands when oral sex is so much more effective?",
+    desc: "Networking events can be so boring! But here's a tip: instead of the usual handshake, try using your head instead! It's a bold move that shows confidence and leaves a lasting impression. Just make sure to read the room first—consent is key, even in business.",
     likedBy: {
-      tags: ["skepticism", "authority", "tradition", "nationalism"],
+      tags: [
+        "sex",
+        "promiscuity",
+        "power",
+        "sensory experience",
+        "giving to get",
+      ],
+      religions: ["The Church of Eros", "The Order of the Alpha Male"],
+    },
+    dislikedBy: {
+      tags: ["shame", "rules", "tradition", "family values"],
+      religions: ["Catholicism", "Southern Baptist"],
+    },
+  },
+  {
+    id: 95,
+    title: "Sincerity is for amateurs! Try being ironically religious instead.",
+    desc: "Why bother with heartfelt devotion when you can just roll your eyes and worship ironically? True enlightenment is achieved by pretending to believe in everything, but never meaning it. Bonus points for sarcastic prayers and meme-worthy rituals.",
+    likedBy: {
+      tags: ["rebellion", "individualism"],
       religions: [
-        "The Order of the Alpha Male",
+        "The Church of Satan",
         "The Sovereign Guild of Untethered Minds",
       ],
     },
     dislikedBy: {
-      tags: ["journalism", "free thought", "reason", "logic"],
-      religions: ["Secular Humanists"],
-    },
-  },
-  {
-    id: 66,
-    title: "Security is just fear wearing a uniform",
-    desc: "All those cameras, passwords, and safety measures are just monuments to your own paranoia and weakness. True faith means living dangerously and trusting that whatever happens is supposed to happen. Locks are for people who don't believe in divine protection.",
-    likedBy: {
-      tags: ["freedom", "individualism", "rebellion", "chaos"],
-      religions: ["The Sovereign Guild of Untethered Minds", "Zardoz"],
-    },
-    dislikedBy: {
-      tags: ["security", "order", "rules", "structure"],
-      religions: ["The Order of the Divine Algorithm", "Secular Humanists"],
+      tags: ["tradition", "dogma", "order", "sincerity"],
+      religions: ["Confucianism", "Catholicism"],
     },
   },
   {
@@ -1386,21 +1424,15 @@ export const themes: Theme[] = [
   },
   {
     id: 76,
-    title:
-      "Alternative medicine works because placebos are miracles in disguise",
-    desc: "The power of positive thinking can literally reshape reality, which makes expensive crystals and homeopathic remedies bargain-priced miracle workers. Your bank account may be empty, but your chakras are aligned, and that's what really matters when the medical bills arrive.",
+    title: "BLOW UP THE MOON!!!!!!!!",
+    desc: "The moon is an outdated celestial relic standing in the way of true progress and personal freedom. Only by erasing it from the sky can we finally unleash our full potential, disrupt the cosmic status quo, and prove that no force—natural or otherwise—can limit our ambition.",
     likedBy: {
-      tags: [
-        "transcendence",
-        "positive affirmations",
-        "bizarre concepts",
-        "self-help",
-      ],
-      religions: ["New-Age Spirituality", "The Starseed Pilgrims"],
+      religions: ["Temple of the Eternal Sun", "Zardoz"],
+      tags: ["violence", "bizarre concepts", "freedom", "power", "chaos"],
     },
     dislikedBy: {
-      tags: ["science", "rationalism", "skepticism", "logic"],
-      religions: ["Secular Humanists", "Agnostic Atheists"],
+      religions: ["New-Age Spirituality", "The Starseed Pilgrims"],
+      tags: ["feminism", "logic", "apathy"],
     },
   },
   {

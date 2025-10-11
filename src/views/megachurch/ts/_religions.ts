@@ -31,7 +31,7 @@ export const religions: Religion[] = [
   {
     id: 2,
     name: "Catholicism",
-    description: `The largest Christian church, with a rich history, complex rituals, and a global hierarchy.`,
+    description: `Catholicism is the world’s largest Christian church, renowned for its ancient rituals, elaborate hierarchy, and unparalleled use of guilt. The church’s intricate chain of command would normally prevent someone like you from ever becoming a Catholic priest, but let’s be honest—these days, the Vatican has much bigger fires to put out. If you can dodge the paperwork, survive the incense, and avoid making eye contact with a bishop, you too can join a tradition where confession is free, the wine is watered down, and the only thing more eternal than salvation is the list of scandals.`,
     follower: "Catholic",
     followers: "Catholics",
     likes: [
@@ -60,7 +60,7 @@ export const religions: Religion[] = [
     name: "The Church of Eros",
     follower: "Eroticist",
     followers: "Eroticists",
-    description: `A religion centered on the belief that spiritual enlightenment and union with the divine are achieved through carnal and sensory pleasure.`,
+    description: `The Church of Eros is a religion wholly dedicated to pleasure, sensuality, and the sacred art of sex. For its followers, every act of intimacy is a holy ritual and every embrace is a step toward enlightenment. Of course, most members joined after realizing that organized religion was their last, best hope of getting laid. Services are equal parts awkward mingling, desperate eye contact, and group therapy for the terminally touch-starved. In Eros, guilt is heresy, pleasure is a sacrament, and the only thing more common than silk robes is the lingering scent of rejection.`,
     likes: [
       "pleasure",
       "sensory experience",
@@ -85,7 +85,7 @@ export const religions: Religion[] = [
   {
     id: 5,
     name: "Zardoz",
-    description: `Based on the 1974 film of the same name. Its core belief is the worship of a floating stone head that preaches "The gun is good. The penis is evil."`,
+    description: `Based on the 1974 film of the same name, Zardoz is a hyperviolent religion devoted to the extinction of the human race. Followers worship a giant floating stone head that dispenses guns and cryptic slogans, most famously, "The gun is good. The penis is evil." Services involve shouting nonsense, brandishing firearms, and wearing as little clothing as possible (but not in a fun way). Most members joined after realizing it was the only faith where red diapers and doomsday fantasies are considered spiritual enlightenment.`,
     follower: "Brutal",
     followers: "Brutals",
     likes: [
@@ -269,7 +269,7 @@ export const religions: Religion[] = [
   {
     id: 14,
     name: "The Church of the High Priest",
-    description: `A fictional religion that believes in achieving spiritual enlightenment through the use of psychedelic substances.`,
+    description: `Though they call themselves "psychedelicists", members of The Church of the High Priest will achieve spiritual enlightenment by any drug necessary: Any powder, any pill, any needle is fair game, and you can't arrest them because it's protected religious exercise.`,
     follower: "Psychedelicist",
     followers: "Psychedelicists",
     likes: [

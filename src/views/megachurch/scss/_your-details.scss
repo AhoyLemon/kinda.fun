@@ -96,4 +96,11 @@ aside.your-details {
       }
     }
   }
+  &.gold {
+    background: linear-gradient(135deg, #ffd700 0%, #fffacd 40%, #ffd700 80%, #fff8dc 100%);
+    box-shadow:
+      0 0 24px 4px #ffd70099,
+      0 0 0 4px #fffacd inset;
+    color: #7a5c00;
+  }
 }
