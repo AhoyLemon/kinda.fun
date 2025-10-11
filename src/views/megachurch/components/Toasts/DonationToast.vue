@@ -38,4 +38,21 @@
     },
   });
 </script>
-<style lang="scss" src="./DonationToast.scss"></style>
+<style lang="scss">
+  @import "../../scss/variables";
+  .Vue-Toastification__icon {
+    display: none;
+  }
+  .Vue-Toastification__toast {
+    &:has(.donation-collected.positive) {
+      background-color: rgba(3, 8, 3, 0.82);
+      color: #eee;
+      font-family: $sans-serif;
+    }
+    &:has(.donation-collected.negative) {
+      background-color: rgba(18, 3, 3, 0.82);
+      color: #111;
+    }
+  }
+</style>
+<style lang="scss" src="./DonationToast.scss" scoped></style>

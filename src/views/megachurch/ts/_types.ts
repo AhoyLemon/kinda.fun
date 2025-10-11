@@ -170,7 +170,7 @@ export interface UI {
   churchReligionIndex: number;
   timing: {
     toastDuration: number;
-    donationToastDuration: number;
+    donationToastDuration: number | false;
     toastDelayMin: number;
     toastDelayMax: number;
     donationToastDelay: number;

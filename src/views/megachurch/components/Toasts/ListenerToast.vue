@@ -119,4 +119,23 @@
     }
   }
 </script>
-<style lang="scss" src="./ListenerToast.scss"></style>
+<style lang="scss">
+  @import "../../scss/_variables.scss";
+
+  .Vue-Toastification__icon {
+    display: none;
+  }
+  .Vue-Toastification__toast {
+    &:has(.listener-effect.is-positive) {
+      background-color: rgba(3, 20, 3, 0.9);
+    }
+    &:has(.listener-effect.is-negative) {
+      background-color: rgba(38, 3, 3, 0.9);
+    }
+    &:has(.listener-effect.is-confused) {
+      background-color: rgba(20, 15, 3, 0.9);
+    }
+  }
+</style>
+
+<style lang="scss" src="./ListenerToast.scss" scoped></style>

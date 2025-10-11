@@ -5,6 +5,9 @@ body {
 main {
   min-height: 100dvh;
   background-color: white;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   display: flex;
   align-items: stretch;
   justify-content: center;

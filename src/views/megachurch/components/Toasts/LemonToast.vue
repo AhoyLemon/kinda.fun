@@ -11,4 +11,4 @@
     },
   });
 </script>
-<style lang="scss" src="./LemonToast.scss"></style>
+<style lang="scss" src="./LemonToast.scss" scoped></style>

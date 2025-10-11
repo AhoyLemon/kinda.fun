@@ -1,18 +1,5 @@
 @import "../../scss/_variables.scss";
 
-.Vue-Toastification__icon {
-  display: none;
-}
-
-.Vue-Toastification__toast {
-  &:has(.container.positive) {
-    background-color: rgba(3, 20, 3, 0.9);
-  }
-  &:has(.container.negative) {
-    background-color: rgba(38, 3, 3, 0.9);
-  }
-}
-
 .container {
   display: flex;
   gap: 20px;

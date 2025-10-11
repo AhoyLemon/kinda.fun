@@ -1,0 +1,4 @@
+@mixin blurBG($opacity: 0.65, $blurAmount: 4px) {
+  background-color: rgba(255, 255, 255, $opacity);
+  backdrop-filter: blur($blurAmount);
+}

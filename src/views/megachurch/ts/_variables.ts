@@ -423,7 +423,7 @@ export const ui = reactive<UI>({
   churchReligionIndex: 0,
   timing: {
     toastDuration: 7000,
-    donationToastDuration: 9000,
+    donationToastDuration: false,
     toastDelayMin: 1600, // Minimum delay between audience reaction toasts (ms)
     toastDelayMax: 3200, // Maximum delay between audience reaction toasts (ms)
     donationToastDelay: 6000, // Delay before showing donation toast after reactions (ms)

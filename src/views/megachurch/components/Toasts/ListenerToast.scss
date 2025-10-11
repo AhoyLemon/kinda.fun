@@ -1,21 +1,4 @@
 @import "../../scss/_variables.scss";
-
-.Vue-Toastification__icon {
-  display: none;
-}
-
-.Vue-Toastification__toast {
-  &:has(.container.is-positive) {
-    background-color: rgba(3, 20, 3, 0.9);
-  }
-  &:has(.container.is-negative) {
-    background-color: rgba(38, 3, 3, 0.9);
-  }
-  &:has(.container.is-confused) {
-    background-color: rgba(20, 15, 3, 0.9);
-  }
-}
-
 .container {
   .religion {
     font-size: 1.05em;

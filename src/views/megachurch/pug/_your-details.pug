@@ -1,70 +1,66 @@
 aside.your-details
 
-  .box
-    .label Name
-    .value {{my.name}}
+  .inside
 
-  .box(v-if="my.place?.name && my.place.name != 'Starting Location' && my.isStreetPreaching")
-    .label Place
-    .value {{my.place.name}}
+    .box
+      .label Name
+      .value {{my.name}}
 
-  .box(v-if="my.church.name")
-    .label Church
-    .value
-      div {{my.church.name}}
-      small(v-if="my.church.location?.name") {{my.church.location.name}}
+    .box(v-if="my.place?.name && my.place.name != 'Starting Location' && my.isStreetPreaching")
+      .label Place
+      .value {{my.place.name}}
 
-  .box.top-religions(v-if="!my.isStreetPreaching && computedTopReligions")
-    .label Top Religions
-    .value
-      ol
-        li(v-for="religion in computedTopReligions.slice(0, 3)")
-          span {{religion.name}}
+    .box(v-if="my.church.name")
+      .label Church
+      .value
+        div {{my.church.name}}
+        small(v-if="my.church.location?.name") {{my.church.location.name}}
 
-  .box.todays-sermon(v-if="(ui.view !== 'sermon-confirm') && my.sermonToday?.topics?.length > 2")
-    .label Today's Sermon
-    .value
-      ol.topics
-        li(v-for="topic in my.sermonToday.topics") {{topic.title}}
-  
-  .box(v-if="my.daysPlayed > 0 || my.money > 0")
-    .label Money
-    .value {{dollars(my.money)}}
-  
-  .box.spice-status(v-if="my.daysPlayed > 0" :class="{'penalty': my.spice.consumedToday < my.spice.requiredAmount, 'normal': my.spice.consumedToday >= my.spice.requiredAmount && my.spice.consumedToday <= my.spice.requiredAmount, 'bonus': my.spice.consumedToday > my.spice.requiredAmount}")
-    .label Spice Status
-    .value
-      div(v-if="my.spice.consumedToday < my.spice.requiredAmount") 
-        .warning ⚠️ UNDER-DOSED
-        small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
-      div(v-else-if="my.spice.consumedToday > my.spice.requiredAmount") 
-        .bonus ⚡ ENHANCED
-        small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
-      div(v-else) 
-        .good ✅ OPTIMAL
-        small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
-      div(v-if="gameSettings.isDebug")
-        small.debug Performance: {{Math.round(getSpiceMultiplier() * 100)}}%
-        small.debug(v-if="my.spice.pendingAddictionIncrease > 0") 
-          | Tomorrow: +{{my.spice.pendingAddictionIncrease.toFixed(2)}} requirement
+    .box.top-religions(v-if="!my.isStreetPreaching && computedTopReligions")
+      .label Top Religions
+      .value
+        ol
+          li(v-for="religion in computedTopReligions.slice(0, 3)")
+            span {{religion.name}}
+    
+    .box(v-if="my.daysPlayed > 0 || my.money > 0")
+      .label Money
+      .value {{dollars(my.money)}}
+    
+    .box.spice-status(v-if="my.daysPlayed > 0" :class="{'penalty': my.spice.consumedToday < my.spice.requiredAmount, 'normal': my.spice.consumedToday >= my.spice.requiredAmount && my.spice.consumedToday <= my.spice.requiredAmount, 'bonus': my.spice.consumedToday > my.spice.requiredAmount}")
+      .label Spice Status
+      .value
+        div(v-if="my.spice.consumedToday < my.spice.requiredAmount") 
+          .warning ⚠️ UNDER-DOSED
+          small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
+        div(v-else-if="my.spice.consumedToday > my.spice.requiredAmount") 
+          .bonus ⚡ ENHANCED
+          small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
+        div(v-else) 
+          .good ✅ OPTIMAL
+          small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
+        div(v-if="gameSettings.isDebug")
+          small.debug Performance: {{Math.round(getSpiceMultiplier() * 100)}}%
+          small.debug(v-if="my.spice.pendingAddictionIncrease > 0") 
+            | Tomorrow: +{{my.spice.pendingAddictionIncrease.toFixed(2)}} requirement
 
-  .box.buttons(v-if="gameSettings.isDebugButtonVisible || !ui.isFullscreen")
-    .label(v-if="gameSettings.isDebug" style="color: hotpink;") CHEATS ARE ENABLED
-    fieldset
-      button.debug-toggle(@click="toggleDebugMode()" :class="{'active': gameSettings.isDebug}")
-        template(v-if="gameSettings.isDebug")
-          span 🟢
-          span Turn Debug Off 
-        template(v-if="!gameSettings.isDebug")
-          span ⚪
-          span Enable Debug
+    .box.buttons(v-if="gameSettings.isDebugButtonVisible || !ui.isFullscreen")
+      .label(v-if="gameSettings.isDebug" style="color: hotpink;") CHEATS ARE ENABLED
+      fieldset
+        button.debug-toggle(@click="toggleDebugMode()" :class="{'active': gameSettings.isDebug}")
+          template(v-if="gameSettings.isDebug")
+            span 🟢
+            span Turn Debug Off 
+          template(v-if="!gameSettings.isDebug")
+            span ⚪
+            span Enable Debug
 
-    fieldset.debug-controls(v-if="gameSettings.isDebug")
-      legend Debug Controls
-      button.debug(@click="my.money += 1000000; toast.success(`Okay, here's a million dollars.`)") +$1,000,000
-      button.debug(v-if="!my.chats.harold.hasContacted" @click="debugTriggerHarold()") Trigger Harold
-      button.debug(v-if="!my.hasVan" @click="my.hasVan = true") Get Van
-      button.debug(v-if="!my.chats.sterling.hasContacted" @click="debugTriggerSterling()") Trigger Sterling
-      button.debug(v-if="!my.eternalLegacy.isActive" @click="debugTriggerEternalLegacy()") Trigger Legacy
-      button.debug(v-if="my.eternalLegacy.isActive" @click="debugAddHeat()") Add Heat (+10)
-      button.debug(@click="debugTriggerSpeedPreaching()") Speed Preaching
+      fieldset.debug-controls(v-if="gameSettings.isDebug")
+        legend Debug Controls
+        button.debug(@click="my.money += 1000000; toast.success(`Okay, here's a million dollars.`)") +$1,000,000
+        button.debug(v-if="!my.chats.harold.hasContacted" @click="debugTriggerHarold()") Trigger Harold
+        button.debug(v-if="!my.hasVan" @click="my.hasVan = true") Get Van
+        button.debug(v-if="!my.chats.sterling.hasContacted" @click="debugTriggerSterling()") Trigger Sterling
+        button.debug(v-if="!my.eternalLegacy.isActive" @click="debugTriggerEternalLegacy()") Trigger Legacy
+        button.debug(v-if="my.eternalLegacy.isActive" @click="debugAddHeat()") Add Heat (+10)
+        button.debug(@click="debugTriggerSpeedPreaching()") Speed Preaching

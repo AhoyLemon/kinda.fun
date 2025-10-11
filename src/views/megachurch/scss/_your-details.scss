@@ -1,12 +1,19 @@
 aside.your-details {
-  background-color: #212121;
+  background-color: #1a1a1a;
   color: white;
   max-width: 240px;
   padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+
   font-family: $sans-serif;
+  .inside {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-x: auto;
+    max-height: calc(100dvh - 20px);
+    position: sticky;
+    top: 10px;
+  }
   .box {
     border: 1px solid #ddd;
     padding: 10px;
@@ -88,7 +95,5 @@ aside.your-details {
         content: "🐞";
       }
     }
-  }
-  .debug-toggle {
   }
 }

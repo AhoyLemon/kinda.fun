@@ -87,26 +87,34 @@ section.diagnosis {
   }
 }
 
-table.debug {
-  caption {
-    text-transform: uppercase;
-    letter-spacing: 0.25em;
-    font-weight: 300;
-    text-align: center;
-    padding: 1em;
-  }
-  th {
-    padding: 0 0.5em;
-    font-weight: bold;
-  }
-  td {
-    vertical-align: middle;
-    border: $border;
-    padding: 0.5em;
-    &.number {
-      text-align: right;
-      font-size: 150%;
-      font-family: monospace;
-    }
+main.sermon-confirm {
+  background-color: #4f2e27;
+  background-image: url(https://images.pexels.com/photos/1226398/pexels-photo-1226398.jpeg);
+  .diagnosis-box {
+    @include blurBG();
   }
 }
+
+// table.debug {
+//   caption {
+//     text-transform: uppercase;
+//     letter-spacing: 0.25em;
+//     font-weight: 300;
+//     text-align: center;
+//     padding: 1em;
+//   }
+//   th {
+//     padding: 0 0.5em;
+//     font-weight: bold;
+//   }
+//   td {
+//     vertical-align: middle;
+//     border: $border;
+//     padding: 0.5em;
+//     &.number {
+//       text-align: right;
+//       font-size: 150%;
+//       font-family: monospace;
+//     }
+//   }
+// }

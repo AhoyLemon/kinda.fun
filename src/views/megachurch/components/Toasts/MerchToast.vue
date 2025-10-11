@@ -62,4 +62,16 @@
     return items;
   });
 </script>
-<style lang="scss" src="./MerchToast.scss"></style>
+<style lang="scss">
+  @import "../../scss/_variables.scss";
+  .Vue-Toastification__icon {
+    display: none;
+  }
+
+  .Vue-Toastification__toast {
+    &:has(.merch-collected.container) {
+      background-color: rgba(3, 3, 20, 0.9);
+    }
+  }
+</style>
+<style lang="scss" src="./MerchToast.scss" scoped></style>

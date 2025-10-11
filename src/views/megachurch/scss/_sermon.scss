@@ -1,8 +1,12 @@
-section.sermon {
+main.sermon {
+  background-color: #4f2e27;
+  background-image: url(https://images.pexels.com/photos/1226398/pexels-photo-1226398.jpeg);
   form {
     width: 72ch;
     max-width: 98dvw;
     margin-left: auto;
     margin-right: auto;
+    padding: 20px;
+    @include blurBG();
   }
 }

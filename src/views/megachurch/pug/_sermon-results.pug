@@ -7,6 +7,7 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
     // Street Preaching Results
     .audience-reactions(v-if="my.isStreetPreaching && my.audienceReactions && my.audienceReactions.length > 0")
       table.debug.audience-changes
+        caption {{my.streetAttendanceYesterday}} people heard you shout
         thead
           tr
             th Religion
@@ -28,7 +29,7 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
         tfoot
           tr
             td(colspan="4")
-              em {{totalIgnoredAudience}} other people ignored your sermon.
+              em {{totalIgnoredAudience}} other people ignored you completely.
 
     // Church Preaching Results 
 

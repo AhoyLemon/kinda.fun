@@ -24,18 +24,27 @@ section.sermon-results {
       rgba(0, 0, 0, 0.12) 0px 4px 6px,
       rgba(0, 0, 0, 0.17) 0px 12px 13px,
       rgba(0, 0, 0, 0.09) 0px -3px 5px;
-    // thead,
-    // th {
-    //   display: none;
-    // }
+    caption {
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      font-weight: 300;
+      text-align: center;
+      padding: 1em;
+    }
     th {
       background-color: black;
       font-weight: 300;
       font-family: $monospace;
       text-transform: uppercase;
+      padding: 0 0.5em;
     }
     td {
       border: none;
+      padding: 0.5em;
+      &.number {
+        font-size: 125%;
+        font-family: monospace;
+      }
     }
     tr:nth-child(odd) {
       td {
@@ -61,7 +70,6 @@ section.sermon-results {
     }
     .religion-name {
       font-family: $serif;
-      font-size: 1.25em;
     }
     span.positive {
       color: $green;
