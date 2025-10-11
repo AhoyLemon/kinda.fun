@@ -885,6 +885,50 @@
     }, finalDelay);
   }
 
+  function gatherChurchAudience(): number {
+    if (!my.church.isFounded || !my.church.location) {
+      return 0;
+    }
+
+    // Start with base attendance
+    let churchAttendees = gameSettings.churchPreaching.expectedAttendees;
+
+    // Apply preacher strength
+    churchAttendees = Math.round(churchAttendees * (my.preacherStrengths?.gatherCrowd || 1));
+
+    // Apply buzz effect - multiply buzz by buzzMultiplier to get extra attendees
+    const buzzBonus = Math.round(my.church.buzz * gameSettings.church.buzzMultiplier);
+    churchAttendees += buzzBonus;
+
+    // Apply marketing effects to attendance (marketing was purchased yesterday, affects today)
+    if (my.marketing.generalAdActive) {
+      churchAttendees = Math.round(churchAttendees * (1 + gameSettings.church.marketing.generalAd.attendanceBoost / 100));
+    }
+    if (my.marketing.signSpinnerActive) {
+      churchAttendees = Math.round(churchAttendees * (1 + gameSettings.church.marketing.signSpinner.attendanceBoost / 100));
+    }
+
+    // Calculate effective church capacity (base + extra pews)
+    const maxPews = gameSettings.church.upgrades.extraPews.maxPews;
+    const actualExtraPews = Math.min(my.church.upgrades.extraPews, maxPews);
+    const effectiveCapacity = my.church.maxAttendance + actualExtraPews * gameSettings.church.upgrades.extraPews.capacityIncrease;
+
+    // Cap attendance at church capacity
+    const finalAttendance = Math.min(churchAttendees, effectiveCapacity);
+
+    // Show toast if we hit capacity
+    if (churchAttendees > effectiveCapacity) {
+      setTimeout(() => {
+        toast("🏛️ Your church is at maximum capacity! Consider expanding.", {
+          position: POSITION.BOTTOM_LEFT,
+          timeout: ui.timing.toastDuration,
+        });
+      }, 500);
+    }
+
+    return finalAttendance;
+  }
+
   function createChurchSermonEffect() {
     ui.view = "preaching";
     my.church.days += 1;
@@ -902,23 +946,8 @@
     // Get spice multiplier for this sermon
     const spiceMultiplier = getSpiceMultiplier();
 
-    // Calculate church attendees
-    let churchAttendees = gameSettings.churchPreaching.expectedFirstTimeAttendees;
-    churchAttendees = Math.round(churchAttendees * (my.preacherStrengths?.gatherCrowd || 1));
-
-    // Apply marketing effects to attendance
-    if (my.marketing.generalAdActive) {
-      churchAttendees = Math.round(churchAttendees * (1 + gameSettings.church.marketing.generalAd.attendanceBoost / 100));
-    }
-    if (my.marketing.signSpinnerActive) {
-      churchAttendees = Math.round(churchAttendees * (1 + gameSettings.church.marketing.signSpinner.attendanceBoost / 100));
-    }
-
-    // Calculate effective church capacity (base + extra pews)
-    const effectiveCapacity = my.church.maxAttendance + my.church.upgrades.extraPews * gameSettings.church.upgrades.extraPews.capacityIncrease;
-
-    // Cap attendance at church capacity
-    churchAttendees = Math.min(churchAttendees, effectiveCapacity);
+    // Gather today's church attendance
+    const churchAttendees = gatherChurchAudience();
 
     // Build today's congregation from church location demographics and scorecard
     const todaysCongregation: Array<{
@@ -1116,6 +1145,15 @@
 
     // Force Vue reactivity by replacing the scorecard array
     my.religiousScorecard = my.religiousScorecard.map((entry) => ({ ...entry }));
+
+    // Update church buzz based on overall sermon performance
+    // Calculate total likes minus dislikes for buzz adjustment
+    const buzzLikes = todaysCongregation.reduce((sum, group) => sum + group.likes, 0);
+    const buzzDislikes = todaysCongregation.reduce((sum, group) => sum + group.dislikes, 0);
+    const buzzChange = buzzLikes - buzzDislikes;
+
+    // Update buzz, ensuring it never goes below 0
+    my.church.buzz = Math.max(0, my.church.buzz + buzzChange);
 
     // Calculate total donations from people who liked the sermon
     let totalLikes = 0;
@@ -1499,7 +1537,6 @@
     }
   }
 
-  // Sterling Chat Functions
   function openSterlingInterface() {
     ui.chats.sterling.isOpen = true;
   }
@@ -1638,6 +1675,7 @@
       }, 6000);
     }
   }
+
   function triggerHaroldContact() {
     my.chats.harold.hasContacted = true;
 

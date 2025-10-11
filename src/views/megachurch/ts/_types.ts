@@ -262,7 +262,7 @@ export interface GameSettings {
     gasPricePerMile: number;
   };
   churchPreaching: {
-    expectedFirstTimeAttendees: number;
+    expectedAttendees: number;
     religionMatchBonus: number;
     dislikeChance: {
       byReligion: number;
@@ -288,6 +288,7 @@ export interface GameSettings {
     topicRepetitionPenalty: number;
   };
   church: {
+    buzzMultiplier: number; // How much buzz affects attendance (buzz * multiplier = extra attendees)
     merch: {
       holyWaterBottles: {
         cost: number; // cost to the player (per item)
@@ -310,6 +311,7 @@ export interface GameSettings {
       extraPews: {
         cost: number; // costPerPew
         capacityIncrease: number; // how many more people per pew
+        maxPews: number; // maximum number of extra pews that can be purchased
       };
       vipConfessionBooths: {
         cost: number;

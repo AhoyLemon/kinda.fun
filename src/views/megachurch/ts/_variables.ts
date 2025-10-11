@@ -50,7 +50,7 @@ export const gameSettings = reactive<GameSettings>({
     gasPricePerMile: 0.1, // Per-mile gas cost (not used yet)
   },
   churchPreaching: {
-    expectedFirstTimeAttendees: 70, // How many first time attendees show up at a new church
+    expectedAttendees: 70, // How many first time attendees show up at a new church
     religionMatchBonus: 200, // Percent bonus to both like and dislike checks if the church's religion matches the attendee's religion
     dislikeChance: {
       byReligion: 30,
@@ -76,6 +76,7 @@ export const gameSettings = reactive<GameSettings>({
     topicRepetitionPenalty: 0.85, // Penalty multiplier for repeating topics (default 15% less effective)
   },
   church: {
+    buzzMultiplier: 0.1, // How much buzz affects attendance (buzz * multiplier = extra attendees)
     merch: {
       holyWaterBottles: {
         cost: 5, // cost to the player (per item)
@@ -97,7 +98,8 @@ export const gameSettings = reactive<GameSettings>({
     upgrades: {
       extraPews: {
         cost: 200, // costPerPew
-        capacityIncrease: 20, // how many more people per pew
+        capacityIncrease: 10, // how many more people per pew
+        maxPews: 10, // maximum number of extra pews that can be purchased
       },
       vipConfessionBooths: {
         cost: 1000,
@@ -423,7 +425,7 @@ export const ui = reactive<UI>({
   churchReligionIndex: 0,
   timing: {
     toastDuration: 7000,
-    donationToastDuration: false,
+    donationToastDuration: 7000,
     toastDelayMin: 1600, // Minimum delay between audience reaction toasts (ms)
     toastDelayMax: 3200, // Maximum delay between audience reaction toasts (ms)
     donationToastDelay: 6000, // Delay before showing donation toast after reactions (ms)
@@ -529,7 +531,7 @@ export const my = reactive<My>({
     religion: undefined,
     days: 0,
     buzz: 0,
-    maxAttendance: 200, // Maximum number of attendees in your church on any given day
+    maxAttendance: 100, // Maximum number of attendees in your church on any given day (can be modified by purchasing extra pews)
     upgrades: {
       extraPews: 0,
       vipConfessionBooths: false,

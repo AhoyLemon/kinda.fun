@@ -61,9 +61,7 @@ export function getAvailablePlaces(
 ): any[] {
   if (hasVan) {
     // Filter out Starting Location (id: 0) and current location when player has a van
-    return places.filter(
-      (place) => place.id !== 0 && place.id !== currentPlaceId,
-    );
+    return places.filter((place) => place.id !== 0);
   }
   return places;
 }
