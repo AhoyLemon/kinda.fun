@@ -79,13 +79,6 @@
   WorshopZone(
     v-if="ui.workshopZone.isOpen"
     @close="closeWorkshopZone"
-  ) 
-
-  HeatMeter(
-    v-if="my.eternalLegacy.isActive && my.eternalLegacy.voicemailPlayed"
-    :currentHeat="my.eternalLegacy.heat"
-    :maxHeat="gameSettings.eternalLegacy.heat.max"
-    :isVisible="true"
   )
 
   EternalLegacyShop(

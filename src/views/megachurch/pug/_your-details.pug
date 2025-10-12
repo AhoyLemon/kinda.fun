@@ -2,10 +2,16 @@ aside.your-details
 
   .inside
 
-    .box
+    .box(v-if="my.name && !my.eternalLegacy.heat" )
       .label Name
       .value {{my.name}}
 
+    .box.heat(v-if="my.eternalLegacy.heat")
+      .label Federal Investigation
+      .value 
+        .thermometer.heat-meter
+          .heat-meter-fill(:style="{ width: Math.min((my.eternalLegacy.heat / gameSettings.eternalLegacy.heat.max) * 100, 100) + '%' }")
+          .heat-meter-text {{ my.eternalLegacy.heat }} / {{ gameSettings.eternalLegacy.heat.max }}
     .box(v-if="my.place?.name && my.place.name != 'Starting Location' && my.isStreetPreaching")
       .label Place
       .value {{my.place.name}}

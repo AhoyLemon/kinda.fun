@@ -20,7 +20,6 @@
   import SterlingNote from "./components/Sterling/SterlingNote.vue";
   import WorshopZoneBanner from "./components/WorshopZone/WorshopZoneBanner.vue";
   import WorshopZone from "./components/WorshopZone/WorshopZone.vue";
-  import HeatMeter from "./components/EternalLegacy/HeatMeter.vue";
   import EternalLegacyShop from "./components/EternalLegacy/EternalLegacyShop.vue";
   import SterlingVoicemail from "./components/Sterling/SterlingVoicemail.vue";
   import { useToast } from "vue-toastification";

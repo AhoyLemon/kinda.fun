@@ -103,4 +103,32 @@ aside.your-details {
       0 0 0 4px #fffacd inset;
     color: #7a5c00;
   }
+
+  .box.heat {
+    background-color: rgba(2, 2, 52, 1);
+    border-color: blue;
+    .heat-meter {
+      border: 2px solid white;
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      background-color: rgba(255, 255, 255, 0.05);
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 1);
+      .heat-meter-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        background: linear-gradient(0deg, #d60000 0%, #ff3c00 40%, #d60000 100%);
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .heat-meter-text {
+        text-align: center;
+        padding: 5px 0;
+        position: relative;
+        filter: drop-shadow(0 0 2px black) drop-shadow(0 0 2px black);
+      }
+    }
+  }
 }
