@@ -62,14 +62,14 @@ section.sermon(v-if="ui.view === 'sermon'")
 
               dt Will Appeal To:
               dd
-                ul.religion-list
+                transition-group.religion-list(name="religion-list" tag="ul")
                   li(v-for="religion in temporarySermonScores.mostLiked" :key="religion.id")
                     span.religion-name {{ religion.name }}
                     //span.weight-indicator ({{ religion.weight }})
             dl.preview-column(v-if="temporarySermonScores.mostDisliked.length > 0")
               dt Will Offend:
               dd
-                ul.religion-list
+                transition-group.religion-list(name="religion-list" tag="ul")
                   li(v-for="religion in temporarySermonScores.mostDisliked" :key="religion.id")
                     span.religion-name {{ religion.name }}
                     //span.weight-indicator ({{ religion.weight }})
@@ -84,7 +84,7 @@ section.sermon(v-if="ui.view === 'sermon'")
             h4 New: Seraph AI Analysis
             p Get real-time insights into how your audience will react to your sermon topics. See which religions will love or hate your message before you preach.
           .nag-actions
-            button.nag-btn-primary(@click="openWorkshopZoneForSeraph()") Try Seraph AI
+            button.nag-btn-primary(@click="openWorkshopZoneForSeraph()") ⚡ Try Seraph AI
             button.nag-btn-secondary(@click="dismissSeraphNag()") Not now
 
       .button-holder

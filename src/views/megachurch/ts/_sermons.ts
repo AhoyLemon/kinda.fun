@@ -1301,7 +1301,7 @@ export const themes: Theme[] = [
     },
   },
   {
-    id: 95,
+    id: 66,
     title: "Sincerity is for amateurs! Try being ironically religious instead.",
     desc: "Why bother with heartfelt devotion when you can just roll your eyes and worship ironically? True enlightenment is achieved by pretending to believe in everything, but never meaning it. Bonus points for sarcastic prayers and meme-worthy rituals.",
     likedBy: {

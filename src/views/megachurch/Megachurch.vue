@@ -638,7 +638,7 @@
         );
 
         setTimeout(() => {
-          ui.view = "sermon-results";
+          endTheDay();
         }, ui.timing.resultsViewDelay);
       }, 1000);
       return;
@@ -730,7 +730,7 @@
       );
 
       setTimeout(() => {
-        ui.view = "sermon-results";
+        endTheDay();
       }, ui.timing.resultsViewDelay);
     }, finalDelay);
   }
@@ -881,7 +881,7 @@
 
       // Switch to results view
       setTimeout(() => {
-        ui.view = "sermon-results";
+        endTheDay();
       }, ui.timing.resultsViewDelay);
     }, finalDelay);
   }
@@ -1409,12 +1409,24 @@
 
       // Switch to results view
       setTimeout(() => {
-        ui.view = "sermon-results";
-
-        // Is it time for Sterling's voicemail?
-        checkEternalLegacyTrigger();
+        endTheDay();
       }, ui.timing.resultsViewDelay);
     }, finalDelay);
+  }
+
+  // ================= DAY MANAGEMENT =================
+  function endTheDay() {
+    ui.view = "sermon-results";
+
+    // Check for Plug auto-introduction on first day
+    if (my.daysPlayed < 1 && !my.chats.plug.hasContacted) {
+      setTimeout(() => {
+        triggerPlugContact();
+      }, 2000);
+    }
+
+    // Is it time for Sterling's voicemail?
+    checkEternalLegacyTrigger();
   }
 
   // ================= SPICE MECHANICS =================
@@ -1489,26 +1501,6 @@
 
   function closeHaroldInterface() {
     ui.chats.harold.isOpen = false;
-  }
-
-  function handlePlugMessage(data: any) {
-    if (data.messages && Array.isArray(data.messages)) {
-      data.messages.forEach((message: any) => {
-        // Replace typing indicator if specified (use in-place update for smooth transitions)
-        if (message.replaceTyping) {
-          const typingMessage = my.chats.plug.chatHistory.find((m) => m.isTyping && m.sender === "plug");
-          if (typingMessage) {
-            // Update the existing message object instead of removing and adding
-            typingMessage.text = message.text;
-            typingMessage.time = message.time;
-            typingMessage.isTyping = false;
-          }
-        } else {
-          // Add new message normally
-          my.chats.plug.chatHistory.push(message);
-        }
-      });
-    }
   }
 
   function handleHaroldMessage(data: any) {
@@ -1688,72 +1680,95 @@
     }
   }
 
-  function triggerHaroldContact() {
-    my.chats.harold.hasContacted = true;
+  // ================= CHAT AUTOMATION HELPERS =================
+  function sendTextMessages(messages: Array<{ sender: string; text: string }>, chatType: "harold" | "sterling" | "plug", typingTime = 3500) {
+    const chatData = my.chats[chatType];
 
-    // Add just the first message and open chat immediately
+    // Add the first message immediately (whether it's from player or NPC)
     const firstMessage = {
       id: Date.now(),
-      sender: "harold",
-      text: "hey kid it ur uncl harold",
+      sender: messages[0].sender,
+      text: messages[0].text,
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
-    my.chats.harold.chatHistory.push(firstMessage);
+    chatData.chatHistory.push(firstMessage);
 
-    // Open Harold chat immediately with just the first message
-    setTimeout(() => {
-      ui.chats.harold.isOpen = true;
-    }, 2200);
-    // Queue the rest of the messages with typing simulation
-    const subsequentMessages = [
-      "u need a van???",
-      `$${gameSettings.van.cost}`, // This message triggers the van interface
-      "u culd relly go places w it",
-      "mb help u w ur preachin",
-      "wana buy???",
-    ];
+    // Queue subsequent messages with typing simulation
+    const subsequentMessages = messages.slice(1); // Skip first message
+    if (subsequentMessages.length === 0) return;
 
     let messageIndex = 0;
 
     function sendNextMessage() {
       if (messageIndex >= subsequentMessages.length) return;
 
-      const messageText = subsequentMessages[messageIndex];
+      const messageData = subsequentMessages[messageIndex];
 
-      // Show typing indicator
-      const typingMessage = {
-        id: Date.now() + 9000 + messageIndex, // Unique ID for typing messages
-        sender: "harold",
-        text: "",
-        time: "",
-        isTyping: true,
-      };
-      my.chats.harold.chatHistory.push(typingMessage);
-
-      // After typing delay, replace with actual message
-      setTimeout(() => {
-        // Find and update the typing message instead of removing and adding
-        const typingMessage = my.chats.harold.chatHistory.find((msg) => msg.isTyping && msg.sender === "harold");
-        if (typingMessage) {
-          // Update the existing message object
-          typingMessage.text = messageText;
-          typingMessage.time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-          typingMessage.isTyping = false;
-        }
-
-        // Van purchase interface will show automatically based on chat history length
-
+      // Show typing indicator (only for NPCs, not player)
+      if (messageData.sender !== "player") {
+        const typingMessage = {
+          id: Date.now() + 9000 + messageIndex,
+          sender: messageData.sender,
+          text: "",
+          time: "",
+          isTyping: true,
+        };
+        chatData.chatHistory.push(typingMessage);
+        // After typing delay, replace with actual message
+        setTimeout(() => {
+          // Find and update the typing message
+          const typingMsg = chatData.chatHistory.find((msg) => msg.isTyping && msg.sender === messageData.sender);
+          if (typingMsg) {
+            typingMsg.text = messageData.text;
+            typingMsg.time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            typingMsg.isTyping = false;
+          }
+          messageIndex++;
+          // Queue next message if there are more
+          if (messageIndex < subsequentMessages.length) {
+            setTimeout(sendNextMessage, 1250); // 1.25 second delay between messages
+          }
+        }, typingTime); // Use configurable typing time
+      } else {
+        // For player messages, add immediately without typing indicator
+        const playerMessage = {
+          id: Date.now() + messageIndex,
+          sender: messageData.sender,
+          text: messageData.text,
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        };
+        chatData.chatHistory.push(playerMessage);
         messageIndex++;
-
         // Queue next message if there are more
         if (messageIndex < subsequentMessages.length) {
-          setTimeout(sendNextMessage, 2000); // 2 second delay between messages
+          setTimeout(sendNextMessage, 1000); // Shorter delay for player messages
         }
-      }, 1500); // 1.5 second typing delay
+      }
     }
 
     // Start sending subsequent messages after a short delay
     setTimeout(sendNextMessage, 2500);
+  }
+
+  // ================= CONTACT TRIGGER FUNCTIONS =================
+  function triggerHaroldContact() {
+    // Mark as contacted and open chat
+    my.chats.harold.hasContacted = true;
+
+    setTimeout(() => {
+      ui.chats.harold.isOpen = true;
+    }, 2200);
+
+    const messages = [
+      { sender: "harold", text: "hey kid it ur uncl harold" },
+      { sender: "harold", text: "u need a van???" },
+      { sender: "harold", text: `$${gameSettings.van.cost}` }, // This message triggers the van interface
+      { sender: "harold", text: "u culd relly go places w it" },
+      { sender: "harold", text: "mb help u w ur preachin" },
+      { sender: "harold", text: "wana buy???" },
+    ];
+
+    sendTextMessages(messages, "harold");
   }
 
   function triggerSterlingContact() {
@@ -1782,6 +1797,26 @@
   function onSterlingNoteRead() {
     // After reading the note, Sterling becomes available for texting
     // No initial chat messages - player must initiate contact
+  }
+
+  function triggerPlugContact() {
+    // Mark as contacted and open chat
+    my.chats.plug.hasContacted = true;
+
+    // Open chat first
+    setTimeout(() => {
+      ui.chats.plug.isOpen = true;
+    }, 200);
+
+    // Delay the first message a bit longer so the UI opens first
+    setTimeout(() => {
+      const messages = [
+        { sender: "player", text: "Hey man it's rough out there, I really need a fix." },
+        { sender: "plug", text: "It's $5 a hit. You know the deal." },
+      ];
+
+      sendTextMessages(messages, "plug", 3500); // Faster typing for this conversation
+    }, 3000); // Wait for UI to open before starting messages
   }
 
   function handlePlugOrder(orderData) {
@@ -2080,32 +2115,9 @@
 
   function debugTriggerHarold() {
     if (!my.chats.harold.hasContacted) {
-      my.chats.harold.hasContacted = true;
-      my.canBuyVan = true;
-      const haroldDebugMessages = [
-        "i got this van",
-        "u need a van???",
-        `$${gameSettings.van.cost}`, // This message triggers the van interface
-        "u culd relly go places w it",
-        "mb help u w ur preachin",
-        "wana buy???",
-        "DEBUG: Harold initial contact triggered!",
-      ];
-      const debugMessageStructure = {
-        id: 0,
-        sender: "harold",
-        text: "",
-        time: "DEBUG",
-        isTyping: false,
-      };
-      haroldDebugMessages.forEach((msg) => {
-        my.chats.harold.chatHistory.push({
-          ...debugMessageStructure,
-          id: randomNumber(500, 1000),
-          text: msg,
-        });
-      });
+      triggerHaroldContact();
       toast.success("DEBUG: Harold initial contact triggered!");
+      ui.chats.harold.isOpen = true;
     } else {
       toast.warning("Harold has already been contacted!");
     }
@@ -2113,8 +2125,8 @@
 
   function debugTriggerSterling() {
     if (!my.chats.sterling.hasContacted) {
-      my.chats.sterling.hasContacted = true;
       toast.success("DEBUG: Sterling initial contact triggered!");
+      triggerSterlingContact();
     } else {
       toast.warning("Sterling has already been contacted!");
     }

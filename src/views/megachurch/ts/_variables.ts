@@ -604,6 +604,7 @@ export const my = reactive<My>({
   },
   chats: {
     plug: {
+      hasContacted: false, // Whether The Plug has made initial contact
       totalOrders: 0, // Track total orders made to The Plug
       chatHistory: [], // Chat message history with The Plug
     },
