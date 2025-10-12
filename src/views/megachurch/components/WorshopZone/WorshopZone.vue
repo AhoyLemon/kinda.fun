@@ -261,13 +261,7 @@
               >
                 ACTIVATE FOR ${{ gameSettings.church.upgrades.seraphAI.cost }}/DAY
               </button>
-              <button
-                v-else
-                @click="toggleSeraphAI()"
-                class="buy-btn big"
-              >
-                DEACTIVATE SERVICE
-              </button>
+              <button v-else @click="toggleSeraphAI()" class="buy-btn big">DEACTIVATE SERVICE</button>
             </div>
 
             <div class="upgrade-card">
@@ -450,7 +444,7 @@
         ui.workshopZone.defaultTab = "merch";
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   // Merch quantities for purchasing

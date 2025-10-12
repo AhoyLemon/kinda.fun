@@ -86,28 +86,28 @@ main.sermon {
     padding: 16px;
     margin: 20px 0;
     box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
-    
+
     .nag-content {
       display: flex;
       align-items: flex-start;
       gap: 12px;
-      
+
       .nag-icon {
         font-size: 2rem;
         flex-shrink: 0;
         animation: pulse 2s infinite;
       }
-      
+
       .nag-text {
         flex: 1;
-        
+
         h4 {
           color: white;
           margin: 0 0 8px 0;
           font-size: 1.1rem;
           font-weight: 600;
         }
-        
+
         p {
           color: rgba(255, 255, 255, 0.9);
           margin: 0 0 16px 0;
@@ -116,12 +116,12 @@ main.sermon {
         }
       }
     }
-    
+
     .nag-actions {
       display: flex;
       gap: 8px;
       justify-content: flex-end;
-      
+
       button {
         padding: 8px 16px;
         border: none;
@@ -129,22 +129,22 @@ main.sermon {
         font-weight: 500;
         cursor: pointer;
         transition: all 0.2s ease;
-        
+
         &.nag-btn-primary {
           background: rgba(255, 255, 255, 0.9);
           color: #4a5568;
-          
+
           &:hover {
             background: white;
             transform: translateY(-1px);
           }
         }
-        
+
         &.nag-btn-secondary {
           background: rgba(255, 255, 255, 0.1);
           color: rgba(255, 255, 255, 0.8);
           border: 1px solid rgba(255, 255, 255, 0.3);
-          
+
           &:hover {
             background: rgba(255, 255, 255, 0.2);
           }
@@ -154,8 +154,13 @@ main.sermon {
   }
 
   @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
   }
 
   .sermon-preview {

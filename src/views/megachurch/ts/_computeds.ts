@@ -105,11 +105,13 @@ export function computeTemporarySermonScores(
   religions: any[],
 ): { mostLiked: any[]; mostDisliked: any[] } {
   // If no topics selected, return empty arrays
-  const selectedTopicIds = selectedTopics.filter((id): id is number => typeof id === "number");
+  const selectedTopicIds = selectedTopics.filter(
+    (id): id is number => typeof id === "number",
+  );
   if (selectedTopicIds.length === 0) {
     return {
       mostLiked: [],
-      mostDisliked: []
+      mostDisliked: [],
     };
   }
 
@@ -119,14 +121,17 @@ export function computeTemporarySermonScores(
     .filter(Boolean);
 
   // Calculate scores for each religion based on both religion matches and tag matches
-  const religionScores: Record<number, { name: string; likeScore: number; dislikeScore: number }> = {};
+  const religionScores: Record<
+    number,
+    { name: string; likeScore: number; dislikeScore: number }
+  > = {};
 
   // Initialize scores for all religions
   religions.forEach((religion) => {
     religionScores[religion.id] = {
       name: religion.name,
       likeScore: 0,
-      dislikeScore: 0
+      dislikeScore: 0,
     };
   });
 
@@ -140,7 +145,9 @@ export function computeTemporarySermonScores(
         id = rel;
       } else {
         // rel is a string, use its hash as id
-        id = rel.split("").reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
+        id = rel
+          .split("")
+          .reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
       }
       if (religionScores[id]) {
         religionScores[id].likeScore += 3; // Religion match = 3x weight
@@ -156,7 +163,9 @@ export function computeTemporarySermonScores(
         id = rel;
       } else {
         // rel is a string, use its hash as id
-        id = rel.split("").reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
+        id = rel
+          .split("")
+          .reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
       }
       if (religionScores[id]) {
         religionScores[id].dislikeScore += 3; // Religion match = 3x weight
@@ -167,7 +176,7 @@ export function computeTemporarySermonScores(
     (theme.likedBy.tags ?? []).forEach((tagObj: any) => {
       const tag = tagObj.tag || tagObj; // Handle both {tag: "value", weight: 1} and "value" formats
       const weight = tagObj.weight || 1;
-      
+
       religions.forEach((religion) => {
         if (religion.likes.includes(tag)) {
           religionScores[religion.id].likeScore += weight; // Tag match = 1x weight
@@ -179,7 +188,7 @@ export function computeTemporarySermonScores(
     (theme.dislikedBy.tags ?? []).forEach((tagObj: any) => {
       const tag = tagObj.tag || tagObj; // Handle both {tag: "value", weight: 1} and "value" formats
       const weight = tagObj.weight || 1;
-      
+
       religions.forEach((religion) => {
         if (religion.likes.includes(tag)) {
           // Religion likes this tag, but we're attacking it = dislike
@@ -191,20 +200,29 @@ export function computeTemporarySermonScores(
 
   // Build top 3 most liked religions (excluding mixed messages)
   const mostLiked = Object.entries(religionScores)
-    .filter(([_, v]) => v.likeScore > 0 && !(v.likeScore > 0 && v.dislikeScore > 0)) // Exclude mixed messages
+    .filter(
+      ([_, v]) => v.likeScore > 0 && !(v.likeScore > 0 && v.dislikeScore > 0),
+    ) // Exclude mixed messages
     .map(([id, v]) => ({ name: v.name, id: Number(id), weight: v.likeScore }))
     .sort((a, b) => b.weight - a.weight)
     .slice(0, 3);
 
   // Build top 3 most disliked religions (excluding mixed messages)
   const mostDisliked = Object.entries(religionScores)
-    .filter(([_, v]) => v.dislikeScore > 0 && !(v.likeScore > 0 && v.dislikeScore > 0)) // Exclude mixed messages
-    .map(([id, v]) => ({ name: v.name, id: Number(id), weight: v.dislikeScore }))
+    .filter(
+      ([_, v]) =>
+        v.dislikeScore > 0 && !(v.likeScore > 0 && v.dislikeScore > 0),
+    ) // Exclude mixed messages
+    .map(([id, v]) => ({
+      name: v.name,
+      id: Number(id),
+      weight: v.dislikeScore,
+    }))
     .sort((a, b) => b.weight - a.weight)
     .slice(0, 3);
 
   return {
     mostLiked,
-    mostDisliked
+    mostDisliked,
   };
 }
