@@ -244,6 +244,34 @@
 
             <div class="upgrade-card">
               <div class="upgrade-img broken-img"></div>
+              <h3>Seraph AI Sermon Analysis</h3>
+              <div class="upgrade-description">
+                Cutting-edge AI that analyzes your sermon topics and predicts audience reactions before you preach! See which religions will love or hate your
+                message in real-time. Subscription service: ${{ gameSettings.church.upgrades.seraphAI.cost }} per day.
+              </div>
+              <div class="upgrade-stats">
+                <div>Daily Cost: ${{ gameSettings.church.upgrades.seraphAI.cost }}</div>
+                <div>Status: {{ my.church.upgrades.seraphAI ? "ACTIVE" : "INACTIVE" }}</div>
+              </div>
+              <button
+                v-if="!my.church.upgrades.seraphAI"
+                @click="toggleSeraphAI()"
+                class="unlock-btn big"
+                :disabled="my.money < gameSettings.church.upgrades.seraphAI.cost"
+              >
+                ACTIVATE FOR ${{ gameSettings.church.upgrades.seraphAI.cost }}/DAY
+              </button>
+              <button
+                v-else
+                @click="toggleSeraphAI()"
+                class="buy-btn big"
+              >
+                DEACTIVATE SERVICE
+              </button>
+            </div>
+
+            <div class="upgrade-card">
+              <div class="upgrade-img broken-img"></div>
               <h3>Branded Communion Snacks</h3>
               <div class="upgrade-description">Upgrade your wine and bread for better congregation satisfaction!</div>
               <div class="sacrament-section">
@@ -402,8 +430,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from "vue";
-  import { my, gameSettings } from "../../ts/_variables";
+  import { ref, computed, watch } from "vue";
+  import { my, gameSettings, ui } from "../../ts/_variables";
   import { religions } from "../../ts/_religions";
 
   const emit = defineEmits<{
@@ -411,6 +439,19 @@
   }>();
 
   const activeTab = ref("merch");
+
+  // Watch for default tab changes
+  watch(
+    () => ui.workshopZone.defaultTab,
+    (newTab) => {
+      if (newTab && ui.workshopZone.isOpen) {
+        activeTab.value = newTab;
+        // Reset the default tab to prevent it from affecting future opens
+        ui.workshopZone.defaultTab = "merch";
+      }
+    },
+    { immediate: true }
+  );
 
   // Merch quantities for purchasing
   const merchQuantities = ref({
@@ -494,6 +535,19 @@
         my.money -= cost;
         my.church.upgrades.audioVisual = true;
       }
+    }
+  }
+
+  function toggleSeraphAI() {
+    if (!my.church.upgrades.seraphAI) {
+      // Activating - charge daily fee
+      if (my.money >= gameSettings.church.upgrades.seraphAI.cost) {
+        my.money -= gameSettings.church.upgrades.seraphAI.cost;
+        my.church.upgrades.seraphAI = true;
+      }
+    } else {
+      // Deactivating - no charge
+      my.church.upgrades.seraphAI = false;
     }
   }
 

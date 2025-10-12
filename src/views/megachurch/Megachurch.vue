@@ -38,6 +38,7 @@
     getAvailablePlaces,
     computeTopReligions,
     getPurchasedItems,
+    computeTemporarySermonScores,
   } from "./ts/_computeds";
 
   // ================= FUNCTIONS =================
@@ -1563,6 +1564,17 @@
     ui.workshopZone.isOpen = true;
   }
 
+  function openWorkshopZoneForSeraph() {
+    // Mark nag as shown and open Workshop Zone to Upgrades tab
+    ui.seraphAINag.hasShown = true;
+    ui.workshopZone.defaultTab = "upgrades";
+    ui.workshopZone.isOpen = true;
+  }
+
+  function dismissSeraphNag() {
+    ui.seraphAINag.hasShown = true;
+  }
+
   // === Eternal Legacy Shop Functions ===
 
   function showEternalLegacyShop() {
@@ -1861,6 +1873,20 @@
     my.marketing.prCampaign.active = false;
     my.marketing.prCampaign.targetReligion = null;
 
+    // Process daily Seraph AI subscription cost
+    my.seraphAICostYesterday = 0;
+    if (my.church.upgrades.seraphAI) {
+      const dailyCost = gameSettings.church.upgrades.seraphAI.cost;
+      if (my.money >= dailyCost) {
+        my.money -= dailyCost;
+        my.seraphAICostYesterday = dailyCost;
+      } else {
+        // Can't afford subscription - deactivate service
+        my.church.upgrades.seraphAI = false;
+        toast.warning("Seraph AI subscription cancelled due to insufficient funds.");
+      }
+    }
+
     // Generate new daily themes for tomorrow
     generateDailyThemes();
 
@@ -2153,6 +2179,10 @@
 
   const purchasedUnderTableItems = computed(() => {
     return getPurchasedItems(my.eternalLegacy.purchasedItems, gameSettings.eternalLegacy.shop.underTheTable);
+  });
+
+  const temporarySermonScores = computed(() => {
+    return computeTemporarySermonScores(ui.selectedTopics, themes, religions);
   });
 
   // === Game Control Functions ===

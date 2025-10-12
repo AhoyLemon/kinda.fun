@@ -85,6 +85,7 @@ export interface ChurchUpgrades {
   extraPews: number; // How many extra pews purchased
   vipConfessionBooths: boolean; // Whether VIP confession booths are installed
   audioVisual: boolean; // Whether audio/visual equipment is installed
+  seraphAI: boolean; // Whether Seraph AI sermon analysis is active
   sacrament: {
     wine: {
       level: number; // 0 = none, 1 = cheap, 2 = mid, 3 = top-shelf
@@ -191,12 +192,16 @@ export interface UI {
   workshopZone: {
     isOpen: boolean;
     showBanner: boolean;
+    defaultTab?: string; // Tab to open to by default
   };
   eternalLegacyShop: {
     isOpen: boolean;
   };
   sterlingVoicemail: {
     isOpen: boolean;
+  };
+  seraphAINag: {
+    hasShown: boolean; // Whether the nag message has been shown to the user
   };
 }
 
@@ -321,6 +326,11 @@ export interface GameSettings {
         cost: number;
         likeBoost: number; // % boost to like chances
       };
+      seraphAI: {
+        cost: number; // Daily subscription cost
+        description: string;
+        daysBeforeNag: number; // How many church days before showing the nag
+      };
       sacraments: {
         wine: {
           levels: Array<{
@@ -443,6 +453,7 @@ export interface My {
   playerShareYesterday?: number;
   merchRevenueYesterday?: number;
   confessionRevenueYesterday?: number;
+  seraphAICostYesterday?: number; // Daily cost for Seraph AI service
   merchSalesDetailsYesterday?: {
     holyWater: { sold: number; revenue: number };
     prayerCandles: { sold: number; revenue: number };
@@ -577,6 +588,7 @@ export type Tags =
   | "loyalty"
   | "materialism"
   | "meditation"
+  | "misogyny"
   | "missionary work"
   | "modernity"
   | "money"
@@ -597,6 +609,7 @@ export type Tags =
   | "power"
   | "progress"
   | "prophecy"
+  | "promiscuity"
   | "provocation"
   | "rationalism"
   | "rebellion"
@@ -604,7 +617,6 @@ export type Tags =
   | "rituals"
   | "rules"
   | "sex"
-  | "promiscuity"
   | "shame"
   | "science"
   | "security"

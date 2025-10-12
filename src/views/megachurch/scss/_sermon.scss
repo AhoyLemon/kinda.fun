@@ -9,4 +9,202 @@ main.sermon {
     padding: 20px;
     @include blurBG();
   }
+
+  // .sermon-preview {
+  //   margin: 20px 0;
+  //   padding: 15px;
+  //   background: rgba(255, 255, 255, 0.1);
+  //   border-radius: 8px;
+  //   border: 1px solid rgba(255, 255, 255, 0.2);
+
+  //   .preview-section {
+  //     h4 {
+  //       margin: 0 0 10px 0;
+  //       color: white;
+  //       font-size: 1.1rem;
+  //       text-align: center;
+  //     }
+
+  //     .preview-columns {
+  //       display: grid;
+  //       grid-template-columns: 1fr 1fr;
+  //       gap: 20px;
+
+  //       @media (max-width: 600px) {
+  //         grid-template-columns: 1fr;
+  //         gap: 15px;
+  //       }
+  //     }
+
+  //     .preview-column {
+  //       h5 {
+  //         margin: 0 0 8px 0;
+  //         color: rgba(255, 255, 255, 0.9);
+  //         font-size: 0.9rem;
+  //         text-transform: uppercase;
+  //         letter-spacing: 0.5px;
+  //       }
+
+  //       .religion-list {
+  //         list-style: none;
+  //         padding: 0;
+  //         margin: 0;
+
+  //         li {
+  //           display: flex;
+  //           justify-content: space-between;
+  //           align-items: center;
+  //           padding: 4px 0;
+  //           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  //           &:last-child {
+  //             border-bottom: none;
+  //           }
+
+  //           .religion-name {
+  //             color: white;
+  //             font-size: 0.85rem;
+  //             flex: 1;
+  //           }
+
+  //           .weight-indicator {
+  //             color: rgba(255, 255, 255, 0.7);
+  //             font-size: 0.75rem;
+  //             font-weight: bold;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
+  // Seraph AI Nag Message
+  .seraph-ai-nag {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 1px solid #4a5568;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    
+    .nag-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      
+      .nag-icon {
+        font-size: 2rem;
+        flex-shrink: 0;
+        animation: pulse 2s infinite;
+      }
+      
+      .nag-text {
+        flex: 1;
+        
+        h4 {
+          color: white;
+          margin: 0 0 8px 0;
+          font-size: 1.1rem;
+          font-weight: 600;
+        }
+        
+        p {
+          color: rgba(255, 255, 255, 0.9);
+          margin: 0 0 16px 0;
+          line-height: 1.4;
+          font-size: 0.9rem;
+        }
+      }
+    }
+    
+    .nag-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      
+      button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &.nag-btn-primary {
+          background: rgba(255, 255, 255, 0.9);
+          color: #4a5568;
+          
+          &:hover {
+            background: white;
+            transform: translateY(-1px);
+          }
+        }
+        
+        &.nag-btn-secondary {
+          background: rgba(255, 255, 255, 0.1);
+          color: rgba(255, 255, 255, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          
+          &:hover {
+            background: rgba(255, 255, 255, 0.2);
+          }
+        }
+      }
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .sermon-preview {
+    .preview-columns {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    dl {
+      border: 1px solid #ccc;
+      font-family: $sans-serif;
+      dt {
+        font-weight: 800;
+        text-transform: uppercase;
+        background-color: #555;
+        font-family: $serif;
+        font-size: 1rem;
+        letter-spacing: 0.1em;
+        color: white;
+        padding: 7px;
+      }
+      dd {
+        padding: 10px;
+        line-height: 140%;
+      }
+      ul {
+        display: grid;
+        //gap: 4px;
+        padding: 0 0.5em 0.5em 1.5em;
+        list-style-type: disc;
+        font-size: 0.875em;
+        li {
+          padding-left: 0.5em;
+          &.match {
+            color: darken($green, 32%);
+            background-color: rgba($green, 0.05);
+            &::marker {
+              color: darken($green, 25%);
+            }
+          }
+          &.mismatch {
+            color: darken($red, 33%);
+            background-color: rgba($red, 0.05);
+            &::marker {
+              color: darken($red, 25%);
+            }
+          }
+        }
+      }
+    }
+  }
 }

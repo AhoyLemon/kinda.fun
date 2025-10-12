@@ -99,6 +99,10 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
           dt Sterling's Cut:
           .modifier.minus -
           dd {{dollars(my.sterlingCutYesterday)}}
+        .row.seraph-ai-cost.minus(v-if="my.seraphAICostYesterday > 0")
+          dt Seraph AI Subscription:
+          .modifier.minus -
+          dd {{dollars(my.seraphAICostYesterday)}}
         .row.player-share.equals(v-if="my.playerShareYesterday && my.playerShareYesterday != my.donationsYesterday")
           dt 
             span(v-if="my.sterlingCutYesterday > 0") Your Share:

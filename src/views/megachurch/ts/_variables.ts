@@ -109,6 +109,11 @@ export const gameSettings = reactive<GameSettings>({
         cost: 800,
         likeBoost: 15, // % boost to like chances
       },
+      seraphAI: {
+        cost: 10, // Daily subscription cost
+        description: "AI-powered sermon analysis and audience prediction",
+        daysBeforeNag: 2, // How many church days before showing the nag
+      },
       sacraments: {
         wine: {
           levels: [
@@ -446,12 +451,16 @@ export const ui = reactive<UI>({
   workshopZone: {
     isOpen: false,
     showBanner: true, // Show banner on first access
+    defaultTab: "merch", // Default tab to open
   },
   eternalLegacyShop: {
     isOpen: false,
   },
   sterlingVoicemail: {
     isOpen: false,
+  },
+  seraphAINag: {
+    hasShown: false,
   },
 });
 
@@ -518,6 +527,7 @@ export const my = reactive<My>({
   playerShareYesterday: 0,
   merchRevenueYesterday: 0,
   confessionRevenueYesterday: 0,
+  seraphAICostYesterday: 0, // Daily cost for Seraph AI service
   merchSalesDetailsYesterday: {
     holyWater: { sold: 0, revenue: 0 },
     prayerCandles: { sold: 0, revenue: 0 },
@@ -536,6 +546,7 @@ export const my = reactive<My>({
       extraPews: 0,
       vipConfessionBooths: false,
       audioVisual: false,
+      seraphAI: false,
       sacrament: {
         wine: {
           level: 0,
