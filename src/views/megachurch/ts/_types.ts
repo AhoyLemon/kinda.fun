@@ -390,7 +390,7 @@ export interface GameSettings {
         mammon: number;
         description: string;
       }>;
-      underTheTable: Array<{
+      darkDeeds: Array<{
         id: string;
         name: string;
         cost: number;
@@ -496,7 +496,7 @@ export interface My {
     voicemailReplayAvailable: boolean;
     totalMammon: number;
     purchasedItems: Array<string>; // Array of item IDs
-    usedUnderTableItems: Array<{
+    usedDarkDeeds: Array<{
       id: string;
       name: string;
       cost: number;

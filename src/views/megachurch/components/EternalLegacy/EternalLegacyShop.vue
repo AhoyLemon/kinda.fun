@@ -14,9 +14,9 @@
             @click="activeTab = 'mammon'"
           ) 💰 Mammon Collection
           button.tab-btn(
-            :class="{ active: activeTab === 'underTheTable' }"
-            @click="activeTab = 'underTheTable'"
-          ) 🤝 Under The Table
+            :class="{ active: activeTab === 'darkDeeds' }"
+            @click="activeTab = 'darkDeeds'"
+          ) 🤝 Dark Deeds
 
         .shop-content
           // Mammon Items Tab
@@ -54,8 +54,8 @@
                   .purchased-indicator(v-else)
                     | ✅ Owned
 
-          // Under The Table Tab  
-          .under-the-table-tab(v-if="activeTab === 'underTheTable'")
+          // Dark Deeds Tab  
+          .under-the-table-tab(v-if="activeTab === 'darkDeeds'")
             .tab-header
               p.tab-description 
                 | Sometimes prosperity requires... creative arrangements. 
@@ -67,7 +67,7 @@
                 
             .items-grid
               .item-card(
-                v-for="item in gameSettings.eternalLegacy.shop.underTheTable"
+                v-for="item in gameSettings.eternalLegacy.shop.darkDeeds"
                 :key="item.id"
                 :class="{ purchased: my.eternalLegacy.purchasedItems.includes(item.id), affordable: my.money >= item.cost, dangerous: true }"
               )
@@ -81,7 +81,7 @@
                   button.purchase-btn.dangerous(
                     v-if="!my.eternalLegacy.purchasedItems.includes(item.id)"
                     :disabled="my.money < item.cost"
-                    @click="purchaseItem(item, 'underTheTable')"
+                    @click="purchaseItem(item, 'darkDeeds')"
                   ) 
                     | {{ my.money >= item.cost ? 'Take Risk' : 'Too Expensive' }}
                   .purchased-indicator(v-else)

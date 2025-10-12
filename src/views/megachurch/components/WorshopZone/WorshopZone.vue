@@ -430,6 +430,7 @@
 
   const emit = defineEmits<{
     close: [];
+    purchase: [{ type: string; name: string; quantity?: number; communionType?: string; level?: number; targetedReligion?: string }];
   }>();
 
   const activeTab = ref("merch");
@@ -495,9 +496,21 @@
 
     if (my.money >= cost) {
       my.money -= cost;
-      if (merchType === "holyWater") my.church.merch.holyWater.inventory += quantity;
-      else if (merchType === "prayerCandles") my.church.merch.prayerCandles.inventory += quantity;
-      else if (merchType === "energyDrinks") my.church.merch.energyDrinks.inventory += quantity;
+
+      let merchName = "";
+      if (merchType === "holyWater") {
+        my.church.merch.holyWater.inventory += quantity;
+        merchName = "Bottles of Holy Water";
+      } else if (merchType === "prayerCandles") {
+        my.church.merch.prayerCandles.inventory += quantity;
+        merchName = "Bluetooth Prayer Candles";
+      } else if (merchType === "energyDrinks") {
+        my.church.merch.energyDrinks.inventory += quantity;
+        merchName = "Saints Flow Energy Drinks";
+      }
+
+      // Emit purchase event for Firebase logging
+      emit("purchase", { type: "merch", name: merchName, quantity });
     }
   }
 
@@ -505,30 +518,43 @@
     if (my.money >= gameSettings.church.merch.holyWaterVendingMachine.cost) {
       my.money -= gameSettings.church.merch.holyWaterVendingMachine.cost;
       my.church.merch.holyWater.isVendingMachine = true;
+
+      // Emit purchase event for Firebase logging
+      emit("purchase", { type: "upgrade", name: "Holy Water Vending Machine" });
     }
   }
 
   function buyUpgrade(upgradeType: "extraPews" | "vipConfessionBooths" | "audioVisual") {
     let cost = 0;
+    let upgradeName = "";
 
     if (upgradeType === "extraPews") {
       cost = gameSettings.church.upgrades.extraPews.cost;
+      upgradeName = "Extra Pews";
       if (my.money >= cost) {
         my.money -= cost;
         my.church.upgrades.extraPews += 1;
       }
     } else if (upgradeType === "vipConfessionBooths") {
       cost = gameSettings.church.upgrades.vipConfessionBooths.cost;
+      upgradeName = "VIP Confession Booths";
       if (my.money >= cost) {
         my.money -= cost;
         my.church.upgrades.vipConfessionBooths = true;
       }
     } else if (upgradeType === "audioVisual") {
       cost = gameSettings.church.upgrades.audioVisual.cost;
+      upgradeName = "Audio Visual Package";
       if (my.money >= cost) {
         my.money -= cost;
         my.church.upgrades.audioVisual = true;
       }
+    }
+
+    // Emit purchase event for Firebase logging if purchase was successful
+    if (my.money >= 0 && upgradeName) {
+      // Simple check - if we had enough money
+      emit("purchase", { type: "upgrade", name: upgradeName });
     }
   }
 
@@ -550,6 +576,14 @@
       my.money -= wineLevel.cost;
       my.church.upgrades.sacrament.wine.level = wineLevel.level;
       my.church.upgrades.sacrament.wine.name = wineLevel.name;
+
+      // Emit purchase event for Firebase logging
+      emit("purchase", {
+        type: "upgrade",
+        name: wineLevel.name,
+        communionType: "wine",
+        level: wineLevel.level,
+      });
     }
   }
 
@@ -558,24 +592,40 @@
       my.money -= breadLevel.cost;
       my.church.upgrades.sacrament.bread.level = breadLevel.level;
       my.church.upgrades.sacrament.bread.name = breadLevel.name;
+
+      // Emit purchase event for Firebase logging
+      emit("purchase", {
+        type: "upgrade",
+        name: breadLevel.name,
+        communionType: "bread",
+        level: breadLevel.level,
+      });
     }
   }
 
   function buyMarketing(marketingType: "generalAd" | "signSpinner") {
     let cost = 0;
+    let marketingName = "";
 
     if (marketingType === "generalAd") {
       cost = gameSettings.church.marketing.generalAd.price;
+      marketingName = "General Internet Ad Campaign";
       if (my.money >= cost) {
         my.money -= cost;
         my.marketing.generalAdActive = true;
       }
     } else if (marketingType === "signSpinner") {
       cost = gameSettings.church.marketing.signSpinner.price;
+      marketingName = "Sign Spinner";
       if (my.money >= cost) {
         my.money -= cost;
         my.marketing.signSpinnerActive = true;
       }
+    }
+
+    // Emit purchase event for Firebase logging if purchase was successful
+    if (my.money >= 0 && marketingName) {
+      emit("purchase", { type: "marketing", name: marketingName });
     }
   }
 
@@ -584,6 +634,13 @@
       my.money -= gameSettings.church.marketing.targetedAd.price;
       my.marketing.targetedAd.active = true;
       my.marketing.targetedAd.targetReligion = selectedTargetReligion.value;
+
+      // Emit purchase event for Firebase logging
+      emit("purchase", {
+        type: "marketing",
+        name: "Targeted Internet Ad Campaign",
+        targetedReligion: selectedTargetReligion.value.name,
+      });
     }
   }
 
@@ -592,6 +649,13 @@
       my.money -= gameSettings.church.marketing.prCampaign.price;
       my.marketing.prCampaign.active = true;
       my.marketing.prCampaign.targetReligion = selectedPrReligion.value;
+
+      // Emit purchase event for Firebase logging
+      emit("purchase", {
+        type: "marketing",
+        name: "PR Campaign",
+        targetedReligion: selectedPrReligion.value.name,
+      });
     }
   }
 </script>

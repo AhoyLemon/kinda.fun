@@ -63,9 +63,9 @@ aside.your-details
 
       fieldset.debug-controls(v-if="gameSettings.isDebug")
         legend Debug Controls
-        button.debug(@click="my.money += 1000000; toast.success(`Okay, here's a million dollars.`)") +$1,000,000
+        button.debug(@click="debugAddMoney()") +$1,000,000
         button.debug(v-if="!my.chats.harold.hasContacted" @click="debugTriggerHarold()") Trigger Harold
-        button.debug(v-if="!my.hasVan" @click="my.hasVan = true") Get Van
+        button.debug(v-if="!my.hasVan" @click="debugGetVan()") Get Van
         button.debug(v-if="!my.chats.sterling.hasContacted" @click="debugTriggerSterling()") Trigger Sterling
         button.debug(v-if="!my.eternalLegacy.isActive" @click="debugTriggerEternalLegacy()") Trigger Legacy
         button.debug(v-if="my.eternalLegacy.isActive" @click="debugAddHeat()") Add Heat (+10)

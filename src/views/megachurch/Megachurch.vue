@@ -9,6 +9,16 @@
 
   import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "../../shared/js/_functions.js";
   import { ui, my, gameSettings } from "./ts/_variables";
+  // Ensure my.seraphAI exists for type safety
+  if (!("seraphAI" in my)) {
+    (my as any).seraphAI = { isActive: false };
+  }
+
+  // Firebase & VueFire Stuff
+  import { doc, increment, serverTimestamp, updateDoc, runTransaction, setDoc, getDoc } from "firebase/firestore";
+  import { useFirestore } from "vuefire";
+  const db = useFirestore();
+  const statsRef = doc(db, `stats/megachurch`);
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
@@ -142,6 +152,12 @@
       my.church.religion = { ...churchReligion };
       my.isStreetPreaching = false; // No longer street preaching
       my.congregation = []; // Initialize empty congregation
+
+      // Log church founding to Firebase
+      logGameplayToFirebase("churchFounded", {
+        location: churchLocation.name,
+        religion: my.church.religion.name,
+      });
 
       // Send message to Sterling confirming the church
       const confirmationMessage = {
@@ -1417,6 +1433,20 @@
   function endTheDay() {
     ui.view = "sermon-results";
 
+    // Firebase logging for first game start
+    if (my.daysPlayed < 1) {
+      logGameplayToFirebase("gameStarted");
+    }
+
+    // Firebase logging for day ended
+    const dayLogData = {
+      preachedOnStreet: my.place && my.place.name !== "Your Church",
+      preachedInChurch: my.place && my.place.name === "Your Church",
+      seraphAIActive: my.church.upgrades.seraphAI,
+      sermonTopics: my.sermonToday.topics || [],
+    };
+    logGameplayToFirebase("dayEnded", dayLogData);
+
     // Check for Plug auto-introduction on first day
     if (my.daysPlayed < 1 && !my.chats.plug.hasContacted) {
       setTimeout(() => {
@@ -1526,6 +1556,9 @@
     if (my.money >= gameSettings.van.cost) {
       my.money -= gameSettings.van.cost;
       my.hasVan = true;
+
+      // Log van purchase to Firebase
+      logGameplayToFirebase("vanPurchased");
     }
   }
 
@@ -1548,6 +1581,11 @@
   function closeWorkshopZone() {
     ui.workshopZone.isOpen = false;
     ui.workshopZone.showBanner = false;
+  }
+
+  function handleWorkshopPurchase(purchaseData: any) {
+    // Log workshop purchases to Firebase
+    logGameplayToFirebase("workshopPurchase", purchaseData);
   }
 
   function onBannerAccepted() {
@@ -1595,12 +1633,19 @@
     my.money -= item.cost;
     my.eternalLegacy.purchasedItems.push(item.id);
 
+    // Log purchase to Firebase
+    const collection = category === "mammon" ? "mammon" : "darkDeeds";
+    logGameplayToFirebase("eternalLegacyPurchase", {
+      name: item.name,
+      collection: collection,
+    });
+
     if (category === "mammon") {
       // Mammon items increase score
       my.eternalLegacy.totalMammon += item.mammon;
       toast.success(`${item.name} acquisition secured! +${item.mammon} mammon`);
-    } else if (category === "underTheTable") {
-      // Handle Under The Table item effects
+    } else if (category === "darkDeeds") {
+      // Handle Dark Deeds item effects
       updateHeat(item.heat);
 
       // Apply specific mechanics based on item ID
@@ -1855,6 +1900,9 @@
       // Auto-consume delivered spice
       my.spice.consumedToday = my.spice.spiceToDeliver;
 
+      // Log spice consumption to Firebase
+      logGameplayToFirebase("spiceTaken", { amount: my.spice.spiceToDeliver });
+
       // Show delivery notification
       const statusMessages = {
         under: "⚠️ You're still under-dosed",
@@ -1961,6 +2009,9 @@
       //document.body.classList.add("fatal-overdose-blur");
       ui.view = "game-over";
       my.gameOverCause = "drug overdose";
+
+      // Log game over to Firebase
+      logGameplayToFirebase("gameFinished", { cause: "drug overdose" });
     } else {
       ui.view = "sermon";
     }
@@ -2041,6 +2092,9 @@
     ui.eternalLegacyShop.isOpen = false;
     ui.sterlingVoicemail.isOpen = false;
 
+    // Log game over to Firebase
+    logGameplayToFirebase("gameFinished", { cause: "prison" });
+
     // Switch to game over view
     setTimeout(() => {
       ui.view = "game-over";
@@ -2064,6 +2118,17 @@
 
   // === Debug Functions ===
 
+  function debugAddMoney() {
+    my.money += 1000000;
+    toast.success("Okay, here's a million dollars.");
+    logGameplayToFirebase("cheatUsed", { name: "+$1,000,000" });
+  }
+
+  function debugGetVan() {
+    my.hasVan = true;
+    logGameplayToFirebase("cheatUsed", { name: "Get Van" });
+  }
+
   function debugTriggerSpeedPreaching() {
     if (ui.timing.toastDelayMin != 1) {
       ui.timing.toastDelayMin = 1;
@@ -2080,6 +2145,7 @@
       ui.timing.churchToastOffset = 1000;
       toast.error("🐢 Speed Preaching deactivated");
     }
+    logGameplayToFirebase("cheatUsed", { name: "Speed Preaching" });
   }
 
   function debugTriggerEternalLegacy() {
@@ -2101,6 +2167,7 @@
     } else {
       toast.warning("Eternal Legacy is already active!");
     }
+    logGameplayToFirebase("cheatUsed", { name: "Trigger Eternal Legacy" });
   }
 
   function debugAddHeat() {
@@ -2110,6 +2177,7 @@
     } else {
       toast.warning("Eternal Legacy must be active to add heat!");
     }
+    logGameplayToFirebase("cheatUsed", { name: "Add Heat (+10)" });
   }
 
   function debugTriggerHarold() {
@@ -2120,6 +2188,7 @@
     } else {
       toast.warning("Harold has already been contacted!");
     }
+    logGameplayToFirebase("cheatUsed", { name: "Trigger Harold" });
   }
 
   function debugTriggerSterling() {
@@ -2129,6 +2198,7 @@
     } else {
       toast.warning("Sterling has already been contacted!");
     }
+    logGameplayToFirebase("cheatUsed", { name: "Trigger Sterling" });
   }
 
   // ================= INITIALISE STUFF AT GAME START =================
@@ -2188,13 +2258,268 @@
     return getPurchasedItems(my.eternalLegacy.purchasedItems, gameSettings.eternalLegacy.shop.mammonItems);
   });
 
-  const purchasedUnderTableItems = computed(() => {
-    return getPurchasedItems(my.eternalLegacy.purchasedItems, gameSettings.eternalLegacy.shop.underTheTable);
+  const purchasedDarkDeeds = computed(() => {
+    return getPurchasedItems(my.eternalLegacy.purchasedItems, gameSettings.eternalLegacy.shop.darkDeeds);
   });
 
   const temporarySermonScores = computed(() => {
     return computeTemporarySermonScores(ui.selectedTopics, themes, religions);
   });
+
+  // ================= FIREBASE LOGGING =================
+  async function logGameplayToFirebase(eventType: string, data: any = {}) {
+    try {
+      const now = serverTimestamp();
+
+      switch (eventType) {
+        case "gameStarted":
+          await updateDoc(statsRef, {
+            gamesStarted: increment(1),
+            lastGameStarted: now,
+          });
+
+          // Log player name to general players collection
+          if (my.name) {
+            const playerRef = doc(db, `stats/general/players/${my.name}`);
+            const playerSnap = await getDoc(playerRef);
+
+            if (playerSnap.exists()) {
+              await updateDoc(playerRef, {
+                gamesPlayed: increment(1),
+                mostRecentGame: "megachurch",
+                lastPlayed: now,
+              });
+            } else {
+              await setDoc(playerRef, {
+                name: my.name,
+                gamesPlayed: 1,
+                mostRecentGame: "megachurch",
+                lastPlayed: now,
+              });
+            }
+          }
+          break;
+
+        case "gameFinished":
+          const gameFinishedUpdates: any = {
+            gamesFinished: increment(1),
+            lastGameFinished: now,
+          };
+
+          if (data.cause === "drug overdose") {
+            gameFinishedUpdates.overdoses = increment(1);
+          } else if (data.cause === "prison") {
+            gameFinishedUpdates.prisonSentences = increment(1);
+          }
+
+          await updateDoc(statsRef, gameFinishedUpdates);
+          break;
+
+        case "churchFounded":
+          await updateDoc(statsRef, {
+            churchesFounded: increment(1),
+          });
+
+          // Log location
+          if (data.location) {
+            const locationRef = doc(db, `stats/megachurch/locations/${data.location}`);
+            const locationSnap = await getDoc(locationRef);
+
+            if (locationSnap.exists()) {
+              await updateDoc(locationRef, {
+                churchesFounded: increment(1),
+              });
+            } else {
+              await setDoc(locationRef, {
+                name: data.location,
+                churchesFounded: 1,
+              });
+            }
+          }
+
+          // Log religion
+          if (data.religion) {
+            const religionRef = doc(db, `stats/megachurch/religions/${data.religion}`);
+            const religionSnap = await getDoc(religionRef);
+
+            if (religionSnap.exists()) {
+              await updateDoc(religionRef, {
+                churchesFounded: increment(1),
+              });
+            } else {
+              await setDoc(religionRef, {
+                name: data.religion,
+                churchesFounded: 1,
+              });
+            }
+          }
+          break;
+
+        case "spiceTaken":
+          if (data.amount > 0) {
+            await updateDoc(statsRef, {
+              spiceTaken: increment(data.amount),
+            });
+          }
+          break;
+
+        case "dayEnded":
+          const dayUpdates: any = {
+            daysPlayed: increment(1),
+          };
+
+          if (data.preachedOnStreet) {
+            dayUpdates.daysPreachedOnStreet = increment(1);
+          }
+
+          if (data.preachedInChurch) {
+            dayUpdates.daysPreachedInChurch = increment(1);
+          }
+
+          if (data.seraphAIActive) {
+            dayUpdates.seraphAIDaysActive = increment(1);
+          }
+
+          await updateDoc(statsRef, dayUpdates);
+
+          // Log sermon topics
+          if (data.sermonTopics && data.sermonTopics.length > 0) {
+            for (const topic of data.sermonTopics) {
+              const topicRef = doc(db, `stats/megachurch/sermonTopics/${topic.title}`);
+              const topicSnap = await getDoc(topicRef);
+
+              if (topicSnap.exists()) {
+                await updateDoc(topicRef, {
+                  timesPreached: increment(1),
+                });
+              } else {
+                await setDoc(topicRef, {
+                  title: topic.title,
+                  timesPreached: 1,
+                });
+              }
+            }
+          }
+          break;
+
+        case "vanPurchased":
+          await updateDoc(statsRef, {
+            vansPurchased: increment(1),
+          });
+          break;
+
+        case "workshopPurchase":
+          if (data.type === "merch") {
+            const merchRef = doc(db, `stats/megachurch/merch/${data.name}`);
+            const merchSnap = await getDoc(merchRef);
+
+            if (merchSnap.exists()) {
+              await updateDoc(merchRef, {
+                timesPurchased: increment(data.quantity || 1),
+              });
+            } else {
+              await setDoc(merchRef, {
+                name: data.name,
+                timesPurchased: data.quantity || 1,
+              });
+            }
+          } else if (data.type === "upgrade") {
+            const upgradeRef = doc(db, `stats/megachurch/upgrades/${data.name}`);
+            const upgradeSnap = await getDoc(upgradeRef);
+
+            const upgradeData: any = {
+              name: data.name,
+              timesPurchased: upgradeSnap.exists() ? increment(1) : 1,
+            };
+
+            // Special handling for communion snacks
+            if (data.communionType) {
+              upgradeData.communionType = data.communionType;
+              upgradeData.level = data.level;
+            }
+
+            if (upgradeSnap.exists()) {
+              await updateDoc(upgradeRef, { timesPurchased: increment(1) });
+            } else {
+              await setDoc(upgradeRef, upgradeData);
+            }
+          } else if (data.type === "marketing") {
+            const marketingRef = doc(db, `stats/megachurch/marketing/${data.name}`);
+            const marketingSnap = await getDoc(marketingRef);
+
+            if (marketingSnap.exists()) {
+              await updateDoc(marketingRef, {
+                timesPurchased: increment(1),
+              });
+            } else {
+              await setDoc(marketingRef, {
+                name: data.name,
+                timesPurchased: 1,
+              });
+            }
+
+            // Handle targeted marketing with religion tracking
+            if (data.targetedReligion) {
+              const religionPath = `religions.${data.targetedReligion}.timesTargeted`;
+              await updateDoc(marketingRef, {
+                [religionPath]: increment(1),
+              });
+            }
+          }
+          break;
+
+        case "eternalLegacyPurchase":
+          if (data.collection === "mammon") {
+            const itemRef = doc(db, `stats/megachurch/eternalLegacy/${data.name}`);
+            const itemSnap = await getDoc(itemRef);
+
+            if (itemSnap.exists()) {
+              await updateDoc(itemRef, {
+                timesPurchased: increment(1),
+              });
+            } else {
+              await setDoc(itemRef, {
+                name: data.name,
+                timesPurchased: 1,
+              });
+            }
+          } else if (data.collection === "darkDeeds") {
+            const deedRef = doc(db, `stats/megachurch/darkDeeds/${data.name}`);
+            const deedSnap = await getDoc(deedRef);
+
+            if (deedSnap.exists()) {
+              await updateDoc(deedRef, {
+                timesEnacted: increment(1),
+              });
+            } else {
+              await setDoc(deedRef, {
+                name: data.name,
+                timesEnacted: 1,
+              });
+            }
+          }
+          break;
+
+        case "cheatUsed":
+          const cheatRef = doc(db, `stats/megachurch/cheats/${data.name}`);
+          const cheatSnap = await getDoc(cheatRef);
+
+          if (cheatSnap.exists()) {
+            await updateDoc(cheatRef, {
+              timesUsed: increment(1),
+            });
+          } else {
+            await setDoc(cheatRef, {
+              name: data.name,
+              timesUsed: 1,
+            });
+          }
+          break;
+      }
+    } catch (error) {
+      console.error(`Error logging ${eventType} to Firebase:`, error);
+    }
+  }
 
   // === Game Control Functions ===
 

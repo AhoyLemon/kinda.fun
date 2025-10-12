@@ -285,7 +285,7 @@ export const gameSettings = reactive<GameSettings>({
             "A 3-foot high gold-plated sculpture. The original idol investment. (Definitely not solid gold.)",
         },
       ],
-      underTheTable: [
+      darkDeeds: [
         {
           id: "shredder",
           name: "Shredder Upgrade",
@@ -627,7 +627,7 @@ export const my = reactive<My>({
     voicemailReplayAvailable: false,
     totalMammon: 0,
     purchasedItems: [],
-    usedUnderTableItems: [],
+    usedDarkDeeds: [],
     sterlingCutModifier: 0,
     sterlingAlive: true,
   },

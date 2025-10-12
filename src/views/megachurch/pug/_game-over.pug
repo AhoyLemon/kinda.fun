@@ -42,10 +42,10 @@ section.game-over(v-if="ui.view === 'game-over'")
           ul
             li(v-for="item in purchasedMammonItems" :key="item.id") {{item.name}}
         
-        .under-table-items(v-if="purchasedUnderTableItems.length > 0")
-          h4 🔥 Under The Table Arrangements
+        .under-table-items(v-if="purchasedDarkDeeds.length > 0")
+          h4 🔥 Dark Deeds Arrangements
           ul
-            li(v-for="item in purchasedUnderTableItems" :key="item.id") {{item.name}}
+            li(v-for="item in purchasedDarkDeeds" :key="item.id") {{item.name}}
 
     .big-button-holder
       button.restart(@click="restartGame") Begin New Ministry
