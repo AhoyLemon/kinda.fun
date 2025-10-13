@@ -8,11 +8,9 @@
   import { themes } from "./ts/_sermons";
 
   import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "../../shared/js/_functions.js";
-  import { ui, my, gameSettings } from "./ts/_variables";
-  // Ensure my.seraphAI exists for type safety
-  if (!("seraphAI" in my)) {
-    (my as any).seraphAI = { isActive: false };
-  }
+  import { gameSettings } from "./ts/variables/_gameSettings";
+  import { my } from "./ts/variables/_my";
+  import { ui } from "./ts/variables/_ui";
 
   // Firebase & VueFire Stuff
   import { doc, increment, serverTimestamp, updateDoc, runTransaction, setDoc, getDoc } from "firebase/firestore";
@@ -1201,7 +1199,9 @@
     let merchSalesDetails = {
       holyWater: { sold: 0, revenue: 0 },
       prayerCandles: { sold: 0, revenue: 0 },
-      energyDrinks: { sold: 0, revenue: 0 },
+      weightLossTea: { sold: 0, revenue: 0 },
+      beachTowel: { sold: 0, revenue: 0 },
+      exorcismKit: { sold: 0, revenue: 0 },
     };
 
     todaysCongregation.forEach((group) => {
@@ -1209,7 +1209,7 @@
       for (let i = 0; i < group.count; i++) {
         // Holy Water sales
         if (my.church.merch.holyWater.inventory > 0) {
-          let holyWaterChance = gameSettings.church.merch.holyWaterBottles.baseChance / 100;
+          let holyWaterChance = gameSettings.church.merch.holyWater.baseChance / 100;
           if (my.church.merch.holyWater.isVendingMachine) {
             holyWaterChance += gameSettings.church.merch.holyWaterVendingMachine.bonusChance / 100;
           }
@@ -1225,7 +1225,7 @@
 
         // Prayer Candles sales
         if (my.church.merch.prayerCandles.inventory > 0) {
-          const candleChance = gameSettings.church.merch.bluetoothPrayerCandles.baseChance / 100;
+          const candleChance = gameSettings.church.merch.prayerCandles.baseChance / 100;
           if (Math.random() < candleChance) {
             my.church.merch.prayerCandles.inventory--;
             my.church.merch.prayerCandles.soldToday++;
@@ -1236,15 +1236,41 @@
           }
         }
 
-        // Energy Drinks sales
-        if (my.church.merch.energyDrinks.inventory > 0) {
-          const drinkChance = gameSettings.church.merch.saintsFlow.baseChance / 100;
-          if (Math.random() < drinkChance) {
-            my.church.merch.energyDrinks.inventory--;
-            my.church.merch.energyDrinks.soldToday++;
-            merchSalesDetails.energyDrinks.sold++;
-            const revenue = my.church.merch.energyDrinks.price;
-            merchSalesDetails.energyDrinks.revenue += revenue;
+        // Weight Loss Tea sales
+        if (my.church.merch.weightLossTea.inventory > 0) {
+          const teaChance = gameSettings.church.merch.weightLossTea.baseChance / 100;
+          if (Math.random() < teaChance) {
+            my.church.merch.weightLossTea.inventory--;
+            my.church.merch.weightLossTea.soldToday++;
+            merchSalesDetails.weightLossTea.sold++;
+            const revenue = my.church.merch.weightLossTea.price;
+            merchSalesDetails.weightLossTea.revenue += revenue;
+            totalMerchRevenue += revenue;
+          }
+        }
+
+        // Beach Towel sales
+        if (my.church.merch.beachTowel.inventory > 0) {
+          const towelChance = gameSettings.church.merch.beachTowel.baseChance / 100;
+          if (Math.random() < towelChance) {
+            my.church.merch.beachTowel.inventory--;
+            my.church.merch.beachTowel.soldToday++;
+            merchSalesDetails.beachTowel.sold++;
+            const revenue = my.church.merch.beachTowel.price;
+            merchSalesDetails.beachTowel.revenue += revenue;
+            totalMerchRevenue += revenue;
+          }
+        }
+
+        // Exorcism Kit sales
+        if (my.church.merch.exorcismKit.inventory > 0) {
+          const kitChance = gameSettings.church.merch.exorcismKit.baseChance / 100;
+          if (Math.random() < kitChance) {
+            my.church.merch.exorcismKit.inventory--;
+            my.church.merch.exorcismKit.soldToday++;
+            merchSalesDetails.exorcismKit.sold++;
+            const revenue = my.church.merch.exorcismKit.price;
+            merchSalesDetails.exorcismKit.revenue += revenue;
             totalMerchRevenue += revenue;
           }
         }
@@ -1367,8 +1393,12 @@
         my.church.merch.holyWater.soldToday > 0 ||
         my.church.merch.prayerCandles.inventory > 0 ||
         my.church.merch.prayerCandles.soldToday > 0 ||
-        my.church.merch.energyDrinks.inventory > 0 ||
-        my.church.merch.energyDrinks.soldToday > 0;
+        my.church.merch.weightLossTea.inventory > 0 ||
+        my.church.merch.weightLossTea.soldToday > 0 ||
+        my.church.merch.beachTowel.inventory > 0 ||
+        my.church.merch.beachTowel.soldToday > 0 ||
+        my.church.merch.exorcismKit.inventory > 0 ||
+        my.church.merch.exorcismKit.soldToday > 0;
 
       if (hasMerchSales || hasConfessionRevenue || ownsMerch) {
         setTimeout(() => {

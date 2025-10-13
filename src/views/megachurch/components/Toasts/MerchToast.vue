@@ -51,11 +51,27 @@
       });
     }
 
-    if (details.energyDrinks && details.energyDrinks.sold > 0) {
+    if (details.weightLossTea && details.weightLossTea.sold > 0) {
       items.push({
-        name: "Saints Flow Energy Drinks",
-        sold: details.energyDrinks.sold,
-        revenue: details.energyDrinks.revenue,
+        name: "Miracle Weight Loss Tea",
+        sold: details.weightLossTea.sold,
+        revenue: details.weightLossTea.revenue,
+      });
+    }
+
+    if (details.beachTowel && details.beachTowel.sold > 0) {
+      items.push({
+        name: "Shroud of Turin Beach Towel",
+        sold: details.beachTowel.sold,
+        revenue: details.beachTowel.revenue,
+      });
+    }
+
+    if (details.exorcismKit && details.exorcismKit.sold > 0) {
+      items.push({
+        name: "Lil' Reagan's Exorcism Kit",
+        sold: details.exorcismKit.sold,
+        revenue: details.exorcismKit.revenue,
       });
     }
 

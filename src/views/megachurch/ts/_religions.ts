@@ -378,8 +378,8 @@ export const religions: Religion[] = [
     id: 18,
     name: "The Order of the Alpha Male",
     description: `A chauvinistic movement that promotes traditional masculinity, dominance, and a patriarchal social structure.`,
-    follower: "Chauvanist",
-    followers: "Chauvanists",
+    follower: "Chauvinist",
+    followers: "Chauvinists",
     likes: [
       "strength",
       "authority",

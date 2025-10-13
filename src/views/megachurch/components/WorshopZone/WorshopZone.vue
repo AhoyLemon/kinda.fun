@@ -58,24 +58,28 @@
         <div v-if="activeTab === 'merch'" class="tab-content">
           <h2>Hallway Merchandise</h2>
           <div class="product-grid">
+            <!-- Holy Water Bottles -->
             <div class="product-card">
               <div class="product-img broken-img"></div>
               <h3>Bottles of Holy Water</h3>
               <div class="product-description">
                 Blessed H2O in convenient bottles! Because tap water just doesn't have that divine touch. Each attendee has
-                {{ gameSettings.church.merch.holyWaterBottles.baseChance }}% chance to buy.
+                {{ gameSettings.church.merch.holyWater.baseChance }}% chance to buy.
               </div>
               <div class="product-stats">
-                <div>Cost: ${{ gameSettings.church.merch.holyWaterBottles.cost }} each</div>
+                <div>Cost: ${{ gameSettings.church.merch.holyWater.cost }} each</div>
                 <div>Selling Price: ${{ my.church.merch.holyWater.price }}</div>
                 <div>In Stock: {{ my.church.merch.holyWater.inventory }}</div>
                 <div>Sold Today: {{ my.church.merch.holyWater.soldToday }}</div>
+                <div v-if="my.church.merch.holyWater.isVendingMachine">
+                  Vending Machine Installed (+{{ gameSettings.church.merch.holyWaterVendingMachine.bonusChance }}% sales chance)
+                </div>
               </div>
               <div class="product-actions">
                 <input
                   type="number"
                   v-model="merchQuantities.holyWater"
-                  min="0"
+                  min="1"
                   max="50"
                   class="quantity-input"
                   :required="false"
@@ -86,40 +90,30 @@
                   BUY {{ merchQuantities.holyWater }} FOR ${{ getMerchCost("holyWater") }} (incl. shipping)
                 </button>
               </div>
+
+              <template v-if="!my.church.merch.holyWater.isVendingMachine || my.church.merch.holyWater.isVendingMachine">
+                <h3>Holy Water Vending Machine</h3>
+                <div class="product-description">
+                  Automated holy water sales! Because nothing says "spiritual experience" like pumping quarters into a machine. Adds +{{
+                    gameSettings.church.merch.holyWaterVendingMachine.bonusChance
+                  }}% chance for holy water purchases.
+                </div>
+                <button class="buy-btn big" :disabled="my.money < gameSettings.church.merch.holyWaterVendingMachine.cost">
+                  INSTALL FOR ${{ gameSettings.church.merch.holyWaterVendingMachine.cost }}
+                </button>
+              </template>
             </div>
 
-            <div class="product-card">
-              <div class="product-img broken-img"></div>
-              <h3>Holy Water Vending Machine</h3>
-              <div class="product-description">
-                Automated holy water sales! Because nothing says "spiritual experience" like pumping quarters into a machine. Adds +{{
-                  gameSettings.church.merch.holyWaterVendingMachine.bonusChance
-                }}% chance for holy water purchases.
-              </div>
-              <div class="product-stats">
-                <div>Cost: ${{ gameSettings.church.merch.holyWaterVendingMachine.cost }}</div>
-                <div>Status: {{ my.church.merch.holyWater.isVendingMachine ? "INSTALLED" : "NOT INSTALLED" }}</div>
-              </div>
-              <button
-                v-if="!my.church.merch.holyWater.isVendingMachine"
-                @click="buyVendingMachine()"
-                class="buy-btn big"
-                :disabled="my.money < gameSettings.church.merch.holyWaterVendingMachine.cost"
-              >
-                INSTALL FOR ${{ gameSettings.church.merch.holyWaterVendingMachine.cost }}
-              </button>
-              <div v-else class="installed-text">✅ INSTALLED</div>
-            </div>
-
+            <!-- Prayer Candles -->
             <div class="product-card">
               <div class="product-img broken-img"></div>
               <h3>Bluetooth Prayer Candles</h3>
               <div class="product-description">
                 "Smart" candles with Bluetooth! Perfect for the tech-savvy spiritual seeker who needs their prayers wirelessly transmitted. Each attendee has
-                {{ gameSettings.church.merch.bluetoothPrayerCandles.baseChance }}% chance to buy.
+                {{ gameSettings.church.merch.prayerCandles.baseChance }}% chance to buy.
               </div>
               <div class="product-stats">
-                <div>Cost: ${{ gameSettings.church.merch.bluetoothPrayerCandles.cost }} each</div>
+                <div>Cost: ${{ gameSettings.church.merch.prayerCandles.cost }} each</div>
                 <div>Selling Price: ${{ my.church.merch.prayerCandles.price }}</div>
                 <div>In Stock: {{ my.church.merch.prayerCandles.inventory }}</div>
                 <div>Sold Today: {{ my.church.merch.prayerCandles.soldToday }}</div>
@@ -128,8 +122,8 @@
                 <input
                   type="number"
                   v-model="merchQuantities.prayerCandles"
-                  min="0"
-                  max="20"
+                  min="1"
+                  max="100"
                   class="quantity-input"
                   :required="false"
                   @focus="setDefaultQuantity('prayerCandles')"
@@ -141,32 +135,99 @@
               </div>
             </div>
 
+            <!-- Weight Loss Tea -->
             <div class="product-card">
               <div class="product-img broken-img"></div>
-              <h3>Saints Flow Energy Drink</h3>
+              <h3>Miracle Weight Loss Tea</h3>
               <div class="product-description">
-                Church-branded energy drinks! Get your caffeine and salvation in one convenient can. Each attendee has
-                {{ gameSettings.church.merch.saintsFlow.baseChance }}% chance to buy.
+                Drop pounds and sins—fast! Our secret blend is so effective, you’ll swear it’s illegal. (May contain trace amounts of methamphetamine. Not FDA
+                approved.)
+                {{ gameSettings.church.merch.weightLossTea.baseChance }}% chance to buy.
               </div>
               <div class="product-stats">
-                <div>Cost: ${{ gameSettings.church.merch.saintsFlow.cost }} each</div>
-                <div>Selling Price: ${{ my.church.merch.energyDrinks.price }}</div>
-                <div>In Stock: {{ my.church.merch.energyDrinks.inventory }}</div>
-                <div>Sold Today: {{ my.church.merch.energyDrinks.soldToday }}</div>
+                <div>Cost: ${{ gameSettings.church.merch.weightLossTea.cost }} each</div>
+                <div>Selling Price: ${{ my.church.merch.weightLossTea.price }}</div>
+                <div>In Stock: {{ my.church.merch.weightLossTea.inventory }}</div>
+                <div>Sold Today: {{ my.church.merch.weightLossTea.soldToday }}</div>
               </div>
               <div class="product-actions">
                 <input
                   type="number"
-                  v-model="merchQuantities.energyDrinks"
-                  min="0"
+                  v-model="merchQuantities.weightLossTea"
+                  min="1"
                   max="100"
                   class="quantity-input"
                   :required="false"
-                  @focus="setDefaultQuantity('energyDrinks')"
+                  @focus="setDefaultQuantity('weightLossTea')"
                   @keydown.enter.prevent
                 />
-                <button @click="buyMerch('energyDrinks')" class="buy-btn" :disabled="!canAffordMerch('energyDrinks')">
-                  BUY {{ merchQuantities.energyDrinks }} FOR ${{ getMerchCost("energyDrinks") }} (incl. shipping)
+                <button @click="buyMerch('weightLossTea')" class="buy-btn" :disabled="!canAffordMerch('weightLossTea')">
+                  BUY {{ merchQuantities.weightLossTea }} FOR ${{ getMerchCost("weightLossTea") }} (incl. shipping)
+                </button>
+              </div>
+            </div>
+
+            <!-- Beach Towel -->
+            <div class="product-card">
+              <div class="product-img broken-img"></div>
+              <h3>Shroud of Turin Beach Towel</h3>
+              <div class="product-description">
+                Make every beach day a miracle! This full-size towel features a mysterious, ancient image—perfect for sunbathing, baptisms, or just showing off
+                your faith in style.
+                {{ gameSettings.church.merch.beachTowel.baseChance }}% chance to buy.
+              </div>
+              <div class="product-stats">
+                <div>Cost: ${{ gameSettings.church.merch.beachTowel.cost }} each</div>
+                <div>Selling Price: ${{ my.church.merch.beachTowel.price }}</div>
+                <div>In Stock: {{ my.church.merch.beachTowel.inventory }}</div>
+                <div>Sold Today: {{ my.church.merch.beachTowel.soldToday }}</div>
+              </div>
+              <div class="product-actions">
+                <input
+                  type="number"
+                  v-model="merchQuantities.beachTowel"
+                  min="1"
+                  max="100"
+                  class="quantity-input"
+                  :required="false"
+                  @focus="setDefaultQuantity('beachTowel')"
+                  @keydown.enter.prevent
+                />
+                <button @click="buyMerch('beachTowel')" class="buy-btn" :disabled="!canAffordMerch('prayerCandles')">
+                  BUY {{ merchQuantities.beachTowel }} FOR ${{ getMerchCost("beachTowel") }} (incl. shipping)
+                </button>
+              </div>
+            </div>
+
+            <!-- Exorcism Kit-->
+            <div class="product-card">
+              <div class="product-img broken-img"></div>
+              <h3>Lil' Reagan’s Exorcism Kit</h3>
+              <div class="product-description">
+                Got demons? Don’t call a priest—do it yourself! This totally unlicensed kit (with a look inspired by a certain 1973 film) includes everything
+                you need to send evil spirits packing: plastic cross, holy water atomizer, and a scroll of Lorem Ipsum, which is pretty much Latin. For
+                entertainment purposes only.
+                {{ gameSettings.church.merch.exorcismKit.baseChance }}% chance to buy.
+              </div>
+              <div class="product-stats">
+                <div>Cost: ${{ gameSettings.church.merch.exorcismKit.cost }} each</div>
+                <div>Selling Price: ${{ my.church.merch.exorcismKit.price }}</div>
+                <div>In Stock: {{ my.church.merch.exorcismKit.inventory }}</div>
+                <div>Sold Today: {{ my.church.merch.exorcismKit.soldToday }}</div>
+              </div>
+              <div class="product-actions">
+                <input
+                  type="number"
+                  v-model="merchQuantities.exorcismKit"
+                  min="1"
+                  max="100"
+                  class="quantity-input"
+                  :required="false"
+                  @focus="setDefaultQuantity('exorcismKit')"
+                  @keydown.enter.prevent
+                />
+                <button @click="buyMerch('exorcismKit')" class="buy-btn" :disabled="!canAffordMerch('exorcismKit')">
+                  BUY {{ merchQuantities.exorcismKit }} FOR ${{ getMerchCost("exorcismKit") }} (incl. shipping)
                 </button>
               </div>
             </div>
@@ -425,8 +486,12 @@
 
 <script setup lang="ts">
   import { ref, computed, watch } from "vue";
-  import { my, gameSettings, ui } from "../../ts/_variables";
+  import { gameSettings } from "../../ts/variables/_gameSettings";
+  import { my } from "../../ts/variables/_my";
+  import { ui } from "../../ts/variables/_ui";
   import { religions } from "../../ts/_religions";
+
+  type MerchTypes = "holyWater" | "prayerCandles" | "weightLossTea" | "beachTowel" | "exorcismKit";
 
   const emit = defineEmits<{
     close: [];
@@ -452,7 +517,9 @@
   const merchQuantities = ref({
     holyWater: 10,
     prayerCandles: 5,
-    energyDrinks: 20,
+    weightLossTea: 20,
+    beachTowel: 10,
+    exorcismKit: 5,
   });
 
   const selectedTargetReligion = ref<any>(null);
@@ -467,30 +534,25 @@
     emit("close");
   }
 
-  function setDefaultQuantity(type: "holyWater" | "prayerCandles" | "energyDrinks") {
+  function setDefaultQuantity(type: MerchTypes) {
     if (merchQuantities.value[type] === null || merchQuantities.value[type] === undefined) {
       merchQuantities.value[type] = 1;
     }
   }
 
-  function canAffordMerch(merchType: "holyWater" | "prayerCandles" | "energyDrinks") {
+  function canAffordMerch(merchType: MerchTypes) {
     return my.money >= getMerchCost(merchType);
   }
 
-  function getMerchCost(merchType: "holyWater" | "prayerCandles" | "energyDrinks") {
+  function getMerchCost(merchType: MerchTypes) {
     const quantity = merchQuantities.value[merchType];
-    const costPerItem =
-      merchType === "holyWater"
-        ? gameSettings.church.merch.holyWaterBottles.cost
-        : merchType === "prayerCandles"
-          ? gameSettings.church.merch.bluetoothPrayerCandles.cost
-          : gameSettings.church.merch.saintsFlow.cost;
+    const costPerItem = gameSettings.church.merch[merchType].cost;
     const itemCost = quantity * costPerItem;
     const shippingCost = 15; // Fixed shipping cost
     return itemCost + shippingCost;
   }
 
-  function buyMerch(merchType: "holyWater" | "prayerCandles" | "energyDrinks") {
+  function buyMerch(merchType: MerchTypes) {
     const cost = getMerchCost(merchType);
     const quantity = merchQuantities.value[merchType];
 
@@ -504,9 +566,15 @@
       } else if (merchType === "prayerCandles") {
         my.church.merch.prayerCandles.inventory += quantity;
         merchName = "Bluetooth Prayer Candles";
-      } else if (merchType === "energyDrinks") {
-        my.church.merch.energyDrinks.inventory += quantity;
-        merchName = "Saints Flow Energy Drinks";
+      } else if (merchType === "weightLossTea") {
+        my.church.merch.weightLossTea.inventory += quantity;
+        merchName = "Miracle Weight Loss Tea";
+      } else if (merchType === "beachTowel") {
+        my.church.merch.beachTowel.inventory += quantity;
+        merchName = "Shroud of Turin Beach Towel";
+      } else if (merchType === "exorcismKit") {
+        my.church.merch.exorcismKit.inventory += quantity;
+        merchName = "Lil' Reagan's Exorcism Kit";
       }
 
       // Emit purchase event for Firebase logging

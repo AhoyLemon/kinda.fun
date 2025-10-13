@@ -126,13 +126,13 @@
 
 <script setup>
   import { ref, computed, watch, nextTick } from "vue";
-  import { gameSettings } from "../../ts/_variables";
+  import { gameSettings } from "../../ts/variables/_gameSettings";
   import { dollars } from "@/shared/js/_functions.js";
   import { chatMessages, getRandomMessage, getRandomSlang } from "../../ts/_chatMessages";
 
   const props = defineProps({
     isOpen: Boolean,
-    contactType: String, // 'plug', 'harold', or 'sterling'
+    contactType: "plug" | "harold" | "sterling",
     playerName: String,
     playerMoney: Number,
     playerHasVan: Boolean,

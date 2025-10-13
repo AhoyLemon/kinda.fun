@@ -104,15 +104,6 @@ export interface MerchItem {
   soldToday: number; // how many sold today
   totalSold: number; // how many sold total
 }
-
-export interface ChurchMerch {
-  holyWater: MerchItem & {
-    isVendingMachine: boolean; // whether you have a vending machine
-  };
-  energyDrinks: MerchItem;
-  prayerCandles: MerchItem;
-}
-
 export interface ChurchMarketing {
   generalAdActive: boolean;
   targetedAd: {
@@ -295,7 +286,7 @@ export interface GameSettings {
   church: {
     buzzMultiplier: number; // How much buzz affects attendance (buzz * multiplier = extra attendees)
     merch: {
-      holyWaterBottles: {
+      holyWater: {
         cost: number; // cost to the player (per item)
         baseChance: number; // base % chance per attendee to buy
       };
@@ -303,11 +294,19 @@ export interface GameSettings {
         cost: number;
         bonusChance: number; // additional % chance
       };
-      bluetoothPrayerCandles: {
+      prayerCandles: {
         cost: number; // cost to the player (per item)
         baseChance: number; // base % chance per attendee to buy
       };
-      saintsFlow: {
+      weightLossTea: {
+        cost: number; // cost to the player (per item)
+        baseChance: number; // base % chance per attendee to buy
+      };
+      beachTowel: {
+        cost: number; // cost to the player (per item)
+        baseChance: number; // base % chance per attendee to buy
+      };
+      exorcismKit: {
         cost: number; // cost to the player (per item)
         baseChance: number; // base % chance per attendee to buy
       };
@@ -457,7 +456,9 @@ export interface My {
   merchSalesDetailsYesterday?: {
     holyWater: { sold: number; revenue: number };
     prayerCandles: { sold: number; revenue: number };
-    energyDrinks: { sold: number; revenue: number };
+    weightLossTea: { sold: number; revenue: number };
+    beachTowel: { sold: number; revenue: number };
+    exorcismKit: { sold: number; revenue: number };
   };
   // Church-related properties
   church: {
@@ -469,7 +470,15 @@ export interface My {
     buzz: number;
     maxAttendance: number;
     upgrades: ChurchUpgrades;
-    merch: ChurchMerch;
+    merch: {
+      holyWater: MerchItem & {
+        isVendingMachine: boolean; // whether you have a vending machine
+      };
+      prayerCandles: MerchItem;
+      weightLossTea: MerchItem;
+      beachTowel: MerchItem;
+      exorcismKit: MerchItem;
+    };
   };
   marketing: ChurchMarketing;
   congregation?: Array<{

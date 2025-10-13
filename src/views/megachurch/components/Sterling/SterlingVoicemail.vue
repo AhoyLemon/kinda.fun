@@ -16,7 +16,7 @@
               @play="onAudioPlay"
               @pause="onAudioPause"
             )
-              source(src="/audio/megachurch/sterling-fpo.mp3" type="audio/mpeg")
+              source(src="/audio/megachurch/jimmysterling-1.mp3" type="audio/mpeg")
               | Your browser does not support the audio element.
               
           .voicemail-transcript

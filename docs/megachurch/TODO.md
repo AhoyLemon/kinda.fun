@@ -31,6 +31,12 @@
 
 ### Da Worshop Zone - Shopping Cart System
 
+### Prosperity Gospel Scratch-Off Tickets (Satirical Merch)
+
+- Add lottery/scratch-off tickets as a purchasable merch item in the shop
+- Mechanic: tickets are always losers, or have rigged odds with only joke prizes
+- Satirical commentary on prosperity gospel and "the house always wins"
+
 Currently, each merch item has a fixed $15 shipping cost applied to every purchase, which encourages bulk buying but can feel clunky. A more sophisticated shopping cart system would provide better UX and more strategic gameplay.
 
 **Requirements for Shopping Cart Implementation:**

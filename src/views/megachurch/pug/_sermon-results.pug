@@ -123,10 +123,18 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
             dl.merch-item
               dt Prayer Candles:
               dd {{my.merchSalesDetailsYesterday.prayerCandles.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.prayerCandles.revenue)}})
-          template(v-if="my.merchSalesDetailsYesterday.energyDrinks.sold > 0")
+          template(v-if="my.merchSalesDetailsYesterday.weightLossTea.sold > 0")
             dl.merch-item
-              dt Energy Drinks:
-              dd {{my.merchSalesDetailsYesterday.energyDrinks.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.energyDrinks.revenue)}})
+              dt Weight Loss Tea:
+              dd {{my.merchSalesDetailsYesterday.weightLossTea.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.weightLossTea.revenue)}})
+          template(v-if="my.merchSalesDetailsYesterday.beachTowel.sold > 0")
+            dl.merch-item
+              dt Beach Towels:
+              dd {{my.merchSalesDetailsYesterday.beachTowel.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.beachTowel.revenue)}})
+          template(v-if="my.merchSalesDetailsYesterday.exorcismKit.sold > 0")
+            dl.merch-item
+              dt Exorcism Kits:
+              dd {{my.merchSalesDetailsYesterday.exorcismKit.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.exorcismKit.revenue)}})
       
       template(v-if="my.confessionRevenueYesterday > 0")
         h3 VIP Confession Revenue

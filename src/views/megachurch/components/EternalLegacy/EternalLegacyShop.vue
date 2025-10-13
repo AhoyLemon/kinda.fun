@@ -14,9 +14,9 @@
             @click="activeTab = 'mammon'"
           ) 💰 Mammon Collection
           button.tab-btn(
-            :class="{ active: activeTab === 'darkDeeds' }"
-            @click="activeTab = 'darkDeeds'"
-          ) 🤝 Dark Deeds
+          :class="{ active: activeTab === 'darkDeeds' }"
+          @click="activeTab = 'darkDeeds'"
+          ) 😈 Dark Deeds
 
         .shop-content
           // Mammon Items Tab
