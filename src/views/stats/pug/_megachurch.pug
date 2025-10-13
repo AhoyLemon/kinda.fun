@@ -1,60 +1,79 @@
+mixin smallTable(title, rows, columns, sortBy)
+
+  - let sortOptions = "{enabled: false }"
+  if sortBy
+    - sortOptions = "{ enabled: true, initialSortBy: { field: '" + sortBy + "', type: 'desc'} }";
+
+  if rows && columns
+    .good-table
+      //h2= sortOptions
+      if title
+        h2= title
+      vue-good-table(
+        :rows=rows
+        :columns=columns
+        :sort-options=sortOptions
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50, 100], dropdownAllowAll: true, nextLabel: 'next', prevLabel: 'prev' }")
+
 section.megachurch.stats(v-if="ui.viewing == 'megachurch'")
   figure
     img(src="/svg/games/megachurch-temp.svg")
 
-  //-.stats-boxes
+  .table-and-stats
 
-    .box.date
-      .caption Last Played
-      .time-ago(v-text="formatTime(stats.megachurch.lastGameStarted,'fromNow')")
-      .calendar(v-text="formatTime(stats.megachurch.lastGameStarted,'calendar')")
-    
-    .box.big-number(v-if="stats.megachurch?.gamesStarted")
-        .caption Games Started
-        .number(v-text="addCommas(stats.megachurch.gamesStarted)")
-        .sub-number
-          strong(v-text="calculateAverage(stats.megachurch.gamesStarted, dates.megachurch.dayCount)")
-          |  games per day
+    .stats-boxes-wrapper
+      .stats-boxes
 
-    .box.big-number
-      .caption Games Finished
-      .number(v-text="addCommas(stats.megachurch.gamesFinished)")
-      .sub-number
-        strong(v-text="percentOf(stats.megachurch.gamesStarted,stats.megachurch.gamesFinished) + '%'")
-        |  completion rate
-      .sub-number
-        strong(v-text="addCommas(stats.megachurch.overdoses)")
-        span  overdoses (#[strong {{percentOf(stats.megachurch.gamesFinished, stats.megachurch.overdoses)}}%])
-      .sub-number
-        strong(v-text="addCommas(stats.megachurch.overdoses)")
-        span  prison sentences (#[strong {{percentOf(stats.megachurch.gamesFinished, stats.megachurch.prisonSentences)}}%])
-    
-    .box.big-number
-      .caption Churches Founded
-      .number(v-text="addCommas(stats.megachurch.churchesFounded)")
-      .sub-number
-        strong(v-text="percentOf(stats.megachurch.gamesStarted,stats.megachurch.churchesFounded) + '%'")
-        |  of games started
-    
-    .box.big-number
-      .caption Total Spice Taken
-      .number(v-text="addCommas(stats.megachurch.spiceTaken)")
-    
-    .box.big-number
-      .caption Days of Preaching
-      .number(v-text="addCommas(stats.megachurch.daysPlayed)")
-      .sub-number
-        strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.daysPreachedOnStreet) + '%'")
-        |  on the street
-      .sub-number
-        strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.daysPreachedInChurch) + '%'")
-        |  in churches
-      .sub-number
-        strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.seraphAIDaysActive) + '%'")
-        |  with Seraph AI
+        .box.date
+          .caption Last Played
+          .time-ago(v-text="formatTime(stats.megachurch.lastGameStarted,'fromNow')")
+          .calendar(v-text="formatTime(stats.megachurch.lastGameStarted,'calendar')")
+        
+        .box.big-number(v-if="stats.megachurch?.gamesStarted")
+            .caption Games Started
+            .number(v-text="addCommas(stats.megachurch.gamesStarted)")
+            .sub-number
+              strong(v-text="calculateAverage(stats.megachurch.gamesStarted, dates.megachurch.dayCount)")
+              |  games per day
 
+        .box.big-number
+          .caption Days of Preaching
+          .number(v-text="addCommas(stats.megachurch.daysPlayed)")
+          .sub-number
+            strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.daysPreachedOnStreet) + '%'")
+            |  on the street
+          .sub-number
+            strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.daysPreachedInChurch) + '%'")
+            |  in churches
+          .sub-number
+            strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.seraphAIDaysActive) + '%'")
+            |  with Seraph AI
 
-  //.two-tables(v-if="ui.megachurchLoaded")
+        .box.big-number
+          .caption Games Finished
+          .number(v-text="addCommas(stats.megachurch.gamesFinished)")
+          .sub-number
+            strong(v-text="percentOf(stats.megachurch.gamesStarted,stats.megachurch.gamesFinished) + '%'")
+            |  completion rate
+          .sub-number
+            strong(v-text="addCommas(stats.megachurch.overdoses)")
+            span  overdoses (#[strong {{percentOf(stats.megachurch.gamesFinished, stats.megachurch.overdoses)}}%])
+          .sub-number
+            strong(v-text="addCommas(stats.megachurch.prisonSentences)")
+            span  prison sentences (#[strong {{percentOf(stats.megachurch.gamesFinished, stats.megachurch.prisonSentences)}}%])
+        
+        .box.big-number
+          .caption Churches Founded
+          .number(v-text="addCommas(stats.megachurch.churchesFounded)")
+          .sub-number
+            strong(v-text="percentOf(stats.megachurch.gamesStarted,stats.megachurch.churchesFounded) + '%'")
+            |  of games started
+        
+        .box.big-number
+          .caption Total Spice Taken
+          .number(v-text="addCommas(stats.megachurch.spiceTaken)")
 
     .good-table
       h2 Sermon Topics
@@ -66,48 +85,27 @@ section.megachurch.stats(v-if="ui.viewing == 'megachurch'")
         styleClass="vgt-table condensed"
         :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
 
-  .three-tables(v-if="ui.megachurchLoaded && stats.megachurch.religions")
+  .four-tables(v-if="ui.megachurchLoaded && stats.megachurch.religions")
   
-    .good-table
-      h2 Church Religions
-      vue-good-table(
-        :rows="stats.megachurch.religions"
-        :columns="columns.megachurchReligions"
-        :sort-options="{ enabled: true, initialSortBy: { field: 'churchesFounded', type: 'desc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+    +smallTable("Cheats", "stats.megachurch.cheats", "columns.megachurchCheats", "timesUsed")
 
-    .good-table
-      h2 Church Locations
-      vue-good-table(
-        :rows="stats.megachurch.locations"
-        :columns="columns.megachurchLocations"
-        :sort-options="{ enabled: true, initialSortBy: { field: 'churchesFounded', type: 'desc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+    +smallTable("Church Names", "stats.megachurch.churchNames", "columns.megachurchChurchNames", "churchesFounded")
+
+    +smallTable("Dark Deeds", "stats.megachurch.darkDeeds", "columns.megachurchDarkDeeds", "timesEnacted")
+
+    +smallTable("Eternal Legacy", "stats.megachurch.eternalLegacy", "columns.megachurchEternalLegacy", "timesPurchased")
+
+    +smallTable("Locations", "stats.megachurch.locations", "columns.megachurchLocations", "churchesFounded")
+
+    +smallTable("Marketing", "stats.megachurch.marketing", "columns.megachurchMarketing", "timesPurchased")
     
-    .good-table
-      h2 Church Merch
-      vue-good-table(
-        :rows="stats.megachurch.merch"
-        :columns="columns.megachurchMerch"
-        :sort-options="{ enabled: true, initialSortBy: { field: 'timesPurchased', type: 'desc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+    +smallTable("Merchandise", "stats.megachurch.merch", "columns.megachurchMerch", "timesPurchased")
 
-    .good-table
-      h2 Player Names
-      vue-good-table(
-        :rows="stats.megachurch.players"
-        :columns="columns.megachurchPlayers"
-        :sort-options="{ enabled: true, initialSortBy: { field: 'timesPurchased', type: 'desc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+    +smallTable("Players", "stats.megachurch.players", "columns.megachurchPlayers", "gamesPlayed")
 
+    +smallTable("Religions", "stats.megachurch.religions", "columns.megachurchReligions", "churchesFounded")
+
+    +smallTable("Upgrades", "stats.megachurch.upgrades", "columns.megachurchUpgrades", "timesPurchased")
 
   //.table-and-stats
 

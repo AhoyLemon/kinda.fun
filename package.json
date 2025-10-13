@@ -26,6 +26,7 @@
   "dependencies": {
     "@vueform/multiselect": "^2.6.11",
     "firebase": "^10.14.1",
+    "firebase-functions": "^6.5.0",
     "howler": "^2.2.4",
     "luxon": "^3.4.4",
     "vue": "^3.4.29",

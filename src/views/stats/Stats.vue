@@ -406,13 +406,19 @@
         await loadFirestoreStats("megachurch", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
           subcollections: {
+            cheats: {},
+            churchNames: {},
+            darkDeeds: {},
+            eternalLegacy: {},
+            locations: {},
+            marketing: {},
+            merch: {},
             players: {
               timestampFields: ["lastPlayed"],
             },
-            sermonTopics: {},
             religions: {},
-            locations: {},
-            merch: {},
+            sermonTopics: {},
+            upgrades: {},
           },
         });
         dates.megachurch.dayCount = dates.today.diff(dates.megachurch.launched, "days");

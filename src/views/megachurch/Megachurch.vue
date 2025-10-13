@@ -1472,8 +1472,8 @@
 
     // Firebase logging for day ended
     const dayLogData = {
-      preachedOnStreet: my.place && my.place.name !== "Your Church",
-      preachedInChurch: my.place && my.place.name === "Your Church",
+      preachedOnStreet: !my.church?.location?.name || my.church?.location?.name !== my.place.name,
+      preachedInChurch: my.church?.location?.name && my.church.location.name === my.place.name,
       seraphAIActive: my.church.upgrades.seraphAI,
       sermonTopics: my.sermonToday.topics || [],
     };
