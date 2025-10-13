@@ -1,6 +1,5 @@
 <script setup>
   import { reactive, computed, onMounted, onBeforeMount } from "vue";
-  // import { DateTime } from "luxon";
   import { formatDate, dollars, billionsOfDollars } from "./js/_functions";
   import { addCommas, percentOf } from "@/shared/js/_functions";
   import { columns } from "./js/_columns";

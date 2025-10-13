@@ -1,30 +1,11 @@
-mixin smallTable(title, rows, columns, sortBy)
-
-  - let sortOptions = "{enabled: false }"
-  if sortBy
-    - sortOptions = "{ enabled: true, initialSortBy: { field: '" + sortBy + "', type: 'desc'} }";
-
-  if rows && columns
-    .good-table
-      //h2= sortOptions
-      if title
-        h2= title
-      vue-good-table(
-        :rows=rows
-        :columns=columns
-        :sort-options=sortOptions
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50, 100], dropdownAllowAll: true, nextLabel: 'next', prevLabel: 'prev' }")
-
 section.megachurch.stats(v-if="ui.viewing == 'megachurch'")
   figure
     img(src="/svg/games/megachurch-temp.svg")
 
-  .table-and-stats
+  .table-and-stats(v-if="ui.megachurchLoaded")
 
     .stats-boxes-wrapper
-      .stats-boxes
+      .stats-boxes(v-if="stats.megachurch.lastGameStarted")
 
         .box.date
           .caption Last Played
@@ -75,7 +56,7 @@ section.megachurch.stats(v-if="ui.viewing == 'megachurch'")
           .caption Total Spice Taken
           .number(v-text="addCommas(stats.megachurch.spiceTaken)")
 
-    .good-table
+    .good-table(v-if="stats.megachurch.sermonTopics")
       h2 Sermon Topics
       vue-good-table(
         :rows="stats.megachurch.sermonTopics"
@@ -106,54 +87,3 @@ section.megachurch.stats(v-if="ui.viewing == 'megachurch'")
     +smallTable("Religions", "stats.megachurch.religions", "columns.megachurchReligions", "churchesFounded")
 
     +smallTable("Upgrades", "stats.megachurch.upgrades", "columns.megachurchUpgrades", "timesPurchased")
-
-  //.table-and-stats
-
-    .stats-boxes-wrapper
-      .stats-boxes
-        .box.date(v-if="stats.guillotine && stats.guillotine.lastGameStarted")
-          .caption Last Game
-          .time-ago(v-text="formatTime(stats.guillotine.lastGameStarted,'fromNow')")
-          .calendar(v-text="formatTime(stats.guillotine.lastGameStarted,'calendar')")
-        .box.big-number(v-if="stats.guillotine && stats.guillotine.gamesStarted")
-          .caption Games Started
-          .number(v-text="addCommas(stats.guillotine.gamesStarted)")
-          .sub-number
-            strong(v-text="calculateAverage(stats.guillotine.gamesStarted, dates.guillotine.dayCount)")
-            |  per day
-        .box.big-number(v-if="stats.guillotine && stats.guillotine.gamesFinished")
-          .caption Games Finished
-          .number(v-text="addCommas(stats.guillotine.gamesFinished)")
-          .sub-number
-              strong(v-text="calculateAverage(stats.guillotine.gamesFinished, dates.guillotine.dayCount)")
-              |  per day (
-              strong(v-text="percentOf(stats.guillotine.gamesStarted, stats.guillotine.gamesFinished) + '%'")
-              | )
-        .box.big-number(v-if="stats.guillotine && stats.guillotine.scoresShared")
-          .caption Scores Shared
-          .number(v-text="addCommas(stats.guillotine.scoresShared)")
-          .sub-number
-            strong(v-text="percentOf(stats.guillotine.gamesFinished, stats.guillotine.scoresShared) + '%'")
-            |  share rate
-        .box.big-name(span="2" v-if="computedGuillotine && computedGuillotine.mostExecuted")
-          .caption Most Executed
-          .name {{computedGuillotine.mostExecuted.name}}
-          .subtext
-            | Sent to the guillotine  {{computedGuillotine.mostExecuted.headCount}} times
-        .box.big-number(span="2" v-if="computedGuillotine && computedGuillotine.moneyLiberated")
-          .caption Total Money Liberated
-          .number(v-text="billionsOfDollars(computedGuillotine.moneyLiberated, true)")
-        .box.big-number( span="2" v-if="computedGuillotine && computedGuillotine.averageHeadValue")
-          .caption Average Head Value
-          .number(v-text="billionsOfDollars(computedGuillotine.averageHeadValue, true)")
-        
-
-    .good-table(v-if="ui.guillotineLoaded")
-      h2 Heads Removed
-      vue-good-table( v-if="stats.guillotine.heads"
-                      :rows="stats.guillotine.heads"
-                      :columns="columns.guillotineHeads"
-                      theme="black-rhino"
-                      :line-numbers="true"
-                      :sort-options="{ enabled: true, initialSortBy: {field: 'headCount', type: 'desc'} }"
-                      :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
