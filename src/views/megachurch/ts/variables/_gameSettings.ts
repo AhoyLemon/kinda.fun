@@ -61,8 +61,8 @@ export const gameSettings = reactive<GameSettings>({
     },
     donation: {
       chance: 80, // % chance that someone who likes your sermon donates
-      min: 2, // Minimum $ per donation
-      max: 10, // Maximum $ per donation
+      min: 5, // Minimum $ per donation
+      max: 25, // Maximum $ per donation
     },
     donationPerAttendee: {
       min: 5, // Minimum donation per attendee
@@ -174,7 +174,7 @@ export const gameSettings = reactive<GameSettings>({
     },
     heat: {
       max: 100, // Maximum heat before endgame
-      dailyBaseIncrease: 5, // Base daily heat increase
+      dailyBaseIncrease: 9, // Base daily heat increase
       earningsMultiplier: 0.01, // Heat increase per dollar earned
     },
     shop: {

@@ -18,11 +18,20 @@ main.general-stats(v-if="ui.viewing == 'general'")
         figure
           img(src="/svg/games/nomorebillionaires.svg" @click="getData('guillotine')")
         .last-played(v-if="stats.general && stats.general.guillotineLastPlayed")
-          //.time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.guillotineLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.guillotineLastPlayed,'calendar')")
         .button-holder
           button(@click="getData('guillotine')") Details
+
+      .summary
+        figure
+          //h2(@click="getData('megachurch')") Megachurch Tycoon
+          img(src="/svg/games/megachurch-temp.svg" @click="getData('megachurch')")
+        .last-played(v-if="stats.general && stats.general.megachurchLastPlayed")
+          .time-ago(v-text="formatTime(stats.general.megachurchLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.megachurchLastPlayed,'calendar')")
+        .button-holder
+          button(@click="getData('megachurch')") Details
 
       .summary
         figure

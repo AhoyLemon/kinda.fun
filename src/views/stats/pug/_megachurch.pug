@@ -1,0 +1,161 @@
+section.megachurch.stats(v-if="ui.viewing == 'megachurch'")
+  figure
+    img(src="/svg/games/megachurch-temp.svg")
+
+  //-.stats-boxes
+
+    .box.date
+      .caption Last Played
+      .time-ago(v-text="formatTime(stats.megachurch.lastGameStarted,'fromNow')")
+      .calendar(v-text="formatTime(stats.megachurch.lastGameStarted,'calendar')")
+    
+    .box.big-number(v-if="stats.megachurch?.gamesStarted")
+        .caption Games Started
+        .number(v-text="addCommas(stats.megachurch.gamesStarted)")
+        .sub-number
+          strong(v-text="calculateAverage(stats.megachurch.gamesStarted, dates.megachurch.dayCount)")
+          |  games per day
+
+    .box.big-number
+      .caption Games Finished
+      .number(v-text="addCommas(stats.megachurch.gamesFinished)")
+      .sub-number
+        strong(v-text="percentOf(stats.megachurch.gamesStarted,stats.megachurch.gamesFinished) + '%'")
+        |  completion rate
+      .sub-number
+        strong(v-text="addCommas(stats.megachurch.overdoses)")
+        span  overdoses (#[strong {{percentOf(stats.megachurch.gamesFinished, stats.megachurch.overdoses)}}%])
+      .sub-number
+        strong(v-text="addCommas(stats.megachurch.overdoses)")
+        span  prison sentences (#[strong {{percentOf(stats.megachurch.gamesFinished, stats.megachurch.prisonSentences)}}%])
+    
+    .box.big-number
+      .caption Churches Founded
+      .number(v-text="addCommas(stats.megachurch.churchesFounded)")
+      .sub-number
+        strong(v-text="percentOf(stats.megachurch.gamesStarted,stats.megachurch.churchesFounded) + '%'")
+        |  of games started
+    
+    .box.big-number
+      .caption Total Spice Taken
+      .number(v-text="addCommas(stats.megachurch.spiceTaken)")
+    
+    .box.big-number
+      .caption Days of Preaching
+      .number(v-text="addCommas(stats.megachurch.daysPlayed)")
+      .sub-number
+        strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.daysPreachedOnStreet) + '%'")
+        |  on the street
+      .sub-number
+        strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.daysPreachedInChurch) + '%'")
+        |  in churches
+      .sub-number
+        strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.seraphAIDaysActive) + '%'")
+        |  with Seraph AI
+
+
+  //.two-tables(v-if="ui.megachurchLoaded")
+
+    .good-table
+      h2 Sermon Topics
+      vue-good-table(
+        :rows="stats.megachurch.sermonTopics"
+        :columns="columns.megachurchSermonTopics"
+        :sort-options="{ enabled: true, initialSortBy: {field: 'timesPreached', type: 'desc'} }"
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+  .three-tables(v-if="ui.megachurchLoaded && stats.megachurch.religions")
+  
+    .good-table
+      h2 Church Religions
+      vue-good-table(
+        :rows="stats.megachurch.religions"
+        :columns="columns.megachurchReligions"
+        :sort-options="{ enabled: true, initialSortBy: { field: 'churchesFounded', type: 'desc'} }"
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+    .good-table
+      h2 Church Locations
+      vue-good-table(
+        :rows="stats.megachurch.locations"
+        :columns="columns.megachurchLocations"
+        :sort-options="{ enabled: true, initialSortBy: { field: 'churchesFounded', type: 'desc'} }"
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+    
+    .good-table
+      h2 Church Merch
+      vue-good-table(
+        :rows="stats.megachurch.merch"
+        :columns="columns.megachurchMerch"
+        :sort-options="{ enabled: true, initialSortBy: { field: 'timesPurchased', type: 'desc'} }"
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+    .good-table
+      h2 Player Names
+      vue-good-table(
+        :rows="stats.megachurch.players"
+        :columns="columns.megachurchPlayers"
+        :sort-options="{ enabled: true, initialSortBy: { field: 'timesPurchased', type: 'desc'} }"
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+
+  //.table-and-stats
+
+    .stats-boxes-wrapper
+      .stats-boxes
+        .box.date(v-if="stats.guillotine && stats.guillotine.lastGameStarted")
+          .caption Last Game
+          .time-ago(v-text="formatTime(stats.guillotine.lastGameStarted,'fromNow')")
+          .calendar(v-text="formatTime(stats.guillotine.lastGameStarted,'calendar')")
+        .box.big-number(v-if="stats.guillotine && stats.guillotine.gamesStarted")
+          .caption Games Started
+          .number(v-text="addCommas(stats.guillotine.gamesStarted)")
+          .sub-number
+            strong(v-text="calculateAverage(stats.guillotine.gamesStarted, dates.guillotine.dayCount)")
+            |  per day
+        .box.big-number(v-if="stats.guillotine && stats.guillotine.gamesFinished")
+          .caption Games Finished
+          .number(v-text="addCommas(stats.guillotine.gamesFinished)")
+          .sub-number
+              strong(v-text="calculateAverage(stats.guillotine.gamesFinished, dates.guillotine.dayCount)")
+              |  per day (
+              strong(v-text="percentOf(stats.guillotine.gamesStarted, stats.guillotine.gamesFinished) + '%'")
+              | )
+        .box.big-number(v-if="stats.guillotine && stats.guillotine.scoresShared")
+          .caption Scores Shared
+          .number(v-text="addCommas(stats.guillotine.scoresShared)")
+          .sub-number
+            strong(v-text="percentOf(stats.guillotine.gamesFinished, stats.guillotine.scoresShared) + '%'")
+            |  share rate
+        .box.big-name(span="2" v-if="computedGuillotine && computedGuillotine.mostExecuted")
+          .caption Most Executed
+          .name {{computedGuillotine.mostExecuted.name}}
+          .subtext
+            | Sent to the guillotine  {{computedGuillotine.mostExecuted.headCount}} times
+        .box.big-number(span="2" v-if="computedGuillotine && computedGuillotine.moneyLiberated")
+          .caption Total Money Liberated
+          .number(v-text="billionsOfDollars(computedGuillotine.moneyLiberated, true)")
+        .box.big-number( span="2" v-if="computedGuillotine && computedGuillotine.averageHeadValue")
+          .caption Average Head Value
+          .number(v-text="billionsOfDollars(computedGuillotine.averageHeadValue, true)")
+        
+
+    .good-table(v-if="ui.guillotineLoaded")
+      h2 Heads Removed
+      vue-good-table( v-if="stats.guillotine.heads"
+                      :rows="stats.guillotine.heads"
+                      :columns="columns.guillotineHeads"
+                      theme="black-rhino"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'headCount', type: 'desc'} }"
+                      :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")

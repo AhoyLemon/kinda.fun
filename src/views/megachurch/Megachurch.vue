@@ -155,6 +155,7 @@
       logGameplayToFirebase("churchFounded", {
         location: churchLocation.name,
         religion: my.church.religion.name,
+        churchName: my.church.name,
       });
 
       // Send message to Sterling confirming the church
@@ -1380,6 +1381,7 @@
       }
 
       my.money += playerShare;
+      trackMoneyEarned(playerShare);
 
       // Store Sterling's cut for results display
       my.sterlingCutYesterday = sterlingCut;
@@ -2084,6 +2086,7 @@
   function closeSterlingVoicemail() {
     ui.sterlingVoicemail.isOpen = false;
     my.eternalLegacy.voicemailPlayed = true;
+    my.eternalLegacy.heat += gameSettings.eternalLegacy.heat.dailyBaseIncrease;
 
     // Show heat meter notification
     setTimeout(() => {
@@ -2109,6 +2112,7 @@
   function updateHeat(amount: number) {
     my.eternalLegacy.heat = Math.min(my.eternalLegacy.heat + amount, gameSettings.eternalLegacy.heat.max);
 
+    console.log("line 2114");
     // Check for endgame trigger
     if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
       triggerEndgame();
@@ -2130,21 +2134,6 @@
       ui.view = "game-over";
     }, 2000);
   }
-
-  // function enterFullscreen() {
-  //   // Try to request fullscreen on the main game container for best compatibility
-  //   const el = document.getElementById("app") || document.body;
-  //   if (el.requestFullscreen) {
-  //     el.requestFullscreen();
-  //   } else if ((el as any).webkitRequestFullscreen) {
-  //     (el as any).webkitRequestFullscreen();
-  //   } else if ((el as any).msRequestFullscreen) {
-  //     (el as any).msRequestFullscreen();
-  //   }
-  // }
-  // document.addEventListener("fullscreenchange", () => {
-  //   ui.isFullscreen = !!document.fullscreenElement;
-  // });
 
   // === Debug Functions ===
 
@@ -2327,6 +2316,21 @@
                 lastPlayed: now,
               });
             }
+
+            const nameRef = doc(db, `stats/megachurch/players/${my.name}`);
+            const nameSnap = await getDoc(nameRef);
+            if (nameSnap.exists()) {
+              await updateDoc(nameRef, {
+                gamesPlayed: increment(1),
+                lastPlayed: now,
+              });
+            } else {
+              await setDoc(nameRef, {
+                name: my.name,
+                gamesPlayed: 1,
+                lastPlayed: now,
+              });
+            }
           }
           break;
 
@@ -2379,6 +2383,23 @@
             } else {
               await setDoc(religionRef, {
                 name: data.religion,
+                churchesFounded: 1,
+              });
+            }
+          }
+
+          // Log church name
+          if (data.churchName) {
+            const nameRef = doc(db, `stats/megachurch/churchNames/${data.churchName}`);
+            const nameSnap = await getDoc(nameRef);
+
+            if (nameSnap.exists()) {
+              await updateDoc(nameRef, {
+                churchesFounded: increment(1),
+              });
+            } else {
+              await setDoc(nameRef, {
+                name: data.churchName,
                 churchesFounded: 1,
               });
             }

@@ -22,8 +22,8 @@
           .voicemail-transcript
             .transcript-header Transcript:
             .transcript-text
-              p Blessings and favor upon you, my dear friend—Sterling here. I trust you’re walking in the Lord’s abundance, as always.
-              p …Alright, let’s cut the shit. The Feds are paying attention. And let me be clear: they’re going to keep paying attention to you. The money you’ve made for me so far has been spent on things the federal government has traditionally taken exception to—simple-minded Judases who never understood that part of my religious mission involves a demonstration of the divine. And what’s more divine than the gold-plated shoes I just bought? If it were up to them, they’d say a man of God shouldn’t own a racehorse in the first place!
+              p Blessings and favor upon you, my dear friend! Sterling here. I trust you’re walking in the Lord’s abundance, as always.
+              p …Alright, let’s cut the shit. The Feds are paying attention. And let me be clear: they’re going to keep paying attention to you. The money you’ve made for me so far has been spent on things the federal government has traditionally taken exception to. Simple-minded Judases who never understood that part of my religious mission involves a demonstration of the divine. And what’s more divine than the gold-plated shoes I just bought? If it were up to them, they’d say a man of God shouldn’t own a racehorse in the first place!
               p Now, I know what you’re thinking—how do I get out of this? But let me stop you right there. I know how this ends: one way or another, you’re going in a box. It’s just a matter of time. So before the final altar call, do what any wise servant would: earn me enough mammon so we can both secure our eternal legacy. You catch my drift.
               p I’ll be praying for you. But obviously, we’ve never met. Godspeed, servant of the Lord.
                 

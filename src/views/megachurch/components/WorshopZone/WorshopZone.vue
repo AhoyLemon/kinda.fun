@@ -91,14 +91,14 @@
                 </button>
               </div>
 
-              <template v-if="!my.church.merch.holyWater.isVendingMachine || my.church.merch.holyWater.isVendingMachine">
+              <template v-if="!my.church.merch.holyWater.isVendingMachine">
                 <h3>Holy Water Vending Machine</h3>
                 <div class="product-description">
                   Automated holy water sales! Because nothing says "spiritual experience" like pumping quarters into a machine. Adds +{{
                     gameSettings.church.merch.holyWaterVendingMachine.bonusChance
                   }}% chance for holy water purchases.
                 </div>
-                <button class="buy-btn big" :disabled="my.money < gameSettings.church.merch.holyWaterVendingMachine.cost">
+                <button class="buy-btn big" :disabled="my.money < gameSettings.church.merch.holyWaterVendingMachine.cost" @click="buyVendingMachine()">
                   INSTALL FOR ${{ gameSettings.church.merch.holyWaterVendingMachine.cost }}
                 </button>
               </template>

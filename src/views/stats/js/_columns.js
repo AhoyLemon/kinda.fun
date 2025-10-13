@@ -104,4 +104,26 @@ export const columns = {
     { label: "Played", field: "count", type: "number" },
     { label: "Last Played", field: "lastPlayed", type: "date", formatFn: formatDate },
   ],
+
+  // MEGACHURCH
+  megachurchSermonTopics: [
+    { label: "Topic", field: "title", tdClass: "font-bold" },
+    { label: "x", field: "timesPreached", type: "number", formatFn: addCommas },
+  ],
+  megachurchReligions: [
+    { label: "Religion", field: "name", tdClass: "font-bold" },
+    { label: "Founded", field: "churchesFounded", type: "number", formatFn: addCommas },
+  ],
+  megachurchLocations: [
+    { label: "Location", field: "name", tdClass: "font-bold" },
+    { label: "Founded", field: "churchesFounded", type: "number", formatFn: addCommas },
+  ],
+  megachurchMerch: [
+    { label: "Merch", field: "name", tdClass: "font-bold" },
+    { label: "Purchased", field: "timesPurchased", type: "number", formatFn: addCommas },
+  ],
+  megachurchPlayers: [
+    { label: "Name", field: "name", tdClass: "font-bold" },
+    { label: "Played", field: "gamesPlayed", type: "number", formatFn: addCommas },
+  ],
 };
