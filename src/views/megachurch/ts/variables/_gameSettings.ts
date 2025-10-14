@@ -20,11 +20,11 @@ export const gameSettings = reactive<GameSettings>({
     // ===== MAJOR TWEAKS =====
     baseCrowdSize: 75, // Base crowd size that shows up to listen
     dislikeChance: {
-      byReligion: 60, // % chance of disliking when sermon attacks their religion (increased)
+      byReligion: 40, // % chance of disliking when sermon attacks their religion (increased)
       byTag: 35, // % chance of disliking when sermon attacks a tag they like (increased)
     },
     likeChance: {
-      byReligion: 45, // % chance of liking when sermon praises their religion
+      byReligion: 30, // % chance of liking when sermon praises their religion
       byTag: 20, // % chance of liking when sermon praises a tag they like
     },
     donation: {

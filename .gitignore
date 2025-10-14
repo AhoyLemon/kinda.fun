@@ -29,8 +29,7 @@ coverage
 
 
 # Firebase Stuff
-.env.local
-.env.prod
+.env.*
 firebaseConfig.js
 .firebase
 firebase-privatekey.json

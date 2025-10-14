@@ -23,7 +23,7 @@
     // megachurch: {
     //   name: "Megachurch Tycoon (Alpha Release)",
     //   slug: "megachurch",
-    //   logo: "megachurch-temp.svg",
+    //   logo: "megachurch.svg",
     //   slogan: "Turn their faith into your fortune.",
     //   description: `
     //     <p>Starting with no money and a crippling drug addiction, <strong>Megachurch Tycoon</strong> will have you preaching the only word you believe: <strong>Get Paid.</strong></p>
@@ -34,7 +34,6 @@
     //   isMultiplayer: false,
     //   tags: ["game", "single player", "lies", "early release"],
     // },
-
     invalid: {
       name: "Invalid",
       slug: "invalid",

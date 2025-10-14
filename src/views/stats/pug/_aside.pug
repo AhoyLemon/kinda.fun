@@ -47,18 +47,9 @@ aside.general.general-stats(v-if="ui.viewing != 'general'")
     // MEGACHURCH TYCOON
     .summary(:class="{ active: (ui.viewing == 'megachurch'), inactive: (ui.viewing != 'megachurch') }")
       figure
-        img(src="/svg/games/megachurch-temp.svg" @click="getData('megachurch')")
+        img(src="/svg/games/megachurch.svg" @click="getData('megachurch')")
       .last-played(v-if="stats?.general?.megachurchLastPlayed")
         .time-ago(v-text="formatTime(stats.general.megachurchLastPlayed,'fromNow')")
-    
-
-    //- .summary(:class="{ active: (ui.viewing == 'wrongest'), inactive: (ui.viewing != 'wrongest') }")
-    //-   figure
-    //-     img(src="/svg/games/thewrongestwords.svg" @click="getData('wrongest')")
-    //-   .last-played(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.wrongest")
-    //-     .time-caption Last Game
-    //-     .time-ago(v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')")
-
 
     aside.last-cloned-holder(v-if="stats?.general?.lastCloned")
       .last-cloned
