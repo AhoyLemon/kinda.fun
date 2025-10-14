@@ -25,7 +25,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
       .summary
         figure
-          img(src="/svg/games/megachurch-temp.svg" @click="getData('megachurch')")
+          img(src="/svg/games/megachurch.svg" @click="getData('megachurch')")
         .last-played(v-if="stats.general && stats.general.megachurchLastPlayed")
           .time-ago(v-text="formatTime(stats.general.megachurchLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.megachurchLastPlayed,'calendar')")
