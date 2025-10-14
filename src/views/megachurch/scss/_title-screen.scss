@@ -1,11 +1,115 @@
 main.title-screen {
   background-size: cover;
   background-position: center;
-  //background-image: url(https://images.pexels.com/photos/2704927/pexels-photo-2704927.jpeg);
-  //background-image: url(https://images.pexels.com/photos/2253934/pexels-photo-2253934.jpeg);
-  background-image: url("/img/megachurch/bg/pexels-dariuskrs-2253934-edit.jpg");
+  // background-image: url("/img/megachurch/bg/pexels-dariuskrs-2253934-edit.jpg");
+  background-image: url("/img/megachurch/bg/filthy-warehouse.jpg");
   grid-column: span 2;
   color: white;
+  position: relative;
+
+  // Wake-up overlay for the blur/brightness effect and eyelid opening
+  @keyframes wakeUp {
+    0% {
+      backdrop-filter: blur(8px) brightness(0%);
+    }
+    30% {
+      backdrop-filter: blur(6px) brightness(20%);
+    }
+    60% {
+      backdrop-filter: blur(3px) brightness(80%);
+    }
+    80% {
+      backdrop-filter: blur(1px) brightness(150%);
+    }
+    100% {
+      backdrop-filter: blur(0px) brightness(100%);
+    }
+  }
+
+  @keyframes topEyelidOpen {
+    0% {
+      transform: translateY(0%);
+    }
+    20% {
+      transform: translateY(0%);
+    }
+    80% {
+      transform: translateY(-80%);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes bottomEyelidOpen {
+    0% {
+      transform: translateY(0%);
+    }
+    20% {
+      transform: translateY(0%);
+    }
+    80% {
+      transform: translateY(80%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes headlineAnimateIn {
+    0% {
+      scale: 0.2;
+      opacity: 0;
+    }
+    80% {
+      scale: 1.1;
+      opacity: 1;
+    }
+    100% {
+      scale: 1;
+      opacity: 1;
+    }
+  }
+
+  .wake-up-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: none;
+    backdrop-filter: blur(8px) brightness(0%);
+    overflow: hidden;
+
+    // Pure CSS animation for waking up
+    animation: wakeUp 6s ease-out forwards;
+
+    // Top eyelid
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+      animation: topEyelidOpen 4s ease-out forwards;
+    }
+
+    // Bottom eyelid
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+      animation: bottomEyelidOpen 4s ease-out forwards;
+    }
+  }
+
   h1 {
     font-family: $serif;
     line-height: 115%;
@@ -39,6 +143,16 @@ main.title-screen {
     // filter: drop-shadow(-1px -1px 0 rgba(0, 0, 0, 1)) drop-shadow(1px 1px 0 rgba(0, 0, 0, 1)) drop-shadow(0 0.18em 0.9em rgba(0, 0, 0, 0.55))
     //   drop-shadow(0 0.4em 1.5em rgba(0, 0, 0, 0.35)) drop-shadow(0 1em 2.5em rgba(0, 0, 0, 0.18));
   }
+
+  section {
+    position: relative;
+    z-index: 2;
+  }
+
+  // Vue transition for h1 - bouncy entrance
+  .title-bounce-enter-active {
+    animation: headlineAnimateIn 0.75s ease-out;
+  }
   h2 {
     font-family: $serif;
     font-size: 3dvw;
@@ -58,15 +172,18 @@ main.title-screen {
       1px 1px #000;
     filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55));
   }
+
   p {
     max-width: 72ch;
     margin-left: auto;
     margin-right: auto;
     line-height: 165%;
   }
-  // h2 {
-  //   fo
-  // }
+
+  // Vue transition for form - slide up from bottom
+  .form-slide-enter-active {
+    animation: slideInUp 1s ease-out;
+  }
 
   form {
     margin-top: 60px;

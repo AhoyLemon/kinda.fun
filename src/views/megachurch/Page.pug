@@ -1,9 +1,9 @@
 include ../../shared/pug/_variables.pug
 - const name = "Megachurch Tycoon"
 - const desc = "Turn their faith into your fortune, one lie at a time."
-- const keywords = ""
+- const keywords = "satire, management game, dark humor, American religion, parody, organized religion, materialism, greed, hypocrisy, browser game, single player, sermon, profit, social commentary, prosperity gospel"
 - const gameUrl = baseUrl + "/megachurch"
-- const ogImage = ""
+- const ogImage = baseUrl +"/img/og-megachurch.png"
 - const datePublished = ""
 
 doctype html
@@ -17,6 +17,11 @@ html(lang="en")
 
     link(href="/megachurch.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
 
+    include pug/_opengraph.pug
+
   body
     #app
     script(type="module" src="/src/entries/megachurch.js")
+
+    // Schema.org
+    include pug/_schema.pug

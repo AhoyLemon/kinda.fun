@@ -43,4 +43,9 @@ export const ui = reactive<UI>({
   seraphAINag: {
     hasShown: false,
   },
+  wakingUp: {
+    showTitle: false,
+    showSubtitle: false,
+    showForm: false,
+  },
 });

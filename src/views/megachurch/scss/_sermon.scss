@@ -1,6 +1,7 @@
 main.sermon {
   background-color: #4f2e27;
-  background-image: url(https://images.pexels.com/photos/1226398/pexels-photo-1226398.jpeg);
+  // background-image: url(https://images.pexels.com/photos/1226398/pexels-photo-1226398.jpeg);
+  background-image: url("/img/megachurch/bg/notebook.jpg");
   form {
     width: 72ch;
     max-width: 98dvw;
@@ -9,74 +10,6 @@ main.sermon {
     padding: 20px;
     @include blurBG();
   }
-
-  // .sermon-preview {
-  //   margin: 20px 0;
-  //   padding: 15px;
-  //   background: rgba(255, 255, 255, 0.1);
-  //   border-radius: 8px;
-  //   border: 1px solid rgba(255, 255, 255, 0.2);
-
-  //   .preview-section {
-  //     h4 {
-  //       margin: 0 0 10px 0;
-  //       color: white;
-  //       font-size: 1.1rem;
-  //       text-align: center;
-  //     }
-
-  //     .preview-columns {
-  //       display: grid;
-  //       grid-template-columns: 1fr 1fr;
-  //       gap: 20px;
-
-  //       @media (max-width: 600px) {
-  //         grid-template-columns: 1fr;
-  //         gap: 15px;
-  //       }
-  //     }
-
-  //     .preview-column {
-  //       h5 {
-  //         margin: 0 0 8px 0;
-  //         color: rgba(255, 255, 255, 0.9);
-  //         font-size: 0.9rem;
-  //         text-transform: uppercase;
-  //         letter-spacing: 0.5px;
-  //       }
-
-  //       .religion-list {
-  //         list-style: none;
-  //         padding: 0;
-  //         margin: 0;
-
-  //         li {
-  //           display: flex;
-  //           justify-content: space-between;
-  //           align-items: center;
-  //           padding: 4px 0;
-  //           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
-  //           &:last-child {
-  //             border-bottom: none;
-  //           }
-
-  //           .religion-name {
-  //             color: white;
-  //             font-size: 0.85rem;
-  //             flex: 1;
-  //           }
-
-  //           .weight-indicator {
-  //             color: rgba(255, 255, 255, 0.7);
-  //             font-size: 0.75rem;
-  //             font-weight: bold;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
 
   // Seraph AI Nag Message
   .seraph-ai-nag {

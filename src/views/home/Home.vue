@@ -20,13 +20,30 @@
   const isListRandomized = ref(false);
 
   const thingData = {
+    // megachurch: {
+    //   name: "Megachurch Tycoon (Alpha Release)",
+    //   slug: "megachurch",
+    //   logo: "megachurch-temp.svg",
+    //   slogan: "Turn their faith into your fortune.",
+    //   description: `
+    //     <p>Starting with no money and a crippling drug addiction, <strong>Megachurch Tycoon</strong> will have you preaching the only word you believe: <strong>Get Paid.</strong></p>
+    //     <p>NOTE: Megachurch Tycoon is currently in early access state. It is <strong>DESKTOP ONLY</strong> while in early access.</p>
+    //   `,
+    //   url: `${baseURL}/megachurch`,
+    //   buttonText: "",
+    //   isMultiplayer: false,
+    //   tags: ["game", "single player", "lies", "early release"],
+    // },
+
     invalid: {
       name: "Invalid",
       slug: "invalid",
       logo: "invalid.svg",
       slogan: "A trivia game of unnecessary suffering.",
-      description: `<p>This is a multiplayer competitive triva game <strong>(best with 3-7 players)</strong> that involves all players taking on one of two roles.</p>
-        <p><strong>Employees</strong> are trying to use their wits and trivia knowledge to come up with a password. But the <strong>SysAdmin</strong> is trying to make everyone's life difficult.</p>`,
+      description: `
+        <p>This is a multiplayer competitive triva game <strong>(best with 3-7 players)</strong> that involves all players taking on one of two roles.</p>
+        <p><strong>Employees</strong> are trying to use their wits and trivia knowledge to come up with a password. But the <strong>SysAdmin</strong> is trying to make everyone's life difficult.</p>
+      `,
       url: `${baseURL}/invalid`,
       buttonText: "",
       isMultiplayer: true,
@@ -100,17 +117,6 @@
       url: `${baseURL}/pretend`,
       tags: ["game", "single player", "celebrities", "guess"],
     },
-    // invalid: {
-    //   name: "Invalid",
-    //   slug: "invalid",
-    //   logo: "invalid.svg",
-    //   slogan: "A trivia game of unnecessary suffering.",
-    //   description: `<p>This is a multiplayer competitive triva game <strong>(best with 4-8 players)</strong> where all players are working at the same company, and all they want to do is create a password. The SysAdmin's job is to make their life difficult.</p>`,
-    //   url: `${baseURL}/invalid`,
-    //   buttonText: "",
-    //   isMultiplayer: true,
-    //   tags: ["game", "multiplayer", "trivia", "guess"],
-    // },
     // wrongest: {
     //   name: "The Wrongest Words",
     //   slug: "wrongest",
@@ -241,16 +247,6 @@
       tags: ["celebrities"],
       buttonText: "See men",
     },
-    // rickrossdaily: {
-    //   name: "Rick Ross Daily",
-    //   slug: "rickrossdaily",
-    //   logo: "rickrossdaily.svg",
-    //   slogan: "Surely he can't be hustling every day...",
-    //   description: `<p>A Mastodon bot to execute a very simple joke: Hey, what's Rick Ross doing today? Is it hustling?</p>`,
-    //   url: "https://botsin.space/@rickross",
-    //   tags: ["celebrities", "list"],
-    //   buttonText: "Hustlin?",
-    // },
   };
 
   const resetGameState = () => {

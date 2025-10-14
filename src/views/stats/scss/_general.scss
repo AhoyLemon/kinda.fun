@@ -10,6 +10,7 @@ main.general-stats {
   .inside {
     width: 100%;
   }
+
   .game-summaries {
     display: flex;
     flex-wrap: wrap;
@@ -77,14 +78,14 @@ main.general-stats {
   gap: $gap;
 
   .player-table {
-    max-height: 99.999vh;
+    // max-height: calc(100dvh - 40px);
     overflow-y: auto;
-  }
-  .good-table {
     h2 {
-      font-size: 190%;
+      font-size: 175%;
       padding-bottom: 0.35em;
     }
+  }
+  .good-table {
     .vgt-wrap__footer {
       select.footer__row-count__select {
         color: $white;

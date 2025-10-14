@@ -1,10 +1,17 @@
 main.title-screen(v-if="ui.view === 'title-screen'")
+  // Wake-up overlay that will animate the brightness/blur effect and eyelid opening
+  .wake-up-overlay
+  
   section
     .inner
-      h1 You wake up in the morning with no money and no drugs.
-      h2 This is a problem.
+      transition(name="title-bounce" appear)
+        h1(v-show="ui.wakingUp.showTitle") You wake up in the morning with no money and no drugs.
+      
+      transition(name="subtitle-fade" appear)
+        h2(v-show="ui.wakingUp.showSubtitle") This is a problem.
 
-      .choose
+      //transition(name="form-slide" appear)
+      .choose(v-show="ui.wakingUp.showForm")
         form(@submit.prevent="ui.view = 'sermon'")
 
           legend In order to get drugs, you'll need money. In order to get money, other people need to give it to you. And to make that happen, rather than robbing them outright, you decide you'll yell about religion as loud as you can in the hopes that somebody gives you enough money for you to get high tomorrow.

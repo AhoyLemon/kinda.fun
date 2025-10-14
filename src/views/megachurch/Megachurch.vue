@@ -2580,6 +2580,25 @@
     }
   }
 
+  // ================= WAKING UP ANIMATION =================
+  watch(
+    () => ui.view,
+    (newView) => {
+      if (newView === "title-screen") {
+        // Reset all animation states
+        ui.wakingUp.showTitle = false;
+        ui.wakingUp.showSubtitle = false;
+        ui.wakingUp.showForm = false;
+
+        // Trigger content animations after the CSS wake-up animation progresses
+        setTimeout(() => (ui.wakingUp.showTitle = true), 5000); // Show title after 4.5s
+        setTimeout(() => (ui.wakingUp.showSubtitle = true), 8200); // Show subtitle after 8s
+        setTimeout(() => (ui.wakingUp.showForm = true), 10000); // Show form after 11s
+      }
+    },
+    { immediate: true },
+  );
+
   // ================= LIFECYCLE =================
   onMounted(() => {
     initialiseGame();

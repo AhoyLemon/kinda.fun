@@ -201,6 +201,11 @@ export interface UI {
   seraphAINag: {
     hasShown: boolean; // Whether the nag message has been shown to the user
   };
+  wakingUp: {
+    showTitle: boolean;
+    showSubtitle: boolean;
+    showForm: boolean;
+  };
 }
 
 export interface ChatMessage {

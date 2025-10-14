@@ -41,6 +41,19 @@ const collectionsToClone = [
   // SISYPHUS CLICKER
   // "stats/sisyphus/cheevos",
   // "stats/sisyphus/purchases",
+  //
+  // MEGACHURCH TYCOON
+  // "/stats/megachurch/cheats",
+  // "/stats/megachurch/churchNames",
+  // "/stats/megachurch/darkDeeds",
+  // "/stats/megachurch/eternalLegacy",
+  // "/stats/megachurch/locations",
+  // "/stats/megachurch/marketing",
+  // "/stats/megachurch/merch",
+  // "/stats/megachurch/players",
+  // "/stats/megachurch/religions",
+  // "/stats/megachurch/sermonTopics",
+  // "/stats/megachurch/upgrades",
 ];
 
 // Individual documents to clone (fields only, no subcollections)
@@ -51,7 +64,7 @@ const documentsToClone = [
   //
   ////////////////////////////////////
   // COMPARATIVELY FAMOUS
-  //"stats/cameo",
+  // "stats/cameo",
   //
   ////////////////////////////////////
   // NO MORE BILLIONAIRES
@@ -67,11 +80,15 @@ const documentsToClone = [
   //
   ////////////////////////////////////
   // PRETEND WORLD
-  //"stats/pretend",
+  // "stats/pretend",
   //
   ////////////////////////////////////
   // SISYPHUS CLICKER
-  //"stats/sisyphus",
+  // "stats/sisyphus",
+  //
+  ////////////////////////////////////
+  // MEGACHURCH TYCOON
+  // "stats/megachurch",
 ];
 
 // =============================================================
@@ -81,6 +98,7 @@ import admin from "firebase-admin";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import chalk from "chalk"; // Add chalk for colored console messages
 
 // Helper to read JSON files in ES Modules
 const readJsonFile = (path) => {
@@ -142,6 +160,14 @@ async function cloneCollection(sourceCollectionRef, targetCollectionRef) {
 }
 
 async function main() {
+  // Check if there is nothing to clone
+  if (collectionsToClone.length === 0 && documentsToClone.length === 0) {
+    console.log(chalk.red.bold("\n🚫 No collections or documents selected for cloning."));
+    console.log(chalk.yellow("👉 Please edit the 'collectionsToClone' or 'documentsToClone' arrays in the script to specify what to clone."));
+    console.log(chalk.green("💡 Tip: Uncomment the relevant lines in the arrays to include them in the cloning process."));
+    process.exit(0);
+  }
+
   // Print actual project IDs from service accounts
   console.log("prodServiceAccount.project_id:", prodServiceAccount.project_id);
   console.log("devServiceAccount.project_id:", devServiceAccount.project_id);
