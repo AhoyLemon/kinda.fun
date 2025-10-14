@@ -112,14 +112,19 @@ main.title-screen {
 
   h1 {
     font-family: $serif;
-    line-height: 115%;
-    font-size: 5.25dvw;
+
     text-align: center;
     text-wrap: balance;
     margin-bottom: 20px;
     color: #df1919;
     color: oklch(0.66 0.29 27.67);
     letter-spacing: 0.025em;
+
+    line-height: 115%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: clamp(32px, 5.25dvw, 75px);
 
     text-shadow:
       -1.5px -1.5px 0 black,
