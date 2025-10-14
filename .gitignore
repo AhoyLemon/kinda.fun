@@ -36,7 +36,6 @@ firebaseConfig.js
 firebase-privatekey.json
 scripts/firebase/dev-service-account.json
 scripts/firebase/prod-service-account.json
-build-for-production.ps1
 
 # Generated HTML files (for dev only)
 /404.html
