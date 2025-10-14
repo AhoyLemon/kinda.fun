@@ -1,3 +1,10 @@
+import {
+  EternalLegacyShopItems,
+  EternalLegacyDarkDeeds,
+  eternalLegacyBibleVerses,
+  EternalLegacyBibleVerses,
+} from "./variables/_eternalLegacy";
+
 // ================= GENERAL TYPES =================
 
 export interface Religion {
@@ -382,26 +389,10 @@ export interface GameSettings {
       earningsMultiplier: number;
     };
     shop: {
-      mammonItems: Array<{
-        id: string;
-        name: string;
-        cost: number;
-        mammon: number;
-        description: string;
-      }>;
-      darkDeeds: Array<{
-        id: string;
-        name: string;
-        cost: number;
-        heat: number;
-        effect: string;
-      }>;
+      mammonItems: EternalLegacyShopItems[];
+      darkDeeds: EternalLegacyDarkDeeds[];
     };
-    bibleVerses: Array<{
-      quote: string;
-      cite: string;
-      version: string;
-    }>;
+    bibleVerses: EternalLegacyBibleVerses[];
   };
 }
 

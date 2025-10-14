@@ -64,7 +64,7 @@ section.megachurch.stats(v-if="ui.viewing == 'megachurch'")
         :sort-options="{ enabled: true, initialSortBy: {field: 'timesPreached', type: 'desc'} }"
         theme="black-rhino"
         styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        :pagination-options="{ enabled: true, perPage: 15, position: 'top', perPageDropdown: [10, 15, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
 
   .four-tables(v-if="ui.megachurchLoaded && stats.megachurch.religions")
   
