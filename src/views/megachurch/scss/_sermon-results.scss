@@ -130,7 +130,7 @@ section.sermon-results {
   }
 
   // Receipt-style styling for donations summary and church management
-  .donations-summary,
+  .donations-summary.church,
   .church-management-summary {
     background: #f8f8f8;
     color: #333;
@@ -177,7 +177,7 @@ section.sermon-results {
     }
   }
 
-  .donations-summary {
+  .donations-summary.church {
     &::before {
       content: "★ ★ DAILY EARNINGS ★ ★";
     }
@@ -250,6 +250,14 @@ section.sermon-results {
         font-weight: normal;
       }
     }
+
+    rotate: -4.5deg;
+    box-shadow:
+      rgba(0, 0, 0, 0.25) 0px 54px 55px,
+      rgba(0, 0, 0, 0.12) 0px -12px 30px,
+      rgba(0, 0, 0, 0.12) 0px 4px 6px,
+      rgba(0, 0, 0, 0.17) 0px 12px 13px,
+      rgba(0, 0, 0, 0.09) 0px -3px 5px;
   }
 
   .church-management-summary {
@@ -305,18 +313,6 @@ section.sermon-results {
         color: #333;
       }
     }
-  }
-
-  .donations-summary {
-    rotate: -4.5deg;
-    box-shadow:
-      rgba(0, 0, 0, 0.25) 0px 54px 55px,
-      rgba(0, 0, 0, 0.12) 0px -12px 30px,
-      rgba(0, 0, 0, 0.12) 0px 4px 6px,
-      rgba(0, 0, 0, 0.17) 0px 12px 13px,
-      rgba(0, 0, 0, 0.09) 0px -3px 5px;
-  }
-  .church-management-summary {
     rotate: 6deg;
     translate: 3% -15%;
     box-shadow:
@@ -326,25 +322,6 @@ section.sermon-results {
       rgba(0, 0, 0, 0.17) 0px 12px 13px,
       rgba(0, 0, 0, 0.09) 0px -3px 5px;
   }
-
-  // .donations-collected {
-  //   display: flex;
-  //   justify-content: center;
-  //   gap: 10px;
-  //   dt {
-  //     align-items: center;
-  //     justify-content: center;
-  //     display: flex;
-  //     text-transform: uppercase;
-  //   }
-  //   dd {
-  //     font-family: monospace;
-  //     font-size: 4em;
-  //     .donor-count {
-  //       font-size: 1rem;
-  //     }
-  //   }
-  // }
 
   .buttons {
     @extend %buttons;

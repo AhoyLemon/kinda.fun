@@ -5,31 +5,44 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
     h2(v-else) Your sermon is complete for the day.
 
     // Street Preaching Results
-    .audience-reactions(v-if="my.isStreetPreaching && my.audienceReactions && my.audienceReactions.length > 0")
-      table.debug.audience-changes
-        caption {{my.streetAttendanceYesterday}} people heard you shout
-        thead
-          tr
-            th Religion
-            th 👂
-            th 😁
-            th 😠
-        tbody
-          tr(v-for="reaction in sortedAudienceReactions.filter(r => r.liked > 0 || r.disliked > 0).slice().sort((a, b) => (b.liked + b.disliked + b.neutral) - (a.liked + a.disliked + a.neutral))" :class="{'positive': reaction.liked > reaction.disliked, 'negative': reaction.disliked > reaction.liked}" )
-            td 
-              span.religion-name {{reaction.name}}
-            td.number {{reaction.liked + reaction.disliked + reaction.neutral}}
-            td.number
-              span.positive(v-if="reaction.liked > 0") {{reaction.liked}}
-              span(v-else) 0
-            td.number
-              span.negative(v-if="reaction.disliked > 0") {{reaction.disliked}}
-              span(v-else) 0
-            tr.summary(v-if="totalIgnoredAudience > 0")
-        tfoot
-          tr
-            td(colspan="4")
-              em {{totalIgnoredAudience}} other people ignored you completely.
+    template(v-if="my.isStreetPreaching")
+
+
+      .audience-reactions(v-if="my.audienceReactions && my.audienceReactions.length > 0")
+        table.debug.audience-changes
+          caption {{my.streetAttendanceYesterday}} people heard you shout
+          thead
+            tr
+              th Religion
+              th 👂
+              th 😁
+              th 😠
+          tbody
+            tr(v-for="reaction in sortedAudienceReactions.filter(r => r.liked > 0 || r.disliked > 0).slice().sort((a, b) => (b.liked + b.disliked + b.neutral) - (a.liked + a.disliked + a.neutral))" :class="{'positive': reaction.liked > reaction.disliked, 'negative': reaction.disliked > reaction.liked}" )
+              td 
+                span.religion-name {{reaction.name}}
+              td.number {{reaction.liked + reaction.disliked + reaction.neutral}}
+              td.number
+                span.positive(v-if="reaction.liked > 0") {{reaction.liked}}
+                span(v-else) 0
+              td.number
+                span.negative(v-if="reaction.disliked > 0") {{reaction.disliked}}
+                span(v-else) 0
+              tr.summary(v-if="totalIgnoredAudience > 0")
+          tfoot
+            tr
+              td(colspan="4")
+                em {{totalIgnoredAudience}} other people ignored you completely.
+
+      .donations-summary
+        dl.money-summary
+          .row.total-donations
+            dt Total Donations:
+            .modifier.empty
+            dd 
+              .amount {{dollars(my.donationsYesterday)}}
+              .donor-count(v-if="my.isStreetPreaching") (from {{my.streetDonorsYesterday}} donors)
+
 
     // Church Preaching Results 
 
@@ -84,71 +97,71 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
               td.number.negative {{group.dislikes}}
               td.number {{group.count - group.likes - group.dislikes}}
 
-    .receipts
+      .receipts
 
-      // Other Revenue
-      .church-management-summary(v-if="!my.isStreetPreaching && my.church.isFounded")
-        template(v-if="my.merchRevenueYesterday > 0")
-          h3 Merch Sales Revenue
-          .merch-breakdown(v-if="my.merchSalesDetailsYesterday")
-            template(v-if="my.merchSalesDetailsYesterday.holyWater.sold > 0")
-              dl.merch-item
-                dt Holy Water Bottles:
-                dd {{my.merchSalesDetailsYesterday.holyWater.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.holyWater.revenue)}})
-            template(v-if="my.merchSalesDetailsYesterday.prayerCandles.sold > 0")
-              dl.merch-item
-                dt Prayer Candles:
-                dd {{my.merchSalesDetailsYesterday.prayerCandles.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.prayerCandles.revenue)}})
-            template(v-if="my.merchSalesDetailsYesterday.weightLossTea.sold > 0")
-              dl.merch-item
-                dt Weight Loss Tea:
-                dd {{my.merchSalesDetailsYesterday.weightLossTea.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.weightLossTea.revenue)}})
-            template(v-if="my.merchSalesDetailsYesterday.beachTowel.sold > 0")
-              dl.merch-item
-                dt Beach Towels:
-                dd {{my.merchSalesDetailsYesterday.beachTowel.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.beachTowel.revenue)}})
-            template(v-if="my.merchSalesDetailsYesterday.exorcismKit.sold > 0")
-              dl.merch-item
-                dt Exorcism Kits:
-                dd {{my.merchSalesDetailsYesterday.exorcismKit.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.exorcismKit.revenue)}})
-        
-        template(v-if="my.confessionRevenueYesterday > 0")
-          h3 VIP Confession Revenue
-          dl.confession-revenue
-            dt VIP Confessions:
-            dd {{dollars(my.confessionRevenueYesterday)}}
+        // Other Revenue
+        .church-management-summary(v-if="!my.isStreetPreaching && my.church.isFounded")
+          template(v-if="my.merchRevenueYesterday > 0")
+            h3 Merch Sales Revenue
+            .merch-breakdown(v-if="my.merchSalesDetailsYesterday")
+              template(v-if="my.merchSalesDetailsYesterday.holyWater.sold > 0")
+                dl.merch-item
+                  dt Holy Water Bottles:
+                  dd {{my.merchSalesDetailsYesterday.holyWater.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.holyWater.revenue)}})
+              template(v-if="my.merchSalesDetailsYesterday.prayerCandles.sold > 0")
+                dl.merch-item
+                  dt Prayer Candles:
+                  dd {{my.merchSalesDetailsYesterday.prayerCandles.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.prayerCandles.revenue)}})
+              template(v-if="my.merchSalesDetailsYesterday.weightLossTea.sold > 0")
+                dl.merch-item
+                  dt Weight Loss Tea:
+                  dd {{my.merchSalesDetailsYesterday.weightLossTea.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.weightLossTea.revenue)}})
+              template(v-if="my.merchSalesDetailsYesterday.beachTowel.sold > 0")
+                dl.merch-item
+                  dt Beach Towels:
+                  dd {{my.merchSalesDetailsYesterday.beachTowel.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.beachTowel.revenue)}})
+              template(v-if="my.merchSalesDetailsYesterday.exorcismKit.sold > 0")
+                dl.merch-item
+                  dt Exorcism Kits:
+                  dd {{my.merchSalesDetailsYesterday.exorcismKit.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.exorcismKit.revenue)}})
+          
+          template(v-if="my.confessionRevenueYesterday > 0")
+            h3 VIP Confession Revenue
+            dl.confession-revenue
+              dt VIP Confessions:
+              dd {{dollars(my.confessionRevenueYesterday)}}
 
-      // Money Summary (Donations + Merch - Sterling - Seraph = Player Share)
-      .donations-summary
-        dl.money-summary
-          .row.total-donations
-            dt Total Donations:
-            .modifier.empty
-            dd 
-              .amount {{dollars(my.donationsYesterday)}}
-              .donor-count(v-if="my.isStreetPreaching") (from {{my.streetDonorsYesterday}} donors)
-          .row.merch-sales.plus(v-if="!my.isStreetPreaching && my.merchRevenueYesterday > 0")
-            dt Merch Sales:
-            .modifier.plus +
-            dd {{dollars(my.merchRevenueYesterday)}}
-          .row.vip-confessions.plus(v-if="!my.isStreetPreaching && my.confessionRevenueYesterday > 0")
-            dt VIP Confessions:
-            .modifier.plus +
-            dd {{dollars(my.confessionRevenueYesterday)}}
-          .row.sterling-cut.minus(v-if="my.sterlingCutYesterday > 0")
-            dt Sterling's Cut:
-            .modifier.minus -
-            dd {{dollars(my.sterlingCutYesterday)}}
-          .row.seraph-ai-cost.minus(v-if="my.seraphAICostYesterday > 0")
-            dt Seraph AI Subscription:
-            .modifier.minus -
-            dd {{dollars(my.seraphAICostYesterday)}}
-          .row.player-share.equals(v-if="my.playerShareYesterday && my.playerShareYesterday != my.donationsYesterday")
-            dt 
-              span(v-if="my.sterlingCutYesterday > 0") Your Share:
-              span(v-else) Your Earnings:
-            .modifier.equals =
-            dd {{dollars(my.playerShareYesterday)}}
+        // Money Summary (Donations + Merch - Sterling - Seraph = Player Share)
+        .donations-summary
+          dl.money-summary
+            .row.total-donations
+              dt Total Donations:
+              .modifier.empty
+              dd 
+                .amount {{dollars(my.donationsYesterday)}}
+                .donor-count(v-if="my.isStreetPreaching") (from {{my.streetDonorsYesterday}} donors)
+            .row.merch-sales.plus(v-if="!my.isStreetPreaching && my.merchRevenueYesterday > 0")
+              dt Merch Sales:
+              .modifier.plus +
+              dd {{dollars(my.merchRevenueYesterday)}}
+            .row.vip-confessions.plus(v-if="!my.isStreetPreaching && my.confessionRevenueYesterday > 0")
+              dt VIP Confessions:
+              .modifier.plus +
+              dd {{dollars(my.confessionRevenueYesterday)}}
+            .row.sterling-cut.minus(v-if="my.sterlingCutYesterday > 0")
+              dt Sterling's Cut:
+              .modifier.minus -
+              dd {{dollars(my.sterlingCutYesterday)}}
+            .row.seraph-ai-cost.minus(v-if="my.seraphAICostYesterday > 0")
+              dt Seraph AI Subscription:
+              .modifier.minus -
+              dd {{dollars(my.seraphAICostYesterday)}}
+            .row.player-share.equals(v-if="my.playerShareYesterday && my.playerShareYesterday != my.donationsYesterday")
+              dt 
+                span(v-if="my.sterlingCutYesterday > 0") Your Share:
+                span(v-else) Your Earnings:
+              .modifier.equals =
+              dd {{dollars(my.playerShareYesterday)}}
       
     .buttons
       button.plug(@click="openPlugInterface()") 📱 The Plug

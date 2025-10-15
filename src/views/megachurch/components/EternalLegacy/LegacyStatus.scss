@@ -1,4 +1,5 @@
 @import "../../scss/_variables";
+@import "../../scss/mixins";
 
 $border-radius: 8px;
 
@@ -119,10 +120,6 @@ $border-radius: 8px;
   }
 }
 
-// .mammon-icon {
-//   font-size: 1.5rem;
-// }
-
 .mammon-name {
   font-size: 0.9rem;
   font-weight: 600;
@@ -138,28 +135,6 @@ $border-radius: 8px;
 .mammon-items-grid {
   display: grid;
   gap: 8px;
-}
-
-@mixin inventoryItem($bgColor, $borderColor) {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
-  background: $bgColor;
-  border-radius: $border-radius;
-  //border: 1px solid $borderColor;
-  overflow: hidden;
-  position: relative;
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: calc($border-radius / 2);
-    background-color: $borderColor;
-    display: block;
-  }
 }
 
 .mammon-item {
