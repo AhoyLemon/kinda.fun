@@ -100,7 +100,7 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
       .receipts
 
         // Other Revenue
-        .church-management-summary(v-if="!my.isStreetPreaching && my.church.isFounded")
+        .church-management-summary(v-if="my.merchRevenueYesterday || my.confessionRevenueYesterday")
           template(v-if="my.merchRevenueYesterday > 0")
             h3 Merch Sales Revenue
             .merch-breakdown(v-if="my.merchSalesDetailsYesterday")
@@ -132,7 +132,7 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
               dd {{dollars(my.confessionRevenueYesterday)}}
 
         // Money Summary (Donations + Merch - Sterling - Seraph = Player Share)
-        .donations-summary
+        .donations-summary.church
           dl.money-summary
             .row.total-donations
               dt Total Donations:
