@@ -190,18 +190,18 @@
       gap: 4px;
       font-size: 12px;
 
+      .cost,
+      .mammon-value,
+      .heat {
+        color: white;
+      }
       .cost {
-        color: #ff6b35;
-        font-weight: bold;
+        font-weight: 600;
+        font-size: 0.875rem;
       }
-
       .mammon-value {
-        color: #d4af37;
-      }
-
-      .heat-increase {
-        color: #ff4444;
-        font-weight: bold;
+        color: rgb(255, 107, 255);
+        font-size: 0.875rem;
       }
     }
   }

@@ -35,11 +35,6 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
 
     template(v-if="!my.isStreetPreaching")
 
-      p Your sermon had #[strong {{my.churchAttendanceYesterday || 0}}] attendees today.
-      p #[strong {{my.congregation.reduce((sum, group) => sum + group.likes, 0)}}] people liked your sermon.
-      p #[strong {{my.congregation.reduce((sum, group) => sum + group.dislikes, 0)}}] people hated it.
-
-
       table.debug.follower-changes(v-if="!my.isStreetPreaching")
         caption Religious Scorecard
         thead
@@ -58,6 +53,12 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
               span.positive(v-if="religion.change > 0") {{"+"+religion.change}}
               span.negative(v-else-if="religion.change < 0") {{religion.change}}
             td.number {{religion.score}}
+        tfoot
+          tr
+            td(colspan="4")
+              p Your sermon had #[strong {{my.churchAttendanceYesterday || 0}}] attendees today.
+              p #[strong {{my.congregation.reduce((sum, group) => sum + group.likes, 0)}}] people liked your sermon.
+              p #[strong {{my.congregation.reduce((sum, group) => sum + group.dislikes, 0)}}] people hated it.
 
       // Debug: Church Attendance Breakdown
       .debug-church-attendance(v-if="!my.isStreetPreaching && gameSettings.isDebug && my.congregation")
@@ -83,106 +84,72 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
               td.number.negative {{group.dislikes}}
               td.number {{group.count - group.likes - group.dislikes}}
 
-    .donations-summary
-      dl.money-summary
-        .row.total-donations
-          dt Total Donations:
-          .modifier.empty
-          dd 
-            .amount {{dollars(my.donationsYesterday)}}
-            .donor-count(v-if="my.isStreetPreaching") (from {{my.streetDonorsYesterday}} donors)
-        .row.merch-sales.plus(v-if="!my.isStreetPreaching && my.merchRevenueYesterday > 0")
-          dt Merch Sales:
-          .modifier.plus +
-          dd {{dollars(my.merchRevenueYesterday)}}
-        .row.sterling-cut.minus(v-if="my.sterlingCutYesterday > 0")
-          dt Sterling's Cut:
-          .modifier.minus -
-          dd {{dollars(my.sterlingCutYesterday)}}
-        .row.seraph-ai-cost.minus(v-if="my.seraphAICostYesterday > 0")
-          dt Seraph AI Subscription:
-          .modifier.minus -
-          dd {{dollars(my.seraphAICostYesterday)}}
-        .row.player-share.equals(v-if="my.playerShareYesterday && my.playerShareYesterday != my.donationsYesterday")
-          dt 
-            span(v-if="my.sterlingCutYesterday > 0") Your Share:
-            span(v-else) Your Earnings:
-          .modifier.equals =
-          dd {{dollars(my.playerShareYesterday)}}
-    
-    // Church Management Results
-    .church-management-summary(v-if="!my.isStreetPreaching && my.church.isFounded")
-      template(v-if="my.merchRevenueYesterday > 0")
-        h3 Merch Sales Revenue
-        .merch-breakdown(v-if="my.merchSalesDetailsYesterday")
-          template(v-if="my.merchSalesDetailsYesterday.holyWater.sold > 0")
-            dl.merch-item
-              dt Holy Water Bottles:
-              dd {{my.merchSalesDetailsYesterday.holyWater.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.holyWater.revenue)}})
-          template(v-if="my.merchSalesDetailsYesterday.prayerCandles.sold > 0")
-            dl.merch-item
-              dt Prayer Candles:
-              dd {{my.merchSalesDetailsYesterday.prayerCandles.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.prayerCandles.revenue)}})
-          template(v-if="my.merchSalesDetailsYesterday.weightLossTea.sold > 0")
-            dl.merch-item
-              dt Weight Loss Tea:
-              dd {{my.merchSalesDetailsYesterday.weightLossTea.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.weightLossTea.revenue)}})
-          template(v-if="my.merchSalesDetailsYesterday.beachTowel.sold > 0")
-            dl.merch-item
-              dt Beach Towels:
-              dd {{my.merchSalesDetailsYesterday.beachTowel.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.beachTowel.revenue)}})
-          template(v-if="my.merchSalesDetailsYesterday.exorcismKit.sold > 0")
-            dl.merch-item
-              dt Exorcism Kits:
-              dd {{my.merchSalesDetailsYesterday.exorcismKit.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.exorcismKit.revenue)}})
-      
-      template(v-if="my.confessionRevenueYesterday > 0")
-        h3 VIP Confession Revenue
-        dl.confession-revenue
-          dt VIP Confessions:
-          dd {{dollars(my.confessionRevenueYesterday)}}
-      
-      template(v-if="my.church.upgrades.extraPews > 0 || my.church.upgrades.audioVisual || my.church.upgrades.vipConfessionBooths || my.church.upgrades.sacrament.wine.level > 0 || my.church.upgrades.sacrament.bread.level > 0")
-        h3 Active Upgrades
-        .upgrade-effects
-          template(v-if="my.church.upgrades.extraPews > 0")
-            .upgrade-effect
-              strong {{my.church.upgrades.extraPews}} Extra Pews
-              span  (+{{my.church.upgrades.extraPews * gameSettings.church.upgrades.extraPews.capacityIncrease}} capacity)
-          template(v-if="my.church.upgrades.audioVisual")
-            .upgrade-effect
-              strong A/V Equipment
-              span  (+{{gameSettings.church.upgrades.audioVisual.likeBoost}}% reaction boost)
-          template(v-if="my.church.upgrades.vipConfessionBooths")
-            .upgrade-effect
-              strong VIP Confession Booths
-              span  (Generating revenue)
-          template(v-if="my.church.upgrades.sacrament.wine.level > 0")
-            .upgrade-effect
-              strong {{my.church.upgrades.sacrament.wine.name}}
-              span  (+{{gameSettings.church.upgrades.sacraments.wine.levels[my.church.upgrades.sacrament.wine.level].likeBoost}}% reaction boost)
-          template(v-if="my.church.upgrades.sacrament.bread.level > 0")
-            .upgrade-effect
-              strong {{my.church.upgrades.sacrament.bread.name}}
-              span  (+{{gameSettings.church.upgrades.sacraments.bread.levels[my.church.upgrades.sacrament.bread.level].likeBoost}}% reaction boost)
-      
-      template(v-if="my.marketing.generalAdActive || my.marketing.targetedAd.active || my.marketing.signSpinnerActive")
-        h3 Active Marketing Campaigns
-        .marketing-effects
-          template(v-if="my.marketing.generalAdActive")
-            .marketing-effect
-              strong General Internet Ad
-              span  (+{{gameSettings.church.marketing.generalAd.attendanceBoost}}% attendance)
-          template(v-if="my.marketing.targetedAd.active")
-            .marketing-effect
-              strong Targeted Ad ({{my.marketing.targetedAd.targetReligion?.name}})
-              span  (+{{gameSettings.church.marketing.targetedAd.targetReligionBoost}}% for target religion)
-          template(v-if="my.marketing.signSpinnerActive")
-            .marketing-effect
-              strong Sign Spinner
-              span  (+{{gameSettings.church.marketing.signSpinner.attendanceBoost}}% attendance)
+    .receipts
 
+      // Other Revenue
+      .church-management-summary(v-if="!my.isStreetPreaching && my.church.isFounded")
+        template(v-if="my.merchRevenueYesterday > 0")
+          h3 Merch Sales Revenue
+          .merch-breakdown(v-if="my.merchSalesDetailsYesterday")
+            template(v-if="my.merchSalesDetailsYesterday.holyWater.sold > 0")
+              dl.merch-item
+                dt Holy Water Bottles:
+                dd {{my.merchSalesDetailsYesterday.holyWater.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.holyWater.revenue)}})
+            template(v-if="my.merchSalesDetailsYesterday.prayerCandles.sold > 0")
+              dl.merch-item
+                dt Prayer Candles:
+                dd {{my.merchSalesDetailsYesterday.prayerCandles.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.prayerCandles.revenue)}})
+            template(v-if="my.merchSalesDetailsYesterday.weightLossTea.sold > 0")
+              dl.merch-item
+                dt Weight Loss Tea:
+                dd {{my.merchSalesDetailsYesterday.weightLossTea.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.weightLossTea.revenue)}})
+            template(v-if="my.merchSalesDetailsYesterday.beachTowel.sold > 0")
+              dl.merch-item
+                dt Beach Towels:
+                dd {{my.merchSalesDetailsYesterday.beachTowel.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.beachTowel.revenue)}})
+            template(v-if="my.merchSalesDetailsYesterday.exorcismKit.sold > 0")
+              dl.merch-item
+                dt Exorcism Kits:
+                dd {{my.merchSalesDetailsYesterday.exorcismKit.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.exorcismKit.revenue)}})
+        
+        template(v-if="my.confessionRevenueYesterday > 0")
+          h3 VIP Confession Revenue
+          dl.confession-revenue
+            dt VIP Confessions:
+            dd {{dollars(my.confessionRevenueYesterday)}}
 
+      // Money Summary (Donations + Merch - Sterling - Seraph = Player Share)
+      .donations-summary
+        dl.money-summary
+          .row.total-donations
+            dt Total Donations:
+            .modifier.empty
+            dd 
+              .amount {{dollars(my.donationsYesterday)}}
+              .donor-count(v-if="my.isStreetPreaching") (from {{my.streetDonorsYesterday}} donors)
+          .row.merch-sales.plus(v-if="!my.isStreetPreaching && my.merchRevenueYesterday > 0")
+            dt Merch Sales:
+            .modifier.plus +
+            dd {{dollars(my.merchRevenueYesterday)}}
+          .row.vip-confessions.plus(v-if="!my.isStreetPreaching && my.confessionRevenueYesterday > 0")
+            dt VIP Confessions:
+            .modifier.plus +
+            dd {{dollars(my.confessionRevenueYesterday)}}
+          .row.sterling-cut.minus(v-if="my.sterlingCutYesterday > 0")
+            dt Sterling's Cut:
+            .modifier.minus -
+            dd {{dollars(my.sterlingCutYesterday)}}
+          .row.seraph-ai-cost.minus(v-if="my.seraphAICostYesterday > 0")
+            dt Seraph AI Subscription:
+            .modifier.minus -
+            dd {{dollars(my.seraphAICostYesterday)}}
+          .row.player-share.equals(v-if="my.playerShareYesterday && my.playerShareYesterday != my.donationsYesterday")
+            dt 
+              span(v-if="my.sterlingCutYesterday > 0") Your Share:
+              span(v-else) Your Earnings:
+            .modifier.equals =
+            dd {{dollars(my.playerShareYesterday)}}
+      
     .buttons
       button.plug(@click="openPlugInterface()") 📱 The Plug
       button.harold(v-if="my.chats.harold.hasContacted && !my.hasVan" @click="openHaroldInterface()") 📱 Uncle Harold
@@ -193,16 +160,3 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
       button.church-inventory(v-if="my.church.isFounded" @click="openChurchInventory") 📦 Church Inventory
       button.legacy-status(v-if="my.eternalLegacy.isActive" @click="openLegacyStatus") ⚖️ Legacy Status
       button.submit(@click="advanceToNextDay()") Next Day.
-
-    
-    //-table.debug(v-if="gameSettings.isDebug")
-      thead
-        tr
-          th id
-          th name
-          th score
-      tbody
-        tr(v-for="religion in my.religiousScorecard.slice().sort((a, b) => b.score - a.score)")
-          td {{religion.id}}
-          td {{religion.name}}
-          td {{religion.score}}

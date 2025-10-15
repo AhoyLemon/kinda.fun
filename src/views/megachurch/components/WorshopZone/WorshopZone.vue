@@ -252,14 +252,7 @@
                 to the pulpit. Transform your sermons with actionable analytics and maximize your spiritual ROI.
                 <strong>Subscription service: ${{ gameSettings.church.upgrades.seraphAI.cost }} per day.</strong>
               </div>
-              <button
-                v-if="!my.church.upgrades.seraphAI"
-                @click="toggleSeraphAI()"
-                class="unlock-btn big"
-                :disabled="my.money < gameSettings.church.upgrades.seraphAI.cost"
-              >
-                ⚡ ACTIVATE FOR ${{ gameSettings.church.upgrades.seraphAI.cost }}/DAY
-              </button>
+              <button @click="toggleSeraphAI()" class="unlock-btn big">⚡ ACTIVATE FOR ${{ gameSettings.church.upgrades.seraphAI.cost }}/DAY</button>
             </div>
 
             <div class="upgrade-card seraph-card" v-if="my.church.upgrades.seraphAI">
@@ -661,13 +654,8 @@
 
   function toggleSeraphAI() {
     if (!my.church.upgrades.seraphAI) {
-      // Activating - charge daily fee
-      if (my.money >= gameSettings.church.upgrades.seraphAI.cost) {
-        my.money -= gameSettings.church.upgrades.seraphAI.cost;
-        my.church.upgrades.seraphAI = true;
-      }
+      my.church.upgrades.seraphAI = true;
     } else {
-      // Deactivating - no charge
       my.church.upgrades.seraphAI = false;
     }
   }

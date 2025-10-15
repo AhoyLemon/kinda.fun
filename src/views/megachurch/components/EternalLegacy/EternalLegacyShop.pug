@@ -28,18 +28,18 @@ Teleport(to="body")
               | score—your true measure of success.
               
           .items-grid
-            .item-card(
+            .item-card.mammon-card(
               v-for="item in gameSettings.eternalLegacy.shop.mammonItems"
               :key="item.id"
               :class="{ purchased: my.eternalLegacy.purchasedItems.includes(item.id), affordable: my.money >= item.cost }"
             )
-              .item-icon 💎
-              .item-details
-                h4 {{ item.name }}
+              //.item-icon 💎
+              .item-details.mammon-item
+                h4.mammon-name {{ item.name }}
                 p.item-description {{ item.description }}
                 .item-stats
                   .cost {{ dollars(item.cost) }}
-                  .mammon-value +{{ addCommas(item.mammon) }} mammon
+                  .mammon-value(v-if="item.mammon") +{{ addCommas(item.mammon) }} mammon
               .item-actions
                 button.purchase-btn(
                   v-if="!my.eternalLegacy.purchasedItems.some(p => p.id === item.id)"
@@ -48,7 +48,7 @@ Teleport(to="body")
                 ) 
                   | {{ my.money >= item.cost ? 'Purchase' : 'Too Expensive' }}
                 .purchased-indicator(v-else)
-                  | ✅ Owned
+                  | Owned
 
         // Dark Deeds Tab  
         .under-the-table-tab(v-if="activeTab === 'darkDeeds'")
@@ -65,21 +65,26 @@ Teleport(to="body")
               :key="item.id"
               :class="{ purchased: my.eternalLegacy.purchasedItems.includes(item.id), affordable: my.money >= item.cost, dangerous: true }"
             )
-              .item-icon 🔥
               .item-details
                 h4 {{ item.name }}
                 p.item-description {{ item.effect }}
                 .item-stats
-                  .cost {{ dollars(item.cost) }}
+                  .cost(v-if="item.cost") {{ dollars(item.cost) }}
+                  .heat(v-if="item.heat") +{{ item.heat }} heat
+                  .heat(v-if="item.id === 'sterling-cut'") 20% reduction in heat
               .item-actions
-                button.purchase-btn.dangerous(
-                  v-if="!my.eternalLegacy.darkDeeds.some(p => p.id === item.id)"
-                  :disabled="my.money < item.cost"
-                  @click="purchaseItem(item, 'darkDeeds')"
-                ) 
-                  | {{ my.money >= item.cost ? 'Take Risk' : 'Too Expensive' }}
-                .purchased-indicator(v-else)
-                  | ✅ Done
+                template(v-if="item.id === 'sterling-cut' && !my.eternalLegacy.sterlingAlive")
+                  .purchased-indicator
+                    | 💀 Sterling is dead.
+                template(v-else)
+                  button.purchase-btn.dangerous(
+                    v-if="!my.eternalLegacy.darkDeeds.some(p => p.id === item.id)"
+                    :disabled="my.money < item.cost"
+                    @click="purchaseItem(item, 'darkDeeds')"
+                  ) 
+                    | {{ my.money >= item.cost ? 'Do The Deed' : 'Too Expensive' }}
+                  .purchased-indicator(v-else)
+                    | ✅ Done
 
       .shop-footer
         blockquote

@@ -97,27 +97,71 @@ main.sermon {
   }
 
   .sermon-preview {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 1px solid #4a5568;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 20px 0;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    color: $white;
+
+    .preview-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    @keyframes animatedEllipsis {
+      0%,
+      100% {
+        content: "";
+      }
+      25% {
+        content: ".";
+      }
+      50% {
+        content: "..";
+      }
+      75% {
+        content: "...";
+      }
+    }
+
+    h4 {
+      font-size: 1.5rem;
+      font-family: $sans-serif;
+      color: $white;
+      &:after {
+        content: "";
+        animation-name: animatedEllipsis;
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+      }
+    }
     .preview-columns {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 20px;
     }
     dl {
-      border: 1px solid #ccc;
+      border: 2px solid #ccc;
       font-family: $sans-serif;
+      color: #efefef;
+      border-radius: 8px;
+      overflow: hidden;
       dt {
         font-weight: 800;
         text-transform: uppercase;
-        background-color: #555;
+        background-color: #efefef;
+        color: #2a084f;
         font-family: $serif;
         font-size: 1rem;
         letter-spacing: 0.1em;
-        color: white;
         padding: 7px;
       }
       dd {
         padding: 10px;
         line-height: 140%;
+        max-height: 88px;
       }
       ul {
         display: grid;
@@ -149,20 +193,20 @@ main.sermon {
   // Vue List Transitions for Religion Lists
   .religion-list-enter-active,
   .religion-list-leave-active {
-    transition: all 0.3s ease;
+    transition: all 0.45s linear;
   }
 
   .religion-list-enter-from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateY(20px);
   }
 
   .religion-list-leave-to {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateY(-20px);
   }
 
   .religion-list-move {
-    transition: transform 0.3s ease;
+    transition: transform 0.45s linear;
   }
 }
