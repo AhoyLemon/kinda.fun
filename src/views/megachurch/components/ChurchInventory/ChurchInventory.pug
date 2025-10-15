@@ -1,0 +1,71 @@
+.church-inventory(
+  :class="{ 'is-visible': isVisible }"
+  @click.stop
+)
+  .church-inventory__header
+    h3.church-inventory__title Church Inventory
+    button.church-inventory__close(
+      @click="$emit('close')"
+      type="button"
+      aria-label="Close Church Inventory"
+    )
+      | ✕
+
+  .church-inventory__content
+
+    // Merch Section
+    Transition(name="inventory-item")
+      .inventory-section(v-if="ownedMerch.length > 0")
+        h4.section-title Merchandise
+        TransitionGroup(name="inventory-item" class="merch-grid" tag="div")
+          .merch-item(
+            v-for="merch in ownedMerch"
+            :key="merch.id"
+          )
+            .merch-icon {{ merch.icon }}
+            .merch-info
+              .merch-name {{ merch.name }}
+              .merch-quantity(v-if="merch.quantity > 1") × {{ merch.quantity }}
+
+    // Marketing Campaigns Section
+    Transition(name="inventory-item")
+      .inventory-section(v-if="activeMarketingCampaigns.length > 0")
+        h4.section-title Active Marketing
+        //- .campaign-list
+        TransitionGroup(name="inventory-item" class="campaign-list" tag="div")
+          .campaign-item(
+            v-for="campaign in activeMarketingCampaigns"
+            :key="campaign.id"
+          )
+            .campaign-icon {{ campaign.icon }}
+            .campaign-info
+              .campaign-name {{ campaign.name }}
+              .campaign-status {{ campaign.status }}
+
+
+    // Upgrades Section
+    Transition(name="inventory-item")
+      .inventory-section(v-if="ownedUpgrades.length > 0 || seraphAIActive")
+        h4.section-title Upgrades
+        .upgrade-list
+          Transition(name="inventory-item")
+            .seraph-status(v-if="seraphAIActive")
+              .seraph-icon 🤖
+              .seraph-info
+                .seraph-name Seraph AI
+                .seraph-status-text Active
+          TransitionGroup(name="inventory-item" class="upgrade-sublist" tag="div")
+            .upgrade-item(
+              v-for="upgrade in ownedUpgrades"
+              :key="upgrade.id"
+            )
+              .upgrade-icon {{ upgrade.icon }}
+              .upgrade-info
+                .upgrade-name {{ upgrade.name }}
+                .upgrade-description {{ upgrade.description }}
+
+    // Empty State
+    .inventory-empty(v-if="isEmpty")
+      .empty-icon 📦
+      .empty-text Your church inventory is empty
+      .empty-subtitle Start preaching to build your collection!

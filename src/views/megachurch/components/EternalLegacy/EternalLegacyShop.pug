@@ -1,0 +1,90 @@
+Teleport(to="body")
+  .eternal-legacy-shop-overlay(@click.self="$emit('close')")
+    .eternal-legacy-shop-container
+      .shop-header
+        h2
+          | 🏛️ ETERNAL LEGACY
+          small Your Catalog of Divine Prosperity
+        button.close-btn(@click="$emit('close')") ✕
+        
+      .shop-nav
+        button.tab-btn(
+          :class="{ active: activeTab === 'mammon' }"
+          @click="activeTab = 'mammon'"
+        ) 💰 Mammon Collection
+        button.tab-btn(
+        :class="{ active: activeTab === 'darkDeeds' }"
+        @click="activeTab = 'darkDeeds'"
+        ) 😈 Dark Deeds
+
+      .shop-content
+        // Mammon Items Tab
+        .mammon-tab(v-if="activeTab === 'mammon'")
+          .tab-header
+            p.tab-description 
+              | Build your eternal legacy with these divinely inspired acquisitions. 
+              | Each purchase increases your 
+              strong mammon 
+              | score—your true measure of success.
+              
+          .items-grid
+            .item-card(
+              v-for="item in gameSettings.eternalLegacy.shop.mammonItems"
+              :key="item.id"
+              :class="{ purchased: my.eternalLegacy.purchasedItems.includes(item.id), affordable: my.money >= item.cost }"
+            )
+              .item-icon 💎
+              .item-details
+                h4 {{ item.name }}
+                p.item-description {{ item.description }}
+                .item-stats
+                  .cost {{ dollars(item.cost) }}
+                  .mammon-value +{{ addCommas(item.mammon) }} mammon
+              .item-actions
+                button.purchase-btn(
+                  v-if="!my.eternalLegacy.purchasedItems.some(p => p.id === item.id)"
+                  :disabled="my.money < item.cost"
+                  @click="purchaseItem(item, 'mammon')"
+                ) 
+                  | {{ my.money >= item.cost ? 'Purchase' : 'Too Expensive' }}
+                .purchased-indicator(v-else)
+                  | ✅ Owned
+
+        // Dark Deeds Tab  
+        .under-the-table-tab(v-if="activeTab === 'darkDeeds'")
+          .tab-header
+            p.tab-description 
+              | Sometimes prosperity requires... creative arrangements. 
+              | These opportunities carry 
+              strong significant risks
+              | but substantial rewards.
+              
+          .items-grid
+            .item-card(
+              v-for="item in gameSettings.eternalLegacy.shop.darkDeeds"
+              :key="item.id"
+              :class="{ purchased: my.eternalLegacy.purchasedItems.includes(item.id), affordable: my.money >= item.cost, dangerous: true }"
+            )
+              .item-icon 🔥
+              .item-details
+                h4 {{ item.name }}
+                p.item-description {{ item.effect }}
+                .item-stats
+                  .cost {{ dollars(item.cost) }}
+              .item-actions
+                button.purchase-btn.dangerous(
+                  v-if="!my.eternalLegacy.darkDeeds.some(p => p.id === item.id)"
+                  :disabled="my.money < item.cost"
+                  @click="purchaseItem(item, 'darkDeeds')"
+                ) 
+                  | {{ my.money >= item.cost ? 'Take Risk' : 'Too Expensive' }}
+                .purchased-indicator(v-else)
+                  | ✅ Done
+
+      .shop-footer
+        blockquote
+          p.bible-verse(v-if="randomBibleVerse")
+            | "{{ randomBibleVerse.quote }}"
+          cite.sterling-signature
+            | {{randomBibleVerse.cite}}, 
+            small {{randomBibleVerse.version}}

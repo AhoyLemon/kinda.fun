@@ -179,7 +179,7 @@ export const my = reactive<My>({
     voicemailReplayAvailable: false,
     totalMammon: 0,
     purchasedItems: [],
-    usedDarkDeeds: [],
+    darkDeeds: [],
     sterlingCutModifier: 0,
     sterlingAlive: true,
   },

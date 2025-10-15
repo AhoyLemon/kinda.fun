@@ -1,26 +1,28 @@
-export interface EternalLegacyShopItems {
+export interface EternalLegacyShopItem {
   id: string;
   name: string;
   cost: number; // Cost in game currency
   mammon: number; // Cost in mammon points
   description: string;
+  dayPurchased?: number; // Day the deed was purchased
 }
 
-export interface EternalLegacyDarkDeeds {
+export interface EternalLegacyDarkDeed {
   id: string;
   name: string;
   cost: number;
   heat: number;
   effect: string;
+  dayPurchased?: number; // Day the deed was purchased
 }
 
-export interface EternalLegacyBibleVerses {
+export interface EternalLegacyBibleVerse {
   quote: string;
   cite: string;
   version: string;
 }
 
-export const eternalLegacyShopItems: EternalLegacyShopItems[] = [
+export const eternalLegacyShopItems: EternalLegacyShopItem[] = [
   {
     id: "serpent-staff",
     name: "Serpent-Handled Staff",
@@ -121,7 +123,7 @@ export const eternalLegacyShopItems: EternalLegacyShopItems[] = [
   },
 ];
 
-export const eternalLegacyDarkDeeds: EternalLegacyDarkDeeds[] = [
+export const eternalLegacyDarkDeeds: EternalLegacyDarkDeed[] = [
   {
     id: "shredder",
     name: "Shredder Upgrade",
@@ -152,7 +154,7 @@ export const eternalLegacyDarkDeeds: EternalLegacyDarkDeeds[] = [
   },
 ];
 
-export const eternalLegacyBibleVerses: EternalLegacyBibleVerses[] = [
+export const eternalLegacyBibleVerses: EternalLegacyBibleVerse[] = [
   {
     quote: "It is easier for a camel to go through the eye of a needle than for a rich man to enter the kingdom of God—unless he has a private jet.",
     cite: "Mark 10:25",

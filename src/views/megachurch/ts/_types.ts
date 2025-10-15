@@ -1,8 +1,7 @@
 import {
-  EternalLegacyShopItems,
-  EternalLegacyDarkDeeds,
-  eternalLegacyBibleVerses,
-  EternalLegacyBibleVerses,
+  EternalLegacyShopItem,
+  EternalLegacyDarkDeed,
+  EternalLegacyBibleVerse,
 } from "./variables/_eternalLegacy";
 
 // ================= GENERAL TYPES =================
@@ -196,6 +195,12 @@ export interface UI {
     isOpen: boolean;
   };
   sterlingVoicemail: {
+    isOpen: boolean;
+  };
+  churchInventory: {
+    isOpen: boolean;
+  };
+  legacyStatus: {
     isOpen: boolean;
   };
   seraphAINag: {
@@ -394,10 +399,10 @@ export interface GameSettings {
       earningsMultiplier: number;
     };
     shop: {
-      mammonItems: EternalLegacyShopItems[];
-      darkDeeds: EternalLegacyDarkDeeds[];
+      mammonItems: EternalLegacyShopItem[];
+      darkDeeds: EternalLegacyDarkDeed[];
     };
-    bibleVerses: EternalLegacyBibleVerses[];
+    bibleVerses: EternalLegacyBibleVerse[];
   };
 }
 
@@ -500,14 +505,8 @@ export interface My {
     voicemailPlayed: boolean;
     voicemailReplayAvailable: boolean;
     totalMammon: number;
-    purchasedItems: Array<string>; // Array of item IDs
-    usedDarkDeeds: Array<{
-      id: string;
-      name: string;
-      cost: number;
-      effect: string;
-      useDate: number; // day used
-    }>;
+    purchasedItems: EternalLegacyShopItem[]; // Array of purchased items
+    darkDeeds: EternalLegacyDarkDeed[];
     sterlingCutModifier: number; // Additional percentage points added to Sterling's cut
     sterlingAlive: boolean;
   };

@@ -30,6 +30,8 @@
   import WorshopZone from "./components/WorshopZone/WorshopZone.vue";
   import EternalLegacyShop from "./components/EternalLegacy/EternalLegacyShop.vue";
   import SterlingVoicemail from "./components/Sterling/SterlingVoicemail.vue";
+  import ChurchInventory from "./components/ChurchInventory/ChurchInventory.vue";
+  import LegacyStatus from "./components/EternalLegacy/LegacyStatus.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -1612,12 +1614,14 @@
       ui.workshopZone.showBanner = true;
     } else {
       ui.workshopZone.isOpen = true;
+      ui.churchInventory.isOpen = true; // Auto-open ChurchInventory when WorshopZone opens
     }
   }
 
   function closeWorkshopZone() {
     ui.workshopZone.isOpen = false;
     ui.workshopZone.showBanner = false;
+    ui.churchInventory.isOpen = false; // Auto-close ChurchInventory when WorshopZone closes
   }
 
   function handleWorkshopPurchase(purchaseData: any) {
@@ -1628,6 +1632,8 @@
   function onBannerAccepted() {
     ui.workshopZone.showBanner = false;
     ui.workshopZone.isOpen = true;
+    // Auto-open ChurchInventory when WorshopZone opens
+    ui.churchInventory.isOpen = true;
   }
 
   function openWorkshopZoneForSeraph() {
@@ -1635,6 +1641,8 @@
     ui.seraphAINag.hasShown = true;
     ui.workshopZone.defaultTab = "upgrades";
     ui.workshopZone.isOpen = true;
+    // Auto-open ChurchInventory when WorshopZone opens
+    ui.churchInventory.isOpen = true;
   }
 
   function dismissSeraphNag() {
@@ -1646,6 +1654,8 @@
   function showEternalLegacyShop() {
     if (my.eternalLegacy.isActive) {
       ui.eternalLegacyShop.isOpen = true;
+      // Auto-open LegacyStatus when EternalLegacyShop opens
+      ui.legacyStatus.isOpen = true;
     } else {
       toast.warning("The Eternal Legacy catalog is not yet available.");
     }
@@ -1653,6 +1663,8 @@
 
   function closeEternalLegacyShop() {
     ui.eternalLegacyShop.isOpen = false;
+    // Auto-close LegacyStatus when EternalLegacyShop closes
+    ui.legacyStatus.isOpen = false;
   }
 
   function handleEternalLegacyPurchase({ item, category }) {
@@ -1668,7 +1680,6 @@
 
     // Process purchase
     my.money -= item.cost;
-    my.eternalLegacy.purchasedItems.push(item.id);
 
     // Log purchase to Firebase
     const collection = category === "mammon" ? "mammon" : "darkDeeds";
@@ -1676,12 +1687,16 @@
       name: item.name,
       collection: collection,
     });
+    item.dayPurchased = my.daysPlayed + 1;
 
     if (category === "mammon") {
+      my.eternalLegacy.purchasedItems.push(item);
       // Mammon items increase score
       my.eternalLegacy.totalMammon += item.mammon;
       toast.success(`${item.name} acquisition secured! +${item.mammon} mammon`);
     } else if (category === "darkDeeds") {
+      my.eternalLegacy.darkDeeds.push(item);
+
       // Handle Dark Deeds item effects
       updateHeat(item.heat);
 
@@ -2104,9 +2119,22 @@
     }
   }
 
+  function onVoicemailCompleted() {
+    // Handle when the Sterling voicemail playback is completed
+    my.eternalLegacy.voicemailPlayed = true;
+    my.eternalLegacy.heat += gameSettings.eternalLegacy.heat.dailyBaseIncrease;
+
+    // Check for immediate endgame trigger
+    if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
+      triggerEndgame();
+    }
+  }
+
   function openEternalLegacyFromVoicemail() {
     my.eternalLegacy.voicemailPlayed = true;
     ui.eternalLegacyShop.isOpen = true;
+    // Auto-open LegacyStatus when EternalLegacyShop opens
+    ui.legacyStatus.isOpen = true;
 
     // Check for immediate endgame trigger
     if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
@@ -2124,12 +2152,34 @@
     }
   }
 
+  // === Church Inventory Functions ===
+
+  function openChurchInventory() {
+    ui.churchInventory.isOpen = true;
+  }
+
+  function closeChurchInventory() {
+    ui.churchInventory.isOpen = false;
+  }
+
+  // === Legacy Status Functions ===
+
+  function openLegacyStatus() {
+    ui.legacyStatus.isOpen = true;
+  }
+
+  function closeLegacyStatus() {
+    ui.legacyStatus.isOpen = false;
+  }
+
   function triggerEndgame() {
     toast.error("🚨 FEDERAL INVESTIGATION INITIATED 🚨");
 
     // Close any open dialogs
     ui.eternalLegacyShop.isOpen = false;
     ui.sterlingVoicemail.isOpen = false;
+    ui.legacyStatus.isOpen = false;
+    ui.churchInventory.isOpen = false;
 
     // Log game over to Firebase
     logGameplayToFirebase("gameFinished", { cause: "prison" });
@@ -2279,11 +2329,11 @@
   });
 
   const purchasedMammonItems = computed(() => {
-    return getPurchasedItems(my.eternalLegacy.purchasedItems, gameSettings.eternalLegacy.shop.mammonItems);
+    return getPurchasedItems(my.eternalLegacy.purchasedItems);
   });
 
   const purchasedDarkDeeds = computed(() => {
-    return getPurchasedItems(my.eternalLegacy.purchasedItems, gameSettings.eternalLegacy.shop.darkDeeds);
+    return getPurchasedItems(my.eternalLegacy.darkDeeds);
   });
 
   const temporarySermonScores = computed(() => {

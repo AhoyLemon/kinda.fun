@@ -1,0 +1,249 @@
+@import "../../scss/_variables";
+
+$border-radius: 8px;
+$grid-gap: 4px;
+
+@mixin inventoryItem($bgColor, $borderColor) {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: $bgColor;
+  border-radius: $border-radius;
+  border: 1px solid $borderColor;
+  position: relative;
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: calc($border-radius / 2);
+    background-color: $borderColor;
+    display: block;
+  }
+}
+
+.church-inventory {
+  position: fixed;
+  bottom: 0;
+  right: 6px;
+  width: 320px;
+  max-height: 70vh;
+  background: rgba(255, 255, 255, 0.91);
+  backdrop-filter: blur(10px);
+  border-radius: ($border-radius * 2);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transform: translateY(100%) scale(0.8);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: $z-churchinventory;
+  overflow: hidden;
+  &.is-visible {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.church-inventory__header {
+  background-color: rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em 0.5em 0.5em 1em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.church-inventory__close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: background-color 0.2s;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.church-inventory__content {
+  padding: 16px;
+  max-height: calc(70vh - 80px);
+  overflow-y: auto;
+}
+
+.inventory-section {
+  margin-bottom: 20px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.section-title {
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// MERCH
+.merch-grid {
+  display: grid;
+  gap: $grid-gap;
+}
+.merch-item {
+  @include inventoryItem(rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.15));
+  font-size: 1.2rem;
+  .merch-info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .merch-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .merch-quantity {
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 600;
+  }
+}
+
+// MARKETING
+.campaign-list {
+  display: grid;
+  gap: $grid-gap;
+}
+
+.campaign-item {
+  @include inventoryItem(rgba(255, 152, 0, 0.06), rgba(255, 152, 0, 0.65));
+  .campaign-icon {
+    font-size: 1rem;
+  }
+
+  .campaign-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #333;
+  }
+  .campaign-status {
+    color: rgb(75 47 6);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+}
+
+// UPGRADES
+.upgrade-list {
+  display: grid;
+  gap: $grid-gap;
+
+  .upgrade-item {
+    @include inventoryItem(rgba(76, 175, 80, 0.1), #4caf50);
+  }
+  .seraph-status {
+    @include inventoryItem(linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(63, 81, 181, 0.1)), #2196f3);
+    .seraph-status-text {
+      font-size: 0.75rem;
+      color: #034c88;
+      font-weight: 500;
+    }
+  }
+  .upgrade-sublist {
+    display: grid;
+    gap: $grid-gap;
+  }
+  .upgrade-icon {
+    font-size: 1rem;
+  }
+
+  .upgrade-info {
+    flex: 1;
+  }
+
+  .upgrade-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .upgrade-description {
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 2px;
+  }
+}
+
+/// EMPTY
+.inventory-empty {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.empty-subtitle {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+// Scrollbar styling
+.church-inventory__content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.church-inventory__content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
+}
+
+.church-inventory__content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+// Vue Transition Styles
+.inventory-item-enter-active,
+.inventory-item-leave-active {
+  transition: all 0.3s ease;
+}
+
+.inventory-item-enter-from {
+  opacity: 0;
+  transform: translateX(102%) scale(0.75);
+}
+
+.inventory-item-leave-to {
+  opacity: 0;
+  transform: translateX(-102%) scale(0.75);
+}
+
+.inventory-item-move {
+  transition: transform 1s ease-out;
+}

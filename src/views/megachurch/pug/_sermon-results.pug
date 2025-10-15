@@ -187,9 +187,11 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
       button.plug(@click="openPlugInterface()") 📱 The Plug
       button.harold(v-if="my.chats.harold.hasContacted && !my.hasVan" @click="openHaroldInterface()") 📱 Uncle Harold
       button.sterling(v-if="my.chats.sterling.hasContacted && my.eternalLegacy.sterlingAlive" @click="openSterlingInterface()") 📱 Sterling Silver
-      //button.sterling-voicemail(v-if="my.eternalLegacy.voicemailReplayAvailable" @click="playEternalLegacyVoicemail()") 📞 Replay Sterling's Voicemail
+      //button.sterling-voicemail(v-if="my.eternalLegacyVoicemailReplayAvailable" @click="playEternalLegacyVoicemail()") 📞 Replay Sterling's Voicemail
       button.workshop-zone(v-if="my.church.isFounded" @click="showWorkshopZone") 💻 Da Worshop Zone
       button.eternal-legacy(v-if="my.eternalLegacy.isActive" @click="showEternalLegacyShop") 💻 Eternal Legacy
+      button.church-inventory(v-if="my.church.isFounded" @click="openChurchInventory") 📦 Church Inventory
+      button.legacy-status(v-if="my.eternalLegacy.isActive" @click="openLegacyStatus") ⚖️ Legacy Status
       button.submit(@click="advanceToNextDay()") Next Day.
 
     

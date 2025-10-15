@@ -1,0 +1,73 @@
+.legacy-status(
+  :class="{ 'is-visible': isVisible }"
+  @click.stop
+)
+  .legacy-status__header
+    h3.legacy-status__title Legacy Status
+    button.legacy-status__close(
+      @click="$emit('close')"
+      type="button"
+      aria-label="Close Legacy Status"
+    )
+      | ✕
+
+
+  .legacy-status__content
+
+    // Heat Level
+    .legacy-section(v-if="heatLevel > 0")
+      h4.section-title Heat Level
+      .corruption-display
+        .corruption-bar
+          .corruption-fill(:style="{ width: heatLevel + '%' }")
+        .corruption-text {{ heatLevel }}% Corrupted
+
+    // Current Mammon Section
+    .legacy-section.mammount-count(v-if="currentMammon")
+      h4.section-title Current Mammon
+      .mammon-current
+        .mammon-name {{ addCommas(currentMammon) }}
+
+    // Mammon Items Section
+    .legacy-section(v-if="ownedMammonItems.length > 0")
+      h4.section-title Tokens of Wealth
+      
+      TransitionGroup(name="inventory-item" class="mammon-items-grid" tag="div")
+        .mammon-item(
+          v-for="item in ownedMammonItems"
+          :key="item.id"
+        )
+          .mammon-item-info
+            .mammon-item-points {{ item.mammon }}
+            .mammon-item-name {{ item.name }}
+
+
+      //.mammon-items-grid
+        .mammon-item(
+          v-for="item in ownedMammonItems"
+          :key="item.id"
+        )
+          //.mammon-item-icon {{ item.icon }}
+          .mammon-item-info
+            .mammon-item-points {{ item.mammon }}
+            .mammon-item-effect {{ item.name }}
+
+    // Dark Deeds Section
+    .legacy-section(v-if="completedDarkDeeds.length > 0")
+      h4.section-title Dark Deeds Committed
+
+      TransitionGroup(name="inventory-item" class="dark-deeds-list" tag="div")
+        .dark-deed(
+          v-for="deed in completedDarkDeeds"
+          :key="deed.id"
+        )
+          .deed-icon 👹
+          .deed-info
+            .deed-name {{ deed.name }}
+            .deed-effect {{ deed.effect }}
+
+    // Empty State
+    .legacy-empty(v-if="isEmpty")
+      .empty-icon ⚖️
+      .empty-text Your soul remains pure
+      .empty-subtitle No dark deeds or mammon pacts... yet

@@ -1,4 +1,8 @@
 import { places } from "./_places";
+import {
+  EternalLegacyShopItem,
+  EternalLegacyDarkDeed,
+} from "./variables/_eternalLegacy";
 
 export function computeTopicsYesterday(sermonYesterday: any): number[] {
   if (
@@ -91,12 +95,9 @@ export function computeTopReligions(
 }
 
 export function getPurchasedItems(
-  purchasedItemIds: (string | number)[],
-  itemShop: any[],
+  purchasedItems: EternalLegacyShopItem[] | EternalLegacyDarkDeed[],
 ): any[] {
-  return purchasedItemIds
-    .map((itemId) => itemShop.find((item) => item.id === itemId))
-    .filter(Boolean);
+  return purchasedItems;
 }
 
 export function computeTemporarySermonScores(

@@ -4,7 +4,7 @@
       <!-- IE6 Browser Chrome -->
       <div class="browser-chrome">
         <div class="title-bar">
-          <span class="window-title">Da Worshop Zone - Internet Explorer</span>
+          <span class="window-title">{{ shopName }} - Internet Explorer</span>
           <div class="window-controls">
             <button class="minimize-btn">_</button>
             <button class="maximize-btn">□</button>
@@ -27,7 +27,7 @@
           <button class="nav-btn">🏠 Home</button>
           <div class="address-bar">
             <span class="security-icon">🔒❌</span>
-            <input value="http://worship-mart.biz/blessed-deals" readonly />
+            <input value="http://sites.geocities.com/coolguy49/da-worshop-zone" readonly />
             <button class="go-btn">Go</button>
           </div>
         </div>
@@ -40,7 +40,7 @@
             <div class="logo">
               <img src="/img/megachurch/worshop/angel.gif" />
             </div>
-            <h1 class="site-title">DA WORSHOP ZONE</h1>
+            <h1 class="site-title">{{ shopName }}</h1>
             <div class="tagline">Your Divine Source for Church Supplies!</div>
           </div>
         </div>
@@ -54,6 +54,14 @@
         <!-- Merch Tab -->
         <div v-if="activeTab === 'merch'" class="tab-content">
           <h2>Hallway Merchandise</h2>
+          <div class="shipping-notice">
+            <img src="/img/megachurch/worshop/truck.gif" />
+            <p>
+              <strong>NEXT DAY SHIPPING!!!!</strong> All the merchandise {{ shopName }} will arrive at your church the next moring! Shipping is FREE except for
+              the cost of shipping, which is {{ dollars(shippingCost) }}.
+            </p>
+          </div>
+
           <div class="product-grid">
             <!-- Holy Water Bottles -->
             <div class="product-card">
@@ -66,13 +74,12 @@
               <dl class="product-stats stats-box">
                 <dt>Cost:</dt>
                 <dd>${{ gameSettings.church.merch.holyWater.cost }} each</dd>
-                <dt>Selling Price:</dt>
+                <dt>Sale Price:</dt>
                 <dd>${{ my.church.merch.holyWater.price }}</dd>
-                <dt>Sold Today:</dt>
-                <dd>{{ my.church.merch.holyWater.soldToday }}</dd>
-                <div v-if="my.church.merch.holyWater.isVendingMachine">
-                  Vending Machine Installed (+{{ gameSettings.church.merch.holyWaterVendingMachine.bonusChance }}% sales chance)
-                </div>
+                <template v-if="my.church.merch.holyWater.isVendingMachine">
+                  <dt>Vending Machine</dt>
+                  <dd>Installed (+{{ gameSettings.church.merch.holyWaterVendingMachine.bonusChance }}% sales chance)</dd>
+                </template>
               </dl>
               <div class="product-actions">
                 <input
@@ -87,7 +94,6 @@
                 />
                 <button @click="buyMerch('holyWater')" class="buy-btn" :disabled="!canAffordMerch('holyWater')">
                   BUY {{ merchQuantities.holyWater }} FOR ${{ getMerchCost("holyWater") }}
-                  <span>(incl. shipping)</span>
                 </button>
               </div>
 
@@ -115,10 +121,8 @@
               <dl class="product-stats stats-box">
                 <dt>Cost:</dt>
                 <dd>${{ gameSettings.church.merch.prayerCandles.cost }} each</dd>
-                <dt>Selling Price:</dt>
+                <dt>Sale Price:</dt>
                 <dd>${{ my.church.merch.prayerCandles.price }}</dd>
-                <dt>Sold Today:</dt>
-                <dd>{{ my.church.merch.prayerCandles.soldToday }}</dd>
               </dl>
               <div class="product-actions">
                 <input
@@ -133,7 +137,6 @@
                 />
                 <button @click="buyMerch('prayerCandles')" class="buy-btn" :disabled="!canAffordMerch('prayerCandles')">
                   BUY {{ merchQuantities.prayerCandles }} FOR ${{ getMerchCost("prayerCandles") }}
-                  <span>(incl. shipping)</span>
                 </button>
               </div>
             </div>
@@ -150,10 +153,8 @@
               <dl class="product-stats stats-box">
                 <dt>Cost:</dt>
                 <dd>${{ gameSettings.church.merch.weightLossTea.cost }} each</dd>
-                <dt>Selling Price:</dt>
+                <dt>Sale Price:</dt>
                 <dd>${{ my.church.merch.weightLossTea.price }}</dd>
-                <dt>Sold Today:</dt>
-                <dd>{{ my.church.merch.weightLossTea.soldToday }}</dd>
               </dl>
               <div class="product-actions">
                 <input
@@ -167,7 +168,7 @@
                   @keydown.enter.prevent
                 />
                 <button @click="buyMerch('weightLossTea')" class="buy-btn" :disabled="!canAffordMerch('weightLossTea')">
-                  BUY {{ merchQuantities.weightLossTea }} FOR ${{ getMerchCost("weightLossTea") }} (incl. shipping)
+                  BUY {{ merchQuantities.weightLossTea }} FOR ${{ getMerchCost("weightLossTea") }}
                 </button>
               </div>
             </div>
@@ -184,10 +185,8 @@
               <dl class="product-stats stats-box">
                 <dt>Cost:</dt>
                 <dd>${{ gameSettings.church.merch.beachTowel.cost }} each</dd>
-                <dt>Selling Price:</dt>
+                <dt>Sale Price:</dt>
                 <dd>${{ my.church.merch.beachTowel.price }}</dd>
-                <dt>Sold Today:</dt>
-                <dd>{{ my.church.merch.beachTowel.soldToday }}</dd>
               </dl>
               <div class="product-actions">
                 <input
@@ -200,8 +199,8 @@
                   @focus="setDefaultQuantity('beachTowel')"
                   @keydown.enter.prevent
                 />
-                <button @click="buyMerch('beachTowel')" class="buy-btn" :disabled="!canAffordMerch('prayerCandles')">
-                  BUY {{ merchQuantities.beachTowel }} FOR ${{ getMerchCost("beachTowel") }} (incl. shipping)
+                <button @click="buyMerch('beachTowel')" class="buy-btn" :disabled="!canAffordMerch('beachTowel')">
+                  BUY {{ merchQuantities.beachTowel }} FOR ${{ getMerchCost("beachTowel") }}
                 </button>
               </div>
             </div>
@@ -219,10 +218,8 @@
               <dl class="product-stats stats-box">
                 <dt>Cost:</dt>
                 <dd>${{ gameSettings.church.merch.exorcismKit.cost }} each</dd>
-                <dt>Selling Price:</dt>
+                <dt>Sale Price:</dt>
                 <dd>${{ my.church.merch.exorcismKit.price }}</dd>
-                <dt>Sold Today:</dt>
-                <dd>{{ my.church.merch.exorcismKit.soldToday }}</dd>
               </dl>
               <div class="product-actions">
                 <input
@@ -236,7 +233,7 @@
                   @keydown.enter.prevent
                 />
                 <button @click="buyMerch('exorcismKit')" class="buy-btn" :disabled="!canAffordMerch('exorcismKit')">
-                  BUY {{ merchQuantities.exorcismKit }} FOR ${{ getMerchCost("exorcismKit") }} (incl. shipping)
+                  BUY {{ merchQuantities.exorcismKit }} FOR ${{ getMerchCost("exorcismKit") }}
                 </button>
               </div>
             </div>
@@ -346,29 +343,6 @@
               </button>
               <div v-else class="installed-text">✅ INSTALLED</div>
             </div>
-
-            <!-- Seraph AI Sermon Analysis -->
-            <!--<div class="upgrade-card">
-              <div class="upgrade-img broken-img"></div>
-              <h3>Seraph AI Sermon Analysis</h3>
-              <div class="upgrade-description">
-                Cutting-edge AI that analyzes your sermon topics and predicts audience reactions before you preach! See which religions will love or hate your
-                message in real-time. Subscription service: ${{ gameSettings.church.upgrades.seraphAI.cost }} per day.
-              </div>
-              <div class="upgrade-stats stats-box">
-                <div>Daily Cost: ${{ gameSettings.church.upgrades.seraphAI.cost }}</div>
-                <div>Status: {{ my.church.upgrades.seraphAI ? "ACTIVE" : "INACTIVE" }}</div>
-              </div>
-              <button
-                v-if="!my.church.upgrades.seraphAI"
-                @click="toggleSeraphAI()"
-                class="unlock-btn big"
-                :disabled="my.money < gameSettings.church.upgrades.seraphAI.cost"
-              >
-                ACTIVATE FOR ${{ gameSettings.church.upgrades.seraphAI.cost }}/DAY
-              </button>
-              <button v-else @click="toggleSeraphAI()" class="buy-btn big">DEACTIVATE SERVICE</button>
-            </div>-->
 
             <!-- Branded Communion Snacks -->
             <div class="upgrade-card">
@@ -548,6 +522,9 @@
   import { religions } from "../../ts/_religions";
   import { dollars } from "../../../../shared/ts/_functions";
 
+  const shippingCost = 15; // Fixed shipping cost for all merch
+  const shopName = "Da Worshop Zone";
+
   type MerchTypes = "holyWater" | "prayerCandles" | "weightLossTea" | "beachTowel" | "exorcismKit";
 
   const emit = defineEmits<{
@@ -605,7 +582,6 @@
     const quantity = merchQuantities.value[merchType];
     const costPerItem = gameSettings.church.merch[merchType].cost;
     const itemCost = quantity * costPerItem;
-    const shippingCost = 15; // Fixed shipping cost
     return itemCost + shippingCost;
   }
 

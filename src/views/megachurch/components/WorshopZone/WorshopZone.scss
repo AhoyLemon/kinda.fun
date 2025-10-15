@@ -7,7 +7,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
-  z-index: 1001;
+  z-index: $z-overlay;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,83 +22,84 @@
   font-size: 11px;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: $z-daworshopzone;
 }
 
 /* Browser Chrome */
 .browser-chrome {
   background: #c0c0c0;
   border-bottom: 1px solid #808080;
-}
+  .title-bar {
+    background: linear-gradient(90deg, #0080ff 0%, #004080 100%);
+    color: white;
+    padding: 2px 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
 
-.title-bar {
-  background: linear-gradient(90deg, #0080ff 0%, #004080 100%);
-  color: white;
-  padding: 2px 4px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-}
+  .window-controls {
+    display: flex;
+    gap: 2px;
+  }
 
-.window-controls {
-  display: flex;
-  gap: 2px;
-}
+  .window-controls button {
+    width: 16px;
+    height: 14px;
+    background: #c0c0c0;
+    border: 1px outset #c0c0c0;
+    font-size: 9px;
+    font-weight: bold;
+  }
 
-.window-controls button {
-  width: 16px;
-  height: 14px;
-  background: #c0c0c0;
-  border: 1px outset #c0c0c0;
-  font-size: 9px;
-  font-weight: bold;
-}
+  .menu-bar {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-bottom: 1px solid #d0d0d0;
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+  }
 
-.menu-bar {
-  background: #f0f0f0;
-  padding: 2px 8px;
-  border-bottom: 1px solid #d0d0d0;
-  display: flex;
-  gap: 16px;
-  font-size: 11px;
-}
+  .toolbar {
+    background: #f0f0f0;
+    padding: 4px 8px;
+    border-bottom: 1px solid #d0d0d0;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
 
-.toolbar {
-  background: #f0f0f0;
-  padding: 4px 8px;
-  border-bottom: 1px solid #d0d0d0;
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
+  .nav-btn {
+    background: #e0e0e0;
+    border: 1px outset #e0e0e0;
+    padding: 2px 8px;
+    font-size: 10px;
+  }
 
-.nav-btn {
-  background: #e0e0e0;
-  border: 1px outset #e0e0e0;
-  padding: 2px 8px;
-  font-size: 10px;
-}
+  .address-bar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+    gap: 4px;
+  }
 
-.address-bar {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  margin-left: 8px;
-  gap: 4px;
-}
+  .address-bar input {
+    flex: 1;
+    border: 1px inset #c0c0c0;
+    padding: 2px 4px;
+    font-size: 10px;
+  }
 
-.address-bar input {
-  flex: 1;
-  border: 1px inset #c0c0c0;
-  padding: 2px 4px;
-  font-size: 10px;
-}
-
-.go-btn {
-  background: #e0e0e0;
-  border: 1px outset #e0e0e0;
-  padding: 2px 8px;
-  font-size: 10px;
+  .go-btn {
+    background: #e0e0e0;
+    border: 1px outset #e0e0e0;
+    padding: 2px 8px;
+    font-size: 10px;
+  }
 }
 
 /* Website Content */
@@ -155,34 +156,24 @@
   }
 }
 
-.warning-popup,
-.certificate-error {
-  background: #ffff80;
-  border: 1px solid #ff0000;
-  padding: 4px 8px;
-  font-size: 10px;
-  color: #800000;
-}
-
 .navigation-tabs {
   display: flex;
   gap: 0;
   margin-bottom: 16px;
-}
+  .tab {
+    background: #f0f0f0;
+    border: 1px solid #c0c0c0;
+    border-bottom: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+  }
 
-.tab {
-  background: #f0f0f0;
-  border: 1px solid #c0c0c0;
-  border-bottom: none;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.tab.active {
-  background: white;
-  border-bottom: 1px solid white;
-  margin-bottom: -1px;
+  .tab.active {
+    background: white;
+    border-bottom: 1px solid white;
+    margin-bottom: -1px;
+  }
 }
 
 .tab-content {
@@ -191,12 +182,25 @@
   padding: 16px;
   min-height: 300px;
   font-family: Arial, sans-serif;
-}
-
-.tab-content h2 {
-  color: #000080;
-  margin-bottom: 16px;
-  font-size: 18px;
+  h2 {
+    color: #000080;
+    margin-bottom: 16px;
+    font-size: 18px;
+  }
+  .shipping-notice {
+    padding: 20px;
+    font-family: "Comic Sans MS", "Comic Sans", "Papyrus", "Chicago", cursive, sans-serif;
+    background-color: #7ec9c9;
+    color: #010443;
+    margin-bottom: 1em;
+    font-size: 15px;
+    img {
+      float: left;
+      width: 32px;
+      aspect-ratio: 1/1;
+      margin-right: 20px;
+    }
+  }
 }
 
 /* Product/Upgrade/Marketing Grids */
@@ -367,7 +371,7 @@
   }
 }
 .buy-btn {
-  padding: 0.4em 1em;
+  padding: 0.4em;
   background: linear-gradient(rgb(130, 206, 130), rgb(55, 145, 55));
   //font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   color: white;
@@ -404,6 +408,7 @@
   &.big {
     display: flex;
     width: 100%;
+    padding: 0.8em;
   }
 }
 

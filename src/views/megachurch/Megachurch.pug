@@ -96,3 +96,13 @@
     @voicemailCompleted="onVoicemailCompleted"
     @openShop="openEternalLegacyFromVoicemail"
   ) 
+
+  ChurchInventory(
+    :isVisible="ui.churchInventory.isOpen"
+    @close="closeChurchInventory"
+  )
+
+  LegacyStatus(
+    :isVisible="ui.legacyStatus.isOpen"
+    @close="closeLegacyStatus"
+  ) 

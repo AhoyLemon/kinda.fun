@@ -40,6 +40,12 @@ export const ui = reactive<UI>({
   sterlingVoicemail: {
     isOpen: false,
   },
+  churchInventory: {
+    isOpen: false,
+  },
+  legacyStatus: {
+    isOpen: false,
+  },
   seraphAINag: {
     hasShown: false,
   },

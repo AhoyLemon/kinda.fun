@@ -148,5 +148,6 @@ section.sermon-results {
     @extend %buttons;
     padding-top: 2em;
     justify-content: center;
+    flex-wrap: wrap;
   }
 }
