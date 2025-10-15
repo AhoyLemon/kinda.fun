@@ -50,6 +50,11 @@
 
   // ================= FUNCTIONS =================
 
+  function startNewGame() {
+    localStorage.setItem("kindaFunPlayerName", my.name);
+    ui.view = "sermon";
+  }
+
   function provideTopicOptions(index: number): typeof themes {
     const selectedIds = ui.selectedTopics.map((id, i) => (i !== index && id !== null && id !== 0 ? id : null)).filter((id): id is number => id !== null);
 

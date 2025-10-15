@@ -12,7 +12,7 @@ main.title-screen(v-if="ui.view === 'title-screen'")
 
       //transition(name="form-slide" appear)
       .choose(v-show="ui.wakingUp.showForm")
-        form(@submit.prevent="ui.view = 'sermon'")
+        form(@submit.prevent="startNewGame()")
 
           legend In order to get drugs, you'll need money. In order to get money, other people need to give it to you. And to make that happen, rather than robbing them outright, you decide you'll yell about religion as loud as you can in the hopes that somebody gives you enough money for you to get high tomorrow.
 
