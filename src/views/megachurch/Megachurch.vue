@@ -1693,7 +1693,6 @@
       my.eternalLegacy.purchasedItems.push(item);
       // Mammon items increase score
       my.eternalLegacy.totalMammon += item.mammon;
-      toast.success(`${item.name} acquisition secured! +${item.mammon} mammon`);
     } else if (category === "darkDeeds") {
       my.eternalLegacy.darkDeeds.push(item);
 
@@ -1704,12 +1703,12 @@
       switch (item.id) {
         case "shredder":
           // Slows heat gain - could be implemented as a modifier
-          toast.success(`${item.name}: Documents shredded. Heat gain reduced, but church reputation damaged.`);
           break;
 
         case "sterling-cut":
           // Increase Sterling's cut permanently
           my.eternalLegacy.sterlingCutModifier += 10; // 10% additional cut
+          gameSettings.eternalLegacy.heat.dailyBaseIncrease -= 3;
           toast.success(`${item.name}: Sterling handles the authorities. His cut of your income increases permanently.`);
           break;
 
@@ -1976,6 +1975,7 @@
       my.spice.spiceToDeliver = 0;
     }
   }
+
   function advanceToNextDay() {
     my.daysPlayed += 1;
     if (!my.chats.sterling.hasContacted && my.hasVan) {
@@ -2145,7 +2145,6 @@
   function updateHeat(amount: number) {
     my.eternalLegacy.heat = Math.min(my.eternalLegacy.heat + amount, gameSettings.eternalLegacy.heat.max);
 
-    console.log("line 2114");
     // Check for endgame trigger
     if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
       triggerEndgame();
@@ -2656,6 +2655,12 @@
 
   // ================= LIFECYCLE =================
   onMounted(() => {
+    // Redirect from old Firebase hosting URLs to new domain
+    if (window.location.hostname === "kinda-fun.web.app" || window.location.hostname === "kinda-fun.firebaseapp.com") {
+      window.location.replace("https://kinda.fun/megachurch.html");
+      return;
+    }
+
     initialiseGame();
     my.name = localStorage.getItem("kindaFunPlayerName") || "";
   });

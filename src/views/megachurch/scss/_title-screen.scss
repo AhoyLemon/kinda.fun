@@ -1,7 +1,6 @@
 main.title-screen {
   background-size: cover;
   background-position: center;
-  // background-image: url("/img/megachurch/bg/pexels-dariuskrs-2253934-edit.jpg");
   background-image: url("/img/megachurch/bg/filthy-warehouse.jpg");
   grid-column: span 2;
   color: white;
@@ -58,11 +57,11 @@ main.title-screen {
 
   @keyframes headlineAnimateIn {
     0% {
-      scale: 0.2;
+      scale: 1.95;
       opacity: 0;
     }
     80% {
-      scale: 1.1;
+      scale: 0.8;
       opacity: 1;
     }
     100% {
@@ -110,53 +109,34 @@ main.title-screen {
     }
   }
 
+  section {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+  }
+
   h1 {
     font-family: $serif;
-
     text-align: center;
     text-wrap: balance;
     margin-bottom: 20px;
     color: #df1919;
     color: oklch(0.66 0.29 27.67);
     letter-spacing: 0.025em;
-
     line-height: 115%;
     text-align: center;
     margin-left: auto;
     margin-right: auto;
     font-size: clamp(32px, 5.25dvw, 75px);
-
     text-shadow:
       -1.5px -1.5px 0 black,
       1.5px 1.5px 0 black,
       -0.05em -0.05em 0.1em black,
       0.05em 0.05em 0.1em black;
     filter: drop-shadow(0 0.1em 0.25em rgba(0, 0, 0, 0.7));
-
-    // /* text-shadow:
-    //   -1px 0 #000,
-    //   1px 0 #000,
-    //   0 -1px #000,
-    //   0 1px #000,
-    //   -1px -1px #000,
-    //   1px -1px #000,
-    //   -1px 1px #000,
-    //   1px 1px #000,
-    //   0 0.18em 0.9em rgba(0, 0, 0, 0.75),
-    //   0 2px 8px #222; */
-    // /* Add a drop shadow using filter for extra depth */
-    // filter: drop-shadow(-1px -1px 0 rgba(0, 0, 0, 1)) drop-shadow(1px 1px 0 rgba(0, 0, 0, 1)) drop-shadow(0 0.18em 0.9em rgba(0, 0, 0, 0.55))
-    //   drop-shadow(0 0.4em 1.5em rgba(0, 0, 0, 0.35)) drop-shadow(0 1em 2.5em rgba(0, 0, 0, 0.18));
   }
-
-  section {
-    position: relative;
-    z-index: 2;
-  }
-
-  // Vue transition for h1 - bouncy entrance
   .title-bounce-enter-active {
-    animation: headlineAnimateIn 0.75s ease-out;
+    animation: headlineAnimateIn 1.35s linear;
   }
   h2 {
     font-family: $serif;
@@ -165,7 +145,6 @@ main.title-screen {
     text-align: center;
     text-wrap: balance;
     margin-bottom: 60px;
-    /* Add a crisp 1px black outline using text-shadow */
     text-shadow:
       -1px 0 #000,
       1px 0 #000,
@@ -185,7 +164,6 @@ main.title-screen {
     line-height: 165%;
   }
 
-  // Vue transition for form - slide up from bottom
   .form-slide-enter-active {
     animation: slideInUp 1s ease-out;
   }
@@ -198,9 +176,7 @@ main.title-screen {
     margin-left: auto;
     margin-right: auto;
     padding: 20px;
-    /* Add background blur effect */
     backdrop-filter: blur(4px);
-
     input {
       background-color: transparent;
     }
