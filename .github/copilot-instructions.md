@@ -192,3 +192,23 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 - Ensure all validation steps pass before marking PR as ready for review
 - Include screenshots for any UI/visual changes
 - Test thoroughly across different games and scenarios before submitting
+
+## Testing Guidelines
+
+**Testing Documentation**: See `docs/vitests.md` for complete testing guide
+
+## Copilot Test Writing Guidance
+
+- ALWAYS use Vitest for writing tests.
+
+When writing tests for this project, Copilot should:
+
+- Prefer comprehensive, scenario-based tests that simulate real gameplay outcomes (not just isolated unit tests)
+- Use paired or controlled randomization to reduce noise and make comparisons meaningful
+- Output results in clear, professional tables (e.g., using cli-table3) with color coding for status
+- Always include summary statistics and actionable balance insights in test output
+- Fail tests only for true game-breaking issues (not minor balance deviations)
+- Make it easy to compare different strategies (e.g., spice vs no-spice) in a single test run
+- Document the reasoning and expected outcomes in comments and console output
+- Use readable, maintainable code and avoid unnecessary duplication
+- Integrate with shared game logic whenever possible to ensure tests match gameplay

@@ -12,6 +12,18 @@
   import { my } from "./ts/variables/_my";
   import { ui } from "./ts/variables/_ui";
 
+  // Import shared game logic
+  import {
+    calculateCrowdSize,
+    generateCrowd,
+    buildSermonData,
+    processCrowdReactions,
+    calculateDonations,
+    simulateStreetPreachingCore,
+    type Person,
+    type StreetPreachingResult,
+  } from "./ts/_gameLogic";
+
   // Firebase & VueFire Stuff
   import { doc, increment, serverTimestamp, updateDoc, runTransaction, setDoc, getDoc } from "firebase/firestore";
   import { useFirestore } from "vuefire";
@@ -333,141 +345,27 @@
 
     // Get spice multiplier for this sermon
     const spiceMultiplier = getSpiceMultiplier();
-    const settings = gameSettings.streetPreaching;
 
-    // === STEP 1: GATHER A CROWD ===
+    // === USE SHARED GAME LOGIC ===
 
-    // Calculate crowd size with location population influence and random variation
-    let crowdSize = settings.baseCrowdSize;
+    // Build sermon data from selected themes (same as game logic)
+    const sermonData = buildSermonData(my.sermonToday.topics || []);
 
-    // Adjust for location population (larger cities get bigger crowds)
-    const populationFactor = Math.min(2.0, place.totalPopulation / 100000); // Cap at 2x for very large cities
-    crowdSize = Math.floor(crowdSize * populationFactor);
+    // Update my.sermonToday with the built sermon data for consistency
+    my.sermonToday.likedBy = sermonData.likedBy;
+    my.sermonToday.dislikedBy = sermonData.dislikedBy;
+    my.sermonToday.mixedMessages = sermonData.mixedMessages;
 
-    // Add random variation
-    const variation = settings.randomCrowdVariation;
-    const minCrowd = Math.floor(crowdSize * (1 - variation));
-    const maxCrowd = Math.floor(crowdSize * (1 + variation));
-    crowdSize = randomNumber(minCrowd, maxCrowd);
+    // Use shared logic to simulate street preaching
+    const result = simulateStreetPreachingCore(place, my.sermonToday.topics || [], spiceMultiplier);
 
-    // Apply spice multiplier
-    crowdSize = Math.floor(crowdSize * spiceMultiplier);
+    // Store results using the same format as before
+    my.donationsYesterday = result.donations;
+    my.streetDonorsYesterday = result.liked; // People who liked are potential donors
+    my.streetAttendanceYesterday = result.crowdSize;
 
-    // Create individual people in the crowd with religions based on location weights
-    interface Person {
-      religionId: number;
-      religionName: string;
-      reaction: "neutral" | "like" | "dislike";
-    }
-
-    const crowd: Person[] = [];
-    const totalWeight = place.religions.reduce((sum, r) => sum + r.weight, 0);
-
-    for (let i = 0; i < crowdSize; i++) {
-      // Randomly assign religion based on weights
-      const roll = Math.random() * totalWeight;
-      let currentWeight = 0;
-
-      for (const placeReligion of place.religions) {
-        currentWeight += placeReligion.weight;
-        if (roll <= currentWeight) {
-          crowd.push({
-            religionId: placeReligion.id,
-            religionName: placeReligion.name,
-            reaction: "neutral",
-          });
-          break;
-        }
-      }
-    }
-
-    // === STEP 2: SERMON REACTIONS ===
-
-    // Process each person to see if they react to the sermon
-    // As per docs: check dislikes first, then likes, skip mixed messages
-    for (const person of crowd) {
-      const religionData = religions.find((r) => r.id === person.religionId);
-      if (!religionData) continue;
-
-      // Check if this person's religion is in mixed messages (skip if so)
-      const isReligionMixed = my.sermonToday.mixedMessages.religions.some((r) => r.id === person.religionId);
-      if (isReligionMixed) continue;
-
-      // STEP 2A: Check religion-based DISLIKES first
-      const religionAttacked = my.sermonToday.dislikedBy.religions.some((r) => r.id === person.religionId);
-      if (religionAttacked) {
-        if (Math.random() * 100 < settings.dislikeChance.byReligion) {
-          person.reaction = "dislike";
-          continue; // Stop processing this person
-        }
-      }
-
-      // STEP 2B: Check religion-based LIKES
-      const religionPraised = my.sermonToday.likedBy.religions.some((r) => r.id === person.religionId);
-      if (religionPraised) {
-        if (Math.random() * 100 < settings.likeChance.byReligion) {
-          person.reaction = "like";
-          continue; // Stop processing this person
-        }
-      }
-
-      // STEP 2C: Check tag-based DISLIKES (only if still neutral)
-      if (person.reaction === "neutral") {
-        for (const tagObj of my.sermonToday.dislikedBy.tags) {
-          // Skip if tag is in mixed messages
-          const tagNotMixed = !my.sermonToday.mixedMessages.tags.some((t) => t.tag === tagObj.tag);
-          if (!tagNotMixed) continue;
-
-          // Check if this person's religion likes this tag (which we're attacking)
-          if (religionData.likes.includes(tagObj.tag as any)) {
-            const chance = settings.dislikeChance.byTag * tagObj.weight;
-            if (Math.random() * 100 < chance) {
-              person.reaction = "dislike";
-              break; // Stop processing tags for this person
-            }
-          }
-        }
-      }
-
-      // STEP 2D: Check tag-based LIKES (only if still neutral)
-      if (person.reaction === "neutral") {
-        for (const tagObj of my.sermonToday.likedBy.tags) {
-          // Skip if tag is in mixed messages
-          const tagNotMixed = !my.sermonToday.mixedMessages.tags.some((t) => t.tag === tagObj.tag);
-          if (!tagNotMixed) continue;
-
-          // Check if this person's religion likes this tag (which we're praising)
-          if (religionData.likes.includes(tagObj.tag as any)) {
-            const chance = settings.likeChance.byTag * tagObj.weight;
-            if (Math.random() * 100 < chance) {
-              person.reaction = "like";
-              break; // Stop processing tags for this person
-            }
-          }
-        }
-      }
-    }
-
-    // === STEP 3: COLLECT DONATIONS ===
-
-    let totalDonations = 0;
-    let totalDonors = 0;
-    const likers = crowd.filter((p) => p.reaction === "like");
-
-    for (const liker of likers) {
-      if (Math.random() * 100 < settings.donation.chance) {
-        const donation = randomNumber(settings.donation.min, settings.donation.max);
-        totalDonations += donation;
-        totalDonors++;
-        // TODO: Future enhancement - modify donation amount based on location's avgNetWorth
-      }
-    }
-
-    // Store donation amount and statistics
-    const roundedDonations = Math.round(totalDonations * 100) / 100;
-    my.donationsYesterday = roundedDonations;
-    my.streetDonorsYesterday = totalDonors;
-    my.streetAttendanceYesterday = crowd.length;
+    // Use the crowd from shared logic for toast generation
+    const crowd = result.crowd;
 
     // === STEP 4: PREPARE TOAST DATA ===
     // New approach: One toast per religion maximum, prioritize most influential
@@ -635,7 +533,7 @@
     my.audienceReactions = reactionsByReligion;
 
     // Show audience feedback toasts
-    showNewToasts(shuffledToasts, roundedDonations);
+    showNewToasts(shuffledToasts, result.donations);
   }
 
   function showNewToasts(toastData: any[], donationAmount: number) {

@@ -5,6 +5,8 @@ aside.your-details
     .box(v-if="my.name && !my.eternalLegacy.heat" )
       .label Name
       .value {{my.name}}
+      .label Day
+      .value Day {{my.daysPlayed + 1}} 
 
     .box.heat(v-if="my.eternalLegacy.heat")
       .label Federal Investigation

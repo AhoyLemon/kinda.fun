@@ -24,13 +24,13 @@ export const gameSettings = reactive<GameSettings>({
       byTag: 35, // % chance of disliking when sermon attacks a tag they like (increased)
     },
     likeChance: {
-      byReligion: 30, // % chance of liking when sermon praises their religion
-      byTag: 20, // % chance of liking when sermon praises a tag they like
+      byReligion: 50, // % chance of liking when sermon praises their religion
+      byTag: 30, // % chance of liking when sermon praises a tag they like
     },
     donation: {
       chance: 70, // % chance that someone who likes your sermon donates
       min: 1, // Minimum $ per donation
-      max: 5, // Maximum $ per donation
+      max: 7, // Maximum $ per donation
     },
 
     // ===== MINOR TUNING =====
