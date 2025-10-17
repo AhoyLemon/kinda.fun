@@ -5,8 +5,6 @@ aside.your-details
     .box(v-if="my.name && !my.eternalLegacy.heat" )
       .label Name
       .value {{my.name}}
-      .label Day
-      .value Day {{my.daysPlayed + 1}} 
 
     .box.heat(v-if="my.eternalLegacy.heat")
       .label Federal Investigation
@@ -14,6 +12,11 @@ aside.your-details
         .thermometer.heat-meter
           .heat-meter-fill(:style="{ width: Math.min((my.eternalLegacy.heat / gameSettings.eternalLegacy.heat.max) * 100, 100) + '%' }")
           .heat-meter-text {{ my.eternalLegacy.heat }} / {{ gameSettings.eternalLegacy.heat.max }}
+    
+    .box(v-if="my.daysPlayed > 3")
+      .label Sermon Title
+      .value {{my.daysPlayed + 1}}
+    
     .box(v-if="my.place?.name && my.place.name != 'Starting Location' && my.isStreetPreaching")
       .label Place
       .value {{my.place.name}}

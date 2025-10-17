@@ -172,4 +172,18 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
       button.eternal-legacy(v-if="my.eternalLegacy.isActive" @click="showEternalLegacyShop") 💻 Eternal Legacy
       button.church-inventory(v-if="my.church.isFounded" @click="openChurchInventory") 📦 Church Inventory
       button.legacy-status(v-if="my.eternalLegacy.isActive" @click="openLegacyStatus") ⚖️ Legacy Status
-      button.submit(@click="advanceToNextDay()") Next Day.
+      button.submit(@click="handleNextDayClick()") Next Day.
+
+  // Spice Warning Overlay
+  .spice-warning-overlay(v-if="ui.spiceWarning.show")
+    .spice-warning-modal
+      .spice-warning-headline Gonna preach without drugs?
+      .spice-warning-content
+        //h2 🌿 Gonna preach without drugs?
+        p {{ ui.spiceWarning.message }}
+        .spice-warning-buttons
+          button.plug(@click="openPlugFromWarning()") 📱 Text The Plug
+          button.submit(@click="proceedWithoutSpice()") Continue Without Spice
+        label.reminder-checkbox
+          input(type="checkbox" v-model="ui.spiceWarning.disregard") 
+          span Don't ask me again.

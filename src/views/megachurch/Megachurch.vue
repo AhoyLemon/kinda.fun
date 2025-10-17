@@ -197,6 +197,41 @@
       my.place = { ...my.church.location };
       toast.info(`You have moved to ${my.church.location.name}.`);
     }
+
+    // Check if player needs spice for tomorrow and provide church-warming gift
+    const spiceNeeded = my.spice.requiredAmount;
+    const spiceOrdered = my.spice.spiceToDeliver;
+    const spiceShortage = Math.max(0, spiceNeeded - spiceOrdered);
+
+    if (spiceShortage > 0) {
+      // The Plug sends free spice as church-warming gift
+      my.spice.spiceToDeliver += spiceShortage;
+
+      // Show toast about the gift
+      toast.success(`The Plug sent you ${spiceShortage} units of spice as a church-warming gift!`, {
+        position: POSITION.TOP_CENTER,
+        timeout: 5000,
+      });
+
+      // Add chat history
+      const plugMessage = {
+        id: Date.now(),
+        sender: "plug",
+        text: `Just heard about ${my.church.name}. Enjoy the gift.`,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+
+      const playerMessage = {
+        id: Date.now() + 1,
+        sender: "player",
+        text: "You are my only true friend.",
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+
+      my.chats.plug.chatHistory.push(plugMessage);
+      my.chats.plug.chatHistory.push(playerMessage);
+    }
+
     advanceToNextDay();
   }
 
@@ -348,8 +383,11 @@
 
     // === USE SHARED GAME LOGIC ===
 
-    // Build sermon data from selected themes (same as game logic)
-    const sermonData = buildSermonData(my.sermonToday.topics || []);
+    // Reconstruct full theme objects from the topic IDs for buildSermonData
+    const fullThemes = (my.sermonToday.topics || []).map((topic: any) => themes.find((t) => t.id === topic.id)).filter(Boolean);
+
+    // Build sermon data from full theme objects (same as game logic)
+    const sermonData = buildSermonData(fullThemes);
 
     // Update my.sermonToday with the built sermon data for consistency
     my.sermonToday.likedBy = sermonData.likedBy;
@@ -357,7 +395,7 @@
     my.sermonToday.mixedMessages = sermonData.mixedMessages;
 
     // Use shared logic to simulate street preaching
-    const result = simulateStreetPreachingCore(place, my.sermonToday.topics || [], spiceMultiplier);
+    const result = simulateStreetPreachingCore(place, fullThemes, spiceMultiplier);
 
     // Store results using the same format as before
     my.donationsYesterday = result.donations;
@@ -1768,6 +1806,7 @@
     my.chats.sterling.hasContacted = true;
 
     // Show toast that player found a note
+
     toast(
       {
         component: h("div", { class: "sterling-note-toast" }, [h("strong", "You found a note on your van"), h("br"), h("span", "A handwritten message...")]),
@@ -1872,6 +1911,44 @@
       // Clear delivery queue
       my.spice.spiceToDeliver = 0;
     }
+  }
+
+  function handleNextDayClick() {
+    const spiceOrdered = my.spice.spiceToDeliver;
+    if (my.spice.spiceToDeliver > 0 || ui.spiceWarning.disregard === true) {
+      advanceToNextDay();
+      return;
+    }
+
+    // Check if player has ordered enough spice for tomorrow
+    const spiceNeeded = my.spice.requiredAmount;
+    const spiceShortage = Math.max(0, spiceNeeded - spiceOrdered);
+    const spiceCost = gameSettings.spice.pricePerUnit;
+    const canAfford = Math.floor(my.money / spiceCost);
+
+    if (canAfford >= spiceShortage) {
+      ui.spiceWarning.show = true;
+      ui.spiceWarning.message = `You haven't bought any spice for tomorrow. You really want to go out there and do this sober?`;
+      ui.spiceWarning.show = true;
+    } else if (canAfford > 0) {
+      ui.spiceWarning.message = `You haven't bought any spice for tomorrow. I know you can only afford ${canAfford}, but maybe that's better than nothing?`;
+      ui.spiceWarning.show = true;
+    } else {
+      // Show === false, proceed with toast message instead of overlay
+      toast.warning(`Looks like you're preaching without drugs again. Good luck with that!`);
+      advanceToNextDay();
+      return;
+    }
+  }
+
+  function proceedWithoutSpice() {
+    ui.spiceWarning.show = false;
+    advanceToNextDay();
+  }
+
+  function openPlugFromWarning() {
+    ui.spiceWarning.show = false;
+    openPlugInterface();
   }
 
   function advanceToNextDay() {

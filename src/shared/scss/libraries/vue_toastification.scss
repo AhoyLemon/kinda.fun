@@ -111,24 +111,24 @@
   direction: rtl;
 }
 .Vue-Toastification__toast--default {
+  background-color: #eee;
+  color: #121212;
+}
+.Vue-Toastification__toast--info {
   background-color: #1976d2;
   color: #fff;
 }
-.Vue-Toastification__toast--info {
-  background-color: #2196f3;
-  color: #fff;
-}
 .Vue-Toastification__toast--success {
-  background-color: #4caf50;
+  background-color: #2a832d;
   color: #fff;
 }
 .Vue-Toastification__toast--error {
-  background-color: #ff5252;
+  background-color: #791111;
   color: #fff;
 }
 .Vue-Toastification__toast--warning {
   background-color: #ffc107;
-  color: #fff;
+  color: #251801;
 }
 @media only screen and (max-width: 600px) {
   .Vue-Toastification__toast {

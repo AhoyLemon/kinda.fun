@@ -211,6 +211,12 @@ export interface UI {
     showSubtitle: boolean;
     showForm: boolean;
   };
+  spiceWarning: {
+    show: boolean;
+    message: string;
+    affordableAmount: number;
+    disregard?: boolean;
+  };
 }
 
 export interface ChatMessage {

@@ -54,4 +54,10 @@ export const ui = reactive<UI>({
     showSubtitle: false,
     showForm: false,
   },
+  spiceWarning: {
+    show: false,
+    message: "",
+    affordableAmount: 0,
+    disregard: false,
+  },
 });

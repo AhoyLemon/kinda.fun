@@ -13,7 +13,10 @@ Start Vite and Express server concurrently.
 Build static HTML pages using build-pages.js.
 
 **`npm run build`**  
-Full production build: update sitemap, build with Vite, generate pages, copy home to index.
+Interactive build: prompts for mode selection (production/development), updates sitemap, builds with Vite, generates pages, copies home to index.
+
+**`npm run build -- --mode <mode>`**  
+Non-interactive build with specified mode (production or development).
 
 **`npm run preview`**  
 Preview production build locally.

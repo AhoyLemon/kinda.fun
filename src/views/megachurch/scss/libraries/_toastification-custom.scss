@@ -1,0 +1,24 @@
+.Vue-Toastification__container {
+  .Vue-Toastification__toast--default {
+    background-color: #dfdfdf;
+    color: #666;
+  }
+
+  .Vue-Toastification__toast--info {
+    background-color: #1976d2;
+    color: #ddddff;
+  }
+
+  .Vue-Toastification__toast--warning {
+    color: #251801;
+  }
+  .Vue-Toastification__toast--success {
+    background-color: #058115;
+    color: #ccffcc;
+  }
+
+  .Vue-Toastification__toast--error {
+    background-color: #791111;
+    color: #ffc2c2;
+  }
+}

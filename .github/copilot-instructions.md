@@ -1,6 +1,6 @@
 # Kinda Fun Gaming Platform
 
-Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and single-player games built by Lemon. The platform includes games like Invalid (trivia), Comparatively Famous (Cameo valuations), No More Billionaires (guillotine simulator), This Meeting Has Points, Pretend World, and Sisyphus Clicker.
+Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and single-player games built by Lemon. The platform includes games like Invalid (trivia), Comparatively Famous (Cameo valuations), No More Billionaires (guillotine simulator), This Meeting Has Points, Pretend World, Megachurch Tycoon and Sisyphus Clicker
 
 **Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
 
@@ -31,6 +31,16 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 - **Billionaire Data**: `npm run guillotine:js` -- generates billionaire data from CSV. Takes ~2 seconds. Creates 2,781 entries.
 - **Arrest Warrants**: `npm run guillotine:arrests` -- creates daily arrest warrant data.
 - **Page Building**: `npm run build:pages` -- builds static HTML pages from templates.
+
+## Copilot Working Style Preferences
+
+When implementing features, Copilot should:
+
+- Create a detailed todo list before starting work
+- Provide status updates while working through the implementation
+- Explain what each step accomplishes and why it's needed
+- Break complex features into smaller, manageable pieces
+- Test changes as they're implemented when possible
 
 ## Validation
 
