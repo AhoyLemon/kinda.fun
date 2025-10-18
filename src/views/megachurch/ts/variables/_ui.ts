@@ -12,8 +12,8 @@ export const ui = reactive<UI>({
   timing: {
     toastDuration: 7000,
     donationToastDuration: 7000,
-    toastDelayMin: 1600, // Minimum delay between audience reaction toasts (ms)
-    toastDelayMax: 320 - 0, // Maximum delay between audience reaction toasts (ms)
+    toastDelayMin: 800, // Minimum delay between audience reaction toasts (ms)
+    toastDelayMax: 1800, // Maximum delay between audience reaction toasts (ms)
     donationToastDelay: 6000, // Delay before showing donation toast after reactions (ms)
     merchToastDelay: 3000, // Delay before showing merch toast (ms)
     resultsViewDelay: 6000, // Delay before switching to results view (ms)
@@ -30,9 +30,10 @@ export const ui = reactive<UI>({
       isOpen: false,
     },
   },
-  workshopZone: {
+  worshopZone: {
     isOpen: false,
-    showBanner: true, // Show banner on first access
+    showBanner: false, // Will show after first preaching
+    hasSeenBanner: false, // Track if player has seen the banner
     defaultTab: "merch", // Default tab to open
   },
   eternalLegacyShop: {
@@ -60,5 +61,6 @@ export const ui = reactive<UI>({
     message: "",
     affordableAmount: 0,
     disregard: false,
+    context: "sermon",
   },
 });

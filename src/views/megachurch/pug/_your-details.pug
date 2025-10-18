@@ -6,14 +6,15 @@ aside.your-details
       .label Name
       .value {{my.name}}
 
-    .box.heat(v-if="my.eternalLegacy.heat")
+    .box.heat(v-if="my.eternalLegacy.heat"
+      :class="{ danger: my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max * 0.75}")
       .label Federal Investigation
       .value 
-        .thermometer.heat-meter
+        .thermometer.heat-meter()
           .heat-meter-fill(:style="{ width: Math.min((my.eternalLegacy.heat / gameSettings.eternalLegacy.heat.max) * 100, 100) + '%' }")
           .heat-meter-text {{ my.eternalLegacy.heat }} / {{ gameSettings.eternalLegacy.heat.max }}
     
-    .box(v-if="my.daysPlayed > 3")
+    .box(v-if="my.daysPlayed > 2")
       .label Days
       .value {{my.daysPlayed + 1}}
     

@@ -1,6 +1,6 @@
 section.choose.choose-place(v-if="ui.view === 'place'")
 
-  form(@submit.prevent="my.hasVan ? travelToPlace(ui.placeIndex) : choosePlace(ui.placeIndex)")
+  form(@submit.prevent="handleTravelClick()")
 
     legend Where do you want to go?
 
@@ -8,12 +8,12 @@ section.choose.choose-place(v-if="ui.view === 'place'")
       label.required Choose a location
       Multiselect(
         v-model="ui.placeIndex"
-        :options="availablePlaces"
+        :options="(availablePlaces || []).filter(p => p.id !== 0)"
         :searchable="true"
         :required="true"
         value-prop="id"
         track-by="name"
-        label="name" 
+        label="name"
         mode="single"
       )
 
@@ -62,9 +62,26 @@ section.choose.choose-place(v-if="ui.view === 'place'")
         dd {{my.church.name}} is in {{my.church.location.name}}. You will be a street preacher in this location.
 
     .button-holder
-      //button.reset(type="button" @click="ui.view = 'religion'") Change Religion
-      button.reset(type="button" @click="ui.view = 'sermon'") Cancel
+      button.reset(type="button" @click="ui.view = 'sermon-results'") Cancel
       button(
         type="submit" 
-        :disabled="!ui.placeIndex ||  (my.hasVan && (my.money < gameSettings.van.fixedGasPrice || my.hasTraveledToday))"
-      ) {{ my.hasVan ? 'Travel Here' : 'Go Here' }}
+        :disabled="!ui.placeIndex || my.money < gameSettings.van.fixedGasPrice || getPlace(ui.placeIndex).id === my.place.id"
+      ) 
+        span(v-if="getPlace(ui.placeIndex).id === my.place.id") Already here
+        span(v-else-if="my.money < gameSettings.van.fixedGasPrice") Can't Afford Gas
+        span(v-else) Start Driving
+
+  // Spice Warning Overlay
+  .spice-warning-overlay(v-if="ui.spiceWarning.show")
+    .spice-warning-modal
+      .spice-warning-headline Want to buy some spice before you drive?
+      .spice-warning-content
+        p {{ ui.spiceWarning.message }}
+        p(v-if="gameSettings.van.fixedGasPrice") Keep in mind you'll need {{ dollars(gameSettings.van.fixedGasPrice) }} for gas,
+          | so  #[strong you can afford {{ui.spiceWarning.affordableAmount}}] and still make it to {{getPlace(ui.placeIndex).name}}
+        .spice-warning-buttons
+          button.plug(@click="openPlugFromWarning()") 📱 Text The Plug
+          button.submit(@click="proceedWithoutSpice()") Just Drive
+        label.reminder-checkbox
+          input(type="checkbox" v-model="ui.spiceWarning.disregard") 
+          span Don't ask me again.

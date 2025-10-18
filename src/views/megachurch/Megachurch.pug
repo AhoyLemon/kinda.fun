@@ -71,14 +71,14 @@
   ) 
 
   WorshopZoneBanner(
-    v-if="ui.workshopZone.showBanner && my.church.isFounded"
+    v-if="ui.worshopZone.showBanner && my.church.isFounded"
     @show-workshop-zone="onBannerAccepted"
-    @close="() => ui.workshopZone.showBanner = false"
+    @close="() => ui.worshopZone.showBanner = false"
   )
 
   WorshopZone(
-    v-if="ui.workshopZone.isOpen"
-    @close="closeWorkshopZone"
+    v-if="ui.worshopZone.isOpen"
+    @close="closeWorshopZone"
     @purchase="handleWorkshopPurchase"
   ) 
 

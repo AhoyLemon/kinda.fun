@@ -235,7 +235,11 @@
       &.dangerous {
         background: #ff6b35;
         color: white;
-
+        &:disabled {
+          background: #666;
+          color: #999;
+          cursor: not-allowed;
+        }
         &:hover:not(:disabled) {
           background: #ff8555;
         }

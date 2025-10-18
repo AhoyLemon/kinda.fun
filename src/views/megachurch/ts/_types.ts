@@ -187,9 +187,10 @@ export interface UI {
       isOpen: boolean;
     };
   };
-  workshopZone: {
+  worshopZone: {
     isOpen: boolean;
     showBanner: boolean;
+    hasSeenBanner: boolean;
     defaultTab?: string; // Tab to open to by default
   };
   eternalLegacyShop: {
@@ -217,6 +218,7 @@ export interface UI {
     message: string;
     affordableAmount: number;
     disregard?: boolean;
+    context?: "sermon" | "travel";
   };
 }
 

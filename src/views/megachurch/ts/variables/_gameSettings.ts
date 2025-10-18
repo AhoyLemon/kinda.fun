@@ -41,7 +41,7 @@ export const gameSettings = reactive<GameSettings>({
     pricePerUnit: 5, // Fixed price per unit of spice
     addictionProgression: 0.25, // How much requiredAmount increases per unit consumed above requirement (4 excess units = +1 requirement)
     penaltyPerUnit: 0.2, // Penalty percentage per unit short of requirement (20% per unit)
-    bonusPerUnit: 0.125, // Bonus percentage per unit above requirement (12.5% per unit)
+    bonusPerUnit: 0.175, // Bonus percentage per unit above requirement (17.5% per unit)
     maxBonus: 1, // Maximum bonus cap (100%)
     maxPenalty: 0.8, // Maximum penalty cap (80% reduction)
   },
@@ -67,8 +67,8 @@ export const gameSettings = reactive<GameSettings>({
       max: 25, // Maximum $ per donation
     },
     sterling: {
-      cutPercentage: 35, // Sterling's cut of church earnings
-      minimumCut: 30, // Minimum amount (in dollars) if cutPercentage isn't met
+      cutPercentage: 33, // Sterling's cut of church earnings
+      minimumCut: 50, // Minimum amount (in dollars) if cutPercentage isn't met
     },
     topicRepetitionPenalty: 0.85, // Penalty multiplier for repeating topics (default 15% less effective)
   },

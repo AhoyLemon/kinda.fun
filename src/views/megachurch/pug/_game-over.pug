@@ -5,13 +5,23 @@ section.game-over(v-if="ui.view === 'game-over'")
 
     template(v-if="my.gameOverCause === 'drug overdose'")
       h2 💀 YOU DIED OF A DRUG OVERDOSE 💀
-      p It feels good until it suddenly doesn't. The stresses of building a megachurch empire have had their effect on your body and mind.
-      p And now you're dead.
-      p But hey, at least you got high in the process!
-      //- p The stress of running an illegal megachurch empire while evading federal authorities has taken its toll. You succumbed to a fatal overdose of spice.
+      p It feels good until it suddenly doesn't. The stresses of building a megachurch empire have had their effect on your body and mind, and it's not like you have the ability to #[em not] take all the drugs you own. You are an addict, afterall.
+      p But hey, #[strong congratultions] on preacing successfully enough to afford a fatal amount of spice. That's an accompliishment in itself.
+      //- p And now you're dead.
+      //- p But hey, at least you got high in the process!
+      //- //- p The stress of running an illegal megachurch empire while evading federal authorities has taken its toll. You succumbed to a fatal overdose of spice.
     template(v-if="my.gameOverCause === 'prison'")
       h2 🏛️ YOU ARE IN PRISON 🏛️
       p The federal investigation into your megachurch empire has concluded, and you have been sentenced to prison for your crimes.
+
+    template(v-if="!my.church.isFounded")
+      p It's a shame that you never even got your Megachurch off the ground. The game is called #[strong Megachurch Tycoon] after all.
+        span(v-if="!my.hasVan") And you didn't even get a van.
+        span(v-else-if="my.chats.sterling.hasContacted") Maybe Sterling could have helped you out with that.
+        span(v-else) You did manage to get a van, you should have held on just a little bit longer.
+
+    p(v-if="!my.van") If you'd bought the van from Harold, you'd be able to preach in new places. And after a couple days of that, you'd probably have met somebody new.
+
 
     .game-over-stats
       table
@@ -19,20 +29,15 @@ section.game-over(v-if="ui.view === 'game-over'")
           tr
             td.label Total Days Survived:
             td.value {{my.daysPlayed}}
-          tr
+          tr(v-if="my.chats.sterling.hasContacted")
             td.label Sterling Status:
             td.value {{my.eternalLegacy.sterlingAlive ? 'alive' : 'dead'}}
-          tr
+          tr(v-if="my.eternalLegacy.isActive")
             td.label Final Mammon Score:
             td.value.huge {{addCommas(my.eternalLegacy.totalMammon)}}
-
-  
-    p Overall, you conned a total of 
-      strong {{dollars(my.totalMoneyEarned)}} 
-      |  out of people, so in a way that's a success.
-    p But in another far more accurate way, the only thing that matters in this game is the acquisition of tokens of wealth, and you've collected 
-      strong(v-text="addCommas(my.eternalLegacy.totalMammon)")
-      |  mammon of tokens of wealth. That is not enough. Play again.
+          tr(v-if="my.totalMoneyEarned > 0")
+            td.label Total Money Earned:
+            td.value {{dollars(my.totalMoneyEarned)}}
 
     .purchased-items(v-if="my.eternalLegacy.purchasedItems.length > 0")
       h3 Your Legacy Items

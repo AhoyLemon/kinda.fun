@@ -85,9 +85,9 @@ section.sermon(v-if="ui.view === 'sermon'")
             h4 New: Seraph AI Analysis
             p Get real-time insights into how your audience will react to your sermon topics. See which religions will love or hate your message before you preach.
           .nag-actions
-            button.nag-btn-primary(@click="openWorkshopZoneForSeraph()") ⚡ Try Seraph AI
+            button.nag-btn-primary(@click="openWorshopZoneForSeraph()") ⚡ Try Seraph AI
             button.nag-btn-secondary(@click="dismissSeraphNag()") Not now
 
       .button-holder
-        button.van(v-if="my.hasVan && !my.hasTraveledToday" @click="ui.view = 'place'") #[span 🚐] Get In The Van
+        //button.van(v-if="my.hasVan && !my.hasTraveledToday" @click="ui.view = 'place'") #[span 🚐] Get In The Van
         button(type="submit" :disabled="!ui.selectedTopics[0] || !ui.selectedTopics[1] || !ui.selectedTopics[2]") Create Sermon

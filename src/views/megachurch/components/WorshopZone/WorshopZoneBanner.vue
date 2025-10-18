@@ -44,7 +44,7 @@
 <script setup lang="ts">
   const emit = defineEmits<{
     close: [];
-    showWorkshopZone: [];
+    "show-workshop-zone": [];
   }>();
 
   function closeBanner() {
@@ -52,7 +52,7 @@
   }
 
   function openWorshopZone() {
-    emit("showWorkshopZone");
+    emit("show-workshop-zone");
   }
 </script>
 

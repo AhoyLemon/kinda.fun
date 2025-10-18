@@ -37,6 +37,11 @@
   import DonationToast from "./components/Toasts/DonationToast.vue";
   import MerchToast from "./components/Toasts/MerchToast.vue";
 
+  // SOUNDS
+  // Sounds
+  import { Howl, Howler } from "howler";
+  import { soundWhoopsYoureDead } from "./ts/_sounds";
+
   // Components
   import Chat from "./components/Chat/Chat.vue";
   import SterlingNote from "./components/Sterling/SterlingNote.vue";
@@ -158,8 +163,7 @@
     const place = places.find((p: any) => p.id === placeId);
     if (place) {
       my.place = { ...place };
-      ui.selectedTopics = [null, null, null] as [number, number, number];
-      ui.view = "sermon";
+      advanceToNextDay();
     } else {
       alert("Place not found.");
     }
@@ -1439,6 +1443,18 @@
       }, 2000);
     }
 
+    // Show Workshop Zone banner after first day of preaching with a founded church
+    // Only show once on the first night after founding a church
+    if (my.church.isFounded && my.church.days === 1 && !ui.worshopZone.hasSeenBanner) {
+      setTimeout(() => {
+        toast.info("You have been served with a banner ad relevant to your interests.", {
+          timeout: 3000,
+        });
+        ui.worshopZone.showBanner = true;
+        ui.worshopZone.hasSeenBanner = true; // Mark as seen so it won't show again
+      }, 2500);
+    }
+
     // Is it time for Sterling's voicemail?
     checkEternalLegacyTrigger();
   }
@@ -1555,18 +1571,18 @@
     ui.chats.sterling.isOpen = false;
   }
 
-  function showWorkshopZone() {
-    if (ui.workshopZone.showBanner && my.church.isFounded) {
-      ui.workshopZone.showBanner = true;
+  function showWorshopZone() {
+    if (ui.worshopZone.showBanner && my.church.isFounded) {
+      ui.worshopZone.showBanner = true;
     } else {
-      ui.workshopZone.isOpen = true;
+      ui.worshopZone.isOpen = true;
       ui.churchInventory.isOpen = true; // Auto-open ChurchInventory when WorshopZone opens
     }
   }
 
-  function closeWorkshopZone() {
-    ui.workshopZone.isOpen = false;
-    ui.workshopZone.showBanner = false;
+  function closeWorshopZone() {
+    ui.worshopZone.isOpen = false;
+    ui.worshopZone.showBanner = false;
     ui.churchInventory.isOpen = false; // Auto-close ChurchInventory when WorshopZone closes
   }
 
@@ -1576,17 +1592,17 @@
   }
 
   function onBannerAccepted() {
-    ui.workshopZone.showBanner = false;
-    ui.workshopZone.isOpen = true;
+    ui.worshopZone.showBanner = false;
+    ui.worshopZone.isOpen = true;
     // Auto-open ChurchInventory when WorshopZone opens
     ui.churchInventory.isOpen = true;
   }
 
-  function openWorkshopZoneForSeraph() {
+  function openWorshopZoneForSeraph() {
     // Mark nag as shown and open Workshop Zone to Upgrades tab
     ui.seraphAINag.hasShown = true;
-    ui.workshopZone.defaultTab = "upgrades";
-    ui.workshopZone.isOpen = true;
+    ui.worshopZone.defaultTab = "upgrades";
+    ui.worshopZone.isOpen = true;
     // Auto-open ChurchInventory when WorshopZone opens
     ui.churchInventory.isOpen = true;
   }
@@ -1653,7 +1669,7 @@
 
         case "sterling-cut":
           // Increase Sterling's cut permanently
-          my.eternalLegacy.sterlingCutModifier += 10; // 10% additional cut
+          my.eternalLegacy.sterlingCutModifier += item.cutIncreasase; // Increase Sterling's cut.
           gameSettings.eternalLegacy.heat.dailyBaseIncrease -= 3;
           toast.success(`${item.name}: Sterling handles the authorities. His cut of your income increases permanently.`);
           break;
@@ -1705,7 +1721,7 @@
     my.totalMoneyEarned += amount;
 
     // Check if player qualifies for van but hasn't been contacted yet
-    if (!my.chats.harold.hasContacted && my.daysPlayed >= gameSettings.triggers.harold.days) {
+    if (!my.chats.harold.hasContacted && my.daysPlayed + 1 >= gameSettings.triggers.harold.days) {
       my.canBuyVan = true;
       triggerHaroldContact();
     }
@@ -1715,7 +1731,7 @@
     if (!my.chats.sterling.hasContacted && my.hasVan && my.chats.sterling.daysWithVan >= gameSettings.triggers.sterling.daysWithVan) {
       setTimeout(() => {
         triggerSterlingContact();
-      }, 6000);
+      }, 3000);
     }
   }
 
@@ -1802,9 +1818,6 @@
       { sender: "harold", text: "hey kid it ur uncl harold" },
       { sender: "harold", text: "u need a van???" },
       { sender: "harold", text: `$${gameSettings.van.cost}` }, // This message triggers the van interface
-      { sender: "harold", text: "u culd relly go places w it" },
-      { sender: "harold", text: "mb help u w ur preachin" },
-      { sender: "harold", text: "wana buy???" },
     ];
 
     sendTextMessages(messages, "harold");
@@ -1853,6 +1866,20 @@
   }
 
   function handlePlugOrder(orderData) {
+    if (orderData.amount > 0) {
+      // Process the actual order
+      my.chats.plug.totalOrders++;
+      my.spice.spiceToDeliver += orderData.amount;
+      my.money -= orderData.cost;
+
+      // Show delivery notification for first-time users
+      if (my.chats.plug.totalOrders <= 2) {
+        toast.info("🚚 Your spice will be delivered in the morning", {
+          timeout: 2500,
+        });
+      }
+    }
+
     if (orderData.messages) {
       // Add messages to chat history
       orderData.messages.forEach((message) => {
@@ -1865,22 +1892,6 @@
         }
         my.chats.plug.chatHistory.push(message);
       });
-    }
-
-    if (orderData.amount > 0) {
-      // Process the actual order
-      my.chats.plug.totalOrders++;
-      my.spice.spiceToDeliver += orderData.amount;
-      my.money -= orderData.cost;
-
-      // Show delivery notification for first-time users
-      if (my.chats.plug.totalOrders <= 2) {
-        setTimeout(() => {
-          toast.info("🚚 Your spice will be delivered in the morning", {
-            timeout: 3500,
-          });
-        }, 2000);
-      }
     }
   }
 
@@ -1906,9 +1917,12 @@
         status = "over";
       }
 
-      toast.success(`${my.spice.spiceToDeliver} spice taken. ${statusMessages[status]}.`, {
-        timeout: 4000,
-      });
+      if (my.spice.consumedToday < my.spice.fatalAmount) {
+        toast.success(`${my.spice.spiceToDeliver} spice taken. ${statusMessages[status]}.`, {
+          timeout: 4000,
+        });
+      }
+
       // Clear delivery queue
       my.spice.spiceToDeliver = 0;
     }
@@ -1927,6 +1941,9 @@
     const spiceCost = gameSettings.spice.pricePerUnit;
     const canAfford = Math.floor(my.money / spiceCost);
 
+    // Set context to sermon
+    ui.spiceWarning.context = "sermon";
+
     if (canAfford >= spiceShortage) {
       ui.spiceWarning.show = true;
       ui.spiceWarning.message = `You haven't bought any spice for tomorrow. You really want to go out there and do this sober?`;
@@ -1944,7 +1961,16 @@
 
   function proceedWithoutSpice() {
     ui.spiceWarning.show = false;
-    advanceToNextDay();
+    if (ui.spiceWarning.context === "travel") {
+      const placeId = ui.placeIndex;
+      if (my.hasVan) {
+        travelToPlace(placeId);
+      } else {
+        choosePlace(placeId);
+      }
+    } else {
+      advanceToNextDay();
+    }
   }
 
   function openPlugFromWarning() {
@@ -1952,14 +1978,56 @@
     openPlugInterface();
   }
 
+  // Travel click handler that uses the existing spice warning system
+  function handleTravelClick() {
+    const placeId = ui.placeIndex;
+    const spiceOrdered = my.spice.spiceToDeliver;
+
+    if (my.spice.spiceToDeliver > 0 || ui.spiceWarning.disregard === true) {
+      if (my.hasVan) {
+        travelToPlace(placeId);
+      } else {
+        choosePlace(placeId);
+      }
+      return;
+    }
+
+    // Check if player has ordered enough spice for tomorrow
+    const spiceNeeded = my.spice.requiredAmount;
+    const spiceShortage = Math.max(0, spiceNeeded - spiceOrdered);
+    const spiceCost = gameSettings.spice.pricePerUnit;
+    const canAfford = Math.floor(my.money / spiceCost);
+
+    const drugBudgetAfterGas = canAfford - gameSettings.van.fixedGasPrice / gameSettings.spice.pricePerUnit;
+
+    // Set context to travel
+    ui.spiceWarning.context = "travel";
+
+    if (canAfford >= spiceShortage) {
+      ui.spiceWarning.show = true;
+      ui.spiceWarning.message = `You haven't bought any spice for tomorrow. Want to order some before you drive? The Plug will deliver to your new location.`;
+      ui.spiceWarning.affordableAmount = drugBudgetAfterGas;
+    } else if (canAfford > 0) {
+      ui.spiceWarning.show = true;
+      ui.spiceWarning.message = `You haven't bought any spice for tomorrow. I know you can only afford ${canAfford}, but maybe that's better than nothing? The Plug will deliver to your new location.`;
+      ui.spiceWarning.affordableAmount = drugBudgetAfterGas;
+    } else {
+      // Show === false, proceed with toast message instead of overlay
+      toast.warning(`Looks like you're traveling without drugs. Good luck with that!`);
+      if (my.hasVan) {
+        travelToPlace(placeId);
+      } else {
+        choosePlace(placeId);
+      }
+      return;
+    }
+  }
+
   function advanceToNextDay() {
     my.daysPlayed += 1;
     if (!my.chats.sterling.hasContacted && my.hasVan) {
       my.chats.sterling.daysWithVan += 1;
     }
-
-    // Check for Eternal Legacy trigger
-    //checkEternalLegacyTrigger();
 
     // Update heat if Eternal Legacy is active
     if (my.eternalLegacy.isActive) {
@@ -2029,16 +2097,13 @@
     }
 
     if (my.spice.consumedToday >= my.spice.fatalAmount) {
-      toast.error("Uh oh", { timeout: 3000 });
+      toast.error("Uh oh", { timeout: ui.timing.toastDuration });
       setTimeout(() => {
-        toast.error("That was probably too much...", { timeout: 4000 });
-      }, 1000);
-      // Blur and darken the screen by adding a class to body
-      //document.body.classList.add("fatal-overdose-blur");
+        toast.error("That was probably too much...", { timeout: ui.timing.toastDuration });
+      }, 2500);
       ui.view = "game-over";
       my.gameOverCause = "drug overdose";
-
-      // Log game over to Firebase
+      soundWhoopsYoureDead.play();
       logGameplayToFirebase("gameFinished", { cause: "drug overdose" });
     } else {
       ui.view = "sermon";
@@ -2605,9 +2670,7 @@
   // === Game Control Functions ===
 
   function restartGame() {
-    if (confirm("Are you sure you want to start a new ministry? All progress will be lost.")) {
-      location.reload();
-    }
+    location.reload();
   }
 
   // ================= WAKING UP ANIMATION =================

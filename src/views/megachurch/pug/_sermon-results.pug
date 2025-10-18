@@ -69,33 +69,10 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
         tfoot
           tr
             td(colspan="4")
-              p Your sermon had #[strong {{my.churchAttendanceYesterday || 0}}] attendees today.
-              p #[strong {{my.congregation.reduce((sum, group) => sum + group.likes, 0)}}] people liked your sermon.
-              p #[strong {{my.congregation.reduce((sum, group) => sum + group.dislikes, 0)}}] people hated it.
-
-      // Debug: Church Attendance Breakdown
-      .debug-church-attendance(v-if="!my.isStreetPreaching && gameSettings.isDebug && my.congregation")
-        h3 🐛 DEBUG: Church Attendance Today
-        .attendance-summary
-          p 
-            strong Total Attendees: {{my.churchAttendanceYesterday || 0}}
-            span  (Expected: {{my.congregation.reduce((sum, group) => sum + group.count, 0)}})
-        
-        table.debug.attendance-breakdown
-          thead
-            tr
-              th Religion
-              th Attendees
-              th Likes
-              th Dislikes
-              th Neutral
-          tbody
-            tr(v-for="group in my.congregation" :key="group.id")
-              td {{getReligion(group.id).name || 'Unknown'}}
-              td.number {{group.count}}
-              td.number.positive {{group.likes}}
-              td.number.negative {{group.dislikes}}
-              td.number {{group.count - group.likes - group.dislikes}}
+              ul
+                li Your sermon had #[strong {{my.churchAttendanceYesterday || 0}}] attendees today.
+                li #[strong {{my.congregation.reduce((sum, group) => sum + group.likes, 0)}}] people loved your sermon.
+                li #[strong {{my.congregation.reduce((sum, group) => sum + group.dislikes, 0)}}] people hated it.
 
       .receipts
 
@@ -166,20 +143,56 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
     .buttons
       button.plug(@click="openPlugInterface()") 📱 The Plug
       button.harold(v-if="my.chats.harold.hasContacted && !my.hasVan" @click="openHaroldInterface()") 📱 Uncle Harold
+      .van-button-holder(v-if="my.hasVan && !my.hasTraveledToday")
+        .van-tooltip(v-if="my.chats.sterling.daysWithVan < 1") Drive overnight. #[br] (The Plug will find you)
+        button.van(@click="ui.view = 'place'") #[span 🚐] Get In The Van
       button.sterling(v-if="my.chats.sterling.hasContacted && my.eternalLegacy.sterlingAlive" @click="openSterlingInterface()") 📱 Sterling Silver
       //button.sterling-voicemail(v-if="my.eternalLegacyVoicemailReplayAvailable" @click="playEternalLegacyVoicemail()") 📞 Replay Sterling's Voicemail
-      button.workshop-zone(v-if="my.church.isFounded" @click="showWorkshopZone") 💻 Da Worshop Zone
+      button.workshop-zone(v-if="my.church.isFounded" @click="showWorshopZone") 💻 Da Worshop Zone
       button.eternal-legacy(v-if="my.eternalLegacy.isActive" @click="showEternalLegacyShop") 💻 Eternal Legacy
       button.church-inventory(v-if="my.church.isFounded" @click="openChurchInventory") 📦 Church Inventory
       button.legacy-status(v-if="my.eternalLegacy.isActive" @click="openLegacyStatus") ⚖️ Legacy Status
       button.submit(@click="handleNextDayClick()") Next Day.
+
+    // Debug: Church Attendance Breakdown
+    .debug-church-attendance(v-if="!my.isStreetPreaching && gameSettings.isDebug && my.congregation")
+      h3 🐛 DEBUG: Church Attendance Today
+      .attendance-summary
+        p 
+          strong Total Attendees: {{my.churchAttendanceYesterday || 0}}
+          span  (Expected: {{my.congregation.reduce((sum, group) => sum + group.count, 0)}})
+      
+      table.debug.attendance-breakdown
+        caption 🐛 DEBUG: YOUR ATTENDEES
+        thead
+          tr
+            th Religion
+            th Attendees
+            th Likes
+            th Dislikes
+            th Neutral
+        tbody
+          tr(v-for="group in my.congregation" :key="group.id")
+            td {{getReligion(group.id).name || 'Unknown'}}
+            td.number {{group.count}}
+            td.number.positive {{group.likes}}
+            td.number.negative {{group.dislikes}}
+            td.number {{group.count - group.likes - group.dislikes}}
+        tfoot
+          tr
+            td Total
+            td.number {{my.churchAttendanceYesterday || 0}}
+            td.number.positive {{my.congregation.reduce((sum, group) => sum + group.likes, 0)}}
+            td.number.negative {{my.congregation.reduce((sum, group) => sum + group.dislikes, 0)}}
+            td.number {{(my.churchAttendanceYesterday || 0) - my.congregation.reduce((sum, group) => sum + group.likes + group.dislikes, 0)}}
+
+
 
   // Spice Warning Overlay
   .spice-warning-overlay(v-if="ui.spiceWarning.show")
     .spice-warning-modal
       .spice-warning-headline Gonna preach without drugs?
       .spice-warning-content
-        //h2 🌿 Gonna preach without drugs?
         p {{ ui.spiceWarning.message }}
         .spice-warning-buttons
           button.plug(@click="openPlugFromWarning()") 📱 Text The Plug

@@ -12,6 +12,7 @@ export interface EternalLegacyDarkDeed {
   name: string;
   cost: number;
   heat: number;
+  cutIncreasase?: number; // Permanent increase to Sterling's cut
   effect: string;
   dayPurchased?: number; // Day the deed was purchased
 }
@@ -124,31 +125,18 @@ export const eternalLegacyShopItems: EternalLegacyShopItem[] = [
 ];
 
 export const eternalLegacyDarkDeeds: EternalLegacyDarkDeed[] = [
-  // {
-  //   id: "shredder",
-  //   name: "Shredder Upgrade",
-  //   cost: 1200,
-  //   heat: 5,
-  //   effect: "Temporarily slows heat gain, but lowers church reputation and reduces weekly donations.",
-  // },
   {
     id: "sterling-cut",
     name: "Sterling's Special Cut",
     cost: 0,
     heat: 0,
+    cutIncreasase: 10,
     effect: "Sterling bribes the authorities to slow the investigation, but his cut of your income increases permanently.",
   },
-  // {
-  //   id: "tax-attorney",
-  //   name: "Tax Attorney Retainer",
-  //   cost: 2200,
-  //   heat: 15,
-  //   effect: "Reduces the amount you must pay Sterling, but increases heat and causes a scandal in your congregation.",
-  // },
   {
     id: "consultation-tony",
     name: "Consultation with Tony (Discreet Services)",
-    cost: 2500,
+    cost: 1500,
     heat: 30,
     effect: "Eliminates Sterling, dramatically increases heat, and triggers a major investigation event. No refunds. No mercy.",
   },

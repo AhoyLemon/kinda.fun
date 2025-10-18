@@ -118,7 +118,7 @@ export const places: Place[] = [
     id: 3,
     name: "Venture City, California",
     description:
-      "Techno Utopia, California is a glittering dystopia where tech billionaires are living gods and their every utterance—especially after a $50,000 ayahuasca retreat—is treated as gospel. The city is ruled by algorithmic dogma, and the faithful gather in glass towers to worship at the altar of disruption, hoping for a retweet from their digital messiah. Residents are obsessed with innovation, but only if it comes with a six-figure price tag and a TED Talk. Spirituality is a commodity, enlightenment is a subscription, and the only thing more sacred than venture capital is the latest miracle cleanse. If you can sell salvation as an app, these zealots will download it, rate it five stars, and demand a blockchain for their soul.",
+      "Venture City is a glittering dystopia where tech billionaires are living gods and their every utterance—especially after a $50,000 ayahuasca retreat—is treated as gospel. The city is ruled by algorithmic dogma, and the faithful gather in glass towers to worship at the altar of disruption, hoping for a retweet from their digital messiah. Residents are obsessed with innovation, but only if it comes with a six-figure price tag and a TED Talk. Spirituality is a commodity, enlightenment is a subscription, and the only thing more sacred than venture capital is the latest miracle cleanse. If you can sell salvation as an app, these zealots will download it, rate it five stars, and demand a blockchain for their soul.",
     likedTags: [
       "innovation",
       "technology",

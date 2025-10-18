@@ -11,13 +11,13 @@
 @import "scss/extends";
 @import "scss/mixins";
 @import "scss/defaults";
+@import "scss/animations";
 
 @import "scss/libraries/multiselect-custom";
 @import "scss/libraries/toastification-custom";
 
 // Screens
 @import "scss/title-screen";
-
 @import "scss/form";
 @import "scss/choose";
 @import "scss/sermon";
@@ -27,3 +27,6 @@
 @import "scss/weekly-report";
 @import "scss/sermon-results";
 @import "scss/game-over";
+
+// Components
+@import "scss/spice-warning";

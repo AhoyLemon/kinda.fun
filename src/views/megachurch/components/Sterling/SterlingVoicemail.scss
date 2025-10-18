@@ -1,0 +1,143 @@
+@import "../../scss/variables";
+
+.voicemail-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: $z-overlay;
+  backdrop-filter: blur(2px);
+
+  .voicemail-container {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 0;
+    border-radius: 10px 10px 0 0;
+    width: 94vw;
+    max-width: 600px;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 28px rgba(2, 6, 23, 0.12);
+    overflow: hidden;
+    transform: translateY(100%);
+    animation: slideUp 320ms ease forwards;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .voicemail-header {
+    background: #f3f4f6;
+    padding: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f1720;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: rgba(15, 23, 32, 0.6);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .meta {
+      display: grid;
+      gap: 2px;
+      .bigtext {
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .subtext {
+        font-size: 12px;
+        color: #666;
+      }
+    }
+  }
+
+  .voicemail-header .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #333;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    overflow: hidden;
+  }
+
+  .voicemail-content {
+    padding: 16px;
+    display: grid;
+    gap: 12px;
+    audio {
+      width: 100%;
+    }
+  }
+  .transcript-box {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.4;
+    .transcript-header {
+      text-transform: uppercase;
+      color: #555;
+    }
+    .transcript-text {
+      padding: 12px 16px;
+      border-radius: 0 18px 18px 18px;
+      display: grid;
+      gap: 1em;
+      background-color: #e9ecef;
+    }
+  }
+
+  .voicemail-actions {
+    padding: 0 16px 16px 16px;
+    display: flex;
+    gap: 12px;
+    border-top: 1px solid rgba(15, 23, 32, 0.04);
+
+    button.primary {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      &:hover:not(:disabled) {
+        background: #0056b3;
+      }
+    }
+  }
+}

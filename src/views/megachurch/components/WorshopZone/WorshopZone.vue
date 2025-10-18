@@ -529,12 +529,12 @@
 
   // Watch for default tab changes
   watch(
-    () => ui.workshopZone.defaultTab,
+    () => ui.worshopZone.defaultTab,
     (newTab) => {
-      if (newTab && ui.workshopZone.isOpen) {
+      if (newTab && ui.worshopZone.isOpen) {
         activeTab.value = newTab;
         // Reset the default tab to prevent it from affecting future opens
-        ui.workshopZone.defaultTab = "merch";
+        ui.worshopZone.defaultTab = "merch";
       }
     },
     { immediate: true },

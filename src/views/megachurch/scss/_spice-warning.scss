@@ -1,0 +1,73 @@
+// Spice Warning Overlay Styles
+.spice-warning-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+  transition: all 0.3s linear;
+
+  @starting-style {
+    background: rgba(0, 0, 0, 0);
+    background-filter: blur(0);
+  }
+
+  .spice-warning-modal {
+    background-color: $white;
+    max-width: 500px;
+    color: $black;
+    animation: slideIn 0.2s ease-out;
+
+    .spice-warning-headline {
+      font-family: $serif;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      background-color: #212121;
+      color: $white;
+      padding: 0.5rem 1rem;
+    }
+
+    .spice-warning-content {
+      padding: 0 1rem;
+      // color: $white;
+
+      h2 {
+        font-family: $serif;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.4;
+        opacity: 0.9;
+      }
+    }
+
+    .spice-warning-buttons {
+      @extend %buttons;
+    }
+    .reminder-checkbox {
+      padding-top: 1em;
+      display: flex;
+      justify-content: end;
+      font-family: $sans-serif;
+      font-size: 0.875rem;
+      padding-bottom: 1rem;
+      gap: 0.5rem;
+      // align-items: end;
+      &:hover {
+        color: $blue;
+        cursor: pointer;
+      }
+    }
+  }
+}

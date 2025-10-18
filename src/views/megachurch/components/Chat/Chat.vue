@@ -52,8 +52,8 @@
             <div class="hints" v-if="orderAmount > 0">
               <div v-if="isUnderRequired" class="warning-hint">⚠️ You'll need more to avoid withdrawal</div>
               <div v-else-if="orderAmount === requiredAmount" class="good-hint">😐 This will keep you steady tomorrow</div>
-              <div v-if="orderAmount >= fatalSpiceAmount" class="warning-hint">💀 Allegedly, this much is fatal</div>
-              <div v-else-if="isOverRequired" class="great-hint">✨ Extra spice will boost your preaching skills</div>
+              <div v-if="orderAmount >= fatalSpiceAmount" class="warning-hint">🤔 I wonder what will happen if you take this much...</div>
+              <div v-else-if="isOverRequired" class="great-hint">✨ Extra spice can boost your preaching skills!</div>
             </div>
 
             <div class="amount-controls">
@@ -75,7 +75,7 @@
         <div class="harold-options">
           <div class="harold-section">
             <!-- Show van purchase option if not owned AND Harold has sent enough messages (at least the price) -->
-            <div v-if="!playerHasVan && chatHistory && chatHistory.length >= 6" class="van-purchase">
+            <div v-if="!playerHasVan && chatHistory && chatHistory.length >= 3" class="van-purchase">
               <div class="van-info">
                 <strong>Uncle Harold's Van: {{ dollars(vanCost) }}</strong>
               </div>
@@ -341,6 +341,18 @@
 
     const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
+    // IMMEDIATELY process the actual order (outside of chat timeouts)
+    const orderData = {
+      amount: orderAmount.value,
+      cost: totalCost.value,
+      messages: [], // We'll add chat messages separately
+    };
+    emit("order", orderData);
+
+    // Mark order as sent immediately
+    orderSent.value = true;
+
+    // Now handle the chat messages with timeouts for UI feedback
     // Send order message immediately
     const orderMessage = {
       id: Date.now(),
@@ -365,8 +377,8 @@
       };
 
       emit("order", {
-        amount: orderAmount.value,
-        cost: totalCost.value,
+        amount: 0,
+        cost: 0,
         messages: [paymentMessage],
       });
 
@@ -402,8 +414,6 @@
         }, 2000);
       }, 800);
     }, 500);
-
-    orderSent.value = true;
   };
 
   const buyVan = () => {
@@ -512,4 +522,4 @@
   );
 </script>
 
-<style lang="scss" scoped src="../../scss/components/Chat.scss"></style>
+<style lang="scss" scoped src="./Chat.scss"></style>
