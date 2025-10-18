@@ -297,7 +297,7 @@
               </div>
               <dl class="upgrade-stats stats-box">
                 <dt>Cost:</dt>
-                <dd>${{ dollars(gameSettings.church.upgrades.vipConfessionBooths.cost) }}</dd>
+                <dd>{{ dollars(gameSettings.church.upgrades.vipConfessionBooths.cost) }}</dd>
                 <dt>Status:</dt>
                 <dd>{{ my.church.upgrades.vipConfessionBooths ? "INSTALLED" : "NOT INSTALLED" }}</dd>
               </dl>

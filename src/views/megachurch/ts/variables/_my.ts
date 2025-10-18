@@ -119,7 +119,7 @@ export const my = reactive<My>({
         totalSold: 0,
       },
       beachTowel: {
-        price: 50,
+        price: 64.99,
         inventory: 0,
         soldToday: 0,
         totalSold: 0,

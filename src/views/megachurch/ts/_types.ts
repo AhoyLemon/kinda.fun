@@ -172,6 +172,7 @@ export interface UI {
     toastDelayMin: number;
     toastDelayMax: number;
     donationToastDelay: number;
+    merchToastDelay: number;
     resultsViewDelay: number;
     churchToastOffset: number;
   };
@@ -293,10 +294,6 @@ export interface GameSettings {
     };
     donation: {
       chance: number;
-      min: number;
-      max: number;
-    };
-    donationPerAttendee: {
       min: number;
       max: number;
     };

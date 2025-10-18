@@ -1,6 +1,6 @@
 # Kinda Fun Gaming Platform
 
-Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and single-player games built by Lemon. The platform includes games like Invalid (trivia), Comparatively Famous (Cameo valuations), No More Billionaires (guillotine simulator), This Meeting Has Points, Pretend World, Megachurch Tycoon and Sisyphus Clicker
+Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and single-player games built by Lemon. The platform includes games like Invalid (multiplayer trivia game), Comparatively Famous (celebrity valutation via Cameo), No More Billionaires (guillotine simulator), This Meeting Has Points (multiplayer card game meant for virtual meetings), Pretend World (celebrity impersonator guessing game), Megachurch Tycoon (single player business simulator) and Sisyphus Clicker (parody clicker game).
 
 **Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
 
@@ -17,7 +17,8 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 
 - **Development Server**: `npm run dev:client` -- starts Vite dev server on http://localhost:5173. Takes ~2 seconds. Games load but show Firebase auth errors (expected without config).
 - **Full Development**: `npm run dev:server` -- starts Vite + Express server concurrently. Takes ~3 seconds. Express runs on port 3000.
-- **Production Build**: `npm run build` -- builds all games and static pages. Takes ~10 seconds. NEVER CANCEL. Set timeout to 60+ seconds.
+- **Production Build**: `npm run build -- --mode production` -- builds all games and static pages in prodution mode (to be deployed to Firebase). Takes ~10 seconds.Set timeout to 60+ seconds.
+- **Development Build**: `npm run build -- --mode development` -- builds all games and static pages in development mode (for local testing and development). Takes ~10 seconds. Set timeout to 60+ seconds.
 - **Preview Build**: `npm run preview` -- serves built application on http://localhost:4173. Takes ~2 seconds.
 
 ### Testing and Quality
@@ -49,29 +50,21 @@ When implementing features, Copilot should:
 **ALWAYS manually test after making changes to games or build system:**
 
 1. **Build Validation**:
-   - Run `npm run build` and verify it completes without errors
+   - Run `npm run build -- --mode production` and verify it completes without errors
    - Check that `dist/` folder contains all game HTML files (cameo.html, guillotine.html, invalid.html, etc.)
 
 2. **Development Server Validation**:
-   - Start `npm run dev:client`
+   - Start `npm run dev`
    - Navigate to http://localhost:5173 and verify homepage loads
    - Test individual games: http://localhost:5173/cameo, http://localhost:5173/guillotine, etc.
    - Verify games display title screens (Firebase auth errors are expected without config)
-
-3. **Game-Specific Testing**:
-   - **Cameo**: Should show "Comparatively Famous" title and celebrity sorting interface
-   - **Guillotine**: Should display "No More Billionaires" with daily billionaire selection
-   - **Invalid**: Should show trivia game setup with employee/sysadmin roles
-   - **Meeting**: Should display "This Meeting Has Points" card-based game
-   - **Pretend**: Should show celebrity impersonator party game
-   - **Sisyphus**: Should display clicker game with hill and store
 
 ### Pre-Commit Requirements
 
 **ALWAYS run before committing changes:**
 
 - `npm run format` -- formats code consistently (but CHECK for SCSS function formatting issues)
-- `npm run build` -- ensures production build works (NEVER CANCEL - takes ~10 seconds)
+- `npm run build -- --mode production` -- ensures production build works (NEVER CANCEL - takes ~10 seconds)
 - `npm run test:unit` -- verifies tests pass (takes ~1.5 seconds)
 
 **CRITICAL: Prettier Formatting Warning**

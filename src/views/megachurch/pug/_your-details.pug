@@ -14,7 +14,7 @@ aside.your-details
           .heat-meter-text {{ my.eternalLegacy.heat }} / {{ gameSettings.eternalLegacy.heat.max }}
     
     .box(v-if="my.daysPlayed > 3")
-      .label Sermon Title
+      .label Days
       .value {{my.daysPlayed + 1}}
     
     .box(v-if="my.place?.name && my.place.name != 'Starting Location' && my.isStreetPreaching")

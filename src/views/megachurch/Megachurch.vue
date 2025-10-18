@@ -36,13 +36,15 @@
   import ListenerToast from "./components/Toasts/ListenerToast.vue";
   import DonationToast from "./components/Toasts/DonationToast.vue";
   import MerchToast from "./components/Toasts/MerchToast.vue";
+
+  // Components
   import Chat from "./components/Chat/Chat.vue";
   import SterlingNote from "./components/Sterling/SterlingNote.vue";
   import WorshopZoneBanner from "./components/WorshopZone/WorshopZoneBanner.vue";
   import WorshopZone from "./components/WorshopZone/WorshopZone.vue";
   import EternalLegacyShop from "./components/EternalLegacy/EternalLegacyShop.vue";
   import SterlingVoicemail from "./components/Sterling/SterlingVoicemail.vue";
-  import ChurchInventory from "./components/ChurchInventory/ChurchInventory.vue";
+  import ChurchInventory from "./components/WorshopZone/ChurchInventory.vue";
   import LegacyStatus from "./components/EternalLegacy/LegacyStatus.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
@@ -86,13 +88,22 @@
       return theme;
     });
 
-    return themedWithYesterday.filter((theme) => !selectedIds.includes(theme.id));
+    // Filter out already selected topics and ensure uniqueness by ID
+    const filteredThemes = themedWithYesterday.filter((theme) => !selectedIds.includes(theme.id));
+
+    // Remove any potential duplicates by ID (defensive programming)
+    const uniqueThemes = filteredThemes.filter((theme, index, array) => array.findIndex((t) => t.id === theme.id) === index);
+
+    return uniqueThemes;
   }
 
   function generateDailyThemes() {
     // Generate a random selection of themes for today
     const shuffledThemes = shuffle([...themes]);
-    my.dailyThemes = shuffledThemes.slice(0, gameSettings.themesPerDay);
+    const selectedThemes = shuffledThemes.slice(0, gameSettings.themesPerDay);
+
+    // Ensure uniqueness by ID (defensive programming)
+    my.dailyThemes = selectedThemes.filter((theme, index, array) => array.findIndex((t) => t.id === theme.id) === index);
   }
 
   function chooseReligion(religionId: number) {
@@ -1242,65 +1253,66 @@
     my.confessionRevenueYesterday = confessionRevenue;
 
     // Show audience reactions in toasts
-    const reactionToastDuration = ui.timing.toastDuration;
-    const reactionToastDelay = 1400;
+    let currentDelay = 0;
+    const reactionGroups = todaysCongregation.filter((group) => group.likes > 0 || group.dislikes > 0);
 
-    todaysCongregation
-      .filter((group) => group.likes > 0 || group.dislikes > 0)
-      .forEach((group, i) => {
-        setTimeout(() => {
-          const religion = religions.find((r: any) => r.id === group.id);
+    reactionGroups.forEach((group, i) => {
+      setTimeout(() => {
+        const religion = religions.find((r: any) => r.id === group.id);
 
-          // Show separate toasts for likes and dislikes if both exist
-          if (group.likes > 0) {
-            toast(
-              {
-                component: ListenerToast,
-                props: {
-                  reaction: "liked",
-                  count: group.likes,
-                  religion: religion,
-                  religionMatch: my.church.religion && my.church.religion.id === group.id,
-                  tagMatch: false,
-                  primaryTag: null,
+        // Show separate toasts for likes and dislikes if both exist
+        if (group.likes > 0) {
+          toast(
+            {
+              component: ListenerToast,
+              props: {
+                reaction: "liked",
+                count: group.likes,
+                religion: religion,
+                religionMatch: my.church.religion && my.church.religion.id === group.id,
+                tagMatch: false,
+                primaryTag: null,
+              },
+            },
+            {
+              position: POSITION.BOTTOM_LEFT,
+              timeout: ui.timing.donationToastDuration,
+            },
+          );
+        }
+
+        if (group.dislikes > 0) {
+          setTimeout(
+            () => {
+              toast(
+                {
+                  component: ListenerToast,
+                  props: {
+                    reaction: "disliked",
+                    count: group.dislikes,
+                    religion: religion,
+                    religionMatch: my.church.religion && my.church.religion.id === group.id,
+                    tagMatch: false,
+                    primaryTag: null,
+                  },
                 },
-              },
-              {
-                position: POSITION.BOTTOM_LEFT,
-                timeout: reactionToastDuration,
-              },
-            );
-          }
+                {
+                  position: POSITION.BOTTOM_LEFT,
+                  timeout: ui.timing.donationToastDuration,
+                },
+              );
+            },
+            group.likes > 0 ? 800 : 0,
+          ); // Delay if we showed a like toast first
+        }
+      }, currentDelay);
 
-          if (group.dislikes > 0) {
-            setTimeout(
-              () => {
-                toast(
-                  {
-                    component: ListenerToast,
-                    props: {
-                      reaction: "disliked",
-                      count: group.dislikes,
-                      religion: religion,
-                      religionMatch: my.church.religion && my.church.religion.id === group.id,
-                      tagMatch: false,
-                      primaryTag: null,
-                    },
-                  },
-                  {
-                    position: POSITION.BOTTOM_LEFT,
-                    timeout: reactionToastDuration,
-                  },
-                );
-              },
-              group.likes > 0 ? 800 : 0,
-            ); // Delay if we showed a like toast first
-          }
-        }, i * reactionToastDelay);
-      });
+      // Calculate delay for next toast using random interval between min and max
+      currentDelay += randomNumber(ui.timing.toastDelayMin, ui.timing.toastDelayMax);
+    });
 
     // Show donation toast after all reactions
-    const finalDelay = todaysCongregation.length * reactionToastDelay + 2000;
+    const merchToastDelay = currentDelay + ui.timing.merchToastDelay;
     setTimeout(() => {
       // Apply Sterling's cut to combined donations, merch revenue, AND confession revenue
       const totalChurchRevenue = totalDonations + totalMerchRevenue + confessionRevenue;
@@ -1346,26 +1358,24 @@
         my.church.merch.exorcismKit.soldToday > 0;
 
       if (hasMerchSales || hasConfessionRevenue || ownsMerch) {
-        setTimeout(() => {
-          toast(
-            {
-              component: MerchToast,
-              props: {
-                totalMerchRevenue: totalMerchRevenue,
-                merchSalesDetails: merchSalesDetails,
-                confessionRevenue: confessionRevenue,
-              },
+        toast(
+          {
+            component: MerchToast,
+            props: {
+              totalMerchRevenue: totalMerchRevenue,
+              merchSalesDetails: merchSalesDetails,
+              confessionRevenue: confessionRevenue,
             },
-            {
-              position: POSITION.BOTTOM_LEFT,
-              timeout: ui.timing.toastDuration,
-            },
-          );
-        }, 0);
+          },
+          {
+            position: POSITION.BOTTOM_LEFT,
+            timeout: ui.timing.donationToastDuration,
+          },
+        );
       }
 
-      // Show donation toast after merch toast (or immediately if no merch)
-      const donationToastDelay = hasMerchSales || hasConfessionRevenue || ownsMerch ? 3000 : 0;
+      // Show donation toast after merch toast using donationToastDelay
+      const finalDonationDelay = hasMerchSales || hasConfessionRevenue || ownsMerch ? ui.timing.donationToastDelay : 0;
       setTimeout(() => {
         toast(
           {
@@ -1382,7 +1392,7 @@
             timeout: ui.timing.donationToastDuration,
           },
         );
-      }, donationToastDelay);
+      }, finalDonationDelay);
 
       // Add Sterling's cut message if applicable
       if (sterlingCut > 0) {
@@ -1401,7 +1411,7 @@
       setTimeout(() => {
         endTheDay();
       }, ui.timing.resultsViewDelay);
-    }, finalDelay);
+    }, merchToastDelay);
   }
 
   // ================= DAY MANAGEMENT =================
@@ -1697,9 +1707,7 @@
     // Check if player qualifies for van but hasn't been contacted yet
     if (!my.chats.harold.hasContacted && my.daysPlayed >= gameSettings.triggers.harold.days) {
       my.canBuyVan = true;
-      setTimeout(() => {
-        triggerHaroldContact();
-      }, 4000);
+      triggerHaroldContact();
     }
 
     // Check if player qualifies for Sterling contact (church phase)
@@ -1806,24 +1814,17 @@
     my.chats.sterling.hasContacted = true;
 
     // Show toast that player found a note
-
-    toast(
-      {
-        component: h("div", { class: "sterling-note-toast" }, [h("strong", "You found a note on your van"), h("br"), h("span", "A handwritten message...")]),
+    toast.info("🚚 Somebody left a note on your van", {
+      timeout: ui.timing.toastDuration,
+      onClose: () => {
+        // Show the actual note after toast disappears
+        setTimeout(() => {
+          if (sterlingNoteRef.value) {
+            sterlingNoteRef.value.showNote();
+          }
+        }, 500);
       },
-      {
-        position: POSITION.BOTTOM_RIGHT,
-        timeout: ui.timing.toastDuration,
-        onClose: () => {
-          // Show the actual note after toast disappears
-          setTimeout(() => {
-            if (sterlingNoteRef.value) {
-              sterlingNoteRef.value.showNote();
-            }
-          }, 500);
-        },
-      },
-    );
+    });
   }
 
   function onSterlingNoteRead() {
@@ -2638,6 +2639,39 @@
 
     initialiseGame();
     my.name = localStorage.getItem("kindaFunPlayerName") || "";
+
+    // toast(
+    //   "DEFAULT TOAST!!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eget aliquet elit. Pellentesque tempor ultrices ante vitae tincidunt. Fusce ut purus ut dolor consequat dignissim nec eget lacus. Vivamus vitae auctor eros.",
+    //   {
+    //     timeout: false,
+    //   },
+    // );
+    // toast.info(
+    //   "INFO TOAST!!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eget aliquet elit. Pellentesque tempor ultrices ante vitae tincidunt. Fusce ut purus ut dolor consequat dignissim nec eget lacus. Vivamus vitae auctor eros.",
+    //   {
+    //     timeout: false,
+    //   },
+    // );
+    // toast.success(
+    //   "SUCCESS TOAST!!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eget aliquet elit. Pellentesque tempor ultrices ante vitae tincidunt. Fusce ut purus ut dolor consequat dignissim nec eget lacus. Vivamus vitae auctor eros.",
+    //   {
+    //     timeout: false,
+    //   },
+    // );
+    // toast.warning(
+    //   "WARNING TOAST!!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eget aliquet elit. Pellentesque tempor ultrices ante vitae tincidunt. Fusce ut purus ut dolor consequat dignissim nec eget lacus. Vivamus vitae auctor eros.",
+    //   {
+    //     timeout: false,
+    //   },
+    // );
+    // toast.error(
+    //   "ERROR TOAST!!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eget aliquet elit. Pellentesque tempor ultrices ante vitae tincidunt. Fusce ut purus ut dolor consequat dignissim nec eget lacus. Vivamus vitae auctor eros.",
+    //   {
+    //     timeout: false,
+    //   },
+    // );
+
+    // alert("what the fuck tho!?");
   });
 </script>
 

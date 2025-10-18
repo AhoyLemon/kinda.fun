@@ -13,7 +13,7 @@ export const gameSettings = reactive<GameSettings>({
       daysWithVan: 3, // Days the player must own a van before being contacted by Sterling.
     },
     harold: {
-      days: 1, // Minimum play days for Harold to contact you
+      days: 3, // Minimum play days for Harold to contact you
     },
   },
   streetPreaching: {
@@ -51,24 +51,20 @@ export const gameSettings = reactive<GameSettings>({
     gasPricePerMile: 0.1, // Per-mile gas cost (not used yet)
   },
   churchPreaching: {
-    expectedAttendees: 70, // How many first time attendees show up at a new church
+    expectedAttendees: 80, // How many first time attendees show up at a new church
     religionMatchBonus: 200, // Percent bonus to both like and dislike checks if the church's religion matches the attendee's religion
     dislikeChance: {
       byReligion: 30,
       byTag: 30,
     },
     likeChance: {
-      byReligion: 70,
+      byReligion: 80,
       byTag: 40,
     },
     donation: {
       chance: 80, // % chance that someone who likes your sermon donates
       min: 5, // Minimum $ per donation
       max: 25, // Maximum $ per donation
-    },
-    donationPerAttendee: {
-      min: 5, // Minimum donation per attendee
-      max: 20, // Maximum donation per attendee
     },
     sterling: {
       cutPercentage: 35, // Sterling's cut of church earnings

@@ -18,7 +18,7 @@ function promptForMode() {
   return new Promise((resolve) => {
     const rl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout
+      output: process.stdout,
     });
 
     console.log("\n🏗️  Build Mode Selection");
@@ -28,9 +28,9 @@ function promptForMode() {
 
     rl.question("Select build mode (1-2) [1]: ", (answer) => {
       rl.close();
-      
+
       const choice = answer.trim() || "1";
-      
+
       switch (choice) {
         case "1":
         case "production":
@@ -53,19 +53,19 @@ async function main() {
   // Check if mode was provided as command line argument
   const args = process.argv.slice(2);
   let mode = null;
-  
+
   // Look for --mode argument
-  const modeIndex = args.findIndex(arg => arg === "--mode");
+  const modeIndex = args.findIndex((arg) => arg === "--mode");
   if (modeIndex !== -1 && args[modeIndex + 1]) {
     mode = args[modeIndex + 1];
     console.log(`🎯 Using specified mode: ${mode}`);
   }
-  
+
   // If no mode specified, prompt user
   if (!mode) {
     mode = await promptForMode();
   }
-  
+
   console.log(`\n🚀 Building in ${mode} mode...\n`);
 
   // 1. Update sitemap
@@ -93,7 +93,7 @@ async function main() {
     console.error("home.html not found in dist/");
     process.exit(1);
   }
-  
+
   console.log(`\n✅ Build completed in ${mode} mode!`);
 }
 

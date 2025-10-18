@@ -242,10 +242,6 @@ const gameSettings = {
       min: 2, // Minimum $ per donation
       max: 10, // Maximum $ per donation
     }
-    donationPerAttendee: {
-      min: 5, // Minimum donation per attendee
-      max: 20, // Maximum donation per attendee
-    },
     sterlingCutPercentage: 35, // Sterling's cut of daily donations
     sterlingMinimumCut: 75, // Minimum amount (in dollars) Sterling takes
     emptyChurchPenalty: 50, // If you don't preach at your church, Sterling takes this much extra
