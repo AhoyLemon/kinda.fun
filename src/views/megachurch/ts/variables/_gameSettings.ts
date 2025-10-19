@@ -39,7 +39,7 @@ export const gameSettings = reactive<GameSettings>({
   },
   spice: {
     pricePerUnit: 5, // Fixed price per unit of spice
-    addictionProgression: 0.25, // How much requiredAmount increases per unit consumed above requirement (4 excess units = +1 requirement)
+    addictionProgression: 0.5, // How much requiredAmount increases per unit consumed above requirement (4 excess units = +1 requirement)
     penaltyPerUnit: 0.2, // Penalty percentage per unit short of requirement (20% per unit)
     bonusPerUnit: 0.175, // Bonus percentage per unit above requirement (17.5% per unit)
     maxBonus: 1, // Maximum bonus cap (100%)
@@ -51,20 +51,20 @@ export const gameSettings = reactive<GameSettings>({
     gasPricePerMile: 0.1, // Per-mile gas cost (not used yet)
   },
   churchPreaching: {
-    expectedAttendees: 80, // How many first time attendees show up at a new church
+    expectedAttendees: 85, // How many first time attendees show up at a new church
     religionMatchBonus: 200, // Percent bonus to both like and dislike checks if the church's religion matches the attendee's religion
     dislikeChance: {
-      byReligion: 30,
-      byTag: 30,
+      byReligion: 35,
+      byTag: 35,
     },
     likeChance: {
       byReligion: 80,
-      byTag: 40,
+      byTag: 50,
     },
     donation: {
       chance: 80, // % chance that someone who likes your sermon donates
       min: 5, // Minimum $ per donation
-      max: 25, // Maximum $ per donation
+      max: 50, // Maximum $ per donation
     },
     sterling: {
       cutPercentage: 33, // Sterling's cut of church earnings

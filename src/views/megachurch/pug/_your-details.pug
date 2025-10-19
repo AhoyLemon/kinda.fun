@@ -14,10 +14,6 @@ aside.your-details
           .heat-meter-fill(:style="{ width: Math.min((my.eternalLegacy.heat / gameSettings.eternalLegacy.heat.max) * 100, 100) + '%' }")
           .heat-meter-text {{ my.eternalLegacy.heat }} / {{ gameSettings.eternalLegacy.heat.max }}
     
-    .box(v-if="my.daysPlayed > 2")
-      .label Days
-      .value {{my.daysPlayed + 1}}
-    
     .box(v-if="my.place?.name && my.place.name != 'Starting Location' && my.isStreetPreaching")
       .label Place
       .value {{my.place.name}}
@@ -31,9 +27,14 @@ aside.your-details
     .box.top-religions(v-if="!my.isStreetPreaching && computedTopReligions")
       .label Top Religions
       .value
-        ol
+        //- ol
+        transition-group.religion-list(name="religion-list" tag="ol")
           li(v-for="religion in computedTopReligions.slice(0, 3)")
             span {{religion.name}}
+
+    .box(v-if="my.daysPlayed > 2")
+      .label Days
+      .value {{my.daysPlayed + 1}}
     
     .box(v-if="my.daysPlayed > 0 || my.money > 0")
       .label Money

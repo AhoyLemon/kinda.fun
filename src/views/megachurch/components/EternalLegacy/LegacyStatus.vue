@@ -3,6 +3,7 @@
 <script setup>
   import { computed } from "vue";
   import { my } from "../../ts/variables/_my";
+  import { ui } from "../../ts/variables/_ui";
   import { gameSettings } from "../../ts/variables/_gameSettings";
   import { addCommas } from "../../../../shared/ts/_functions";
 
@@ -26,31 +27,6 @@
     }
 
     return my.eternalLegacy.purchasedItems;
-
-    // // Map purchased items to display format
-    // return my.eternalLegacy.purchasedItems.map((itemId) => {
-    //   // Find the item in gameSettings mammon items
-    //   const mammonItems = gameSettings.eternalLegacy?.shop?.mammonItems || [];
-    //   const item = mammonItems.find((m) => m.id === itemId);
-
-    //   if (item) {
-    //     return {
-    //       id: itemId,
-    //       name: item.name,
-    //       icon: item.icon,
-    //       description: item.description,
-    //       cost: item.cost,
-    //     };
-    //   }
-
-    //   return {
-    //     id: itemId,
-    //     name: itemId,
-    //     icon: "💰",
-    //     description: "Unknown item",
-    //     cost: 0,
-    //   };
-    // });
   });
 
   const completedDarkDeeds = computed(() => {
@@ -81,6 +57,10 @@
 
   const sterlingStatus = computed(() => {
     return my.eternalLegacy?.sterlingAlive ? "Alive" : "Deceased";
+  });
+
+  const isGameOver = computed(() => {
+    return ui.isGameOver || false;
   });
 
   const isEmpty = computed(() => {

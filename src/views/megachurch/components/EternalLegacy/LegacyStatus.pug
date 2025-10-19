@@ -5,6 +5,7 @@
   .legacy-status__header
     h3.legacy-status__title Legacy Status
     button.legacy-status__close(
+      v-if="!isGameOver"
       @click="$emit('close')"
       type="button"
       aria-label="Close Legacy Status"
@@ -15,7 +16,7 @@
   .legacy-status__content
 
     // Heat Level
-    .legacy-section(v-if="heatLevel > 0")
+    .legacy-section(v-if="heatLevel > 0 && !isGameOver")
       h4.section-title Heat Level
       .corruption-display
         .corruption-bar

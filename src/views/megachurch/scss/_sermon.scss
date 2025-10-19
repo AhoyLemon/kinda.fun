@@ -189,24 +189,4 @@ main.sermon {
       }
     }
   }
-
-  // Vue List Transitions for Religion Lists
-  .religion-list-enter-active,
-  .religion-list-leave-active {
-    transition: all 0.45s linear;
-  }
-
-  .religion-list-enter-from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  .religion-list-leave-to {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-
-  .religion-list-move {
-    transition: transform 0.45s linear;
-  }
 }

@@ -1,4 +1,5 @@
 @import "../../scss/_variables";
+@import "../../scss/transitions";
 
 $border-radius: 8px;
 $grid-gap: 4px;
@@ -226,24 +227,4 @@ $grid-gap: 4px;
   &:hover {
     background: rgba(0, 0, 0, 0.3);
   }
-}
-
-// Vue Transition Styles
-.inventory-item-enter-active,
-.inventory-item-leave-active {
-  transition: all 0.3s ease;
-}
-
-.inventory-item-enter-from {
-  opacity: 0;
-  transform: translateX(102%) scale(0.75);
-}
-
-.inventory-item-leave-to {
-  opacity: 0;
-  transform: translateX(-102%) scale(0.75);
-}
-
-.inventory-item-move {
-  transition: transform 1s ease-out;
 }

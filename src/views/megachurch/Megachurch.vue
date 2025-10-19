@@ -2213,21 +2213,24 @@
   }
 
   function triggerEndgame() {
-    toast.error("🚨 FEDERAL INVESTIGATION INITIATED 🚨");
+    toast.error("🚨 FEDERAL INVESTIGATION COMPLETE 🚨");
 
     // Close any open dialogs
     ui.eternalLegacyShop.isOpen = false;
     ui.sterlingVoicemail.isOpen = false;
-    ui.legacyStatus.isOpen = false;
+
     ui.churchInventory.isOpen = false;
+
+    ui.view = "game-over";
+    my.gameOverCause = "prison";
 
     // Log game over to Firebase
     logGameplayToFirebase("gameFinished", { cause: "prison" });
-
-    // Switch to game over view
-    setTimeout(() => {
-      ui.view = "game-over";
-    }, 2000);
+    if (my.eternalLegacy.totalMammon) {
+      setTimeout(() => {
+        ui.legacyStatus.isOpen = true;
+      }, 2500);
+    }
   }
 
   // === Debug Functions ===

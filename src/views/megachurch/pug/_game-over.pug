@@ -7,21 +7,18 @@ section.game-over(v-if="ui.view === 'game-over'")
       h2 💀 YOU DIED OF A DRUG OVERDOSE 💀
       p It feels good until it suddenly doesn't. The stresses of building a megachurch empire have had their effect on your body and mind, and it's not like you have the ability to #[em not] take all the drugs you own. You are an addict, afterall.
       p But hey, #[strong congratultions] on preacing successfully enough to afford a fatal amount of spice. That's an accompliishment in itself.
-      //- p And now you're dead.
-      //- p But hey, at least you got high in the process!
-      //- //- p The stress of running an illegal megachurch empire while evading federal authorities has taken its toll. You succumbed to a fatal overdose of spice.
     template(v-if="my.gameOverCause === 'prison'")
       h2 🏛️ YOU ARE IN PRISON 🏛️
-      p The federal investigation into your megachurch empire has concluded, and you have been sentenced to prison for your crimes.
+      p The federal investigation into your megachurch empire has concluded, and unlike in real-life America, you actually end up going to prison for massive fraud.
+      p(v-if="my.eternalLegacy.isActive") All your church's assets have been seized, but you can still take comfort in knowing that, like any true religious grifter, at least you ended up with some obscene tokens of wealth.
+      p(v-else) All your church's assets have been seized, and you have nothing to show for your efforts. Maybe you should have bought some things from the Eternal Legacy before the curtains closed.
 
     template(v-if="!my.church.isFounded")
       p It's a shame that you never even got your Megachurch off the ground. The game is called #[strong Megachurch Tycoon] after all.
-        span(v-if="!my.hasVan") And you didn't even get a van.
+        span(v-if="!my.hasVan") And you didn't even get a van. 
+          span(v-if="my.chats.harold.hasContacted") If you'd bought the van from Harold, you'd be able to preach in new places. And after a couple days of that, you'd probably have met somebody new.
         span(v-else-if="my.chats.sterling.hasContacted") Maybe Sterling could have helped you out with that.
         span(v-else) You did manage to get a van, you should have held on just a little bit longer.
-
-    p(v-if="!my.van") If you'd bought the van from Harold, you'd be able to preach in new places. And after a couple days of that, you'd probably have met somebody new.
-
 
     .game-over-stats
       table
@@ -30,27 +27,14 @@ section.game-over(v-if="ui.view === 'game-over'")
             td.label Total Days Survived:
             td.value {{my.daysPlayed}}
           tr(v-if="my.chats.sterling.hasContacted")
-            td.label Sterling Status:
-            td.value {{my.eternalLegacy.sterlingAlive ? 'alive' : 'dead'}}
-          tr(v-if="my.eternalLegacy.isActive")
-            td.label Final Mammon Score:
-            td.value.huge {{addCommas(my.eternalLegacy.totalMammon)}}
+            td.label Sterling isActive:
+            td.value {{my.eternalLegacy.sterlingAlive ? 'ALIVE' : 'DEAD'}}
           tr(v-if="my.totalMoneyEarned > 0")
             td.label Total Money Earned:
             td.value {{dollars(my.totalMoneyEarned)}}
-
-    .purchased-items(v-if="my.eternalLegacy.purchasedItems.length > 0")
-      h3 Your Legacy Items
-      .items-list
-        .mammon-items(v-if="purchasedMammonItems.length > 0")
-          h4 💰 Mammon Collection
-          ul
-            li(v-for="item in purchasedMammonItems" :key="item.id") {{item.name}}
-        
-        .under-table-items(v-if="purchasedDarkDeeds.length > 0")
-          h4 🔥 Dark Deeds Arrangements
-          ul
-            li(v-for="item in purchasedDarkDeeds" :key="item.id") {{item.name}}
+          tr(v-if="my.eternalLegacy.isActive")
+            td.label Final Mammon Score:
+            td.value.huge {{addCommas(my.eternalLegacy.totalMammon)}}
 
     .big-button-holder
       button.restart(@click="restartGame") Begin New Ministry
