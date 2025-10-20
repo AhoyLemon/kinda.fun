@@ -72,10 +72,6 @@
     return my.eternalLegacy?.sterlingAlive ? "Alive" : "Deceased";
   });
 
-  const isGameOver = computed(() => {
-    return ui.isGameOver || false;
-  });
-
   const isEmpty = computed(() => {
     return (
       !isLegacyActive.value &&
