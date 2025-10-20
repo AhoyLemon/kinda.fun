@@ -150,8 +150,8 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
       //button.sterling-voicemail(v-if="my.eternalLegacyVoicemailReplayAvailable" @click="playEternalLegacyVoicemail()") 📞 Replay Sterling's Voicemail
       button.workshop-zone(v-if="my.church.isFounded" @click="showWorshopZone") 💻 Da Worshop Zone
       button.eternal-legacy(v-if="my.eternalLegacy.isActive" @click="showEternalLegacyShop") 💻 Eternal Legacy
-      button.church-inventory(v-if="my.church.isFounded" @click="openChurchInventory") 📦 Church Inventory
-      button.legacy-status(v-if="my.eternalLegacy.isActive" @click="openLegacyStatus") ⚖️ Legacy Status
+      //button.church-inventory(v-if="my.church.isFounded" @click="openChurchInventory") 📦 Church Inventory
+      //button.legacy-status(v-if="my.eternalLegacy.isActive" @click="openLegacyStatus") ⚖️ Legacy Status
       button.submit(@click="handleNextDayClick()") Next Day.
 
     // Debug: Church Attendance Breakdown

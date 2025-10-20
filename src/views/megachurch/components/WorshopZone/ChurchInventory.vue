@@ -112,45 +112,37 @@
 
     const campaigns = [];
 
-    // General Advertisement
-    if (my.marketing.generalAdActive) {
+    // General Advertisement - now shows purchase count
+    if (my.marketing.generalAd?.purchaseCount > 0) {
       campaigns.push({
         id: "generalAd",
-        name: "General Advertisement",
+        name: "Internet Ad Campaigns",
         icon: "📢",
-        status: "Active",
+        status: `Purchased ${my.marketing.generalAd.purchaseCount} times`,
       });
     }
 
     // Sign Spinner
-    if (my.marketing.signSpinnerActive) {
+    if (my.marketing.signSpinner?.active && my.marketing.signSpinner.daysRemaining > 0) {
       campaigns.push({
         id: "signSpinner",
         name: "Sign Spinner",
         icon: "🪧",
-        status: "Active",
+        status: `${my.marketing.signSpinner.daysRemaining} days left`,
       });
     }
 
     // Targeted Advertisement
-    if (my.marketing.targetedAd?.active) {
+    if (my.marketing.targetedAd?.active && my.marketing.targetedAd.daysRemaining > 0) {
       campaigns.push({
         id: "targetedAd",
         name: "Targeted Advertisement",
         icon: "🎯",
-        status: `${my.marketing.targetedAd.targetReligion?.name || "Unknown"}`,
+        status: `${my.marketing.targetedAd.targetReligion?.name || "Unknown"} (${my.marketing.targetedAd.daysRemaining} days left)`,
       });
     }
 
-    // PR Campaign
-    if (my.marketing.prCampaign?.active) {
-      campaigns.push({
-        id: "prCampaign",
-        name: "PR Campaign",
-        icon: "📰",
-        status: `${my.marketing.prCampaign.targetReligion?.name || "Unknown"}`,
-      });
-    }
+    // PR Campaign is now permanent, so no longer shows in active campaigns
 
     return campaigns;
   });

@@ -133,15 +133,20 @@ export const my = reactive<My>({
     },
   },
   marketing: {
-    generalAdActive: false,
+    generalAd: {
+      purchaseCount: 0, // Number of times purchased for escalating cost
+    },
     targetedAd: {
       active: false,
       targetReligion: null,
+      daysRemaining: 0, // Days left for effect
     },
-    signSpinnerActive: false,
-    prCampaign: {
+    signSpinner: {
       active: false,
-      targetReligion: null,
+      daysRemaining: 0, // Days left for effect
+    },
+    prCampaign: {
+      // PR Campaign now permanent, no active state needed
     },
   },
   congregation: [],
@@ -178,6 +183,7 @@ export const my = reactive<My>({
     voicemailPlayed: false,
     voicemailReplayAvailable: false,
     totalMammon: 0,
+    totalInfluence: 0,
     purchasedItems: [],
     darkDeeds: [],
     sterlingCutModifier: 0,

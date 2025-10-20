@@ -1,3 +1,5 @@
+import { ReligionNames } from "../_types";
+
 export interface EternalLegacyShopItem {
   id: string;
   name: string;
@@ -28,99 +30,85 @@ export const eternalLegacyShopItems: EternalLegacyShopItem[] = [
     id: "serpent-staff",
     name: "Serpent-Handled Staff",
     cost: 500,
-    mammon: 5,
-    description: "For miracles, mischief, and plausible deniability. The entry-level idolator's tool.",
+    mammon: 15,
+    description: "Ethically sourced crystals that definitely align your chakras and bank account. Results may vary by gullibility.",
   },
+  // {
+  //   id: "prosperity-candles",
+  //   name: "Blessed Prosperity Candles (24-pack)",
+  //   cost: 1180,
+  //   mammon: 25,
+  //   description: "Hand-dipped in holy oils and capitalism. Burns bright like your congregation's wallets.",
+  // },
   {
     id: "silver-pieces",
     name: "Thirty Pieces of Silver",
-    cost: 1500,
-    mammon: 25,
-    description: "A collector's set for the truly committed betrayer. Includes certificate of authenticity.",
+    cost: 1650,
+    mammon: 30,
+    description: "Probably not actual silver, but who's counting? Perfect for betrayers, backstabbers, and dinner party conversation starters.",
   },
+  // {
+  //   id: "miracle-water",
+  //   name: "Premium Miracle Water Dispenser",
+  //   cost: 2340,
+  //   mammon: 40,
+  //   description: "Tap water blessed by someone who met someone who knew a priest. $50 per bottle sold separately.",
+  // },
   {
     id: "pearl-gates-keychain",
     name: "Pearl Gates Keychain",
-    cost: 3000,
+    cost: 2875,
     mammon: 50,
-    description: "Why wait for heaven when you can carry the keys now? Now with faux pearl inlay.",
+    description: "Why wait for death to show off your VIP afterlife access? Jingle your way to eternal salvation. Saint Peter not included.",
+  },
+  {
+    id: "gold-cross-necklace",
+    name: "Gold Cross Necklace",
+    cost: 3450,
+    mammon: 65,
+    description: "Nothing says 'humble servant' like 24-karat religious iconography. Made by the same jewelers who do chains for rappers.",
   },
   {
     id: "led-hubcaps",
-    name: "LED Hubcaps (Custom Name)",
-    cost: 5000,
-    mammon: 80,
-    description: "Let your chariot proclaim His glory in scrolling RGB. Custom text available.",
+    name: "Divine LED Hubcap Proclamation System",
+    cost: 4230,
+    mammon: 75,
+    description: "Let your chariot proclaim His glory in scrolling RGB. Custom scripture available, blasphemy extra.",
   },
   {
-    id: "diamond-cufflinks",
-    name: "Diamond-Encrusted Cufflinks",
-    cost: 8000,
+    id: "private-jet-model",
+    name: "Blessed Aviation Ministry Scale Model",
+    cost: 5680,
+    mammon: 95,
+    description: "A replica of the private jet you'll definitely need for 'missionary work' in the Bahamas.",
+  },
+  {
+    id: "diamond-chalice",
+    name: "Artisan Diamond-Encrusted Chalice",
+    cost: 6920,
     mammon: 120,
-    description: "For when you need to shine at the Lord's table—and the IRS audit.",
+    description: "Because regular communion wine tastes better from a $7,000 cup, obviously. Dishwasher safe!",
   },
   {
-    id: "gold-card-holder",
-    name: "Solid Gold Business Card Holder",
-    cost: 12000,
-    mammon: 180,
-    description: "Blessed are those who network in style. Impress the angels and the auditors.",
-  },
-  {
-    id: "babylonian-robes",
-    name: "Babylonian Luxury Robes",
-    cost: 16000,
-    mammon: 240,
-    description: "Fit for a king, or at least a cautionary tale. Dry clean only.",
-  },
-  {
-    id: "platinum-chalice",
-    name: "Platinum Chalice",
-    cost: 20000,
-    mammon: 300,
-    description: "Because the blood of Christ deserves nothing less than 24k. Dishwasher safe!",
-  },
-  {
-    id: "diamond-grillz",
-    name: "Diamond Fronts (Grillz)",
-    cost: 25000,
-    mammon: 375,
-    description: "Let your smile dazzle the congregation and blind your enemies. Not dentist recommended.",
-  },
-  {
-    id: "crystal-pulpit",
-    name: "Crystal Pulpit",
-    cost: 30000,
-    mammon: 450,
-    description: "Transparency in all things, except finances. Includes LED underlighting.",
-  },
-  {
-    id: "marble-baptismal",
-    name: "Marble Baptismal Pool",
-    cost: 35000,
-    mammon: 525,
-    description: "For baptisms that truly make a splash. Imported Italian marble.",
+    id: "prosperity-throne",
+    name: "Babylonian Prosperity Throne",
+    cost: 7850,
+    mammon: 140,
+    description: "Rule over your flock in style. Includes built-in cup holder and donation collection chute.",
   },
   {
     id: "baal-idol",
-    name: "Idol of Baal",
-    cost: 40000,
-    mammon: 600,
-    description: "For when you want to hedge your bets on the afterlife. Now with extra horns.",
-  },
-  {
-    id: "pharaoh-chariot",
-    name: "Pharaoh's Chariot (Golf Cart Edition)",
-    cost: 45000,
-    mammon: 675,
-    description: "For when you want to ride in style—straight into the Red Sea. Street legal in most gated communities.",
+    name: "Authentic Idol of Baal",
+    cost: 15000,
+    mammon: 250,
+    description: "The ultimate irony—worship money by buying a golden idol of an ancient prosperity god. Moses not included.",
   },
   {
     id: "golden-calf",
-    name: "Golden Calf (3ft, Gold-Plated)",
-    cost: 50000,
-    mammon: 750,
-    description: "A 3-foot high gold-plated sculpture. The original idol investment. (Definitely not solid gold.)",
+    name: "Biblical Golden Calf Replica",
+    cost: 25000,
+    mammon: 400,
+    description: "Peak biblical blasphemy. Moses would flip tables, but your accountant will flip with joy. (Solid gold-plated.)",
   },
 ];
 
@@ -137,7 +125,7 @@ export const eternalLegacyDarkDeeds: EternalLegacyDarkDeed[] = [
     id: "consultation-tony",
     name: "Consultation with Tony (Discreet Services)",
     cost: 1500,
-    heat: 30,
+    heat: 15,
     effect: "Eliminates Sterling, dramatically increases heat, and triggers a major investigation event. No refunds. No mercy.",
   },
 ];
@@ -222,5 +210,81 @@ export const eternalLegacyBibleVerses: EternalLegacyBibleVerse[] = [
     quote: "Blessed are the poor in spirit, for theirs is the kingdom of heaven—pending credit approval.",
     cite: "Matthew 5:3",
     version: "Rewards Card Edition",
+  },
+];
+
+// ================= CELEBRITY CENTRE INTERFACE =================
+// TODO: This interface is prepared for future Celebrity Centre feature implementation
+// When implementing, uncomment the following interface and celebrity data
+
+export interface EternalLegacyCelebrity {
+  id: string;
+  name: string;
+  cost?: number; // One-time cost for permanent effects
+  mammon: number; // Cost in mammon points
+  dailyCost?: number; // Daily cost for ongoing effects
+  religion?: ReligionNames; // Name of the religion that this celebrity is popular with
+  buzzBoost?: number; // One-time boost to my.church.buzz
+  religionBoost?: number; // One-time boost to specific religion in my.religiousScorecard
+  description: string; // humorous description
+  effect: string; // Clear description of what this celebrity endorsement will do for your church
+  dayEndorsed?: number; // Day of celebrity acquisition
+}
+
+export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
+  {
+    id: "terrible-rapper",
+    name: "RuFF RiFF",
+    mammon: 5,
+    dailyCost: 85,
+    buzzBoost: 3,
+    description: `A Florida born rapper who thinks "blessing" rhymes with "bling-sing." Will happily tattoo the name of your church on his pelvis. Will definitely steal all your Sprite. Make friends with him now and you'll have a friend when you're both in prison later.`,
+    effect: "Daily cost: $85. Provides +25 permanent buzz to attract younger crowds to your church.",
+  },
+  {
+    id: "obviously-this-is-joe-rogan",
+    name: "Bo Reagan",
+    mammon: 20,
+    dailyCost: 110,
+    religion: "The Order of the Alpha Male",
+    buzzBoost: 22,
+    religionBoost: 12,
+    description:
+      "An inexplicably popular podcast host and comedian(?) who appeals strongly to the manosphere by treating every conversation like an MMA fight. Will probably try to sell supplements to your church.",
+    effect: "Overall attendance boost and a improved following with The Order of the Alpha Male",
+  },
+
+  {
+    id: "former-adult-actress",
+    name: "Chastity Bangs",
+    cost: 1200,
+    mammon: 30,
+    buzzBoost: -20,
+    religion: "The Church of Eros",
+    religionBoost: 35,
+    description:
+      "Once a moderately famous adult actress, Chastity Bangs coincidentally found God right after she stopped getting booked for new work. A true believer in your faith (whatever it may be) provided she can still keep her OnlyFans account.",
+    effect: "One-time cost: $1,200. +12 permanent buzz, but may attract controversial attention.",
+  },
+  {
+    id: "washed-up-action-star",
+    name: "Steev Seagul",
+    mammon: 25,
+    dailyCost: 140,
+    religion: "2 Fast 2 Faithful",
+    religionBoost: 25,
+    description: `Starred in "Under Siege 7: Spiritual Warfare." and allegedly had a cameo in Fast 5, but I've never noticed. Now teaches mediation classes, hawks NFT dojo memberships, and insists ponytails are a lifestyle. Will anger every Buddhist he talks to.`,
+    effect: "Boost to 2 Fast 2 Faithful, penalty to Buddhists.",
+  },
+  {
+    id: "haul-influencer",
+    name: 'Tiffani "Tiff Da Shoppa" Bagwell',
+    mammon: 10,
+    cost: 500,
+    religion: "The Church of Having More Things",
+    buzzBoost: 12,
+    religionBoost: 15,
+    description: `A frankly irritatingly upbeat YouTube influencer from the Indiana who believes happiness is measured in shopping bags. Tiff’s daily haul videos feature her buying everything from scented candles to bulk glitter glue, and her catchphrase "I Shop Therefore I'm Tiff!" has become a hit among her 13.7M followers, assuredly none of whom have read René Descartes`,
+    effect: "Slight boost to attendance and big boost with The Church of Having More Things",
   },
 ];

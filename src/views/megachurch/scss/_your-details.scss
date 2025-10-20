@@ -91,8 +91,14 @@ aside.your-details {
         letter-spacing: 0.1em;
         font-size: 0.75em;
       }
-      button:before {
+      .trigger:before {
         content: "🐞";
+      }
+      .toggle:before {
+        content: "⚪";
+      }
+      .toggle.active:before {
+        content: "🟢";
       }
     }
   }

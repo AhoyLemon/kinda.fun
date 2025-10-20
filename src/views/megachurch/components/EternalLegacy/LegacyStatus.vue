@@ -37,6 +37,19 @@
     return my.eternalLegacy.darkDeeds;
   });
 
+  const currentInfluence = computed(() => {
+    return my.eternalLegacy?.totalInfluence || 0;
+  });
+
+  const ownedCelebrities = computed(() => {
+    if (!my.eternalLegacy?.purchasedItems) {
+      return [];
+    }
+
+    // Filter purchased items to get only celebrities
+    return my.eternalLegacy.purchasedItems.filter((item) => gameSettings.eternalLegacy.shop.celebrities.some((celeb) => celeb.id === item.id));
+  });
+
   const heatLevel = computed(() => {
     if (!my.eternalLegacy.heat || !gameSettings.eternalLegacy.heat.max) {
       return 0;

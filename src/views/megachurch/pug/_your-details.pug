@@ -29,7 +29,7 @@ aside.your-details
       .value
         //- ol
         transition-group.religion-list(name="religion-list" tag="ol")
-          li(v-for="religion in computedTopReligions.slice(0, 3)")
+          li(v-for="religion in computedTopReligions.slice(0, 3)" :key="religion.id")
             span {{religion.name}}
 
     .box(v-if="my.daysPlayed > 2")
@@ -70,10 +70,14 @@ aside.your-details
 
       fieldset.debug-controls(v-if="gameSettings.isDebug")
         legend Debug Controls
-        button.debug(@click="debugAddMoney()") +$1,000,000
-        button.debug(v-if="!my.chats.harold.hasContacted" @click="debugTriggerHarold()") Trigger Harold
-        button.debug(v-if="!my.hasVan" @click="debugGetVan()") Get Van
-        button.debug(v-if="!my.chats.sterling.hasContacted" @click="debugTriggerSterling()") Trigger Sterling
-        button.debug(v-if="!my.eternalLegacy.isActive" @click="debugTriggerEternalLegacy()") Trigger Legacy
-        button.debug(v-if="my.eternalLegacy.isActive" @click="debugAddHeat()") Add Heat (+10)
-        button.debug(@click="debugTriggerSpeedPreaching()") Speed Preaching
+        button.trigger(@click="debugAddMoney()") +$1,000,000
+        button.trigger(v-if="!my.chats.harold.hasContacted" @click="debugTriggerHarold()") Trigger Harold
+        button.trigger(v-if="!my.hasVan" @click="debugGetVan()") Get Van
+        button.trigger(v-if="!my.chats.sterling.hasContacted" @click="debugTriggerSterling()") Trigger Sterling
+        button.trigger(v-if="!my.eternalLegacy.isActive" @click="debugTriggerEternalLegacy()") Trigger Legacy
+        button.trigger(v-if="my.eternalLegacy.isActive" @click="debugAddHeat()") Add Heat (+10)
+        button.toggle(@click="debugTriggerSpeedPreaching()" :class="{'active': ui.timing.toastDelayMin == 1 }") 
+          template(v-if="ui.timing.toastDelayMin == 1")
+            span Regular Preaching
+          template(v-else)
+            span Speed Preaching

@@ -140,6 +140,52 @@ $border-radius: 8px;
   }
 }
 
+// INFLUENCE STYLES (similar to mammon)
+.influence-count {
+  .section-title {
+    color: #6bb6ff;
+    margin-bottom: unset;
+  }
+  .influence-current {
+    display: flex;
+    align-items: center;
+    color: #6bb6ff;
+    .influence-name {
+      font-size: 2.75rem;
+      font-weight: 345;
+      color: #6bb6ff;
+    }
+  }
+}
+
+// CELEBRITY ENDORSEMENTS
+.celebrity-items-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.celebrity-item {
+  @include inventoryItem(rgba(107, 182, 255, 0.1), #6bb6ff);
+  padding-left: 20px;
+  .celebrity-item-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    .celebrity-item-points {
+      color: #fff;
+      font-size: 130%;
+      font-weight: 325;
+      text-align: center;
+    }
+    .celebrity-item-name {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #93c5ff;
+      margin-bottom: 2px;
+    }
+  }
+}
+
 // DARK DEEDS
 .dark-deeds-list {
   display: grid;

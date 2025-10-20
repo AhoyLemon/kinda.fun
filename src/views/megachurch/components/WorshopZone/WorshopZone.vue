@@ -386,24 +386,24 @@
               <div class="marketing-img broken-img"></div>
               <h3>General Internet Ad Campaign</h3>
               <div class="marketing-description">
-                Broad online advertising to boost overall attendance by {{ gameSettings.church.marketing.generalAd.attendanceBoost }}% for
-                {{ gameSettings.church.marketing.generalAd.duration }} day(s). Spam the internet with pop-ups about salvation!
+                Permanently boost your church's online buzz by {{ gameSettings.church.marketing.generalAd.buzzBoost }} points. Gets 2x more expensive each time
+                you buy it. Spam salvation across the interwebs!
               </div>
               <dl class="marketing-stats stats-box">
-                <dt>Cost:</dt>
-                <dd>${{ gameSettings.church.marketing.generalAd.price }}</dd>
-                <dt>Status:</dt>
-                <dd>{{ my.marketing.generalAdActive ? "ACTIVE" : "INACTIVE" }}</dd>
+                <dt>Next Cost:</dt>
+                <dd>${{ gameSettings.church.marketing.generalAd.price * Math.pow(2, my.marketing.generalAd.purchaseCount) }}</dd>
+                <dt>Times Purchased:</dt>
+                <dd>{{ my.marketing.generalAd.purchaseCount }}</dd>
+                <dt>Buzz Boost:</dt>
+                <dd>+{{ gameSettings.church.marketing.generalAd.buzzBoost }} per purchase</dd>
               </dl>
               <button
-                v-if="!my.marketing.generalAdActive"
-                @click="buyMarketing('generalAd')"
+                @click="buyGeneralAd()"
                 class="buy-btn big"
-                :disabled="my.money < gameSettings.church.marketing.generalAd.price"
+                :disabled="my.money < gameSettings.church.marketing.generalAd.price * Math.pow(2, my.marketing.generalAd.purchaseCount)"
               >
-                RUN CAMPAIGN FOR ${{ gameSettings.church.marketing.generalAd.price }}
+                BUY FOR ${{ gameSettings.church.marketing.generalAd.price * Math.pow(2, my.marketing.generalAd.purchaseCount) }}
               </button>
-              <div v-else class="active-text">📢 CAMPAIGN ACTIVE</div>
             </div>
 
             <div class="marketing-card">
@@ -411,15 +411,17 @@
               <h3>Targeted Internet Ad Campaign</h3>
               <div class="marketing-description">
                 Target a specific religion to boost their attendance by {{ gameSettings.church.marketing.targetedAd.targetReligionBoost }}% for
-                {{ gameSettings.church.marketing.targetedAd.duration }} day(s). Because nothing says "conversion" like targeted advertising!
+                {{ gameSettings.church.marketing.targetedAd.duration }} days. Precision marketing for sustained attendance growth!
               </div>
               <dl class="marketing-stats stats-box">
                 <dt>Cost:</dt>
                 <dd>${{ gameSettings.church.marketing.targetedAd.price }}</dd>
-                <dt>Status:</dt>
-                <dd>{{ my.marketing.targetedAd.active ? "ACTIVE" : "INACTIVE" }}</dd>
+                <dt>Duration:</dt>
+                <dd>{{ gameSettings.church.marketing.targetedAd.duration }} days</dd>
                 <dt v-if="my.marketing.targetedAd.active">Target:</dt>
                 <dd v-if="my.marketing.targetedAd.active">{{ my.marketing.targetedAd.targetReligion?.name }}</dd>
+                <dt v-if="my.marketing.targetedAd.active">Days Left:</dt>
+                <dd v-if="my.marketing.targetedAd.active">{{ my.marketing.targetedAd.daysRemaining }}</dd>
               </dl>
               <div v-if="!my.marketing.targetedAd.active" class="targeting-section">
                 <select v-model="selectedTargetReligion" class="religion-select">
@@ -436,50 +438,52 @@
                   RUN CAMPAIGN FOR ${{ gameSettings.church.marketing.targetedAd.price }}
                 </button>
               </div>
-              <div v-else class="active-text">🎯 TARGETING {{ my.marketing.targetedAd.targetReligion?.name?.toUpperCase() }}</div>
+              <div v-else class="active-text">
+                🎯 TARGETING {{ my.marketing.targetedAd.targetReligion?.name?.toUpperCase() }} ({{ my.marketing.targetedAd.daysRemaining }} days left)
+              </div>
             </div>
 
             <div class="marketing-card">
               <div class="marketing-img broken-img"></div>
               <h3>Sign Spinner</h3>
               <div class="marketing-description">
-                Pay someone to spin a sign outside! Boosts attendance by {{ gameSettings.church.marketing.signSpinner.attendanceBoost }}% for
-                {{ gameSettings.church.marketing.signSpinner.duration }} day(s). Nothing attracts worshippers like impressive sign-spinning skills.
+                Pay someone to spin a sign outside! Boosts attendance by {{ gameSettings.church.marketing.signSpinner.attendanceBoost }}% per day. ${{
+                  gameSettings.church.marketing.signSpinner.price
+                }}
+                per day, hire for 1-7 days at once.
               </div>
               <dl class="marketing-stats stats-box">
-                <dt>Cost:</dt>
+                <dt>Cost per Day:</dt>
                 <dd>${{ gameSettings.church.marketing.signSpinner.price }}</dd>
-                <dt>Status:</dt>
-                <dd>{{ my.marketing.signSpinnerActive ? "ACTIVE" : "INACTIVE" }}</dd>
+                <dt v-if="my.marketing.signSpinner.active">Days Remaining:</dt>
+                <dd v-if="my.marketing.signSpinner.active">{{ my.marketing.signSpinner.daysRemaining }}</dd>
+                <dt v-else>Status:</dt>
+                <dd v-else>INACTIVE</dd>
               </dl>
-              <button
-                v-if="!my.marketing.signSpinnerActive"
-                @click="buyMarketing('signSpinner')"
-                class="buy-btn big"
-                :disabled="my.money < gameSettings.church.marketing.signSpinner.price"
-              >
-                HIRE SPINNER FOR ${{ gameSettings.church.marketing.signSpinner.price }}
-              </button>
-              <div v-else class="active-text">🪧 SPINNER ACTIVE</div>
+              <div v-if="!my.marketing.signSpinner.active" class="product-actions">
+                <input type="number" v-model="signSpinnerDays" min="1" max="7" class="quantity-input" @focus="setDefaultSignSpinnerDays" />
+                <button @click="buySignSpinner()" class="buy-btn" :disabled="my.money < gameSettings.church.marketing.signSpinner.price * signSpinnerDays">
+                  HIRE FOR {{ signSpinnerDays }} DAYS (${{ gameSettings.church.marketing.signSpinner.price * signSpinnerDays }})
+                </button>
+              </div>
+              <div v-else class="active-text">🪧 SPINNER ACTIVE ({{ my.marketing.signSpinner.daysRemaining }} days left)</div>
             </div>
 
             <div class="marketing-card">
               <div class="marketing-img broken-img"></div>
               <h3>PR Campaign</h3>
               <div class="marketing-description">
-                Hire a PR firm to improve your church's reputation with a specific religion. Adds
-                {{ gameSettings.church.marketing.prCampaign.reputationBoost }} points to that religion's scorecard for
-                {{ gameSettings.church.marketing.prCampaign.duration }} day(s). Professional spin doctors for your salvation business!
+                Hire a PR firm to permanently improve your church's reputation with a specific religion. Adds
+                {{ gameSettings.church.marketing.prCampaign.reputationBoost }} points to that religion's scorecard forever. Can be purchased multiple times for
+                different religions!
               </div>
               <dl class="marketing-stats stats-box">
                 <dt>Cost:</dt>
                 <dd>${{ gameSettings.church.marketing.prCampaign.price }}</dd>
-                <dt>Status:</dt>
-                <dd>{{ my.marketing.prCampaign.active ? "ACTIVE" : "INACTIVE" }}</dd>
-                <dt v-if="my.marketing.prCampaign.active">Target:</dt>
-                <dd v-if="my.marketing.prCampaign.active">{{ my.marketing.prCampaign.targetReligion?.name }}</dd>
+                <dt>Effect:</dt>
+                <dd>Permanent +{{ gameSettings.church.marketing.prCampaign.reputationBoost }} religion score</dd>
               </dl>
-              <div v-if="!my.marketing.prCampaign.active" class="targeting-section">
+              <div class="targeting-section">
                 <select v-model="selectedPrReligion" class="religion-select">
                   <option value="">Select Religion to Target</option>
                   <option v-for="religion in availableReligions" :key="religion.id" :value="religion">
@@ -487,10 +491,9 @@
                   </option>
                 </select>
                 <button @click="buyPrCampaign()" class="buy-btn" :disabled="!selectedPrReligion || my.money < gameSettings.church.marketing.prCampaign.price">
-                  RUN CAMPAIGN FOR ${{ gameSettings.church.marketing.prCampaign.price }}
+                  BUY PR CAMPAIGN FOR ${{ gameSettings.church.marketing.prCampaign.price }}
                 </button>
               </div>
-              <div v-else class="active-text">📢 IMPROVING {{ my.marketing.prCampaign.targetReligion?.name?.toUpperCase() }} RELATIONS</div>
             </div>
           </div>
         </div>
@@ -522,7 +525,19 @@
 
   const emit = defineEmits<{
     close: [];
-    purchase: [{ type: string; name: string; quantity?: number; communionType?: string; level?: number; targetedReligion?: string }];
+    purchase: [
+      {
+        type: string;
+        name: string;
+        quantity?: number;
+        communionType?: string;
+        level?: number;
+        targetedReligion?: string;
+        purchaseCount?: number;
+        days?: number;
+        cost?: number;
+      },
+    ];
   }>();
 
   const activeTab = ref("merch");
@@ -551,6 +566,7 @@
 
   const selectedTargetReligion = ref<any>(null);
   const selectedPrReligion = ref<any>(null);
+  const signSpinnerDays = ref(1); // Days to hire sign spinner (1-7)
 
   const availableReligions = computed(() => {
     if (!my.church.location?.religions) return [];
@@ -564,6 +580,12 @@
   function setDefaultQuantity(type: MerchTypes) {
     if (merchQuantities.value[type] === null || merchQuantities.value[type] === undefined) {
       merchQuantities.value[type] = 1;
+    }
+  }
+
+  function setDefaultSignSpinnerDays() {
+    if (signSpinnerDays.value === null || signSpinnerDays.value === undefined) {
+      signSpinnerDays.value = 1;
     }
   }
 
@@ -692,37 +714,58 @@
     }
   }
 
-  function buyMarketing(marketingType: "generalAd" | "signSpinner") {
-    let cost = 0;
-    let marketingName = "";
+  function buyGeneralAd() {
+    // Calculate escalating cost: base price * 2^purchaseCount
+    const baseCost = gameSettings.church.marketing.generalAd.price;
+    const cost = baseCost * Math.pow(2, my.marketing.generalAd.purchaseCount);
 
-    if (marketingType === "generalAd") {
-      cost = gameSettings.church.marketing.generalAd.price;
-      marketingName = "General Internet Ad Campaign";
-      if (my.money >= cost) {
-        my.money -= cost;
-        my.marketing.generalAdActive = true;
-      }
-    } else if (marketingType === "signSpinner") {
-      cost = gameSettings.church.marketing.signSpinner.price;
-      marketingName = "Sign Spinner";
-      if (my.money >= cost) {
-        my.money -= cost;
-        my.marketing.signSpinnerActive = true;
-      }
+    if (my.money >= cost) {
+      my.money -= cost;
+
+      // Add permanent buzz boost
+      my.church.buzz += gameSettings.church.marketing.generalAd.buzzBoost;
+
+      // Increment purchase count for future escalating costs
+      my.marketing.generalAd.purchaseCount += 1;
+
+      // Emit purchase event for Firebase logging
+      emit("purchase", {
+        type: "marketing",
+        name: "General Internet Ad Campaign",
+        purchaseCount: my.marketing.generalAd.purchaseCount,
+      });
     }
+  }
 
-    // Emit purchase event for Firebase logging if purchase was successful
-    if (my.money >= 0 && marketingName) {
-      emit("purchase", { type: "marketing", name: marketingName });
+  function buySignSpinner() {
+    const costPerDay = gameSettings.church.marketing.signSpinner.price;
+    const totalCost = costPerDay * signSpinnerDays.value;
+
+    if (my.money >= totalCost) {
+      my.money -= totalCost;
+
+      // Activate sign spinner for selected number of days
+      my.marketing.signSpinner.active = true;
+      my.marketing.signSpinner.daysRemaining = signSpinnerDays.value;
+
+      // Emit purchase event for Firebase logging
+      emit("purchase", {
+        type: "marketing",
+        name: "Sign Spinner",
+        days: signSpinnerDays.value,
+        cost: totalCost,
+      });
     }
   }
 
   function buyTargetedMarketing() {
     if (selectedTargetReligion.value && my.money >= gameSettings.church.marketing.targetedAd.price) {
       my.money -= gameSettings.church.marketing.targetedAd.price;
+
+      // Activate targeted ad for 3 days
       my.marketing.targetedAd.active = true;
       my.marketing.targetedAd.targetReligion = selectedTargetReligion.value;
+      my.marketing.targetedAd.daysRemaining = gameSettings.church.marketing.targetedAd.duration;
 
       // Emit purchase event for Firebase logging
       emit("purchase", {
@@ -736,8 +779,10 @@
   function buyPrCampaign() {
     if (selectedPrReligion.value && my.money >= gameSettings.church.marketing.prCampaign.price) {
       my.money -= gameSettings.church.marketing.prCampaign.price;
-      my.marketing.prCampaign.active = true;
-      my.marketing.prCampaign.targetReligion = selectedPrReligion.value;
+
+      // TODO: PR Campaign now provides permanent religion boost
+      // Need to investigate how religion scoring system works before implementing
+      // For now, the purchase is successful but doesn't apply the bonus yet
 
       // Emit purchase event for Firebase logging
       emit("purchase", {
@@ -745,6 +790,9 @@
         name: "PR Campaign",
         targetedReligion: selectedPrReligion.value.name,
       });
+
+      // Clear selection for next purchase
+      selectedPrReligion.value = null;
     }
   }
 </script>

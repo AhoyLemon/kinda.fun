@@ -28,6 +28,12 @@
       .mammon-current
         .mammon-name {{ addCommas(currentMammon) }}
 
+    // Current Influence Section
+    .legacy-section.influence-count(v-if="currentInfluence")
+      h4.section-title Current Influence
+      .influence-current
+        .influence-name {{ addCommas(currentInfluence) }}
+
     // Mammon Items Section
     .legacy-section(v-if="ownedMammonItems.length > 0")
       h4.section-title Tokens of Wealth
@@ -51,6 +57,19 @@
           .mammon-item-info
             .mammon-item-points {{ item.mammon }}
             .mammon-item-effect {{ item.name }}
+
+    // Celebrity Endorsements Section
+    .legacy-section(v-if="ownedCelebrities.length > 0")
+      h4.section-title Celebrity Endorsements
+      
+      TransitionGroup(name="inventory-item" class="celebrity-items-grid" tag="div")
+        .celebrity-item(
+          v-for="celebrity in ownedCelebrities"
+          :key="celebrity.id"
+        )
+          .celebrity-item-info
+            .celebrity-item-points {{ celebrity.influence }}
+            .celebrity-item-name {{ celebrity.name }}
 
     // Dark Deeds Section
     .legacy-section(v-if="completedDarkDeeds.length > 0")

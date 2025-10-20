@@ -27,7 +27,7 @@ section.game-over(v-if="ui.view === 'game-over'")
             td.label Total Days Survived:
             td.value {{my.daysPlayed}}
           tr(v-if="my.chats.sterling.hasContacted")
-            td.label Sterling isActive:
+            td.label Sterling is:
             td.value {{my.eternalLegacy.sterlingAlive ? 'ALIVE' : 'DEAD'}}
           tr(v-if="my.totalMoneyEarned > 0")
             td.label Total Money Earned:

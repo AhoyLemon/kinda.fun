@@ -164,6 +164,13 @@
     }
   }
 
+  &.celebrity-card {
+    border-color: #6b9bff;
+    &:has(button:hover) {
+      box-shadow: 0 4px 12px rgba(107, 155, 255, 0.3);
+    }
+  }
+
   .item-icon {
     font-size: 32px;
     text-align: center;
@@ -192,6 +199,7 @@
 
       .cost,
       .mammon-value,
+      .influence-value,
       .heat {
         color: white;
       }
@@ -202,6 +210,14 @@
       .mammon-value {
         color: rgb(255, 107, 255);
         font-size: 0.875rem;
+      }
+      .boost {
+        color: rgb(107, 255, 255);
+        font-size: 0.75rem;
+      }
+      .negative {
+        color: rgb(255, 180, 180);
+        font-size: 0.75rem;
       }
     }
   }

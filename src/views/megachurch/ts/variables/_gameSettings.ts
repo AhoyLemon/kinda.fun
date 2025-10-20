@@ -1,7 +1,7 @@
 import { reactive } from "vue";
 import { GameSettings } from "../_types";
 
-import { eternalLegacyShopItems, eternalLegacyDarkDeeds, eternalLegacyBibleVerses } from "./_eternalLegacy";
+import { eternalLegacyShopItems, eternalLegacyDarkDeeds, eternalLegacyBibleVerses, eternalLegacyCelebrities } from "./_eternalLegacy";
 
 export const gameSettings = reactive<GameSettings>({
   baseDonation: 0.25, // Base donation per follower
@@ -39,7 +39,7 @@ export const gameSettings = reactive<GameSettings>({
   },
   spice: {
     pricePerUnit: 5, // Fixed price per unit of spice
-    addictionProgression: 0.5, // How much requiredAmount increases per unit consumed above requirement (4 excess units = +1 requirement)
+    addictionProgression: 0.25, // How much requiredAmount increases per unit consumed above requirement (4 excess units = +1 requirement)
     penaltyPerUnit: 0.2, // Penalty percentage per unit short of requirement (20% per unit)
     bonusPerUnit: 0.175, // Bonus percentage per unit above requirement (17.5% per unit)
     maxBonus: 1, // Maximum bonus cap (100%)
@@ -145,24 +145,25 @@ export const gameSettings = reactive<GameSettings>({
     },
     marketing: {
       generalAd: {
-        price: 100,
-        attendanceBoost: 25, // % boost to attendance
-        duration: 1, // days
+        price: 150, // Base price, will be doubled each purchase
+        buzzBoost: 15, // Permanent buzz increase per purchase
+        purchaseCount: 0, // Track how many times purchased for escalating cost
       },
       targetedAd: {
-        price: 150,
+        price: 400,
         targetReligionBoost: 40, // % boost to target religion attendance
-        duration: 1,
+        duration: 3, // Increased from 1 to 3 days
       },
       signSpinner: {
-        price: 50,
+        price: 20, // Per day cost
         attendanceBoost: 10,
-        duration: 1,
+        duration: 1, // Will be multiplied by selected days
+        maxDays: 7, // Maximum days that can be hired at once
       },
       prCampaign: {
-        price: 200,
-        reputationBoost: 5, // Points to add to religious scorecard for target religion
-        duration: 1,
+        price: 250, // Increased from 200
+        reputationBoost: 5, // Permanent points to add to religious scorecard
+        duration: 0, // 0 means permanent effect
       },
     },
   },
@@ -178,6 +179,7 @@ export const gameSettings = reactive<GameSettings>({
     shop: {
       mammonItems: eternalLegacyShopItems,
       darkDeeds: eternalLegacyDarkDeeds,
+      celebrities: eternalLegacyCelebrities,
     },
     bibleVerses: eternalLegacyBibleVerses,
   },

@@ -49,23 +49,20 @@ When implementing features, Copilot should:
 
 **ALWAYS manually test after making changes to games or build system:**
 
-1. **Build Validation**:
+1. **TypeScript Validation**:
+   - Run `npx tsc --noEmit` to verify TypeScript compilation is clean
+
+2. **Build Validation**:
    - Run `npm run build -- --mode production` and verify it completes without errors
    - Check that `dist/` folder contains all game HTML files (cameo.html, guillotine.html, invalid.html, etc.)
-
-2. **Development Server Validation**:
-   - Start `npm run dev`
-   - Navigate to http://localhost:5173 and verify homepage loads
-   - Test individual games: http://localhost:5173/cameo, http://localhost:5173/guillotine, etc.
-   - Verify games display title screens (Firebase auth errors are expected without config)
 
 ### Pre-Commit Requirements
 
 **ALWAYS run before committing changes:**
 
+- `npm run tsc` -- verifies TypeScript compilation is clean
 - `npm run format` -- formats code consistently (but CHECK for SCSS function formatting issues)
 - `npm run build -- --mode production` -- ensures production build works (NEVER CANCEL - takes ~10 seconds)
-- `npm run test:unit` -- verifies tests pass (takes ~1.5 seconds)
 
 **CRITICAL: Prettier Formatting Warning**
 

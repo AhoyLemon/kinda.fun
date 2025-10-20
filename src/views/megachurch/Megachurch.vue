@@ -41,6 +41,7 @@
   // Sounds
   import { Howl, Howler } from "howler";
   import { soundWhoopsYoureDead } from "./ts/_sounds";
+  import { soundInPrison } from "./ts/_sounds";
 
   // Components
   import Chat from "./components/Chat/Chat.vue";
@@ -874,11 +875,18 @@
     churchAttendees += buzzBonus;
 
     // Apply marketing effects to attendance (marketing was purchased yesterday, affects today)
-    if (my.marketing.generalAdActive) {
-      churchAttendees = Math.round(churchAttendees * (1 + gameSettings.church.marketing.generalAd.attendanceBoost / 100));
-    }
-    if (my.marketing.signSpinnerActive) {
+    // General Ad now provides permanent buzz boost, so it's applied through my.church.buzz
+    // Sign Spinner provides temporary boost when active
+    if (my.marketing.signSpinner.active && my.marketing.signSpinner.daysRemaining > 0) {
       churchAttendees = Math.round(churchAttendees * (1 + gameSettings.church.marketing.signSpinner.attendanceBoost / 100));
+    }
+    // Targeted ads boost specific religion attendance
+    if (my.marketing.targetedAd.active && my.marketing.targetedAd.daysRemaining > 0) {
+      // This would need specific logic to boost the targeted religion's attendance
+      // For now, apply general boost if the church religion matches the targeted religion
+      if (my.church.religion?.id === my.marketing.targetedAd.targetReligion?.id) {
+        churchAttendees = Math.round(churchAttendees * (1 + gameSettings.church.marketing.targetedAd.targetReligionBoost / 100));
+      }
     }
 
     // Calculate effective church capacity (base + extra pews)
@@ -1106,15 +1114,8 @@
       }
     });
 
-    // Apply PR campaign reputation boost if active
-    if (my.marketing.prCampaign.active && my.marketing.prCampaign.targetReligion) {
-      const targetEntry = my.religiousScorecard.find((entry: any) => entry.id === my.marketing.prCampaign.targetReligion.id);
-      if (targetEntry) {
-        targetEntry.score += gameSettings.church.marketing.prCampaign.reputationBoost;
-        // Add to existing change or create new change if none exists
-        targetEntry.change = (targetEntry.change || 0) + gameSettings.church.marketing.prCampaign.reputationBoost;
-      }
-    }
+    // PR Campaign is now permanent and boosts are applied at purchase time
+    // No longer need to apply daily boosts
 
     // Force Vue reactivity by replacing the scorecard array
     my.religiousScorecard = my.religiousScorecard.map((entry) => ({ ...entry }));
@@ -1489,10 +1490,9 @@
     const excess = Math.max(0, consumed - required);
 
     if (excess > 0) {
-      // Store addiction increase for next day (rounded to integer)
-      my.spice.pendingAddictionIncrease = Math.round(excess * gameSettings.spice.addictionProgression);
-    } else {
-      my.spice.pendingAddictionIncrease = 0;
+      // If you took more than you need, this gets added to your pending addiction as a float.
+      const newIncrease = excess * gameSettings.spice.addictionProgression;
+      my.spice.pendingAddictionIncrease = my.spice.pendingAddictionIncrease + newIncrease;
     }
   }
 
@@ -1500,10 +1500,12 @@
     // Apply addiction progression that was calculated yesterday
     if (my.spice.pendingAddictionIncrease > 0) {
       const oldRequirement = my.spice.requiredAmount;
-      my.spice.requiredAmount = my.spice.requiredAmount + my.spice.pendingAddictionIncrease;
-      const newRequirement = my.spice.requiredAmount;
-      my.spice.pendingAddictionIncrease = 0;
-      return newRequirement > oldRequirement;
+      const pendingAddictionIncreaseInteger = Math.floor(my.spice.pendingAddictionIncrease);
+
+      if (pendingAddictionIncreaseInteger > 0) {
+        my.spice.requiredAmount += pendingAddictionIncreaseInteger;
+        my.spice.pendingAddictionIncrease -= pendingAddictionIncreaseInteger;
+      }
     }
     return false; // No change
   }
@@ -1644,7 +1646,7 @@
     my.money -= item.cost;
 
     // Log purchase to Firebase
-    const collection = category === "mammon" ? "mammon" : "darkDeeds";
+    const collection = category === "mammon" ? "mammon" : category === "darkDeeds" ? "darkDeeds" : "celebrities";
     logGameplayToFirebase("eternalLegacyPurchase", {
       name: item.name,
       collection: collection,
@@ -1682,11 +1684,21 @@
         case "consultation-tony":
           // Eliminate Sterling but massive heat increase
           my.eternalLegacy.sterlingAlive = false;
-          toast.error(`${item.name}: Sterling has been... permanently removed. Heat MASSIVELY increased!`);
+          toast.error(`${item.name}: Sterling has been... permanently removed. Heat increased by ${item.heat}`);
           break;
       }
 
       toast.warning(`🔥 Heat increased by ${item.heat}! Current: ${my.eternalLegacy.heat}/${gameSettings.eternalLegacy.heat.max}`);
+    } else if (category === "celebrities") {
+      my.eternalLegacy.purchasedItems.push(item);
+      // Celebrity items increase influence score
+      if (item.influence) {
+        if (!my.eternalLegacy.totalInfluence) {
+          my.eternalLegacy.totalInfluence = 0;
+        }
+        my.eternalLegacy.totalInfluence += item.influence;
+      }
+      toast.success(`🌟 ${item.name} endorsed your church! Influence increased.`);
     }
 
     // Don't auto-close shop - let player continue shopping
@@ -1828,21 +1840,14 @@
 
     // Show toast that player found a note
     toast.info("🚚 Somebody left a note on your van", {
-      timeout: ui.timing.toastDuration,
+      timeout: 3500,
       onClose: () => {
         // Show the actual note after toast disappears
-        setTimeout(() => {
-          if (sterlingNoteRef.value) {
-            sterlingNoteRef.value.showNote();
-          }
-        }, 500);
+        if (sterlingNoteRef.value) {
+          sterlingNoteRef.value.showNote();
+        }
       },
     });
-  }
-
-  function onSterlingNoteRead() {
-    // After reading the note, Sterling becomes available for texting
-    // No initial chat messages - player must initiate contact
   }
 
   function triggerPlugContact() {
@@ -2032,6 +2037,9 @@
     // Update heat if Eternal Legacy is active
     if (my.eternalLegacy.isActive) {
       updateHeat(gameSettings.eternalLegacy.heat.dailyBaseIncrease);
+      if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
+        return; // Endgame triggered
+      }
     }
 
     // Calculate pending addiction BEFORE resetting spice consumption
@@ -2043,13 +2051,24 @@
     // Reset van travel for the day
     my.hasTraveledToday = false;
 
-    // Reset marketing effects (they only last one day)
-    my.marketing.generalAdActive = false;
-    my.marketing.signSpinnerActive = false;
-    my.marketing.targetedAd.active = false;
-    my.marketing.targetedAd.targetReligion = null;
-    my.marketing.prCampaign.active = false;
-    my.marketing.prCampaign.targetReligion = null;
+    // Update marketing effects (decrement days remaining for temporary effects)
+    // General Ad is permanent (buzz boost), so no reset needed
+    // Sign Spinner: decrement days remaining
+    if (my.marketing.signSpinner.active && my.marketing.signSpinner.daysRemaining > 0) {
+      my.marketing.signSpinner.daysRemaining -= 1;
+      if (my.marketing.signSpinner.daysRemaining <= 0) {
+        my.marketing.signSpinner.active = false;
+      }
+    }
+    // Targeted Ad: decrement days remaining
+    if (my.marketing.targetedAd.active && my.marketing.targetedAd.daysRemaining > 0) {
+      my.marketing.targetedAd.daysRemaining -= 1;
+      if (my.marketing.targetedAd.daysRemaining <= 0) {
+        my.marketing.targetedAd.active = false;
+        my.marketing.targetedAd.targetReligion = null;
+      }
+    }
+    // PR Campaign is permanent, no reset needed
 
     // Process daily Seraph AI subscription cost
     my.seraphAICostYesterday = 0;
@@ -2097,14 +2116,7 @@
     }
 
     if (my.spice.consumedToday >= my.spice.fatalAmount) {
-      toast.error("Uh oh", { timeout: ui.timing.toastDuration });
-      setTimeout(() => {
-        toast.error("That was probably too much...", { timeout: ui.timing.toastDuration });
-      }, 2500);
-      ui.view = "game-over";
-      my.gameOverCause = "drug overdose";
-      soundWhoopsYoureDead.play();
-      logGameplayToFirebase("gameFinished", { cause: "drug overdose" });
+      triggerEndGame("drug overdose");
     } else {
       ui.view = "sermon";
     }
@@ -2153,22 +2165,12 @@
     setTimeout(() => {
       toast.warning("The Heat Meter is now tracking federal attention. Your days are numbered.");
     }, 1000);
-
-    // Check for immediate endgame trigger
-    if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
-      triggerEndgame();
-    }
   }
 
   function onVoicemailCompleted() {
     // Handle when the Sterling voicemail playback is completed
     my.eternalLegacy.voicemailPlayed = true;
     my.eternalLegacy.heat += gameSettings.eternalLegacy.heat.dailyBaseIncrease;
-
-    // Check for immediate endgame trigger
-    if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
-      triggerEndgame();
-    }
   }
 
   function openEternalLegacyFromVoicemail() {
@@ -2176,11 +2178,6 @@
     ui.eternalLegacyShop.isOpen = true;
     // Auto-open LegacyStatus when EternalLegacyShop opens
     ui.legacyStatus.isOpen = true;
-
-    // Check for immediate endgame trigger
-    if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
-      triggerEndgame();
-    }
   }
 
   function updateHeat(amount: number) {
@@ -2188,7 +2185,7 @@
 
     // Check for endgame trigger
     if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
-      triggerEndgame();
+      triggerEndGame("prison");
     }
   }
 
@@ -2212,25 +2209,25 @@
     ui.legacyStatus.isOpen = false;
   }
 
-  function triggerEndgame() {
-    toast.error("🚨 FEDERAL INVESTIGATION COMPLETE 🚨");
-
-    // Close any open dialogs
-    ui.eternalLegacyShop.isOpen = false;
-    ui.sterlingVoicemail.isOpen = false;
-
-    ui.churchInventory.isOpen = false;
-
-    ui.view = "game-over";
-    my.gameOverCause = "prison";
-
-    // Log game over to Firebase
-    logGameplayToFirebase("gameFinished", { cause: "prison" });
-    if (my.eternalLegacy.totalMammon) {
+  function triggerEndGame(cause: "drug overdose" | "prison") {
+    if (cause === "drug overdose") {
+      toast.error("Uh oh", { timeout: ui.timing.toastDuration });
       setTimeout(() => {
-        ui.legacyStatus.isOpen = true;
+        toast.error("That was probably too much...", { timeout: ui.timing.toastDuration });
       }, 2500);
+      soundWhoopsYoureDead.play();
+    } else if (cause === "prison") {
+      toast.error("🚨 FEDERAL INVESTIGATION COMPLETE 🚨");
+      soundInPrison.play();
+      if (my.eternalLegacy.totalMammon) {
+        setTimeout(() => {
+          ui.legacyStatus.isOpen = true;
+        }, 2500);
+      }
     }
+    ui.view = "game-over";
+    my.gameOverCause = cause;
+    logGameplayToFirebase("gameFinished", { cause: cause });
   }
 
   // === Debug Functions ===

@@ -2,6 +2,7 @@ import {
   EternalLegacyShopItem,
   EternalLegacyDarkDeed,
   EternalLegacyBibleVerse,
+  EternalLegacyCelebrity,
 } from "./variables/_eternalLegacy";
 
 // ================= GENERAL TYPES =================
@@ -111,15 +112,20 @@ export interface MerchItem {
   totalSold: number; // how many sold total
 }
 export interface ChurchMarketing {
-  generalAdActive: boolean;
+  generalAd: {
+    purchaseCount: number; // Number of times purchased for escalating cost
+  };
   targetedAd: {
     active: boolean;
     targetReligion: Religion | null;
+    daysRemaining: number; // Days left for effect
   };
-  signSpinnerActive: boolean;
-  prCampaign: {
+  signSpinner: {
     active: boolean;
-    targetReligion: Religion | null;
+    daysRemaining: number; // Days left for effect
+  };
+  prCampaign: {
+    // PR Campaign now permanent, no active state needed
   };
 }
 
@@ -373,9 +379,9 @@ export interface GameSettings {
     };
     marketing: {
       generalAd: {
-        price: number;
-        attendanceBoost: number;
-        duration: number; // days
+        price: number; // Base price, will be doubled each purchase
+        buzzBoost: number; // Permanent buzz increase per purchase
+        purchaseCount: number; // Track how many times purchased for escalating cost
       };
       targetedAd: {
         price: number;
@@ -383,14 +389,15 @@ export interface GameSettings {
         duration: number;
       };
       signSpinner: {
-        price: number;
+        price: number; // Per day cost
         attendanceBoost: number;
-        duration: number;
+        duration: number; // Will be multiplied by selected days
+        maxDays: number; // Maximum days that can be hired at once
       };
       prCampaign: {
         price: number;
-        reputationBoost: number;
-        duration: number;
+        reputationBoost: number; // Permanent points to add to religious scorecard
+        duration: number; // 0 means permanent effect
       };
     };
   };
@@ -406,6 +413,7 @@ export interface GameSettings {
     shop: {
       mammonItems: EternalLegacyShopItem[];
       darkDeeds: EternalLegacyDarkDeed[];
+      celebrities: EternalLegacyCelebrity[];
     };
     bibleVerses: EternalLegacyBibleVerse[];
   };
@@ -510,6 +518,7 @@ export interface My {
     voicemailPlayed: boolean;
     voicemailReplayAvailable: boolean;
     totalMammon: number;
+    totalInfluence: number;
     purchasedItems: EternalLegacyShopItem[]; // Array of purchased items
     darkDeeds: EternalLegacyDarkDeed[];
     sterlingCutModifier: number; // Additional percentage points added to Sterling's cut
