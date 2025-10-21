@@ -12,13 +12,13 @@ Teleport(to="body")
           :class="{ active: activeTab === 'mammon' }"
           @click="activeTab = 'mammon'"
         ) The Mammon Collection
-        //- button.tab-btn(
-        //- :class="{ active: activeTab === 'celebrities' }"
-        //- @click="activeTab = 'celebrities'"
-        //- ) Celebrity Centre
         button.tab-btn(
-        :class="{ active: activeTab === 'darkDeeds' }"
-        @click="activeTab = 'darkDeeds'"
+          :class="{ active: activeTab === 'celebrities' }"
+          @click="activeTab = 'celebrities'"
+        ) Celebrity Centre
+        button.tab-btn(
+          :class="{ active: activeTab === 'darkDeeds' }"
+          @click="activeTab = 'darkDeeds'"
         ) Commit Dark Deeds
         
 

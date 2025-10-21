@@ -231,6 +231,135 @@ export interface EternalLegacyCelebrity {
   dayEndorsed?: number; // Day of celebrity acquisition
 }
 
+export interface ELC {
+  id: string;
+  name: string;
+  cost: number; // Cost to acquire.
+  dailyCost: number; // Daily upkeep to maintain
+  hasDailyEffects: boolean;
+  hasOneTimeEffects: boolean;
+
+  religions?: {
+    likedBy: ReligionNames[];
+    hatedBy: ReligionNames[];
+  };
+
+  oneTimeEffects?: {
+    // Effects caused immediately when acquired. This MUST be provided if hasOneTimeEffects is true
+    mammon: number; // one-time mammon gain
+    buzz: number; // one-time gain to my.church.buzz
+    religionBoost: number; // one-time boost to the likedBy religion(s) in in my.religiousScorecard
+    religionPenalty: number; // one-time penalty to the hatedBy religion(s) in my.religiousScorecard
+  };
+  dailyEffects?: {
+    // Effects provided every day. This MUST be provided if hasDailyEffects is true
+    mammon: number; // daily mammon gain
+    buzz: number; // daily gain to my.church.buzz
+    religionBoost: number; // daily boost to the likedBy religion(s) in in my.religiousScorecard
+    religionPenalty: number; // daily penalty to the hatedBy religion(s) in my.religiousScorecard
+  };
+
+  description: string; // humorous description
+  effect: string; // Clear description of what this celebrity endorsement will do for your church
+}
+
+export const eternalLegacyCelebritiesAgain: ELC[] = [
+  {
+    id: "terrible-rapper",
+    name: "RuFF RiFF",
+    cost: 700,
+    dailyCost: 0,
+    hasOneTimeEffects: true,
+    hasDailyEffects: false,
+    religions: {
+      likedBy: ["The Church of the High Priest", "The Church of Having More Things"],
+      hatedBy: ["The Queens' Dominion", "Mormonism", "Jehovah's Witnesses"],
+    },
+    oneTimeEffects: {
+      mammon: 5,
+      buzz: 3,
+      religionBoost: 15,
+      religionPenalty: 20,
+    },
+    description: `A Florida born rapper who thinks "blessing" rhymes with "bling-sing." Will happily tattoo the name of your church on his pelvis. Will definitely steal all your Sprite. Make friends with him now and you'll have a friend when you're both in prison later.`,
+    effect: "Will increase your church attendence slightly. Will lure in fans of sizzurp and Dolce & Gabanna, but will drive pretty much everyone else away",
+  },
+  {
+    id: "obviously-this-is-joe-rogan",
+    name: "Bo Reagan",
+    cost: 1400,
+    dailyCost: 150,
+    hasOneTimeEffects: true,
+    hasDailyEffects: true,
+    religions: {
+      likedBy: ["The Order of the Alpha Male"],
+      hatedBy: [],
+    },
+    oneTimeEffects: {
+      mammon: 40,
+      buzz: 40,
+      religionBoost: 12,
+      religionPenalty: 0,
+    },
+    dailyEffects: {
+      mammon: 0,
+      buzz: -3,
+      religionBoost: 2,
+      religionPenalty: 0,
+    },
+    description:
+      "An inexplicably popular podcast host and comedian(?) who appeals strongly to the manosphere by treating every conversation like an MMA fight. Will probably try to sell supplements to your church.",
+    effect: "Provides a significant boost to attendance when hired, and will bring in the Chauvanists. However, expend attendance to dwindle as time goes on.",
+  },
+  {
+    id: "former-adult-actress",
+    name: "Chastity Bangs",
+    hasOneTimeEffects: true,
+    hasDailyEffects: true,
+    cost: 1200,
+    dailyCost: 0,
+    religions: {
+      likedBy: ["The Church of Eros"],
+      hatedBy: ["Catholicism", "Southern Baptist", "Zardoz"],
+    },
+    oneTimeEffects: {
+      mammon: 30,
+      buzz: 2,
+      religionBoost: 10,
+      religionPenalty: 10,
+    },
+    dailyEffects: {
+      mammon: 0,
+      buzz: 0,
+      religionBoost: 5,
+      religionPenalty: 10,
+    },
+    description:
+      "Once a moderately famous adult actress, Chastity Bangs coincidentally found God right after she stopped getting booked for new work. A true believer in your faith (whatever it may be) provided she can still keep her OnlyFans account.",
+    effect: "Slight boost to attendance and big boost with The Church of Eros, but will alienate more conservative religious groups.",
+  },
+  {
+    id: "washed-up-action-star",
+    name: "Steev Seagul",
+    hasOneTimeEffects: true,
+    hasDailyEffects: false,
+    cost: 1000,
+    dailyCost: 0,
+    religions: {
+      likedBy: ["2 Fast 2 Faithful"],
+      hatedBy: ["Buddhism"],
+    },
+    oneTimeEffects: {
+      mammon: 25,
+      buzz: 4,
+      religionBoost: 40,
+      religionPenalty: 200,
+    },
+    description: `Starred in "Under Siege 7: Spiritual Warfare." and allegedly had a cameo in Fast 5, but I've never noticed. Now teaches mediation classes, hawks NFT dojo memberships, and insists ponytails are a lifestyle. Will anger every Buddhist he talks to.`,
+    effect: "Boost to 2 Fast 2 Faithful, but you'll never see a Buddhist in your church again.",
+  },
+];
+
 export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
   {
     id: "terrible-rapper",
@@ -253,7 +382,6 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
       "An inexplicably popular podcast host and comedian(?) who appeals strongly to the manosphere by treating every conversation like an MMA fight. Will probably try to sell supplements to your church.",
     effect: "Overall attendance boost and a improved following with The Order of the Alpha Male",
   },
-
   {
     id: "former-adult-actress",
     name: "Chastity Bangs",

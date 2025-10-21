@@ -128,12 +128,15 @@
   .Vue-Toastification__toast {
     &:has(.listener-effect.is-positive) {
       background-color: rgba(3, 20, 3, 0.9);
+      color: $white;
     }
     &:has(.listener-effect.is-negative) {
       background-color: rgba(38, 3, 3, 0.9);
+      color: $white;
     }
     &:has(.listener-effect.is-confused) {
       background-color: rgba(20, 15, 3, 0.9);
+      color: $white;
     }
   }
 </style>
