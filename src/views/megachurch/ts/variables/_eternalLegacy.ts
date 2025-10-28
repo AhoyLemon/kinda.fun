@@ -220,20 +220,6 @@ export const eternalLegacyBibleVerses: EternalLegacyBibleVerse[] = [
 export interface EternalLegacyCelebrity {
   id: string;
   name: string;
-  cost?: number; // One-time cost for permanent effects
-  mammon: number; // Cost in mammon points
-  dailyCost?: number; // Daily cost for ongoing effects
-  religion?: ReligionNames; // Name of the religion that this celebrity is popular with
-  buzzBoost?: number; // One-time boost to my.church.buzz
-  religionBoost?: number; // One-time boost to specific religion in my.religiousScorecard
-  description: string; // humorous description
-  effect: string; // Clear description of what this celebrity endorsement will do for your church
-  dayEndorsed?: number; // Day of celebrity acquisition
-}
-
-export interface ELC {
-  id: string;
-  name: string;
   cost: number; // Cost to acquire.
   dailyCost: number; // Daily upkeep to maintain
   hasDailyEffects: boolean;
@@ -263,7 +249,7 @@ export interface ELC {
   effect: string; // Clear description of what this celebrity endorsement will do for your church
 }
 
-export const eternalLegacyCelebritiesAgain: ELC[] = [
+export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
   {
     id: "terrible-rapper",
     name: "RuFF RiFF",
@@ -357,62 +343,5 @@ export const eternalLegacyCelebritiesAgain: ELC[] = [
     },
     description: `Starred in "Under Siege 7: Spiritual Warfare." and allegedly had a cameo in Fast 5, but I've never noticed. Now teaches mediation classes, hawks NFT dojo memberships, and insists ponytails are a lifestyle. Will anger every Buddhist he talks to.`,
     effect: "Boost to 2 Fast 2 Faithful, but you'll never see a Buddhist in your church again.",
-  },
-];
-
-export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
-  {
-    id: "terrible-rapper",
-    name: "RuFF RiFF",
-    mammon: 5,
-    dailyCost: 85,
-    buzzBoost: 3,
-    description: `A Florida born rapper who thinks "blessing" rhymes with "bling-sing." Will happily tattoo the name of your church on his pelvis. Will definitely steal all your Sprite. Make friends with him now and you'll have a friend when you're both in prison later.`,
-    effect: "Daily cost: $85. Provides +25 permanent buzz to attract younger crowds to your church.",
-  },
-  {
-    id: "obviously-this-is-joe-rogan",
-    name: "Bo Reagan",
-    mammon: 20,
-    dailyCost: 110,
-    religion: "The Order of the Alpha Male",
-    buzzBoost: 22,
-    religionBoost: 12,
-    description:
-      "An inexplicably popular podcast host and comedian(?) who appeals strongly to the manosphere by treating every conversation like an MMA fight. Will probably try to sell supplements to your church.",
-    effect: "Overall attendance boost and a improved following with The Order of the Alpha Male",
-  },
-  {
-    id: "former-adult-actress",
-    name: "Chastity Bangs",
-    cost: 1200,
-    mammon: 30,
-    buzzBoost: -20,
-    religion: "The Church of Eros",
-    religionBoost: 35,
-    description:
-      "Once a moderately famous adult actress, Chastity Bangs coincidentally found God right after she stopped getting booked for new work. A true believer in your faith (whatever it may be) provided she can still keep her OnlyFans account.",
-    effect: "One-time cost: $1,200. +12 permanent buzz, but may attract controversial attention.",
-  },
-  {
-    id: "washed-up-action-star",
-    name: "Steev Seagul",
-    mammon: 25,
-    dailyCost: 140,
-    religion: "2 Fast 2 Faithful",
-    religionBoost: 25,
-    description: `Starred in "Under Siege 7: Spiritual Warfare." and allegedly had a cameo in Fast 5, but I've never noticed. Now teaches mediation classes, hawks NFT dojo memberships, and insists ponytails are a lifestyle. Will anger every Buddhist he talks to.`,
-    effect: "Boost to 2 Fast 2 Faithful, penalty to Buddhists.",
-  },
-  {
-    id: "haul-influencer",
-    name: 'Tiffani "Tiff Da Shoppa" Bagwell',
-    mammon: 10,
-    cost: 500,
-    religion: "The Church of Having More Things",
-    buzzBoost: 12,
-    religionBoost: 15,
-    description: `A frankly irritatingly upbeat YouTube influencer from the Indiana who believes happiness is measured in shopping bags. Tiff’s daily haul videos feature her buying everything from scented candles to bulk glitter glue, and her catchphrase "I Shop Therefore I'm Tiff!" has become a hit among her 13.7M followers, assuredly none of whom have read René Descartes`,
-    effect: "Slight boost to attendance and big boost with The Church of Having More Things",
   },
 ];

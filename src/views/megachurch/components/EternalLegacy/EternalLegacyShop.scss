@@ -169,6 +169,35 @@
     &:has(button:hover) {
       box-shadow: 0 4px 12px rgba(107, 155, 255, 0.3);
     }
+    .item-details {
+      .item-stats {
+        .cost {
+          font-size: 1.75em;
+          font-weight: 300;
+        }
+      }
+    }
+
+    .effect-summary {
+      color: oklch(0.8 0 360);
+      padding-bottom: 0.5em;
+    }
+    .celebrity-effects {
+      color: $white;
+      dt {
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 525;
+      }
+      dd {
+        padding: 0.5em 0 0.5em 1em;
+        display: grid;
+        gap: 0.5em;
+      }
+      .mammon {
+        color: rgb(255, 107, 255);
+      }
+    }
   }
 
   .item-icon {

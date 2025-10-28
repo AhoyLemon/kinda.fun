@@ -13,6 +13,10 @@
 
   .church-inventory__content
 
+    .inventory-section
+      h4.section-title CASH
+      .cash-amount {{ dollars(my.money) }}
+
     // Merch Section
     Transition(name="inventory-item")
       .inventory-section(v-if="ownedMerch.length > 0")

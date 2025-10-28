@@ -96,9 +96,7 @@ Teleport(to="body")
           .tab-header
             p.tab-description 
               | Enhance your church's prestige with celebrity endorsements. 
-              | Each celebrity provides unique benefits and increases your  
-              strong influence
-              |  score.
+              | Each celebrity provides unique benefits and penalties, plus you'll have somebody new to do drugs with.
               
           .items-grid
             .item-card.celebrity-card(
@@ -109,22 +107,36 @@ Teleport(to="body")
               .item-details.celebrity-item
                 h4.celebrity-name {{ celebrity.name }}
                 p.item-description {{ celebrity.description }}
-                //p.celebrity-effect {{ celebrity.effect }}
                 .item-stats
                   .cost(v-if="celebrity.cost") {{ dollars(celebrity.cost) }}
                   .cost(v-if="celebrity.dailyCost") {{ dollars(celebrity.dailyCost) }} per day
-                  .mammon-value(v-if="celebrity.mammon") +{{ addCommas(celebrity.mammon) }} mammon
-                  .boost(v-if="celebrity.religion && celebrity.religionBoost") {{ Math.abs(celebrity.religionBoost) }}% boost among {{celebrity.religion}}
-                  .boost(v-else-if="celebrity.religion") Popular among {{celebrity.religion}}
-                  .boost(v-if="celebrity.buzzBoost > 0") {{ celebrity.buzzBoost }}% attendance boost
-                  .negative(v-if="celebrity.buzzBoost < 0") {{ Math.abs(celebrity.buzzBoost) }}% reduction in attendance
+                  //.mammon-value(v-if="celebrity.mammon") +{{ addCommas(celebrity.mammon) }} mammon
+                  p.effect-summary {{ celebrity.effect }}
+                  dl.celebrity-effects(v-if="celebrity.hasOneTimeEffects")
+                    dt One-Time Effects:
+                    dd
+                      .mammon(v-if="celebrity.oneTimeEffects.mammon") +{{ addCommas(celebrity.oneTimeEffects.mammon) }} mammon
+                      .boost(v-if="celebrity.oneTimeEffects.buzz") {{celebrity.oneTimeEffects.buzz}} attendance boost
+                      .boost(v-if="celebrity.oneTimeEffects.religionBoost && celebrity.religions.likedBy.length > 0") {{celebrity.oneTimeEffects.religionBoost}}% boost among {{celebrity.religions.likedBy.join(', ')}}
+                      .negative(v-if="celebrity.oneTimeEffects.religionPenalty && celebrity.religions.hatedBy.length > 0") {{Math.abs(celebrity.oneTimeEffects.religionPenalty)}}% reduction among {{celebrity.religions.hatedBy.join(', ')}}
+                  dl.celebrity-effects(v-if="celebrity.hasDailyEffects")
+                    dt Ongoing Effects:
+                    dd
+                      .mammon(v-if="celebrity.dailyEffects.mammon") +{{ addCommas(celebrity.dailyEffects.mammon) }} mammon per day
+                      .boost(v-if="celebrity.dailyEffects.buzz > 0 ") {{celebrity.dailyEffects.buzz}}% attendance boost
+                      .negative(v-if="celebrity.dailyEffects.buzz < 0 ") {{Math.abs(celebrity.dailyEffects.buzz)}}% attendance reduction
+                      .boost(v-if="celebrity.dailyEffects.religionBoost && celebrity.religions.likedBy.length > 0") {{celebrity.dailyEffects.religionBoost}}% boost among {{celebrity.religions.likedBy.join(', ')}}
+                      .negative(v-if="celebrity.dailyEffects.religionPenalty && celebrity.religions.hatedBy.length > 0") {{Math.abs(celebrity.dailyEffects.religionPenalty)}}% reduction among {{celebrity.religions.hatedBy.join(', ')}}
+                
               .item-actions
                 button.purchase-btn(
                   v-if="!my.eternalLegacy.purchasedItems.some(p => p.id === celebrity.id)"
                   :disabled="my.money < celebrity.cost"
                   @click="purchaseItem(celebrity, 'celebrities')"
                 ) 
-                  | {{ my.money >= celebrity.cost ? 'Hire Celebrity' : 'Too Expensive' }}
+                  span(v-if="!celebrity.cost") Get Endorsed
+                  span(v-else-if="my.money >= celebrity.cost") Pay For Endorsement
+                  span(v-else) Too Expensive
                 .purchased-indicator(v-else)
                   | Endorsed
 
