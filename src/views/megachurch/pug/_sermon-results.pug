@@ -10,7 +10,7 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
       // Debug: Detailed audience reactions table
       .audience-reactions(v-if="gameSettings.isDebug && my.audienceReactions && my.audienceReactions.length > 0")
         table.debug.audience-changes
-          caption {{my.streetAttendanceYesterday}} people heard you shout
+          caption 🐛 DEBUG: Street Attendance Report
           thead
             tr
               th Religion

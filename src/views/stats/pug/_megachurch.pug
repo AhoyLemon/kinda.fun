@@ -67,25 +67,31 @@ section.megachurch.stats(v-if="ui.viewing == 'megachurch'")
         :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
 
   .four-tables(v-if="ui.megachurchLoaded && stats.megachurch.religions")
-  
-    +smallTable("Cheats", "stats.megachurch.cheats", "columns.megachurchCheats", "timesUsed")
-
-    +smallTable("Church Names", "stats.megachurch.churchNames", "columns.megachurchChurchNames", "churchesFounded")
-
-    +smallTable("Dark Deeds", "stats.megachurch.darkDeeds", "columns.megachurchDarkDeeds", "timesEnacted")
-
-    +smallTable("Eternal Legacy", "stats.megachurch.eternalLegacy", "columns.megachurchEternalLegacy", "timesPurchased")
-
-    +smallTable("Celebrity Friends", "stats.megachurch.eternalLegacy", "columns.megachurchEternalLegacy", "timesPurchased")
-    
-    +smallTable("Locations", "stats.megachurch.locations", "columns.megachurchLocations", "churchesFounded")
-
-    +smallTable("Marketing", "stats.megachurch.marketing", "columns.megachurchMarketing", "timesPurchased")
-    
-    +smallTable("Merchandise", "stats.megachurch.merch", "columns.megachurchMerch", "timesPurchased")
 
     +smallTable("Players", "stats.megachurch.players", "columns.megachurchPlayers", "gamesPlayed")
 
+    // Church Setup
+
     +smallTable("Religions", "stats.megachurch.religions", "columns.megachurchReligions", "churchesFounded")
 
+    +smallTable("Locations", "stats.megachurch.locations", "columns.megachurchLocations", "churchesFounded")
+
+    +smallTable("Church Names", "stats.megachurch.churchNames", "columns.megachurchChurchNames", "churchesFounded")
+
+    // WORSHOP ZONE
+
+    +smallTable("Merchandise", "stats.megachurch.merch", "columns.megachurchMerch", "timesPurchased")
+
     +smallTable("Upgrades", "stats.megachurch.upgrades", "columns.megachurchUpgrades", "timesPurchased")
+
+    +smallTable("Marketing", "stats.megachurch.marketing", "columns.megachurchMarketing", "timesPurchased")
+
+    // ETERNAL LEGACY
+
+    +smallTable("Mammon Items", "stats.megachurch.eternalLegacy", "columns.megachurchEternalLegacy", "timesPurchased")
+
+    +smallTable("Celebrity Friends", "stats.megachurch.celebrityFriends", "columns.megachurchCelebrityFriends", "timesFriended")
+
+    +smallTable("Dark Deeds", "stats.megachurch.darkDeeds", "columns.megachurchDarkDeeds", "timesEnacted")
+
+    +smallTable("Cheats", "stats.megachurch.cheats", "columns.megachurchCheats", "timesUsed")

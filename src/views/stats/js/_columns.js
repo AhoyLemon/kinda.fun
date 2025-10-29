@@ -124,7 +124,8 @@ export const columns = {
   ],
   megachurchCelebrityFriends: [
     { label: "Friend", field: "name", tdClass: "font-bold" },
-    { label: "x", field: "timesFriended", type: "number", formatFn: addCommas },
+    { label: "💓", field: "timesFriended", type: "number", formatFn: addCommas },
+    { label: "💔", field: "timesUnfriended", type: "number", formatFn: addCommas },
   ],
   megachurchLocations: [
     { label: "Location", field: "name", tdClass: "font-bold" },
