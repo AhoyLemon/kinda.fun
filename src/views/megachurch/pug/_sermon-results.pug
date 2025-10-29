@@ -7,8 +7,8 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
     // Street Preaching Results
     template(v-if="my.isStreetPreaching")
 
-
-      .audience-reactions(v-if="my.audienceReactions && my.audienceReactions.length > 0")
+      // Debug: Detailed audience reactions table
+      .audience-reactions(v-if="gameSettings.isDebug && my.audienceReactions && my.audienceReactions.length > 0")
         table.debug.audience-changes
           caption {{my.streetAttendanceYesterday}} people heard you shout
           thead
@@ -33,6 +33,26 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
             tr
               td(colspan="4")
                 em {{totalIgnoredAudience}} other people ignored you completely.
+
+      // Simplified donation-focused feedback
+      .donation-feedback(v-if="!gameSettings.isDebug && my.audienceReactions && my.audienceReactions.length > 0")
+        table.donation-summary-table
+          caption {{my.streetAttendanceYesterday}} people heard you shout
+          thead
+            tr
+              th Religion
+              th(style="text-align:right") donors
+            tr(v-for="reaction in sortedAudienceReactions.filter(r => r.liked > 0).slice().sort((a, b) => b.liked - a.liked)" :class="{'positive': true}")
+              td 
+                span.religion-name {{reaction.name}}
+              td.number.positive(style="text-align:right") {{reaction.liked}}
+          tfoot
+            tr
+              td(colspan="2")
+                ul
+                  li #[strong {{my.audienceReactions.reduce((sum, r) => sum + r.liked, 0)}}] people loved preaching
+                  li #[strong {{my.audienceReactions.reduce((sum, r) => sum + r.disliked, 0)}}] people hated it
+                  li #[strong {{my.audienceReactions.reduce((sum, r) => sum + r.neutral, 0)}}] people ignored you completely
 
       .donations-summary
         dl.money-summary

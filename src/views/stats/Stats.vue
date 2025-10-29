@@ -405,6 +405,7 @@
         await loadFirestoreStats("megachurch", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
           subcollections: {
+            celebrityFriends: {},
             cheats: {},
             churchNames: {},
             darkDeeds: {},

@@ -77,7 +77,7 @@
             <!-- Show van purchase option if not owned AND Harold has sent enough messages (at least the price) -->
             <div v-if="!playerHasVan && chatHistory && chatHistory.length >= 3" class="van-purchase">
               <div class="van-info">
-                <strong>Uncle Harold's Van: {{ dollars(vanCost) }}</strong>
+                <strong>Uncle Harold's Van: {{ dollars(vanCost, true) }}</strong>
               </div>
               <button class="buy-van-btn" @click="buyVan" :disabled="!canAffordVan">
                 {{ canAffordVan ? "Buy Van" : "Insufficient Funds" }}
@@ -127,7 +127,7 @@
 <script setup>
   import { ref, computed, watch, nextTick } from "vue";
   import { gameSettings } from "../../ts/variables/_gameSettings";
-  import { dollars } from "@/shared/js/_functions.js";
+  import { dollars } from "@/shared/ts/_functions";
   import { chatMessages, getRandomMessage, getRandomSlang } from "../../ts/_chatMessages";
 
   const props = defineProps({

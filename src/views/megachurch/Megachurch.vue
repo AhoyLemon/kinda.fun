@@ -1328,7 +1328,7 @@
     setTimeout(() => {
       // Calculate gross church revenue first
       const grossChurchRevenue = totalDonations + totalMerchRevenue + confessionRevenue;
-      
+
       // Process celebrity daily costs with total available funds (current money + today's earnings)
       const totalAvailableFunds = my.money + grossChurchRevenue;
       const { costsOwed, terminatedFriendships } = processCelebrityDailyCosts(totalAvailableFunds);
@@ -2497,6 +2497,11 @@
     ui.friendshipEnded.celebrity = celebrity;
     ui.friendshipEnded.reason = reason;
     ui.friendshipEnded.effects = effects;
+
+    logGameplayToFirebase("celebrityUnfriending", {
+      name: celebrity.name,
+      reason: reason,
+    });
   }
 
   function triggerEndGame(cause: "drug overdose" | "prison") {
@@ -2933,9 +2938,40 @@
                 timesEnacted: 1,
               });
             }
+          } else if (data.collection === "celebrities") {
+            const itemRef = doc(db, `stats/megachurch/celebrityFriends/${data.name}`);
+            const itemSnap = await getDoc(itemRef);
+
+            if (itemSnap.exists()) {
+              await updateDoc(itemRef, {
+                timesFriended: increment(1),
+              });
+            } else {
+              await setDoc(itemRef, {
+                name: data.name,
+                timesFriended: 1,
+                timesUnfriended: 0,
+              });
+            }
           }
           break;
 
+        case "celebrityUnfriending":
+          const itemRef = doc(db, `stats/megachurch/celebrityFriends/${data.name}`);
+          const itemSnap = await getDoc(itemRef);
+
+          if (itemSnap.exists()) {
+            await updateDoc(itemRef, {
+              timesUnfriended: increment(1),
+            });
+          } else {
+            await setDoc(itemRef, {
+              name: data.name,
+              timesFriended: 1,
+              timesUnfriended: 1,
+            });
+          }
+          break;
         case "cheatUsed":
           const cheatRef = doc(db, `stats/megachurch/cheats/${data.name}`);
           const cheatSnap = await getDoc(cheatRef);

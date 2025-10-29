@@ -122,6 +122,10 @@ export const columns = {
     { label: "Legacy", field: "name", tdClass: "font-bold" },
     { label: "x", field: "timesPurchased", type: "number", formatFn: addCommas },
   ],
+  megachurchCelebrityFriends: [
+    { label: "Friend", field: "name", tdClass: "font-bold" },
+    { label: "x", field: "timesFriended", type: "number", formatFn: addCommas },
+  ],
   megachurchLocations: [
     { label: "Location", field: "name", tdClass: "font-bold" },
     { label: "Founded", field: "churchesFounded", type: "number", formatFn: addCommas },

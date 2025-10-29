@@ -28,7 +28,6 @@ section.choose.church-setup(v-if="ui.view === 'church-setup'")
             )
 
           .details.place-details(v-if="ui.churchLocationIndex")
-            //.name {{getPlace(ui.churchLocationIndex).name}}
             .description {{getPlace(ui.churchLocationIndex).description}}
             
             dl.population
@@ -99,7 +98,7 @@ section.choose.church-setup(v-if="ui.view === 'church-setup'")
               dt Dislikes
               dd 
                 ul
-                  li(v-for="dislike in getReligion(ui.churchReligionIndex).dislikes" :class='{ match: getPlace(ui.churchLocationIndex).dislikedTags.includes(dislike), mismatch: getPlace(ui.churchLocationIndex).likedTags.includes(dislike) }') {{dislike}}
+                  li(v-for="dislike in (getReligion(ui.churchReligionIndex)?.dislikes || [])" :class='{ match: (getPlace(ui.churchLocationIndex)?.dislikedTags || []).includes(dislike), mismatch: (getPlace(ui.churchLocationIndex)?.likedTags || []).includes(dislike) }') {{dislike}}
 
       aside.partnership-terms(v-if="ui.churchLocationIndex && ui.churchReligionIndex")
         h3 Partnership Terms
