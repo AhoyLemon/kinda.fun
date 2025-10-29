@@ -5,7 +5,7 @@
   import { my } from "../../ts/variables/_my";
   import { ui } from "../../ts/variables/_ui";
   import { gameSettings } from "../../ts/variables/_gameSettings";
-  import { addCommas } from "../../../../shared/ts/_functions";
+  import { addCommas, dollars } from "../../../../shared/ts/_functions";
 
   defineEmits(["close"]);
 
@@ -42,7 +42,7 @@
   });
 
   const ownedCelebrities = computed(() => {
-    return [];
+    return my.celebrityFriends || [];
   });
 
   const heatLevel = computed(() => {

@@ -28,6 +28,14 @@
       required: false,
       default: 0,
     },
+    /**
+     * Celebrity merchandise sales
+     */
+    celebMerchSales: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   });
 
   // Create array of items that were actually sold for display
@@ -72,6 +80,18 @@
         name: "Lil' Reagan's Exorcism Kit",
         sold: details.exorcismKit.sold,
         revenue: details.exorcismKit.revenue,
+      });
+    }
+
+    // Add celebrity merch sales
+    if (props.celebMerchSales && props.celebMerchSales.length > 0) {
+      props.celebMerchSales.forEach((sale) => {
+        items.push({
+          name: `${sale.itemName} (via ${sale.celebrityName})`,
+          sold: sale.itemsSold, // Note: celebrity sales use 'itemsSold' property
+          revenue: sale.revenue,
+          isCelebrity: true,
+        });
       });
     }
 

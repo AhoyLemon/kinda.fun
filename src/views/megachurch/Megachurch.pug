@@ -87,6 +87,7 @@
     :gameSettings="gameSettings"
     @close="closeEternalLegacyShop"
     @purchase="handleEternalLegacyPurchase"
+    @unfriend-celebrity="handleUnfriendCelebrity"
   )
 
   SterlingVoicemail(
@@ -104,4 +105,19 @@
   LegacyStatus(
     :isVisible="ui.legacyStatus.isOpen"
     @close="closeLegacyStatus"
+  ) 
+
+  FriendshipEnded(
+    :isVisible="ui.friendshipEnded.isVisible"
+    :celebrity="ui.friendshipEnded.celebrity"
+    :reason="ui.friendshipEnded.reason"
+    :effects="ui.friendshipEnded.effects"
+    @close="closeFriendshipEnded"
+  ) 
+
+  UnfriendConfirmation(
+    :isVisible="ui.unfriendConfirmation.isVisible"
+    :celebrity="ui.unfriendConfirmation.celebrity"
+    @confirm="confirmUnfriendCelebrity"
+    @cancel="cancelUnfriendCelebrity"
   ) 

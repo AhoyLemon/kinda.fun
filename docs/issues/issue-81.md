@@ -19,6 +19,10 @@
     - `heatModifier` (a daily modifier to the amount of heat you gain each day)
   - Celebrities may also have an associated item of merch. If you have that celebrity, the merch acts like any other merch in your store, EXCEPT that there is no inventory. You have a `baseChance` chance of selling that item, plus a `religionBonusChance` if the person happens to be one of the religions that likes your celebrity. If a sale is made, you get `yourCut`
 
+## Before You Begin
+
+Please study `src\views\megachurch\ts\variables\_eternalLegacy.ts`, particularly EternalLegacyCelebrity type and eternalLegacyCelebrities array.
+
 ## Eternal Legacy documentaiton
 
 All of the properties for our current celebrities is drawn up in `src\views\megachurch\ts\variables\_eternalLegacy.ts`. We just need the work to implement the effects
@@ -96,4 +100,6 @@ While thinking about this feature, I've talked about "acquiring" or "owning" a c
 - It is OKAY to add variables, functions, and computeds not strictly documented here if needed for implementation.
 - It is ENCOURAGED for you to keep the celebrity processing into one or two functions called at the right moment, so we can handle all the celebrity effects in one place rather than scattered throughout the codebase.
 - It is RECOMMENDED that you STOP adding the celebrity to `my.eternalLegacy.purchasedItems` and instead add them to a new array `my.celebrityFriends`. This will help us keep the logic for celebrities separate from other Eternal Legacy items.
-- It is preferred you throw a simple `toast.info` out if you think there's some other game logic that's being changed by a celebrity friendship that we haven't considered.
+- It is APPRECIATED you throw a simple `toast.info` out if you think there's some other game logic that's being changed by a celebrity friendship that we haven't considered.
+- It is ADVISED that you begin by making a plan for how to implement this, put that into a TODO, and then describe what you're doing as you're working
+- It is HELPFUL if you can write any relevant unit tests associated with this work.

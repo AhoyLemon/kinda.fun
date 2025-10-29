@@ -149,8 +149,10 @@
   }
 
   &.purchased {
-    background: #1a2a1a;
-    border-color: #4caf50;
+    opacity: 0.8;
+    filter: grayscale(0.3);
+    // background: #1a2a1a;
+    // border-color: #4caf50;
   }
 
   &.dangerous {
@@ -310,8 +312,44 @@
     .purchased-indicator {
       text-align: center;
       color: #4caf50;
-      font-weight: bold;
       padding: 8px;
+    }
+
+    .friendship-controls {
+      display: flex;
+      gap: 8px;
+
+      .purchased-indicator {
+        margin: 0;
+        padding: 4px 8px;
+        flex-basis: 50%;
+      }
+
+      .unfriend-btn {
+        background: linear-gradient(135deg, #f44336, #d32f2f);
+        color: white;
+        flex-basis: 50%;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: linear-gradient(135deg, #d32f2f, #b71c1c);
+          transform: translateY(-1px);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+      .no-refriend {
+        flex-basis: 100%;
+        text-align: center;
+        color: oklch(1 0 0 / 0.4);
+      }
     }
   }
 }

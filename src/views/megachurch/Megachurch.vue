@@ -36,6 +36,7 @@
   import ListenerToast from "./components/Toasts/ListenerToast.vue";
   import DonationToast from "./components/Toasts/DonationToast.vue";
   import MerchToast from "./components/Toasts/MerchToast.vue";
+  import CelebrityFriendToast from "./components/Toasts/CelebrityFriendToast.vue";
 
   // SOUNDS
   // Sounds
@@ -52,6 +53,8 @@
   import SterlingVoicemail from "./components/Sterling/SterlingVoicemail.vue";
   import ChurchInventory from "./components/WorshopZone/ChurchInventory.vue";
   import LegacyStatus from "./components/EternalLegacy/LegacyStatus.vue";
+  import FriendshipEnded from "./components/EternalLegacy/FriendshipEnded.vue";
+  import UnfriendConfirmation from "./components/EternalLegacy/UnfriendConfirmation.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -1239,7 +1242,11 @@
 
     totalMerchRevenue = Math.round(totalMerchRevenue * 100) / 100; // Round to cents
 
-    // Calculate VIP confession booth revenue
+    // Process celebrity merchandise sales
+    const { totalCelebMerchRevenue, celebMerchSales } = processCelebrityMerchSales(todaysCongregation);
+
+    // Add celebrity merch revenue to total
+    totalMerchRevenue += totalCelebMerchRevenue; // Calculate VIP confession booth revenue
     let confessionRevenue = 0;
     if (my.church.upgrades.vipConfessionBooths) {
       // VIP confession booths generate revenue based on total attendance
@@ -1319,37 +1326,48 @@
     // Show donation toast after all reactions
     const merchToastDelay = currentDelay + ui.timing.merchToastDelay;
     setTimeout(() => {
-      // Apply Sterling's cut to combined donations, merch revenue, AND confession revenue
-      const totalChurchRevenue = totalDonations + totalMerchRevenue + confessionRevenue;
-      let playerShare = totalChurchRevenue;
+      // Process celebrity daily costs FIRST, before Sterling takes his cut
+      const { costsOwed, terminatedFriendships } = processCelebrityDailyCosts();
+
+      // Calculate net church revenue AFTER celebrity costs
+      const grossChurchRevenue = totalDonations + totalMerchRevenue + confessionRevenue;
+      const totalCelebrityCosts = costsOwed.reduce((sum, cost) => sum + cost.amount, 0);
+      const netChurchRevenue = grossChurchRevenue - totalCelebrityCosts;
+
+      let playerShare = netChurchRevenue;
       let sterlingCut = 0;
 
       if (my.chats.sterling.hasContacted && my.eternalLegacy.sterlingAlive) {
         const cutPercentage = gameSettings.churchPreaching.sterling.cutPercentage / 100;
         const minimumCut = gameSettings.churchPreaching.sterling.minimumCut;
 
-        sterlingCut = Math.max(minimumCut, totalChurchRevenue * cutPercentage);
-        playerShare = totalChurchRevenue - sterlingCut;
+        // Sterling's cut is calculated on net revenue (after celebrity costs)
+        sterlingCut = Math.max(minimumCut, netChurchRevenue * cutPercentage);
+        playerShare = netChurchRevenue - sterlingCut;
 
         if (playerShare < 0) {
-          sterlingCut = totalChurchRevenue;
+          sterlingCut = netChurchRevenue;
           playerShare = 0;
         }
       } else {
-        // If Sterling hasn't contacted yet, player gets all revenue
-        playerShare = totalChurchRevenue;
+        // If Sterling hasn't contacted yet, player gets all net revenue
+        playerShare = netChurchRevenue;
       }
 
       my.money += playerShare;
       trackMoneyEarned(playerShare);
 
-      // Store Sterling's cut for results display
+      // Store values for results display
       my.sterlingCutYesterday = sterlingCut;
       my.playerShareYesterday = playerShare;
+      my.celebrityCostsYesterday = costsOwed;
+      my.grossRevenueYesterday = grossChurchRevenue;
+      my.celebMerchSalesYesterday = celebMerchSales;
 
-      // Show merch toast first if there's merch sales, confession revenue, or a no-merch message if player owns merch but sold none
+      // Show merch toast first if there's merch sales, confession revenue, celebrity merch sales, or a no-merch message if player owns merch but sold none
       const hasMerchSales = totalMerchRevenue > 0;
       const hasConfessionRevenue = confessionRevenue > 0;
+      const hasCelebrityMerchSales = totalCelebMerchRevenue > 0;
       const ownsMerch =
         my.church.merch.holyWater.inventory > 0 ||
         my.church.merch.holyWater.soldToday > 0 ||
@@ -1362,7 +1380,7 @@
         my.church.merch.exorcismKit.inventory > 0 ||
         my.church.merch.exorcismKit.soldToday > 0;
 
-      if (hasMerchSales || hasConfessionRevenue || ownsMerch) {
+      if (hasMerchSales || hasConfessionRevenue || hasCelebrityMerchSales || ownsMerch) {
         toast(
           {
             component: MerchToast,
@@ -1370,6 +1388,7 @@
               totalMerchRevenue: totalMerchRevenue,
               merchSalesDetails: merchSalesDetails,
               confessionRevenue: confessionRevenue,
+              celebMerchSales: celebMerchSales,
             },
           },
           {
@@ -1380,7 +1399,7 @@
       }
 
       // Show donation toast after merch toast using donationToastDelay
-      const finalDonationDelay = hasMerchSales || hasConfessionRevenue || ownsMerch ? ui.timing.donationToastDelay : 0;
+      const finalDonationDelay = hasMerchSales || hasConfessionRevenue || hasCelebrityMerchSales || ownsMerch ? ui.timing.donationToastDelay : 0;
       setTimeout(() => {
         toast(
           {
@@ -1390,6 +1409,7 @@
               totalDonations: totalDonations,
               totalMerch: totalMerchRevenue,
               sterlingCut: sterlingCut,
+              celebrityCosts: costsOwed,
             },
           },
           {
@@ -1637,9 +1657,22 @@
       return;
     }
 
-    if (my.eternalLegacy.purchasedItems.includes(item.id)) {
-      toast.warning("You already own this item.");
-      return;
+    // Check if item is already owned (different logic for celebrities vs other items)
+    if (category === "celebrities") {
+      if (my.celebrityFriends.some((c) => c.id === item.id)) {
+        toast.warning("You are already friends with this celebrity.");
+        return;
+      }
+      // Check if celebrity has been friended before (prevents re-friending)
+      if (my.eternalLegacy.friendedCelebrityIds.includes(item.id)) {
+        toast.warning("You have already established a friendship with this celebrity in the past.");
+        return;
+      }
+    } else {
+      if (my.eternalLegacy.purchasedItems.includes(item.id)) {
+        toast.warning("You already own this item.");
+        return;
+      }
     }
 
     // Process purchase
@@ -1690,15 +1723,63 @@
 
       toast.warning(`🔥 Heat increased by ${item.heat}! Current: ${my.eternalLegacy.heat}/${gameSettings.eternalLegacy.heat.max}`);
     } else if (category === "celebrities") {
-      my.eternalLegacy.purchasedItems.push(item);
-      // Celebrity items increase influence score
-      if (item.influence) {
-        if (!my.eternalLegacy.totalInfluence) {
-          my.eternalLegacy.totalInfluence = 0;
-        }
-        my.eternalLegacy.totalInfluence += item.influence;
+      // Handle celebrity friendship acquisition
+      const celebrity = { ...item }; // Make a copy to avoid reference issues
+
+      // Collect all acquisition effects for single toast
+      const acquisitionEffects: any = {};
+      const religionBoosts: string[] = [];
+      const religionPenalties: string[] = [];
+
+      // Apply heat change if celebrity has heat property
+      if (celebrity.oneTimeEffects?.heat) {
+        updateHeat(celebrity.oneTimeEffects.heat);
+        acquisitionEffects.heat = celebrity.oneTimeEffects.heat;
       }
-      toast.success(`🌟 ${item.name} endorsed your church! Influence increased.`);
+
+      // Apply one-time effects
+      if (celebrity.hasOneTimeEffects && celebrity.oneTimeEffects) {
+        if (celebrity.oneTimeEffects.mammon) {
+          my.eternalLegacy.totalMammon += celebrity.oneTimeEffects.mammon;
+          acquisitionEffects.mammon = celebrity.oneTimeEffects.mammon;
+        }
+
+        if (celebrity.oneTimeEffects.buzz) {
+          my.church.buzz += celebrity.oneTimeEffects.buzz;
+          acquisitionEffects.buzz = celebrity.oneTimeEffects.buzz;
+        }
+
+        // Apply religion boosts and penalties
+        if (celebrity.religions) {
+          if (celebrity.religions.likedBy && celebrity.oneTimeEffects.religionBoost) {
+            celebrity.religions.likedBy.forEach((religionName) => {
+              const religionScore = my.religiousScorecard.find((r) => r.name === religionName);
+              if (religionScore) {
+                religionScore.score += celebrity.oneTimeEffects.religionBoost;
+                religionBoosts.push(`${religionName} (+${celebrity.oneTimeEffects.religionBoost})`);
+              }
+            });
+            acquisitionEffects.religionBoosts = religionBoosts;
+          }
+
+          if (celebrity.religions.hatedBy && celebrity.oneTimeEffects.religionPenalty) {
+            celebrity.religions.hatedBy.forEach((religionName) => {
+              const religionScore = my.religiousScorecard.find((r) => r.name === religionName);
+              if (religionScore) {
+                religionScore.score -= celebrity.oneTimeEffects.religionPenalty;
+                religionPenalties.push(`${religionName} (-${celebrity.oneTimeEffects.religionPenalty})`);
+              }
+            });
+            acquisitionEffects.religionPenalties = religionPenalties;
+          }
+        }
+      }
+
+      // Add celebrity to friends list
+      my.celebrityFriends.push(celebrity);
+
+      // Track that this celebrity has been friended to prevent re-friending
+      my.eternalLegacy.friendedCelebrityIds.push(celebrity.id);
     }
 
     // Don't auto-close shop - let player continue shopping
@@ -2034,6 +2115,9 @@
       my.chats.sterling.daysWithVan += 1;
     }
 
+    // Apply celebrity daily effects at the beginning of the day
+    processCelebrityDailyEffects();
+
     // Update heat if Eternal Legacy is active
     if (my.eternalLegacy.isActive) {
       updateHeat(gameSettings.eternalLegacy.heat.dailyBaseIncrease);
@@ -2207,6 +2291,203 @@
 
   function closeLegacyStatus() {
     ui.legacyStatus.isOpen = false;
+  }
+
+  function closeFriendshipEnded() {
+    ui.friendshipEnded.isVisible = false;
+  }
+
+  function handleUnfriendCelebrity(celebrity: any) {
+    // Show confirmation modal instead of immediately unfriending
+    ui.unfriendConfirmation.isVisible = true;
+    ui.unfriendConfirmation.celebrity = celebrity;
+  }
+
+  function confirmUnfriendCelebrity(celebrity: any) {
+    // Close confirmation modal
+    ui.unfriendConfirmation.isVisible = false;
+
+    // Remove celebrity from friends list
+    const index = my.celebrityFriends.findIndex((c) => c.id === celebrity.id);
+    if (index !== -1) {
+      my.celebrityFriends.splice(index, 1);
+      terminateCelebrityFriendship(celebrity, "voluntary");
+    }
+  }
+
+  function cancelUnfriendCelebrity() {
+    // Close confirmation modal without doing anything
+    ui.unfriendConfirmation.isVisible = false;
+  }
+
+  // ================= CELEBRITY FRIENDSHIP FUNCTIONS =================
+
+  function processCelebrityDailyEffects() {
+    // Apply daily effects at the beginning of the day for all celebrity friends
+    my.celebrityFriends.forEach((celebrity) => {
+      if (celebrity.hasDailyEffects && celebrity.dailyEffects) {
+        const effects: any = {};
+        const religionBoosts: string[] = [];
+        const religionPenalties: string[] = [];
+
+        // Process mammon effects
+        if (celebrity.dailyEffects.mammon) {
+          my.eternalLegacy.totalMammon += celebrity.dailyEffects.mammon;
+          effects.mammon = celebrity.dailyEffects.mammon;
+        }
+
+        // Process buzz effects
+        if (celebrity.dailyEffects.buzz) {
+          my.church.buzz += celebrity.dailyEffects.buzz;
+          effects.buzz = celebrity.dailyEffects.buzz;
+        }
+
+        // Apply religion boosts and penalties
+        if (celebrity.religions) {
+          if (celebrity.religions.likedBy && celebrity.dailyEffects.religionBoost) {
+            celebrity.religions.likedBy.forEach((religionName) => {
+              const religionScore = my.religiousScorecard.find((r) => r.name === religionName);
+              if (religionScore) {
+                religionScore.score += celebrity.dailyEffects.religionBoost;
+                religionBoosts.push(`${religionName} (+${celebrity.dailyEffects.religionBoost})`);
+              }
+            });
+            effects.religionBoosts = religionBoosts;
+          }
+
+          if (celebrity.religions.hatedBy && celebrity.dailyEffects.religionPenalty) {
+            celebrity.religions.hatedBy.forEach((religionName) => {
+              const religionScore = my.religiousScorecard.find((r) => r.name === religionName);
+              if (religionScore) {
+                religionScore.score -= celebrity.dailyEffects.religionPenalty;
+                religionPenalties.push(`${religionName} (-${celebrity.dailyEffects.religionPenalty})`);
+              }
+            });
+            effects.religionPenalties = religionPenalties;
+          }
+        }
+      }
+    });
+  }
+
+  function processCelebrityMerchSales(congregationGroups: any[]) {
+    let totalCelebMerchRevenue = 0;
+    const celebMerchSales: any[] = [];
+
+    my.celebrityFriends.forEach((celebrity) => {
+      if (celebrity.hasMerch && celebrity.merch) {
+        let itemsSold = 0;
+
+        // For each congregation group, calculate sales
+        congregationGroups.forEach((group) => {
+          let chance = celebrity.merch.baseChance;
+
+          // Find the religion for this group
+          const religion = religions.find((r: any) => r.id === group.id);
+
+          // Add religion bonus chance if this religion likes the celebrity
+          if (celebrity.religions?.likedBy && celebrity.merch.religionBonusChance && religion) {
+            if (celebrity.religions.likedBy.includes(religion.name)) {
+              chance += celebrity.merch.religionBonusChance;
+            }
+          }
+
+          // Calculate how many items this group will buy
+          for (let i = 0; i < group.count; i++) {
+            if (Math.random() * 100 < chance) {
+              itemsSold++;
+            }
+          }
+        });
+
+        const revenue = itemsSold * celebrity.merch.yourCut;
+        totalCelebMerchRevenue += revenue;
+
+        if (itemsSold > 0) {
+          celebMerchSales.push({
+            celebrityName: celebrity.name,
+            itemName: celebrity.merch.name,
+            itemsSold,
+            revenue,
+          });
+        }
+      }
+    });
+
+    return { totalCelebMerchRevenue, celebMerchSales };
+  }
+
+  function processCelebrityDailyCosts() {
+    const costsOwed: any[] = [];
+    const terminatedFriendships: any[] = [];
+
+    my.celebrityFriends = my.celebrityFriends.filter((celebrity) => {
+      if (celebrity.dailyCost > 0) {
+        if (my.money >= celebrity.dailyCost) {
+          my.money -= celebrity.dailyCost;
+          costsOwed.push({
+            name: celebrity.name,
+            amount: celebrity.dailyCost,
+          });
+          return true; // Keep the celebrity
+        } else {
+          // Cannot afford - terminate friendship
+          terminateCelebrityFriendship(celebrity, "non-payment");
+          terminatedFriendships.push(celebrity);
+          return false; // Remove the celebrity
+        }
+      }
+      return true; // Keep celebrities with no daily cost
+    });
+
+    return { costsOwed, terminatedFriendships };
+  }
+
+  function terminateCelebrityFriendship(celebrity: any, reason: "voluntary" | "non-payment") {
+    const termination = celebrity.termination;
+    const effects: any = {};
+
+    // Apply termination effects
+    if (termination.mammonLost) {
+      my.eternalLegacy.totalMammon -= termination.mammonLost;
+      effects.mammonLost = termination.mammonLost;
+    }
+
+    if (termination.buzzLost) {
+      my.church.buzz -= termination.buzzLost;
+      effects.buzzLost = termination.buzzLost;
+    }
+
+    if (termination.religionPenalty && celebrity.religions?.likedBy) {
+      celebrity.religions.likedBy.forEach((religionName) => {
+        const religionScore = my.religiousScorecard.find((r) => r.name === religionName);
+        if (religionScore) {
+          religionScore.score -= termination.religionPenalty;
+        }
+      });
+      effects.religionPenalty = termination.religionPenalty;
+    }
+
+    if (termination.religionBoost && celebrity.religions?.hatedBy) {
+      celebrity.religions.hatedBy.forEach((religionName) => {
+        const religionScore = my.religiousScorecard.find((r) => r.name === religionName);
+        if (religionScore) {
+          religionScore.score += termination.religionBoost;
+        }
+      });
+      effects.religionBoost = termination.religionBoost;
+    }
+
+    if (termination.additionalCost) {
+      // Handle IOUs (to be implemented later if needed)
+      effects.additionalCost = termination.additionalCost;
+    }
+
+    // Show friendship ended modal
+    ui.friendshipEnded.isVisible = true;
+    ui.friendshipEnded.celebrity = celebrity;
+    ui.friendshipEnded.reason = reason;
+    ui.friendshipEnded.effects = effects;
   }
 
   function triggerEndGame(cause: "drug overdose" | "prison") {

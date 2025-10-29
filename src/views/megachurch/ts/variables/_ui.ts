@@ -10,7 +10,7 @@ export const ui = reactive<UI>({
   churchLocationIndex: 0,
   churchReligionIndex: 0,
   timing: {
-    toastDuration: 7000,
+    toastDuration: 4800,
     donationToastDuration: 7000,
     toastDelayMin: 800, // Minimum delay between audience reaction toasts (ms)
     toastDelayMax: 1800, // Maximum delay between audience reaction toasts (ms)
@@ -47,6 +47,16 @@ export const ui = reactive<UI>({
   },
   legacyStatus: {
     isOpen: false,
+  },
+  friendshipEnded: {
+    isVisible: false,
+    celebrity: {},
+    reason: "",
+    effects: {},
+  },
+  unfriendConfirmation: {
+    isVisible: false,
+    celebrity: {},
   },
   seraphAINag: {
     hasShown: false,

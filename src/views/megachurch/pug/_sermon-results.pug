@@ -77,8 +77,8 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
       .receipts
 
         // Other Revenue
-        .church-management-summary(v-if="my.merchRevenueYesterday || my.confessionRevenueYesterday")
-          template(v-if="my.merchRevenueYesterday > 0")
+        .church-management-summary(v-if="my.merchRevenueYesterday || my.confessionRevenueYesterday || (my.celebMerchSalesYesterday && my.celebMerchSalesYesterday.length > 0)")
+          template(v-if="my.merchSalesDetailsYesterday.holyWater.sold || my.merchSalesDetailsYesterday.prayerCandles.sold || my.merchSalesDetailsYesterday.weightLossTea.sold || my.merchSalesDetailsYesterday.beachTowel.sold || my.merchSalesDetailsYesterday.exorcismKit.sold")
             h3 Merch Sales Revenue
             .merch-breakdown(v-if="my.merchSalesDetailsYesterday")
               template(v-if="my.merchSalesDetailsYesterday.holyWater.sold > 0")
@@ -101,6 +101,14 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
                 dl.merch-item
                   dt Exorcism Kits:
                   dd {{my.merchSalesDetailsYesterday.exorcismKit.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.exorcismKit.revenue)}})
+          
+          template(v-if="my.celebMerchSalesYesterday && my.celebMerchSalesYesterday.length > 0")
+            h3 Celebrity Merchandise Sales
+            .merch-breakdown
+              template(v-for="celebSale in my.celebMerchSalesYesterday" :key="celebSale.name")
+                dl.merch-item
+                  dt {{celebSale.itemName}}:
+                  dd {{celebSale.itemsSold}} sold ({{dollars(celebSale.revenue)}})
           
           template(v-if="my.confessionRevenueYesterday > 0")
             h3 VIP Confession Revenue
@@ -125,6 +133,10 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
               dt VIP Confessions:
               .modifier.plus +
               dd {{dollars(my.confessionRevenueYesterday)}}
+            .row.celebrity-costs.minus(v-if="my.celebrityCostsYesterday && my.celebrityCostsYesterday.length > 0")
+              dt Celebrity Friends:
+              .modifier.minus -
+              dd {{dollars(my.celebrityCostsYesterday.reduce((sum, cost) => sum + cost.amount, 0))}}
             .row.sterling-cut.minus(v-if="my.sterlingCutYesterday > 0")
               dt Sterling's Cut:
               .modifier.minus -
@@ -147,11 +159,8 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
         .van-tooltip(v-if="my.chats.sterling.daysWithVan < 1") Drive overnight. #[br] (The Plug will find you)
         button.van(@click="ui.view = 'place'") #[span 🚐] Get In The Van
       button.sterling(v-if="my.chats.sterling.hasContacted && my.eternalLegacy.sterlingAlive" @click="openSterlingInterface()") 📱 Sterling Silver
-      //button.sterling-voicemail(v-if="my.eternalLegacyVoicemailReplayAvailable" @click="playEternalLegacyVoicemail()") 📞 Replay Sterling's Voicemail
       button.workshop-zone(v-if="my.church.isFounded" @click="showWorshopZone") 💻 Da Worshop Zone
       button.eternal-legacy(v-if="my.eternalLegacy.isActive" @click="showEternalLegacyShop") 💻 Eternal Legacy
-      //button.church-inventory(v-if="my.church.isFounded" @click="openChurchInventory") 📦 Church Inventory
-      //button.legacy-status(v-if="my.eternalLegacy.isActive" @click="openLegacyStatus") ⚖️ Legacy Status
       button.submit(@click="handleNextDayClick()") Next Day.
 
     // Debug: Church Attendance Breakdown

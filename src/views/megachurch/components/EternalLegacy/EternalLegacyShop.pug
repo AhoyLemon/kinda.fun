@@ -36,7 +36,7 @@ Teleport(to="body")
             .item-card.mammon-card(
               v-for="item in gameSettings.eternalLegacy.shop.mammonItems"
               :key="item.id"
-              :class="{ purchased: my.eternalLegacy.purchasedItems.includes(item.id), affordable: my.money >= item.cost }"
+              :class="{ purchased: my.eternalLegacy.purchasedItems.some(i => i.id === item.id), affordable: my.money >= item.cost }"
             )
               .item-details.mammon-item
                 h4.mammon-name {{ item.name }}
@@ -102,7 +102,7 @@ Teleport(to="body")
             .item-card.celebrity-card(
               v-for="celebrity in gameSettings.eternalLegacy.shop.celebrities"
               :key="celebrity.id"
-              :class="{ purchased: my.eternalLegacy.purchasedItems.includes(celebrity.id), affordable: my.money >= celebrity.cost }"
+              :class="{ purchased: my.celebrityFriends.some(c => c.id === celebrity.id), affordable: my.money >= celebrity.cost }"
             )
               .item-details.celebrity-item
                 h4.celebrity-name {{ celebrity.name }}
@@ -134,18 +134,23 @@ Teleport(to="body")
                         .negative(v-if="celebrity.dailyEffects.buzz < 0 ") {{Math.abs(celebrity.dailyEffects.buzz)}}% attendance reduction
                         .boost(v-if="celebrity.dailyEffects.religionBoost && celebrity.religions.likedBy.length > 0") {{celebrity.dailyEffects.religionBoost}}% boost among {{celebrity.religions.likedBy.join(', ')}}
                         .negative(v-if="celebrity.dailyEffects.religionPenalty && celebrity.religions.hatedBy.length > 0") {{Math.abs(celebrity.dailyEffects.religionPenalty)}}% reduction among {{celebrity.religions.hatedBy.join(', ')}}
+                        template(v-if="celebrity.merch")
+                          .merch-sales {{ celebrity.merch.baseChance }}% - {{ celebrity.merch.baseChance + celebrity.merch.religionBonusChance }}% chance to sell {{celebrity.merch.name}}. For each sale, you earn {{ dollars(celebrity.merch.yourCut) }}.
                 
               .item-actions
                 button.purchase-btn(
-                  v-if="!my.eternalLegacy.purchasedItems.some(p => p.id === celebrity.id)"
+                  v-if="!my.celebrityFriends.some(c => c.id === celebrity.id) && !my.eternalLegacy.friendedCelebrityIds.includes(celebrity.id)"
                   :disabled="my.money < celebrity.cost"
                   @click="purchaseItem(celebrity, 'celebrities')"
                 ) 
                   span(v-if="!celebrity.cost") Become Friends
                   span(v-else-if="my.money >= celebrity.cost") Become Friends
                   span(v-else) You Can't Be Friends
-                .purchased-indicator(v-else)
-                  | You Are Friends
+                .friendship-controls(v-if="my.celebrityFriends.some(c => c.id === celebrity.id)")
+                  .purchased-indicator You Are Friends
+                  button.unfriend-btn(@click="unfriendCelebrity(celebrity)") End Friendship
+                .friendship-controls(v-else-if="my.eternalLegacy.friendedCelebrityIds.includes(celebrity.id)")
+                  .no-refriend You're not friends anymore.
 
       .shop-footer
         blockquote

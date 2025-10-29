@@ -28,51 +28,51 @@
       .mammon-current
         .mammon-name {{ addCommas(currentMammon) }}
 
-    // Current Influence Section
-    .legacy-section.influence-count(v-if="currentInfluence")
-      h4.section-title Current Influence
-      .influence-current
-        .influence-name {{ addCommas(currentInfluence) }}
-
     // Mammon Items Section
-    .legacy-section(v-if="ownedMammonItems.length > 0")
-      h4.section-title Tokens of Wealth
-      
-      TransitionGroup(name="inventory-item" class="mammon-items-grid" tag="div")
-        .mammon-item(
-          v-for="item in ownedMammonItems"
-          :key="item.id"
-        )
-          .mammon-item-info
-            .mammon-item-points {{ item.mammon }}
-            .mammon-item-name {{ item.name }}
+    Transition(name="inventory-item")
+      .legacy-section(v-if="my.eternalLegacy.purchasedItems.length > 0")
+        h4.section-title Tokens of Wealth
+        
+        TransitionGroup(name="inventory-item" class="mammon-items-grid" tag="div")
+          .mammon-item(
+            v-for="item in my.eternalLegacy.purchasedItems"
+            :key="item.id"
+          )
+            .mammon-item-info
+              .mammon-item-points {{ item.mammon }}
+              .mammon-item-name {{ item.name }}
 
 
     // Celebrity Endorsements Section
-    .legacy-section(v-if="ownedCelebrities.length > 0")
-      h4.section-title Celebrity Friends
-      
-      TransitionGroup(name="inventory-item" class="celebrity-items-grid" tag="div")
-        .celebrity-item(
-          v-for="celebrity in ownedCelebrities"
-          :key="celebrity.id"
-        )
-          .celebrity-item-info
-            .celebrity-item-name {{ celebrity.name }}
+    Transition(name="inventory-item")
+      .legacy-section(v-if="my.celebrityFriends.length > 0")
+        h4.section-title Celebrity Friends
+        
+        TransitionGroup(name="inventory-item" class="celebrity-items-grid" tag="div")
+          .celebrity-item(
+            v-for="celebrity in my.celebrityFriends"
+            :key="celebrity.id"
+          )
+            .celebrity-item-info
+              .celebrity-item-points(v-if="celebrity.hasOneTimeEffects && celebrity.oneTimeEffects?.mammon")
+                span {{ celebrity.oneTimeEffects.mammon }}
+              .celebrity-item-name {{ celebrity.name }}
+              //.celebrity-item-effect {{ celebrity.effect }}
 
     // Dark Deeds Section
-    .legacy-section(v-if="completedDarkDeeds.length > 0")
-      h4.section-title Dark Deeds Committed
+    Transition(name="inventory-item")
+      .legacy-section(v-if="completedDarkDeeds.length > 0")
+        h4.section-title Dark Deeds Committed
 
-      TransitionGroup(name="inventory-item" class="dark-deeds-list" tag="div")
-        .dark-deed(
-          v-for="deed in completedDarkDeeds"
-          :key="deed.id"
-        )
-          .deed-icon 👹
-          .deed-info
-            .deed-name {{ deed.name }}
-            .deed-effect {{ deed.effect }}
+        TransitionGroup(name="inventory-item" class="dark-deeds-list" tag="div")
+          .dark-deed(
+            v-for="deed in completedDarkDeeds"
+            :key="deed.id"
+          )
+            .deed-icon 👹
+            .deed-info
+              .deed-name {{ deed.name }}
+              //.deed-effect {{ deed.effect }}
 
     // Empty State
     .legacy-empty(v-if="isEmpty")

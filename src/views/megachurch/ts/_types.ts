@@ -211,6 +211,16 @@ export interface UI {
   legacyStatus: {
     isOpen: boolean;
   };
+  friendshipEnded: {
+    isVisible: boolean;
+    celebrity: any;
+    reason: string;
+    effects: any;
+  };
+  unfriendConfirmation: {
+    isVisible: boolean;
+    celebrity: any;
+  };
   seraphAINag: {
     hasShown: boolean; // Whether the nag message has been shown to the user
   };
@@ -468,6 +478,13 @@ export interface My {
   merchRevenueYesterday?: number;
   confessionRevenueYesterday?: number;
   seraphAICostYesterday?: number; // Daily cost for Seraph AI service
+  celebrityCostsYesterday?: Array<{ name: string; amount: number }>; // Celebrity daily costs
+  grossRevenueYesterday?: number; // Total revenue before celebrity costs
+  celebMerchSalesYesterday?: Array<{
+    name: string;
+    sold: number;
+    revenue: number;
+  }>; // Celebrity merchandise sales
   merchSalesDetailsYesterday?: {
     holyWater: { sold: number; revenue: number };
     prayerCandles: { sold: number; revenue: number };
@@ -524,6 +541,7 @@ export interface My {
     darkDeeds: EternalLegacyDarkDeed[];
     sterlingCutModifier: number; // Additional percentage points added to Sterling's cut
     sterlingAlive: boolean;
+    friendedCelebrityIds: string[]; // IDs of celebrities that have been friended before (prevents re-friending)
   };
   gameOverCause: null | "drug overdose" | "prison"; // If endgame is triggered (not null), what caused game over
 }

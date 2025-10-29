@@ -257,7 +257,16 @@ export interface EternalLegacyCelebrity {
   };
 
   description: string; // humorous description
-  effect: string; // Clear description of what this celebrity endorsement will do for your church
+  effect: string; // Clear description of what this celebrity friendship will do for your church
+
+  termination: {
+    additionalCost?: number; // Cost to terminate the celebrity contract
+    heat?: number; // Heat gained when this celebrity is terminated
+    buzzLost?: number; // Buzz lost when this celebrity is terminated
+    mammonLost?: number; // Mammon lost when this celebrity is terminated
+    religionBoost?: number; // Boost to the hatedBy religions
+    religionPenalty?: number; // Penalty to the likedBy religions
+  };
 }
 
 export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
@@ -281,6 +290,11 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
     },
     description: `A Florida born rapper who thinks "blessing" rhymes with "bling-sing." Will happily tattoo the name of your church on his pelvis. Will definitely steal all your Sprite. Make friends with him now and you'll have a friend when you're both in prison later.`,
     effect: "Will increase your church attendence slightly. Will lure in fans of sizzurp and Dolce & Gabanna, but will drive pretty much everyone else away",
+    termination: {
+      additionalCost: 200,
+      mammonLost: 15,
+      buzzLost: 20,
+    },
   },
   {
     id: "obviously-this-is-joe-rogan",
@@ -309,6 +323,9 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
     description:
       "An inexplicably popular podcast host and comedian(?) who appeals strongly to the manosphere by treating every conversation like an MMA fight. Will probably try to sell supplements to your church.",
     effect: "Provides a significant boost to attendance when hired, and will bring in the Chauvanists. However, expend attendance to dwindle as time goes on.",
+    termination: {
+      additionalCost: 2900,
+    },
   },
   {
     id: "former-adult-actress",
@@ -337,6 +354,10 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
     description:
       "Once a moderately famous adult actress, Chastity Bangs coincidentally found God right after she stopped getting booked for new work. A true believer in your faith (whatever it may be) provided she can still keep her OnlyFans account.",
     effect: "Slight boost to attendance and big boost with The Church of Eros, but will alienate more conservative religious groups.",
+    termination: {
+      religionBoost: 10,
+      mammonLost: 29,
+    },
   },
   {
     id: "washed-up-action-star",
@@ -358,10 +379,15 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
     },
     description: `Starred in "Under Siege 7: Spiritual Warfare." and allegedly had a cameo in Fast 5, but I've never noticed. Now teaches mediation classes, hawks NFT dojo memberships, and insists ponytails are a lifestyle. Will anger every Buddhist he talks to.`,
     effect: "Boost to 2 Fast 2 Faithful, but you'll never see a Buddhist in your church again.",
+    termination: {
+      religionBoost: 20,
+      religionPenalty: 60,
+      mammonLost: 25,
+    },
   },
   {
-    id: "crypto-christ",
-    name: `Chad "CRYPT0CRYST" Hodlman`,
+    id: "cryptobro",
+    name: `CRYPT0CRYST`,
     cost: 0,
     dailyCost: 300,
     hasDailyEffects: true,
@@ -380,12 +406,15 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
     merch: {
       name: "$iN Token",
       price: 300,
-      yourCut: 15,
+      yourCut: 40,
       baseChance: 1,
       religionBonusChance: 4,
     },
-    description: `A self-proclaimed prophet of the blockchain, Chad Hodlman preaches that salvation is "to the moon" and that tithing in Bitcoin is the only way to secure your spot in the decentralized afterlife. His sermons are filled with crypto buzzwords like "HODL for the Lord" and "gm, saints!" while he casually shills his latest NFT collection. Chad promises your church will be driving Lambos in no time, but don’t be surprised if he pulls the ultimate rug and disappears with your congregation’s wallets.`,
-    effect: `Chad’s endorsement will attract tech enthusiast idiots and generate a surge in crypto-based donations, but his blatant greed and shady schemes will alienate more traditional or ethical congregants.`,
+    description: `CRYPT0CRYST (aka Chad Hodlman) is a prophet of the blockchain, preaching that salvation is "to the moon" and that tithing in Bitcoin is the only way to secure your spot in the decentralized afterlife. His sermons are filled with crypto buzzwords like "HODL for the Lord" and "gm, saints!" while he casually shills his latest NFT collection. Chad promises your church will be driving Lambos in no time, but don’t be surprised if he pulls the ultimate rug and disappears with your congregation’s wallets.`,
+    effect: `Chad’s friendship will attract tech enthusiast idiots who will all want to buy his new coin, but he'll alienate any followers with any sense of ethics whatsoever.`,
+    termination: {
+      buzzLost: 60,
+    },
   },
   {
     id: "new-age",
@@ -412,13 +441,17 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
       religionPenalty: 10,
     },
     description: `Melody Dylan was once the pop-country singer Jessica Hastings, until she reinvented herself after "learning" she was Bob Dylan's estranged daughter (a claim Bob Dylan’s attorneys have repeatedly denied). Melody now sells overpriced healing crystals, chakra stones, and essential oils through her online store, "Melody’s Cosmic Harmony." Her followers adore her soothing voice and spiritual platitudes, but skeptics see her as a savvy grifter who’s only in it for the money.`,
-    effect: `Melody’s endorsement will attract New-Age followers and generate a surge in donations, but her history of grifts and lack of authenticity may alienate more traditional or skeptical congregants.`,
+    effect: `Melody’s friendship will attract New-Age followers, who she will try to sell chakra crystals to. Expect to lose the support of skeptics.`,
     merch: {
       name: "Chakra Crystal",
       price: 300,
       yourCut: 24,
       baseChance: 2,
       religionBonusChance: 6,
+    },
+    termination: {
+      mammonLost: 20,
+      buzzLost: 20,
     },
   },
 ];

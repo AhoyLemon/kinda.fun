@@ -190,6 +190,7 @@ export const my = reactive<My>({
     darkDeeds: [],
     sterlingCutModifier: 0,
     sterlingAlive: true,
+    friendedCelebrityIds: [], // Track celebrity IDs that have been friended before
   },
   gameOverCause: null,
 });

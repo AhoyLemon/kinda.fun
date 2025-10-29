@@ -1,0 +1,18 @@
+.unfriend-confirmation-modal(v-if="isVisible")
+  .unfriend-confirmation
+    .title
+      .celebrity-name Unfriend {{ celebrity.name }}?
+    .content
+      //.warning-text ⚠️ Are you sure you want to end this friendship?
+      
+      //p This action cannot be undone. {{ celebrity.name }} will not be available for friendship again.
+      
+      dl.effects-list(v-if="terminationEffects.length > 0")
+        dt Immediate Effects:
+        dd
+          ul
+            li.effect-item(v-for="effect in terminationEffects" :key="effect") {{ effect }}
+      .notice You will never be friends with {{celebrity.name}} again.
+    .button-group
+      button.cancel(@click="handleCancel") Cancel
+      button.confirm(@click="handleConfirm") Yes, End Friendship

@@ -36,6 +36,14 @@
       required: false,
       default: 0,
     },
+    /**
+     * Celebrity daily costs
+     */
+    celebrityCosts: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   });
 </script>
 <style lang="scss">

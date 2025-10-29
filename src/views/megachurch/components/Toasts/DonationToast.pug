@@ -27,6 +27,10 @@
         template(v-if="totalMerch")
           dt Merch Sales:
           dd {{ dollars(totalMerch) }}
+        template(v-if="celebrityCosts && celebrityCosts.length > 0")
+          dt.celebrity Celebrity Friends:
+          dd.minus -{{ dollars(celebrityCosts.reduce((sum, cost) => sum + cost.amount, 0)) }}
         template(v-if="sterlingCut")
           dt.sterling Sterling's Cut:
           dd.minus {{ dollars(sterlingCut) }}
+        

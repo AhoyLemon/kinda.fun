@@ -15,7 +15,7 @@
     },
   });
 
-  const emit = defineEmits(["close", "purchase"]);
+  const emit = defineEmits(["close", "purchase", "unfriend-celebrity"]);
 
   const activeTab = ref("mammon");
 
@@ -38,6 +38,10 @@
 
   function purchaseItem(item, category) {
     emit("purchase", { item, category });
+  }
+
+  function unfriendCelebrity(celebrity) {
+    emit("unfriend-celebrity", celebrity);
   }
 </script>
 
