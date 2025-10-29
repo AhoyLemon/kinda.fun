@@ -48,19 +48,9 @@
             .mammon-item-name {{ item.name }}
 
 
-      //.mammon-items-grid
-        .mammon-item(
-          v-for="item in ownedMammonItems"
-          :key="item.id"
-        )
-          //.mammon-item-icon {{ item.icon }}
-          .mammon-item-info
-            .mammon-item-points {{ item.mammon }}
-            .mammon-item-effect {{ item.name }}
-
     // Celebrity Endorsements Section
     .legacy-section(v-if="ownedCelebrities.length > 0")
-      h4.section-title Celebrity Endorsements
+      h4.section-title Celebrity Friends
       
       TransitionGroup(name="inventory-item" class="celebrity-items-grid" tag="div")
         .celebrity-item(
@@ -68,7 +58,6 @@
           :key="celebrity.id"
         )
           .celebrity-item-info
-            .celebrity-item-points {{ celebrity.influence }}
             .celebrity-item-name {{ celebrity.name }}
 
     // Dark Deeds Section

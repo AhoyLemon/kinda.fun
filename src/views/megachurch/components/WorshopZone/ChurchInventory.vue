@@ -3,6 +3,7 @@
 <script setup lang="ts">
   import { computed } from "vue";
   import { my } from "../../ts/variables/_my";
+  import { dollars } from "../../../../shared/ts/_functions";
   import { gameSettings } from "../../ts/variables/_gameSettings";
 
   defineEmits(["close"]);

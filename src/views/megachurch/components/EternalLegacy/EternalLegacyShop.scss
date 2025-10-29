@@ -146,10 +146,6 @@
 
   &.affordable {
     border-color: #d4af37;
-    &:has(button:hover) {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
-    }
   }
 
   &.purchased {
@@ -159,25 +155,48 @@
 
   &.dangerous {
     border-color: #ff6b35;
-    &:has(button:hover) {
-      box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
-    }
+  }
+
+  &:has(.purchase-btn:hover),
+  &:has(.purchase-btn:focus-visible) {
+    transform: translateY(-2px);
+    box-shadow:
+      6px 6px 6px oklch(0 0 0 / 0.15),
+      3px 3px 3px oklch(0 0 0 / 0.3);
   }
 
   &.celebrity-card {
     border-color: #6b9bff;
-    &:has(button:hover) {
-      box-shadow: 0 4px 12px rgba(107, 155, 255, 0.3);
-    }
     .item-details {
       .item-stats {
+        position: relative;
+        .toggle-details {
+          position: absolute;
+          top: 0;
+          right: 0;
+          display: flex;
+          appearance: none;
+          border-radius: 50%;
+          border: 1px solid currentColor;
+          color: $white;
+          background-color: transparent;
+          width: 2em;
+          height: 2em;
+          font-size: 0.75rem;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          &:hover,
+          &:focus-visible {
+            background-color: oklch(1 0 0 / 0.15);
+          }
+        }
         .cost {
           font-size: 1.75em;
           font-weight: 300;
         }
       }
     }
-
     .effect-summary {
       color: oklch(0.8 0 360);
       padding-bottom: 0.5em;
@@ -284,9 +303,6 @@
           background: #666;
           color: #999;
           cursor: not-allowed;
-        }
-        &:hover:not(:disabled) {
-          background: #ff8555;
         }
       }
     }

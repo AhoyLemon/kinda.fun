@@ -69,11 +69,11 @@ export function removeFromArrayByKey<T>(array: T[], key: keyof T, value: any): v
   }
 }
 
-export function dollars(amount: number): string {
+export function dollars(amount: number, minimumFractionDigits: number = 0): string {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-    minimumFractionDigits: 0,
+    minimumFractionDigits: minimumFractionDigits,
   });
   return formatter.format(amount);
 }

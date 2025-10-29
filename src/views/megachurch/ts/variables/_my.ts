@@ -1,6 +1,7 @@
 import { reactive } from "vue";
 import { places } from "../_places";
 import { My } from "../_types";
+import { EternalLegacyCelebrity } from "./_eternalLegacy";
 
 export const my = reactive<My>({
   name: "",
@@ -10,6 +11,7 @@ export const my = reactive<My>({
   religion: {},
   place: places[0],
   lucre: [],
+  celebrityFriends: [],
   preacherStrengths: {
     gatherCrowd: 1, // Muliplier for gathering crowd size
     getDonations: 1, // Multiplier for donation amounts

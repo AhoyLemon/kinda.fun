@@ -428,6 +428,7 @@ export interface My {
   religion: object;
   place: Place;
   lucre: object[];
+  celebrityFriends: EternalLegacyCelebrity[];
   preacherStrengths: {
     gatherCrowd: number;
     getDonations: number;

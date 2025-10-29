@@ -95,8 +95,8 @@ Teleport(to="body")
         .celebrity-tab(v-if="activeTab === 'celebrities'")
           .tab-header
             p.tab-description 
-              | Enhance your church's prestige with celebrity endorsements. 
-              | Each celebrity provides unique benefits and penalties, plus you'll have somebody new to do drugs with.
+              | Enhance your church's prestige by making celebrity friends.
+              | Each friend you make will apply different boosts and penalties to your church, and hopefully provide you with someone to do drugs with.
               
           .items-grid
             .item-card.celebrity-card(
@@ -108,25 +108,32 @@ Teleport(to="body")
                 h4.celebrity-name {{ celebrity.name }}
                 p.item-description {{ celebrity.description }}
                 .item-stats
-                  .cost(v-if="celebrity.cost") {{ dollars(celebrity.cost) }}
-                  .cost(v-if="celebrity.dailyCost") {{ dollars(celebrity.dailyCost) }} per day
-                  //.mammon-value(v-if="celebrity.mammon") +{{ addCommas(celebrity.mammon) }} mammon
-                  p.effect-summary {{ celebrity.effect }}
-                  dl.celebrity-effects(v-if="celebrity.hasOneTimeEffects")
-                    dt One-Time Effects:
-                    dd
-                      .mammon(v-if="celebrity.oneTimeEffects.mammon") +{{ addCommas(celebrity.oneTimeEffects.mammon) }} mammon
-                      .boost(v-if="celebrity.oneTimeEffects.buzz") {{celebrity.oneTimeEffects.buzz}} attendance boost
-                      .boost(v-if="celebrity.oneTimeEffects.religionBoost && celebrity.religions.likedBy.length > 0") {{celebrity.oneTimeEffects.religionBoost}}% boost among {{celebrity.religions.likedBy.join(', ')}}
-                      .negative(v-if="celebrity.oneTimeEffects.religionPenalty && celebrity.religions.hatedBy.length > 0") {{Math.abs(celebrity.oneTimeEffects.religionPenalty)}}% reduction among {{celebrity.religions.hatedBy.join(', ')}}
-                  dl.celebrity-effects(v-if="celebrity.hasDailyEffects")
-                    dt Ongoing Effects:
-                    dd
-                      .mammon(v-if="celebrity.dailyEffects.mammon") +{{ addCommas(celebrity.dailyEffects.mammon) }} mammon per day
-                      .boost(v-if="celebrity.dailyEffects.buzz > 0 ") {{celebrity.dailyEffects.buzz}}% attendance boost
-                      .negative(v-if="celebrity.dailyEffects.buzz < 0 ") {{Math.abs(celebrity.dailyEffects.buzz)}}% attendance reduction
-                      .boost(v-if="celebrity.dailyEffects.religionBoost && celebrity.religions.likedBy.length > 0") {{celebrity.dailyEffects.religionBoost}}% boost among {{celebrity.religions.likedBy.join(', ')}}
-                      .negative(v-if="celebrity.dailyEffects.religionPenalty && celebrity.religions.hatedBy.length > 0") {{Math.abs(celebrity.dailyEffects.religionPenalty)}}% reduction among {{celebrity.religions.hatedBy.join(', ')}}
+
+                  
+                  button.toggle-details(@click="toggleCelebrityDetails(celebrity)") ?
+                  .cost(v-if="celebrity.cost && celebrity.dailyCost") {{ dollars(celebrity.cost) }} once / {{ dollars(celebrity.dailyCost) }} per day
+                  .cost(v-else-if="celebrity.cost") {{ dollars(celebrity.cost) }}
+                  .cost(v-else-if="celebrity.dailyCost") {{ dollars(celebrity.dailyCost) }} per day
+                  template(v-if="celebrityUI.detailedId !== celebrity.id")
+                    .mammon-value(v-if="celebrity.hasOneTimeEffects && celebrity.oneTimeEffects?.mammon") +{{ addCommas(celebrity.oneTimeEffects.mammon) }} mammon
+                    .mammon-value(v-if="celebrity.hasDailyEffects && celebrity.dailyEffects?.mammon") +{{ addCommas(celebrity.dailyEffects.mammon) }} mammon per day
+                    p.effect-summary(v-if="celebrityUI.detailedId !== celebrity.id") {{ celebrity.effect }}
+                  template(v-if="celebrityUI.detailedId === celebrity.id")
+                    dl.celebrity-effects(v-if="celebrity.hasOneTimeEffects && celebrity.oneTimeEffects")
+                      dt One-Time Effects:
+                      dd
+                        .mammon(v-if="celebrity.oneTimeEffects.mammon") {{ addCommas(celebrity.oneTimeEffects.mammon) }} mammon
+                        .boost(v-if="celebrity.oneTimeEffects.buzz") {{celebrity.oneTimeEffects.buzz}}% attendance boost
+                        .boost(v-if="celebrity.oneTimeEffects.religionBoost && celebrity.religions.likedBy.length > 0") {{celebrity.oneTimeEffects.religionBoost}}% boost among {{celebrity.religions.likedBy.join(', ')}}
+                        .negative(v-if="celebrity.oneTimeEffects.religionPenalty && celebrity.religions.hatedBy.length > 0") {{Math.abs(celebrity.oneTimeEffects.religionPenalty)}}% reduction among {{celebrity.religions.hatedBy.join(', ')}}
+                    dl.celebrity-effects(v-if="celebrity.hasDailyEffects && celebrity.dailyEffects")
+                      dt Ongoing Effects:
+                      dd
+                        .mammon(v-if="celebrity.dailyEffects.mammon") +{{ addCommas(celebrity.dailyEffects.mammon) }} mammon per day
+                        .boost(v-if="celebrity.dailyEffects.buzz > 0 ") {{celebrity.dailyEffects.buzz}}% attendance boost
+                        .negative(v-if="celebrity.dailyEffects.buzz < 0 ") {{Math.abs(celebrity.dailyEffects.buzz)}}% attendance reduction
+                        .boost(v-if="celebrity.dailyEffects.religionBoost && celebrity.religions.likedBy.length > 0") {{celebrity.dailyEffects.religionBoost}}% boost among {{celebrity.religions.likedBy.join(', ')}}
+                        .negative(v-if="celebrity.dailyEffects.religionPenalty && celebrity.religions.hatedBy.length > 0") {{Math.abs(celebrity.dailyEffects.religionPenalty)}}% reduction among {{celebrity.religions.hatedBy.join(', ')}}
                 
               .item-actions
                 button.purchase-btn(
@@ -134,11 +141,11 @@ Teleport(to="body")
                   :disabled="my.money < celebrity.cost"
                   @click="purchaseItem(celebrity, 'celebrities')"
                 ) 
-                  span(v-if="!celebrity.cost") Get Endorsed
-                  span(v-else-if="my.money >= celebrity.cost") Pay For Endorsement
-                  span(v-else) Too Expensive
+                  span(v-if="!celebrity.cost") Become Friends
+                  span(v-else-if="my.money >= celebrity.cost") Become Friends
+                  span(v-else) You Can't Be Friends
                 .purchased-indicator(v-else)
-                  | Endorsed
+                  | You Are Friends
 
       .shop-footer
         blockquote

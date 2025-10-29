@@ -42,12 +42,7 @@
   });
 
   const ownedCelebrities = computed(() => {
-    if (!my.eternalLegacy?.purchasedItems) {
-      return [];
-    }
-
-    // Filter purchased items to get only celebrities
-    return my.eternalLegacy.purchasedItems.filter((item) => gameSettings.eternalLegacy.shop.celebrities.some((celeb) => celeb.id === item.id));
+    return [];
   });
 
   const heatLevel = computed(() => {

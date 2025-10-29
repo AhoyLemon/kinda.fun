@@ -224,6 +224,7 @@ export interface EternalLegacyCelebrity {
   dailyCost: number; // Daily upkeep to maintain
   hasDailyEffects: boolean;
   hasOneTimeEffects: boolean;
+  hasMerch: boolean;
 
   religions?: {
     likedBy: ReligionNames[];
@@ -236,6 +237,7 @@ export interface EternalLegacyCelebrity {
     buzz: number; // one-time gain to my.church.buzz
     religionBoost: number; // one-time boost to the likedBy religion(s) in in my.religiousScorecard
     religionPenalty: number; // one-time penalty to the hatedBy religion(s) in my.religiousScorecard
+    heat?: number; // Can be positive or negative. Immediately adds or subtracts this amount of heat when acquired.
   };
   dailyEffects?: {
     // Effects provided every day. This MUST be provided if hasDailyEffects is true
@@ -243,6 +245,15 @@ export interface EternalLegacyCelebrity {
     buzz: number; // daily gain to my.church.buzz
     religionBoost: number; // daily boost to the likedBy religion(s) in in my.religiousScorecard
     religionPenalty: number; // daily penalty to the hatedBy religion(s) in my.religiousScorecard
+    heatModifier?: number; // Can be positive or negative. Modifies the amount of heat you gain every day.
+  };
+  merch?: {
+    // Description of merch. This MUST be provided if hasMerch is true
+    name: string; // Name of the merch item
+    price: number; // Total price of the item, as sold in your church.
+    yourCut: number; // The number (in dollars) you will make from each item sold
+    baseChance: number; // Base chance (%) that an attendee will buy this merch item
+    religionBonusChance?: number; // Additional chance (%) if the attendee belongs to a religion that likes this celebrity
   };
 
   description: string; // humorous description
@@ -257,6 +268,7 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
     dailyCost: 0,
     hasOneTimeEffects: true,
     hasDailyEffects: false,
+    hasMerch: false,
     religions: {
       likedBy: ["The Church of the High Priest", "The Church of Having More Things"],
       hatedBy: ["The Queens' Dominion", "Mormonism", "Jehovah's Witnesses"],
@@ -277,6 +289,7 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
     dailyCost: 150,
     hasOneTimeEffects: true,
     hasDailyEffects: true,
+    hasMerch: false,
     religions: {
       likedBy: ["The Order of the Alpha Male"],
       hatedBy: [],
@@ -302,6 +315,7 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
     name: "Chastity Bangs",
     hasOneTimeEffects: true,
     hasDailyEffects: true,
+    hasMerch: false,
     cost: 1200,
     dailyCost: 0,
     religions: {
@@ -329,6 +343,7 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
     name: "Steev Seagul",
     hasOneTimeEffects: true,
     hasDailyEffects: false,
+    hasMerch: false,
     cost: 1000,
     dailyCost: 0,
     religions: {
@@ -343,5 +358,67 @@ export const eternalLegacyCelebrities: EternalLegacyCelebrity[] = [
     },
     description: `Starred in "Under Siege 7: Spiritual Warfare." and allegedly had a cameo in Fast 5, but I've never noticed. Now teaches mediation classes, hawks NFT dojo memberships, and insists ponytails are a lifestyle. Will anger every Buddhist he talks to.`,
     effect: "Boost to 2 Fast 2 Faithful, but you'll never see a Buddhist in your church again.",
+  },
+  {
+    id: "crypto-christ",
+    name: `Chad "CRYPT0CRYST" Hodlman`,
+    cost: 0,
+    dailyCost: 300,
+    hasDailyEffects: true,
+    hasOneTimeEffects: false,
+    hasMerch: true,
+    religions: {
+      likedBy: ["The Digital Ascension", "The Sovereign Guild of Untethered Minds"],
+      hatedBy: ["The Gaia Collective", "Buddhism"],
+    },
+    dailyEffects: {
+      mammon: 0,
+      buzz: 5,
+      religionBoost: 25,
+      religionPenalty: 25,
+    },
+    merch: {
+      name: "$iN Token",
+      price: 300,
+      yourCut: 15,
+      baseChance: 1,
+      religionBonusChance: 4,
+    },
+    description: `A self-proclaimed prophet of the blockchain, Chad Hodlman preaches that salvation is "to the moon" and that tithing in Bitcoin is the only way to secure your spot in the decentralized afterlife. His sermons are filled with crypto buzzwords like "HODL for the Lord" and "gm, saints!" while he casually shills his latest NFT collection. Chad promises your church will be driving Lambos in no time, but don’t be surprised if he pulls the ultimate rug and disappears with your congregation’s wallets.`,
+    effect: `Chad’s endorsement will attract tech enthusiast idiots and generate a surge in crypto-based donations, but his blatant greed and shady schemes will alienate more traditional or ethical congregants.`,
+  },
+  {
+    id: "new-age",
+    name: "Melody Dylan",
+    cost: 1600,
+    dailyCost: 0,
+    hasDailyEffects: true,
+    hasOneTimeEffects: true,
+    hasMerch: true,
+    religions: {
+      likedBy: ["New-Age Spirituality"],
+      hatedBy: ["Agnostic Atheists"],
+    },
+    oneTimeEffects: {
+      mammon: 25,
+      buzz: 7,
+      religionBoost: 0,
+      religionPenalty: 0,
+    },
+    dailyEffects: {
+      mammon: 0,
+      buzz: 0,
+      religionBoost: 20,
+      religionPenalty: 10,
+    },
+    description: `Melody Dylan was once the pop-country singer Jessica Hastings, until she reinvented herself after "learning" she was Bob Dylan's estranged daughter (a claim Bob Dylan’s attorneys have repeatedly denied). Melody now sells overpriced healing crystals, chakra stones, and essential oils through her online store, "Melody’s Cosmic Harmony." Her followers adore her soothing voice and spiritual platitudes, but skeptics see her as a savvy grifter who’s only in it for the money.`,
+    effect: `Melody’s endorsement will attract New-Age followers and generate a surge in donations, but her history of grifts and lack of authenticity may alienate more traditional or skeptical congregants.`,
+    merch: {
+      name: "Chakra Crystal",
+      price: 300,
+      yourCut: 24,
+      baseChance: 2,
+      religionBonusChance: 6,
+    },
   },
 ];

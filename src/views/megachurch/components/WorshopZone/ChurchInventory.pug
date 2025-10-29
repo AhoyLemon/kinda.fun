@@ -13,9 +13,9 @@
 
   .church-inventory__content
 
-    .inventory-section
+    .cash-section
       h4.section-title CASH
-      .cash-amount {{ dollars(my.money) }}
+      .cash-amount {{ dollars(my.money,2) }}
 
     // Merch Section
     Transition(name="inventory-item")

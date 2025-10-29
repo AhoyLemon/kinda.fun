@@ -93,6 +93,20 @@ $grid-gap: 4px;
   letter-spacing: 0.5px;
 }
 
+.cash-section {
+  border-radius: 6px;
+  margin-bottom: 1em;
+  .section-title {
+    margin: unset;
+  }
+  .cash-amount {
+    font-family: $monospace;
+    font-weight: 800;
+    color: rgba(0, 0, 0, 0.75);
+    font-size: 1.15em;
+  }
+}
+
 // MERCH
 .merch-grid {
   display: grid;
