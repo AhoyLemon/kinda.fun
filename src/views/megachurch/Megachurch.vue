@@ -1326,11 +1326,14 @@
     // Show donation toast after all reactions
     const merchToastDelay = currentDelay + ui.timing.merchToastDelay;
     setTimeout(() => {
-      // Process celebrity daily costs FIRST, before Sterling takes his cut
-      const { costsOwed, terminatedFriendships } = processCelebrityDailyCosts();
+      // Calculate gross church revenue first
+      const grossChurchRevenue = totalDonations + totalMerchRevenue + confessionRevenue;
+      
+      // Process celebrity daily costs with total available funds (current money + today's earnings)
+      const totalAvailableFunds = my.money + grossChurchRevenue;
+      const { costsOwed, terminatedFriendships } = processCelebrityDailyCosts(totalAvailableFunds);
 
       // Calculate net church revenue AFTER celebrity costs
-      const grossChurchRevenue = totalDonations + totalMerchRevenue + confessionRevenue;
       const totalCelebrityCosts = costsOwed.reduce((sum, cost) => sum + cost.amount, 0);
       const netChurchRevenue = grossChurchRevenue - totalCelebrityCosts;
 
@@ -1356,6 +1359,9 @@
 
       my.money += playerShare;
       trackMoneyEarned(playerShare);
+
+      // NOW deduct celebrity costs from the player's updated money balance
+      my.money -= totalCelebrityCosts;
 
       // Store values for results display
       my.sterlingCutYesterday = sterlingCut;
@@ -2417,18 +2423,21 @@
     return { totalCelebMerchRevenue, celebMerchSales };
   }
 
-  function processCelebrityDailyCosts() {
+  function processCelebrityDailyCosts(totalAvailableFunds: number = my.money) {
     const costsOwed: any[] = [];
     const terminatedFriendships: any[] = [];
+    let totalCostsDeducted = 0;
 
     my.celebrityFriends = my.celebrityFriends.filter((celebrity) => {
       if (celebrity.dailyCost > 0) {
-        if (my.money >= celebrity.dailyCost) {
-          my.money -= celebrity.dailyCost;
+        // Check if total available funds (current money + today's earnings) can cover this cost
+        if (totalAvailableFunds >= totalCostsDeducted + celebrity.dailyCost) {
+          // Track the cost but don't deduct from my.money yet - that happens after earnings are added
           costsOwed.push({
             name: celebrity.name,
             amount: celebrity.dailyCost,
           });
+          totalCostsDeducted += celebrity.dailyCost;
           return true; // Keep the celebrity
         } else {
           // Cannot afford - terminate friendship

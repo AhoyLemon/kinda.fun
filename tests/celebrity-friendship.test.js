@@ -177,7 +177,7 @@ describe("Celebrity Friendship System", () => {
 
   describe("Celebrity Merchandise Sales", () => {
     it("should process merch sales for celebrities with merchandise", () => {
-      const cryptoChrist = eternalLegacyCelebrities.find((c) => c.id === "crypto-christ");
+      const cryptoChrist = eternalLegacyCelebrities.find((c) => c.id === "cryptobro");
       my.celebrityFriends.push({ ...cryptoChrist });
 
       // Simulate congregation with some attendees
