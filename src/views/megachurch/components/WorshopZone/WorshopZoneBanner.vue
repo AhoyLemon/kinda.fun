@@ -221,21 +221,62 @@
     text-shadow: 1px 1px 2px #000;
     cursor: pointer;
     margin-bottom: 8px;
-    animation: pulse 2s ease-in-out infinite;
+    animation: pulse-jerky 2s steps(5, end) infinite;
   }
 
-  @keyframes pulse {
-    0%,
-    100% {
+  @keyframes pulse-jerky {
+    0% {
       transform: scale(1);
     }
-    50% {
-      transform: scale(1.05);
+    20% {
+      transform: scale(1.1);
+    }
+    40% {
+      transform: scale(0.9);
+    }
+    60% {
+      transform: scale(1.15);
+    }
+    80% {
+      transform: scale(0.95);
+    }
+    100% {
+      transform: scale(1);
     }
   }
 
   .enter-site-btn:hover {
     filter: brightness(1.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .enter-site-btn:hover::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+    transform: translate(-50%, -50%) scale(0);
+    animation: sparkle 0.8s ease-out forwards;
+    pointer-events: none;
+  }
+
+  @keyframes sparkle {
+    0% {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1.5);
+      opacity: 0;
+    }
   }
 
   .fine-print {

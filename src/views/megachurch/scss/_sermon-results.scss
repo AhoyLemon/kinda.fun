@@ -289,15 +289,19 @@ section.sermon-results {
         border-bottom: 1px dotted #ccc;
 
         dt {
-          font-size: 11px;
+          font-size: 12px;
           text-transform: uppercase;
           color: #333;
           flex: 1;
         }
+        .count {
+          font-family: "Courier New", monospace;
+          font-size: 13px;
+        }
 
         dd {
           font-family: "Courier New", monospace;
-          font-size: 11px;
+          font-size: 13px;
           font-weight: bold;
           color: #333;
           margin-left: 10px;
@@ -311,22 +315,28 @@ section.sermon-results {
       margin: 5px 0;
       padding: 2px 0;
       border-bottom: 1px dotted #ccc;
+      gap: 5px;
 
       dt {
-        font-size: 11px;
+        font-size: 12px;
         text-transform: uppercase;
         color: #333;
+        flex: 1;
+      }
+      .count {
+        font-family: "Courier New", monospace;
+        font-size: 13px;
       }
 
       dd {
         font-family: "Courier New", monospace;
-        font-size: 11px;
+        font-size: 13px;
         font-weight: bold;
         color: #333;
       }
     }
     rotate: 6deg;
-    translate: 3% -15%;
+    translate: 3% -21%;
     box-shadow:
       rgba(0, 0, 0, 0.25) 0px 54px 55px,
       rgba(0, 0, 0, 0.12) 0px -12px 30px,

@@ -15,6 +15,9 @@
 
 .friendship-ended-modal {
   background-color: #afbbcd;
+  background-image: url("/img/megachurch/bg/unfriend.jpg");
+  background-position: center;
+  background-size: cover;
   padding: 2rem;
   width: 90%;
   max-width: 600px;
@@ -27,7 +30,7 @@
     span {
       color: #55c500; /* Fallback color */
       background: linear-gradient(-180deg, #60d000 0%, #ff9500 100%);
-      -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
       -webkit-text-stroke: 1px #030a50;
     }
@@ -69,9 +72,10 @@
     padding-top: 2em;
     display: flex;
     justify-content: center;
-    button {
-      font-family: $sans-serif;
-    }
+  }
+  .close-btn {
+    cursor: pointer;
+    font-family: $sans-serif;
   }
 }
 

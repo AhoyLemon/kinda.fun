@@ -7,7 +7,7 @@
   import { places } from "./ts/_places";
   import { themes } from "./ts/_sermons";
 
-  import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "../../shared/js/_functions.js";
+  import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "../../shared/ts/_functions";
   import { gameSettings } from "./ts/variables/_gameSettings";
   import { my } from "./ts/variables/_my";
   import { ui } from "./ts/variables/_ui";
@@ -904,7 +904,7 @@
     if (churchAttendees > effectiveCapacity) {
       setTimeout(() => {
         toast("🏛️ Your church is at maximum capacity! Consider expanding.", {
-          position: POSITION.BOTTOM_LEFT,
+          position: POSITION.BOTTOM_RIGHT,
           timeout: ui.timing.toastDuration,
         });
       }, 500);
@@ -1468,7 +1468,7 @@
     // Only show once on the first night after founding a church
     if (my.church.isFounded && my.church.days === 1 && !ui.worshopZone.hasSeenBanner) {
       setTimeout(() => {
-        toast.info("You have been served with a banner ad relevant to your interests.", {
+        toast.info("You have been served with a pop up ad relevant to your interests.", {
           timeout: 3000,
         });
         ui.worshopZone.showBanner = true;

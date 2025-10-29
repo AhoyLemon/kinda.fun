@@ -263,7 +263,9 @@
   background: #fafafa;
 
   .casual-section {
-    text-align: center;
+    display: flex;
+    gap: 0.5em;
+    justify-content: center;
 
     .casual-chat-btn {
       padding: 8px 16px;

@@ -40,7 +40,7 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
             dt Total Donations:
             .modifier.empty
             dd 
-              .amount {{dollars(my.donationsYesterday)}}
+              .amount {{dollars(my.donationsYesterday, true)}}
               .donor-count(v-if="my.isStreetPreaching") (from {{my.streetDonorsYesterday}} donors)
 
 
@@ -83,38 +83,45 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
             .merch-breakdown(v-if="my.merchSalesDetailsYesterday")
               template(v-if="my.merchSalesDetailsYesterday.holyWater.sold > 0")
                 dl.merch-item
-                  dt Holy Water Bottles:
-                  dd {{my.merchSalesDetailsYesterday.holyWater.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.holyWater.revenue)}})
+                  dt Holy Water Bottles
+                  .count x{{my.merchSalesDetailsYesterday.holyWater.sold}}
+                  dd {{dollars(my.merchSalesDetailsYesterday.holyWater.revenue, true)}}
               template(v-if="my.merchSalesDetailsYesterday.prayerCandles.sold > 0")
                 dl.merch-item
-                  dt Prayer Candles:
-                  dd {{my.merchSalesDetailsYesterday.prayerCandles.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.prayerCandles.revenue)}})
+                  dt Prayer Candles
+                  .count x{{my.merchSalesDetailsYesterday.prayerCandles.sold}}
+                  dd {{dollars(my.merchSalesDetailsYesterday.prayerCandles.revenue, true)}}
               template(v-if="my.merchSalesDetailsYesterday.weightLossTea.sold > 0")
                 dl.merch-item
-                  dt Weight Loss Tea:
-                  dd {{my.merchSalesDetailsYesterday.weightLossTea.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.weightLossTea.revenue)}})
+                  dt Weight Loss Tea
+                  .count x{{my.merchSalesDetailsYesterday.weightLossTea.sold}}
+                  dd {{dollars(my.merchSalesDetailsYesterday.weightLossTea.revenue, true)}}
               template(v-if="my.merchSalesDetailsYesterday.beachTowel.sold > 0")
                 dl.merch-item
-                  dt Beach Towels:
-                  dd {{my.merchSalesDetailsYesterday.beachTowel.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.beachTowel.revenue)}})
+                  dt Beach Towels
+                  .count x{{my.merchSalesDetailsYesterday.beachTowel.sold}}
+                  dd {{dollars(my.merchSalesDetailsYesterday.beachTowel.revenue, true)}}
               template(v-if="my.merchSalesDetailsYesterday.exorcismKit.sold > 0")
                 dl.merch-item
-                  dt Exorcism Kits:
-                  dd {{my.merchSalesDetailsYesterday.exorcismKit.sold}} sold ({{dollars(my.merchSalesDetailsYesterday.exorcismKit.revenue)}})
+                  dt Exorcism Kits
+                  .count x{{my.merchSalesDetailsYesterday.exorcismKit.sold}}
+                  dd {{dollars(my.merchSalesDetailsYesterday.exorcismKit.revenue, true)}}
           
           template(v-if="my.celebMerchSalesYesterday && my.celebMerchSalesYesterday.length > 0")
             h3 Celebrity Merchandise Sales
             .merch-breakdown
               template(v-for="celebSale in my.celebMerchSalesYesterday" :key="celebSale.name")
                 dl.merch-item
-                  dt {{celebSale.itemName}}:
-                  dd {{celebSale.itemsSold}} sold ({{dollars(celebSale.revenue)}})
+                  dt {{celebSale.itemName}}
+                  .count x{{celebSale.itemsSold}}
+                  dd {{dollars(celebSale.revenue, true)}}
           
           template(v-if="my.confessionRevenueYesterday > 0")
             h3 VIP Confession Revenue
             dl.confession-revenue
-              dt VIP Confessions:
-              dd {{dollars(my.confessionRevenueYesterday)}}
+              dt VIP Confessions
+              .count x{{my.confessionRevenueYesterday / 25}}
+              dd {{dollars(my.confessionRevenueYesterday, true)}}
 
         // Money Summary (Donations + Merch - Sterling - Seraph = Player Share)
         .donations-summary.church
@@ -123,34 +130,34 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
               dt Total Donations:
               .modifier.empty
               dd 
-                .amount {{dollars(my.donationsYesterday)}}
+                .amount {{dollars(my.donationsYesterday,true)}}
                 .donor-count(v-if="my.isStreetPreaching") (from {{my.streetDonorsYesterday}} donors)
             .row.merch-sales.plus(v-if="!my.isStreetPreaching && my.merchRevenueYesterday > 0")
               dt Merch Sales:
               .modifier.plus +
-              dd {{dollars(my.merchRevenueYesterday)}}
+              dd {{dollars(my.merchRevenueYesterday,true)}}
             .row.vip-confessions.plus(v-if="!my.isStreetPreaching && my.confessionRevenueYesterday > 0")
               dt VIP Confessions:
               .modifier.plus +
-              dd {{dollars(my.confessionRevenueYesterday)}}
+              dd {{dollars(my.confessionRevenueYesterday,true)}}
             .row.celebrity-costs.minus(v-if="my.celebrityCostsYesterday && my.celebrityCostsYesterday.length > 0")
               dt Celebrity Friends:
               .modifier.minus -
-              dd {{dollars(my.celebrityCostsYesterday.reduce((sum, cost) => sum + cost.amount, 0))}}
-            .row.sterling-cut.minus(v-if="my.sterlingCutYesterday > 0")
-              dt Sterling's Cut:
-              .modifier.minus -
-              dd {{dollars(my.sterlingCutYesterday)}}
+              dd {{dollars(my.celebrityCostsYesterday.reduce((sum, cost) => sum + cost.amount, 0),true)}}
             .row.seraph-ai-cost.minus(v-if="my.seraphAICostYesterday > 0")
               dt Seraph AI Subscription:
               .modifier.minus -
-              dd {{dollars(my.seraphAICostYesterday)}}
+              dd {{dollars(my.seraphAICostYesterday,true)}}
+            .row.sterling-cut.minus(v-if="my.sterlingCutYesterday > 0")
+              dt Sterling's Cut:
+              .modifier.minus -
+              dd {{dollars(my.sterlingCutYesterday,true)}}
             .row.player-share.equals(v-if="my.playerShareYesterday && my.playerShareYesterday != my.donationsYesterday")
               dt 
                 span(v-if="my.sterlingCutYesterday > 0") Your Share:
                 span(v-else) Your Earnings:
               .modifier.equals =
-              dd {{dollars(my.playerShareYesterday)}}
+              dd {{dollars(my.playerShareYesterday,true)}}
       
     .buttons
       button.plug(@click="openPlugInterface()") 📱 The Plug

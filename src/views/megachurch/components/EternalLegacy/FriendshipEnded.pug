@@ -8,21 +8,12 @@ Teleport(to="body")
         .friendship-status-text
           span Friendship ended with  
           span.celebrity-name {{ celebrity.name }}
-        //.reason-text Friendship {{ reasonText }}
-        
-      //- .friendship-photo-section
-      //-   .photo-frame
-      //-     // Using a generic placeholder since we don't have actual celebrity photos
-      //-     .celebrity-photo 👤
-      //-     .crossed-out-overlay ❌
-          
-      //- .effects-section
-      //-   h3 Consequences:
+
+      .unpaid(v-if="reason === 'non-payment'")
+        p Friends like yours need daily payments.
       ul.effects-list
         template(v-for="effect in effectsText" :key="effect")
           li.effect {{ effect }}
-          //li.blank
-        //li.effect(v-for="effect in effectsText" :key="effect") {{ effect }}
           
       //- .meme-reference
       //-   small (Inspired by the classic "Friendship ended with..." meme)
