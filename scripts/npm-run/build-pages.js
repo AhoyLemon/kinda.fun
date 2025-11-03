@@ -57,6 +57,11 @@ const pages = [
     name: "pretend.html",
   },
   {
+    src: path.join(SRC_DIR, "views", "rothko", "Page.pug"),
+    out: path.join(DIST_DIR, "rothko.html"),
+    name: "rothko.html",
+  },
+  {
     src: path.join(SRC_DIR, "views", "sisyphus", "Page.pug"),
     out: path.join(DIST_DIR, "sisyphus.html"),
     name: "sisyphus.html",

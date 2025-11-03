@@ -1,0 +1,30 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Rothko Painting Generator | Kinda fun.
+    meta(name='description', content='Create paintings in the style of Mark Rothko using this interactive generator. Adjust colors, shapes, and effects to create your own abstract masterpiece.')
+    link(rel='canonical', href=`${baseUrl}/rothko`)
+    
+    // Open Graph / Social Media
+    meta(property='og:type', content='website')
+    meta(property='og:title', content='Rothko Painting Generator | Kinda fun.')
+    meta(property='og:description', content='Create paintings in the style of Mark Rothko using this interactive generator.')
+    meta(property='og:url', content=`${baseUrl}/rothko`)
+    meta(property='og:site_name', content='Kinda fun.')
+    
+    // Twitter
+    meta(name='twitter:card', content='summary_large_image')
+    meta(name='twitter:title', content='Rothko Painting Generator | Kinda fun.')
+    meta(name='twitter:description', content='Create paintings in the style of Mark Rothko using this interactive generator.')
+    
+    // Styles
+    link(rel='stylesheet', href='/rothko.css')
+    
+  body
+    #app
+      // Vue app will mount here
+    
+    // Scripts
+    script(type='module', src='/src/entries/rothko.js')

@@ -53,6 +53,7 @@ export default defineConfig(({ mode }) => {
           invalid: resolve(__dirname, "src/entries/invalid.js"),
           meeting: resolve(__dirname, "src/entries/meeting.js"),
           pretend: resolve(__dirname, "src/entries/pretend.js"),
+          rothko: resolve(__dirname, "src/entries/rothko.js"),
           sisyphus: resolve(__dirname, "src/entries/sisyphus.js"),
           stats: resolve(__dirname, "src/entries/stats.js"),
           wrongest: resolve(__dirname, "src/entries/wrongest.js"),
@@ -71,7 +72,7 @@ export default defineConfig(({ mode }) => {
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
-          const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home", "404"];
+          const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "rothko", "sisyphus", "stats", "wrongest", "home", "404"];
           const url = req.url.split("?")[0];
 
           console.log("Middleware hit for URL:", url);
