@@ -57,7 +57,7 @@ aside.your-details
           small.debug(v-if="my.spice.pendingAddictionIncrease > 0") 
             | Tomorrow: +{{my.spice.pendingAddictionIncrease.toFixed(2)}} requirement
 
-    .box.buttons(v-if="gameSettings.isDebugButtonVisible || !ui.isFullscreen")
+    .box.buttons(v-if="gameSettings.isDebugButtonVisible")
       .label(v-if="gameSettings.isDebug" style="color: hotpink;") CHEATS ARE ENABLED
       fieldset
         button.debug-toggle(@click="toggleDebugMode()" :class="{'active': gameSettings.isDebug}")

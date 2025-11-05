@@ -71,7 +71,8 @@
           )
             .deed-icon 👹
             .deed-info
-              .deed-name {{ deed.name }}
+              .deed-name(v-if="deed.id === 'kill-sterling' || deed.id === 'consultation-tony'") You killed Sterling
+              .deed-name(v-else-if="deed.id === 'sterling-bribe' || deed.id === 'sterling-cut'") You got Sterling to bribe the cops
               //.deed-effect {{ deed.effect }}
 
     // Empty State

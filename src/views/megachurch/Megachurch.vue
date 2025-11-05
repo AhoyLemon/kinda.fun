@@ -73,46 +73,24 @@
     computeTemporarySermonScores,
   } from "./ts/_computeds";
 
+  import {
+    buildSermonDefinition,
+    processStreetPreachingEffect,
+    calculateChurchAudience,
+    sendTextMessagesWithTyping,
+    generateDailyThemesSelection,
+    getTopicOptionsForSermon,
+    buildChurchCongregation,
+    calculateCongregationReactions,
+    processChurchMerchSales,
+  } from "./ts/_functions";
+
   // ================= FUNCTIONS =================
 
+  // ========== GAME SETUP & NAVIGATION ==========
   function startNewGame() {
     localStorage.setItem("kindaFunPlayerName", my.name);
     ui.view = "sermon";
-  }
-
-  function provideTopicOptions(index: number): typeof themes {
-    const selectedIds = ui.selectedTopics.map((id, i) => (i !== index && id !== null && id !== 0 ? id : null)).filter((id): id is number => id !== null);
-
-    // Use daily themes instead of all themes
-    const availableThemes = my.dailyThemes.length > 0 ? my.dailyThemes : themes;
-
-    // Map and mark topics preached yesterday using computedTopicsYesterday
-    const themedWithYesterday = availableThemes.map((theme) => {
-      if (computedTopicsYesterday.value.includes(theme.id)) {
-        return {
-          ...theme,
-          isPreachedYesterday: true,
-        };
-      }
-      return theme;
-    });
-
-    // Filter out already selected topics and ensure uniqueness by ID
-    const filteredThemes = themedWithYesterday.filter((theme) => !selectedIds.includes(theme.id));
-
-    // Remove any potential duplicates by ID (defensive programming)
-    const uniqueThemes = filteredThemes.filter((theme, index, array) => array.findIndex((t) => t.id === theme.id) === index);
-
-    return uniqueThemes;
-  }
-
-  function generateDailyThemes() {
-    // Generate a random selection of themes for today
-    const shuffledThemes = shuffle([...themes]);
-    const selectedThemes = shuffledThemes.slice(0, gameSettings.themesPerDay);
-
-    // Ensure uniqueness by ID (defensive programming)
-    my.dailyThemes = selectedThemes.filter((theme, index, array) => array.findIndex((t) => t.id === theme.id) === index);
   }
 
   function chooseReligion(religionId: number) {
@@ -125,6 +103,17 @@
     ui.view = "place";
   }
 
+  function choosePlace(placeId: number) {
+    const place = places.find((p: any) => p.id === placeId);
+    if (place) {
+      my.place = { ...place };
+      advanceToNextDay();
+    } else {
+      alert("Place not found.");
+    }
+  }
+
+  // ========== UTILITY FUNCTIONS ==========
   function getReligion(id: number): Religion | {} {
     if (!id) {
       return { name: "Unknown" };
@@ -145,6 +134,8 @@
     }
   }
 
+  // ========== TRAVEL & LOCATION ==========
+
   // Travel with van
   function travelToPlace(placeId: number) {
     if (!my.hasVan || my.hasTraveledToday) return;
@@ -163,17 +154,7 @@
     choosePlace(placeId);
   }
 
-  function choosePlace(placeId: number) {
-    const place = places.find((p: any) => p.id === placeId);
-    if (place) {
-      my.place = { ...place };
-      advanceToNextDay();
-    } else {
-      alert("Place not found.");
-    }
-  }
-
-  // Church setup functions
+  // ========== CHURCH SETUP ==========
   function foundChurch() {
     if (!my.church.name || !ui.churchLocationIndex || !ui.churchReligionIndex) {
       return;
@@ -259,121 +240,26 @@
     ui.chats.sterling.isOpen = false;
   }
 
+  // ========== SERMON PLANNING ==========
+  function provideTopicOptions(index: number): typeof themes {
+    return getTopicOptionsForSermon(index, ui.selectedTopics, my.dailyThemes, computedTopicsYesterday.value);
+  }
+
+  function generateDailyThemes() {
+    my.dailyThemes = generateDailyThemesSelection(my.dailyThemes);
+  }
+
   function showThemeDescription(id: number): string {
     const theme = (themes as Theme[]).find((s) => s.id === id);
     return theme ? theme.desc || "" : "";
   }
 
   function defineSermon() {
-    const selectedThemes = ui.selectedTopics
-      .filter((id): id is number => typeof id === "number")
-      .map((id) => themes.find((t) => t.id === id))
-      .filter(Boolean);
-
-    // Count weights for tags
-    const tagWeights: Record<string, { liked: number; disliked: number }> = {};
-    // Count weights for religions
-    const religionWeights: Record<number, { name: string; liked: number; disliked: number }> = {};
-
-    selectedThemes.forEach((theme) => {
-      // Liked tags
-      (theme.likedBy.tags ?? []).forEach((tag: string) => {
-        if (!tagWeights[tag]) tagWeights[tag] = { liked: 0, disliked: 0 };
-        tagWeights[tag].liked++;
-      });
-      // Disliked tags
-      (theme.dislikedBy.tags ?? []).forEach((tag: string) => {
-        if (!tagWeights[tag]) tagWeights[tag] = { liked: 0, disliked: 0 };
-        tagWeights[tag].disliked++;
-      });
-      // Liked religions
-      (theme.likedBy.religions ?? []).forEach((rel: any) => {
-        let id: number;
-        let name: string;
-        if (typeof rel === "object") {
-          id = rel.id;
-          name = rel.name;
-        } else if (typeof rel === "number") {
-          id = rel;
-          name = String(rel);
-        } else {
-          // rel is a string, use its hash as id
-          id = rel.split("").reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
-          name = rel;
-        }
-        if (!religionWeights[id]) religionWeights[id] = { name, liked: 0, disliked: 0 };
-        religionWeights[id].liked++;
-      });
-      // Disliked religions
-      (theme.dislikedBy.religions ?? []).forEach((rel: any) => {
-        let id: number;
-        let name: string;
-        if (typeof rel === "object") {
-          id = rel.id;
-          name = rel.name;
-        } else if (typeof rel === "number") {
-          id = rel;
-          name = String(rel);
-        } else {
-          // rel is a string, use its hash as id
-          id = rel.split("").reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
-          name = rel;
-        }
-        if (!religionWeights[id]) religionWeights[id] = { name, liked: 0, disliked: 0 };
-        religionWeights[id].disliked++;
-      });
-    });
-
-    // Build liked/disliked arrays sorted by weight
-    const likedTagsArr = Object.entries(tagWeights)
-      .filter(([_, v]) => v.liked > 0)
-      .map(([tag, v]) => ({ tag, weight: v.liked }))
-      .sort((a, b) => b.weight - a.weight);
-    const dislikedTagsArr = Object.entries(tagWeights)
-      .filter(([_, v]) => v.disliked > 0)
-      .map(([tag, v]) => ({ tag, weight: v.disliked }))
-      .sort((a, b) => b.weight - a.weight);
-
-    const likedReligionsArr = Object.entries(religionWeights)
-      .filter(([_, v]) => v.liked > 0)
-      .map(([id, v]) => ({ name: v.name, id: Number(id), weight: v.liked }))
-      .sort((a, b) => b.weight - a.weight);
-    const dislikedReligionsArr = Object.entries(religionWeights)
-      .filter(([_, v]) => v.disliked > 0)
-      .map(([id, v]) => ({ name: v.name, id: Number(id), weight: v.disliked }))
-      .sort((a, b) => b.weight - a.weight);
-
-    // Mixed messages: tags and religions that appear in both liked and disliked
-    const mixedTagsArr = Object.entries(tagWeights)
-      .filter(([_, v]) => v.liked > 0 && v.disliked > 0)
-      .map(([tag, v]) => ({ tag, liked: v.liked, disliked: v.disliked }));
-    const mixedReligionsArr = Object.entries(religionWeights)
-      .filter(([_, v]) => v.liked > 0 && v.disliked > 0)
-      .map(([id, v]) => ({ name: v.name, id: Number(id), liked: v.liked, disliked: v.disliked }));
-
-    my.sermonToday = {
-      topics: selectedThemes.map((t) => ({
-        id: t.id,
-        title: t.title,
-        description: t.desc,
-      })),
-      likedBy: {
-        tags: likedTagsArr,
-        religions: likedReligionsArr,
-      },
-      dislikedBy: {
-        tags: dislikedTagsArr,
-        religions: dislikedReligionsArr,
-      },
-      mixedMessages: {
-        tags: mixedTagsArr,
-        religions: mixedReligionsArr,
-      },
-    };
-
+    my.sermonToday = buildSermonDefinition(ui.selectedTopics, my.sermonToday);
     ui.view = "sermon-confirm";
   }
 
+  // ========== SERMON EXECUTION ==========
   function preachSermon() {
     // Create sermon objects for tracking but don't update scorecard yet
     // Scorecard updates only happen in church preaching
@@ -400,197 +286,17 @@
     // Get spice multiplier for this sermon
     const spiceMultiplier = getSpiceMultiplier();
 
-    // === USE SHARED GAME LOGIC ===
+    // Use extracted function to process street preaching
+    const result = processStreetPreachingEffect(place, my.sermonToday, spiceMultiplier);
 
-    // Reconstruct full theme objects from the topic IDs for buildSermonData
-    const fullThemes = (my.sermonToday.topics || []).map((topic: any) => themes.find((t) => t.id === topic.id)).filter(Boolean);
-
-    // Build sermon data from full theme objects (same as game logic)
-    const sermonData = buildSermonData(fullThemes);
-
-    // Update my.sermonToday with the built sermon data for consistency
-    my.sermonToday.likedBy = sermonData.likedBy;
-    my.sermonToday.dislikedBy = sermonData.dislikedBy;
-    my.sermonToday.mixedMessages = sermonData.mixedMessages;
-
-    // Use shared logic to simulate street preaching
-    const result = simulateStreetPreachingCore(place, fullThemes, spiceMultiplier);
-
-    // Store results using the same format as before
+    // Store results
     my.donationsYesterday = result.donations;
-    my.streetDonorsYesterday = result.liked; // People who liked are potential donors
+    my.streetDonorsYesterday = result.donations > 0 ? Math.ceil(result.donations / 10) : 0; // Rough estimate
     my.streetAttendanceYesterday = result.crowdSize;
-
-    // Use the crowd from shared logic for toast generation
-    const crowd = result.crowd;
-
-    // === STEP 4: PREPARE TOAST DATA ===
-    // New approach: One toast per religion maximum, prioritize most influential
-
-    // Track reactions by religion to find the most influential per religion
-    const religionReactions = new Map();
-
-    // Process all reactions and find the strongest one per religion
-    for (const person of crowd) {
-      if (person.reaction === "neutral") continue;
-
-      const religionId = person.religionId;
-      const religionData = religions.find((r) => r.id === religionId);
-      if (!religionData) continue;
-
-      if (!religionReactions.has(religionId)) {
-        religionReactions.set(religionId, {
-          religionData,
-          reactions: { like: 0, dislike: 0 },
-          causes: { like: [], dislike: [] },
-        });
-      }
-
-      const religionInfo = religionReactions.get(religionId);
-      religionInfo.reactions[person.reaction]++;
-
-      // Determine what caused this reaction
-      let cause = null;
-      let isReligionMatch = false;
-
-      // Check if it was a religion match
-      if (person.reaction === "like" && my.sermonToday.likedBy.religions.some((r) => r.id === religionId)) {
-        cause = "religion";
-        isReligionMatch = true;
-      } else if (person.reaction === "dislike" && my.sermonToday.dislikedBy.religions.some((r) => r.id === religionId)) {
-        cause = "religion";
-        isReligionMatch = true;
-      } else {
-        // Check for tag matches
-        if (person.reaction === "like") {
-          for (const tagObj of my.sermonToday.likedBy.tags) {
-            if (religionData.likes.includes(tagObj.tag as any)) {
-              cause = tagObj.tag;
-              break;
-            }
-          }
-        } else if (person.reaction === "dislike") {
-          for (const tagObj of my.sermonToday.dislikedBy.tags) {
-            if (religionData.likes.includes(tagObj.tag as any)) {
-              cause = tagObj.tag;
-              break;
-            }
-          }
-        }
-      }
-
-      if (cause && !religionInfo.causes[person.reaction].some((c) => c.cause === cause)) {
-        religionInfo.causes[person.reaction].push({ cause, isReligionMatch });
-      }
-    }
-
-    // Create toasts - one per religion with their strongest reaction
-    const toastCandidates = [];
-
-    religionReactions.forEach((info, religionId) => {
-      const likeCount = info.reactions.like;
-      const dislikeCount = info.reactions.dislike;
-
-      // Determine which reaction was stronger
-      if (likeCount > dislikeCount && likeCount > 0) {
-        const cause = info.causes.like[0]; // Use first/primary cause
-        toastCandidates.push({
-          type: "like",
-          count: likeCount,
-          religionData: info.religionData,
-          cause: cause?.cause || null,
-          isReligionMatch: cause?.isReligionMatch || false,
-          priority: likeCount,
-        });
-      } else if (dislikeCount > 0) {
-        const cause = info.causes.dislike[0];
-        toastCandidates.push({
-          type: "dislike",
-          count: dislikeCount,
-          religionData: info.religionData,
-          cause: cause?.cause || null,
-          isReligionMatch: cause?.isReligionMatch || false,
-          priority: dislikeCount,
-        });
-      }
-    });
-
-    // Add mixed message toasts (limit to 2)
-    const mixedToasts = [];
-    for (const mixedTag of my.sermonToday.mixedMessages.tags) {
-      const affectedCount = crowd.filter((p) => {
-        const religionData = religions.find((r) => r.id === p.religionId);
-        return religionData && (religionData.likes.includes(mixedTag.tag as any) || religionData.dislikes.includes(mixedTag.tag as any));
-      }).length;
-
-      if (affectedCount > 0) {
-        const affectedReligions = Array.from(
-          new Set(
-            crowd
-              .filter((p) => {
-                const religionData = religions.find((r) => r.id === p.religionId);
-                return religionData && (religionData.likes.includes(mixedTag.tag as any) || religionData.dislikes.includes(mixedTag.tag as any));
-              })
-              .map((p) => {
-                const religionData = religions.find((r) => r.id === p.religionId);
-                return religionData?.followers || p.religionName;
-              }),
-          ),
-        );
-
-        mixedToasts.push({
-          type: "mixed",
-          count: affectedCount,
-          cause: mixedTag.tag,
-          affectedReligions,
-          priority: affectedCount,
-        });
-      }
-    }
-
-    // Sort mixed toasts by priority and take top 2
-    mixedToasts.sort((a, b) => b.priority - a.priority);
-    const limitedMixedToasts = mixedToasts.slice(0, 2);
-
-    // Combine all toasts and sort by priority
-    const allToasts = [...toastCandidates, ...limitedMixedToasts];
-    allToasts.sort((a, b) => b.priority - a.priority);
-
-    // Limit to 10 total toasts
-    const finalToasts = allToasts.slice(0, 10);
-
-    // Shuffle the toasts so they're not in priority order
-    const shuffledToasts = shuffle([...finalToasts]);
-
-    // Store legacy audience reactions format for compatibility
-    const reactionsByReligion = place.religions
-      .map((placeReligion) => {
-        const religionCrowd = crowd.filter((p) => p.religionId === placeReligion.id);
-        const liked = religionCrowd.filter((p) => p.reaction === "like").length;
-        const disliked = religionCrowd.filter((p) => p.reaction === "dislike").length;
-        const neutral = religionCrowd.filter((p) => p.reaction === "neutral").length;
-
-        const religionData = religions.find((r) => r.id === placeReligion.id);
-
-        return {
-          id: placeReligion.id,
-          name: placeReligion.name,
-          liked,
-          disliked,
-          neutral,
-          likedTags: [], // Not needed for new system
-          dislikedTags: [], // Not needed for new system
-          mixedTags: [], // Not needed for new system
-          followerName: religionData?.follower || placeReligion.name,
-          followersName: religionData?.followers || placeReligion.name,
-        };
-      })
-      .filter((r) => r.liked > 0 || r.disliked > 0 || r.neutral > 0);
-
-    my.audienceReactions = reactionsByReligion;
+    my.audienceReactions = result.audienceReactions;
 
     // Show audience feedback toasts
-    showNewToasts(shuffledToasts, result.donations);
+    showNewToasts(result.toastData, result.donations);
   }
 
   function showNewToasts(toastData: any[], donationAmount: number) {
@@ -863,54 +569,38 @@
   }
 
   function gatherChurchAudience(): number {
-    if (!my.church.isFounded || !my.church.location) {
-      return 0;
-    }
+    const attendance = calculateChurchAudience(my);
 
-    // Start with base attendance
-    let churchAttendees = gameSettings.churchPreaching.expectedAttendees;
+    // Show toast if we hit capacity
+    if (my.church.isFounded && my.church.location) {
+      let churchAttendees = gameSettings.churchPreaching.expectedAttendees;
+      churchAttendees = Math.round(churchAttendees * (my.preacherStrengths?.gatherCrowd || 1));
+      churchAttendees += Math.round(my.church.buzz * gameSettings.church.buzzMultiplier);
 
-    // Apply preacher strength
-    churchAttendees = Math.round(churchAttendees * (my.preacherStrengths?.gatherCrowd || 1));
+      if (my.marketing.signSpinner.active && my.marketing.signSpinner.daysRemaining > 0) {
+        churchAttendees = Math.round(churchAttendees * (1 + gameSettings.church.marketing.signSpinner.attendanceBoost / 100));
+      }
+      if (my.marketing.targetedAd.active && my.marketing.targetedAd.daysRemaining > 0) {
+        if (my.church.religion?.id === my.marketing.targetedAd.targetReligion?.id) {
+          churchAttendees = Math.round(churchAttendees * (1 + gameSettings.church.marketing.targetedAd.targetReligionBoost / 100));
+        }
+      }
 
-    // Apply buzz effect - multiply buzz by buzzMultiplier to get extra attendees
-    const buzzBonus = Math.round(my.church.buzz * gameSettings.church.buzzMultiplier);
-    churchAttendees += buzzBonus;
+      const maxPews = gameSettings.church.upgrades.extraPews.maxPews;
+      const actualExtraPews = Math.min(my.church.upgrades.extraPews, maxPews);
+      const effectiveCapacity = my.church.maxAttendance + actualExtraPews * gameSettings.church.upgrades.extraPews.capacityIncrease;
 
-    // Apply marketing effects to attendance (marketing was purchased yesterday, affects today)
-    // General Ad now provides permanent buzz boost, so it's applied through my.church.buzz
-    // Sign Spinner provides temporary boost when active
-    if (my.marketing.signSpinner.active && my.marketing.signSpinner.daysRemaining > 0) {
-      churchAttendees = Math.round(churchAttendees * (1 + gameSettings.church.marketing.signSpinner.attendanceBoost / 100));
-    }
-    // Targeted ads boost specific religion attendance
-    if (my.marketing.targetedAd.active && my.marketing.targetedAd.daysRemaining > 0) {
-      // This would need specific logic to boost the targeted religion's attendance
-      // For now, apply general boost if the church religion matches the targeted religion
-      if (my.church.religion?.id === my.marketing.targetedAd.targetReligion?.id) {
-        churchAttendees = Math.round(churchAttendees * (1 + gameSettings.church.marketing.targetedAd.targetReligionBoost / 100));
+      if (churchAttendees > effectiveCapacity) {
+        setTimeout(() => {
+          toast("🏛️ Your church is at maximum capacity! Consider expanding.", {
+            position: POSITION.BOTTOM_RIGHT,
+            timeout: ui.timing.toastDuration,
+          });
+        }, 500);
       }
     }
 
-    // Calculate effective church capacity (base + extra pews)
-    const maxPews = gameSettings.church.upgrades.extraPews.maxPews;
-    const actualExtraPews = Math.min(my.church.upgrades.extraPews, maxPews);
-    const effectiveCapacity = my.church.maxAttendance + actualExtraPews * gameSettings.church.upgrades.extraPews.capacityIncrease;
-
-    // Cap attendance at church capacity
-    const finalAttendance = Math.min(churchAttendees, effectiveCapacity);
-
-    // Show toast if we hit capacity
-    if (churchAttendees > effectiveCapacity) {
-      setTimeout(() => {
-        toast("🏛️ Your church is at maximum capacity! Consider expanding.", {
-          position: POSITION.BOTTOM_RIGHT,
-          timeout: ui.timing.toastDuration,
-        });
-      }, 500);
-    }
-
-    return finalAttendance;
+    return attendance;
   }
 
   function createChurchSermonEffect() {
@@ -933,162 +623,20 @@
     // Gather today's church attendance
     const churchAttendees = gatherChurchAudience();
 
-    // Build today's congregation from church location demographics and scorecard
-    const todaysCongregation: Array<{
-      id: number;
-      count: number;
-      likes: number;
-      dislikes: number;
-    }> = [];
+    // Build today's congregation using extracted function
+    const todaysCongregation = buildChurchCongregation(churchLocation, churchAttendees, my.religiousScorecard, my.church.religion, my.marketing, gameSettings);
 
-    // Use scorecard to adjust weights for church attendance
-    const scorecardMap = new Map<number, { score: number }>();
-    my.religiousScorecard.forEach((entry: any) => {
-      scorecardMap.set(entry.id, { score: entry.score || 0 });
-    });
-
-    let totalWeight = 0;
-    const weightedReligions: Array<{ id: number; weight: number }> = [];
-
-    churchLocation.religions.forEach((locationReligion: any) => {
-      // Start with base weight from location
-      let weight = locationReligion.weight;
-
-      // Add scorecard score
-      const scorecardScore = scorecardMap.get(locationReligion.id)?.score || 0;
-      weight += scorecardScore;
-
-      // Double the scorecard effect if this religion matches the church's religion
-      if (my.church.religion && my.church.religion.id === locationReligion.id) {
-        weight += scorecardScore; // Add scorecard score again for doubling effect
-      }
-
-      // Apply targeted marketing boost
-      if (my.marketing.targetedAd.active && my.marketing.targetedAd.targetReligion?.id === locationReligion.id) {
-        weight = Math.round(weight * (1 + gameSettings.church.marketing.targetedAd.targetReligionBoost / 100));
-      }
-
-      // Ensure minimum weight of 1
-      weight = Math.max(1, weight);
-
-      weightedReligions.push({ id: locationReligion.id, weight });
-      totalWeight += weight;
-    });
-
-    // Assign attendees based on weighted probabilities
-    for (const { id, weight } of weightedReligions) {
-      let attendeeCount = Math.round((churchAttendees * weight) / totalWeight);
-      if (attendeeCount > 0) {
-        todaysCongregation.push({
-          id,
-          count: attendeeCount,
-          likes: 0,
-          dislikes: 0,
-        });
-      }
-    }
-
-    // Calculate likes and dislikes for each religious group
-    todaysCongregation.forEach((group) => {
-      const religion = religions.find((r: any) => r.id === group.id);
-      if (!religion) return;
-
-      // Topic repetition penalty
-      let repetitionPenalty = 1;
-      if (my.sermonYesterday && Array.isArray(my.sermonYesterday.topics)) {
-        const preachedYesterday = my.sermonYesterday.topics.some((t: any) => my.sermonToday.topics.some((tt: any) => tt.id === t.id));
-        if (preachedYesterday) repetitionPenalty = gameSettings.churchPreaching.topicRepetitionPenalty;
-      }
-
-      // First, get likes and dislikes by religion match
-      if (!my.sermonToday.mixedMessages.religions.find((mr: any) => mr.id === group.id)) {
-        // Check for dislikes by religion
-        const dislikedReligionMatch = my.sermonToday.dislikedBy.religions.find((dr: any) => dr.id === group.id);
-        if (dislikedReligionMatch) {
-          const dislikeChance = gameSettings.churchPreaching.dislikeChance.byReligion / 100;
-          const modifiedChance = dislikeChance * (my.preacherStrengths?.getDislikes || 1) * spiceMultiplier * repetitionPenalty;
-          group.dislikes += Math.round(group.count * modifiedChance);
-        }
-
-        // Check for likes by religion
-        const likedReligionMatch = my.sermonToday.likedBy.religions.find((lr: any) => lr.id === group.id);
-        if (likedReligionMatch) {
-          const likeChance = gameSettings.churchPreaching.likeChance.byReligion / 100;
-          const modifiedChance = likeChance * (my.preacherStrengths?.getLikes || 1) * spiceMultiplier * repetitionPenalty;
-          group.likes += Math.round(group.count * modifiedChance);
-        }
-      }
-
-      // Then, get likes and dislikes by tag match
-      const allSermonTags = [
-        ...my.sermonToday.likedBy.tags.map((tag: any) => ({ ...tag, sermon: "positive" })),
-        ...my.sermonToday.dislikedBy.tags.map((tag: any) => ({ ...tag, sermon: "negative" })),
-      ].filter((tag: any) => !my.sermonToday.mixedMessages.tags.find((mt: any) => mt.tag === tag.tag));
-
-      // Shuffle tags for random checking order
-      const shuffledTags = shuffle([...allSermonTags]);
-
-      shuffledTags.forEach((sermonTag: any) => {
-        let tagScore = 0;
-
-        // Calculate tag score based on religion's preferences
-        if (religion.likes.includes(sermonTag.tag)) {
-          tagScore += sermonTag.sermon === "positive" ? sermonTag.weight : -sermonTag.weight;
-        }
-        if (religion.dislikes.includes(sermonTag.tag)) {
-          tagScore += sermonTag.sermon === "positive" ? -sermonTag.weight : sermonTag.weight;
-        }
-
-        // Apply tag score to likes/dislikes
-        if (tagScore > 0) {
-          const likeChance = (gameSettings.churchPreaching.likeChance.byTag / 100) * (tagScore / 5);
-          const modifiedChance = likeChance * (my.preacherStrengths?.getLikes || 1) * spiceMultiplier * repetitionPenalty;
-          group.likes += Math.round(group.count * Math.min(modifiedChance, 0.5));
-        } else if (tagScore < 0) {
-          const dislikeChance = (gameSettings.churchPreaching.dislikeChance.byTag / 100) * (Math.abs(tagScore) / 5);
-          const modifiedChance = dislikeChance * (my.preacherStrengths?.getDislikes || 1) * spiceMultiplier * repetitionPenalty;
-          group.dislikes += Math.round(group.count * Math.min(modifiedChance, 0.5));
-        }
-      });
-
-      // Apply church upgrade effects to likes
-      let upgradeBonus = 0;
-
-      // Audio/Visual equipment increases like chance
-      if (my.church.upgrades.audioVisual) {
-        upgradeBonus += gameSettings.church.upgrades.audioVisual.likeBoost / 100;
-      }
-
-      // Sacrament upgrades increase like chance
-      if (my.church.upgrades.sacrament.wine.level > 0) {
-        const wineLevel = gameSettings.church.upgrades.sacraments.wine.levels[my.church.upgrades.sacrament.wine.level];
-        if (wineLevel) {
-          upgradeBonus += wineLevel.likeBoost / 100;
-        }
-      }
-
-      if (my.church.upgrades.sacrament.bread.level > 0) {
-        const breadLevel = gameSettings.church.upgrades.sacraments.bread.levels[my.church.upgrades.sacrament.bread.level];
-        if (breadLevel) {
-          upgradeBonus += breadLevel.likeBoost / 100;
-        }
-      }
-
-      // Apply targeted marketing effects to specific religions
-      if (my.marketing.targetedAd.active && my.marketing.targetedAd.targetReligion?.id === group.id) {
-        upgradeBonus += gameSettings.church.marketing.targetedAd.targetReligionBoost / 100;
-      }
-
-      // Apply upgrade bonus to likes
-      if (upgradeBonus > 0) {
-        const bonusLikes = Math.round(group.count * upgradeBonus);
-        group.likes += bonusLikes;
-      }
-
-      // Ensure likes and dislikes don't exceed total count
-      group.likes = Math.min(group.likes, group.count);
-      group.dislikes = Math.min(group.dislikes, group.count);
-    });
+    // Calculate reactions using extracted function
+    calculateCongregationReactions(
+      todaysCongregation,
+      my.sermonToday,
+      my.sermonYesterday,
+      my.preacherStrengths,
+      spiceMultiplier,
+      my.church.upgrades,
+      my.marketing,
+      gameSettings,
+    );
 
     // Store congregation data for potential future use
     my.congregation = todaysCongregation;
@@ -1117,19 +665,13 @@
       }
     });
 
-    // PR Campaign is now permanent and boosts are applied at purchase time
-    // No longer need to apply daily boosts
-
     // Force Vue reactivity by replacing the scorecard array
     my.religiousScorecard = my.religiousScorecard.map((entry) => ({ ...entry }));
 
     // Update church buzz based on overall sermon performance
-    // Calculate total likes minus dislikes for buzz adjustment
     const buzzLikes = todaysCongregation.reduce((sum, group) => sum + group.likes, 0);
     const buzzDislikes = todaysCongregation.reduce((sum, group) => sum + group.dislikes, 0);
     const buzzChange = buzzLikes - buzzDislikes;
-
-    // Update buzz, ensuring it never goes below 0
     my.church.buzz = Math.max(0, my.church.buzz + buzzChange);
 
     // Calculate total donations from people who liked the sermon
@@ -1157,110 +699,28 @@
     totalDonations *= (my.preacherStrengths?.getDonations || 1) * spiceMultiplier;
     totalDonations = Math.round(totalDonations * 100) / 100; // Round to cents
 
-    // Calculate merch sales revenue
-    let totalMerchRevenue = 0;
-    let merchSalesDetails = {
-      holyWater: { sold: 0, revenue: 0 },
-      prayerCandles: { sold: 0, revenue: 0 },
-      weightLossTea: { sold: 0, revenue: 0 },
-      beachTowel: { sold: 0, revenue: 0 },
-      exorcismKit: { sold: 0, revenue: 0 },
-    };
-
-    todaysCongregation.forEach((group) => {
-      // Each person in the group gets a chance to buy merch
-      for (let i = 0; i < group.count; i++) {
-        // Holy Water sales
-        if (my.church.merch.holyWater.inventory > 0) {
-          let holyWaterChance = gameSettings.church.merch.holyWater.baseChance / 100;
-          if (my.church.merch.holyWater.isVendingMachine) {
-            holyWaterChance += gameSettings.church.merch.holyWaterVendingMachine.bonusChance / 100;
-          }
-          if (Math.random() < holyWaterChance) {
-            my.church.merch.holyWater.inventory--;
-            my.church.merch.holyWater.soldToday++;
-            merchSalesDetails.holyWater.sold++;
-            const revenue = my.church.merch.holyWater.price;
-            merchSalesDetails.holyWater.revenue += revenue;
-            totalMerchRevenue += revenue;
-          }
-        }
-
-        // Prayer Candles sales
-        if (my.church.merch.prayerCandles.inventory > 0) {
-          const candleChance = gameSettings.church.merch.prayerCandles.baseChance / 100;
-          if (Math.random() < candleChance) {
-            my.church.merch.prayerCandles.inventory--;
-            my.church.merch.prayerCandles.soldToday++;
-            merchSalesDetails.prayerCandles.sold++;
-            const revenue = my.church.merch.prayerCandles.price;
-            merchSalesDetails.prayerCandles.revenue += revenue;
-            totalMerchRevenue += revenue;
-          }
-        }
-
-        // Weight Loss Tea sales
-        if (my.church.merch.weightLossTea.inventory > 0) {
-          const teaChance = gameSettings.church.merch.weightLossTea.baseChance / 100;
-          if (Math.random() < teaChance) {
-            my.church.merch.weightLossTea.inventory--;
-            my.church.merch.weightLossTea.soldToday++;
-            merchSalesDetails.weightLossTea.sold++;
-            const revenue = my.church.merch.weightLossTea.price;
-            merchSalesDetails.weightLossTea.revenue += revenue;
-            totalMerchRevenue += revenue;
-          }
-        }
-
-        // Beach Towel sales
-        if (my.church.merch.beachTowel.inventory > 0) {
-          const towelChance = gameSettings.church.merch.beachTowel.baseChance / 100;
-          if (Math.random() < towelChance) {
-            my.church.merch.beachTowel.inventory--;
-            my.church.merch.beachTowel.soldToday++;
-            merchSalesDetails.beachTowel.sold++;
-            const revenue = my.church.merch.beachTowel.price;
-            merchSalesDetails.beachTowel.revenue += revenue;
-            totalMerchRevenue += revenue;
-          }
-        }
-
-        // Exorcism Kit sales
-        if (my.church.merch.exorcismKit.inventory > 0) {
-          const kitChance = gameSettings.church.merch.exorcismKit.baseChance / 100;
-          if (Math.random() < kitChance) {
-            my.church.merch.exorcismKit.inventory--;
-            my.church.merch.exorcismKit.soldToday++;
-            merchSalesDetails.exorcismKit.sold++;
-            const revenue = my.church.merch.exorcismKit.price;
-            merchSalesDetails.exorcismKit.revenue += revenue;
-            totalMerchRevenue += revenue;
-          }
-        }
-      }
-    });
-
-    totalMerchRevenue = Math.round(totalMerchRevenue * 100) / 100; // Round to cents
+    // Process merchandise sales using extracted function
+    const { totalRevenue: totalMerchRevenue, salesDetails: merchSalesDetails } = processChurchMerchSales(todaysCongregation, my.church.merch, gameSettings);
 
     // Process celebrity merchandise sales
     const { totalCelebMerchRevenue, celebMerchSales } = processCelebrityMerchSales(todaysCongregation);
 
-    // Add celebrity merch revenue to total
-    totalMerchRevenue += totalCelebMerchRevenue; // Calculate VIP confession booth revenue
+    // Add celebrity merch revenue to total merch revenue
+    const finalMerchRevenue = totalMerchRevenue + totalCelebMerchRevenue;
+
+    // Calculate VIP confession booth revenue
     let confessionRevenue = 0;
     if (my.church.upgrades.vipConfessionBooths) {
-      // VIP confession booths generate revenue based on total attendance
-      // Assuming some percentage of attendees use the VIP confession service
       const confessionUsers = Math.round(totalAttendance * 0.15); // 15% of attendees use VIP confession
       confessionRevenue = confessionUsers * gameSettings.church.upgrades.vipConfessionBooths.revenuePerUse;
       confessionRevenue = Math.round(confessionRevenue * 100) / 100; // Round to cents
     }
 
     // Store church preaching statistics for results display
-    my.donationsYesterday = totalDonations; // Total before Sterling's cut
+    my.donationsYesterday = totalDonations;
     my.churchAttendanceYesterday = totalAttendance;
     my.churchDonorsYesterday = totalDonors;
-    my.merchRevenueYesterday = totalMerchRevenue;
+    my.merchRevenueYesterday = finalMerchRevenue;
     my.merchSalesDetailsYesterday = merchSalesDetails;
     my.confessionRevenueYesterday = confessionRevenue;
 
@@ -1315,11 +775,10 @@
               );
             },
             group.likes > 0 ? 800 : 0,
-          ); // Delay if we showed a like toast first
+          );
         }
       }, currentDelay);
 
-      // Calculate delay for next toast using random interval between min and max
       currentDelay += randomNumber(ui.timing.toastDelayMin, ui.timing.toastDelayMax);
     });
 
@@ -1327,7 +786,7 @@
     const merchToastDelay = currentDelay + ui.timing.merchToastDelay;
     setTimeout(() => {
       // Calculate gross church revenue first
-      const grossChurchRevenue = totalDonations + totalMerchRevenue + confessionRevenue;
+      const grossChurchRevenue = totalDonations + finalMerchRevenue + confessionRevenue;
 
       // Process celebrity daily costs with total available funds (current money + today's earnings)
       const totalAvailableFunds = my.money + grossChurchRevenue;
@@ -1344,7 +803,6 @@
         const cutPercentage = gameSettings.churchPreaching.sterling.cutPercentage / 100;
         const minimumCut = gameSettings.churchPreaching.sterling.minimumCut;
 
-        // Sterling's cut is calculated on net revenue (after celebrity costs)
         sterlingCut = Math.max(minimumCut, netChurchRevenue * cutPercentage);
         playerShare = netChurchRevenue - sterlingCut;
 
@@ -1353,14 +811,13 @@
           playerShare = 0;
         }
       } else {
-        // If Sterling hasn't contacted yet, player gets all net revenue
         playerShare = netChurchRevenue;
       }
 
       my.money += playerShare;
       trackMoneyEarned(playerShare);
 
-      // NOW deduct celebrity costs from the player's updated money balance
+      // Deduct celebrity costs from the player's updated money balance
       my.money -= totalCelebrityCosts;
 
       // Store values for results display
@@ -1370,8 +827,8 @@
       my.grossRevenueYesterday = grossChurchRevenue;
       my.celebMerchSalesYesterday = celebMerchSales;
 
-      // Show merch toast first if there's merch sales, confession revenue, celebrity merch sales, or a no-merch message if player owns merch but sold none
-      const hasMerchSales = totalMerchRevenue > 0;
+      // Show merch toast if there are sales
+      const hasMerchSales = finalMerchRevenue > 0;
       const hasConfessionRevenue = confessionRevenue > 0;
       const hasCelebrityMerchSales = totalCelebMerchRevenue > 0;
       const ownsMerch =
@@ -1391,7 +848,7 @@
           {
             component: MerchToast,
             props: {
-              totalMerchRevenue: totalMerchRevenue,
+              totalMerchRevenue: finalMerchRevenue,
               merchSalesDetails: merchSalesDetails,
               confessionRevenue: confessionRevenue,
               celebMerchSales: celebMerchSales,
@@ -1404,7 +861,7 @@
         );
       }
 
-      // Show donation toast after merch toast using donationToastDelay
+      // Show donation toast after merch toast
       const finalDonationDelay = hasMerchSales || hasConfessionRevenue || hasCelebrityMerchSales || ownsMerch ? ui.timing.donationToastDelay : 0;
       setTimeout(() => {
         toast(
@@ -1413,7 +870,7 @@
             props: {
               totalEarnings: playerShare + confessionRevenue,
               totalDonations: totalDonations,
-              totalMerch: totalMerchRevenue,
+              totalMerch: finalMerchRevenue,
               sterlingCut: sterlingCut,
               celebrityCosts: costsOwed,
             },
@@ -1837,71 +1294,7 @@
   // ================= CHAT AUTOMATION HELPERS =================
   function sendTextMessages(messages: Array<{ sender: string; text: string }>, chatType: "harold" | "sterling" | "plug", typingTime = 3500) {
     const chatData = my.chats[chatType];
-
-    // Add the first message immediately (whether it's from player or NPC)
-    const firstMessage = {
-      id: Date.now(),
-      sender: messages[0].sender,
-      text: messages[0].text,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    };
-    chatData.chatHistory.push(firstMessage);
-
-    // Queue subsequent messages with typing simulation
-    const subsequentMessages = messages.slice(1); // Skip first message
-    if (subsequentMessages.length === 0) return;
-
-    let messageIndex = 0;
-
-    function sendNextMessage() {
-      if (messageIndex >= subsequentMessages.length) return;
-
-      const messageData = subsequentMessages[messageIndex];
-
-      // Show typing indicator (only for NPCs, not player)
-      if (messageData.sender !== "player") {
-        const typingMessage = {
-          id: Date.now() + 9000 + messageIndex,
-          sender: messageData.sender,
-          text: "",
-          time: "",
-          isTyping: true,
-        };
-        chatData.chatHistory.push(typingMessage);
-        // After typing delay, replace with actual message
-        setTimeout(() => {
-          // Find and update the typing message
-          const typingMsg = chatData.chatHistory.find((msg) => msg.isTyping && msg.sender === messageData.sender);
-          if (typingMsg) {
-            typingMsg.text = messageData.text;
-            typingMsg.time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-            typingMsg.isTyping = false;
-          }
-          messageIndex++;
-          // Queue next message if there are more
-          if (messageIndex < subsequentMessages.length) {
-            setTimeout(sendNextMessage, 1250); // 1.25 second delay between messages
-          }
-        }, typingTime); // Use configurable typing time
-      } else {
-        // For player messages, add immediately without typing indicator
-        const playerMessage = {
-          id: Date.now() + messageIndex,
-          sender: messageData.sender,
-          text: messageData.text,
-          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        };
-        chatData.chatHistory.push(playerMessage);
-        messageIndex++;
-        // Queue next message if there are more
-        if (messageIndex < subsequentMessages.length) {
-          setTimeout(sendNextMessage, 1000); // Shorter delay for player messages
-        }
-      }
-    }
-
-    // Start sending subsequent messages after a short delay
-    setTimeout(sendNextMessage, 2500);
+    sendTextMessagesWithTyping(messages, chatType, chatData.chatHistory, typingTime);
   }
 
   // ================= CONTACT TRIGGER FUNCTIONS =================
@@ -3020,47 +2413,21 @@
 
   // ================= LIFECYCLE =================
   onMounted(() => {
+    const hostname = window.location.hostname;
+    const urlParams = new URLSearchParams(window.location.search);
+
     // Redirect from old Firebase hosting URLs to new domain
-    if (window.location.hostname === "kinda-fun.web.app" || window.location.hostname === "kinda-fun.firebaseapp.com") {
+    if (hostname === "kinda-fun.web.app" || hostname === "kinda-fun.firebaseapp.com") {
       window.location.replace("https://kinda.fun/megachurch.html");
       return;
+    }
+    // Allow debug button if cheat param is present or on localhost
+    if (urlParams.get("cheat") === "true" || hostname === "localhost") {
+      gameSettings.isDebugButtonVisible = true;
     }
 
     initialiseGame();
     my.name = localStorage.getItem("kindaFunPlayerName") || "";
-
-    // toast(
-    //   "DEFAULT TOAST!!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eget aliquet elit. Pellentesque tempor ultrices ante vitae tincidunt. Fusce ut purus ut dolor consequat dignissim nec eget lacus. Vivamus vitae auctor eros.",
-    //   {
-    //     timeout: false,
-    //   },
-    // );
-    // toast.info(
-    //   "INFO TOAST!!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eget aliquet elit. Pellentesque tempor ultrices ante vitae tincidunt. Fusce ut purus ut dolor consequat dignissim nec eget lacus. Vivamus vitae auctor eros.",
-    //   {
-    //     timeout: false,
-    //   },
-    // );
-    // toast.success(
-    //   "SUCCESS TOAST!!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eget aliquet elit. Pellentesque tempor ultrices ante vitae tincidunt. Fusce ut purus ut dolor consequat dignissim nec eget lacus. Vivamus vitae auctor eros.",
-    //   {
-    //     timeout: false,
-    //   },
-    // );
-    // toast.warning(
-    //   "WARNING TOAST!!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eget aliquet elit. Pellentesque tempor ultrices ante vitae tincidunt. Fusce ut purus ut dolor consequat dignissim nec eget lacus. Vivamus vitae auctor eros.",
-    //   {
-    //     timeout: false,
-    //   },
-    // );
-    // toast.error(
-    //   "ERROR TOAST!!!! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eget aliquet elit. Pellentesque tempor ultrices ante vitae tincidunt. Fusce ut purus ut dolor consequat dignissim nec eget lacus. Vivamus vitae auctor eros.",
-    //   {
-    //     timeout: false,
-    //   },
-    // );
-
-    // alert("what the fuck tho!?");
   });
 </script>
 

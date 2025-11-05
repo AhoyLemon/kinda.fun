@@ -33,13 +33,6 @@ export const eternalLegacyShopItems: EternalLegacyShopItem[] = [
     mammon: 15,
     description: "Ethically sourced crystals that definitely align your chakras and bank account. Results may vary by gullibility.",
   },
-  // {
-  //   id: "prosperity-candles",
-  //   name: "Blessed Prosperity Candles (24-pack)",
-  //   cost: 1180,
-  //   mammon: 25,
-  //   description: "Hand-dipped in holy oils and capitalism. Burns bright like your congregation's wallets.",
-  // },
   {
     id: "silver-pieces",
     name: "Thirty Pieces of Silver",
@@ -47,13 +40,7 @@ export const eternalLegacyShopItems: EternalLegacyShopItem[] = [
     mammon: 30,
     description: "Probably not actual silver, but who's counting? Perfect for betrayers, backstabbers, and dinner party conversation starters.",
   },
-  // {
-  //   id: "miracle-water",
-  //   name: "Premium Miracle Water Dispenser",
-  //   cost: 2340,
-  //   mammon: 40,
-  //   description: "Tap water blessed by someone who met someone who knew a priest. $50 per bottle sold separately.",
-  // },
+
   {
     id: "pearl-gates-keychain",
     name: "Pearl Gates Keychain",
@@ -114,19 +101,21 @@ export const eternalLegacyShopItems: EternalLegacyShopItem[] = [
 
 export const eternalLegacyDarkDeeds: EternalLegacyDarkDeed[] = [
   {
-    id: "sterling-cut",
-    name: "Sterling's Special Cut",
+    id: "sterling-bribe",
+    name: "Bribe The Cops",
     cost: 0,
     heat: 0,
     cutIncreasase: 10,
-    effect: "Sterling bribes the authorities to slow the investigation, but his cut of your income increases permanently.",
+    effect:
+      "Sterling knows some people who know some people. He can slow down the investigation on your church, but will take a bigger cut each day in return.",
   },
   {
-    id: "consultation-tony",
-    name: "Consultation with Tony (Discreet Services)",
+    id: "kill-sterling",
+    name: "Kill Sterling",
     cost: 1500,
     heat: 15,
-    effect: "Eliminates Sterling, dramatically increases heat, and triggers a major investigation event. No refunds. No mercy.",
+    effect:
+      "Pay someone inside the prison to arrange for an accident to happen to Sterling Silver. He will no longer take a cut of your income or bribe authorities, which will hasten their investigation on you.",
   },
 ];
 

@@ -12,8 +12,8 @@ export const ui = reactive<UI>({
   timing: {
     toastDuration: 4800,
     donationToastDuration: 7000,
-    toastDelayMin: 0, // Minimum delay between audience reaction toasts (ms)
-    toastDelayMax: 0, // Maximum delay between audience reaction toasts (ms)
+    toastDelayMin: 800, // Minimum delay between audience reaction toasts (ms)
+    toastDelayMax: 1800, // Maximum delay between audience reaction toasts (ms)
     donationToastDelay: 6000, // Delay before showing donation toast after reactions (ms)
     merchToastDelay: 3000, // Delay before showing merch toast (ms)
     resultsViewDelay: 6000, // Delay before switching to results view (ms)

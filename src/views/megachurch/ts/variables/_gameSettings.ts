@@ -6,7 +6,7 @@ import { eternalLegacyShopItems, eternalLegacyDarkDeeds, eternalLegacyBibleVerse
 export const gameSettings = reactive<GameSettings>({
   baseDonation: 0.25, // Base donation per follower
   isDebug: false,
-  isDebugButtonVisible: true,
+  isDebugButtonVisible: false,
   themesPerDay: 25, // How many themes are available to choose from each day
   triggers: {
     sterling: {
