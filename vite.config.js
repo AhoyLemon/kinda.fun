@@ -64,9 +64,8 @@ export default defineConfig(({ mode }) => {
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
-          const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home", "404"];
+          const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "megachurch", "pretend", "sisyphus", "stats", "wrongest", "home", "404"];
           const url = req.url.split("?")[0];
-
           console.log("Middleware hit for URL:", url);
 
           // If the URL is exactly "/", rewrite to /home.html
