@@ -1,16 +1,16 @@
 @import "../../scss/variables";
 
 @mixin secondaryButton {
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 8px;
+  border: $border;
+  background: $white;
+  border-radius: $radiusMedium;
   cursor: pointer;
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
   &:hover:not(:disabled) {
-    background: #f0f0f0;
+    background: $lightestGray;
   }
 }
 
@@ -34,18 +34,18 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: oklch(0 0 0 / 0.7);
   display: flex;
   align-items: flex-end;
   justify-content: center;
   z-index: $z-overlay;
 
   .chat-window {
-    background: #fff;
+    background: $white;
     width: 100%;
     max-width: 400px;
     height: 80vh;
-    border-radius: 12px 12px 0 0;
+    border-radius: $radiusLarge $radiusLarge 0 0;
     display: flex;
     flex-direction: column;
     animation: slideUp 0.3s ease-out;
@@ -62,13 +62,13 @@
 }
 
 .chat-header {
-  background: #f0f0f0;
+  background: $lightestGray;
   padding: 16px;
-  border-radius: 12px 12px 0 0;
+  border-radius: $radiusLarge 12px 0 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid $mediumGray;
 
   .contact-info {
     display: flex;
@@ -78,9 +78,9 @@
     .avatar {
       width: 40px;
       height: 40px;
-      border-radius: 50%;
-      background: #333;
-      color: white;
+      border-radius: $radiusRound;
+      background: $darkGray;
+      color: $white;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -106,7 +106,7 @@
 
       .contact-status {
         font-size: 12px;
-        color: #666;
+        color: $darkerGray;
       }
     }
   }
@@ -125,7 +125,7 @@
 
     &:hover {
       background: rgba(0, 0, 0, 0.1);
-      border-radius: 50%;
+      border-radius: $radiusRound;
     }
   }
 }
@@ -152,7 +152,7 @@
     &.sent {
       .message-bubble {
         background: #007bff;
-        color: white;
+        color: $white;
         margin-left: auto;
         border-bottom-right-radius: 0;
       }
@@ -164,7 +164,7 @@
     &.received {
       .message-bubble {
         background: #e9ecef;
-        color: #333;
+        color: $darkGray;
         margin-right: auto;
         border-bottom-left-radius: 0;
       }
@@ -173,9 +173,9 @@
     .message-avatar {
       width: 38px;
       height: 38px;
-      border-radius: 50%;
+      border-radius: $radiusRound;
       background: #444;
-      color: white;
+      color: $white;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -259,7 +259,7 @@
 
 .casual-chat {
   padding: 12px 16px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid $lightGray;
   background: #fafafa;
 
   .casual-section {
@@ -277,16 +277,16 @@
 
 .harold-options {
   padding: 16px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid $mediumGray;
   background: #f8f9fa;
 
   .harold-section {
     .van-purchase {
       margin-bottom: 16px;
       padding: 12px;
-      background: #fff;
-      border-radius: 8px;
-      border: 1px solid #ddd;
+      background: $white;
+      border-radius: $radiusMedium;
+      border: 1px solid $mediumGray;
 
       .van-info {
         margin-bottom: 8px;
@@ -297,7 +297,7 @@
         width: 100%;
         padding: 10px;
         background: #28a745;
-        color: white;
+        color: $white;
         border: none;
         border-radius: 6px;
         font-weight: bold;
@@ -331,7 +331,7 @@
 
 .order-interface {
   padding: 16px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid $mediumGray;
   background: #f8f9fa;
   transition: transform 0.1s ease;
 
@@ -388,24 +388,24 @@
       font-size: 13px;
       line-height: 140%;
       .warning-hint {
-        background: #fff3cd;
+        background: oklch(96% 0.02 80);
         color: #856404;
         padding: 6px;
-        border-radius: 4px;
+        border-radius: $radiusSmall;
       }
 
       .good-hint {
         background: #d1ecf1;
         color: #0c5460;
         padding: 6px;
-        border-radius: 4px;
+        border-radius: $radiusSmall;
       }
 
       .great-hint {
         background: #d4edda;
         color: #155724;
         padding: 6px;
-        border-radius: 4px;
+        border-radius: $radiusSmall;
       }
     }
 
@@ -420,13 +420,13 @@
         width: 36px;
         height: 36px;
         border: 1px solid #ccc;
-        background: white;
+        background: $white;
         border-radius: 7px;
         font-size: 18px;
         cursor: pointer;
 
         &:hover:not(:disabled) {
-          background: #f0f0f0;
+          background: $lightestGray;
         }
 
         &:disabled {
@@ -457,7 +457,7 @@
       width: 100%;
       padding: 12px;
       background: #007bff;
-      color: white;
+      color: $white;
       border: none;
       border-radius: 6px;
       font-weight: bold;

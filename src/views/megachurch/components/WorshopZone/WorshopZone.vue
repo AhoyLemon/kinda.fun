@@ -97,7 +97,7 @@
                 </button>
               </div>
 
-              <div v-if="!my.church.merch.holyWater.isVendingMachine" style="padding-top:10px; border-top:1px solid #aaa; margin">
+              <div v-if="!my.church.merch.holyWater.isVendingMachine" style="padding-top:10px; border-top:1px solid oklch(70% 0 0); margin">
                 <h3>Holy Water Vending Machine</h3>
                 <div class="product-description">
                   Automated holy water sales! Because nothing says "spiritual experience" like pumping quarters into a machine. Adds +{{

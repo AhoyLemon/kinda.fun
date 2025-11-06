@@ -36,7 +36,7 @@
   .Vue-Toastification__toast {
     &:has(.celebrity-friend.container) {
       background-color: oklch(0.18 0.08 271.66 / 0.9);
-      color: #fff;
+      color: $white;
       font-family: $sans-serif;
     }
   }

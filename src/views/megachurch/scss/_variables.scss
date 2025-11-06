@@ -1,18 +1,102 @@
+// TYPOGRAPHY
 $serif: "Bitter", serif;
 $sans-serif: "Commissioner", sans-serif;
 $monospace: "monospace", monospace;
 
-$pink: #ff595e;
-$yellow: #ffca3a;
-$green: #8ac926;
-$blue: #1982c4;
-$purple: #6a4c93;
-$white: #efefef;
+// COLOR PALETTE
 
+// Base colors (from shared variables)
+$white: oklch(0.95 0.005 0);
+$lightestGray: oklch(0.97 0.005 0);
+$lightGray: oklch(0.87 0.005 0);
+$mediumGray: oklch(0.8 0.005 0);
+$gray: oklch(0.52 0.005 0);
+$darkGray: oklch(0.35 0.005 0);
+$darkerGray: oklch(0.28 0.005 0);
+$black: oklch(0.18 0.005 0);
+
+// Primary colors
+$red: oklch(0.58 0.22 25);
+$darkRed: oklch(0.45 0.22 25);
+$veryDarkRed: oklch(0.3 0.22 25);
+$lightRed: oklch(0.75 0.15 25);
+
+$green: oklch(0.72 0.15 135);
+$darkGreen: oklch(0.55 0.15 135);
+$veryDarkGreen: oklch(0.35 0.15 135);
+$lightGreen: oklch(0.85 0.08 135);
+
+$blue: oklch(0.55 0.15 250);
+$darkBlue: oklch(0.4 0.15 250);
+$lightBlue: oklch(0.75 0.1 250);
+
+$yellow: oklch(0.85 0.12 95);
+$darkYellow: oklch(0.7 0.12 95);
+
+$purple: oklch(0.45 0.12 285);
+$lightPurple: oklch(0.65 0.12 285);
+$darkPurple: oklch(0.35 0.12 285);
+$pink: oklch(0.65 0.22 15);
+
+// Gradient colors (AI assistant styling)
+$aiGradientLight: oklch(0.7 0.15 260);
+$aiGradientDark: oklch(0.5 0.15 285);
+$aiBorder: oklch(0.4 0.08 260);
+
+// Theme-specific colors
+$lemonYellow: oklch(0.88 0.15 105);
+$lemonBlack: oklch(0.25 0.005 0);
+$lemonOrange: oklch(0.7 0.15 65);
+
+// Eternal Legacy colors (gold/bronze theme)
+$goldDark: oklch(0.65 0.12 85);
+$goldBright: oklch(0.8 0.12 85);
+$goldAccent: oklch(0.75 0.08 85);
+$bronzeDark: oklch(0.35 0.05 55);
+$bronzeLight: oklch(0.45 0.05 55);
+
+// Retro/Windows 95 colors
+$retroGray: oklch(0.75 0.005 0);
+$retroDarkGray: oklch(0.5 0.005 0);
+$retroLightGray: oklch(0.85 0.005 0);
+
+// Gradient colors (for sermon results background)
+$gradientDark: oklch(0.15 0.02 210);
+$gradientMid: oklch(0.25 0.03 210);
+$gradientLight: oklch(0.35 0.04 210);
+
+// Toast notification colors
+$toastInfo: oklch(0.6 0.15 250);
+$toastInfoText: oklch(0.85 0.08 250);
+$toastSuccess: oklch(0.45 0.15 135);
+$toastSuccessText: oklch(0.85 0.08 135);
+$toastError: oklch(0.5 0.2 25);
+$toastErrorText: oklch(0.85 0.08 25);
+$toastDefault: oklch(0.85 0.005 0);
+$toastDefaultText: oklch(0.45 0.005 0);
+
+// Multiselect colors
+$multiselectDark: oklch(0.18 0.005 0);
+$multiselectMid: oklch(0.22 0.005 0);
+$multiselectHighlight: oklch(0.75 0.08 250);
+
+// Utility colors
 $focus: $blue;
+$borderColor: $gray;
 
-$border: 1px solid #777;
+// SPACING
 $gap: 10px;
+
+// BORDERS & RADIUS
+$borderColor: $gray;
+$border: 1px solid $borderColor;
+$borderThick: 2px solid $borderColor;
+$borderDashed: 1px dashed $borderColor;
+
+$radiusSmall: 4px;
+$radiusMedium: 8px;
+$radiusLarge: 12px;
+$radiusRound: 50%;
 
 // Z-INDEXES
 $z-overlay: 100;

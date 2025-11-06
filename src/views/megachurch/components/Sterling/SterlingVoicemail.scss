@@ -14,7 +14,7 @@
   backdrop-filter: blur(2px);
 
   .voicemail-container {
-    background: #fff;
+    background: $white;
     border: 1px solid rgba(0, 0, 0, 0.06);
     border-bottom: 0;
     border-radius: 10px 10px 0 0;
@@ -58,7 +58,7 @@
       color: rgba(15, 23, 32, 0.6);
       width: 34px;
       height: 34px;
-      border-radius: 50%;
+      border-radius: $radiusRound;
       cursor: pointer;
       font-size: 18px;
     }
@@ -71,7 +71,7 @@
       }
       .subtext {
         font-size: 12px;
-        color: #666;
+        color: $darkerGray;
       }
     }
   }
@@ -85,9 +85,9 @@
   .avatar {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-    background: #333;
-    color: white;
+    border-radius: $radiusRound;
+    background: $darkGray;
+    color: $white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -104,7 +104,7 @@
     }
   }
   .transcript-box {
-    color: #333;
+    color: $darkGray;
     font-size: 14px;
     line-height: 1.4;
     .transcript-header {
@@ -130,7 +130,7 @@
       width: 100%;
       padding: 12px;
       background: #007bff;
-      color: white;
+      color: $white;
       border: none;
       border-radius: 6px;
       font-weight: bold;
@@ -141,3 +141,4 @@
     }
   }
 }
+

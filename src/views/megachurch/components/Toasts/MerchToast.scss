@@ -4,7 +4,7 @@
   display: flex;
   gap: 5px;
   flex-direction: column;
-  color: #eee;
+  color: $lightGray;
 
   .row.first {
     display: flex;
@@ -44,3 +44,4 @@
     }
   }
 }
+

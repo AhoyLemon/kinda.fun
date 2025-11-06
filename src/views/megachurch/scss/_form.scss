@@ -8,7 +8,7 @@ form {
   }
   fieldset {
     display: grid;
-    background-color: white;
+    background-color: $white;
     border: $border;
     label {
       padding: 2px 10px;
@@ -17,7 +17,7 @@ form {
       letter-spacing: 0.1em;
       text-transform: uppercase;
       font-family: $sans-serif;
-      color: #777;
+      color: $gray;
       &.required:after {
         content: " *";
         color: $red;
@@ -39,7 +39,7 @@ form {
       outline: none;
 
       &::placeholder {
-        color: #aaa;
+        color: $lightGray;
         font-weight: 400;
       }
     }
@@ -68,7 +68,7 @@ form {
     }
 
     .explainer {
-      border-top: 1px solid #999;
+      border-top: 1px solid $gray;
       padding: 14px;
       font-size: 0.875em;
       font-family: $sans-serif;

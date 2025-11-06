@@ -660,8 +660,7 @@ export function buildChurchCongregation(
       weight = Math.round(
         weight *
           (1 +
-            gameSettings.church.marketing.targetedAd.targetReligionBoost /
-              100),
+            gameSettings.church.marketing.targetedAd.targetReligionBoost / 100),
       );
     }
 
@@ -717,15 +716,12 @@ export function calculateCongregationReactions(
         sermonToday.topics.some((tt: any) => tt.id === t.id),
       );
       if (preachedYesterday)
-        repetitionPenalty =
-          gameSettings.churchPreaching.topicRepetitionPenalty;
+        repetitionPenalty = gameSettings.churchPreaching.topicRepetitionPenalty;
     }
 
     // First, get likes and dislikes by religion match
     if (
-      !sermonToday.mixedMessages.religions.find(
-        (mr: any) => mr.id === group.id,
-      )
+      !sermonToday.mixedMessages.religions.find((mr: any) => mr.id === group.id)
     ) {
       // Check for dislikes by religion
       const dislikedReligionMatch = sermonToday.dislikedBy.religions.find(
@@ -803,9 +799,7 @@ export function calculateCongregationReactions(
           (preacherStrengths?.getLikes || 1) *
           spiceMultiplier *
           repetitionPenalty;
-        group.likes += Math.round(
-          group.count * Math.min(modifiedChance, 0.5),
-        );
+        group.likes += Math.round(group.count * Math.min(modifiedChance, 0.5));
       } else if (tagScore < 0) {
         const dislikeChance =
           (gameSettings.churchPreaching.dislikeChance.byTag / 100) *
@@ -826,8 +820,7 @@ export function calculateCongregationReactions(
 
     // Audio/Visual equipment increases like chance
     if (churchUpgrades.audioVisual) {
-      upgradeBonus +=
-        gameSettings.church.upgrades.audioVisual.likeBoost / 100;
+      upgradeBonus += gameSettings.church.upgrades.audioVisual.likeBoost / 100;
     }
 
     // Sacrament upgrades increase like chance
@@ -903,8 +896,7 @@ export function processChurchMerchSales(
           gameSettings.church.merch.holyWater.baseChance / 100;
         if (churchMerch.holyWater.isVendingMachine) {
           holyWaterChance +=
-            gameSettings.church.merch.holyWaterVendingMachine.bonusChance /
-            100;
+            gameSettings.church.merch.holyWaterVendingMachine.bonusChance / 100;
         }
         if (Math.random() < holyWaterChance) {
           churchMerch.holyWater.inventory--;
@@ -946,7 +938,8 @@ export function processChurchMerchSales(
 
       // Beach Towel sales
       if (churchMerch.beachTowel.inventory > 0) {
-        const towelChance = gameSettings.church.merch.beachTowel.baseChance / 100;
+        const towelChance =
+          gameSettings.church.merch.beachTowel.baseChance / 100;
         if (Math.random() < towelChance) {
           churchMerch.beachTowel.inventory--;
           churchMerch.beachTowel.soldToday++;
@@ -959,7 +952,8 @@ export function processChurchMerchSales(
 
       // Exorcism Kit sales
       if (churchMerch.exorcismKit.inventory > 0) {
-        const kitChance = gameSettings.church.merch.exorcismKit.baseChance / 100;
+        const kitChance =
+          gameSettings.church.merch.exorcismKit.baseChance / 100;
         if (Math.random() < kitChance) {
           churchMerch.exorcismKit.inventory--;
           churchMerch.exorcismKit.soldToday++;

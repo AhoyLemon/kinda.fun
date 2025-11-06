@@ -1,7 +1,7 @@
 :root {
-  --ms-option-bg-selected-pointed: #212121;
-  --ms-option-bg-selected: #313131;
-  --ms-option-bg-pointed: #90caf9;
+  --ms-option-bg-selected-pointed: #{$multiselectDark};
+  --ms-option-bg-selected: #{$multiselectMid};
+  --ms-option-bg-pointed: #{$multiselectHighlight};
 }
 .multiselect {
   border: none;

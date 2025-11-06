@@ -72,7 +72,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.8);
+    background: oklch(0% 0 0 / 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -81,14 +81,14 @@
   }
 
   .note-paper {
-    background: #f8f6f0;
-    background-image: linear-gradient(to right, #ff6b6b 0px, #ff6b6b 2px, transparent 3px);
+    background: oklch(96% 0.02 60);
+    background-image: linear-gradient(to right, oklch(68% 0.19 27) 0px, oklch(68% 0.19 27) 2px, transparent 3px);
     padding: 40px 60px 40px 80px;
     max-width: 600px;
     max-height: 80vh;
     overflow-y: auto;
-    border-radius: 4px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    border-radius: $radiusSmall;
+    box-shadow: 0 10px 40px oklch(0% 0 0 / 0.4);
     font-family: "Times New Roman", serif;
     line-height: 1.8;
     position: relative;
@@ -112,14 +112,14 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    border-bottom: 2px solid #333;
+    border-bottom: 2px solid $darkGray;
     padding-bottom: 10px;
   }
 
   .note-title {
     font-weight: bold;
     font-size: 18px;
-    color: #333;
+    color: $darkGray;
   }
 
   .close-button {
@@ -127,23 +127,23 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: #666;
+    color: $darkerGray;
     padding: 0;
     width: 30px;
     height: 30px;
-    border-radius: 50%;
+    border-radius: $radiusRound;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
   .close-button:hover {
-    background: #ddd;
-    color: #000;
+    background: $lightGray;
+    color: $black;
   }
 
   .note-content {
-    color: #2c2c2c;
+    color: $darkerGray;
     font-size: 16px;
     font-family: $monospace;
   }

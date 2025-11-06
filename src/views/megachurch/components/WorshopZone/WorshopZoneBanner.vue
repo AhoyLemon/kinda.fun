@@ -56,14 +56,15 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  @import "../../scss/_variables";
   .banner-ad-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: oklch(0% 0 0 / 0.8);
     z-index: 1000;
     display: flex;
     justify-content: center;
@@ -72,16 +73,16 @@
 
   .banner-ad {
     width: 600px;
-    background: #ffffff;
-    border: 3px solid #000080;
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    background: $white;
+    border: 3px solid oklch(0.25 0.15 272);
+    box-shadow: 4px 4px 8px oklch(0% 0 0 / 0.5);
     font-family: "Times New Roman", serif;
   }
 
   .browser-bar {
-    background: #c0c0c0;
+    background: oklch(0.76 0.005 0);
     padding: 2px 4px;
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid $retroGray;
     display: flex;
     justify-content: space-between;
     align-items: center;

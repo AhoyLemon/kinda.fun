@@ -1,5 +1,5 @@
 @mixin blurBG($opacity: 0.65, $blurAmount: 4px) {
-  background-color: rgba(255, 255, 255, $opacity);
+  background-color: oklch(1 0 0 / #{$opacity});
   backdrop-filter: blur($blurAmount);
 }
 
@@ -9,7 +9,7 @@
   gap: 12px;
   padding: 8px 12px;
   background: $bgColor;
-  border-radius: $border-radius;
+  border-radius: $radiusSmall;
   overflow: hidden;
   position: relative;
   &:before {
@@ -18,7 +18,7 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: calc($border-radius / 2);
+    width: calc($radiusSmall / 2);
     background-color: $borderColor;
     display: block;
   }

@@ -53,13 +53,13 @@
   }
   .Vue-Toastification__toast {
     &:has(.donation-collected.positive) {
-      background-color: rgba(3, 8, 3, 0.82);
-      color: #eee;
+      background-color: oklch(8% 0.12 140 / 0.82);
+      color: $lightestGray;
       font-family: $sans-serif;
     }
     &:has(.donation-collected.negative) {
-      background-color: rgba(18, 3, 3, 0.82);
-      color: #111;
+      background-color: oklch(8% 0.12 12 / 0.82);
+      color: $darkerGray;
     }
   }
 </style>

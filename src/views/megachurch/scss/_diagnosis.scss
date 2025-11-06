@@ -35,8 +35,8 @@ section.diagnosis {
   dl {
     border: $border;
     dt {
-      background-color: #555;
-      color: white;
+      background-color: $darkGray;
+      color: $white;
       padding: 0.5em 1em;
       font-weight: 700;
       text-transform: uppercase;
@@ -77,7 +77,7 @@ section.diagnosis {
         padding-left: 1em;
         font-size: 0.875rem;
         line-height: 160%;
-        color: darken($red, 20%);
+        color: $darkRed;
       }
     }
   }
@@ -88,7 +88,7 @@ section.diagnosis {
 }
 
 main.sermon-confirm {
-  background-color: #4f2e27;
+  background-color: oklch(0.25 0.03 25);
   background-image: url(https://images.pexels.com/photos/1226398/pexels-photo-1226398.jpeg);
   .diagnosis-box {
     @include blurBG();

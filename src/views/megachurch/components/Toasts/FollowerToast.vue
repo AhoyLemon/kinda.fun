@@ -26,10 +26,10 @@
   }
   .Vue-Toastification__toast {
     &:has(.follower-change.positive) {
-      background-color: rgba(3, 20, 3, 0.9);
+      background-color: oklch(12% 0.15 140 / 0.9);
     }
     &:has(.follower-change.negative) {
-      background-color: rgba(38, 3, 3, 0.9);
+      background-color: oklch(12% 0.15 12 / 0.9);
     }
   }
 </style>

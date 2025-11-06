@@ -5,8 +5,8 @@ section.sermon-results {
   justify-content: center;
   min-height: 100dvh;
 
-  background: #0f2027; /* fallback for old browsers */
-  background: linear-gradient(to left, #2c5364, #203a43, #0f2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: $gradientDark; /* fallback for old browsers */
+  background: linear-gradient(to left, $gradientLight, $gradientMid, $gradientDark); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
   .inner {
     color: $white;
@@ -20,11 +20,11 @@ section.sermon-results {
     margin: 3rem auto;
     min-width: 400px;
     box-shadow:
-      rgba(0, 0, 0, 0.25) 0px 54px 55px,
-      rgba(0, 0, 0, 0.12) 0px -12px 30px,
-      rgba(0, 0, 0, 0.12) 0px 4px 6px,
-      rgba(0, 0, 0, 0.17) 0px 12px 13px,
-      rgba(0, 0, 0, 0.09) 0px -3px 5px;
+      oklch(0 0 0 / 0.25) 0px 54px 55px,
+      oklch(0 0 0 / 0.12) 0px -12px 30px,
+      oklch(0 0 0 / 0.12) 0px 4px 6px,
+      oklch(0 0 0 / 0.17) 0px 12px 13px,
+      oklch(0 0 0 / 0.09) 0px -3px 5px;
     caption {
       text-transform: uppercase;
       letter-spacing: 0.25em;
@@ -145,12 +145,12 @@ section.sermon-results {
   // Receipt-style styling for donations summary and church management
   .donations-summary.church,
   .church-management-summary {
-    background: #f8f8f8;
-    color: #333;
+    background: $lightestGray;
+    color: $darkGray;
     font-family: "Courier New", monospace;
     margin: 2rem auto;
     padding: 20px;
-    border: 2px dashed #ccc;
+    border: 2px dashed $mediumGray;
     position: relative;
     box-shadow:
       0 4px 8px rgba(0, 0, 0, 0.1),
@@ -165,7 +165,7 @@ section.sermon-results {
       font-size: 1.3rem;
       letter-spacing: 2px;
       margin-bottom: 15px;
-      border-bottom: 1px dashed #999;
+      border-bottom: 1px dashed $gray;
       padding-bottom: 10px;
     }
 
@@ -176,7 +176,7 @@ section.sermon-results {
       text-align: center;
       margin-top: 15px;
       font-size: 12px;
-      color: #999;
+      color: $gray;
     }
 
     h3 {
@@ -214,7 +214,7 @@ section.sermon-results {
           text-align: left;
           font-weight: normal;
           text-transform: uppercase;
-          color: #333;
+          color: $darkGray;
         }
         .modifier {
           width: 2em;
@@ -230,18 +230,18 @@ section.sermon-results {
         &.plus {
           .modifier,
           dd {
-            color: #2d5016;
+            color: $veryDarkGreen;
           }
         }
         &.minus {
           .modifier,
           dd {
-            color: #8b0000;
+            color: $veryDarkRed;
           }
         }
         &.equals {
           > * {
-            border-top: 1px dashed #666;
+            border-top: 1px dashed $darkerGray;
             padding-top: 8px;
           }
           dd {
@@ -259,7 +259,7 @@ section.sermon-results {
 
       .donor-count {
         font-size: 10px !important;
-        color: #666;
+        color: $darkerGray;
         font-weight: normal;
       }
     }
@@ -287,12 +287,12 @@ section.sermon-results {
         justify-content: space-between;
         margin: 5px 0;
         padding: 2px 0;
-        border-bottom: 1px dotted #ccc;
+        border-bottom: 1px dotted $mediumGray;
 
         dt {
           font-size: 12px;
           text-transform: uppercase;
-          color: #333;
+          color: $darkGray;
           flex: 1;
         }
         .count {
@@ -304,7 +304,7 @@ section.sermon-results {
           font-family: "Courier New", monospace;
           font-size: 13px;
           font-weight: bold;
-          color: #333;
+          color: $darkGray;
           margin-left: 10px;
         }
       }
@@ -315,13 +315,13 @@ section.sermon-results {
       justify-content: space-between;
       margin: 5px 0;
       padding: 2px 0;
-      border-bottom: 1px dotted #ccc;
+      border-bottom: 1px dotted $mediumGray;
       gap: 5px;
 
       dt {
         font-size: 12px;
         text-transform: uppercase;
-        color: #333;
+        color: $darkGray;
         flex: 1;
       }
       .count {
@@ -333,7 +333,7 @@ section.sermon-results {
         font-family: "Courier New", monospace;
         font-size: 13px;
         font-weight: bold;
-        color: #333;
+        color: $darkGray;
       }
     }
     rotate: 6deg;

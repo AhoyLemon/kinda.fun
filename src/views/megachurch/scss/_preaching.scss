@@ -24,7 +24,7 @@
 
 section.preaching {
   min-height: 100dvh;
-  background-color: #353535;
+  background-color: $darkGray;
 
   background-size: cover;
   width: 100%;
@@ -44,10 +44,10 @@ section.preaching {
     color: $white;
     font-family: $serif;
     text-shadow:
-      0 1px 0 rgba(0, 0, 0, 0.35),
-      0 -1px 0 rgba(0, 0, 0, 0.35),
-      1px 0 0 rgba(0, 0, 0, 0.35),
-      -1px 0 0 rgba(0, 0, 0, 0.35);
+      0 1px 0 oklch(0 0 0 / 0.35),
+      0 -1px 0 oklch(0 0 0 / 0.35),
+      1px 0 0 oklch(0 0 0 / 0.35),
+      -1px 0 0 oklch(0 0 0 / 0.35);
     transform: translateY(-400%);
     .ellipsis {
       text-align: left;

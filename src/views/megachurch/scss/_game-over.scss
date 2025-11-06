@@ -1,7 +1,3 @@
-$lemonYellow: #e4e72c;
-$lemonBlack: #313131;
-$lemonOrange: #e98741;
-
 .game-over {
   grid-column: span 2;
   min-height: 100dvh;
@@ -54,7 +50,7 @@ $lemonOrange: #e98741;
     }
     td {
       vertical-align: middle;
-      background-color: white;
+      background-color: $white;
       border: 1px solid $lemonBlack;
       padding: 0.25rem 1rem;
     }

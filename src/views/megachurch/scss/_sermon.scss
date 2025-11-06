@@ -1,5 +1,5 @@
 main.sermon {
-  background-color: #4f2e27;
+  background-color: oklch(0.25 0.03 25);
   // background-image: url(https://images.pexels.com/photos/1226398/pexels-photo-1226398.jpeg);
   background-image: url("/img/megachurch/bg/notebook.jpg");
   form {
@@ -13,8 +13,8 @@ main.sermon {
 
   // Seraph AI Nag Message
   .seraph-ai-nag {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: 1px solid #4a5568;
+    background: linear-gradient(135deg, $aiGradientLight 0%, $aiGradientDark 100%);
+    border: 1px solid $aiBorder;
     border-radius: 12px;
     padding: 16px;
     margin: 20px 0;
@@ -65,7 +65,7 @@ main.sermon {
 
         &.nag-btn-primary {
           background: rgba(255, 255, 255, 0.9);
-          color: #4a5568;
+          color: $aiBorder;
 
           &:hover {
             background: white;
@@ -97,8 +97,8 @@ main.sermon {
   }
 
   .sermon-preview {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: 1px solid #4a5568;
+    background: linear-gradient(135deg, $aiGradientLight 0%, $aiGradientDark 100%);
+    border: 1px solid $aiBorder;
     border-radius: 8px;
     padding: 16px;
     margin: 20px 0;
@@ -143,16 +143,16 @@ main.sermon {
       gap: 20px;
     }
     dl {
-      border: 2px solid #ccc;
+      border: 2px solid $mediumGray;
       font-family: $sans-serif;
-      color: #efefef;
+      color: $white;
       border-radius: 8px;
       overflow: hidden;
       dt {
         font-weight: 800;
         text-transform: uppercase;
-        background-color: #efefef;
-        color: #2a084f;
+        background-color: $white;
+        color: $darkPurple;
         font-family: $serif;
         font-size: 1rem;
         letter-spacing: 0.1em;
@@ -172,17 +172,17 @@ main.sermon {
         li {
           padding-left: 0.5em;
           &.match {
-            color: darken($green, 32%);
-            background-color: rgba($green, 0.05);
+            color: $darkGreen;
+            background-color: $lightGreen;
             &::marker {
-              color: darken($green, 25%);
+              color: $darkGreen;
             }
           }
           &.mismatch {
-            color: darken($red, 33%);
-            background-color: rgba($red, 0.05);
+            color: $darkRed;
+            background-color: $lightRed;
             &::marker {
-              color: darken($red, 25%);
+              color: $darkRed;
             }
           }
         }

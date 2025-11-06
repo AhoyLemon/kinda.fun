@@ -6,7 +6,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  background: oklch(0 0 0 / 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,21 +15,21 @@
 }
 
 .eternal-legacy-shop-container {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 100%);
-  border: 3px solid #d4af37;
-  border-radius: 12px;
+  background: linear-gradient(135deg, $black 0%, $bronzeDark 100%);
+  border: 3px solid $goldDark;
+  border-radius: $radiusLarge;
   width: 90vw;
   max-width: 900px;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.4);
+  box-shadow: 0 8px 32px oklch(0.65 0.12 85 / 0.4);
   overflow: hidden;
 }
 
 .shop-header {
-  background: linear-gradient(90deg, #d4af37, #f4e17a);
-  color: #1a1a1a;
+  background: linear-gradient(90deg, $goldDark, $goldBright);
+  color: $black;
   padding: 16px 24px;
   display: flex;
   align-items: center;
@@ -50,18 +50,18 @@
 
   .close-btn {
     background: none;
-    border: 2px solid #1a1a1a;
-    color: #1a1a1a;
+    border: 2px solid $black;
+    color: $black;
     width: 32px;
     height: 32px;
-    border-radius: 50%;
+    border-radius: $radiusRound;
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
 
     &:hover {
-      background: #1a1a1a;
-      color: #d4af37;
+      background: $black;
+      color: $goldDark;
     }
   }
 }
@@ -69,7 +69,7 @@
 .shop-nav {
   background: #2a2a2a;
   display: flex;
-  border-bottom: 2px solid #d4af37;
+  border-bottom: 2px solid $goldDark;
 
   .tab-btn {
     flex: 1;
@@ -83,13 +83,13 @@
     transition: all 0.2s;
 
     &.active {
-      background: #d4af37;
-      color: #1a1a1a;
+      background: $goldDark;
+      color: $black;
     }
 
     &:not(.active):hover {
       background: #3a3a3a;
-      color: #d4af37;
+      color: $goldDark;
     }
   }
 }
@@ -113,11 +113,11 @@
   .current-mammon,
   .heat-warning {
     background: rgba(212, 175, 55, 0.1);
-    border: 1px solid #d4af37;
+    border: 1px solid $goldDark;
     border-radius: 6px;
     padding: 8px 12px;
     font-size: 14px;
-    color: #d4af37;
+    color: $goldDark;
 
     strong {
       color: #f4e17a;
@@ -140,12 +140,12 @@
 .item-card {
   background: #2a2a2a;
   border: 2px solid #444;
-  border-radius: 8px;
+  border-radius: $radiusMedium;
   padding: 16px;
   transition: all 0.2s;
 
   &.affordable {
-    border-color: #d4af37;
+    border-color: $goldDark;
   }
 
   &.purchased {
@@ -178,7 +178,7 @@
           right: 0;
           display: flex;
           appearance: none;
-          border-radius: 50%;
+          border-radius: $radiusRound;
           border: 1px solid currentColor;
           color: $white;
           background-color: transparent;
@@ -229,7 +229,7 @@
 
   .item-details {
     h4 {
-      color: #d4af37;
+      color: $goldDark;
       margin: 0 0 8px 0;
       font-size: 16px;
     }
@@ -251,7 +251,7 @@
       .mammon-value,
       .influence-value,
       .heat {
-        color: white;
+        color: $white;
       }
       .cost {
         font-weight: 600;
@@ -277,8 +277,8 @@
 
     .purchase-btn {
       width: 100%;
-      background: #d4af37;
-      color: #1a1a1a;
+      background: $goldDark;
+      color: $black;
       border: none;
       padding: 8px 16px;
       border-radius: 6px;
@@ -293,17 +293,17 @@
       }
 
       &:disabled {
-        background: #666;
-        color: #999;
+        background: $darkerGray;
+        color: $gray;
         cursor: not-allowed;
       }
 
       &.dangerous {
         background: #ff6b35;
-        color: white;
+        color: $white;
         &:disabled {
-          background: #666;
-          color: #999;
+          background: $darkerGray;
+          color: $gray;
           cursor: not-allowed;
         }
       }
@@ -327,11 +327,11 @@
 
       .unfriend-btn {
         background: linear-gradient(135deg, #f44336, #d32f2f);
-        color: white;
+        color: $white;
         flex-basis: 50%;
         border: none;
         padding: 6px 12px;
-        border-radius: 4px;
+        border-radius: $radiusSmall;
         font-size: 0.8rem;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -355,7 +355,7 @@
 }
 
 .shop-footer {
-  background: #1a1a1a;
+  background: $black;
   border-top: 1px solid #444;
   padding: 16px 24px;
 
@@ -369,7 +369,7 @@
 
   .sterling-signature {
     display: block;
-    color: #d4af37;
+    color: $goldDark;
     font-size: 14px;
     text-align: right;
 
@@ -379,3 +379,4 @@
     }
   }
 }
+

@@ -1,7 +1,7 @@
 @import "../../scss/_variables";
 @import "../../scss/transitions";
 
-$border-radius: 8px;
+$border-radius: $radiusMedium;
 $grid-gap: 4px;
 
 @mixin inventoryItem($bgColor, $borderColor) {
@@ -88,7 +88,7 @@ $grid-gap: 4px;
   margin: 0 0 12px 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #666;
+  color: $darkerGray;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -125,12 +125,12 @@ $grid-gap: 4px;
   .merch-name {
     font-size: 0.85rem;
     font-weight: 500;
-    color: #333;
+    color: $darkGray;
   }
 
   .merch-quantity {
     font-size: 0.75rem;
-    color: #666;
+    color: $darkerGray;
     font-weight: 600;
   }
 }
@@ -150,7 +150,7 @@ $grid-gap: 4px;
   .campaign-name {
     font-size: 0.8rem;
     font-weight: 500;
-    color: #333;
+    color: $darkGray;
   }
   .campaign-status {
     color: rgb(75 47 6);
@@ -190,12 +190,12 @@ $grid-gap: 4px;
   .upgrade-name {
     font-size: 0.8rem;
     font-weight: 500;
-    color: #333;
+    color: $darkGray;
   }
 
   .upgrade-description {
     font-size: 0.7rem;
-    color: #666;
+    color: $darkerGray;
     margin-top: 2px;
   }
 }
@@ -215,13 +215,13 @@ $grid-gap: 4px;
 .empty-text {
   font-size: 1rem;
   font-weight: 500;
-  color: #666;
+  color: $darkerGray;
   margin-bottom: 8px;
 }
 
 .empty-subtitle {
   font-size: 0.85rem;
-  color: #999;
+  color: $gray;
 }
 
 // Scrollbar styling
@@ -242,3 +242,4 @@ $grid-gap: 4px;
     background: rgba(0, 0, 0, 0.3);
   }
 }
+
