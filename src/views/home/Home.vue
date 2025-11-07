@@ -20,20 +20,20 @@
   const isListRandomized = ref(false);
 
   const thingData = {
-    // megachurch: {
-    //   name: "Megachurch Tycoon (Alpha Release)",
-    //   slug: "megachurch",
-    //   logo: "megachurch.svg",
-    //   slogan: "Turn their faith into your fortune.",
-    //   description: `
-    //     <p>Starting with no money and a crippling drug addiction, <strong>Megachurch Tycoon</strong> will have you preaching the only word you believe: <strong>Get Paid.</strong></p>
-    //     <p>NOTE: Megachurch Tycoon is currently in early access state. It is <strong>DESKTOP ONLY</strong> while in early access.</p>
-    //   `,
-    //   url: `${baseURL}/megachurch`,
-    //   buttonText: "",
-    //   isMultiplayer: false,
-    //   tags: ["game", "single player", "lies", "early release"],
-    // },
+    megachurch: {
+      name: "Megachurch Tycoon (Alpha Release)",
+      slug: "megachurch",
+      logo: "megachurch.svg",
+      slogan: "Turn their faith into your fortune.",
+      description: `
+        <p>Starting with no money and a crippling drug addiction, Megachurch Tycoon will have you preaching to larger and larger audiences, motivated by the only thing you believe in: <strong>Geting paid.</strong></p>
+        <p>NOTE: While in early access state, Megachurch Tycoon is <strong>DESKTOP ONLY</strong>.</p>
+      `,
+      url: `${baseURL}/megachurch`,
+      buttonText: "",
+      isMultiplayer: false,
+      tags: ["game", "single player", "lies", "early access"],
+    },
     invalid: {
       name: "Invalid",
       slug: "invalid",
@@ -154,7 +154,7 @@
       description: `<p><strong>Want a sticker that certifies you as sane?</strong> Sure you do. Well then, all you have to do is answer a series of questions that have been intentionally designed to make you question your sanity.</p>`,
       url: "https://sane.science",
       buttonText: "Take the test.",
-      tags: ["test"],
+      tags: ["quiz"],
     },
     verifiablewin: {
       name: "Verifiable Win",
@@ -193,7 +193,7 @@
       slogan: "A true test of intelligence",
       description: `<p>There's a lot of people, places, and things in the world. Can <strong>you</strong> tell which of those things are Nicki Minaj?</p>`,
       url: "https://isthisnickiminaj.com",
-      tags: ["test", "celebrities"],
+      tags: ["quiz", "celebrities"],
       buttonText: "Take the test.",
     },
     notpoutine: {
