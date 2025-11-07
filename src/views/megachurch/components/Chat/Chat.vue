@@ -37,7 +37,7 @@
       </div>
 
       <!-- Plug-specific interface -->
-      <div v-if="contactType === 'plug'">
+      <div class="specific-interface plug" v-if="contactType === 'plug'">
         <div class="casual-chat">
           <div class="casual-section">
             <button class="casual-chat-btn" @click="sendMessage('plug', 'casual')">Casual Chat</button>
@@ -71,32 +71,29 @@
       </div>
 
       <!-- Harold-specific interface -->
-      <div v-if="contactType === 'harold'">
-        <div class="harold-options">
-          <div class="harold-section">
-            <!-- Show van purchase option if not owned AND Harold has sent enough messages (at least the price) -->
-            <div v-if="!playerHasVan && chatHistory && chatHistory.length >= 3" class="van-purchase">
-              <div class="van-info">
-                <strong>Uncle Harold's Van: {{ dollars(vanCost, true) }}</strong>
-              </div>
-              <button class="buy-van-btn" @click="buyVan" :disabled="!canAffordVan">
-                {{ canAffordVan ? "Buy Van" : "Insufficient Funds" }}
-              </button>
+      <div class="specific-interface harold" v-if="contactType === 'harold'">
+        <div class="casual-chat">
+          <div class="casual-section">
+            <button v-if="!playerHasVan" class="casual-chat-btn" @click="sendMessage('harold', 'haggle')">Haggle</button>
+            <button v-if="!playerHasVan" class="casual-chat-btn" @click="sendMessage('harold', 'van')">A Van?</button>
+            <button class="casual-chat-btn" @click="sendMessage('harold', 'chat')">Chat</button>
+          </div>
+        </div>
+        <div class="order-interface" v-if="!playerHasVan && chatHistory && chatHistory.length >= 3">
+          <div class="order-section">
+            <label>Buy Harold's Van? ({{ dollars(vanCost, true) }})</label>
+            <div class="hints">
+              <div class="warning-hint">This will allow you to preach in new locations (provided you have gas money)</div>
             </div>
-
-            <!-- General conversation options -->
-            <div class="conversation-options">
-              <button v-if="!playerHasVan" class="harold-chat-btn" @click="sendMessage('harold', 'haggle')">Haggle</button>
-              <button v-if="!playerHasVan" class="harold-chat-btn" @click="sendMessage('harold', 'van')">A Van?</button>
-              <button class="harold-chat-btn" @click="sendMessage('harold', 'chat')">Chat</button>
-            </div>
+            <button class="send-order-btn" @click="buyVan" :disabled="!canAffordVan">
+              {{ canAffordVan ? "Buy Van" : "Insufficient Funds" }}
+            </button>
           </div>
         </div>
       </div>
 
       <!-- Sterling Silver-specific interface -->
-
-      <template v-if="contactType === 'sterling'">
+      <div class="specific-interface sterling" v-if="contactType === 'sterling'">
         <div class="casual-chat">
           <div class="casual-section">
             <button v-if="!playerHasChurch" class="casual-chat-btn" @click="sendMessage('sterling', 'clarify')">Clarify Arrangement</button>
@@ -119,7 +116,7 @@
             <button class="send-order-btn" @click="startChurchFounding">Agree To Terms</button>
           </div>
         </div>
-      </template>
+      </div>
     </div>
   </div>
 </template>

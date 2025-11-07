@@ -6,6 +6,7 @@ $monospace: "monospace", monospace;
 // COLOR PALETTE
 
 // Base colors (from shared variables)
+$pureWhite: oklch(1 0 0);
 $white: oklch(0.95 0.005 0);
 $lightestGray: oklch(0.97 0.005 0);
 $lightGray: oklch(0.87 0.005 0);
@@ -85,7 +86,10 @@ $focus: $blue;
 $borderColor: $gray;
 
 // SPACING
-$gap: 10px;
+$gapSmall: 10px;
+$gapMedium: 20px;
+$gapLarge: 40px;
+$gap: $gapMedium;
 
 // BORDERS & RADIUS
 $borderColor: $gray;
@@ -99,6 +103,9 @@ $radiusLarge: 12px;
 $radiusRound: 50%;
 
 // Z-INDEXES
+
+$z-about: 2;
+$z-sidebar: 3;
 $z-overlay: 100;
 $z-churchinventory: 1002;
 $z-daworshopzone: 1003;

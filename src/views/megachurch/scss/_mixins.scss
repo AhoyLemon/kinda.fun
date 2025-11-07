@@ -23,3 +23,19 @@
     display: block;
   }
 }
+
+@mixin secondaryButton {
+  border: 1px solid oklch(0.8 0.005 0);
+  background: $white;
+  border-radius: $radiusMedium;
+  font-family: $sans-serif;
+  cursor: pointer;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
+    background: $lightestGray;
+  }
+}

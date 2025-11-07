@@ -211,6 +211,9 @@ export interface UI {
   legacyStatus: {
     isOpen: boolean;
   };
+  aboutBox: {
+    isVisible: boolean;
+  };
   friendshipEnded: {
     isVisible: boolean;
     celebrity: any;

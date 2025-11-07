@@ -38,11 +38,9 @@
   import MerchToast from "./components/Toasts/MerchToast.vue";
   import CelebrityFriendToast from "./components/Toasts/CelebrityFriendToast.vue";
 
-  // SOUNDS
   // Sounds
   import { Howl, Howler } from "howler";
-  import { soundWhoopsYoureDead } from "./ts/_sounds";
-  import { soundInPrison } from "./ts/_sounds";
+  import { soundWhoopsYoureDead, soundInPrison, soundDonationStreet } from "./ts/_sounds";
 
   // Components
   import Chat from "./components/Chat/Chat.vue";
@@ -318,7 +316,6 @@
             timeout: ui.timing.donationToastDuration,
           },
         );
-
         setTimeout(() => {
           endTheDay();
         }, ui.timing.resultsViewDelay);
@@ -410,6 +407,9 @@
           timeout: ui.timing.donationToastDuration,
         },
       );
+      setTimeout(() => {
+        soundDonationStreet.play();
+      }, 350);
 
       setTimeout(() => {
         endTheDay();
@@ -1368,14 +1368,19 @@
     if (orderData.messages) {
       // Add messages to chat history
       orderData.messages.forEach((message) => {
+        // Replace typing indicator if specified (use in-place update for smooth transitions)
         if (message.replaceTyping) {
-          // Remove the last typing message and add the actual response
-          const typingIndex = my.chats.plug.chatHistory.findIndex((m) => m.isTyping);
-          if (typingIndex !== -1) {
-            my.chats.plug.chatHistory.splice(typingIndex, 1);
+          const typingMessage = my.chats.plug.chatHistory.find((m) => m.isTyping && m.sender === "plug");
+          if (typingMessage) {
+            // Update the existing message object instead of removing and adding
+            typingMessage.text = message.text;
+            typingMessage.time = message.time;
+            typingMessage.isTyping = false;
           }
+        } else {
+          // Add new message normally
+          my.chats.plug.chatHistory.push(message);
         }
-        my.chats.plug.chatHistory.push(message);
       });
     }
   }
@@ -2422,7 +2427,7 @@
       return;
     }
     // Allow debug button if cheat param is present or on localhost
-    if (urlParams.get("cheat") === "true" || hostname === "localhost") {
+    if (urlParams.get("cheats") || urlParams.get("debug") || hostname === "localhost") {
       gameSettings.isDebugButtonVisible = true;
     }
 

@@ -1,18 +1,28 @@
-aside.your-details {
-  background-color: #1a1a1a;
-  color: white;
-  max-width: 240px;
-  padding: 10px;
+$sidebarWidth: 240px;
 
+aside.your-details {
+  background-color: $black;
+  color: $pureWhite;
+  width: 240px;
+  padding: 10px;
   font-family: $sans-serif;
+  position: relative;
+  z-index: $z-sidebar;
   .inside {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    justify-content: space-between;
+    gap: $gap;
     overflow-x: auto;
-    max-height: calc(100dvh - 20px);
+    height: calc(100dvh - 20px);
     position: sticky;
     top: 10px;
+  }
+  .above,
+  .below {
+    display: flex;
+    flex-direction: column;
+    gap: $gap;
   }
   .box {
     background-color: oklch(0 0 0 / 0.3);
@@ -64,6 +74,7 @@ aside.your-details {
     }
   }
   .box.buttons {
+    background-color: transparent;
     fieldset {
       display: grid;
       gap: 2px;
@@ -101,6 +112,34 @@ aside.your-details {
       }
       .toggle.active:before {
         content: "🟢";
+      }
+    }
+  }
+  .box.about {
+    background-color: transparent;
+    button {
+      display: flex;
+      width: 100%;
+      background-color: $white;
+      gap: $gapSmall;
+      font-family: $sans-serif;
+      border-radius: 6px;
+      padding: 0.5em 1em;
+      cursor: pointer;
+      &:hover,
+      &:focus {
+        background-color: rgba(235, 235, 255);
+      }
+      &.active {
+        background-color: oklch(0 0 0);
+        color: $white;
+      }
+      svg {
+        width: 1.25em;
+        height: 1.25em;
+        * {
+          fill: currentColor;
+        }
       }
     }
   }
@@ -185,5 +224,58 @@ aside.your-details {
         filter: brightness(1) saturate(1);
       }
     }
+  }
+}
+
+.about-box {
+  position: fixed;
+  z-index: $z-about;
+  bottom: 0;
+  right: 0;
+  width: $sidebarWidth;
+  padding: $gapSmall;
+  background-color: $black;
+  color: $white;
+  pointer-events: none;
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: $gapSmall;
+  }
+  li {
+    background-color: oklch(0 0 0 / 0.3);
+    box-shadow: inset 0 0 9px oklch(0 0 0 / 0.3);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    .label {
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .value {
+      font-family: $serif;
+      font-size: 1.25rem;
+    }
+    a {
+      text-decoration: none;
+      color: $lemonYellow;
+      font-weight: 520;
+      &:hover,
+      &:focus-visible {
+        text-decoration: underline;
+      }
+      &:active {
+        color: $lemonOrange;
+      }
+    }
+    //text-align: right;
+  }
+  transition: transform 0.4s ease-out;
+  &.visible {
+    transform: translate(-100%);
+    pointer-events: all;
   }
 }
