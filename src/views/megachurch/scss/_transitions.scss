@@ -37,3 +37,12 @@
 .inventory-item-move {
   transition: transform 1s ease-out;
 }
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.6s ease-in-out;
+}
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translateY(102%);
+}
