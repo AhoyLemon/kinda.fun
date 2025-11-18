@@ -389,9 +389,6 @@
     // Show donation toast after all reaction toasts
     const finalDelay = currentDelay + ui.timing.donationToastDelay;
     setTimeout(() => {
-      console.log(`toastCount: ${toastCount}`);
-      console.table(toastArray);
-
       my.money += donationAmount;
       trackMoneyEarned(donationAmount);
 

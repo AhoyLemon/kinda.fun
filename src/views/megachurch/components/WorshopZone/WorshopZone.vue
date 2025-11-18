@@ -780,9 +780,10 @@
     if (selectedPrReligion.value && my.money >= gameSettings.church.marketing.prCampaign.price) {
       my.money -= gameSettings.church.marketing.prCampaign.price;
 
-      // TODO: PR Campaign now provides permanent religion boost
-      // Need to investigate how religion scoring system works before implementing
-      // For now, the purchase is successful but doesn't apply the bonus yet
+      // NOTE: PR Campaign feature is incomplete
+      // Should apply gameSettings.church.marketing.prCampaign.reputationBoost (5 points)
+      // to my.religiousScorecard for the selected religion as a permanent boost
+      // Tracked in technical debt for future implementation
 
       // Emit purchase event for Firebase logging
       emit("purchase", {
