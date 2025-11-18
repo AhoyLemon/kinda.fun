@@ -38,19 +38,19 @@ jobs:
           echo "NPM version: $(npm --version)"
           echo "Available scripts:"
           npm run --list
-          
+
           echo "🔍 Checking environment variables..."
           echo "NODE_ENV: $NODE_ENV"
           echo "IS_DEV: $IS_DEV" 
           echo "IS_PROD: $IS_PROD"
           echo "VITE_FIREBASE_PROJECT_ID: ${VITE_FIREBASE_PROJECT_ID:0:10}..." # Only show first 10 chars for security
-          
+
           echo "🔍 Checking if vite is available..."
           npx vite --version || echo "Vite not found"
-          
+
           echo "🏗️ Trying direct vite build first..."
           npx vite build --mode production 2>&1 | tee direct-build.log || echo "Direct vite build failed"
-          
+
           echo "📁 Checking for dist after direct build..."
           if [ -d "dist" ]; then
             echo "✅ Direct vite build created dist directory"
