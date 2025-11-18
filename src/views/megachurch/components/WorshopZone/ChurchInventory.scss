@@ -31,7 +31,7 @@ $grid-gap: 4px;
   right: 6px;
   width: 320px;
   max-height: 70vh;
-  background: rgba(255, 255, 255, 0.91);
+  background: $white;
   backdrop-filter: blur(10px);
   border-radius: ($border-radius * 2);
   border-bottom-left-radius: 0;
@@ -50,12 +50,12 @@ $grid-gap: 4px;
 }
 
 .church-inventory__header {
-  background-color: rgba(0, 0, 0, 0.1);
+  background: $lightGray;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.5em 0.5em 0.5em 1em;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid $mediumGray;
 }
 
 .church-inventory__close {
@@ -111,6 +111,7 @@ $grid-gap: 4px;
 .merch-grid {
   display: grid;
   gap: $grid-gap;
+  overflow: hidden;
 }
 .merch-item {
   @include inventoryItem(rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.15));
@@ -242,4 +243,3 @@ $grid-gap: 4px;
     background: rgba(0, 0, 0, 0.3);
   }
 }
-

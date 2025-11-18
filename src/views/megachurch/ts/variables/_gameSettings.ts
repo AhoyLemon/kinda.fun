@@ -39,7 +39,7 @@ export const gameSettings = reactive<GameSettings>({
   },
   spice: {
     pricePerUnit: 5, // Fixed price per unit of spice
-    addictionProgression: 0.25, // How much requiredAmount increases per unit consumed above requirement (4 excess units = +1 requirement)
+    addictionProgression: 0.4, // How much requiredAmount increases per unit consumed above requirement (4 excess units = +1 requirement)
     penaltyPerUnit: 0.2, // Penalty percentage per unit short of requirement (20% per unit)
     bonusPerUnit: 0.175, // Bonus percentage per unit above requirement (17.5% per unit)
     maxBonus: 1, // Maximum bonus cap (100%)

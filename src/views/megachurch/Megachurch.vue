@@ -40,7 +40,7 @@
 
   // Sounds
   import { Howl, Howler } from "howler";
-  import { soundWhoopsYoureDead, soundInPrison, soundDonationStreet } from "./ts/_sounds";
+  import { soundWhoopsYoureDead, soundInPrison, soundDonationStreet, spiceSniffs } from "./ts/variables/_sounds";
 
   // Components
   import Chat from "./components/Chat/Chat.vue";
@@ -1411,6 +1411,23 @@
         toast.success(`${my.spice.spiceToDeliver} spice taken. ${statusMessages[status]}.`, {
           timeout: 4000,
         });
+        // Determine the sound to play based on spice consumption
+        const difference = my.spice.consumedToday - my.spice.requiredAmount;
+        let sniffType: string;
+        if (difference <= -2) {
+          sniffType = "tiny";
+        } else if (difference === -1) {
+          sniffType = "small";
+        } else if (difference === 0) {
+          sniffType = "medium";
+        } else if (difference === 1) {
+          sniffType = "large";
+        } else {
+          sniffType = "huge";
+        }
+
+        // Play the appropriate sound
+        spiceSniffs.play(sniffType);
       }
 
       // Clear delivery queue

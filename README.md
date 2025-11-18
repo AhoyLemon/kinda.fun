@@ -27,6 +27,12 @@
 
 There's currently six games here...
 
+## MegaChurch Tycoon
+
+[![MegaChurch Tycoon](https://kinda.fun/img/og-megachurch.png)](https://kinda.fun/megachurch)
+
+A single-player game where you start out
+
 ## Invalid
 
 [![Invalid](https://kinda.fun/img/og-invalid.png)](https://kinda.fun/invalid)

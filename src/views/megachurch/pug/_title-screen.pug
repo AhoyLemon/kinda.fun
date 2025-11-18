@@ -10,7 +10,6 @@ main.title-screen(v-if="ui.view === 'title-screen'")
       transition(name="subtitle-fade" appear)
         h2(v-show="ui.wakingUp.showSubtitle") This is a problem.
 
-      //transition(name="form-slide" appear)
       .choose(v-show="ui.wakingUp.showForm")
         form(@submit.prevent="startNewGame()")
 
