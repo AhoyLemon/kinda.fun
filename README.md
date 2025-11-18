@@ -25,6 +25,19 @@
 
 [![These games are by Lemon](https://img.shields.io/badge/These%20games%20are%20by-Lemon-E5E828?style=for-the-badge&logo=person&logoColor=313131)](https://ahoylemon.xyz)
 
+## 🚀 Developer Setup
+
+**Prerequisites:** Node.js 22+ is required (due to Vite 6 compatibility)
+
+```bash
+npm install    # Install dependencies
+npm run dev    # Start development server
+```
+
+For complete setup instructions, see **[Developer Guide](docs/DEVELOPER_GUIDE.md)**
+
+---
+
 There's currently six games here...
 
 ## MegaChurch Tycoon

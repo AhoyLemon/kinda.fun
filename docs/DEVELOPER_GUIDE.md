@@ -8,7 +8,7 @@ This guide will help you set up the Kinda Fun gaming platform for local developm
 
 ### Prerequisites
 
-- **Node.js 20.x** (Functions require Node.js 22, but this only affects deployment)
+- **Node.js 22+** (Required for Vite 6 compatibility and Firebase Functions)
 
 ### Getting Started
 

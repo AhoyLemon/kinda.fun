@@ -6,7 +6,7 @@
 | ------------------------------------------------------------------------- | ---------------------------- |
 | **[Vue.js](https://vuejs.org/)**                                          | Frontend framework           |
 | **[Vite](https://vitejs.dev/)**                                           | Build tool and dev server    |
-| **[Node.js](https://nodejs.org/)**                                        | JavaScript runtime           |
+| **[Node.js](https://nodejs.org/)** (22+)                                 | JavaScript runtime           |
 | **[JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)** | Programming language         |
 | **[Firebase](https://firebase.google.com/)**                              | Backend services and hosting |
 

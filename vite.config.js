@@ -8,8 +8,9 @@ export default defineConfig(({ mode }) => {
   console.log(mode);
   const env = loadEnv(mode, process.cwd(), "");
 
-  const isDev = (env.IS_DEV === "true" || env.IS_DEV === true) ?? false;
-  const isProd = (env.IS_PROD === "true" || env.IS_PROD === true) ?? false;
+  // Check both .env file and process.env for compatibility with CI
+  const isDev = (env.IS_DEV === "true" || env.IS_DEV === true || process.env.IS_DEV === "true" || process.env.IS_DEV === true) ?? false;
+  const isProd = (env.IS_PROD === "true" || env.IS_PROD === true || process.env.IS_PROD === "true" || process.env.IS_PROD === true) ?? false;
 
   console.table([
     { key: "mode", value: mode },

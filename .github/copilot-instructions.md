@@ -8,10 +8,10 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 
 ### Prerequisites and Setup
 
-- **Node.js Version**: Node.js 20.x works for main development. Functions require Node.js 22 but this only affects deployment.
+- **Node.js Version**: Node.js 22+ is required for all development and deployment (updated due to Vite 6 compatibility requirements).
 - **Environment Setup**:
   - `npm install` -- installs all dependencies including Firebase functions. Takes ~45 seconds. NEVER CANCEL.
-  - Functions installation shows Node.js 22 warnings but continues successfully.
+  - Functions and main project now both use Node.js 22+.
 
 ### Build and Development Commands
 
@@ -84,7 +84,7 @@ When implementing features, Copilot should:
 - **`src/shared/`** -- Shared SCSS variables, functions, and components
 - **`scripts/`** -- Build scripts and data generation utilities
 - **`public/`** -- Static assets (images, audio, fonts)
-- **`functions/`** -- Firebase Cloud Functions (requires Node.js 22)
+- **`functions/`** -- Firebase Cloud Functions (uses Node.js 22+)
 - **`docs/`** -- Game documentation and technical guides
 
 ### Configuration Files
@@ -109,11 +109,11 @@ When implementing features, Copilot should:
 - **Required for deployment**: Firebase environment variables in GitHub Actions
 - **Local development**: Games work without Firebase for UI testing
 
-### Node.js Version Warnings
+### Node.js Version Requirements
 
-- **Main development**: Node.js 20.x works fine
-- **Functions deployment**: Requires Node.js 22 (handled by deployment pipeline)
-- **Warning**: Functions show Node.js version warnings during `npm install` but continue successfully
+- **All development and deployment**: Node.js 22+ is required
+- **Vite 6 Compatibility**: Updated from Node.js 20 due to Vite 6 minimum requirements
+- **Functions**: Also use Node.js 22+ (no version conflicts)
 
 ### Build Performance
 
