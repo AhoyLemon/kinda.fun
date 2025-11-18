@@ -16,7 +16,6 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 ### Build and Development Commands
 
 - **Development Server**: `npm run dev:client` -- starts Vite dev server on http://localhost:5173. Takes ~2 seconds. Games load but show Firebase auth errors (expected without config).
-- **Full Development**: `npm run dev:server` -- starts Vite + Express server concurrently. Takes ~3 seconds. Express runs on port 3000.
 - **Production Build**: `npm run build -- --mode production` -- builds all games and static pages in prodution mode (to be deployed to Firebase). Takes ~10 seconds.Set timeout to 60+ seconds.
 - **Development Build**: `npm run build -- --mode development` -- builds all games and static pages in development mode (for local testing and development). Takes ~10 seconds. Set timeout to 60+ seconds.
 - **Preview Build**: `npm run preview` -- serves built application on http://localhost:4173. Takes ~2 seconds.
@@ -82,7 +81,6 @@ When implementing features, Copilot should:
 
 - **`src/views/[game]/`** -- Each game has its own Vue component, SCSS, and JavaScript files
 - **`src/entries/`** -- Entry points for each game's JavaScript bundle
-- **`src/server/`** -- Express.js server for multiplayer functionality
 - **`src/shared/`** -- Shared SCSS variables, functions, and components
 - **`scripts/`** -- Build scripts and data generation utilities
 - **`public/`** -- Static assets (images, audio, fonts)
@@ -140,9 +138,9 @@ When implementing features, Copilot should:
 
 ### Manual Deployment
 
-1. Ensure GitHub secrets are configured (see `docs/deployment-setup.md`)
-2. Push to `main` branch or manually trigger "Deploy to Firebase" workflow
-3. Monitor deployment in GitHub Actions tab
+1. **Automated**: Push to `main` branch (usually by merging a pull request)
+2. **Manual**: Run `firebase deploy` if needed outside of normal workflow
+3. See `docs/deployment-setup.md` for configuration details
 
 ## Troubleshooting
 
@@ -154,9 +152,8 @@ When implementing features, Copilot should:
 
 ### Development Server Issues
 
-- **Port conflicts**: Vite uses 5173, Express uses 3000
+- **Port conflicts**: Vite uses 5173
 - **Hot reload**: File watching works for Vue components, manual refresh needed for some assets
-- **CORS**: Use `npm run dev:server` for full-stack development
 
 ### Game-Specific Issues
 
@@ -166,17 +163,12 @@ When implementing features, Copilot should:
 
 ### MegaChurch Development
 
-- **Configuration**: Most game balance settings centralized in `src/views/megachurch/ts/_variables.ts`
-  - `gameSettings.streetPreaching` - Audience behavior and donation mechanics
-  - `gameSettings.donationCalculation` - Financial calculation parameters
-  - `gameSettings.sermonScoring` - Religion and theme scoring multipliers
-  - `ui.timing` - Toast and animation timing configurations
-- **Architecture**: Single large Vue component with embedded systems (street preaching, spice addiction, scoring)
+- **Comprehensive Guide**: See `docs/megachurch-developer.md` for complete MegaChurch development documentation
+- **Configuration**: Most game balance settings centralized in `src/views/megachurch/ts/variables/_gameSettings.ts`
+- **Architecture**: Modular Vue component with organized subsystems
 - **Content Management**: Religion data in `_religions.ts`, locations in `_places.ts`, sermon themes in `_sermons.ts`
 - **Avoid Magic Numbers**: Use configuration objects instead of hardcoded values in game logic
-- **Testing**: Use in-game debug toggle to inspect calculations during development
-
-**Always validate changes with `npm run build && npm run preview` before creating pull requests.**
+- **Testing**: Use in-game debug toggle and Vitest for development validation
 
 ## Pull Request Guidelines
 

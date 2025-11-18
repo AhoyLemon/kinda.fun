@@ -1,133 +1,89 @@
-# MegaChurch
+# MegaChurch Tycoon
 
-## Game Overview
+MegaChurch Tycoon is a satirical religious empire-building game where you start with no money and a drug addiction, then use adaptable religious philosophy to build your way from street preaching to running a massive religious empire.
 
-MegaChurch is a satirical religious empire-building game where players start as street preachers and work their way up to building massive religious organizations. The game combines strategic sermon planning, audience psychology, resource management (including spice addiction mechanics), and gradual progression from street corners to megachurches.
+**Warning: This game contains mature themes including drug use, religious satire, and financial exploitation. It is intended as social commentary and parody.**
 
-## Core Systems
+## How to Play
 
-### Street Preaching System
+### Starting Out: Street Preaching
 
-Players begin as street preachers, testing their sermon topics on diverse urban audiences before they can afford churches or other venues.
+You begin as a broke street preacher with a spice addiction. Each day, you'll:
 
-**Key Features:**
+1. **Choose a Location** - Different neighborhoods have varying populations and religious demographics
+2. **Craft Your Sermon** - Select three topics that will make up your daily message
+3. **Preach to the Crowd** - Watch as different audience members react to your words
+4. **Collect Donations** - Successful sermons earn money to fund your growing ministry
 
-- **Audience Simulation**: Each location has different religious demographics that react to sermon content
-- **Mixed Messages**: When sermon topics contain contradictory elements that both appeal and repel the same religion group
-- **Spice Effects**: Performance-enhancing substances that affect preaching effectiveness (with addiction consequences)
-- **Donation Mechanics**: Audience engagement directly affects financial rewards
-- **Progression Path**: Success in street preaching enables purchasing vans, churches, and other upgrades
+**Key Strategy Tips:**
 
-### Configuration & Tuning
+- Match your sermon topics to the religious preferences of your location
+- Avoid "mixed messages" - topics that both attract and repel the same religious group
+- Your current spice level affects your charisma and preaching effectiveness
 
-Most game balance settings are centralized in `src/views/megachurch/ts/_variables.ts`:
+### Understanding Your Audience
 
-#### `gameSettings.streetPreaching`
+**Locations Matter:** Each neighborhood has unique characteristics:
 
-- **Audience behavior**: Engagement rates, like/dislike thresholds and percentages
-- **Donation ranges**: Min/max donation amounts per engaged audience member
-- **Scaling factors**: Population-to-audience conversion rates
+- **Population Size** - More people means bigger potential donations
+- **Religious Demographics** - Different areas have concentrations of various faiths
+- **Economic Level** - Wealthier areas provide larger donations
 
-#### `gameSettings.donationCalculation`
+**Crafting Effective Sermons:**
 
-- **Score multipliers**: How religious approval affects donation amounts
-- **Net worth effects**: Location wealth impact on donations
-- **Preacher strength bonuses**: Performance multiplier effects
+- Choose **three topics** for each sermon from available themes
+- Topics have **tags** that appeal to specific religious groups
+- **Green reactions** mean your message resonates - expect donations!
+- **Red reactions** show your message offends - they won't contribute
+- **Mixed reactions** occur when the same person likes some topics but dislikes others
 
-#### `gameSettings.sermonScoring`
+### The Spice System
 
-- **Tag multipliers**: Point values for sermon topic alignment with religions
-- **Religion matching**: Bonus effects when preacher's religion aligns with topics
-- **Enthusiasm calculations**: How audience engagement affects overall response
+**Your Addiction Challenge:**
+You start the game addicted to "spice" - a street drug that affects your daily performance:
 
-#### `ui.timing`
+- **Withdrawal Effects** - Not having enough spice reduces your charisma and donation potential
+- **Enhanced Performance** - The right amount of spice boosts your preaching abilities
+- **Overdose Risk** - Too much spice can be dangerous or even fatal
+- **The Plug** - Your dealer who provides spice for $5 per unit
+- **Tolerance Growth** - Your addiction worsens over time, requiring more spice
 
-- **Toast display timing**: Delay ranges for audience reaction notifications
-- **UI transition timing**: View switching and animation delays
+### Building Your Empire
 
-## Terminology
+**From Streets to Sanctuary:**
+As you earn money and build reputation, you'll unlock new opportunities:
 
-- **Sermon**: The full program for a service—the collection of things you'll talk about in a day.
-- **Topic**: An individual section or point within a Sermon.
-- **Theme**: The selectable subject or idea assigned to a Topic (previously called "sermon" in code).
+**Uncle Harold's Van** ($2,000)
 
-Other terms:
+- Enables travel to new locations with different demographics
+- Expands your preaching territory beyond your starting area
 
-- **Preacher/Pastor**: The person delivering the Sermon.
-- **Congregation**: The audience attending the Sermon.
-- **Religion**: The belief system chosen by the player, affecting available Themes and gameplay.
+**Sterling Silver's Church Partnership**
 
-Example:
-Sermon (whole event)
+- Transition from street preaching to running an actual church
+- Sterling takes a cut of donations but provides a permanent venue
+- Declare your church's religious affiliation
+- Build **buzz** through successful sermons to increase attendance
+- Your church develops a **Religious Scorecard** based on your past messages
 
-- Topic 1: Theme A
-- Topic 2: Theme B
-- Topic 3: Theme C
+**Church Revenue Streams:**
 
-Players build a Sermon by selecting Themes for each Topic. Religion and audience affect available choices and reactions.
+- **Sermon Donations** - Core income from engaged congregation members
+- **Merchandise Sales** - Sell religious items to attendees for additional profit
+- **Special Events** - Host breakfasts, talks, and community drives
+- **Upgrades** - Purchase church improvements to boost attendance and donations
 
-## Developer Guide
+### End Game: Eternal Legacy
 
-### Key Files & Architecture
+**Celebrity Friendships:**
+In the later stages, you can use your wealth and influence to befriend celebrities, each providing unique benefits to your ministry. These relationships become part of your lasting legacy.
 
-**Core Game Logic:**
+**Mammon - Your Final Score:**
+The game will eventually end through various possible outcomes. **Mammon** represents your accumulated spiritual and material wealth - the ultimate measure of your religious empire's success or failure.
 
-- `src/views/megachurch/Megachurch.vue` - Main game component with all systems
-- `src/views/megachurch/ts/_variables.ts` - Centralized configuration and state management
-- `src/views/megachurch/ts/_types.ts` - TypeScript interfaces and type definitions
+**Multiple Endings:**
+Your choices throughout the game determine how your story concludes. Will you build a lasting religious legacy, or will your empire crumble under the weight of addiction and corruption?
 
-**Content Data:**
+---
 
-- `src/views/megachurch/ts/_religions.ts` - Religion definitions with likes/dislikes
-- `src/views/megachurch/ts/_places.ts` - Location data with demographics
-- `src/views/megachurch/ts/_sermons.ts` - Available sermon themes and tags
-
-**UI Components:**
-
-- `src/views/megachurch/vue/ListenerToast.vue` - Audience reaction notifications
-- `src/views/megachurch/vue/DonationToast.vue` - Financial feedback display
-- `src/views/megachurch/vue/FollowerToast.vue` - Follower change notifications
-
-### Adding New Features
-
-**New Sermon Topics:**
-
-1. Add themes to `_sermons.ts` with appropriate tags
-2. Update religion preferences in `_religions.ts` if needed
-3. Test with different religious demographics
-
-**Balance Adjustments:**
-
-1. Modify values in `gameSettings` object in `_variables.ts`
-2. Avoid hardcoding numbers in component logic
-3. Use descriptive configuration property names
-
-**New Locations:**
-
-1. Add location data to `_places.ts` with population and religious breakdown
-2. Consider economic factors (avgNetWorth) for donation calculations
-3. Test audience simulation with new demographics
-
-### Testing Guidelines
-
-**Development Testing:**
-
-- Use debug mode (toggle in-game) to inspect audience calculations
-- Test edge cases: very high/low religious scores, extreme spice usage
-- Verify mixed message detection with contradictory sermon topics
-
-**Build Validation:**
-
-- Run `npm run build` to catch TypeScript errors
-- Test in both development (`npm run dev:client`) and production builds
-- Verify no console errors in browser during gameplay
-
-### Next Development Phase
-
-Planned features for upcoming development:
-
-1. **Enhanced Spice UI** - Better interface for spice purchasing and addiction management
-2. **Van System** - Transportation mechanics for traveling between locations
-3. **Religion Declaration** - Formal religion selection and customization
-4. **Church Foundation** - Transition from street preaching to permanent venues
-5. **Recovery Mechanics** - Options for overcoming spice addiction
+_For technical information about the game's development, see [MegaChurch Developer Guide](megachurch-developer.md)_

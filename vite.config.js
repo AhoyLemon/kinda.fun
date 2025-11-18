@@ -17,8 +17,33 @@ export default defineConfig(({ mode }) => {
     { key: "IS_PROD?", value: isProd },
   ]);
 
+  // Custom plugin to show localhost guidance after server starts
+  const localhostGuidancePlugin = {
+    name: 'localhost-guidance',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        next();
+      });
+      
+      const originalListen = server.listen;
+      server.listen = function(...args) {
+        const result = originalListen.apply(this, args);
+        
+        // Show guidance after server is ready
+        setTimeout(() => {
+          console.log('\n📝 Kinda Fun Development Notes:');
+          console.log('❌ http://localhost:5173/ won\'t work');
+          console.log('✅ Use http://localhost:5173/home.html for homepage');
+          console.log('✅ Games: /invalid, /meeting, /megachurch, /guillotine, /cameo, /pretend, /sisyphus\n');
+        }, 100);
+        
+        return result;
+      };
+    }
+  };
+
   return {
-    plugins: [vue(), vueDevTools()],
+    plugins: [vue(), vueDevTools(), localhostGuidancePlugin],
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -61,6 +86,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       middlewareMode: false,
+      host: true,
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
