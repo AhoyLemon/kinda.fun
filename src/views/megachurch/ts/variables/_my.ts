@@ -18,7 +18,6 @@ export const my = reactive<My>({
     getLikes: 1, // Multiplier for likes
     getDislikes: 1, // Multiplier for dislikes (lower is better)
   },
-  selectedTopics: [null, null, null], // TODO: Move this to ui.selectedTopics
   isStreetPreaching: true, // Start as street preacher
   hasVan: false, // Can't travel yet
   canBuyVan: false, // Whether van purchase option is available

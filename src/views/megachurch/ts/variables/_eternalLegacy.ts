@@ -203,8 +203,6 @@ export const eternalLegacyBibleVerses: EternalLegacyBibleVerse[] = [
 ];
 
 // ================= CELEBRITY CENTRE INTERFACE =================
-// TODO: This interface is prepared for future Celebrity Centre feature implementation
-// When implementing, uncomment the following interface and celebrity data
 
 export interface EternalLegacyCelebrity {
   id: string;
