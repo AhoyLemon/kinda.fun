@@ -46,17 +46,22 @@ aside.your-details
         .value
           div(v-if="my.spice.consumedToday < my.spice.requiredAmount") 
             .warning ⚠️ UNDER-DOSED
-            small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
           div(v-else-if="my.spice.consumedToday > my.spice.requiredAmount") 
             .bonus ⚡ ENHANCED
-            small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
           div(v-else) 
             .good ✅ OPTIMAL
-            small {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} units
           div(v-if="gameSettings.isDebug")
             small.debug Performance: {{Math.round(getSpiceMultiplier() * 100)}}%
             small.debug(v-if="my.spice.pendingAddictionIncrease > 0") 
               | Tomorrow: +{{my.spice.pendingAddictionIncrease.toFixed(2)}} requirement
+          div(v-if="my.spice.spiceToDeliver")
+            small 
+              strong {{my.spice.spiceToDeliver}} 
+              |  arriving tomorrow
+          div(v-if="!my.spice.spiceToDeliver")
+            small 
+              strong {{my.spice.consumedToday}}/{{Math.ceil(my.spice.requiredAmount)}} 
+              |  taken today
 
     .below
 
