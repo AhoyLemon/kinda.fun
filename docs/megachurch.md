@@ -86,4 +86,4 @@ Your choices throughout the game determine how your story concludes. Will you bu
 
 ---
 
-_For technical information about the game's development, see [MegaChurch Developer Guide](megachurch-developer.md)_
+_For technical information about the game's development, see [MegaChurch Developer Guide](megachurch/DEVELOPER.md)_

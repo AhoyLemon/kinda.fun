@@ -97,7 +97,7 @@ open http://localhost:5173/[gamename]
 code src/views/[gamename]/[GameName].vue
 ```
 
-**Tip:** MegaChurch Tycoon has the most comprehensive documentation - see [MegaChurch Developer Guide](megachurch-developer.md) for a detailed example.
+**Tip:** MegaChurch Tycoon has the most comprehensive documentation - see [MegaChurch Developer Guide](megachurch/DEVELOPER.md) for a detailed example.
 
 ### 2. Understanding Game Structure
 
@@ -184,7 +184,7 @@ Each game has its own documentation in the `docs/` folder:
 
 ### Example: MegaChurch Tycoon
 
-- **Full Developer Guide:** [docs/megachurch-developer.md](megachurch-developer.md)
+- **Full Developer Guide:** [docs/megachurch/DEVELOPER.md](megachurch/DEVELOPER.md)
 - **Player Guide:** [docs/megachurch.md](megachurch.md)
 - **Configuration:** `src/views/megachurch/ts/variables/_gameSettings.ts`
 
@@ -239,4 +239,4 @@ _Browse the `docs/` folder to find documentation for other games._
 4. **Write your first test** - see `docs/vitests.md` for examples
 5. **Join development** - create issues or PRs for improvements
 
-**Ready to dive deeper into MegaChurch?** → [MegaChurch Developer Guide](megachurch-developer.md)
+**Ready to dive deeper into MegaChurch?** → [MegaChurch Developer Guide](megachurch/DEVELOPER.md)

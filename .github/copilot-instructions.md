@@ -163,7 +163,7 @@ When implementing features, Copilot should:
 
 ### MegaChurch Development
 
-- **Comprehensive Guide**: See `docs/megachurch-developer.md` for complete MegaChurch development documentation
+- **Comprehensive Guide**: See `docs/megachurch/DEVELOPER.md` for complete MegaChurch development documentation
 - **Configuration**: Most game balance settings centralized in `src/views/megachurch/ts/variables/_gameSettings.ts`
 - **Architecture**: Modular Vue component with organized subsystems
 - **Content Management**: Religion data in `_religions.ts`, locations in `_places.ts`, sermon themes in `_sermons.ts`
