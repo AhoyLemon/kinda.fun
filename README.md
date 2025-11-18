@@ -1,9 +1,8 @@
 [![kinda.fun](https://kinda.fun/img/og-wide.png)](https://kinda.fun)
 
 [![Last Deploy](https://img.shields.io/github/last-commit/AhoyLemon/kinda.fun/main?label=Last%20Deploy&style=for-the-badge&color=green)](https://github.com/AhoyLemon/kinda.fun/actions)
-[![Tests](https://img.shields.io/badge/Unit%20Tests-Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)](vitest.config.js)
-[![Format](https://img.shields.io/badge/Format-Prettier-ff69b4?style=for-the-badge&logo=prettier&logoColor=white)](.prettierrc.json)
 [![Live Site](https://img.shields.io/badge/Live%20Site-kinda.fun-blue?style=for-the-badge)](https://kinda.fun)
+[![Game Count](https://img.shields.io/badge/games-7-E5E828?style=for-the-badge)](https://github.com/AhoyLemon/kinda.fun/tree/main/src/views)
 
 **Made with**
 
@@ -12,26 +11,34 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-000?style=for-the-badge&labelColor=3178C6&logo=typescript&logoColor=white&color=222)](https://www.typescriptlang.org/)
 [![Sass](https://img.shields.io/badge/Sass-000?style=for-the-badge&labelColor=CC6699&logo=sass&logoColor=white&color=222)](https://sass-lang.com/)
 [![Pug](https://img.shields.io/badge/Pug-000?style=for-the-badge&labelColor=A86454&logo=pug&logoColor=white&color=222)](https://pugjs.org/)
-[![Firebase](https://img.shields.io/badge/Firebase-000?style=for-the-badge&labelColor=FFCA28&logo=firebase&logoColor=white&color=222)](https://firebase.google.com/)
+[![Firebase](https://img.shields.io/badge/Firebase-000?style=for-the-badge&labelColor=FFCA28&logo=firebase&logoColor=111&color=222)](https://firebase.google.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-000?style=for-the-badge&labelColor=339933&logo=node.js&logoColor=white&color=222)](https://nodejs.org/)
+[![Vitest](https://img.shields.io/badge/Vitest-000?style=for-the-badge&labelColor=6E9F18&logo=vitest&logoColor=white&color=222)](https://nodejs.org/)
+[![Prettier](https://img.shields.io/badge/Prettier-000?style=for-the-badge&labelColor=F7B93E&logo=prettier&logoColor=111&color=222)](https://nodejs.org/)
 
-[![Contributors](https://img.shields.io/github/contributors/AhoyLemon/kinda.fun?style=for-the-badge&color=0074D9)](https://github.com/AhoyLemon/kinda.fun/graphs/contributors)
-[![Stars](https://img.shields.io/github/stars/AhoyLemon/kinda.fun?style=for-the-badge&logoColor=white&color=E5E828)](https://github.com/AhoyLemon/kinda.fun/stargazers)
-[![Issues](https://img.shields.io/github/issues-raw/AhoyLemon/kinda.fun?style=for-the-badge&logoColor=white)](https://github.com/AhoyLemon/kinda.fun/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr-closed-raw/AhoyLemon/kinda.fun?style=for-the-badge&label=Pull%20Requests&color=690869)](https://github.com/AhoyLemon/kinda.fun/pulls)
-[![Commit Activity](https://img.shields.io/github/commit-activity/m/AhoyLemon/kinda.fun?style=for-the-badge)](https://github.com/AhoyLemon/kinda.fun/commits/main)
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-white?style=for-the-badge&logoColor=white&)](LICENSE)
+**Stats**
+
+[![Contributors](https://img.shields.io/github/contributors/AhoyLemon/kinda.fun?style=for-the-badge&color=black)](https://github.com/AhoyLemon/kinda.fun/graphs/contributors)
+[![Stars](https://img.shields.io/github/stars/AhoyLemon/kinda.fun?style=for-the-badge&logoColor=white&color=black)](https://github.com/AhoyLemon/kinda.fun/stargazers)
+[![Issues](https://img.shields.io/github/issues-raw/AhoyLemon/kinda.fun?style=for-the-badge&color=black)](https://github.com/AhoyLemon/kinda.fun/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr-closed-raw/AhoyLemon/kinda.fun?style=for-the-badge&label=Pull%20Requests&color=black)](https://github.com/AhoyLemon/kinda.fun/pulls)
+[![Commit Activity](https://img.shields.io/github/commit-activity/m/AhoyLemon/kinda.fun?style=for-the-badge&color=black)](https://github.com/AhoyLemon/kinda.fun/commits/main)
+
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-white?style=for-the-badge&logoColor=white&logo=creativecommons)](LICENSE)
 [![Docs](https://img.shields.io/badge/Docs-Available-4FC08D?style=for-the-badge&logo=readthedocs&logoColor=white)](docs/)
+[![These games are by Lemon](https://img.shields.io/badge/These%20games%20are%20by-Lemon-E5E828?style=for-the-badge&logo=lemonsqueezy&logoColor=white)](https://ahoylemon.xyz)
 
-[![These games are by Lemon](https://img.shields.io/badge/These%20games%20are%20by-Lemon-E5E828?style=for-the-badge&logo=person&logoColor=313131)](https://ahoylemon.xyz)
-
-There's currently six games here...
+There's currently seven games in this repo...
 
 ## MegaChurch Tycoon
 
 [![MegaChurch Tycoon](https://kinda.fun/img/og-megachurch.png)](https://kinda.fun/megachurch)
 
-A single-player game where you start out
+A single-player game where you start out with no money and a drug addiction, and must build a religious empire using cunning, strategy, and most importantly - lies.
+
+- **[Game Documentation](docs/invalid.md)** - Basics of how to play
+- **[Preaching Documentation](docs/megachurch/preaching.md)** - Preaching mechanics, audience generation, and donation calculations
+- **[Developer Guide](docs/megachurch/DEVELOPER.md)** - MegaChurch development architecture, configuration, and content management
 
 ## Invalid
 
