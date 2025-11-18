@@ -36,39 +36,8 @@ jobs:
           echo "Current working directory: $(pwd)"
           echo "Node.js version: $(node --version)"
           echo "NPM version: $(npm --version)"
-          echo "Available scripts:"
-          npm run --list
-
-          echo "🔍 Checking environment variables..."
-          echo "NODE_ENV: $NODE_ENV"
-          echo "IS_DEV: $IS_DEV" 
-          echo "IS_PROD: $IS_PROD"
-          echo "VITE_FIREBASE_PROJECT_ID: ${VITE_FIREBASE_PROJECT_ID:0:10}..." # Only show first 10 chars for security
-
-          echo "🔍 Checking if vite is available..."
-          npx vite --version || echo "Vite not found"
-
-          echo "🏗️ Trying direct vite build first..."
-          npx vite build --mode production 2>&1 | tee direct-build.log || echo "Direct vite build failed"
-
-          echo "📁 Checking for dist after direct build..."
-          if [ -d "dist" ]; then
-            echo "✅ Direct vite build created dist directory"
-            ls -la dist/
-          else
-            echo "❌ Direct vite build did not create dist directory"
-            echo "Running custom build script instead..."
-            npm run build -- --mode production 2>&1 | tee custom-build.log
-            CUSTOM_EXIT_CODE=${PIPESTATUS[0]}
-            if [ $CUSTOM_EXIT_CODE -ne 0 ]; then
-              echo "❌ Custom build also failed! Logs:"
-              echo "=== Direct Build Log ==="
-              cat direct-build.log || echo "No direct build log"
-              echo "=== Custom Build Log ==="
-              cat custom-build.log || echo "No custom build log"
-              exit $CUSTOM_EXIT_CODE
-            fi
-          fi
+          echo "🏗️ Running full build script..."
+          npm run build -- --mode production
         env:
           NODE_ENV: production
           ENVIRONMENT: production
