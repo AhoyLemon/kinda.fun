@@ -1,0 +1,97 @@
+section.megachurch.stats(v-if="ui.viewing == 'megachurch'")
+  figure
+    img(src="/svg/games/megachurch.svg")
+
+  .table-and-stats(v-if="ui.megachurchLoaded")
+
+    .stats-boxes-wrapper
+      .stats-boxes(v-if="stats.megachurch.lastGameStarted")
+
+        .box.date
+          .caption Last Played
+          .time-ago(v-text="formatTime(stats.megachurch.lastGameStarted,'fromNow')")
+          .calendar(v-text="formatTime(stats.megachurch.lastGameStarted,'calendar')")
+        
+        .box.big-number(v-if="stats.megachurch?.gamesStarted")
+            .caption Games Started
+            .number(v-text="addCommas(stats.megachurch.gamesStarted)")
+            .sub-number
+              strong(v-text="calculateAverage(stats.megachurch.gamesStarted, dates.megachurch.dayCount)")
+              |  games per day
+
+        .box.big-number
+          .caption Days of Preaching
+          .number(v-text="addCommas(stats.megachurch.daysPlayed)")
+          .sub-number
+            strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.daysPreachedOnStreet) + '%'")
+            |  on the street
+          .sub-number
+            strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.daysPreachedInChurch) + '%'")
+            |  in churches
+          .sub-number
+            strong(v-text="percentOf(stats.megachurch.daysPlayed,stats.megachurch.seraphAIDaysActive) + '%'")
+            |  with Seraph AI
+
+        .box.big-number
+          .caption Games Finished
+          .number(v-text="addCommas(stats.megachurch.gamesFinished)")
+          .sub-number
+            strong(v-text="percentOf(stats.megachurch.gamesStarted,stats.megachurch.gamesFinished) + '%'")
+            |  completion rate
+          .sub-number
+            strong(v-text="addCommas(stats.megachurch.overdoses)")
+            span  overdoses (#[strong {{percentOf(stats.megachurch.gamesFinished, stats.megachurch.overdoses)}}%])
+          .sub-number
+            strong(v-text="addCommas(stats.megachurch.prisonSentences)")
+            span  prison sentences (#[strong {{percentOf(stats.megachurch.gamesFinished, stats.megachurch.prisonSentences)}}%])
+        
+        .box.big-number
+          .caption Churches Founded
+          .number(v-text="addCommas(stats.megachurch.churchesFounded)")
+          .sub-number
+            strong(v-text="percentOf(stats.megachurch.gamesStarted,stats.megachurch.churchesFounded) + '%'")
+            |  of games started
+        
+        .box.big-number
+          .caption Total Spice Taken
+          .number(v-text="addCommas(stats.megachurch.spiceTaken)")
+
+    .good-table(v-if="stats.megachurch.sermonTopics")
+      h2 Sermon Topics
+      vue-good-table(
+        :rows="stats.megachurch.sermonTopics"
+        :columns="columns.megachurchSermonTopics"
+        :sort-options="{ enabled: true, initialSortBy: {field: 'timesPreached', type: 'desc'} }"
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+  .four-tables(v-if="ui.megachurchLoaded && stats.megachurch.religions")
+
+    +smallTable("Players", "stats.megachurch.players", "columns.megachurchPlayers", "gamesPlayed")
+
+    // Church Setup
+
+    +smallTable("Religions", "stats.megachurch.religions", "columns.megachurchReligions", "churchesFounded")
+
+    +smallTable("Locations", "stats.megachurch.locations", "columns.megachurchLocations", "churchesFounded")
+
+    +smallTable("Church Names", "stats.megachurch.churchNames", "columns.megachurchChurchNames", "churchesFounded")
+
+    // WORSHOP ZONE
+
+    +smallTable("Merchandise", "stats.megachurch.merch", "columns.megachurchMerch", "timesPurchased")
+
+    +smallTable("Upgrades", "stats.megachurch.upgrades", "columns.megachurchUpgrades", "timesPurchased")
+
+    +smallTable("Marketing", "stats.megachurch.marketing", "columns.megachurchMarketing", "timesPurchased")
+
+    // ETERNAL LEGACY
+
+    +smallTable("Mammon Items", "stats.megachurch.eternalLegacy", "columns.megachurchEternalLegacy", "timesPurchased")
+
+    +smallTable("Celebrity Friends", "stats.megachurch.celebrityFriends", "columns.megachurchCelebrityFriends", "timesFriended")
+
+    +smallTable("Dark Deeds", "stats.megachurch.darkDeeds", "columns.megachurchDarkDeeds", "timesEnacted")
+
+    +smallTable("Cheats", "stats.megachurch.cheats", "columns.megachurchCheats", "timesUsed")

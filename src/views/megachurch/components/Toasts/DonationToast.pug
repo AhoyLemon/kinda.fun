@@ -1,0 +1,36 @@
+.donation-collected.container(:class="{ positive: totalDonations > 0, negative: totalDonations <= 0 }")
+  .row.first
+
+  template(v-if="totalEarnings > 0")
+    .row.first
+      .point-holder
+        .number(:class="{ positive: totalDonations > 0, negative: totalDonations < 0 }") {{ dollars(totalEarnings) }}
+
+      .text-holder
+        .text
+          template(v-if="totalDonations && !sterlingCut && !totalMerch")
+            .label in donations collected
+          template(v-else)
+            .label is what you're going home with today
+
+  template(v-else)
+    .text-holder
+      .text
+        .religion-label.label You didn't make any money today.
+
+  template(v-if="totalDonations || totalMerch || sterlingCut")
+    .row.second
+      dl.breakdown
+        template(v-if="totalDonations && totalDonations != totalEarnings")
+          dt Donations:
+          dd {{ dollars(totalDonations) }}
+        template(v-if="totalMerch")
+          dt Merch Sales:
+          dd {{ dollars(totalMerch) }}
+        template(v-if="celebrityCosts && celebrityCosts.length > 0")
+          dt.celebrity Celebrity Friends:
+          dd.minus -{{ dollars(celebrityCosts.reduce((sum, cost) => sum + cost.amount, 0)) }}
+        template(v-if="sterlingCut")
+          dt.sterling Sterling's Cut:
+          dd.minus {{ dollars(sterlingCut) }}
+        

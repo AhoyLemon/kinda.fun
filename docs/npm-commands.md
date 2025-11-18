@@ -13,7 +13,10 @@ Start Vite and Express server concurrently.
 Build static HTML pages using build-pages.js.
 
 **`npm run build`**  
-Full production build: update sitemap, build with Vite, generate pages, copy home to index.
+Interactive build: prompts for mode selection (production/development), updates sitemap, builds with Vite, generates pages, copies home to index.
+
+**`npm run build -- --mode <mode>`**  
+Non-interactive build with specified mode (production or development).
 
 **`npm run preview`**  
 Preview production build locally.
@@ -28,7 +31,7 @@ Lint and auto-fix Vue/JS files with ESLint.
 Format source code with Prettier.
 
 **`npm run serve-heroku`**  
-Serve production build on Heroku (with PORT environment variable).
+Serve production build on Heroku (DEPRECATED. PLEASE REMOVE ALL HEROKU LOGIC AT NEXT OPPORTUNITY).
 
 **`npm run update-billionaires`**  
 Process `csv/2024 Billionaire List.csv` and generate `js/data/_billionaires.js` with 2,775+ billionaires ranked by net worth.

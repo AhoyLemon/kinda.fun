@@ -1,0 +1,34 @@
+.Vue-Toastification__container {
+  .Vue-Toastification__toast--default {
+    background-color: $toastDefault;
+    .Vue-Toastification__toast-body {
+      color: $toastDefaultText;
+    }
+  }
+
+  .Vue-Toastification__toast--info {
+    background-color: $toastInfo;
+    .Vue-Toastification__toast-body {
+      color: $toastInfoText;
+    }
+  }
+
+  .Vue-Toastification__toast--warning {
+    .Vue-Toastification__toast-body {
+      color: oklch(0.2 0.05 75);
+    }
+  }
+  .Vue-Toastification__toast--success {
+    background-color: $toastSuccess;
+    .Vue-Toastification__toast-body {
+      color: $toastSuccessText;
+    }
+  }
+
+  .Vue-Toastification__toast--error {
+    background-color: $toastError;
+    .Vue-Toastification__toast-body {
+      color: $toastErrorText;
+    }
+  }
+}

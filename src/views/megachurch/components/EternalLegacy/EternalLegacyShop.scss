@@ -1,0 +1,382 @@
+@import "../../scss/_variables.scss";
+
+.eternal-legacy-shop-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: oklch(0 0 0 / 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-overlay;
+  backdrop-filter: blur(3px);
+}
+
+.eternal-legacy-shop-container {
+  background: linear-gradient(135deg, $black 0%, $bronzeDark 100%);
+  border: 3px solid $goldDark;
+  border-radius: $radiusLarge;
+  width: 90vw;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px oklch(0.65 0.12 85 / 0.4);
+  overflow: hidden;
+}
+
+.shop-header {
+  background: linear-gradient(90deg, $goldDark, $goldBright);
+  color: $black;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+
+    small {
+      display: block;
+      font-size: 14px;
+      font-weight: normal;
+      opacity: 0.8;
+    }
+  }
+
+  .close-btn {
+    background: none;
+    border: 2px solid $black;
+    color: $black;
+    width: 32px;
+    height: 32px;
+    border-radius: $radiusRound;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+
+    &:hover {
+      background: $black;
+      color: $goldDark;
+    }
+  }
+}
+
+.shop-nav {
+  background: #2a2a2a;
+  display: flex;
+  border-bottom: 2px solid $goldDark;
+
+  .tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #888;
+    padding: 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s;
+
+    &.active {
+      background: $goldDark;
+      color: $black;
+    }
+
+    &:not(.active):hover {
+      background: #3a3a3a;
+      color: $goldDark;
+    }
+  }
+}
+
+.shop-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.tab-header {
+  margin-bottom: 24px;
+
+  .tab-description {
+    color: #ccc;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+
+  .current-mammon,
+  .heat-warning {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid $goldDark;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: $goldDark;
+
+    strong {
+      color: #f4e17a;
+    }
+  }
+
+  .heat-warning {
+    background: rgba(255, 68, 68, 0.1);
+    border-color: #ff4444;
+    color: #ff4444;
+  }
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.item-card {
+  background: #2a2a2a;
+  border: 2px solid #444;
+  border-radius: $radiusMedium;
+  padding: 16px;
+  transition: all 0.2s;
+
+  &.affordable {
+    border-color: $goldDark;
+  }
+
+  &.purchased {
+    opacity: 0.8;
+    filter: grayscale(0.3);
+    // background: #1a2a1a;
+    // border-color: #4caf50;
+  }
+
+  &.dangerous {
+    border-color: #ff6b35;
+  }
+
+  &:has(.purchase-btn:hover),
+  &:has(.purchase-btn:focus-visible) {
+    transform: translateY(-2px);
+    box-shadow:
+      6px 6px 6px oklch(0 0 0 / 0.15),
+      3px 3px 3px oklch(0 0 0 / 0.3);
+  }
+
+  &.celebrity-card {
+    border-color: #6b9bff;
+    .item-details {
+      .item-stats {
+        position: relative;
+        .toggle-details {
+          position: absolute;
+          top: 0;
+          right: 0;
+          display: flex;
+          appearance: none;
+          border-radius: $radiusRound;
+          border: 1px solid currentColor;
+          color: $white;
+          background-color: transparent;
+          width: 2em;
+          height: 2em;
+          font-size: 0.75rem;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          &:hover,
+          &:focus-visible {
+            background-color: oklch(1 0 0 / 0.15);
+          }
+        }
+        .cost {
+          font-size: 1.75em;
+          font-weight: 300;
+        }
+      }
+    }
+    .effect-summary {
+      color: oklch(0.8 0 360);
+      padding-bottom: 0.5em;
+    }
+    .celebrity-effects {
+      color: $white;
+      dt {
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 525;
+      }
+      dd {
+        padding: 0.5em 0 0.5em 1em;
+        display: grid;
+        gap: 0.5em;
+      }
+      .mammon {
+        color: rgb(255, 107, 255);
+      }
+    }
+  }
+
+  .item-icon {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .item-details {
+    h4 {
+      color: $goldDark;
+      margin: 0 0 8px 0;
+      font-size: 16px;
+    }
+
+    .item-description {
+      color: #ccc;
+      font-size: 13px;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    .item-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+
+      .cost,
+      .mammon-value,
+      .influence-value,
+      .heat {
+        color: $white;
+      }
+      .cost {
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+      .mammon-value {
+        color: rgb(255, 107, 255);
+        font-size: 0.875rem;
+      }
+      .boost {
+        color: rgb(107, 255, 255);
+        font-size: 0.75rem;
+      }
+      .negative {
+        color: rgb(255, 180, 180);
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .item-actions {
+    margin-top: 12px;
+
+    .purchase-btn {
+      width: 100%;
+      background: $goldDark;
+      color: $black;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.2s;
+
+      &:hover:not(:disabled) {
+        background: #f4e17a;
+        transform: translateY(-1px);
+      }
+
+      &:disabled {
+        background: $darkerGray;
+        color: $gray;
+        cursor: not-allowed;
+      }
+
+      &.dangerous {
+        background: #ff6b35;
+        color: $white;
+        &:disabled {
+          background: $darkerGray;
+          color: $gray;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .purchased-indicator {
+      text-align: center;
+      color: #4caf50;
+      padding: 8px;
+    }
+
+    .friendship-controls {
+      display: flex;
+      gap: 8px;
+
+      .purchased-indicator {
+        margin: 0;
+        padding: 4px 8px;
+        flex-basis: 50%;
+      }
+
+      .unfriend-btn {
+        background: linear-gradient(135deg, #f44336, #d32f2f);
+        color: $white;
+        flex-basis: 50%;
+        border: none;
+        padding: 6px 12px;
+        border-radius: $radiusSmall;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: linear-gradient(135deg, #d32f2f, #b71c1c);
+          transform: translateY(-1px);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+      .no-refriend {
+        flex-basis: 100%;
+        text-align: center;
+        color: oklch(1 0 0 / 0.4);
+      }
+    }
+  }
+}
+
+.shop-footer {
+  background: $black;
+  border-top: 1px solid #444;
+  padding: 16px 24px;
+
+  .bible-verse {
+    color: #888;
+    font-size: 16px;
+    font-family: $serif;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+
+  .sterling-signature {
+    display: block;
+    color: $goldDark;
+    font-size: 14px;
+    text-align: right;
+
+    small {
+      font-size: 80%;
+      opacity: 0.7;
+    }
+  }
+}
+

@@ -37,6 +37,14 @@
         "destination": "/meeting.html"
       },
       {
+        "source": "/megachurch",
+        "destination": "/megachurch.html"
+      },
+      {
+        "source": "/megachurch/",
+        "destination": "/megachurch.html"
+      },
+      {
         "source": "/pretend",
         "destination": "/pretend.html"
       },

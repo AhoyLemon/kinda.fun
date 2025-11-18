@@ -1,0 +1,82 @@
+.legacy-status(
+  :class="{ 'is-visible': isVisible }"
+  @click.stop
+)
+  .legacy-status__header
+    h3.legacy-status__title Legacy Status
+    button.legacy-status__close(
+      v-if="ui.view !== 'game-over'"
+      @click="$emit('close')"
+      type="button"
+      aria-label="Close Legacy Status"
+    )
+      | ✕
+
+
+  .legacy-status__content
+
+    // Heat Level
+    .legacy-section(v-if="heatLevel > 0 && ui.view !== 'game-over'")
+      h4.section-title Heat Level
+      .corruption-display
+        .corruption-bar
+          .corruption-fill(:style="{ width: heatLevel + '%' }")
+
+    // Current Mammon Section
+    .legacy-section.mammount-count(v-if="currentMammon")
+      h4.section-title Current Mammon
+      .mammon-current
+        .mammon-name {{ addCommas(currentMammon) }}
+
+    // Mammon Items Section
+    Transition(name="inventory-item")
+      .legacy-section(v-if="my.eternalLegacy.purchasedItems.length > 0")
+        h4.section-title Tokens of Wealth
+        
+        TransitionGroup(name="inventory-item" class="mammon-items-grid" tag="div")
+          .mammon-item(
+            v-for="item in my.eternalLegacy.purchasedItems"
+            :key="item.id"
+          )
+            .mammon-item-info
+              .mammon-item-points {{ item.mammon }}
+              .mammon-item-name {{ item.name }}
+
+
+    // Celebrity Endorsements Section
+    Transition(name="inventory-item")
+      .legacy-section(v-if="my.celebrityFriends.length > 0")
+        h4.section-title Celebrity Friends
+        
+        TransitionGroup(name="inventory-item" class="celebrity-items-grid" tag="div")
+          .celebrity-item(
+            v-for="celebrity in my.celebrityFriends"
+            :key="celebrity.id"
+          )
+            .celebrity-item-info
+              .celebrity-item-points(v-if="celebrity.hasOneTimeEffects && celebrity.oneTimeEffects?.mammon")
+                span {{ celebrity.oneTimeEffects.mammon }}
+              .celebrity-item-name {{ celebrity.name }}
+              //.celebrity-item-effect {{ celebrity.effect }}
+
+    // Dark Deeds Section
+    Transition(name="inventory-item")
+      .legacy-section(v-if="completedDarkDeeds.length > 0")
+        h4.section-title Dark Deeds Committed
+
+        TransitionGroup(name="inventory-item" class="dark-deeds-list" tag="div")
+          .dark-deed(
+            v-for="deed in completedDarkDeeds"
+            :key="deed.id"
+          )
+            .deed-icon 👹
+            .deed-info
+              .deed-name(v-if="deed.id === 'kill-sterling' || deed.id === 'consultation-tony'") You killed Sterling
+              .deed-name(v-else-if="deed.id === 'sterling-bribe' || deed.id === 'sterling-cut'") You got Sterling to bribe the cops
+              //.deed-effect {{ deed.effect }}
+
+    // Empty State
+    .legacy-empty(v-if="isEmpty")
+      .empty-icon ⚖️
+      .empty-text Your soul remains pure
+      .empty-subtitle No dark deeds or mammon pacts... yet

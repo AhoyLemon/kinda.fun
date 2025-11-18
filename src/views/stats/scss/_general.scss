@@ -2,22 +2,29 @@ main.general-stats {
   grid-column: span 2;
   min-height: 100dvh;
   // display: flex;
+  padding-right: 20px;
+  padding-left: 20px;
   align-items: center;
   font-family: $serif;
-  grid-template-rows: 1fr 150px;
+  grid-template-rows: 1fr 60px;
   .inside {
     width: 100%;
   }
+
   .game-summaries {
-    display: grid;
-    gap: $gap;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 20px;
     row-gap: 80px;
-    grid-template-columns: repeat(3, 1fr);
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
+    justify-content: space-evenly;
     .summary {
       text-align: center;
+      flex-basis: 300px;
+      flex-grow: 0;
+      flex-shrink: 1;
+      button {
+        display: none;
+      }
     }
     figure {
       display: flex;
@@ -67,18 +74,18 @@ main.general-stats {
     }
   }
   display: grid;
-  grid-template-columns: 1fr 520px;
+  grid-template-columns: 1fr 480px;
   gap: $gap;
 
   .player-table {
-    max-height: 99.999vh;
+    // max-height: calc(100dvh - 40px);
     overflow-y: auto;
-  }
-  .good-table {
     h2 {
-      font-size: 190%;
+      font-size: 175%;
       padding-bottom: 0.35em;
     }
+  }
+  .good-table {
     .vgt-wrap__footer {
       select.footer__row-count__select {
         color: $white;
@@ -164,7 +171,6 @@ main.general-stats {
   .last-cloned-holder {
     grid-column: span 2;
     text-align: center;
-    padding-top: 4em;
     .last-cloned {
       padding: 1em;
       background-color: $white;

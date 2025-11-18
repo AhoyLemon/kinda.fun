@@ -1,4 +1,5 @@
 const audioFolder = "audio/sisyphus";
+import { Howl } from "howler";
 
 export const uphillMusic = new Howl({
   src: [`${audioFolder}/uphill4.ogg`, `${audioFolder}/uphill4.mp3`],

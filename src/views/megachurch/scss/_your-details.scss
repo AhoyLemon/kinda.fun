@@ -1,0 +1,297 @@
+$sidebarWidth: 240px;
+
+@mixin sidebarButton() {
+  appearance: none;
+  border: none;
+  display: flex;
+  width: 100%;
+  background-color: transparent;
+  color: $white;
+  border: 1px solid currentColor;
+  gap: $gapSmall;
+  font-family: $sans-serif;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  transition: all 0.15s linear;
+  span {
+    transition: all 0.15s linear;
+  }
+  &:hover,
+  &:focus-visible {
+    background-color: oklch(0 0 360 / 80%);
+    span:last-child {
+      color: $lemonYellow;
+    }
+  }
+  &.active {
+    background-color: $trueBlack;
+    background-color: $white;
+    color: $black;
+    //color: $black;
+  }
+  svg {
+    width: 1.25em;
+    height: 1.25em;
+    * {
+      fill: currentColor;
+    }
+  }
+  .toggle {
+    flex-basis: 1.25em;
+    border-radius: 50%;
+    &.off {
+      background-color: $darkGreen;
+    }
+    &.on {
+      opacity: 0.45;
+      background-color: $red;
+    }
+  }
+}
+
+aside.your-details {
+  background-color: $black;
+  color: $pureWhite;
+  width: 240px;
+  padding: 10px;
+  font-family: $sans-serif;
+  position: relative;
+  z-index: $z-sidebar;
+  .inside {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: $gap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable both-edges;
+    scrollbar-color: #692647 #e6e7dc;
+    height: calc(100dvh - 20px);
+    position: sticky;
+    top: 10px;
+  }
+  .above {
+    display: flex;
+    flex-direction: column;
+    gap: $gap;
+  }
+  .box {
+    background-color: oklch(0 0 0 / 0.3);
+    box-shadow: inset 0 0 9px oklch(0 0 0 / 0.3);
+    padding: 10px;
+    .label {
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .value {
+      padding-top: 5px;
+      font-family: $serif;
+      font-size: 1.25rem;
+    }
+    ol {
+      display: grid;
+      gap: 0.25em;
+      list-style: decimal;
+      padding-left: 1em;
+      li::marker {
+        font-size: 80%;
+      }
+    }
+  }
+  .box.top-religions {
+    .value {
+      font-size: 1rem;
+    }
+  }
+  .box.todays-sermon {
+    .value {
+      font-size: 0.875rem;
+    }
+  }
+  .fullscreen-btn {
+    display: flex;
+    background: rgba(235, 235, 235);
+    gap: 10px;
+    width: 100%;
+    font-family: $sans-serif;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    border-radius: 6px;
+    &:hover,
+    &:focus {
+      background-color: rgba(235, 235, 255);
+    }
+  }
+  .box.buttons {
+    background-color: transparent;
+    fieldset {
+      display: grid;
+      gap: 2px;
+    }
+    .debug-controls {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      legend {
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.75em;
+      }
+    }
+  }
+  button {
+    @include sidebarButton();
+    &.toggle:before {
+      content: "";
+      flex-basis: 1.25em;
+      background-color: $veryDarkRed;
+      border-radius: 50%;
+    }
+    &.toggle.active:before {
+      background-color: $green;
+      opacity: 1;
+    }
+  }
+  .box.about {
+    background-color: transparent;
+  }
+  &.gold {
+    background: linear-gradient(135deg, #ffd700 0%, #fffacd 40%, #ffd700 80%, #fff8dc 100%);
+    box-shadow:
+      0 0 24px 4px #ffd70099,
+      0 0 0 4px #fffacd inset;
+    color: #7a5c00;
+  }
+
+  .box.heat {
+    background-color: rgba(2, 2, 52, 1);
+    border-color: blue;
+    .heat-meter {
+      border: 2px solid white;
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      background-color: rgba(255, 255, 255, 0.05);
+      .heat-meter-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        background: linear-gradient(0deg, #d60000 0%, #ff3c00 40%, #d60000 100%);
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .heat-meter-text {
+        text-align: center;
+        padding: 5px 0;
+        position: relative;
+        filter: drop-shadow(0 0 2px black) drop-shadow(0 0 2px black);
+      }
+    }
+
+    // Danger styling: restrained red/ember look when heat is high
+    &.danger {
+      .heat-meter {
+        background-color: rgba(30, 0, 0, 0.06);
+
+        .heat-meter-fill {
+          background: linear-gradient(0deg, #6a0000 0%, #c40000 30%, #ff4a00 65%);
+          box-shadow: inset 0 0 18px rgba(255, 80, 20, 0.18);
+          animation: heat-burn-flicker 1.2s infinite ease-in-out;
+
+          /* subtle embers using a layered radial-gradient (no SVG) */
+          background-image:
+            radial-gradient(circle at 12% 30%, rgba(255, 210, 140, 0.85) 0 2px, transparent 3px),
+            radial-gradient(circle at 36% 20%, rgba(255, 170, 90, 0.7) 0 2px, transparent 3px),
+            radial-gradient(circle at 68% 40%, rgba(255, 230, 160, 0.8) 0 2px, transparent 3px), linear-gradient(0deg, #6a0000 0%, #c40000 30%, #ff4a00 65%);
+          background-repeat: no-repeat;
+          background-size:
+            100% 100%,
+            100% 100%,
+            100% 100%,
+            100% 100%;
+          mix-blend-mode: screen;
+          opacity: 0.98;
+        }
+
+        .heat-meter-text {
+          color: #fff;
+          text-shadow: 0 0 6px rgba(255, 120, 0, 0.9);
+        }
+      }
+    }
+
+    // Keep only the main flicker animation for the filled bar
+    @keyframes heat-burn-flicker {
+      0% {
+        transform: translateY(0) scaleX(1);
+        filter: brightness(1) saturate(1);
+      }
+      50% {
+        transform: translateY(-0.8px) scaleX(1.02);
+        filter: brightness(1.08) saturate(1.06);
+      }
+      100% {
+        transform: translateY(0) scaleX(1);
+        filter: brightness(1) saturate(1);
+      }
+    }
+  }
+}
+
+.about-box {
+  position: fixed;
+  z-index: $z-about;
+  bottom: 0;
+  right: 0;
+  width: $sidebarWidth;
+  padding: $gapSmall;
+  background-color: $black;
+  color: $white;
+  pointer-events: none;
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: $gapSmall;
+  }
+  li {
+    background-color: oklch(0 0 0 / 0.3);
+    box-shadow: inset 0 0 9px oklch(0 0 0 / 0.3);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    .label {
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .value {
+      font-family: $serif;
+      font-size: 1.25rem;
+    }
+    a {
+      text-decoration: none;
+      color: $lemonYellow;
+      font-weight: 520;
+      &:hover,
+      &:focus-visible {
+        text-decoration: underline;
+      }
+      &:active {
+        color: $lemonOrange;
+      }
+    }
+    //text-align: right;
+  }
+  transition: transform 0.4s ease-out;
+  &.visible {
+    box-shadow: inset -3px 0 3px rgba(0, 0, 0, 0.25);
+    transform: translate(-100%);
+    pointer-events: all;
+  }
+}

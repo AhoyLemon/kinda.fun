@@ -1,0 +1,205 @@
+main.title-screen {
+  background-size: cover;
+  background-position: center;
+  background-image: url("/img/megachurch/bg/filthy-warehouse.jpg");
+  grid-column: span 2;
+  color: white;
+  position: relative;
+
+  // Wake-up overlay for the blur/brightness effect and eyelid opening
+  @keyframes wakeUp {
+    0% {
+      backdrop-filter: blur(8px) brightness(0%);
+    }
+    30% {
+      backdrop-filter: blur(6px) brightness(20%);
+    }
+    60% {
+      backdrop-filter: blur(3px) brightness(80%);
+    }
+    80% {
+      backdrop-filter: blur(1px) brightness(150%);
+    }
+    100% {
+      backdrop-filter: blur(0px) brightness(100%);
+    }
+  }
+
+  @keyframes topEyelidOpen {
+    0% {
+      transform: translateY(0%);
+    }
+    20% {
+      transform: translateY(0%);
+    }
+    80% {
+      transform: translateY(-80%);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes bottomEyelidOpen {
+    0% {
+      transform: translateY(0%);
+    }
+    20% {
+      transform: translateY(0%);
+    }
+    80% {
+      transform: translateY(80%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes headlineAnimateIn {
+    0% {
+      scale: 1.95;
+      opacity: 0;
+    }
+    80% {
+      scale: 0.8;
+      opacity: 1;
+    }
+    100% {
+      scale: 1;
+      opacity: 1;
+    }
+  }
+
+  .wake-up-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: none;
+    backdrop-filter: blur(8px) brightness(0%);
+    overflow: hidden;
+
+    // Pure CSS animation for waking up
+    animation: wakeUp 6s ease-out forwards;
+
+    // Top eyelid
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+      animation: topEyelidOpen 4s ease-out forwards;
+    }
+
+    // Bottom eyelid
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+      animation: bottomEyelidOpen 4s ease-out forwards;
+    }
+  }
+
+  section {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  h1 {
+    font-family: $serif;
+    text-align: center;
+    text-wrap: balance;
+    margin-bottom: 20px;
+    color: $red;
+    color: oklch(0.66 0.29 27.67);
+    letter-spacing: 0.025em;
+    line-height: 115%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: clamp(32px, 5.25dvw, 75px);
+    text-shadow:
+      -1.5px -1.5px 0 black,
+      1.5px 1.5px 0 black,
+      -0.05em -0.05em 0.1em black,
+      0.05em 0.05em 0.1em black;
+    filter: drop-shadow(0 0.1em 0.25em rgba(0, 0, 0, 0.7));
+  }
+  .title-bounce-enter-active {
+    animation: headlineAnimateIn 1.35s linear;
+  }
+  h2 {
+    font-family: $serif;
+    font-size: 3dvw;
+    font-weight: 400;
+    text-align: center;
+    text-wrap: balance;
+    margin-bottom: 60px;
+    text-shadow:
+      -1px 0 $black,
+      1px 0 $black,
+      0 -1px $black,
+      0 1px $black,
+      -1px -1px $black,
+      1px -1px $black,
+      -1px 1px $black,
+      1px 1px $black;
+    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55));
+  }
+
+  p {
+    max-width: 72ch;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 165%;
+  }
+
+  .form-slide-enter-active {
+    animation: slideInUp 1s ease-out;
+  }
+
+  form {
+    margin-top: 60px;
+    max-width: 680px;
+    background-color: rgba(255, 255, 255, 0.65);
+    color: #222;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+    input {
+      background-color: transparent;
+    }
+    fieldset {
+      border-color: #222;
+      label {
+        color: #222;
+      }
+      &.checkbox {
+        padding-bottom: 6px;
+      }
+    }
+    fieldset:has(:focus) {
+      background-color: white;
+    }
+    legend {
+      font-size: 14px;
+      line-height: 135%;
+      font-family: $sans-serif;
+      margin-bottom: 0;
+    }
+    .button-holder {
+      justify-content: center;
+    }
+  }
+}

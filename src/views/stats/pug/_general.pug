@@ -18,11 +18,19 @@ main.general-stats(v-if="ui.viewing == 'general'")
         figure
           img(src="/svg/games/nomorebillionaires.svg" @click="getData('guillotine')")
         .last-played(v-if="stats.general && stats.general.guillotineLastPlayed")
-          //.time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.guillotineLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.guillotineLastPlayed,'calendar')")
         .button-holder
           button(@click="getData('guillotine')") Details
+
+      .summary
+        figure
+          img(src="/svg/games/megachurch.svg" @click="getData('megachurch')")
+        .last-played(v-if="stats.general && stats.general.megachurchLastPlayed")
+          .time-ago(v-text="formatTime(stats.general.megachurchLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.megachurchLastPlayed,'calendar')")
+        .button-holder
+          button(@click="getData('megachurch')") Details
 
       .summary
         figure
@@ -55,7 +63,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
       
       .summary
         figure
-          img(src="/svg/sisyphus/logo-simple.svg" @click="getData('sisyphus')")
+          img(src="/svg/games/sisyphusclicker.svg" @click="getData('sisyphus')")
         .last-played(v-if="stats.general && stats.general.sisyphusLastPlayed")
           //.time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.sisyphusLastPlayed,'fromNow')")
@@ -70,7 +78,7 @@ main.general-stats(v-if="ui.viewing == 'general'")
         theme="black-rhino"
         :columns="columns.generalPlayers"
         :sort-options="{ enabled: true, initialSortBy: {field: 'gamesPlayed', type: 'desc'} }"
-        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+        :pagination-options="{ enabled: true, perPage: 20, position: 'top', perPageDropdown: [10, 20, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
 
   aside.last-cloned-holder(v-if="stats?.general?.lastCloned")
     .last-cloned

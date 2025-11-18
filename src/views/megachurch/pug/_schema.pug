@@ -1,0 +1,31 @@
+script(type="application/ld+json").
+  {
+    "@context": "http://schema.org",
+    "@type": "VideoGame",
+    "name": "#{name}",
+    "url": "#{gameUrl}",
+    "image": "#{ogImage}",
+    "keywords": "#{keywords}",
+    "playMode": "SinglePlayer",
+    "applicationCategory": "browser game",
+    "gamePlatform": "web browser",
+    "operatingSystem": "web browser",
+    "genre": "comedy",
+    "description": "#{desc}",
+    "inLanguage": "English",
+    "numberOfPlayers": 1,
+    "aggregateRating": {
+      "ratingValue": 5,
+      "ratingCount": 12
+    },
+    "creator": !{creatorSchema},
+    "offers": {
+      "@type": "Offer",
+      "description": "free",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "isAccessibleForFree": true,
+    "datePublished": "#{datePublished}",
+    "dateModified": "#{lastUpdated}"
+  }

@@ -11,23 +11,39 @@ export default defineConfig(({ mode }) => {
   const isDev = (env.IS_DEV === "true" || env.IS_DEV === true) ?? false;
   const isProd = (env.IS_PROD === "true" || env.IS_PROD === true) ?? false;
 
-  let currentDatabase;
-  if (env.VITE_DEV_DB === env.VITE_DB) {
-    currentDatabase = "VITE_DEV_DB";
-  } else if (env.VITE_LIVE_DB === env.VITE_DB) {
-    currentDatabase = "VITE_DEV_DB";
-  } else {
-    currentDatabase = "??? UNKNOWN ????";
-  }
-
   console.table([
     { key: "mode", value: mode },
     { key: "IS_DEV?", value: isDev },
     { key: "IS_PROD?", value: isProd },
   ]);
 
+  // Custom plugin to show localhost guidance after server starts
+  const localhostGuidancePlugin = {
+    name: "localhost-guidance",
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        next();
+      });
+
+      const originalListen = server.listen;
+      server.listen = function (...args) {
+        const result = originalListen.apply(this, args);
+
+        // Show guidance after server is ready
+        setTimeout(() => {
+          console.log("\n📝 Kinda Fun Development Notes:");
+          console.log("❌ http://localhost:5173/ won't work");
+          console.log("✅ Use http://localhost:5173/home.html for homepage");
+          console.log("✅ Games: /invalid, /meeting, /megachurch, /guillotine, /cameo, /pretend, /sisyphus\n");
+        }, 100);
+
+        return result;
+      };
+    },
+  };
+
   return {
-    plugins: [vue(), vueDevTools()],
+    plugins: [vue(), vueDevTools(), localhostGuidancePlugin],
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -38,6 +54,7 @@ export default defineConfig(({ mode }) => {
       "process.env.APP_ENV": JSON.stringify(env.APP_ENV),
     },
     css: {
+      devSourcemap: true,
       preprocessorOptions: {
         scss: {
           quietDeps: true,
@@ -58,6 +75,7 @@ export default defineConfig(({ mode }) => {
           wrongest: resolve(__dirname, "src/entries/wrongest.js"),
           home: resolve(__dirname, "src/entries/home.js"),
           404: resolve(__dirname, "src/entries/404.js"),
+          megachurch: resolve(__dirname, "src/entries/megachurch.js"),
         },
         output: {
           entryFileNames: "[name].js",
@@ -68,12 +86,12 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       middlewareMode: false,
+      host: true,
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
-          const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "pretend", "sisyphus", "stats", "wrongest", "home", "404"];
+          const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "megachurch", "pretend", "sisyphus", "stats", "wrongest", "home", "404"];
           const url = req.url.split("?")[0];
-
           console.log("Middleware hit for URL:", url);
 
           // If the URL is exactly "/", rewrite to /home.html

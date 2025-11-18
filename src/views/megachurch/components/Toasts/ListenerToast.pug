@@ -1,0 +1,37 @@
+.listener-effect.container(:class="reaction === 'liked' ? 'is-positive' : reaction === 'disliked' ? 'is-negative' : 'is-confused'")
+  .text-holder
+    .text
+      // Positive reactions
+      template(v-if="reaction === 'liked'")
+        strong.religion(v-if="religion") {{ count === 1 ? (["A", "E", "I", "O", "U"].includes(religion.follower[0].toUpperCase()) ? "An " : "A ") + religion.follower : count + " " + religion.followers }}
+        strong(v-else) people
+        span(v-if="religionMatch") {{ " " + getRandomMessage("religionAgree", count > 1) }}
+        span(v-else-if="tagMatch && primaryTag") {{ " " + getRandomMessage("tagLike", count > 1) + " " }}
+          span.tag.liked-tag {{ primaryTag }}
+          | .
+        span(v-else) {{ " " + getRandomMessage("generalLike", count > 1) }}
+
+      // Negative reactions
+      template(v-else-if="reaction === 'disliked'")
+        strong.religion(v-if="religion") {{ count === 1 ? (["A", "E", "I", "O", "U"].includes(religion.follower[0].toUpperCase()) ? "An " : "A ") + religion.follower : count + " " + religion.followers }}
+        strong(v-else) people
+        span(v-if="religionMatch") {{ " " + getRandomMessage("religionOffend", count > 1) }}
+        span(v-else-if="tagMatch && primaryTag") {{ " " + getRandomMessage("tagHate", count > 1) + " " }}
+          span.tag.hated-tag {{ primaryTag }}
+          | .
+        span(v-else) {{ " " + getRandomMessage("generalOffend", count > 1) }}
+
+      // Mixed/Confused reactions
+      template(v-else-if="reaction === 'mixed'")
+        // Tag confusion affecting many religions
+        span(v-if="primaryTag && affectedReligions && affectedReligions.length > 2") Your views on 
+          span.tag.confused-tag {{ primaryTag }}
+          | {{ " " + getRandomMessage("confusedALot") }}
+        // Tag confusion affecting 1-2 specific religions
+        span(v-else-if="primaryTag && affectedReligions && affectedReligions.length <= 2") Your views on 
+          span.tag.confused-tag {{ primaryTag }}
+          | {{ " " + getRandomMessage("confusedSpecific") + " " + formatAffectedReligions(affectedReligions) }}.
+        // General confusion for 1-2 religions (no specific tag)
+        span(v-else-if="affectedReligions && affectedReligions.length <= 2") {{ formatAffectedReligions(affectedReligions) + " " + getRandomMessage("confusedGeneral") }}
+        // General confusion for many religions
+        span(v-else) A whole lot of people {{ getRandomMessage("confusedGeneral") }}

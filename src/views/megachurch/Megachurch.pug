@@ -1,0 +1,125 @@
+.game-screen
+
+  template(v-if="ui.view === 'title-screen'")
+    include pug/_title-screen.pug
+  
+  template(v-else-if="ui.view === 'game-over'")
+    include pug/_game-over.pug
+    
+  template(v-else)
+
+    main(:class="ui.view")
+
+      include pug/_choose-place.pug
+
+      include pug/_create-sermon.pug 
+
+      include pug/_sermon-diagnosis.pug
+
+      include pug/_preaching.pug 
+
+      include pug/_sermon-results.pug
+
+      include pug/_church-setup.pug
+  
+    include pug/_your-details.pug 
+
+  // Spice dealer chat interface
+  Chat(
+    :isOpen="ui.chats.plug.isOpen"
+    contactType="plug" 
+    :playerName="my.name"
+    :playerMoney="my.money"
+    :spicePrice="gameSettings.spice.pricePerUnit"
+    :fatalSpiceAmount="my.spice.fatalAmount" 
+    :spiceRequired="my.spice.requiredAmount"
+    :chatHistory="my.chats.plug.chatHistory"
+    :totalOrders="my.chats.plug.totalOrders"
+    @close="closePlugInterface"
+    @order="handlePlugOrder"
+  )
+
+  Chat(
+    :isOpen="ui.chats.harold.isOpen"
+    contactType="harold"
+    :playerName="my.name"
+    :playerMoney="my.money"
+    :playerHasVan="my.hasVan"
+    :vanCost="gameSettings.van.cost"
+    :chatHistory="my.chats.harold.chatHistory"
+    @close="closeHaroldInterface"
+    @van-purchase="buyVan"
+    @harold-message="handleHaroldMessage"
+  )
+
+  Chat(
+    :isOpen="ui.chats.sterling.isOpen"
+    contactType="sterling"
+    :playerName="my.name"
+    :playerMoney="my.money"
+    :playerHasChurch="my.church.isFounded"
+    :chatHistory="my.chats.sterling.chatHistory"
+    @close="closeSterlingInterface"
+    @sterling-message="handleSterlingMessage"
+    @church-founding="handleChurchFounding"
+  )
+
+  SterlingNote(
+    ref="sterlingNoteRef"
+    :playerName="my.name"
+  ) 
+
+  WorshopZoneBanner(
+    v-if="ui.worshopZone.showBanner && my.church.isFounded"
+    @show-workshop-zone="onBannerAccepted"
+    @close="() => ui.worshopZone.showBanner = false"
+  )
+
+  WorshopZone(
+    v-if="ui.worshopZone.isOpen"
+    @close="closeWorshopZone"
+    @purchase="handleWorkshopPurchase"
+  ) 
+
+  EternalLegacyShop(
+    v-if="ui.eternalLegacyShop.isOpen"
+    :my="my"
+    :gameSettings="gameSettings"
+    @close="closeEternalLegacyShop"
+    @purchase="handleEternalLegacyPurchase"
+    @unfriend-celebrity="handleUnfriendCelebrity"
+  )
+
+  SterlingVoicemail(
+    :isVisible="ui.sterlingVoicemail.isOpen"
+    @close="closeSterlingVoicemail"
+    @voicemailCompleted="onVoicemailCompleted"
+    @openShop="openEternalLegacyFromVoicemail"
+  ) 
+
+  ChurchInventory(
+    :isVisible="ui.churchInventory.isOpen"
+    @close="closeChurchInventory"
+  )
+
+  LegacyStatus(
+    :isVisible="ui.legacyStatus.isOpen"
+    @close="closeLegacyStatus"
+  ) 
+
+  FriendshipEnded(
+    :isVisible="ui.friendshipEnded.isVisible"
+    :celebrity="ui.friendshipEnded.celebrity"
+    :reason="ui.friendshipEnded.reason"
+    :effects="ui.friendshipEnded.effects"
+    @close="closeFriendshipEnded"
+  ) 
+
+  UnfriendConfirmation(
+    :isVisible="ui.unfriendConfirmation.isVisible"
+    :celebrity="ui.unfriendConfirmation.celebrity"
+    @confirm="confirmUnfriendCelebrity"
+    @cancel="cancelUnfriendCelebrity"
+  ) 
+
+include pug/_mobile-unscreen.pug 
