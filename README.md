@@ -21,7 +21,7 @@
 [![Contributors](https://img.shields.io/github/contributors/AhoyLemon/kinda.fun?style=for-the-badge&color=black)](https://github.com/AhoyLemon/kinda.fun/graphs/contributors)
 [![Stars](https://img.shields.io/github/stars/AhoyLemon/kinda.fun?style=for-the-badge&logoColor=white&color=black)](https://github.com/AhoyLemon/kinda.fun/stargazers)
 [![Issues](https://img.shields.io/github/issues-raw/AhoyLemon/kinda.fun?style=for-the-badge&color=black)](https://github.com/AhoyLemon/kinda.fun/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr-closed-raw/AhoyLemon/kinda.fun?style=for-the-badge&label=Pull%20Requests&color=black)](https://github.com/AhoyLemon/kinda.fun/pulls)
+[![Pull Requests](https://img.shields.io/github/issues-pr-closed-raw/AhoyLemon/kinda.fun?style=for-the-badge&label=Closed%20Pull%20Requests&color=black)](https://github.com/AhoyLemon/kinda.fun/pulls)
 [![Commit Activity](https://img.shields.io/github/commit-activity/m/AhoyLemon/kinda.fun?style=for-the-badge&color=black)](https://github.com/AhoyLemon/kinda.fun/commits/main)
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-white?style=for-the-badge&logoColor=white&logo=creativecommons)](LICENSE)
@@ -105,5 +105,3 @@ An exercise in active depression.
 ## Credits
 
 - **[Credits & Thank Yous](docs/credits.md)** - Contributors, voice actors, and resources that made these games possible
-
-# Deployment test 11/18/2025 12:02:38
