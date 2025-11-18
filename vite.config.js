@@ -3,6 +3,8 @@ import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vueDevTools from "vite-plugin-vue-devtools";
 import path, { resolve } from "path";
+import Table from "cli-table3";
+import chalk from "chalk";
 
 export default defineConfig(({ mode }) => {
   console.log(mode);
@@ -12,39 +14,65 @@ export default defineConfig(({ mode }) => {
   const isDev = (env.IS_DEV === "true" || env.IS_DEV === true || process.env.IS_DEV === "true" || process.env.IS_DEV === true) ?? false;
   const isProd = (env.IS_PROD === "true" || env.IS_PROD === true || process.env.IS_PROD === "true" || process.env.IS_PROD === true) ?? false;
 
-  console.table([
-    { key: "mode", value: mode },
-    { key: "IS_DEV?", value: isDev },
-    { key: "IS_PROD?", value: isProd },
-  ]);
-
-  // Custom plugin to show localhost guidance after server starts
-  const localhostGuidancePlugin = {
-    name: "localhost-guidance",
-    configureServer(server) {
-      server.middlewares.use((req, res, next) => {
-        next();
-      });
-
-      const originalListen = server.listen;
-      server.listen = function (...args) {
-        const result = originalListen.apply(this, args);
-
-        // Show guidance after server is ready
-        setTimeout(() => {
-          console.log("\n📝 Kinda Fun Development Notes:");
-          console.log("❌ http://localhost:5173/ won't work");
-          console.log("✅ Use http://localhost:5173/home.html for homepage");
-          console.log("✅ Games: /invalid, /meeting, /megachurch, /guillotine, /cameo, /pretend, /sisyphus\n");
-        }, 100);
-
-        return result;
-      };
+  // Build information table - will be updated with URL later
+  const buildTable = new Table({
+    style: {
+      border: ["grey"],
+      compact: false,
     },
-  };
+  });
+
+  const styledMode = mode === "development" ? chalk.green("DEV") : mode === "production" ? chalk.blue("PROD") : chalk.yellow(mode);
+
+  buildTable.push([chalk.magenta("This is"), chalk.yellow(`kinda fun.`)]);
+  buildTable.push([chalk.magenta("Mode"), `${styledMode}`]);
 
   return {
-    plugins: [vue(), vueDevTools(), localhostGuidancePlugin],
+    plugins: [
+      vue(),
+      vueDevTools(),
+      // Custom plugin to show homepage URL after server starts
+      {
+        name: "show-homepage-url",
+        configureServer(server) {
+          const originalListen = server.listen;
+          server.listen = function (...args) {
+            const result = originalListen.apply(this, args);
+
+            // Show URL after server is listening
+            setTimeout(() => {
+              const address = server.httpServer?.address();
+              if (address && typeof address === "object") {
+                const port = address.port;
+                const host = server.config.server.host === true ? "localhost" : server.config.server.host || "localhost";
+
+                // Get the full URL based on mode and configuration
+                let baseUrl;
+                if (mode === "production") {
+                  // In production, use the actual domain
+                  baseUrl = env.VITE_APP_URL || process.env.VITE_APP_URL || "https://kinda.fun";
+                } else {
+                  // In development/preview, use the server configuration
+                  const protocol = server.config.server.https ? "https" : "http";
+                  baseUrl = `${protocol}://${host}:${port}`;
+                }
+
+                const homepageUrl = mode === "development" ? `${baseUrl}/home.html` : baseUrl;
+
+                // Add homepage URL to the existing table with proper styling
+                const styledUrl = chalk.underline.cyan(homepageUrl);
+                buildTable.push([chalk.magenta("Homepage URL"), `${styledUrl}`]);
+
+                // Display the complete table with URL (don't clear console)
+                console.log("\n" + buildTable.toString() + "\n");
+              }
+            }, 100);
+
+            return result;
+          };
+        },
+      },
+    ],
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
