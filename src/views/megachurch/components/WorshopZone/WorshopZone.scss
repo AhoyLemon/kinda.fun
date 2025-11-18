@@ -317,7 +317,7 @@
 
 .broken-img::after {
   content: "IMG\ANOTFOUND";
-  $white-space: pre;
+  white-space: pre;
   text-align: center;
 }
 

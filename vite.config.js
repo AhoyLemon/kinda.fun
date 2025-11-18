@@ -19,27 +19,27 @@ export default defineConfig(({ mode }) => {
 
   // Custom plugin to show localhost guidance after server starts
   const localhostGuidancePlugin = {
-    name: 'localhost-guidance',
+    name: "localhost-guidance",
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         next();
       });
-      
+
       const originalListen = server.listen;
-      server.listen = function(...args) {
+      server.listen = function (...args) {
         const result = originalListen.apply(this, args);
-        
+
         // Show guidance after server is ready
         setTimeout(() => {
-          console.log('\n📝 Kinda Fun Development Notes:');
-          console.log('❌ http://localhost:5173/ won\'t work');
-          console.log('✅ Use http://localhost:5173/home.html for homepage');
-          console.log('✅ Games: /invalid, /meeting, /megachurch, /guillotine, /cameo, /pretend, /sisyphus\n');
+          console.log("\n📝 Kinda Fun Development Notes:");
+          console.log("❌ http://localhost:5173/ won't work");
+          console.log("✅ Use http://localhost:5173/home.html for homepage");
+          console.log("✅ Games: /invalid, /meeting, /megachurch, /guillotine, /cameo, /pretend, /sisyphus\n");
         }, 100);
-        
+
         return result;
       };
-    }
+    },
   };
 
   return {
