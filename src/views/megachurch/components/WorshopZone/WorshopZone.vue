@@ -455,10 +455,14 @@
               <dl class="marketing-stats stats-box">
                 <dt>Cost per Day:</dt>
                 <dd>${{ gameSettings.church.marketing.signSpinner.price }}</dd>
-                <dt v-if="my.marketing.signSpinner.active">Days Remaining:</dt>
-                <dd v-if="my.marketing.signSpinner.active">{{ my.marketing.signSpinner.daysRemaining }}</dd>
-                <dt v-else>Status:</dt>
-                <dd v-else>INACTIVE</dd>
+                <template v-if="my.marketing.signSpinner.active">
+                  <dt>Attendance Boost:</dt>
+                  <dd>+{{ gameSettings.church.marketing.signSpinner.attendanceBoost }}% per day</dd>
+                </template>
+                <template v-else>
+                  <dt>Status:</dt>
+                  <dd>INACTIVE</dd>
+                </template>
               </dl>
               <div v-if="!my.marketing.signSpinner.active" class="product-actions">
                 <input type="number" v-model="signSpinnerDays" min="1" max="7" class="quantity-input" @focus="setDefaultSignSpinnerDays" />
