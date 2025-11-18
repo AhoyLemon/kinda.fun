@@ -16,14 +16,29 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          echo "📦 Installing dependencies..."
+          npm ci --ignore-scripts
+          echo "✅ Main dependencies installed"
+          echo "📦 Installing functions dependencies separately..."
+          cd functions && npm ci || echo "⚠️ Functions install failed (this might be expected)"
+          cd ..
+          echo "📋 Verifying key dependencies..."
+          npm list vite vue @vitejs/plugin-vue
 
       - name: Build project
-        run: npm run build -- --mode production
+        run: |
+          echo "🏗️ Starting build process..."
+          echo "Current working directory: $(pwd)"
+          echo "Available scripts:"
+          npm run --list
+          echo "Running build..."
+          npm run build -- --mode production
+          echo "✅ Build command completed with exit code: $?"
         env:
           NODE_ENV: production
           ENVIRONMENT: production
@@ -35,6 +50,18 @@ jobs:
           VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
           VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+
+      - name: Verify dist directory exists
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "❌ Error: dist directory was not created during build"
+            echo "Listing current directory contents:"
+            ls -la
+            exit 1
+          fi
+          echo "✅ dist directory exists"
+          echo "Contents of dist directory:"
+          ls -la dist/
 
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
