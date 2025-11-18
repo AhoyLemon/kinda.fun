@@ -42,6 +42,7 @@ const collectionsToClone = [
   // "stats/sisyphus/cheevos",
   // "stats/sisyphus/purchases",
   //
+  ////////////////////////////////////
   // MEGACHURCH TYCOON
   // "/stats/megachurch/cheats",
   // "/stats/megachurch/churchNames",
@@ -63,31 +64,13 @@ const documentsToClone = [
   // "stats/general",
   //
   ////////////////////////////////////
-  // COMPARATIVELY FAMOUS
+  // GAMES
   // "stats/cameo",
-  //
-  ////////////////////////////////////
-  // NO MORE BILLIONAIRES
   // "stats/guillotine",
-  //
-  ////////////////////////////////////
-  // INVALID
   // "stats/invalid",
-  //
-  ////////////////////////////////////
-  // THIS MEETING HAS POINTS
   // "stats/meeting",
-  //
-  ////////////////////////////////////
-  // PRETEND WORLD
   // "stats/pretend",
-  //
-  ////////////////////////////////////
-  // SISYPHUS CLICKER
   // "stats/sisyphus",
-  //
-  ////////////////////////////////////
-  // MEGACHURCH TYCOON
   // "stats/megachurch",
 ];
 

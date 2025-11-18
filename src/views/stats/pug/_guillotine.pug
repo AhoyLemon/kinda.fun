@@ -52,3 +52,6 @@ section.guillotine.stats(v-if="ui.viewing == 'guillotine'")
                       :line-numbers="true"
                       :sort-options="{ enabled: true, initialSortBy: {field: 'headCount', type: 'desc'} }"
                       :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+      .table-under(v-if="stats.guillotine.heads_isLimited")
+        button.load-full(@click="loadFullData('guillotine', 'heads')" :disabled="ui.loadingFullData")
+          | {{ ui.loadingFullData ? 'Loading...' : `Load All (currently top ${stats.guillotine.heads_limitTo})` }}

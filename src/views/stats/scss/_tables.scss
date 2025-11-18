@@ -85,3 +85,32 @@ section {
     }
   }
 }
+
+.table-under {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 1rem;
+
+  button.load-full {
+    background: rgba($white, 0.1);
+    border: 1px solid rgba($white, 0.3);
+    color: $white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-family: $sans-serif;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: rgba($white, 0.2);
+      border-color: rgba($white, 0.5);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}

@@ -25,15 +25,6 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
       .summary
         figure
-          img(src="/svg/games/megachurch.svg" @click="getData('megachurch')")
-        .last-played(v-if="stats.general && stats.general.megachurchLastPlayed")
-          .time-ago(v-text="formatTime(stats.general.megachurchLastPlayed,'fromNow')")
-          .calendar(v-text="formatTime(stats.general.megachurchLastPlayed,'calendar')")
-        .button-holder
-          button(@click="getData('megachurch')") Details
-
-      .summary
-        figure
           img(src="/svg/games/invalid.svg" @click="getData('invalid')")
         .last-played(v-if="stats.general && stats.general.invalidLastPlayed")
           .time-ago(v-text="formatTime(stats.general.invalidLastPlayed,'fromNow')")
@@ -50,6 +41,15 @@ main.general-stats(v-if="ui.viewing == 'general'")
           .calendar(v-text="formatTime(stats.general.meetingLastPlayed,'calendar')")
         .button-holder
           button(@click="getData('meeting')") Details
+
+      .summary
+        figure
+          img(src="/svg/games/megachurch.svg" @click="getData('megachurch')")
+        .last-played(v-if="stats.general && stats.general.megachurchLastPlayed")
+          .time-ago(v-text="formatTime(stats.general.megachurchLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.megachurchLastPlayed,'calendar')")
+        .button-holder
+          button(@click="getData('megachurch')") Details
           
       .summary
         figure
@@ -79,6 +79,9 @@ main.general-stats(v-if="ui.viewing == 'general'")
         :columns="columns.generalPlayers"
         :sort-options="{ enabled: true, initialSortBy: {field: 'gamesPlayed', type: 'desc'} }"
         :pagination-options="{ enabled: true, perPage: 20, position: 'top', perPageDropdown: [10, 20, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+    .table-under(v-if="stats?.general?.players_isLimited")
+      button.load-full(@click="loadFullData('general', 'players')" :disabled="ui.loadingFullData")
+        | {{ ui.loadingFullData ? 'Loading...' : `Show All (currently top ${stats.general.players_limitTo})` }}
 
   aside.last-cloned-holder(v-if="stats?.general?.lastCloned")
     .last-cloned

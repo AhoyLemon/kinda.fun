@@ -101,6 +101,9 @@ section.famous.stats(v-if="ui.viewing == 'cameo'")
                       :pagination-options="{ enabled: true, perPage: 50, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"
                       :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
                     )
+      .table-under(v-if="stats.cameo.celebs_isLimited")
+        button.load-full(@click="loadFullData('cameo', 'celebs')" :disabled="ui.loadingFullData")
+          | {{ ui.loadingFullData ? 'Loading...' : `Load All (currently top ${stats.cameo.celebs_limitTo})` }}
 
     //-.good-table.player-table(v-if="ui.cameoLoaded")
       h2 Player Performance

@@ -77,6 +77,7 @@
     pretendLoaded: false,
     meetingLoaded: false,
     megachurchLoaded: false,
+    loadingFullData: false,
   });
 
   const app = initializeApp(firebaseConfig);
@@ -103,13 +104,15 @@
    *   subcollections: {
    *     [subcollectionName]: {
    *       process: (data) => data, // optional per-item processor
-   *       timestampFields: [fieldName, ...] // optional per-item timestamp fields
+   *       timestampFields: [fieldName, ...], // optional per-item timestamp fields
+   *       limitTo: number, // optional limit for query
+   *       sortBy: string // optional sort field (for limiting)
    *     }
    *   }
    * }
    */
   async function loadFirestoreStats(game, options) {
-    const { doc, getDoc, collection, getDocs } = await import("firebase/firestore");
+    const { doc, getDoc, collection, getDocs, query, orderBy, limit } = await import("firebase/firestore");
     // Get the main doc
     const mainDocSnap = await getDoc(doc(firestoreDb, "stats", game));
     if (mainDocSnap.exists()) {
@@ -125,8 +128,20 @@
     // Load subcollections
     if (options.subcollections) {
       for (const [sub, subOpts] of Object.entries(options.subcollections)) {
-        const snap = await getDocs(collection(firestoreDb, `stats/${game}/${sub}`));
-        stats[game][sub] = snap.docs.map((doc) => {
+        let collectionRef = collection(firestoreDb, `stats/${game}/${sub}`);
+        let queryRef = collectionRef;
+
+        // Apply sorting and limiting if specified
+        if (subOpts.sortBy && subOpts.limitTo) {
+          queryRef = query(collectionRef, orderBy(subOpts.sortBy, "desc"), limit(subOpts.limitTo));
+        } else if (subOpts.sortBy) {
+          queryRef = query(collectionRef, orderBy(subOpts.sortBy, "desc"));
+        } else if (subOpts.limitTo) {
+          queryRef = query(collectionRef, limit(subOpts.limitTo));
+        }
+
+        const snap = await getDocs(queryRef);
+        const results = snap.docs.map((doc) => {
           let data = doc.data();
           // Convert per-item timestamps
           if (subOpts.timestampFields) {
@@ -138,6 +153,14 @@
           if (subOpts.process) data = subOpts.process(data);
           return data;
         });
+
+        stats[game][sub] = results;
+        // Track if this is a limited query
+        if (subOpts.limitTo) {
+          stats[game][sub + "_isLimited"] = true;
+          stats[game][sub + "_limitTo"] = subOpts.limitTo;
+          stats[game][sub + "_sortBy"] = subOpts.sortBy;
+        }
       }
     }
   }
@@ -209,6 +232,8 @@
           subcollections: {
             players: {
               timestampFields: ["lastPlayed"],
+              limitTo: 50,
+              sortBy: "gamesPlayed",
             },
           },
         });
@@ -244,6 +269,8 @@
                 }
                 return data;
               },
+              limitTo: 30,
+              sortBy: "valuationCount",
             },
             specialGames: {},
           },
@@ -304,6 +331,8 @@
           subcollections: {
             heads: {
               timestampFields: ["lastRemoved"],
+              limitTo: 100,
+              sortBy: "headCount",
             },
           },
         });
@@ -370,9 +399,14 @@
         await loadFirestoreStats("invalid", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
           subcollections: {
-            bugs: {},
+            bugs: {
+              limitTo: 10,
+              sortBy: "timesCreated",
+            },
             challenges: {
               timestampFields: ["lastChosen"],
+              limitTo: 25,
+              sortBy: "timesChosen",
             },
             gameSizes: {
               timestampFields: ["lastGameStarted", "lastGameFinished"],
@@ -380,6 +414,8 @@
             letters: {},
             passwords: {
               timestampFields: ["lastCreated", "lastCracked"],
+              limitTo: 25,
+              sortBy: "timesCreated",
             },
             rules: {
               timestampFields: ["lastPlayed"],
@@ -484,6 +520,104 @@
       correct += rowObj.closeGuess * 0.7;
     }
     return percentOf(total, correct) + "%";
+  };
+
+  const loadFullData = async (game, subcollection) => {
+    ui.loadingFullData = true;
+    try {
+      const { collection, getDocs, query, orderBy } = await import("firebase/firestore");
+
+      // Get the configuration for this specific subcollection from the current stats
+      const currentData = stats[game][subcollection];
+      if (!currentData) {
+        throw new Error(`No data found for ${game}.${subcollection}`);
+      }
+
+      // Get the sort field from the limited query metadata
+      const sortBy = stats[game][subcollection + "_sortBy"];
+
+      // Set up the query - unlimited but still sorted
+      let collectionRef = collection(firestoreDb, `stats/${game}/${subcollection}`);
+      let queryRef = sortBy ? query(collectionRef, orderBy(sortBy, "desc")) : collectionRef;
+
+      // Fetch all documents
+      const snap = await getDocs(queryRef);
+      const results = snap.docs.map((doc) => {
+        let data = doc.data();
+
+        // Apply the same processing that was used in the limited query
+        // This ensures consistency between limited and unlimited data
+        if (subcollection === "celebs" && game === "cameo") {
+          if (typeof data.actualValue === "number" && typeof data.averagePlayerValue === "number") {
+            data.marketForces = data.averagePlayerValue - data.actualValue;
+          }
+        } else if (subcollection === "impersonators" && game === "pretend") {
+          const correct = typeof data.correctGuessCount === "number" ? data.correctGuessCount : 0;
+          const close = typeof data.closeGuessCount === "number" ? data.closeGuessCount : 0;
+          const bad = typeof data.badGuessCount === "number" ? data.badGuessCount : 0;
+          const total = correct + close + bad;
+          data.correctPercent = total > 0 ? (((correct + close) / total) * 100).toFixed(1) : "0.0";
+        } else if (subcollection === "cheevos" && game === "sisyphus") {
+          data.icount = typeof data.icount === "number" ? data.icount : 0;
+          data.pointValue = typeof data.pointValue === "number" ? data.pointValue : 0;
+        } else if (subcollection === "purchases" && game === "sisyphus") {
+          data.icount = typeof data.icount === "number" ? data.icount : 0;
+          data.price = typeof data.price === "number" ? data.price : 0;
+        }
+
+        // Convert timestamp fields if they exist
+        const timestampFields = getTimestampFieldsForSubcollection(game, subcollection);
+        if (timestampFields) {
+          timestampFields.forEach((field) => {
+            if (data[field]) data[field] = convertTimestamp(data[field]);
+          });
+        }
+
+        return data;
+      });
+
+      // Replace the limited data with unlimited data
+      stats[game][subcollection] = results;
+
+      // Remove the limitation metadata
+      delete stats[game][subcollection + "_isLimited"];
+      delete stats[game][subcollection + "_limitTo"];
+      delete stats[game][subcollection + "_sortBy"];
+    } catch (e) {
+      console.error(`Error loading full ${subcollection} data:`, e);
+    } finally {
+      ui.loadingFullData = false;
+    }
+  };
+
+  // Helper function to get timestamp fields for a subcollection
+  const getTimestampFieldsForSubcollection = (game, subcollection) => {
+    const timestampMap = {
+      general: {
+        players: ["lastPlayed"],
+      },
+      guillotine: {
+        heads: ["lastRemoved"],
+      },
+      sisyphus: {
+        cheevos: ["lastEarned"],
+        purchases: ["lastPurchased"],
+      },
+      meeting: {
+        players: ["lastPlayed"],
+        jobTitles: ["lastPlayed"],
+      },
+      invalid: {
+        challenges: ["lastChosen"],
+        gameSizes: ["lastGameStarted", "lastGameFinished"],
+        passwords: ["lastCreated", "lastCracked"],
+        rules: ["lastPlayed"],
+      },
+      megachurch: {
+        players: ["lastPlayed"],
+      },
+    };
+    return timestampMap[game]?.[subcollection];
   };
 
   /////////////////////////////////////////////////////////

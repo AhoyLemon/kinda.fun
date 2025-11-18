@@ -29,6 +29,13 @@ aside.general.general-stats(v-if="ui.viewing != 'general'")
         img(src="/svg/games/thismeetinghaspoints.svg" @click="getData('meeting')")
       .last-played(v-if="stats?.general?.meetingLastPlayed")
         .time-ago(v-text="formatTime(stats.general.meetingLastPlayed,'fromNow')")
+    
+    // MEGACHURCH TYCOON
+    .summary(:class="{ active: (ui.viewing == 'megachurch'), inactive: (ui.viewing != 'megachurch') }")
+      figure
+        img(src="/svg/games/megachurch.svg" @click="getData('megachurch')")
+      .last-played(v-if="stats?.general?.megachurchLastPlayed")
+        .time-ago(v-text="formatTime(stats.general.megachurchLastPlayed,'fromNow')")
 
     // PRETEND WORLD
     .summary(:class="{ active: (ui.viewing == 'pretend'), inactive: (ui.viewing != 'pretend') }")
@@ -43,13 +50,6 @@ aside.general.general-stats(v-if="ui.viewing != 'general'")
         img(src="/svg/sisyphus/logo-simple.svg" @click="getData('sisyphus')")
       .last-played(v-if="stats?.general?.sisyphusLastPlayed")
         .time-ago(v-text="formatTime(stats.general.sisyphusLastPlayed,'fromNow')")
-
-    // MEGACHURCH TYCOON
-    .summary(:class="{ active: (ui.viewing == 'megachurch'), inactive: (ui.viewing != 'megachurch') }")
-      figure
-        img(src="/svg/games/megachurch.svg" @click="getData('megachurch')")
-      .last-played(v-if="stats?.general?.megachurchLastPlayed")
-        .time-ago(v-text="formatTime(stats.general.megachurchLastPlayed,'fromNow')")
 
     aside.last-cloned-holder(v-if="stats?.general?.lastCloned")
       .last-cloned

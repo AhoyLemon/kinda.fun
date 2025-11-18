@@ -81,6 +81,9 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
         theme="black-rhino"
         styleClass="vgt-table condensed"
         :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+      .table-under(v-if="stats.invalid.challenges_isLimited")
+        button.load-full(@click="loadFullData('invalid', 'challenges')" :disabled="ui.loadingFullData")
+          | {{ ui.loadingFullData ? 'Loading...' : `Load All (currently top ${stats.invalid.challenges_limitTo})` }}
 
     .good-table
       h2 Passwords
@@ -95,6 +98,9 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
           template(v-if="props.column.field === 'timesCracked'")
             span(v-if="props.row.timesCracked") {{ addCommas(props.row.timesCracked) }}
             span(v-else) 0
+      .table-under(v-if="stats.invalid.passwords_isLimited")
+        button.load-full(@click="loadFullData('invalid', 'passwords')" :disabled="ui.loadingFullData")
+          | {{ ui.loadingFullData ? 'Loading...' : `Load All (currently top ${stats.invalid.passwords_limitTo})` }}
 
 
   .three-tables(v-if="ui.invalidLoaded")
@@ -122,6 +128,9 @@ section.invalid.stats(v-if="ui.viewing == 'invalid'")
           template(v-if="props.column.field === 'timesCrashed'")
             span(v-if="props.row.timesCrashed") {{ addCommas(props.row.timesCrashed) }}
             span(v-else) 0
+      .table-under(v-if="stats.invalid.bugs_isLimited")
+        button.load-full(@click="loadFullData('invalid', 'bugs')" :disabled="ui.loadingFullData")
+          | {{ ui.loadingFullData ? 'Loading...' : `Load All (currently top ${stats.invalid.bugs_limitTo})` }}
 
     .good-table
       h2 Letters
