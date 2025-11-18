@@ -39,18 +39,18 @@
     },
     pretend: {
       launched: "2023-08-23",
-      dayCount: 0,
+      dayCount: null,
     },
     meeting: {
       launched: "2025-07-09",
-      dayCount: 0,
+      dayCount: null,
     },
     invalid: {
       launched: "2025-08-01",
       dayCount: null,
     },
     megachurch: {
-      launched: "2025-11-14",
+      launched: "2025-11-18",
       dayCount: null,
     },
   });
