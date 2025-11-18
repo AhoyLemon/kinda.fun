@@ -1,0 +1,39 @@
+.celebrity-friend.container
+  .celebrity-info
+    .celebrity-name {{ celebrity.name }}
+    //.effect-type-label(v-if="effectType === 'daily'") Daily Effects
+    .effect-type-label(v-if="effectType === 'acquisition'") New Friendship!
+    .effect-type-label(v-if="effectType === 'termination'") Friendship Ended
+    
+    .effects-list
+      li.effect-item(v-if="effects.mammon")
+        .effect-text 
+          span(v-if="effectType === 'daily'") +{{ effects.mammon }} mammon today
+          span(v-else-if="effectType === 'acquisition'") +{{ effects.mammon }} mammon gained
+          span(v-else-if="effectType === 'termination' && effects.mammon < 0") {{ effects.mammon }} mammon lost
+      
+      li.effect-item(v-if="effects.buzz")
+        .effect-text 
+          span(v-if="effects.buzz > 0") +{{ effects.buzz }}% church buzz
+          span(v-else) {{ effects.buzz }}% church buzz
+      
+      li.effect-item(v-if="effects.religionBoosts && effects.religionBoosts.length > 0")
+        .effect-text 
+          span Religion boosts: {{ effects.religionBoosts.join(', ') }}
+      
+      li.effect-item(v-if="effects.religionPenalties && effects.religionPenalties.length > 0")
+        .effect-text 
+          span Religion penalties: {{ effects.religionPenalties.join(', ') }}
+      
+      li.effect-item(v-if="effects.merchSales")
+        .effect-text 
+          span {{ effects.merchSales.itemName }}: {{ effects.merchSales.sold }} sold for {{ dollars(effects.merchSales.revenue) }}
+      
+      li.effect-item(v-if="effects.dailyCost")
+        .effect-text 
+          span Daily cost: {{ dollars(effects.dailyCost) }}
+      
+      li.effect-item(v-if="effects.heat")
+        .effect-text 
+          span(v-if="effects.heat > 0") +{{ effects.heat }} heat
+          span(v-else) {{ effects.heat }} heat

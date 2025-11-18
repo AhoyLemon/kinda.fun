@@ -29,8 +29,7 @@ coverage
 
 
 # Firebase Stuff
-.env.local
-.env.prod
+.env.*
 firebaseConfig.js
 .firebase
 firebase-privatekey.json
@@ -43,9 +42,12 @@ scripts/firebase/prod-service-account.json
 /home.html
 /cameo.html
 /guillotine.html
+/megachurch.html
 /invalid.html
 /meeting.html
 /pretend.html
 /sisyphus.html
 /stats.html
 /wrongest.html
+
+src/views/megachurch/ts/unused-tags.txt

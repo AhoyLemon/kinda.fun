@@ -1,0 +1,25 @@
+@import "../../scss/_variables.scss";
+.container {
+  .religion {
+    font-size: 1.05em;
+    font-weight: 620;
+    font-family: $serif;
+  }
+
+  .label {
+    font-size: 0.875em;
+  }
+
+  .liked-tag {
+    color: $green;
+  }
+
+  .hated-tag {
+    color: $pink;
+  }
+
+  .confused-tag {
+    color: $yellow;
+  }
+}
+

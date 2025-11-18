@@ -1,0 +1,71 @@
+.game-over {
+  grid-column: span 2;
+  min-height: 100dvh;
+  background-color: $lemonYellow;
+  color: $lemonBlack;
+  h1 {
+    text-align: center;
+    font-family: $monospace;
+    text-transform: uppercase;
+    font-size: 13.6dvw;
+    letter-spacing: 0.2em;
+  }
+
+  h2 {
+    font-family: $monospace;
+    text-transform: uppercase;
+    font-size: 2dvw;
+    text-align: center;
+    letter-spacing: 0.3em;
+    margin-bottom: 2rem;
+  }
+
+  p {
+    font-family: $serif;
+    margin-bottom: 1.25em;
+    max-width: 68ch;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 150%;
+  }
+
+  .big-button-holder {
+    text-align: center;
+    padding-top: 1em;
+    button {
+      text-align: center;
+      font-family: $monospace;
+      text-transform: uppercase;
+      font-size: 2.25rem;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+    }
+  }
+
+  .game-over-stats {
+    table {
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 3rem;
+    }
+    td {
+      vertical-align: middle;
+      background-color: $white;
+      border: 1px solid $lemonBlack;
+      padding: 0.25rem 1rem;
+    }
+    td.label {
+      text-align: right;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+    td.value {
+      font-weight: 700;
+      font-family: $monospace;
+      text-align: left;
+      &.huge {
+        font-size: 200%;
+      }
+    }
+  }
+}

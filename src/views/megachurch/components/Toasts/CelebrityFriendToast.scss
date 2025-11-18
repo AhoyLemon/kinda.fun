@@ -1,0 +1,40 @@
+@import "../../scss/_variables";
+
+.celebrity-friend {
+  &.container {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    color: $white;
+
+    font-family: $sans-serif;
+    min-width: 300px;
+  }
+}
+
+.celebrity-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #a9cdf7;
+  margin-bottom: 0.5em;
+}
+
+.effects-list {
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  font-size: 0.75rem;
+}
+
+// // Special styling for different effect types
+// .celebrity-friend-collected {
+//   &.container:has(.effect-type-label:contains("New Friendship")) {
+//     border-left-color: #4caf50;
+//     background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(107, 182, 255, 0.1));
+//   }
+
+//   &.container:has(.effect-type-label:contains("Friendship Ended")) {
+//     border-left-color: #f44336;
+//     background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(107, 182, 255, 0.1));
+//   }
+// }

@@ -1,0 +1,40 @@
+section.game-over(v-if="ui.view === 'game-over'")
+  .inner
+
+    h1 Game Over
+
+    template(v-if="my.gameOverCause === 'drug overdose'")
+      h2 💀 YOU DIED OF A DRUG OVERDOSE 💀
+      p It feels good until it suddenly doesn't. The stresses of building a megachurch empire have had their effect on your body and mind, and it's not like you have the ability to #[em not] take all the drugs you own. You are an addict, afterall.
+      p But hey, #[strong congratultions] on preacing successfully enough to afford a fatal amount of spice. That's an accompliishment in itself.
+    template(v-if="my.gameOverCause === 'prison'")
+      h2 🏛️ YOU ARE IN PRISON 🏛️
+      p The federal investigation into your megachurch empire has concluded, and unlike in real-life America, you actually end up going to prison for massive fraud.
+      p(v-if="my.eternalLegacy.isActive") All your church's assets have been seized, but you can still take comfort in knowing that, like any true religious grifter, at least you ended up with some obscene tokens of wealth.
+      p(v-if="!my.eternalLegacy.isActive") All your church's assets have been seized, and you have nothing to show for your efforts. Maybe you should have bought some things from the Eternal Legacy before the curtains closed.
+      p(v-if="my.eternalLegacy.sterlingAlive") At least you've got a friend on the inside in Sterling. Hopefully he can keep you safe.
+
+    template(v-if="!my.church.isFounded")
+      p It's a shame that you never even got your Megachurch off the ground. The game is called #[strong Megachurch Tycoon] after all.
+        span(v-if="!my.hasVan") And you didn't even get a van. 
+          span(v-if="my.chats.harold.hasContacted") If you'd bought the van from Harold, you'd be able to preach in new places. And after a couple days of that, you'd probably have met somebody new.
+        span(v-else-if="my.chats.sterling.hasContacted") Maybe Sterling could have helped you out with that.
+        span(v-else) You did manage to get a van, you should have held on just a little bit longer.
+
+    template(v-if="my.church.isFounded")
+      p(v-if="!my.eternalLegacy.sterlingAlive") It's a shame that Sterling didn't survive to see everything that you were capable of. Although, I'm sure his last moments on Earth were spent thinking of you.
+      
+      p(v-if="my.church.religion.id == computedTopReligions[0]?.id") Throughout it all, you remained faithful to the #[strong {{my.church.religion.name}}]. I'm sure the {{my.church.religion.followers}} will find somebody new to lead them now.
+      p(v-else-if="computedTopReligions[0]?.name") Though your church was {{my.church.religion.name}}, it was with the #[strong(v-text="computedTopReligions[0]?.name")] that you found your most eager followers. I hope they'll find somebody just as trustworthy to lead them now.
+    .game-over-stats
+      table
+        tbody
+          tr
+            td.label Total Days Survived:
+            td.value {{my.daysPlayed}}
+          tr(v-if="my.totalMoneyEarned > 0")
+            td.label Total Money Earned:
+            td.value {{dollars(my.totalMoneyEarned)}}
+
+    .big-button-holder
+      button.restart(@click="restartGame") Begin New Ministry

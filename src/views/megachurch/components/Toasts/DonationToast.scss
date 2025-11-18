@@ -1,0 +1,55 @@
+@import "../../scss/_variables.scss";
+
+.container {
+  display: flex;
+  gap: 6px;
+  flex-direction: column;
+
+  .row.first {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .number {
+    font-size: 2.5em;
+    flex-basis: 32px;
+    flex-grow: 1;
+    flex-shrink: 0;
+    font-family: $monospace;
+    font-weight: 900;
+    &.positive {
+      color: #0f0;
+    }
+  }
+
+  .text-holder {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+  }
+
+  .breakdown {
+    display: grid;
+    grid-template-columns: 8em auto;
+    column-gap: 1em;
+    padding-left: 0;
+    row-gap: 8px;
+    align-items: center;
+    dt {
+      text-align: right;
+      font-size: 0.875rem;
+    }
+
+    dd {
+      font-weight: 800;
+      font-family: $monospace;
+      font-size: 1.25em;
+      &.minus {
+        color: $pink;
+      }
+    }
+  }
+}
+

@@ -8,6 +8,3 @@
 <template>
   <RouterView />
 </template>
-<style lang="scss">
-  @import "@/shared/scss/globals/_reset";
-</style>

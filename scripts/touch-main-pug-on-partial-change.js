@@ -41,9 +41,9 @@ watchedFiles.forEach((file) => {
       // Touch the main file (update mtime)
       const now = new Date();
       fs.utimesSync(main, now, now);
-      console.log(`[touch-main-pug] Touched ${main} because ${file} changed.`);
+      console.log(`\x1b[36m[touch-main-pug]\x1b[0m \x1b[32m${path.basename(main)}\x1b[0m updated due to change in \x1b[33m${path.basename(file)}\x1b[0m.`);
     }
   });
 });
 
-console.log("[touch-main-pug] Watching partials:", watchedFiles);
+console.log("[touch-main-pug] Watching partials...");

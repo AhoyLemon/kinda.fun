@@ -1,0 +1,18 @@
+mixin smallTable(title, rows, columns, sortBy)
+
+  - let sortOptions = "{enabled: false }"
+  if sortBy
+    - sortOptions = "{ enabled: true, initialSortBy: { field: '" + sortBy + "', type: 'desc'} }";
+
+  if rows && columns
+    .good-table
+      //h2= sortOptions
+      if title
+        h2= title
+      vue-good-table(
+        :rows=rows
+        :columns=columns
+        :sort-options=sortOptions
+        theme="black-rhino"
+        styleClass="vgt-table condensed"
+        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50, 100], dropdownAllowAll: true, nextLabel: 'next', prevLabel: 'prev' }")

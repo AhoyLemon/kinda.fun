@@ -1,0 +1,49 @@
+$desktopMin: 901px;
+$mobileMax: 900px;
+$z-mobile-unscreen: 2000;
+@media (max-width: $mobileMax) {
+  .mobile-unscreen {
+    position: fixed;
+    inset: 0;
+    z-index: $z-mobile-unscreen;
+    background: $black;
+    color: $white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .inner {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 5dvh;
+      padding: 20px;
+    }
+    img {
+      max-width: 260px;
+    }
+    h3 {
+      font-size: 7.5dvw;
+      font-weight: 200;
+      text-transform: uppercase;
+      font-family: $serif;
+    }
+    p {
+      line-height: 150%;
+    }
+    a {
+      color: $pink;
+      font-weight: bold;
+      text-decoration: none;
+      &:hover,
+      &:focus {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@media (min-width: $desktopMin) {
+  .mobile-unscreen {
+    display: none !important;
+  }
+}

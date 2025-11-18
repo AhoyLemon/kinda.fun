@@ -1,0 +1,182 @@
+.choose {
+  fieldset {
+    width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    &.sticky {
+      background-color: $pureWhite;
+      position: sticky;
+      top: 10px;
+      &.secondary {
+        top: 80px;
+      }
+    }
+  }
+
+  .match,
+  .mismatch {
+    font-weight: 800;
+  }
+
+  .details {
+    width: 76ch;
+
+    margin-left: auto;
+    margin-right: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    border: $border;
+    padding: 16px;
+    .name,
+    .description {
+      grid-column: span 2;
+    }
+    .big-number {
+      font-size: 1.35rem;
+      font-family: $serif;
+      font-weight: 600;
+    }
+    .name {
+      font-size: 1.25em;
+      font-family: $serif;
+    }
+    .description {
+      font-family: $serif;
+      line-height: 140%;
+      font-style: italic;
+    }
+    .cost.warning {
+      color: $darkRed;
+      font-weight: 525;
+    }
+    .notice {
+      font-size: 0.875rem;
+      background: $lightRed;
+      color: $darkRed;
+      padding: 6px;
+      border-radius: 4px;
+    }
+
+    dl {
+      border: $border;
+      font-family: $sans-serif;
+      dt {
+        font-weight: 800;
+        text-transform: uppercase;
+        background-color: $darkGray;
+        font-family: $serif;
+        font-size: 1.25em;
+        letter-spacing: 0.1em;
+        color: $white;
+        padding: 7px;
+      }
+      dd {
+        padding: 10px;
+        line-height: 140%;
+      }
+      ul {
+        display: grid;
+        //gap: 4px;
+        padding: 0 0.5em 0.5em 1.5em;
+        list-style-type: disc;
+        font-size: 0.875em;
+        li {
+          padding-left: 0.5em;
+          &.match {
+            color: $darkGreen;
+            background-color: $lightGreen;
+            &::marker {
+              color: $darkGreen;
+            }
+          }
+          &.mismatch {
+            color: $darkRed;
+            background-color: $lightRed;
+            &::marker {
+              color: $darkRed;
+            }
+          }
+        }
+      }
+    }
+    dl.religions {
+      grid-column: span 2;
+      ol {
+        display: grid;
+        gap: 0.25em;
+        padding-left: 1rem;
+        list-style: decimal;
+        font-family: $serif;
+        font-size: 1.25em;
+        li.match {
+          color: $darkGreen;
+          font-weight: 800;
+        }
+        li::marker {
+          font-size: 80%;
+          font-weight: 800;
+        }
+      }
+    }
+  }
+
+  .location-and-religion {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $gap;
+    .details {
+      width: auto;
+    }
+  }
+
+  .partnership-terms {
+    margin-left: auto;
+    margin-right: auto;
+    border: $border;
+    h3 {
+      font-weight: 800;
+      text-transform: uppercase;
+      background-color: $darkGray;
+      font-family: $serif;
+      font-size: 1.25em;
+      letter-spacing: 0.1em;
+      color: $white;
+      padding: 7px;
+    }
+    ul {
+      padding: 7px 7px 7px 2em;
+      list-style: disc;
+      display: grid;
+      gap: 0.5em;
+      // li {
+      //   padding-left: 2em;
+      // }
+    }
+  }
+}
+
+main.church-setup {
+  background-size: cover;
+  background-image: url("/img/megachurch/bg/pexels-adrien-olichon-1257089-2537598-cropped.jpg");
+
+  form {
+    background-color: oklch(1 0 0 / 0.85);
+    color: $black;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+  }
+}
+
+main.place {
+  background-color: $lightBlue;
+  background-image: url("/img/megachurch/bg/van.jpg");
+  form {
+    background-color: oklch(1 0 0 / 0.85);
+    color: $black;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+  }
+}

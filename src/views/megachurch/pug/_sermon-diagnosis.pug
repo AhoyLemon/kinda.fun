@@ -1,0 +1,46 @@
+section.diagnosis(v-if="ui.view === 'sermon-confirm'")
+
+  .inner
+    .diagnosis-box
+      dl.topics
+        dt topics
+        dd
+          ol
+            li(v-for="topic in my.sermonToday.topics") 
+              .title {{topic.title}}
+              .repeat(v-if="computedTopicsYesterday.includes(topic.id)") You preached this topic yesterday. As such, your current followers will be less moved by this message today.
+              .description(v-else) {{topic.description}}
+      dl.tags.liked
+        dt primary messages
+        dd
+          ul
+            li(v-for="like in my.sermonToday.likedBy.tags.slice(0,5)") {{like.tag}}
+      dl.religions.liked
+        dt Primary Audience
+        dd
+          ul
+            li(v-for="religion in my.sermonToday.likedBy.religions.slice(0,3)") {{religion.name}}
+      dl.tags.disliked
+        dt today's evils
+        dd
+          ul
+            li(v-for="dislike in my.sermonToday.dislikedBy.tags.slice(0,3)") {{dislike.tag}}
+      
+      dl.religions.disliked
+        dt Collateral Damage
+        dd
+          ul
+            li(v-for="religion in my.sermonToday.dislikedBy.religions.slice(0,2)") {{religion.name}}
+      
+      template(v-if="my.sermonToday.mixedMessages?.religions[0] || my.sermonToday.mixedMessages?.tags[0]")
+        dl.mixed-messages(style="grid-column: span 2")
+          dt Mixed Messages
+          dd
+            ul(v-if="my.sermonToday.mixedMessages?.religions")
+              li(v-for="religion in my.sermonToday.mixedMessages.religions") {{religion.name}}
+            ul(v-if="my.sermonToday.mixedMessages?.tags")
+              li(v-for="tag in my.sermonToday.mixedMessages.tags") {{tag.tag}}
+    
+    .button-holder
+      button.reset(@click="ui.view = 'sermon'") Edit Sermon
+      button.submit(@click='preachSermon()') Preach It

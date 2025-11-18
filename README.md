@@ -27,6 +27,12 @@
 
 There's currently six games here...
 
+## MegaChurch Tycoon
+
+[![MegaChurch Tycoon](https://kinda.fun/img/og-megachurch.png)](https://kinda.fun/megachurch)
+
+A single-player game where you start out
+
 ## Invalid
 
 [![Invalid](https://kinda.fun/img/og-invalid.png)](https://kinda.fun/invalid)
@@ -82,9 +88,13 @@ An exercise in active depression.
 
 ---
 
-## Technical Documentation
+## Developer Information
 
+- **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Getting started with local development and contributing
 - **[NPM Commands](docs/npm-commands.md)** - Complete reference for all available npm scripts and what they do
 - **[Migration Guide](docs/migration-guide.md)** - Guide for migrating between different versions or setups
 - **[Deployment Setup](docs/deployment-setup.md)** - Instructions for setting up automated Firebase deployment via GitHub Actions
+
+## Credits
+
 - **[Credits & Thank Yous](docs/credits.md)** - Contributors, voice actors, and resources that made these games possible

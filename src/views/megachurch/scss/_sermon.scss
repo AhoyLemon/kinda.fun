@@ -1,0 +1,192 @@
+main.sermon {
+  background-color: oklch(0.25 0.03 25);
+  // background-image: url(https://images.pexels.com/photos/1226398/pexels-photo-1226398.jpeg);
+  background-image: url("/img/megachurch/bg/notebook.jpg");
+  form {
+    width: 72ch;
+    max-width: 98dvw;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    @include blurBG();
+  }
+
+  // Seraph AI Nag Message
+  .seraph-ai-nag {
+    background: linear-gradient(135deg, $aiGradientLight 0%, $aiGradientDark 100%);
+    border: 1px solid $aiBorder;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+
+    .nag-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+
+      .nag-icon {
+        font-size: 2rem;
+        flex-shrink: 0;
+        animation: pulse 2s infinite;
+      }
+
+      .nag-text {
+        flex: 1;
+
+        h4 {
+          color: white;
+          margin: 0 0 8px 0;
+          font-size: 1.1rem;
+          font-weight: 600;
+        }
+
+        p {
+          color: rgba(255, 255, 255, 0.9);
+          margin: 0 0 16px 0;
+          line-height: 1.4;
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .nag-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+
+      button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &.nag-btn-primary {
+          background: rgba(255, 255, 255, 0.9);
+          color: $aiBorder;
+
+          &:hover {
+            background: white;
+            transform: translateY(-1px);
+          }
+        }
+
+        &.nag-btn-secondary {
+          background: rgba(255, 255, 255, 0.1);
+          color: rgba(255, 255, 255, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.2);
+          }
+        }
+      }
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  .sermon-preview {
+    background: linear-gradient(135deg, $aiGradientLight 0%, $aiGradientDark 100%);
+    border: 1px solid $aiBorder;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 20px 0;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    color: $white;
+
+    .preview-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    @keyframes animatedEllipsis {
+      0%,
+      100% {
+        content: "";
+      }
+      25% {
+        content: ".";
+      }
+      50% {
+        content: "..";
+      }
+      75% {
+        content: "...";
+      }
+    }
+
+    h4 {
+      font-size: 1.5rem;
+      font-family: $sans-serif;
+      color: $white;
+      &:after {
+        content: "";
+        animation-name: animatedEllipsis;
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+      }
+    }
+    .preview-columns {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: $gap;
+    }
+    dl {
+      border: 2px solid $mediumGray;
+      font-family: $sans-serif;
+      color: $white;
+      border-radius: 8px;
+      overflow: hidden;
+      dt {
+        font-weight: 800;
+        text-transform: uppercase;
+        background-color: $white;
+        color: $darkPurple;
+        font-family: $serif;
+        font-size: 1rem;
+        letter-spacing: 0.1em;
+        padding: 7px;
+      }
+      dd {
+        padding: 10px;
+        line-height: 140%;
+        max-height: 88px;
+      }
+      ul {
+        display: grid;
+        //gap: 4px;
+        padding: 0 0.5em 0.5em 1.5em;
+        list-style-type: disc;
+        font-size: 0.875em;
+        li {
+          padding-left: 0.5em;
+          &.match {
+            color: $darkGreen;
+            background-color: $lightGreen;
+            &::marker {
+              color: $darkGreen;
+            }
+          }
+          &.mismatch {
+            color: $darkRed;
+            background-color: $lightRed;
+            &::marker {
+              color: $darkRed;
+            }
+          }
+        }
+      }
+    }
+  }
+}

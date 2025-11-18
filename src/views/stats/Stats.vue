@@ -1,6 +1,5 @@
 <script setup>
   import { reactive, computed, onMounted, onBeforeMount } from "vue";
-  // import { DateTime } from "luxon";
   import { formatDate, dollars, billionsOfDollars } from "./js/_functions";
   import { addCommas, percentOf } from "@/shared/js/_functions";
   import { columns } from "./js/_columns";
@@ -50,6 +49,10 @@
       launched: "2025-08-01",
       dayCount: null,
     },
+    megachurch: {
+      launched: "2025-11-14",
+      dayCount: null,
+    },
   });
 
   const stats = reactive({
@@ -61,6 +64,7 @@
     sisyphus: {},
     pretend: {},
     meeting: {},
+    megachurch: {},
   });
 
   const ui = reactive({
@@ -72,6 +76,7 @@
     guillotineLoaded: false,
     pretendLoaded: false,
     meetingLoaded: false,
+    megachurchLoaded: false,
   });
 
   const app = initializeApp(firebaseConfig);
@@ -193,6 +198,13 @@
           stats.general.invalidLastPlayed = invalidData.lastGameStarted ? convertTimestamp(invalidData.lastGameStarted) : null;
         }
 
+        const megachurchSnap = await getDoc(doc(firestoreDb, "stats", "megachurch"));
+        if (megachurchSnap.exists()) {
+          const megachurchData = megachurchSnap.data();
+          stats.general.megachurchGamesStarted = megachurchData.gamesStarted || 0;
+          stats.general.megachurchLastPlayed = megachurchData.lastGameStarted ? convertTimestamp(megachurchData.lastGameStarted) : null;
+        }
+
         await loadFirestoreStats("general", {
           subcollections: {
             players: {
@@ -213,6 +225,9 @@
         stats.general.pretendGamesStarted = 0;
         stats.general.pretendLastPlayed = null;
         stats.general.sisyphusFirstClick = null;
+        stats.general.megachurchGamesStarted = 0;
+        stats.general.megachurchLastPlayed = null;
+
         console.error("Error loading general stats from Firestore:", e);
       }
     }
@@ -384,6 +399,36 @@
         stats.invalid.rules = [];
         errorOccurred = true;
         console.error("Error loading invalid stats from Firestore:", e);
+      }
+    } else if (game == "megachurch") {
+      try {
+        await loadFirestoreStats("megachurch", {
+          mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
+          subcollections: {
+            celebrityFriends: {},
+            cheats: {},
+            churchNames: {},
+            darkDeeds: {},
+            eternalLegacy: {},
+            locations: {},
+            marketing: {},
+            merch: {},
+            players: {
+              timestampFields: ["lastPlayed"],
+            },
+            religions: {},
+            sermonTopics: {},
+            upgrades: {},
+          },
+        });
+        dates.megachurch.dayCount = dates.today.diff(dates.megachurch.launched, "days");
+        ui.megachurchLoaded = true;
+        ui.viewing = "megachurch";
+      } catch (e) {
+        if (!stats.megachurch) stats.megachurch = {};
+        stats.megachurch.players = [];
+        errorOccurred = true;
+        console.error("Error loading megachurch stats from Firestore:", e);
       }
     }
 

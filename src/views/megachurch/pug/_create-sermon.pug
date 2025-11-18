@@ -1,0 +1,93 @@
+section.sermon(v-if="ui.view === 'sermon'")
+
+  .inner
+
+    form(@submit.prevent="defineSermon()")
+
+      legend 
+        span What will you preach today?
+
+      fieldset
+        label.required First Topic
+        Multiselect(
+          v-model="ui.selectedTopics[0]"
+          :options="provideTopicOptions(0)"
+          :searchable="true"
+          :required="true"
+          value-prop="id"
+          track-by="title"
+          label="title"
+          mode="single"
+        )
+          template(#option="{ option }")
+            span.preached-yesterday(v-if="option.isPreachedYesterday ? 'preached-yesterday-option' : ''") {{ option.title }} | PREACHED YESTERDAY
+            span(v-else) {{option.title}}
+
+      fieldset
+        label.required Second Topic
+        Multiselect(
+          v-model="ui.selectedTopics[1]"
+          :options="provideTopicOptions(1)"
+          :searchable="true"
+          :required="true"
+          value-prop="id"
+          track-by="title"
+          label="title"
+          mode="single"
+        )
+          template(#option="{ option }")
+            span.preached-yesterday(v-if="option.isPreachedYesterday ? 'preached-yesterday-option' : ''") {{ option.title }} | PREACHED YESTERDAY
+            span(v-else) {{option.title}}
+      fieldset
+        label.required Third Topic
+        Multiselect(
+          v-model="ui.selectedTopics[2]"
+          :options="provideTopicOptions(2)"
+          :searchable="true"
+          :required="true"
+          value-prop="id"
+          track-by="title"
+          label="title"
+          mode="single"
+        )
+          template(#option="{ option }")
+            span.preached-yesterday(v-if="option.isPreachedYesterday ? 'preached-yesterday-option' : ''") {{ option.title }} | PREACHED YESTERDAY
+            span(v-else) {{option.title}}
+
+      .sermon-preview(v-if="my.church.upgrades.seraphAI")
+        .preview-section
+          h4 📊 Seraph AI Analysis
+          .preview-columns(v-if="ui.selectedTopics.some(topic => topic !== null)")
+            dl.preview-column(v-if="temporarySermonScores.mostLiked.length > 0")
+
+              dt Will Appeal To:
+              dd
+                transition-group.religion-list(name="religion-list" tag="ul")
+                  li(v-for="religion in temporarySermonScores.mostLiked" :key="religion.id")
+                    span.religion-name {{ religion.name }}
+                    //span.weight-indicator ({{ religion.weight }})
+            dl.preview-column(v-if="temporarySermonScores.mostDisliked.length > 0")
+              dt Will Offend:
+              dd
+                transition-group.religion-list(name="religion-list" tag="ul")
+                  li(v-for="religion in temporarySermonScores.mostDisliked" :key="religion.id")
+                    span.religion-name {{ religion.name }}
+                    //span.weight-indicator ({{ religion.weight }})
+            .preview-message(v-if="temporarySermonScores.mostLiked.length === 0 && temporarySermonScores.mostDisliked.length === 0")
+              p.neutral-message No strong reactions predicted for this sermon combination.
+          .empty-sermon(v-else)
+            p No topics selected.
+      // Seraph AI Nag Message
+      .seraph-ai-nag(v-if="!my.church.upgrades.seraphAI && my.church.days >= gameSettings.church.upgrades.seraphAI.daysBeforeNag && !ui.seraphAINag.hasShown && ui.selectedTopics.some(topic => topic !== null)")
+        .nag-content
+          .nag-icon 🤖
+          .nag-text
+            h4 New: Seraph AI Analysis
+            p Get real-time insights into how your audience will react to your sermon topics. See which religions will love or hate your message before you preach.
+          .nag-actions
+            button.nag-btn-primary(@click="openWorshopZoneForSeraph()") ⚡ Try Seraph AI
+            button.nag-btn-secondary(@click="dismissSeraphNag()") Not now
+
+      .button-holder
+        //button.van(v-if="my.hasVan && !my.hasTraveledToday" @click="ui.view = 'place'") #[span 🚐] Get In The Van
+        button(type="submit" :disabled="!ui.selectedTopics[0] || !ui.selectedTopics[1] || !ui.selectedTopics[2]") Create Sermon

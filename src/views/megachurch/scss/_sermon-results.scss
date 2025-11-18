@@ -1,0 +1,401 @@
+section.sermon-results {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+
+  background: $gradientDark; /* fallback for old browsers */
+  background: linear-gradient(to left, $gradientLight, $gradientMid, $gradientDark); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  .inner {
+    color: $white;
+  }
+  h2 {
+    font-family: $serif;
+    font-size: 1.75em;
+  }
+
+  table {
+    margin: 3rem auto;
+    min-width: 400px;
+    box-shadow:
+      oklch(0 0 0 / 0.25) 0px 54px 55px,
+      oklch(0 0 0 / 0.12) 0px -12px 30px,
+      oklch(0 0 0 / 0.12) 0px 4px 6px,
+      oklch(0 0 0 / 0.17) 0px 12px 13px,
+      oklch(0 0 0 / 0.09) 0px -3px 5px;
+    caption {
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      font-weight: 300;
+      text-align: center;
+      padding: 1em;
+    }
+    th {
+      background-color: black;
+      font-weight: 300;
+      font-family: $monospace;
+      text-transform: uppercase;
+      padding: 0 0.5em;
+    }
+    td {
+      border: none;
+      padding: 0.5em;
+      &.number {
+        font-size: 125%;
+        font-family: monospace;
+      }
+    }
+    tr:nth-child(odd) {
+      td {
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      &.positive {
+        background-color: rgba(0, 60, 0, 0.5);
+      }
+      &.negative {
+        background-color: rgba(60, 0, 0, 0.5);
+      }
+    }
+    tr:nth-child(even) {
+      td {
+        background-color: rgba(0, 0, 0, 0.35);
+      }
+      &.positive {
+        background-color: rgba(0, 60, 0, 0.35);
+      }
+      &.negative {
+        background-color: rgba(60, 0, 0, 0.35);
+      }
+    }
+    tfoot {
+      tr:nth-child(odd),
+      tr:nth-child(even) {
+        td {
+          background-color: rgba(0, 0, 0, 0.9);
+          ul {
+            display: grid;
+            gap: 6px;
+          }
+        }
+      }
+    }
+    .religion-name {
+      font-family: $serif;
+    }
+    span.positive {
+      color: $green;
+    }
+    span.negative {
+      color: $red;
+    }
+  }
+
+  .money-summary {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+    .row {
+      display: table-row;
+      > * {
+        padding: 6px 10px;
+        display: table-cell;
+      }
+      dt {
+        text-align: right;
+        font-weight: 300;
+        text-transform: uppercase;
+      }
+      .modifier {
+        width: 2em;
+        text-align: center;
+      }
+      dd {
+        font-family: $monospace;
+        font-size: 1.25rem;
+      }
+      &.plus {
+        .modifier,
+        dd {
+          color: $green;
+        }
+      }
+      &.minus {
+        .modifier,
+        dd {
+          color: $pink;
+        }
+      }
+      &.equals {
+        > * {
+          border-top: 1px solid $white;
+        }
+        dd {
+          font-weight: 850;
+        }
+      }
+    }
+  }
+
+  .receipts {
+    display: flex;
+  }
+
+  // Receipt-style styling for donations summary and church management
+  .donations-summary.church,
+  .church-management-summary {
+    background: $lightestGray;
+    color: $darkGray;
+    font-family: "Courier New", monospace;
+    margin: 2rem auto;
+    padding: 20px;
+    border: 2px dashed $mediumGray;
+    position: relative;
+    box-shadow:
+      0 4px 8px rgba(0, 0, 0, 0.1),
+      inset 0 0 20px rgba(0, 0, 0, 0.05);
+
+    // Receipt header styling
+    &::before {
+      content: "★ ★ ★ RECEIPT ★ ★ ★";
+      display: block;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      border-bottom: 1px dashed $gray;
+      padding-bottom: 10px;
+    }
+
+    // Receipt footer with decorative border
+    &::after {
+      content: "- - - - - - - - - - - - - - - -";
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      font-size: 12px;
+      color: $gray;
+    }
+
+    h3 {
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-align: center;
+      margin: 15px 0 10px 0;
+      letter-spacing: 1px;
+    }
+  }
+
+  .donations-summary.church {
+    &::before {
+      content: "★ ★ DAILY EARNINGS ★ ★";
+    }
+
+    .money-summary {
+      display: table;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+
+      .row {
+        display: table-row;
+        > * {
+          padding: 4px 8px;
+          display: table-cell;
+          font-size: 12px;
+        }
+        dt {
+          text-align: left;
+          font-weight: normal;
+          text-transform: uppercase;
+          color: $darkGray;
+        }
+        .modifier {
+          width: 2em;
+          text-align: center;
+          font-weight: bold;
+        }
+        dd {
+          font-family: "Courier New", monospace;
+          font-size: 12px;
+          text-align: right;
+          font-weight: bold;
+        }
+        &.plus {
+          .modifier,
+          dd {
+            color: $veryDarkGreen;
+          }
+        }
+        &.minus {
+          .modifier,
+          dd {
+            color: $veryDarkRed;
+          }
+        }
+        &.equals {
+          > * {
+            border-top: 1px dashed $darkerGray;
+            padding-top: 8px;
+          }
+          dd {
+            font-weight: bold;
+            font-size: 18px;
+          }
+        }
+        &.total-donations {
+          dd {
+            font-size: 14px;
+            font-weight: bold;
+          }
+        }
+      }
+
+      .donor-count {
+        font-size: 10px !important;
+        color: $darkerGray;
+        font-weight: normal;
+      }
+    }
+
+    rotate: -4.5deg;
+    box-shadow:
+      rgba(0, 0, 0, 0.25) 0px 54px 55px,
+      rgba(0, 0, 0, 0.12) 0px -12px 30px,
+      rgba(0, 0, 0, 0.12) 0px 4px 6px,
+      rgba(0, 0, 0, 0.17) 0px 12px 13px,
+      rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  }
+
+  .church-management-summary {
+    &::before {
+      content: "★ ★ SALES REPORT ★ ★";
+    }
+
+    // Merch breakdown styling (receipt items)
+    .merch-breakdown {
+      margin: 10px 0;
+
+      .merch-item {
+        display: flex;
+        justify-content: space-between;
+        margin: 5px 0;
+        padding: 2px 0;
+        border-bottom: 1px dotted $mediumGray;
+
+        dt {
+          font-size: 12px;
+          text-transform: uppercase;
+          color: $darkGray;
+          flex: 1;
+        }
+        .count {
+          font-family: "Courier New", monospace;
+          font-size: 13px;
+        }
+
+        dd {
+          font-family: "Courier New", monospace;
+          font-size: 13px;
+          font-weight: bold;
+          color: $darkGray;
+          margin-left: 10px;
+        }
+      }
+    }
+
+    .confession-revenue {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+      padding: 2px 0;
+      border-bottom: 1px dotted $mediumGray;
+      gap: 5px;
+
+      dt {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: $darkGray;
+        flex: 1;
+      }
+      .count {
+        font-family: "Courier New", monospace;
+        font-size: 13px;
+      }
+
+      dd {
+        font-family: "Courier New", monospace;
+        font-size: 13px;
+        font-weight: bold;
+        color: $darkGray;
+      }
+    }
+    rotate: 6deg;
+    translate: 3% -21%;
+    box-shadow:
+      rgba(0, 0, 0, 0.25) 0px 54px 55px,
+      rgba(0, 0, 0, 0.12) 0px -12px 30px,
+      rgba(0, 0, 0, 0.12) 0px 4px 6px,
+      rgba(0, 0, 0, 0.17) 0px 12px 13px,
+      rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  }
+
+  .buttons {
+    @extend %buttons;
+    padding-top: 2em;
+    justify-content: center;
+    flex-wrap: wrap;
+    .van-button-holder {
+      position: relative;
+
+      .van {
+        position: relative;
+        z-index: 1;
+      }
+
+      .van-tooltip {
+        position: absolute;
+        bottom: calc(100% + 0.5rem);
+        left: 50%;
+        transform: translateX(-50%) translateY(-3px);
+        background: rgba(0, 0, 0, 0.85);
+        color: $white;
+        padding: 6px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        pointer-events: none;
+        transition:
+          opacity 0.12s cubic-bezier(0.2, 0.8, 0.2, 1),
+          transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1);
+        z-index: 3;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+        &::after {
+          content: "";
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          border-width: 6px;
+          border-style: solid;
+          border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+        }
+      }
+
+      // &:hover .van-tooltip,
+      // &:focus-within .van-tooltip {
+      //   opacity: 1;
+      //   visibility: visible;
+      //   transform: translateX(-50%) translateY(0);
+      //   pointer-events: auto;
+      // }
+    }
+  }
+}
