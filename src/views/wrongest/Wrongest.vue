@@ -368,70 +368,81 @@
   };
 
   const startTheGame = async () => {
-    let d = shuffle(game.chosenDeck.cards);
-    game.gameDeck.cards = d;
-    await dealOutCards();
+    try {
+      let d = shuffle(game.chosenDeck.cards);
+      game.gameDeck.cards = d;
+      await dealOutCards();
 
-    if (game.players.length == 3 || game.players.length == 4) {
-      game.maxRounds = 4;
-    } else if (game.players.length == 5 || game.players.length == 6) {
-      game.maxRounds = 3;
-    } else if (game.players.length > 6) {
-      game.maxRounds = 2;
+      if (game.players.length == 3 || game.players.length == 4) {
+        game.maxRounds = 4;
+      } else if (game.players.length == 5 || game.players.length == 6) {
+        game.maxRounds = 3;
+      } else if (game.players.length > 6) {
+        game.maxRounds = 2;
+      }
+
+      // Update room document
+      const roomRef = doc(db, `rooms/${game.roomCode}`);
+      await updateDoc(roomRef, {
+        isGameStarted: true,
+      });
+
+      // Update game state
+      const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
+      await updateDoc(gameStateRef, {
+        phase: "presenting",
+        currentRound: 1,
+        maxRounds: game.maxRounds,
+        chosenDeckName: game.chosenDeck.name,
+        gameDeck: game.gameDeck,
+        activePlayerIndex: -1,
+        playerPresenting: false,
+      });
+
+      sendEvent("The Wrongest Words", "Game Started", game.roomCode);
+      changeFavicon("wrongest/favicons/favicon.ico");
+    } catch (error) {
+      console.error("Error starting game:", error);
+      alert("Failed to start game: " + error.message);
     }
-
-    // Update room document
-    const roomRef = doc(db, `rooms/${game.roomCode}`);
-    await updateDoc(roomRef, {
-      isGameStarted: true,
-    });
-
-    // Update game state
-    const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
-    await updateDoc(gameStateRef, {
-      phase: "presenting",
-      currentRound: 1,
-      maxRounds: game.maxRounds,
-      chosenDeckName: game.chosenDeck.name,
-      gameDeck: game.gameDeck,
-      activePlayerIndex: -1,
-      playerPresenting: false,
-    });
-
-    sendEvent("The Wrongest Words", "Game Started", game.roomCode);
-    changeFavicon("wrongest/favicons/favicon.ico");
   };
   ////////////////////////////////////////
   // In Game
   const dealOutCards = async () => {
-    if (game.gameDeck.cards.length <= computedPlayerCount.value) {
-      ////////////////////////////////////////////////////////////
-      // You've run out of cards.
-      // EMERGENCY BACKUP SCENARIO.
-      let newDeck = randomFrom(allDecks);
-      let d = shuffle(newDeck.cards);
-      game.gameDeck.cards = d;
+    try {
+      if (game.gameDeck.cards.length <= computedPlayerCount.value) {
+        ////////////////////////////////////////////////////////////
+        // You've run out of cards.
+        // EMERGENCY BACKUP SCENARIO.
+        let newDeck = randomFrom(allDecks);
+        let d = shuffle(newDeck.cards);
+        game.gameDeck.cards = d;
 
-      alert("You've run out of cards. As such, I've chosen a new deck and shuffled that for you.");
-    }
+        alert("You've run out of cards. As such, I've chosen a new deck and shuffled that for you.");
+      }
 
-    // Deal cards to each player in Firestore
-    for (let index = 0; index < game.players.length; index++) {
-      const player = game.players[index];
-      const card = game.gameDeck.cards[0];
-      game.gameDeck.cards.shift();
+      // Deal cards to each player in Firestore
+      for (let index = 0; index < game.players.length; index++) {
+        const player = game.players[index];
+        const card = game.gameDeck.cards[0];
+        game.gameDeck.cards.shift();
 
-      const playerRef = doc(db, "rooms", game.roomCode, "players", player.playerID);
-      await updateDoc(playerRef, {
-        card: card,
+        // Use the document ID (player.id) which matches the playerID
+        const playerRef = doc(db, "rooms", game.roomCode, "players", player.id);
+        await updateDoc(playerRef, {
+          card: card,
+        });
+      }
+
+      // Update game deck in game state
+      const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
+      await updateDoc(gameStateRef, {
+        gameDeck: game.gameDeck,
       });
+    } catch (error) {
+      console.error("Error dealing cards:", error);
+      throw error; // Re-throw to be caught by startTheGame
     }
-
-    // Update game deck in game state
-    const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
-    await updateDoc(gameStateRef, {
-      gameDeck: game.gameDeck,
-    });
   };
 
   const sendGameDeck = async () => {
@@ -443,47 +454,62 @@
   };
 
   const dealCard = async () => {
-    round.activePlayerIndex++;
-    const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
-    await updateDoc(gameStateRef, {
-      activePlayerIndex: round.activePlayerIndex,
-      playerPresenting: true,
-    });
-    soundBeginTalking.play();
+    try {
+      round.activePlayerIndex++;
+      const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
+      await updateDoc(gameStateRef, {
+        activePlayerIndex: round.activePlayerIndex,
+        playerPresenting: true,
+      });
+      soundBeginTalking.play();
+    } catch (error) {
+      console.error("Error dealing card:", error);
+      alert("Failed to deal card: " + error.message);
+    }
   };
 
   const presentationFinished = async () => {
-    round.playerPresenting = false;
-    resetPresentationTimer();
+    try {
+      round.playerPresenting = false;
+      resetPresentationTimer();
 
-    const activePlayer = game.players[round.activePlayerIndex];
-    const cardPresented = {
-      card: activePlayer.card,
-      playerIndex: round.activePlayerIndex,
-      playerName: activePlayer.name,
-      score: 0,
-    };
+      const activePlayer = game.players[round.activePlayerIndex];
+      const cardPresented = {
+        card: activePlayer.card,
+        playerIndex: round.activePlayerIndex,
+        playerName: activePlayer.name,
+        score: 0,
+      };
 
-    const updatedCardsPresented = [...round.cardsPresented, cardPresented];
+      const updatedCardsPresented = [...round.cardsPresented, cardPresented];
 
-    const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
-    await updateDoc(gameStateRef, {
-      playerPresenting: false,
-      cardsPresented: updatedCardsPresented,
-    });
+      const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
+      await updateDoc(gameStateRef, {
+        playerPresenting: false,
+        cardsPresented: updatedCardsPresented,
+      });
 
-    soundPresentationOver.play();
+      soundPresentationOver.play();
+    } catch (error) {
+      console.error("Error finishing presentation:", error);
+      alert("Failed to finish presentation: " + error.message);
+    }
   };
 
   /////////////////////////////////////////
   // Voting
   const startVoting = async () => {
-    const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
-    await updateDoc(gameStateRef, {
-      phase: "voting",
-      cardsPresented: round.cardsPresented,
-      votesSubmitted: 0,
-    });
+    try {
+      const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
+      await updateDoc(gameStateRef, {
+        phase: "voting",
+        cardsPresented: round.cardsPresented,
+        votesSubmitted: 0,
+      });
+    } catch (error) {
+      console.error("Error starting voting:", error);
+      alert("Failed to start voting: " + error.message);
+    }
   };
 
   const voteUp = (statement) => {
@@ -508,121 +534,142 @@
   // };
 
   const submitVotes = async () => {
-    let upVoteIndex;
-    let downVoteIndex;
-    let upVoteCard = my.upVote;
-    let downVoteCard = my.downVote;
+    try {
+      let upVoteIndex;
+      let downVoteIndex;
+      let upVoteCard = my.upVote;
+      let downVoteCard = my.downVote;
 
-    // Find the upVote and downVote cards and their indices
-    round.cardsPresented.forEach((card, index) => {
-      if (card.card === my.upVote) {
-        upVoteIndex = index;
-        upVoteCard = card.card;
-      }
-      if (card.card === my.downVote) {
-        downVoteIndex = index;
-        downVoteCard = card.card;
-      }
-    });
+      // Find the upVote and downVote cards and their indices
+      round.cardsPresented.forEach((card, index) => {
+        if (card.card === my.upVote) {
+          upVoteIndex = index;
+          upVoteCard = card.card;
+        }
+        if (card.card === my.downVote) {
+          downVoteIndex = index;
+          downVoteCard = card.card;
+        }
+      });
 
-    // Update scores in Firestore
-    const downVotePlayerRef = doc(db, "rooms", game.roomCode, "players", game.players[downVoteIndex].playerID);
-    await updateDoc(downVotePlayerRef, {
-      score: increment(-1),
-    });
+      // Get the actual players from the cardsPresented data
+      const downVotedCard = round.cardsPresented[downVoteIndex];
+      const upVotedCard = round.cardsPresented[upVoteIndex];
+      const downVotedPlayer = game.players[downVotedCard.playerIndex];
+      const upVotedPlayer = game.players[upVotedCard.playerIndex];
 
-    const upVotePlayerRef = doc(db, "rooms", game.roomCode, "players", game.players[upVoteIndex].playerID);
-    await updateDoc(upVotePlayerRef, {
-      score: increment(1),
-    });
+      // Update scores in Firestore
+      const downVotePlayerRef = doc(db, "rooms", game.roomCode, "players", downVotedPlayer.id);
+      await updateDoc(downVotePlayerRef, {
+        score: increment(-1),
+      });
 
-    // Update card scores in cardsPresented
-    const updatedCardsPresented = [...round.cardsPresented];
-    updatedCardsPresented[downVoteIndex].score -= 1;
-    updatedCardsPresented[upVoteIndex].score += 1;
+      const upVotePlayerRef = doc(db, "rooms", game.roomCode, "players", upVotedPlayer.id);
+      await updateDoc(upVotePlayerRef, {
+        score: increment(1),
+      });
 
-    // Add to vote history
-    const newVoteHistory = [
-      ...game.voteHistory,
-      {
-        downVoteIndex: downVoteIndex,
-        voterName: my.name,
-        voted: "down",
-        presenter: round.cardsPresented[downVoteIndex].playerName,
-        card: round.cardsPresented[downVoteIndex].card,
-      },
-      {
-        upVoteIndex: upVoteIndex,
-        voterName: my.name,
-        voted: "up",
-        presenter: round.cardsPresented[upVoteIndex].playerName,
-        card: round.cardsPresented[upVoteIndex].card,
-      },
-    ];
+      // Update card scores in cardsPresented
+      const updatedCardsPresented = [...round.cardsPresented];
+      updatedCardsPresented[downVoteIndex].score -= 1;
+      updatedCardsPresented[upVoteIndex].score += 1;
 
-    // Update game state
-    const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
-    await updateDoc(gameStateRef, {
-      votesSubmitted: increment(1),
-      cardsPresented: updatedCardsPresented,
-    });
+      // Add to vote history
+      const newVoteHistory = [
+        ...game.voteHistory,
+        {
+          downVoteIndex: downVoteIndex,
+          voterName: my.name,
+          voted: "down",
+          presenter: round.cardsPresented[downVoteIndex].playerName,
+          card: round.cardsPresented[downVoteIndex].card,
+        },
+        {
+          upVoteIndex: upVoteIndex,
+          voterName: my.name,
+          voted: "up",
+          presenter: round.cardsPresented[upVoteIndex].playerName,
+          card: round.cardsPresented[upVoteIndex].card,
+        },
+      ];
 
-    ui.iVoted = true;
-    sendEvent("The Wrongest Words", "Downvote", downVoteCard);
-    sendEvent("The Wrongest Words", "Upvote", upVoteCard);
+      // Update game state
+      const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
+      await updateDoc(gameStateRef, {
+        votesSubmitted: increment(1),
+        cardsPresented: updatedCardsPresented,
+      });
+
+      ui.iVoted = true;
+      sendEvent("The Wrongest Words", "Downvote", downVoteCard);
+      sendEvent("The Wrongest Words", "Upvote", upVoteCard);
+    } catch (error) {
+      console.error("Error submitting votes:", error);
+      alert("Failed to submit votes: " + error.message);
+    }
   };
 
   const startNextRound = async () => {
-    // Rotate players array (move first to end)
-    const rotatedPlayers = [...game.players];
-    rotatedPlayers.push(rotatedPlayers.shift());
+    try {
+      // Rotate players array (move first to end)
+      const rotatedPlayers = [...game.players];
+      rotatedPlayers.push(rotatedPlayers.shift());
 
-    // Update player indices in Firestore
-    for (let index = 0; index < rotatedPlayers.length; index++) {
-      const player = rotatedPlayers[index];
-      const playerRef = doc(db, "rooms", game.roomCode, "players", player.playerID);
-      await updateDoc(playerRef, {
-        playerIndex: index,
+      // Update player indices in Firestore
+      for (let index = 0; index < rotatedPlayers.length; index++) {
+        const player = rotatedPlayers[index];
+        const playerRef = doc(db, "rooms", game.roomCode, "players", player.id);
+        await updateDoc(playerRef, {
+          playerIndex: index,
+        });
+      }
+
+      round.number += 1;
+      const newStatementHistory = game.statementHistory.concat(round.cardsPresented);
+
+      // Deal out new cards
+      await dealOutCards();
+
+      // Update game state
+      const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
+      await updateDoc(gameStateRef, {
+        phase: "presenting",
+        currentRound: round.number,
+        statementHistory: newStatementHistory,
+        cardsPresented: [],
+        votesSubmitted: 0,
+        activePlayerIndex: -1,
+        playerPresenting: false,
       });
+
+      // Reset UI
+      resetUIVariables();
+    } catch (error) {
+      console.error("Error starting next round:", error);
+      alert("Failed to start next round: " + error.message);
     }
-
-    round.number += 1;
-    const newStatementHistory = game.statementHistory.concat(round.cardsPresented);
-
-    // Deal out new cards
-    await dealOutCards();
-
-    // Update game state
-    const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
-    await updateDoc(gameStateRef, {
-      phase: "presenting",
-      currentRound: round.number,
-      statementHistory: newStatementHistory,
-      cardsPresented: [],
-      votesSubmitted: 0,
-      activePlayerIndex: -1,
-      playerPresenting: false,
-    });
-
-    // Reset UI
-    resetUIVariables();
   };
 
   const sendGameOver = async () => {
-    const newStatementHistory = game.statementHistory.concat(round.cardsPresented);
+    try {
+      const newStatementHistory = game.statementHistory.concat(round.cardsPresented);
 
-    // Update room document
-    const roomRef = doc(db, `rooms/${game.roomCode}`);
-    await updateDoc(roomRef, {
-      isGameOver: true,
-    });
+      // Update room document
+      const roomRef = doc(db, `rooms/${game.roomCode}`);
+      await updateDoc(roomRef, {
+        isGameOver: true,
+      });
 
-    // Update game state
-    const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
-    await updateDoc(gameStateRef, {
-      phase: "GAME OVER",
-      statementHistory: newStatementHistory,
-    });
+      // Update game state
+      const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
+      await updateDoc(gameStateRef, {
+        phase: "GAME OVER",
+        statementHistory: newStatementHistory,
+      });
+    } catch (error) {
+      console.error("Error ending game:", error);
+      alert("Failed to end game: " + error.message);
+    }
   };
 
   ////////////////////////////////////////
