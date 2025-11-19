@@ -39,7 +39,7 @@
     "@rushstack/eslint-patch": "^1.8.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/eslint-config-prettier": "^9.0.0",
-    "@vue/language-plugin-pug": "^2.0.26",
+    "@vue/language-plugin-pug": "^3.1.4",
     "@vue/test-utils": "^2.4.6",
     "axios": "^1.7.2",
     "cli-table3": "^0.6.5",
