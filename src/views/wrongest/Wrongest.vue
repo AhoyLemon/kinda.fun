@@ -25,8 +25,24 @@
   } from "./js/_variables";
 
   //////// socket.io
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  // TODO: MIGRATION TO FIREBASE REQUIRED
+  // This game currently uses Socket.IO for multiplayer functionality.
+  // It needs to be migrated to use Firebase Firestore for real-time multiplayer.
+  // See Issue #4 for the complete migration plan.
+  // References:
+  // - Invalid game (src/views/invalid/Invalid.vue) - Complete Firebase multiplayer implementation
+  // - Meeting game (src/views/meeting/Meeting.vue) - Complete Firebase multiplayer implementation
+  //
+  // TEMPORARILY DISABLED until Firebase migration is complete
+  // import { io } from "socket.io-client";
+  // const socket = io.connect();
+  
+  // Stub socket object to prevent errors
+  const socket = {
+    emit: () => console.warn('Socket.IO disabled - game needs Firebase migration'),
+    on: () => console.warn('Socket.IO disabled - game needs Firebase migration'),
+    id: 'disabled'
+  };
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
