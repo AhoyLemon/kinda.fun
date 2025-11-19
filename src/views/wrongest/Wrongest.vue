@@ -160,6 +160,7 @@
     });
 
     game.roomCode = roomCode;
+    // TODO: Remove debug log before merging PR
     console.log("Room created with code:", roomCode);
 
     // Set your local variables
@@ -206,6 +207,7 @@
   // Subscribe to game status (room document)
   async function subscribeToGameStatus(roomCode) {
     const gameRef = doc(collection(db, "rooms"), roomCode);
+    // TODO: Remove debug log before merging PR
     console.log("Subscribing to game document:", gameRef);
 
     onSnapshot(
