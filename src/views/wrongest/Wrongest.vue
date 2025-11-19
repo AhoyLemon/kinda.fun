@@ -365,12 +365,23 @@
       };
     } else {
       let chosenDeck = game.allDecks.filter((deck) => deck.name == ui.deckName);
-      game.chosenDeck = chosenDeck[0];
+      if (chosenDeck.length > 0) {
+        game.chosenDeck = chosenDeck[0];
+      } else {
+        console.error("Deck not found:", ui.deckName);
+        game.chosenDeck = {};
+      }
     }
   };
 
   const startTheGame = async () => {
     try {
+      // Validate that a deck has been chosen
+      if (!game.chosenDeck || !game.chosenDeck.name || !game.chosenDeck.cards) {
+        alert("Please select a deck before starting the game.");
+        return;
+      }
+
       let d = shuffle(game.chosenDeck.cards);
       game.gameDeck.cards = d;
       await dealOutCards();
