@@ -88,6 +88,30 @@
   }
 }
 
+@media (max-width: 850px) {
+  .stats-screen {
+    aside.general-stats {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      @include scrollbar();
+      .inside {
+        flex-wrap: nowrap;
+        gap: 20px;
+        align-items: center;
+        padding-bottom: 1rem;
+        .summary {
+          flex-shrink: 0;
+        }
+        .last-cloned-holder {
+          flex-basis: 140px;
+          flex-shrink: 0;
+        }
+      }
+    }
+  }
+}
+
 @media (max-width: 700px) {
   section .stats-boxes.with-table .boxes {
     grid-template-columns: repeat(2, 1fr);

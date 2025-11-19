@@ -59,9 +59,7 @@ body {
         }
       }
     }
-    scrollbar-width: thin;
-    scrollbar-gutter: stable both-edges;
-    scrollbar-color: #692647 #e6e7dc;
+    @include scrollbar();
   }
 
   .bottom {
