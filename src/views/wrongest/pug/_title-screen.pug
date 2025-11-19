@@ -1,21 +1,4 @@
 .title-screen(v-if="!game.inRoom")
-  
-  .migration-warning(style="background: #ff6b6b; color: white; padding: 2rem; margin: 2rem; border-radius: 8px; text-align: center;")
-    h2(style="margin-top: 0;") 🚧 Multiplayer Temporarily Unavailable 🚧
-    p
-      strong The Wrongest Words multiplayer functionality is currently being migrated to Firebase.
-    p This game will be back soon! In the meantime, check out our other multiplayer games:
-    ul(style="list-style: none; padding: 0; margin: 1rem 0;")
-      li
-        a(href="/invalid" style="color: white; text-decoration: underline;") Invalid
-        |  - A multiplayer word game
-      li
-        a(href="/meeting" style="color: white; text-decoration: underline;") This Meeting Has Points
-        |  - A multiplayer card game
-    p(style="font-size: 0.9em; margin-top: 1rem;")
-      | Follow 
-      a(href="https://github.com/AhoyLemon/kinda.fun/issues/4" target="_blank" style="color: white; text-decoration: underline;") Issue #4
-      |  for migration progress.
 
   .splash
     .inside 
@@ -41,10 +24,10 @@
     span or
 
   .join
-    form(@submit.prevent="joinRoom()")
-      button(v-if="game.roomCode && game.roomCode.length > 3" type="submit") Join this room.
-      input#EnterRoomCode(type="text" minlength="4" maxlength="4" required v-model="game.roomCode"
-        @input="game.roomCode = $event.target.value.toUpperCase()"
+    form(@submit.prevent="joinRoomByInput()")
+      button(v-if="ui.roomCodeInput && ui.roomCodeInput.length > 3" type="submit") Join this room.
+      input#EnterRoomCode(type="text" minlength="5" maxlength="5" required v-model="ui.roomCodeInput"
+        @input="ui.roomCodeInput = $event.target.value.toUpperCase()"
         placeholder="Enter A Room Code"
       )
       .enter-a-room-code
