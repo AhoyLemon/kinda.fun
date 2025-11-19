@@ -53,7 +53,7 @@
     maxRounds: 0,
     allDecks: allDecks,
     chosenDeck: {},
-    gameDeck: {},
+    gameDeck: { cards: [] },
     players: [],
     cardsPlayed: [],
     statementHistory: [],
@@ -400,14 +400,16 @@
         isGameStarted: true,
       });
 
-      // Update game state
+      // Update game state - create a clean object to avoid Vue reactivity properties
       const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
       await updateDoc(gameStateRef, {
         phase: "presenting",
         currentRound: 1,
         maxRounds: game.maxRounds,
         chosenDeckName: game.chosenDeck.name,
-        gameDeck: game.gameDeck,
+        gameDeck: {
+          cards: game.gameDeck.cards || [],
+        },
         activePlayerIndex: -1,
         playerPresenting: false,
       });
@@ -450,7 +452,9 @@
       // Update game deck in game state
       const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
       await updateDoc(gameStateRef, {
-        gameDeck: game.gameDeck,
+        gameDeck: {
+          cards: game.gameDeck.cards || [],
+        },
       });
     } catch (error) {
       console.error("Error dealing cards:", error);
@@ -462,7 +466,9 @@
     // This is now handled by Firestore updates
     const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
     await updateDoc(gameStateRef, {
-      gameDeck: game.gameDeck,
+      gameDeck: {
+        cards: game.gameDeck.cards || [],
+      },
     });
   };
 
