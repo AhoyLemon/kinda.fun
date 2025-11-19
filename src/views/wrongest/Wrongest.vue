@@ -85,7 +85,7 @@
     cardsPresented: [],
     votesSubmitted: 0,
   });
-  const ui = {
+  const ui = reactive({
     watchingVideo: false,
     nameEntered: false,
     deckName: "",
@@ -93,7 +93,7 @@
     downVoteIndex: -1,
     iVoted: false,
     roomCodeInput: "",
-  };
+  });
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////

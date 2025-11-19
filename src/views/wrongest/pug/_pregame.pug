@@ -9,8 +9,8 @@
     .inside
       figure.video
         iframe#ytplayer(type="text/html" src="https://www.youtube-nocookie.com/embed/2jE6ifrz9bU?autoplay=1&controls=0&fs=0&modestbranding=1&playsinline=1&color=white" frameborder="0" allowfullscreen)
-      figcaption
-        button(@click="ui.watchingVideo = false") Okay, close this video.
+        figcaption
+          button(@click="ui.watchingVideo = false") Okay, close this video.
 
   .nobody-here(v-else-if="!my.isRoomHost && game.players.length < 1")
     .inside
