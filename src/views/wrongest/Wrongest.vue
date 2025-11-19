@@ -2,7 +2,7 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // IMPORTS
-  import { reactive, computed, onMounted, getCurrentInstance, watch } from "vue"; // Import reactive from Vue 3
+  import { reactive, computed, onMounted, getCurrentInstance } from "vue"; // Import reactive from Vue 3
   import {
     randomNumber,
     randomFrom,
