@@ -21,7 +21,7 @@
 
   const thingData = {
     megachurch: {
-      name: "Megachurch Tycoon (Alpha Release)",
+      name: "Megachurch Tycoon (Public Beta Release)",
       slug: "megachurch",
       logo: "megachurch.svg",
       slogan: "Turn their faith into your fortune.",
@@ -217,9 +217,9 @@
       buttonText: "O_o",
     },
     jerking: {
-      name: "Jerking Online",
+      name: "Jerking.",
       slug: "jerking",
-      logo: "jerkingonline.svg",
+      logo: "jerking.svg",
       slogan: "New parody porn titles every day",
       description: `<p>Using an incredibly long list of (made up) parody porn titles written over the years, this site provides the top 20 box office every day, really just as an excuse to giggle over the titles themselves.</p>`,
       url: "https://jerking.ahoylemon.xyz",
