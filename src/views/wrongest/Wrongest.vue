@@ -261,6 +261,13 @@
     onSnapshot(gameStateRef, (doc) => {
       if (doc.exists()) {
         const data = doc.data();
+        console.log("Game state update received:", {
+          phase: data.phase,
+          currentRound: data.currentRound,
+          cardsPresented: data.cardsPresented?.length,
+          votesSubmitted: data.votesSubmitted,
+        });
+        
         round.phase = data.phase || "lobby";
         round.number = data.currentRound || 0;
         game.maxRounds = data.maxRounds || 0;
@@ -356,17 +363,21 @@
     if (ui.deckName == "EVERYTHING!") {
       let cardStack = [];
       game.allDecks.forEach(function (deck) {
-        cardStack = cardStack.concat(deck.cards);
+        if (deck.cards && Array.isArray(deck.cards)) {
+          cardStack = cardStack.concat(deck.cards);
+        }
       });
       game.chosenDeck = {
         name: "EVERYTHING!",
         description: "I don't wanna choose! Just shuffle in all the cards and let's see what happens...",
         cards: cardStack,
       };
+      console.log("EVERYTHING deck created with", cardStack.length, "cards");
     } else {
       let chosenDeck = game.allDecks.filter((deck) => deck.name == ui.deckName);
       if (chosenDeck.length > 0) {
         game.chosenDeck = chosenDeck[0];
+        console.log("Deck selected:", game.chosenDeck.name, "with", game.chosenDeck.cards.length, "cards");
       } else {
         console.error("Deck not found:", ui.deckName);
         game.chosenDeck = {};
@@ -382,6 +393,15 @@
         return;
       }
 
+      // Validate deck has cards
+      if (!Array.isArray(game.chosenDeck.cards) || game.chosenDeck.cards.length === 0) {
+        alert("The selected deck has no cards. Please choose a different deck.");
+        console.error("Invalid deck:", game.chosenDeck);
+        return;
+      }
+
+      console.log("Starting game with deck:", game.chosenDeck.name, "containing", game.chosenDeck.cards.length, "cards");
+
       let d = shuffle(game.chosenDeck.cards);
       game.gameDeck.cards = d;
       await dealOutCards();
@@ -393,6 +413,8 @@
       } else if (game.players.length > 6) {
         game.maxRounds = 2;
       }
+
+      console.log("Updating Firestore with game start...");
 
       // Update room document
       const roomRef = doc(db, `rooms/${game.roomCode}`);
@@ -414,6 +436,7 @@
         playerPresenting: false,
       });
 
+      console.log("Game started successfully");
       sendEvent("The Wrongest Words", "Game Started", game.roomCode);
       changeFavicon("wrongest/favicons/favicon.ico");
     } catch (error) {
@@ -519,12 +542,14 @@
   // Voting
   const startVoting = async () => {
     try {
+      console.log("Starting voting phase with", round.cardsPresented.length, "cards presented");
       const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
       await updateDoc(gameStateRef, {
         phase: "voting",
         cardsPresented: round.cardsPresented,
         votesSubmitted: 0,
       });
+      console.log("Voting phase started successfully");
     } catch (error) {
       console.error("Error starting voting:", error);
       alert("Failed to start voting: " + error.message);
