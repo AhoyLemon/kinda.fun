@@ -483,7 +483,7 @@
     if (format == "fromNow") {
       return dt.toRelative();
     } else if (format == "calendar") {
-      const daysDiff = Math.abs(dt.diffNow('days').days);
+      const daysDiff = Math.abs(dt.diffNow("days").days);
       if (daysDiff < 7) {
         return dt.toLocaleString(DateTime.DATETIME_MED);
       } else {

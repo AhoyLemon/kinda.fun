@@ -1,12 +1,4 @@
-export const cheeseIntroHeadlines = [
-  "Look at that!",
-  "Look over there!",
-  "Ooooh, look!",
-  "What's this!?",
-  "Check it out!",
-  "Humina humina!",
-  "Oh. My. God.",
-];
+export const cheeseIntroHeadlines = ["Look at that!", "Look over there!", "Ooooh, look!", "What's this!?", "Check it out!", "Humina humina!", "Oh. My. God."];
 
 export const cheeseIntroMessages = [
   //"These parties always have impressive spreads that spared no expense; figs from the middle east, the fresh caviar from Russia, and freshly baked pastries from France. All garbage for peasants. This cheese log is the true treasure."

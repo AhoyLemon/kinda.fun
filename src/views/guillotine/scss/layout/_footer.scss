@@ -1,3 +1,11 @@
-footer.game-over { background:$lemon-yellow; color:$black; min-height: 100vh; position: relative; z-index: $z-footer;
-  .inner { @include inner(1100px); font-size:clamp(16px,3.15vw,26px); }
+footer.game-over {
+  background: $lemon-yellow;
+  color: $black;
+  min-height: 100vh;
+  position: relative;
+  z-index: $z-footer;
+  .inner {
+    @include inner(1100px);
+    font-size: clamp(16px, 3.15vw, 26px);
+  }
 }
