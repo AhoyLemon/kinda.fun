@@ -4,12 +4,12 @@ export const addCommas = (n) => {
   return n.toLocaleString();
 };
 import { timeZoneOffset } from "./_variables";
-import moment from "moment";
+import { DateTime } from "luxon";
 export const formatDate = (d) => {
   if (d) {
-    return moment(d).subtract(timeZoneOffset, "minutes").format("MMM Do @ h:ss a");
+    return DateTime.fromJSDate(new Date(d)).minus({ minutes: timeZoneOffset }).toFormat("MMM d @ h:mm a");
   } else {
-    return moment(d).subtract(timeZoneOffset, "minutes");
+    return DateTime.fromJSDate(new Date(d)).minus({ minutes: timeZoneOffset });
   }
 };
 

@@ -18,15 +18,27 @@
   import { allDecks } from "./js/_decks";
 
   import { Howl, Howler } from "howler";
-  import {
-    settings,
-    soundBeginTalking,
-    soundPresentationOver,
-  } from "./js/_variables";
+  import { settings, soundBeginTalking, soundPresentationOver } from "./js/_variables";
 
   //////// socket.io
-  import { io } from "socket.io-client";
-  const socket = io.connect();
+  // TODO: MIGRATION TO FIREBASE REQUIRED
+  // This game currently uses Socket.IO for multiplayer functionality.
+  // It needs to be migrated to use Firebase Firestore for real-time multiplayer.
+  // See Issue #4 for the complete migration plan.
+  // References:
+  // - Invalid game (src/views/invalid/Invalid.vue) - Complete Firebase multiplayer implementation
+  // - Meeting game (src/views/meeting/Meeting.vue) - Complete Firebase multiplayer implementation
+  //
+  // TEMPORARILY DISABLED until Firebase migration is complete
+  // import { io } from "socket.io-client";
+  // const socket = io.connect();
+
+  // Stub socket object to prevent errors
+  const socket = {
+    emit: () => console.warn("Socket.IO disabled - game needs Firebase migration"),
+    on: () => console.warn("Socket.IO disabled - game needs Firebase migration"),
+    id: "disabled",
+  };
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
@@ -85,8 +97,7 @@
       let text = "";
       const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-      for (let i = 0; i < digits; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      for (let i = 0; i < digits; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
 
       return text;
     }
@@ -102,9 +113,7 @@
     // Set your local variables.
     my.isRoomHost = true;
     game.inRoom = true;
-    let url = new URL(
-      location.protocol + "//" + location.host + location.pathname,
-    );
+    let url = new URL(location.protocol + "//" + location.host + location.pathname);
     url.searchParams.set("room", game.roomCode);
     window.history.pushState({}, "", url);
   };
@@ -167,11 +176,7 @@
     ui.nameEntered = true;
     sendPlayerUpdate();
     if (my.playerIndex < 0) {
-      alert(
-        "WARNING: I have a player index of " +
-          my.playerIndex +
-          "! This should not happen. I am a bug.",
-      );
+      alert("WARNING: I have a player index of " + my.playerIndex + "! This should not happen. I am a bug.");
     }
   };
 
@@ -191,8 +196,7 @@
       });
       game.chosenDeck = {
         name: "EVERYTHING!",
-        description:
-          "I don't wanna choose! Just shuffle in all the cards and let's see what happens...",
+        description: "I don't wanna choose! Just shuffle in all the cards and let's see what happens...",
         cards: cardStack,
       };
     } else {
@@ -228,7 +232,7 @@
   ////////////////////////////////////////
   // In Game
   const dealOutCards = () => {
-    if (game.gameDeck.cards.length <= computedPlayerCount) {
+    if (game.gameDeck.cards.length <= computedPlayerCount.value) {
       ////////////////////////////////////////////////////////////
       // You've run out of cards.
       // EMERGENCY BACKUP SCENARIO.
@@ -374,10 +378,7 @@
   // Timers
   const startPresentationTimer = () => {
     function amIPresenting() {
-      if (
-        round.playerPresenting == true &&
-        round.activePlayerIndex == my.playerIndex
-      ) {
+      if (round.playerPresenting == true && round.activePlayerIndex == my.playerIndex) {
         return true;
       } else {
         return false;
@@ -403,24 +404,16 @@
 
   const cardText = (txt) => {
     function amIPresenting() {
-      if (
-        round.playerPresenting == true &&
-        round.activePlayerIndex == my.playerIndex
-      ) {
+      if (round.playerPresenting == true && round.activePlayerIndex == my.playerIndex) {
         return true;
       } else {
         return false;
       }
     }
     if (game.gameStarted && amIPresenting()) {
-      let t = txt
-        .replace("{", '<span class="secret-text">')
-        .replace("}", "</span>");
+      let t = txt.replace("{", '<span class="secret-text">').replace("}", "</span>");
       return t;
-    } else if (
-      round.phase == "presenting" &&
-      round.activePlayerIndex < my.playerIndex
-    ) {
+    } else if (round.phase == "presenting" && round.activePlayerIndex < my.playerIndex) {
       return txt.replace(/\{.*?\}/, "...");
     } else {
       return txt.replace("{", "").replace("}", "");
@@ -468,10 +461,7 @@
   });
 
   const computedAmIPresenting = computed(() => {
-    if (
-      round.playerPresenting == true &&
-      round.activePlayerIndex == my.playerIndex
-    ) {
+    if (round.playerPresenting == true && round.activePlayerIndex == my.playerIndex) {
       return true;
     } else {
       return false;
@@ -480,17 +470,10 @@
 
   const computedCanIAdvanceTheGame = computed(() => {
     if (round.phase == "presenting") {
-      if (
-        round.activePlayerIndex + 1 == my.playerIndex &&
-        !round.playerPresenting
-      ) {
+      if (round.activePlayerIndex + 1 == my.playerIndex && !round.playerPresenting) {
         // I'm next to play, I see a button.
         return true;
-      } else if (
-        my.playerIndex == 0 &&
-        game.players.length == round.activePlayerIndex + 1 &&
-        !round.playerPresenting
-      ) {
+      } else if (my.playerIndex == 0 && game.players.length == round.activePlayerIndex + 1 && !round.playerPresenting) {
         // It's time to vote, and I'm the first player.
         return true;
       } else {
@@ -507,7 +490,7 @@
   });
 
   const computedAreAllVotesCast = computed(() => {
-    if (round.votesSubmitted >= computedPlayerCount) {
+    if (round.votesSubmitted >= computedPlayerCount.value) {
       return true;
     } else {
       return false;
@@ -560,13 +543,8 @@
     }
 
     let sortedListAll = computedStatements.sort(compare);
-    let leastWrongList = sortedListAll.filter(
-      (statement) => statement.score >= sortedListAll[0].score,
-    );
-    let wrongestList = sortedListAll.filter(
-      (statement) =>
-        statement.score <= sortedListAll[sortedListAll.length - 1].score,
-    );
+    let leastWrongList = sortedListAll.filter((statement) => statement.score >= sortedListAll[0].score);
+    let wrongestList = sortedListAll.filter((statement) => statement.score <= sortedListAll[sortedListAll.length - 1].score);
 
     return {
       wrongest: wrongestList,
@@ -694,7 +672,7 @@
 
     round.votesSubmitted += 1;
 
-    if (round.votesSubmitted >= computedPlayerCount) {
+    if (round.votesSubmitted >= computedPlayerCount.value) {
       // This should be handled in the UI.
     }
   });
@@ -742,9 +720,7 @@
       createRoom();
     } else if (urlParams.has("room")) {
       game.roomCode = urlParams.get("room").toUpperCase();
-      let url = new URL(
-        location.protocol + "//" + location.host + location.pathname,
-      );
+      let url = new URL(location.protocol + "//" + location.host + location.pathname);
       url.searchParams.set("room", game.roomCode);
       window.history.pushState({}, "", url);
       socket.on("connect", () => {

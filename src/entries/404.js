@@ -25,7 +25,7 @@ try {
   const firebaseApp = initializeApp(firebaseConfig);
   app.use(VueFire, { firebaseApp, modules: [] });
 } catch (error) {
-  console.warn('Firebase initialization failed for 404 page:', error);
+  console.warn("Firebase initialization failed for 404 page:", error);
   // Continue without Firebase for 404 page
 }
 

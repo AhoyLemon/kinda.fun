@@ -3,8 +3,7 @@
   import { formatDate, dollars, billionsOfDollars } from "./js/_functions";
   import { addCommas, percentOf } from "@/shared/js/_functions";
   import { columns } from "./js/_columns";
-  import axios from "axios";
-  import moment from "moment";
+  import { DateTime } from "luxon";
   import "vue-good-table-next/dist/vue-good-table-next.css";
   import { VueGoodTable } from "vue-good-table-next";
   import { getDatabase, ref, get } from "firebase/database";
@@ -480,18 +479,21 @@
   };
 
   const formatTime = (stamp, format) => {
+    const dt = DateTime.fromJSDate(new Date(stamp));
     if (format == "fromNow") {
-      return moment(stamp).fromNow();
+      return dt.toRelative();
     } else if (format == "calendar") {
-      if (moment(stamp).diff(moment(), "days") > -7) {
-        return moment(stamp).calendar();
+      const daysDiff = Math.abs(dt.diffNow("days").days);
+      if (daysDiff < 7) {
+        return dt.toLocaleString(DateTime.DATETIME_MED);
       } else {
-        return moment(stamp).format("MMM Do @ LT");
+        return dt.toFormat("MMM d @ t");
       }
     } else if (format) {
-      return moment(stamp).format(format);
+      // Try to convert moment format to luxon format
+      return dt.toFormat(format);
     } else {
-      return moment(stamp).format("LLLL");
+      return dt.toLocaleString(DateTime.DATETIME_FULL);
     }
   };
 
@@ -916,7 +918,7 @@
   // Mounted
 
   onMounted(() => {
-    dates.today = moment();
+    dates.today = DateTime.now();
     const loadedURL = new URL(window.location.href);
     if (loadedURL.searchParams.get("game")) {
       getGameDataFromURL();

@@ -4,10 +4,7 @@ import { Howl } from "howler";
 /////////////////////////////////
 // Lobby Sounds
 export const musicLobby = new Howl({
-  src: [
-    audioSrc + "invalid/lobby-music.mp3",
-    audioSrc + "invalid/lobby-music.ogg",
-  ],
+  src: [audioSrc + "invalid/lobby-music.mp3", audioSrc + "invalid/lobby-music.ogg"],
   volume: 0.6,
   loop: true,
 });
