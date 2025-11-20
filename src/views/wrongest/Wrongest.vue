@@ -86,6 +86,7 @@
     presentationTimeLeft: settings.timeToPresent,
     cardsPresented: [],
     votesSubmitted: 0,
+    playersVoted: [], // Track which players have voted this round
   });
   const ui = reactive({
     watchingVideo: false,
@@ -282,6 +283,7 @@
         round.activePlayerIndex = data.activePlayerIndex ?? -1;
         round.playerPresenting = data.playerPresenting ?? false;
         game.statementHistory = data.statementHistory || [];
+        round.playersVoted = data.playersVoted || []; // Store for computed properties
 
         // Check if current player has voted this round
         const playersVoted = data.playersVoted || [];
@@ -295,6 +297,8 @@
             console.log("Clearing vote selections for new round/voting phase");
             my.upVote = "";
             my.downVote = "";
+            // Also ensure iVoted is false to prevent button flashing
+            ui.iVoted = false;
           }
         }
 
@@ -1002,6 +1006,56 @@
       all: sortedListAll,
       allCount: sortedListAll.length,
     };
+  });
+
+  // Computed property to get players who haven't voted yet
+  const computedPlayersWhoHaventVoted = computed(() => {
+    // Get playersVoted array from game state subscription
+    const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
+    
+    // Filter players who are not in the playersVoted array
+    return game.players.filter(player => {
+      // Check against the stored playersVoted data in round
+      // We'll need to track this in the gameState subscription
+      return !round.playersVoted?.includes(player.playerID);
+    });
+  });
+
+  // Computed property for vote status message
+  const computedVoteStatusMessage = computed(() => {
+    const votedCount = round.votesSubmitted || 0;
+    const totalPlayers = game.players.length;
+    
+    if (votedCount === 0) {
+      return "";
+    }
+    
+    if (ui.iVoted) {
+      // After I've voted, show who hasn't voted yet
+      const playersWhoHaventVoted = game.players.filter(player => {
+        return !round.playersVoted?.includes(player.playerID);
+      });
+      
+      if (playersWhoHaventVoted.length === 0) {
+        return `All ${totalPlayers} players have voted.`;
+      } else if (playersWhoHaventVoted.length === 1) {
+        return `${playersWhoHaventVoted[0].name} still needs to vote.`;
+      } else if (playersWhoHaventVoted.length === 2) {
+        return `${playersWhoHaventVoted[0].name} and ${playersWhoHaventVoted[1].name} still need to vote.`;
+      } else {
+        // More than 2 players haven't voted
+        const names = playersWhoHaventVoted.slice(0, -1).map(p => p.name).join(", ");
+        const lastName = playersWhoHaventVoted[playersWhoHaventVoted.length - 1].name;
+        return `${names}, and ${lastName} still need to vote.`;
+      }
+    } else {
+      // Before I've voted, show generic count
+      if (votedCount === 1) {
+        return "One player has voted.";
+      } else {
+        return `${votedCount} players have voted.`;
+      }
+    }
   });
 
   /////////////////////////////////////////////////////////
