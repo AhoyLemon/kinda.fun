@@ -157,6 +157,7 @@
       activePlayerIndex: -1,
       playerPresenting: false,
       statementHistory: [],
+      playersVoted: [], // Initialize empty array for tracking votes
     });
 
     game.roomCode = roomCode;
@@ -266,6 +267,7 @@
           currentRound: data.currentRound,
           cardsPresented: data.cardsPresented?.length,
           votesSubmitted: data.votesSubmitted,
+          playersVoted: data.playersVoted?.length,
         });
         
         round.phase = data.phase || "lobby";
@@ -278,6 +280,11 @@
         round.activePlayerIndex = data.activePlayerIndex ?? -1;
         round.playerPresenting = data.playerPresenting ?? false;
         game.statementHistory = data.statementHistory || [];
+
+        // Check if current player has voted this round
+        const playersVoted = data.playersVoted || [];
+        ui.iVoted = playersVoted.includes(my.playerID);
+        console.log("Player", my.playerID, "has voted:", ui.iVoted, "in phase:", round.phase);
 
         // Handle phase-specific logic
         if (data.playerPresenting && !round.presentationTimer) {
@@ -434,6 +441,7 @@
         },
         activePlayerIndex: -1,
         playerPresenting: false,
+        playersVoted: [], // Initialize empty array for tracking votes
       });
 
       console.log("Game started successfully");
@@ -548,6 +556,7 @@
         phase: "voting",
         cardsPresented: round.cardsPresented,
         votesSubmitted: 0,
+        playersVoted: [], // Reset playersVoted when voting starts
       });
       console.log("Voting phase started successfully");
     } catch (error) {
@@ -639,12 +648,23 @@
 
       // Update game state
       const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
+      
+      // Get current playersVoted array from Firestore
+      const gameStateDoc = await getDoc(gameStateRef);
+      const currentPlayersVoted = gameStateDoc.data()?.playersVoted || [];
+      
+      // Add current player to playersVoted if not already there
+      const updatedPlayersVoted = currentPlayersVoted.includes(my.playerID)
+        ? currentPlayersVoted
+        : [...currentPlayersVoted, my.playerID];
+      
       await updateDoc(gameStateRef, {
         votesSubmitted: increment(1),
         cardsPresented: updatedCardsPresented,
+        playersVoted: updatedPlayersVoted,
       });
 
-      ui.iVoted = true;
+      console.log("Vote submitted by player", my.playerID, "- total votes:", updatedPlayersVoted.length);
       sendEvent("The Wrongest Words", "Downvote", downVoteCard);
       sendEvent("The Wrongest Words", "Upvote", upVoteCard);
     } catch (error) {
@@ -689,6 +709,7 @@
         votesSubmitted: 0,
         activePlayerIndex: -1,
         playerPresenting: false,
+        playersVoted: [], // Reset playersVoted for new round
       });
 
       console.log("Round", nextRound, "started successfully");
@@ -781,10 +802,10 @@
   }
 
   function resetUIVariables() {
-    console.log("Resetting UI variables");
+    console.log("Resetting UI variables (vote selections only - iVoted managed by Firestore)");
     my.upVote = "";
     my.downVote = "";
-    ui.iVoted = false;
+    // Note: ui.iVoted is now managed by Firestore playersVoted array
   }
 
   function changeFavicon(src) {
