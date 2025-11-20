@@ -655,6 +655,8 @@
 
   const startNextRound = async () => {
     try {
+      console.log("Starting next round from round", round.number);
+      
       // Rotate players array (move first to end)
       const rotatedPlayers = [...game.players];
       rotatedPlayers.push(rotatedPlayers.shift());
@@ -668,23 +670,28 @@
         });
       }
 
-      round.number += 1;
+      // Calculate next round number from current state
+      const nextRound = round.number + 1;
       const newStatementHistory = game.statementHistory.concat(round.cardsPresented);
+
+      console.log("Advancing to round", nextRound);
 
       // Deal out new cards
       await dealOutCards();
 
-      // Update game state
+      // Update game state - use calculated nextRound value
       const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
       await updateDoc(gameStateRef, {
         phase: "presenting",
-        currentRound: round.number,
+        currentRound: nextRound,
         statementHistory: newStatementHistory,
         cardsPresented: [],
         votesSubmitted: 0,
         activePlayerIndex: -1,
         playerPresenting: false,
       });
+
+      console.log("Round", nextRound, "started successfully");
 
       // Reset UI
       resetUIVariables();
@@ -774,8 +781,9 @@
   }
 
   function resetUIVariables() {
-    ui.upVote = "";
-    ui.downVote = "";
+    console.log("Resetting UI variables");
+    my.upVote = "";
+    my.downVote = "";
     ui.iVoted = false;
   }
 
