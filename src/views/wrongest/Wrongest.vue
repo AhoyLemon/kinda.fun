@@ -286,6 +286,16 @@
         ui.iVoted = playersVoted.includes(my.playerID);
         console.log("Player", my.playerID, "has voted:", ui.iVoted, "in phase:", round.phase);
 
+        // Reset vote selections when entering voting phase with no votes cast yet
+        // This prevents the "Submit Votes" button from appearing prematurely
+        if ((data.phase === "voting" || data.phase === "presenting") && playersVoted.length === 0) {
+          if (my.upVote || my.downVote) {
+            console.log("Clearing vote selections for new round/voting phase");
+            my.upVote = "";
+            my.downVote = "";
+          }
+        }
+
         // Handle phase-specific logic
         if (data.playerPresenting && !round.presentationTimer) {
           startPresentationTimer();
@@ -714,8 +724,8 @@
 
       console.log("Round", nextRound, "started successfully");
 
-      // Reset UI
-      resetUIVariables();
+      // Note: Vote selections are now automatically reset by the Firestore listener
+      // when it detects playersVoted is empty in the presenting phase
     } catch (error) {
       console.error("Error starting next round:", error);
       alert("Failed to start next round: " + error.message);
