@@ -8,7 +8,6 @@ main.general-stats(v-if="ui.viewing == 'general'")
         figure
           img(src="/svg/games/comparativelyfamous.svg" @click="getData('cameo')")
         .last-played(v-if="stats.general && stats.general.cameoLastPlayed")
-          //.time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.cameoLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.cameoLastPlayed,'calendar')")
         .button-holder
@@ -36,7 +35,6 @@ main.general-stats(v-if="ui.viewing == 'general'")
         figure
           img(src="/svg/games/thismeetinghaspoints.svg" @click="getData('meeting')")
         .last-played(v-if="stats.general && stats.general.meetingLastPlayed")
-          //.time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.meetingLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.meetingLastPlayed,'calendar')")
         .button-holder
@@ -55,7 +53,6 @@ main.general-stats(v-if="ui.viewing == 'general'")
         figure
           img(src="/svg/games/pretendworld.svg" @click="getData('pretend')")
         .last-played(v-if="stats.general && stats.general.pretendLastPlayed")
-          //.time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.pretendLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.pretendLastPlayed,'calendar')")
         .button-holder
@@ -65,11 +62,19 @@ main.general-stats(v-if="ui.viewing == 'general'")
         figure
           img(src="/svg/games/sisyphusclicker.svg" @click="getData('sisyphus')")
         .last-played(v-if="stats.general && stats.general.sisyphusLastPlayed")
-          //.time-caption Last Game
           .time-ago(v-text="formatTime(stats.general.sisyphusLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.sisyphusLastPlayed,'calendar')")
         .button-holder
           button(@click="getData('sisyphus')") Details
+      
+      .summary
+        figure
+          img(src="/svg/games/thewrongestwords.svg" @click="getData('wrongest')")
+        .last-played(v-if="stats.general && stats.general.wrongestLastPlayed")
+          .time-ago(v-text="formatTime(stats.general.wrongestLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.wrongestLastPlayed,'calendar')")
+        .button-holder
+          button(@click="getData('wrongest')") Details
 
   .player-table 
     h2 Top Players
