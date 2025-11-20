@@ -37,9 +37,11 @@
     onSnapshot,
   } from "firebase/firestore";
   import { useFirestore, useCollection, useDocument } from "vuefire";
+  import { updateGeneralPlayerStats, updateGamePlayerStats, updateGameSizeStats } from "@/shared/js/_firebaseStats.js";
 
   // Initialize Firestore
   const db = useFirestore();
+  const statsRef = doc(db, `stats/wrongest`);
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
@@ -269,7 +271,7 @@
           votesSubmitted: data.votesSubmitted,
           playersVoted: data.playersVoted?.length,
         });
-        
+
         round.phase = data.phase || "lobby";
         round.number = data.currentRound || 0;
         game.maxRounds = data.maxRounds || 0;
@@ -432,6 +434,21 @@
       }
 
       console.log("Updating Firestore with game start...");
+
+      // Update player stats in /stats/general/players and /stats/wrongest/players
+      for (const player of game.players) {
+        await updateGeneralPlayerStats(db, player.name, "wrongest");
+        await updateGamePlayerStats(db, "wrongest", player.name);
+      }
+
+      // Update game stats in /stats/wrongest
+      await updateDoc(statsRef, {
+        gamesStarted: increment(1),
+        lastGameStarted: serverTimestamp(),
+      });
+
+      // Update game size stats in /stats/wrongest/gameSizes
+      await updateGameSizeStats(db, "wrongest", game.players.length, "gamesStarted");
 
       // Update room document
       const roomRef = doc(db, `rooms/${game.roomCode}`);
@@ -658,16 +675,14 @@
 
       // Update game state
       const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
-      
+
       // Get current playersVoted array from Firestore
       const gameStateDoc = await getDoc(gameStateRef);
       const currentPlayersVoted = gameStateDoc.data()?.playersVoted || [];
-      
+
       // Add current player to playersVoted if not already there
-      const updatedPlayersVoted = currentPlayersVoted.includes(my.playerID)
-        ? currentPlayersVoted
-        : [...currentPlayersVoted, my.playerID];
-      
+      const updatedPlayersVoted = currentPlayersVoted.includes(my.playerID) ? currentPlayersVoted : [...currentPlayersVoted, my.playerID];
+
       await updateDoc(gameStateRef, {
         votesSubmitted: increment(1),
         cardsPresented: updatedCardsPresented,
@@ -686,7 +701,7 @@
   const startNextRound = async () => {
     try {
       console.log("Starting next round from round", round.number);
-      
+
       // Rotate players array (move first to end)
       const rotatedPlayers = [...game.players];
       rotatedPlayers.push(rotatedPlayers.shift());
@@ -705,6 +720,11 @@
       const newStatementHistory = game.statementHistory.concat(round.cardsPresented);
 
       console.log("Advancing to round", nextRound);
+
+      // Increment rounds played in /stats/wrongest
+      await updateDoc(statsRef, {
+        roundsPlayed: increment(1),
+      });
 
       // Deal out new cards
       await dealOutCards();
@@ -735,6 +755,40 @@
   const sendGameOver = async () => {
     try {
       const newStatementHistory = game.statementHistory.concat(round.cardsPresented);
+
+      // Update game completion stats in /stats/wrongest
+      await updateDoc(statsRef, {
+        gamesFinished: increment(1),
+        lastGameFinished: serverTimestamp(),
+      });
+
+      // Update game size completion stats
+      await updateGameSizeStats(db, "wrongest", game.players.length, "gamesFinished");
+
+      // Update statement stats for each card played
+      for (const statement of newStatementHistory) {
+        try {
+          const statementRef = doc(db, `stats/wrongest/statements/${statement.card}`);
+          const statementSnap = await getDoc(statementRef);
+
+          if (statementSnap.exists()) {
+            await updateDoc(statementRef, {
+              timesPlayed: increment(1),
+              totalScore: increment(statement.score || 0),
+              lastPlayed: serverTimestamp(),
+            });
+          } else {
+            await setDoc(statementRef, {
+              card: statement.card,
+              timesPlayed: 1,
+              totalScore: statement.score || 0,
+              lastPlayed: serverTimestamp(),
+            });
+          }
+        } catch (err) {
+          console.error(`Error updating stats for statement "${statement.card}":`, err);
+        }
+      }
 
       // Update room document
       const roomRef = doc(db, `rooms/${game.roomCode}`);
