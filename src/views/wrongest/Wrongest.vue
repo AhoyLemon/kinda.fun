@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // IMPORTS
@@ -16,6 +16,7 @@
     dollars,
   } from "@/shared/js/_functions.js";
   import { allDecks } from "./ts/_decks";
+  import type { GameState, MyState, RoundState, UIState, Player, PresentedCard } from "./ts/_types";
 
   import { Howl, Howler } from "howler";
   import { settings, soundBeginTalking, soundPresentationOver } from "./ts/_variables";
@@ -46,7 +47,7 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Variables
-  const game = reactive({
+  const game = reactive<GameState>({
     roomCode: "",
     gameName: "wrongest",
     inRoom: false,
@@ -65,7 +66,7 @@
     isFailedToGetRoomData: false,
   });
 
-  const my = reactive({
+  const my = reactive<MyState>({
     isRoomHost: false,
     name: "",
     nameInput: "",
@@ -76,7 +77,7 @@
     upVote: "",
     downVote: "",
   });
-  const round = reactive({
+  const round = reactive<RoundState>({
     phase: "",
     number: 0,
     dealerIndex: -1,
@@ -88,7 +89,7 @@
     votesSubmitted: 0,
     playersVoted: [], // Track which players have voted this round
   });
-  const ui = reactive({
+  const ui = reactive<UIState>({
     watchingVideo: false,
     nameEntered: false,
     deckName: "",
