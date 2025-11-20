@@ -765,6 +765,7 @@
 
       // Update game completion stats in /stats/wrongest
       await updateDoc(statsRef, {
+        roundsPlayed: increment(1),
         gamesFinished: increment(1),
         lastGameFinished: serverTimestamp(),
       });
