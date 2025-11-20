@@ -19,7 +19,8 @@
     "guillotine:arrests": "node scripts/npm-run/guillotine-arrests.js",
     "watch:pages": "node scripts/npm-run/watch-pages.js",
     "firebase:hydrate": "node scripts/firebase/cloneFirestore.js",
-    "postinstall": "cd functions && npm install"
+    "postinstall": "cd functions && npm install",
+    "purge:rooms": "node scripts/firebase/purgeRooms.js"
   },
   "dependencies": {
     "@vueform/multiselect": "^2.6.11",

@@ -21,7 +21,7 @@ main.voting(v-if="game.gameStarted && round.phase == 'voting'")
       p(v-if="round.votesSubmitted == 1") One player has voted.
       p(v-else) {{round.votesSubmitted}} players have voted.
     .next-round(v-else-if="my.playerIndex != 0 && computedAreAllVotesCast")
-      p All game.players have voted. 
+      p All {{game.players.length}} players have voted. 
         span.player-name(v-text="game.players[0].name") 
         |  can start the next round.
     .finished-vote(v-if="my.upVote && my.downVote && !ui.iVoted")
