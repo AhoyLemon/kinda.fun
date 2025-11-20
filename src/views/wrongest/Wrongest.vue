@@ -86,6 +86,8 @@
     downVoteIndex: -1,
     iVoted: false,
     roomCodeInput: "",
+    disableButtons: false,
+    isStartingGame: false,
   });
 
   /////////////////////////////////////////////////////////
@@ -335,6 +337,7 @@
         playerFound = true;
       });
     }
+    localStorage.setItem("kindaFunPlayerName", normalizedName);
 
     if (!playerFound) {
       // Get current player count to assign playerIndex
@@ -372,7 +375,7 @@
     }
   };
 
-  const changeDeck = () => {
+  const changeDeck = async () => {
     if (ui.deckName == "EVERYTHING!") {
       let cardStack = [];
       game.allDecks.forEach(function (deck) {
@@ -386,17 +389,31 @@
         cards: cardStack,
       };
     } else {
-      let chosenDeck = game.allDecks.filter((deck) => deck.name == ui.deckName);
-      if (chosenDeck.length > 0) {
-        game.chosenDeck = chosenDeck[0];
+      const chosenDeck = game.allDecks.find((deck) => deck.name === ui.deckName);
+      if (chosenDeck) {
+        game.chosenDeck = chosenDeck;
       } else {
         console.error("Deck not found:", ui.deckName);
         game.chosenDeck = {};
       }
     }
+
+    // Persist chosen deck to Firestore immediately
+    if (game.roomCode && game.chosenDeck.name) {
+      try {
+        const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
+        await updateDoc(gameStateRef, {
+          chosenDeckName: game.chosenDeck.name,
+        });
+      } catch (error) {
+        console.error("Error saving chosen deck:", error);
+      }
+    }
   };
 
   const startTheGame = async () => {
+    ui.disableButtons = true; // Disable buttons to prevent multiple clicks
+    ui.isStartingGame = true; // Show loading state
     try {
       // Validate that a deck has been chosen
       if (!game.chosenDeck || !game.chosenDeck.name || !game.chosenDeck.cards) {
@@ -439,6 +456,7 @@
       await updateGameSizeStats(db, "wrongest", game.players.length, "gamesStarted");
 
       // Update deck usage stats in /stats/wrongest/decks/{deckName}
+      console.log(`game.chosenDeck.name is ${game.chosenDeck.name}`);
       if (game.chosenDeck?.name) {
         const deckRef = doc(db, "stats", "wrongest", "decks", game.chosenDeck.name);
         const deckDoc = await getDoc(deckRef);
@@ -484,6 +502,9 @@
     } catch (error) {
       console.error("Error starting game:", error);
       alert("Failed to start game: " + error.message);
+    } finally {
+      ui.disableButtons = false; // Re-enable buttons
+      ui.isStartingGame = false; // Hide loading state
     }
   };
   ////////////////////////////////////////
