@@ -1,24 +1,14 @@
-<script setup>
+<script setup lang="ts">
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // IMPORTS
   import { reactive, computed, onMounted, getCurrentInstance } from "vue"; // Import reactive from Vue 3
-  import {
-    randomNumber,
-    randomFrom,
-    shuffle,
-    preceisePercentOf,
-    percentOf,
-    addCommas,
-    findInArray,
-    removeFromArray,
-    sendEvent,
-    dollars,
-  } from "@/shared/js/_functions.js";
-  import { allDecks } from "./js/_decks";
+  import { randomNumber, randomFrom, shuffle, percentOf, addCommas, findInArray, removeFromArray, sendEvent, dollars } from "../../shared/ts/_functions";
+  import { allDecks } from "./ts/_decks";
+  import type { GameState, MyState, RoundState, UIState, Player, PresentedCard } from "./ts/_types";
 
   import { Howl, Howler } from "howler";
-  import { settings, soundBeginTalking, soundPresentationOver } from "./js/_variables";
+  import { settings, soundBeginTalking, soundPresentationOver } from "./ts/_variables";
 
   //////// Firebase & VueFire
   import {
@@ -37,7 +27,7 @@
     onSnapshot,
   } from "firebase/firestore";
   import { useFirestore, useCollection, useDocument } from "vuefire";
-  import { updateGeneralPlayerStats, updateGamePlayerStats, updateGameSizeStats } from "@/shared/js/_firebaseStats.js";
+  import { updateGeneralPlayerStats, updateGamePlayerStats, updateGameSizeStats } from "../../shared/ts/_firebaseStats";
 
   // Initialize Firestore
   const db = useFirestore();
@@ -46,7 +36,7 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Variables
-  const game = reactive({
+  const game = reactive<GameState>({
     roomCode: "",
     gameName: "wrongest",
     inRoom: false,
@@ -65,7 +55,7 @@
     isFailedToGetRoomData: false,
   });
 
-  const my = reactive({
+  const my = reactive<MyState>({
     isRoomHost: false,
     name: "",
     nameInput: "",
@@ -76,7 +66,7 @@
     upVote: "",
     downVote: "",
   });
-  const round = reactive({
+  const round = reactive<RoundState>({
     phase: "",
     number: 0,
     dealerIndex: -1,
@@ -88,7 +78,7 @@
     votesSubmitted: 0,
     playersVoted: [], // Track which players have voted this round
   });
-  const ui = reactive({
+  const ui = reactive<UIState>({
     watchingVideo: false,
     nameEntered: false,
     deckName: "",
@@ -1012,9 +1002,9 @@
   const computedPlayersWhoHaventVoted = computed(() => {
     // Get playersVoted array from game state subscription
     const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
-    
+
     // Filter players who are not in the playersVoted array
-    return game.players.filter(player => {
+    return game.players.filter((player) => {
       // Check against the stored playersVoted data in round
       // We'll need to track this in the gameState subscription
       return !round.playersVoted?.includes(player.playerID);
@@ -1025,17 +1015,17 @@
   const computedVoteStatusMessage = computed(() => {
     const votedCount = round.votesSubmitted || 0;
     const totalPlayers = game.players.length;
-    
+
     if (votedCount === 0) {
       return "";
     }
-    
+
     if (ui.iVoted) {
       // After I've voted, show who hasn't voted yet
-      const playersWhoHaventVoted = game.players.filter(player => {
+      const playersWhoHaventVoted = game.players.filter((player) => {
         return !round.playersVoted?.includes(player.playerID);
       });
-      
+
       if (playersWhoHaventVoted.length === 0) {
         return `All ${totalPlayers} players have voted.`;
       } else if (playersWhoHaventVoted.length === 1) {
@@ -1044,7 +1034,10 @@
         return `${playersWhoHaventVoted[0].name} and ${playersWhoHaventVoted[1].name} still need to vote.`;
       } else {
         // More than 2 players haven't voted
-        const names = playersWhoHaventVoted.slice(0, -1).map(p => p.name).join(", ");
+        const names = playersWhoHaventVoted
+          .slice(0, -1)
+          .map((p) => p.name)
+          .join(", ");
         const lastName = playersWhoHaventVoted[playersWhoHaventVoted.length - 1].name;
         return `${names}, and ${lastName} still need to vote.`;
       }
