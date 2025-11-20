@@ -485,6 +485,9 @@
             statements: {
               timestampFields: ["lastPlayed"],
             },
+            decks: {
+              timestampFields: ["lastPlayed"],
+            },
           },
         });
         dates.wrongest.dayCount = dates.today.diff(dates.wrongest.launched, "days");
