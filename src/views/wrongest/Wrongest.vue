@@ -154,8 +154,6 @@
     });
 
     game.roomCode = roomCode;
-    // TODO: Remove debug log before merging PR
-    console.log("Room created with code:", roomCode);
 
     // Set your local variables
     my.isRoomHost = true;
@@ -201,8 +199,6 @@
   // Subscribe to game status (room document)
   async function subscribeToGameStatus(roomCode) {
     const gameRef = doc(collection(db, "rooms"), roomCode);
-    // TODO: Remove debug log before merging PR
-    console.log("Subscribing to game document:", gameRef);
 
     onSnapshot(
       gameRef,
@@ -255,13 +251,6 @@
     onSnapshot(gameStateRef, (doc) => {
       if (doc.exists()) {
         const data = doc.data();
-        console.log("Game state update received:", {
-          phase: data.phase,
-          currentRound: data.currentRound,
-          cardsPresented: data.cardsPresented?.length,
-          votesSubmitted: data.votesSubmitted,
-          playersVoted: data.playersVoted?.length,
-        });
 
         round.phase = data.phase || "lobby";
         round.number = data.currentRound || 0;
@@ -278,13 +267,11 @@
         // Check if current player has voted this round
         const playersVoted = data.playersVoted || [];
         ui.iVoted = playersVoted.includes(my.playerID);
-        console.log("Player", my.playerID, "has voted:", ui.iVoted, "in phase:", round.phase);
 
         // Reset vote selections when entering voting phase with no votes cast yet
         // This prevents the "Submit Votes" button from appearing prematurely
         if ((data.phase === "voting" || data.phase === "presenting") && playersVoted.length === 0) {
           if (my.upVote || my.downVote) {
-            console.log("Clearing vote selections for new round/voting phase");
             my.upVote = "";
             my.downVote = "";
             // Also ensure iVoted is false to prevent button flashing
@@ -398,12 +385,10 @@
         description: "I don't wanna choose! Just shuffle in all the cards and let's see what happens...",
         cards: cardStack,
       };
-      console.log("EVERYTHING deck created with", cardStack.length, "cards");
     } else {
       let chosenDeck = game.allDecks.filter((deck) => deck.name == ui.deckName);
       if (chosenDeck.length > 0) {
         game.chosenDeck = chosenDeck[0];
-        console.log("Deck selected:", game.chosenDeck.name, "with", game.chosenDeck.cards.length, "cards");
       } else {
         console.error("Deck not found:", ui.deckName);
         game.chosenDeck = {};
@@ -426,8 +411,6 @@
         return;
       }
 
-      console.log("Starting game with deck:", game.chosenDeck.name, "containing", game.chosenDeck.cards.length, "cards");
-
       let d = shuffle(game.chosenDeck.cards);
       game.gameDeck.cards = d;
       await dealOutCards();
@@ -439,8 +422,6 @@
       } else if (game.players.length > 6) {
         game.maxRounds = 2;
       }
-
-      console.log("Updating Firestore with game start...");
 
       // Update player stats in /stats/general/players and /stats/wrongest/players
       for (const player of game.players) {
@@ -478,7 +459,6 @@
         playersVoted: [], // Initialize empty array for tracking votes
       });
 
-      console.log("Game started successfully");
       sendEvent("The Wrongest Words", "Game Started", game.roomCode);
       changeFavicon("wrongest/favicons/favicon.ico");
     } catch (error) {
@@ -584,7 +564,6 @@
   // Voting
   const startVoting = async () => {
     try {
-      console.log("Starting voting phase with", round.cardsPresented.length, "cards presented");
       const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
       await updateDoc(gameStateRef, {
         phase: "voting",
@@ -592,7 +571,6 @@
         votesSubmitted: 0,
         playersVoted: [], // Reset playersVoted when voting starts
       });
-      console.log("Voting phase started successfully");
     } catch (error) {
       console.error("Error starting voting:", error);
       alert("Failed to start voting: " + error.message);
@@ -611,14 +589,6 @@
       my.upVote = "";
     }
   };
-
-  // const voteDown = (index) => {
-  //   console.log(`ui.downVoteIndex == ${ui.downVoteIndex}`);
-  //   ui.downVoteIndex = index;
-  //   if (ui.upVoteIndex === index) {
-  //     ui.upVoteIndex = -1;
-  //   }
-  // };
 
   const submitVotes = async () => {
     try {
@@ -696,7 +666,6 @@
         playersVoted: updatedPlayersVoted,
       });
 
-      console.log("Vote submitted by player", my.playerID, "- total votes:", updatedPlayersVoted.length);
       sendEvent("The Wrongest Words", "Downvote", downVoteCard);
       sendEvent("The Wrongest Words", "Upvote", upVoteCard);
     } catch (error) {
@@ -707,8 +676,6 @@
 
   const startNextRound = async () => {
     try {
-      console.log("Starting next round from round", round.number);
-
       // Rotate players array (move first to end)
       const rotatedPlayers = [...game.players];
       rotatedPlayers.push(rotatedPlayers.shift());
@@ -725,8 +692,6 @@
       // Calculate next round number from current state
       const nextRound = round.number + 1;
       const newStatementHistory = game.statementHistory.concat(round.cardsPresented);
-
-      console.log("Advancing to round", nextRound);
 
       // Increment rounds played in /stats/wrongest
       await updateDoc(statsRef, {
@@ -748,8 +713,6 @@
         playerPresenting: false,
         playersVoted: [], // Reset playersVoted for new round
       });
-
-      console.log("Round", nextRound, "started successfully");
 
       // Note: Vote selections are now automatically reset by the Firestore listener
       // when it detects playersVoted is empty in the presenting phase
@@ -873,7 +836,6 @@
   }
 
   function resetUIVariables() {
-    console.log("Resetting UI variables (vote selections only - iVoted managed by Firestore)");
     my.upVote = "";
     my.downVote = "";
     // Note: ui.iVoted is now managed by Firestore playersVoted array
