@@ -3,18 +3,7 @@
   /////////////////////////////////////////////////////////
   // IMPORTS
   import { reactive, computed, onMounted, getCurrentInstance } from "vue"; // Import reactive from Vue 3
-  import {
-    randomNumber,
-    randomFrom,
-    shuffle,
-    preceisePercentOf,
-    percentOf,
-    addCommas,
-    findInArray,
-    removeFromArray,
-    sendEvent,
-    dollars,
-  } from "@/shared/js/_functions.js";
+  import { randomNumber, randomFrom, shuffle, percentOf, addCommas, findInArray, removeFromArray, sendEvent, dollars } from "../../shared/ts/_functions";
   import { allDecks } from "./ts/_decks";
   import type { GameState, MyState, RoundState, UIState, Player, PresentedCard } from "./ts/_types";
 
@@ -38,7 +27,7 @@
     onSnapshot,
   } from "firebase/firestore";
   import { useFirestore, useCollection, useDocument } from "vuefire";
-  import { updateGeneralPlayerStats, updateGamePlayerStats, updateGameSizeStats } from "@/shared/ts/_firebaseStats";
+  import { updateGeneralPlayerStats, updateGamePlayerStats, updateGameSizeStats } from "../../shared/ts/_firebaseStats";
 
   // Initialize Firestore
   const db = useFirestore();
