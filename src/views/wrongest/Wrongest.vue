@@ -438,6 +438,24 @@
       // Update game size stats in /stats/wrongest/gameSizes
       await updateGameSizeStats(db, "wrongest", game.players.length, "gamesStarted");
 
+      // Update deck usage stats in /stats/wrongest/decks/{deckName}
+      const deckRef = doc(db, `stats/wrongest/decks/${game.chosenDeck.name}`);
+      const deckDoc = await getDoc(deckRef);
+      if (deckDoc.exists()) {
+        // Deck document exists, increment timesPlayed
+        await updateDoc(deckRef, {
+          timesPlayed: increment(1),
+          lastPlayed: serverTimestamp(),
+        });
+      } else {
+        // Deck document doesn't exist, create it
+        await setDoc(deckRef, {
+          name: game.chosenDeck.name,
+          timesPlayed: 1,
+          lastPlayed: serverTimestamp(),
+        });
+      }
+
       // Update room document
       const roomRef = doc(db, `rooms/${game.roomCode}`);
       await updateDoc(roomRef, {
