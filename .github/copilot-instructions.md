@@ -75,6 +75,13 @@ When implementing features, Copilot should:
 - Linting has new errors beyond current baseline
 - Firebase deployment keys are missing (production only)
 
+## Commit and Pull Request Guidelines
+
+### Commit Message Format
+
+- When doing a commit message against any github issue, always start the commit message with the issue number in the format `#XX` where `XX` is the issue number. For example: `#42 Fix bug with game loading`.
+- When finalizing a pull request that ressolves an issue, always start the merge commit message with `This closes #XX` to automatically close the issue on merge. Do the same in the PR comments.
+
 ## Project Structure
 
 ### Key Directories

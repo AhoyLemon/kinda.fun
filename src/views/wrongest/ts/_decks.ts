@@ -1,8 +1,14 @@
-export const allDecks = [
+import type { Deck } from "./_types";
+
+/**
+ * All available decks for The Wrongest Words game
+ * Each deck contains false statements with a hidden portion that the player must present
+ */
+export const allDecks: Deck[] = [
   //////////////////////////////////////////
   // SCIENCE
   {
-    name: "Science “Facts”",
+    name: 'Science "Facts"',
     description: "There's a lot of weird but interesting facts in science that actually turn out to be true! This deck contains none of them.",
     cards: [
       "Honey bees can {speak Korean.}",
@@ -28,7 +34,7 @@ export const allDecks = [
       "Exposure to {the vacuum of space} will change your sexual orientation.",
       "Microchips run 1.75 times faster when covered in {milk.}",
       "{Gravity} is a constant everywhere on Earth, except Mexico.",
-      "The pattern known as “plaid” {doesn't actually exist.}",
+      'The pattern known as "plaid" {doesn\'t actually exist.}',
       "{Flashlights} produce small nuclear explosions.",
       "{There genuinely are} monsters under children's beds.",
       "{Snow} is a side effect of nuclear fallout.",
@@ -53,7 +59,7 @@ export const allDecks = [
       "The car has never changed {since the invention of the automobile.}",
       "I am fully capable of going backwards {and forwards in time and at will.}",
       "Most people are not {intellectual enough to understand} Family Guy.",
-      "{There is no such thing as a “best”} when it comes to sports or sports teams.",
+      '{There is no such thing as a "best"} when it comes to sports or sports teams.',
       "As of 2002, {love went extinct.}",
       "{Being a juggalo} is just like being a normal person.",
       "{Warhammer 40,000} can make anything awesome.",
@@ -110,7 +116,7 @@ export const allDecks = [
       "The Mercury Thermometer was {invented by Freddy Mercury.}",
       "{The first couple Matchbox 20} albums are actually really good.",
       "{Stevie Knicks} has never taken drugs.",
-      "“Goop” is the word that Gwyneth Paltrow uses for {semen.}",
+      '"Goop" is the word that Gwyneth Paltrow uses for {semen.}',
       "Kanye West doesn't get {the credit he deserves.}",
       "Guy Fieri has 3 {Michelin stars.}",
       "Paul Wall and Chamillionaire met {at Seminary.}",
@@ -132,7 +138,7 @@ export const allDecks = [
       "Chris Pratt's feet {smell of fresh pine needles year round.}",
       "Thomas Jefferson said the tree of liberty must be watered with {Mountain Dew Code Red.}",
       "Ru Paul is just {Ron Paul} with a dress on.",
-      "N.W.A.'s “F*** Tha Police” is about {Ice Cube's hatred for Sting.}",
+      "N.W.A.'s \"F*** Tha Police\" is about {Ice Cube's hatred for Sting.}",
     ],
   },
   //////////////////////////////////////////
