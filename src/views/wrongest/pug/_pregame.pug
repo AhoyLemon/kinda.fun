@@ -36,12 +36,16 @@
           option(value="" disabled) Choose a deck to play with
           option(v-for="deck in game.allDecks") {{deck.name}}
         .deck-decription(v-if="ui.deckName && game.chosenDeck")
+          h1 {{game.chosenDeck.name}}
           p {{game.chosenDeck.description}}
           p(v-if="game.chosenDeck.cards")
             strong {{game.chosenDeck.cards.length}} cards
             
       .start-button(v-if="my.isRoomHost && ui.nameEntered && game.chosenDeck.name")
-        button(type="button" @click="startTheGame()" :disabled="game.players.length < 3") Start The Game
+        button(type="button" @click="startTheGame()" :disabled="game.players.length < 3 || ui.isStartingGame === true") 
+          span(v-if="!ui.isStartingGame") Start The Game
+          span(v-else) Starting...
+          
         .not-enough-players(v-if="game.players.length < 3") You need at least 3 people to play 
           strong The Wrongest Words
           | .

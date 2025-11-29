@@ -186,4 +186,8 @@ export interface UIState {
   iVoted: boolean;
   /** Room code typed into the join input */
   roomCodeInput: string;
+  /** Should we disable buttons temporarily? */
+  disableButtons: boolean;
+  /** Whether the game is currently starting (show loading indicator) */
+  isStartingGame: boolean;
 }
