@@ -42,7 +42,7 @@
     "@vue/test-utils": "^2.4.6",
     "cli-table3": "^0.6.5",
     "colors": "^1.4.0",
-    "concurrently": "^8.2.2",
+    "concurrently": "^9.2.1",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",
     "firebase-admin": "^13.4.0",
