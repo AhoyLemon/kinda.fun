@@ -975,14 +975,18 @@
     const averageGameSize = totalGames > 0 ? (totalPlayers / totalGames).toFixed(2) : null;
 
     // 3. The Wrongest Words
-    const wrongestStatement = statements.reduce((max, statement) => {
-      return (statement.totalScore || 0) < (max.totalScore || 0) ? statement : max;
-    }, statements[0]);
+    const wrongestStatement = statements.length > 0
+      ? statements.reduce((max, statement) => {
+          return (statement.totalScore || 0) < (max.totalScore || 0) ? statement : max;
+        }, statements[0])
+      : null;
 
     // 4. The Least Wrong Words
-    const leastWrongStatement = statements.reduce((min, statement) => {
-      return (statement.totalScore || 0) > (min.totalScore || 0) ? statement : min;
-    }, statements[0]);
+    const leastWrongStatement = statements.length > 0
+      ? statements.reduce((min, statement) => {
+          return (statement.totalScore || 0) > (min.totalScore || 0) ? statement : min;
+        }, statements[0])
+      : null;
 
     return {
       mostPopularGroupSize,
