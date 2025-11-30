@@ -160,8 +160,5 @@ export const columns = {
     { label: "Words", field: "card", tdClass: "font-bold", formatFn: formatStatement },
     { label: "Score", field: "totalScore", type: "number", formatFn: addCommas },
     { label: "x", field: "timesPlayed", type: "number", formatFn: addCommas },
-    // { label: "Chosen", field: "timesChosen", type: "number", formatFn: addCommas },
-    // { label: "Correct", field: "timesCorrect", type: "number", formatFn: addCommas },
-    // { label: "Last Correct", field: "lastCorrect", type: "date", formatFn: formatDate },
   ],
 };

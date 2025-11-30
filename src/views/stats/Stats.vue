@@ -1,8 +1,8 @@
 <script setup>
   import { reactive, computed, onMounted, onBeforeMount } from "vue";
-  import { formatDate, dollars, billionsOfDollars } from "./js/_functions";
+  import { formatDate, dollars, billionsOfDollars } from "./ts/_functions";
   import { addCommas, percentOf } from "@/shared/js/_functions";
-  import { columns } from "./js/_columns";
+  import { columns } from "./ts/_columns";
   import { DateTime } from "luxon";
   import "vue-good-table-next/dist/vue-good-table-next.css";
   import { VueGoodTable } from "vue-good-table-next";
@@ -990,33 +990,6 @@
       wrongestStatement,
       leastWrongStatement,
     };
-
-    // // Most active player (highest gamesPlayed)
-    // let mostActivePlayer = null;
-    // let maxGamesPlayed = -Infinity;
-    // players.forEach((player) => {
-    //   const gamesPlayed = typeof player.gamesPlayed === "number" ? player.gamesPlayed : 0;
-    //   if (gamesPlayed > maxGamesPlayed) {
-    //     maxGamesPlayed = gamesPlayed;
-    //     mostActivePlayer = player;
-    //   }
-    // });
-
-    // // Most frequently used statement (highest timesPlayed)
-    // let mostUsedStatement = null;
-    // let maxTimesPlayed = -Infinity;
-    // statements.forEach((statement) => {
-    //   const timesPlayed = typeof statement.timesPlayed === "number" ? statement.timesPlayed : 0;
-    //   if (timesPlayed > maxTimesPlayed) {
-    //     maxTimesPlayed = timesPlayed;
-    //     mostUsedStatement = statement;
-    //   }
-    // });
-
-    // return {
-    //   mostActivePlayer,
-    //   mostUsedStatement,
-    // };
   });
 
   /////////////////////////////////////////////////////////
