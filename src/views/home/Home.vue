@@ -340,7 +340,7 @@
     // Filter out tags with a count less than 2
     const filteredTags = tagArray.filter((tag) => tag.count >= 2);
 
-    return filteredTags;
+    return tagArray;
   });
   const computedWidth = computed(() => {
     return window.innerHeight;
