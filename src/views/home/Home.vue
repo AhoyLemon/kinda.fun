@@ -72,7 +72,7 @@
       slug: "wrongest",
       logo: "thewrongestwords.svg",
       slogan: "The game where you defend some very stupid ideas.",
-      description: `<p>Gather together a group of <strong>3 - 10 players</strong> and get ready to talk nonsense. You'll get a card with an untrue statement on it, and it's your job to convince you're friends your statement is the least wrong.</p>`,
+      description: `<p>Gather together a group of <strong>3 - 10 players</strong> and get ready to talk nonsense. You'll get a card with an untrue statement on it, and it's your job to convince your friends your statement is the least wrong.</p>`,
       url: `${baseURL}/wrongest`,
       isMultiplayer: true,
       tags: ["game", "multiplayer", "lies", "party"],
