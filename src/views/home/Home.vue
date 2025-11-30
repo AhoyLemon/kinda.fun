@@ -67,6 +67,16 @@
       tags: ["game", "multiplayer", "guess"],
       buttonText: "Let's huddle up and discuss.",
     },
+    wrongest: {
+      name: "The Wrongest Words",
+      slug: "wrongest",
+      logo: "thewrongestwords.svg",
+      slogan: "The game where you defend some very stupid ideas.",
+      description: `<p>Gather together a group of <strong>3 - 10 players</strong> and get ready to talk nonsense. You'll get a card with an untrue statement on it, and it's your job to convince you're friends your statement is the least wrong.</p>`,
+      url: `${baseURL}/wrongest`,
+      isMultiplayer: true,
+      tags: ["game", "multiplayer", "lies", "party"],
+    },
     greatsextips: {
       name: "Great Sex Tips!",
       slug: "greatsextips",
@@ -116,16 +126,6 @@
       url: `${baseURL}/pretend`,
       tags: ["game", "single player", "celebrities", "guess"],
     },
-    // wrongest: {
-    //   name: "The Wrongest Words",
-    //   slug: "wrongest",
-    //   logo: "thewrongestwords.svg",
-    //   slogan: "The game where you defend some very stupid ideas.",
-    //   description: `<p>Gather together a group of <strong>5 - 10 players</strong> and get ready to talk nonsense. You'll get a card with an untrue statement on it, and it's your job to convince you're friends your statement is the least wrong.</p>`,
-    //   url: `${baseURL}/wrongest`,
-    //   isMultiplayer: true,
-    //   tags: ["game", "multiplayer", "lies", "party"],
-    // },
     idiotswin: {
       name: "Idiots win.",
       slug: "idiotswin",
@@ -337,7 +337,10 @@
     // Sort the array by usage in descending order
     tagArray.sort((a, b) => b.count - a.count);
 
-    return tagArray;
+    // Filter out tags with a count less than 2
+    const filteredTags = tagArray.filter((tag) => tag.count >= 2);
+
+    return filteredTags;
   });
   const computedWidth = computed(() => {
     return window.innerHeight;
