@@ -1,8 +1,8 @@
 <script setup>
   import { reactive, computed, onMounted, onBeforeMount } from "vue";
-  import { formatDate, dollars, billionsOfDollars } from "./js/_functions";
+  import { formatDate, dollars, billionsOfDollars } from "./ts/_functions";
   import { addCommas, percentOf } from "@/shared/js/_functions";
-  import { columns } from "./js/_columns";
+  import { columns } from "./ts/_columns";
   import { DateTime } from "luxon";
   import "vue-good-table-next/dist/vue-good-table-next.css";
   import { VueGoodTable } from "vue-good-table-next";
@@ -27,11 +27,6 @@
       launched: "2021-02-16",
       dayCount: null,
     },
-
-    wrongest: {
-      launched: "2020-01-27",
-      dayCount: null,
-    },
     sisyphus: {
       launched: "2021-09-21",
       dayCount: null,
@@ -50,6 +45,10 @@
     },
     megachurch: {
       launched: "2025-11-18",
+      dayCount: null,
+    },
+    wrongest: {
+      launched: "2025-01-20",
       dayCount: null,
     },
   });
@@ -225,6 +224,13 @@
           const megachurchData = megachurchSnap.data();
           stats.general.megachurchGamesStarted = megachurchData.gamesStarted || 0;
           stats.general.megachurchLastPlayed = megachurchData.lastGameStarted ? convertTimestamp(megachurchData.lastGameStarted) : null;
+        }
+
+        const wrongestSnap = await getDoc(doc(firestoreDb, "stats", "wrongest"));
+        if (wrongestSnap.exists()) {
+          const wrongestData = wrongestSnap.data();
+          stats.general.wrongestGamesStarted = wrongestData.gamesStarted || 0;
+          stats.general.wrongestLastPlayed = wrongestData.lastGameStarted ? convertTimestamp(wrongestData.lastGameStarted) : null;
         }
 
         await loadFirestoreStats("general", {
@@ -465,6 +471,35 @@
         errorOccurred = true;
         console.error("Error loading megachurch stats from Firestore:", e);
       }
+    } else if (game == "wrongest") {
+      try {
+        await loadFirestoreStats("wrongest", {
+          mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
+          subcollections: {
+            gameSizes: {
+              timestampFields: ["lastGameStarted", "lastGameFinished"],
+            },
+            players: {
+              timestampFields: ["lastPlayed"],
+            },
+            statements: {
+              timestampFields: ["lastPlayed"],
+            },
+            decks: {
+              timestampFields: ["lastPlayed"],
+            },
+          },
+        });
+        dates.wrongest.dayCount = dates.today.diff(dates.wrongest.launched, "days");
+        ui.wrongestLoaded = true;
+        ui.viewing = "wrongest";
+      } catch (e) {
+        stats.wrongest.gameSizes = [];
+        stats.wrongest.players = [];
+        stats.wrongest.statements = [];
+        errorOccurred = true;
+        console.error("Error loading wrongest stats from Firestore:", e);
+      }
     }
 
     // Always update URL and title, even if error occurred
@@ -620,6 +655,11 @@
       },
     };
     return timestampMap[game]?.[subcollection];
+  };
+
+  const stripWrongestBraces = (statement) => {
+    if (typeof statement !== "string") return statement;
+    return statement.replace(/\{([^}]+)\}/g, "<strong>$1</strong>");
   };
 
   /////////////////////////////////////////////////////////
@@ -910,6 +950,54 @@
       cheevosEarned,
       pushesSpent,
       pointsEarned,
+    };
+  });
+
+  const computedWrongest = computed(() => {
+    const players = stats.wrongest.players || [];
+    const statements = stats.wrongest.statements || [];
+    const gameSizes = stats.wrongest.gameSizes || [];
+
+    // 1. Most popular group size (highest gamesPlayed)
+    const mostPopularGroupSize =
+      gameSizes.length > 0
+        ? gameSizes.reduce((max, size) => {
+            return (size.gamesPlayed || 0) > (max.gamesPlayed || 0) ? size : max;
+          }, gameSizes[0])
+        : null;
+
+    // 2. Average game size (weighted average of players per game)
+    let totalPlayers = 0;
+    let totalGames = 0;
+    gameSizes.forEach((size) => {
+      const games = Number(size.gamesStarted) || 0;
+      const players = Number(size.players) || 0;
+      totalPlayers += games * players;
+      totalGames += games;
+    });
+    const averageGameSize = totalGames > 0 ? (totalPlayers / totalGames).toFixed(2) : null;
+
+    // 3. The Wrongest Words
+    const wrongestStatement =
+      statements.length > 0
+        ? statements.reduce((max, statement) => {
+            return (statement.totalScore || 0) < (max.totalScore || 0) ? statement : max;
+          }, statements[0])
+        : null;
+
+    // 4. The Least Wrong Words
+    const leastWrongStatement =
+      statements.length > 0
+        ? statements.reduce((min, statement) => {
+            return (statement.totalScore || 0) > (min.totalScore || 0) ? statement : min;
+          }, statements[0])
+        : null;
+
+    return {
+      mostPopularGroupSize,
+      averageGameSize,
+      wrongestStatement,
+      leastWrongStatement,
     };
   });
 

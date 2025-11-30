@@ -2,7 +2,7 @@
 
 [![Last Deploy](https://img.shields.io/github/last-commit/AhoyLemon/kinda.fun/main?label=Last%20Deploy&style=for-the-badge&color=green)](https://github.com/AhoyLemon/kinda.fun/actions)
 [![Live Site](https://img.shields.io/badge/Live%20Site-kinda.fun-blue?style=for-the-badge)](https://kinda.fun)
-[![Game Count](https://img.shields.io/badge/games-7-E5E828?style=for-the-badge)](https://github.com/AhoyLemon/kinda.fun/tree/main/src/views)
+[![Game Count](https://img.shields.io/badge/games-8-E5E828?style=for-the-badge)](https://github.com/AhoyLemon/kinda.fun/tree/main/src/views)
 
 **Made with**
 
@@ -28,7 +28,7 @@
 [![Docs](https://img.shields.io/badge/Docs-Available-4FC08D?style=for-the-badge&logo=readthedocs&logoColor=white)](docs/)
 [![These games are by Lemon](https://img.shields.io/badge/These%20games%20are%20by-Lemon-E5E828?style=for-the-badge&logo=lemonsqueezy&logoColor=white)](https://ahoylemon.xyz)
 
-There's currently seven games in this repo...
+There's currently eight games in this repo...
 
 ## MegaChurch Tycoon
 
@@ -92,6 +92,14 @@ You are at a party of celebrity impersonators. You must try to guess who is pret
 An exercise in active depression.
 
 **[Game Documentation](docs/sisyphus.md)** - Click mechanics, achievement system, and store items
+
+## The Wrongest Words
+
+[![The Wrongest Words](https://kinda.fun/img/og-wrongest.png)](https://kinda.fun/wrongest)
+
+You're going to defend some very stupid ideas.
+
+**[Game Documentation](docs/wrongest.md)** - Rules, settiings, and scoring system
 
 ---
 

@@ -3,6 +3,65 @@ section.wrongest.stats(v-if="ui.viewing == 'wrongest'")
     img(src="/svg/games/thewrongestwords.svg")
 
   .stats-boxes
+    .box.date
+      .caption Last Played
+      .time-ago(v-text="formatTime(stats.wrongest.lastGameStarted,'fromNow')")
+      .calendar(v-text="formatTime(stats.wrongest.lastGameStarted,'calendar')")
+    .box.big-number(v-if="stats.wrongest && stats.wrongest.gamesStarted")
+      .caption Games Started
+      .number(v-text="addCommas(stats.wrongest.gamesStarted)")
+      .sub-number
+        strong(v-text="calculateAverage(stats.wrongest.gamesStarted, dates.wrongest.dayCount)")
+        |  games per day
+    
+    .box.big-number(v-if="stats.wrongest && stats.wrongest.gamesFinished")
+      .caption Games Finished
+      .number(v-text="addCommas(stats.wrongest.gamesFinished)")
+      .sub-number
+        strong(v-text="percentOf(stats.wrongest.gamesStarted, stats.wrongest.gamesFinished) + '%'")
+        |  completion rate
+    .box.big-name(v-if="computedWrongest?.averageGameSize")
+      .caption Most Popular Group Size
+      .name(v-if="computedWrongest.mostPopularGroupSize && computedWrongest.mostPopularGroupSize.players") {{computedWrongest.mostPopularGroupSize.players}} players
+      .name(v-else) tie
+      .sub-number
+        | avg size: 
+        strong(v-text="computedWrongest.averageGameSize")
+    .box.big-number(v-if="stats.wrongest && stats.wrongest.roundsPlayed")
+      .caption Rounds Played
+      .number(v-text="addCommas(stats.wrongest.roundsPlayed)")
+    .box.big-name(v-if="computedWrongest?.wrongestStatement" style="grid-column:-1/1")
+      .caption The Wrongest Words
+      .name(v-html="stripWrongestBraces(computedWrongest.wrongestStatement.card)")
+      .sub-number
+        span Total Score: 
+        strong(v-text="computedWrongest.wrongestStatement.totalScore")
+        span  | 
+        span Times Played: 
+        strong(v-text="computedWrongest.wrongestStatement.timesPlayed")
+    .box.big-name(v-if="computedWrongest?.leastWrongStatement" style="grid-column:-1/1")
+      .caption The Least Wrong Words
+      .name(v-html="stripWrongestBraces(computedWrongest.leastWrongStatement.card)")
+      .sub-number
+        span Total Score: 
+        strong(v-text="computedWrongest.leastWrongStatement.totalScore")
+        span  | 
+        span Times Played: 
+        strong(v-text="computedWrongest.leastWrongStatement.timesPlayed")
+
+  .good-tables(v-if="ui.wrongestLoaded")
+    .good-table.pass-table
+      h2 Statements
+      vue-good-table( v-if="stats.wrongest.statements"
+                        :rows="stats.wrongest.statements"
+                        :columns="columns.wrongestStatements"
+                        theme="black-rhino"
+                        :line-numbers="true"
+                        :sort-options="{ enabled: true, initialSortBy: { field: 'totalScore', type: 'asc'} }"
+                        :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
+
+
+  //.stats-boxes
     .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
       .caption Last Game
       .time-ago(v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')")
@@ -29,7 +88,7 @@ section.wrongest.stats(v-if="ui.viewing == 'wrongest'")
       .calendar(v-text="formatTime(dates.wrongest.launched,'fromNow')")
     
   
-  .good-tables(v-if="ui.wrongestLoaded")
+  //.good-tables(v-if="ui.wrongestLoaded")
 
     .good-table.pass-table
       h2 Statements
