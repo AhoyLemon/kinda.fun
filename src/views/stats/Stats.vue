@@ -959,9 +959,12 @@
     const gameSizes = stats.wrongest.gameSizes || [];
 
     // 1. Most popular group size (highest gamesPlayed)
-    const mostPopularGroupSize = gameSizes.reduce((max, size) => {
-      return (size.gamesPlayed || 0) > (max.gamesPlayed || 0) ? size : max;
-    }, gameSizes[0]);
+    const mostPopularGroupSize =
+      gameSizes.length > 0
+        ? gameSizes.reduce((max, size) => {
+            return (size.gamesPlayed || 0) > (max.gamesPlayed || 0) ? size : max;
+          }, gameSizes[0])
+        : null;
 
     // 2. Average game size (weighted average of players per game)
     let totalPlayers = 0;
@@ -975,18 +978,20 @@
     const averageGameSize = totalGames > 0 ? (totalPlayers / totalGames).toFixed(2) : null;
 
     // 3. The Wrongest Words
-    const wrongestStatement = statements.length > 0
-      ? statements.reduce((max, statement) => {
-          return (statement.totalScore || 0) < (max.totalScore || 0) ? statement : max;
-        }, statements[0])
-      : null;
+    const wrongestStatement =
+      statements.length > 0
+        ? statements.reduce((max, statement) => {
+            return (statement.totalScore || 0) < (max.totalScore || 0) ? statement : max;
+          }, statements[0])
+        : null;
 
     // 4. The Least Wrong Words
-    const leastWrongStatement = statements.length > 0
-      ? statements.reduce((min, statement) => {
-          return (statement.totalScore || 0) > (min.totalScore || 0) ? statement : min;
-        }, statements[0])
-      : null;
+    const leastWrongStatement =
+      statements.length > 0
+        ? statements.reduce((min, statement) => {
+            return (statement.totalScore || 0) > (min.totalScore || 0) ? statement : min;
+          }, statements[0])
+        : null;
 
     return {
       mostPopularGroupSize,
