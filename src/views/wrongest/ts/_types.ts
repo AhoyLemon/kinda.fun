@@ -12,10 +12,14 @@ export type Card = string;
  * Represents a deck of cards with metadata
  */
 export interface Deck {
+  /** Unique identifier for the deck, ex: "science-facts" */
+  id: string;
   /** The display name of the deck */
   name: string;
   /** A description explaining the theme and content of this deck */
   description: string;
+  /** Whether this deck contains adult-themed content that should be filtered in family-friendly setups */
+  isNaughty: boolean;
   /** Array of card statements (only present for regular decks, not the "EVERYTHING!" meta-deck) */
   cards?: Card[];
 }
