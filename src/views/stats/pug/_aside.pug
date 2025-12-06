@@ -51,6 +51,13 @@ aside.general.general-stats(v-if="ui.viewing != 'general'")
       .last-played(v-if="stats?.general?.sisyphusLastPlayed")
         .time-ago(v-text="formatTime(stats.general.sisyphusLastPlayed,'fromNow')")
 
+    // THE WRONGEST WORDS
+    .summary(:class="{ active: (ui.viewing == 'wrongest'), inactive: (ui.viewing != 'wrongest') }")
+      figure
+        img(src="/svg/games/thewrongestwords.svg" @click="getData('wrongest')")
+      .last-played(v-if="stats?.general?.wrongestLastPlayed")
+        .time-ago(v-text="formatTime(stats.general.wrongestLastPlayed,'fromNow')")
+
     aside.last-cloned-holder(v-if="stats?.general?.lastCloned")
       .last-cloned
         div Last Clone:  
