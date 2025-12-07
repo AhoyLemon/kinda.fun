@@ -17,6 +17,11 @@ coverage
 /cypress/videos/
 /cypress/screenshots/
 
+# Nuxt build outputs
+.nuxt
+.output
+.env.production
+
 # Editor directories and files
 .idea
 *.suo

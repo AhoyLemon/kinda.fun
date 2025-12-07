@@ -33,10 +33,7 @@ export default defineNuxtConfig({
 
   // CSS configuration
   css: [
-    // Global SCSS variables and mixins
-    '~/assets/scss/globals/_variables.scss',
-    '~/assets/scss/globals/_mixins.scss',
-    '~/assets/scss/globals/_extends.scss',
+    // Global reset and base styles
     '~/assets/scss/globals/_reset.scss',
     '~/assets/scss/globals/_z-index.scss',
     // Library overrides
