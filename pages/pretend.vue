@@ -1,6 +1,11 @@
 <script setup>
 import Pretend from '@/views/pretend/Pretend.vue'
 
+// Disable SSR due to Firebase dependencies
+definePageMeta({
+  ssr: false
+})
+
 // SEO and meta tags
 useHead({
   title: 'Pretend World | Kinda fun.',

@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { fileURLToPath } from 'node:url'
+import { resolve } from 'path'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-12-07',
@@ -27,9 +28,10 @@ export default defineNuxtConfig({
     }
   },
 
-  // Path aliases
+  // Path aliases - use both alias and resolve for maximum compatibility
   alias: {
     '@': fileURLToPath(new URL('./src', import.meta.url)),
+    '~': fileURLToPath(new URL('.', import.meta.url)),
   },
 
   // CSS configuration
@@ -67,7 +69,10 @@ export default defineNuxtConfig({
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
-      }
+        '~': fileURLToPath(new URL('.', import.meta.url)),
+      },
+      // Ensure proper module resolution for SSR
+      dedupe: ['vue', 'vuefire', '@vue/runtime-core'],
     }
   },
 
@@ -84,7 +89,6 @@ export default defineNuxtConfig({
       routes: [
         '/',
         '/stats',
-        '/pretend', 
         '/guillotine',
         '/wrongest',
         '/404'
@@ -94,7 +98,8 @@ export default defineNuxtConfig({
         '/sisyphus',
         '/invalid',
         '/meeting',
-        '/megachurch'
+        '/megachurch',
+        '/pretend'
       ]
     }
   },
