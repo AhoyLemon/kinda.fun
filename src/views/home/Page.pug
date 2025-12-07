@@ -37,6 +37,11 @@ html(lang="en")
     meta(name="msvalidate.01" content="D3327FD7610C2D05D7D605EBCA288944")
   body
     #app
+      h1 So, here's some stuff that's kinda fun...
+      ul
+        each thing in funGames
+          li
+            a(href=thing.url) #{thing.name}
     script(type="module" src="/src/entries/home.js")
 
     // Schema.org
