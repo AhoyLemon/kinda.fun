@@ -92,14 +92,6 @@ export default defineNuxtConfig({
         '/guillotine',
         '/wrongest',
         '/404'
-      ],
-      ignore: [
-        '/cameo',
-        '/sisyphus',
-        '/invalid',
-        '/meeting',
-        '/megachurch',
-        '/pretend'
       ]
     }
   },

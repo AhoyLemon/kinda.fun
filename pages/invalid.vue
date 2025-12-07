@@ -1,11 +1,6 @@
 <script setup>
 import Invalid from '@/views/invalid/Invalid.vue'
 
-// Disable SSR for this page due to browser-only dependencies
-definePageMeta({
-  ssr: false
-})
-
 // SEO and meta tags
 useHead({
   title: 'Invalid | Kinda fun.',
@@ -15,6 +10,37 @@ useHead({
 })
 </script>
 
-<template>
-  <Invalid />
+<template lang="pug">
+ClientOnly
+  Invalid
+  template(#fallback)
+    .loading-state
+      .loading-content
+        h1 Invalid
+        p Loading game...
 </template>
+
+<style lang="scss" scoped>
+.loading-state {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  
+  .loading-content {
+    text-align: center;
+    color: white;
+    
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    p {
+      font-size: 1.5rem;
+      opacity: 0.8;
+    }
+  }
+}
+</style>
