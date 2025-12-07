@@ -67,5 +67,96 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-@import '../src/views/404/NotFound.scss';
+.NotFoundPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  
+  .container {
+    max-width: 800px;
+    width: 100%;
+  }
+  
+  .not-found-content {
+    text-align: center;
+    color: white;
+    
+    .error-number {
+      font-size: 8rem;
+      font-weight: bold;
+      margin: 0;
+      line-height: 1;
+    }
+    
+    .error-message {
+      font-size: 2rem;
+      margin: 1rem 0 3rem;
+    }
+    
+    .navigation-options {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+      
+      .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.2s;
+        
+        &.btn-primary {
+          background: white;
+          color: #667eea;
+        }
+        
+        &.btn-secondary {
+          background: rgba(255, 255, 255, 0.2);
+          color: white;
+          border: 2px solid white;
+        }
+        
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+      }
+    }
+    
+    .quick-links {
+      h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      .game-links {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        
+        .game-link {
+          padding: 0.5rem 1rem;
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          text-decoration: none;
+          border-radius: 4px;
+          transition: all 0.2s;
+          
+          &:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+          }
+        }
+      }
+    }
+  }
+}
 </style>

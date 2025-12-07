@@ -1,18 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted, computed, onBeforeUnmount } from "vue";
-
-// Add body class for page-specific styling
-onMounted(() => {
-  if (import.meta.client) {
-    document.body.classList.add('home-page')
-  }
-})
-
-onBeforeUnmount(() => {
-  if (import.meta.client) {
-    document.body.classList.remove('home-page')
-  }
-})
+import { ref, reactive, onMounted, computed } from "vue";
 
 // SEO and meta tags
 useHead({
@@ -444,30 +431,3 @@ main.title-screen
           span.text {{tag.text}}
           span.count {{tag.count}}
 </template>
-
-<style lang="scss" scoped>
-// Import only page-specific styles (globals already loaded in nuxt.config)
-@import '../src/views/home/scss/_variables';
-@import '../src/views/home/scss/_transitions';
-@import '../src/views/home/scss/_title-screen';
-@import '../src/views/home/scss/_testing';
-
-// Page-specific overrides (from _default.scss but scoped)
-p {
-  margin-bottom: 1em;
-}
-</style>
-
-<style lang="scss">
-// Global styles that need to be applied when on home page
-// These will be added/removed when navigating to/from home
-body.home-page {
-  background: radial-gradient(#353535, #161616);
-  color: #eee;
-  background-attachment: fixed;
-}
-
-.v-toast {
-  font-family: "Lora", serif;
-}
-</style>
