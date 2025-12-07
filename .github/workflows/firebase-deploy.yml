@@ -28,16 +28,16 @@ jobs:
           cd functions && npm ci || echo "⚠️ Functions install failed (this might be expected)"
           cd ..
           echo "📋 Verifying key dependencies..."
-          npm list vite vue @vitejs/plugin-vue
+          npm list nuxt vue
 
       - name: Build project
         run: |
-          echo "🏗️ Starting build process..."
+          echo "🏗️ Starting Nuxt build process..."
           echo "Current working directory: $(pwd)"
           echo "Node.js version: $(node --version)"
           echo "NPM version: $(npm --version)"
-          echo "🏗️ Running full build script..."
-          npm run build -- --mode production
+          echo "🏗️ Running Nuxt generate..."
+          npm run build
         env:
           NODE_ENV: production
           ENVIRONMENT: production
@@ -50,17 +50,17 @@ jobs:
           VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
 
-      - name: Verify dist directory exists
+      - name: Verify .output/public directory exists
         run: |
-          if [ ! -d "dist" ]; then
-            echo "❌ Error: dist directory was not created during build"
+          if [ ! -d ".output/public" ]; then
+            echo "❌ Error: .output/public directory was not created during build"
             echo "Listing current directory contents:"
             ls -la
             exit 1
           fi
-          echo "✅ dist directory exists"
-          echo "Contents of dist directory:"
-          ls -la dist/
+          echo "✅ .output/public directory exists"
+          echo "Contents of .output/public directory:"
+          ls -la .output/public/
 
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0

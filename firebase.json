@@ -1,88 +1,64 @@
 {
   "hosting": {
     "site": "kinda-fun",
-    "public": "dist",
+    "public": ".output/public",
     "ignore": [],
+    "redirects": [
+      {
+        "source": "/cameo.html",
+        "destination": "/cameo",
+        "type": 301
+      },
+      {
+        "source": "/guillotine.html",
+        "destination": "/guillotine",
+        "type": 301
+      },
+      {
+        "source": "/invalid.html",
+        "destination": "/invalid",
+        "type": 301
+      },
+      {
+        "source": "/meeting.html",
+        "destination": "/meeting",
+        "type": 301
+      },
+      {
+        "source": "/megachurch.html",
+        "destination": "/megachurch",
+        "type": 301
+      },
+      {
+        "source": "/pretend.html",
+        "destination": "/pretend",
+        "type": 301
+      },
+      {
+        "source": "/sisyphus.html",
+        "destination": "/sisyphus",
+        "type": 301
+      },
+      {
+        "source": "/wrongest.html",
+        "destination": "/wrongest",
+        "type": 301
+      },
+      {
+        "source": "/stats.html",
+        "destination": "/stats",
+        "type": 301
+      },
+      {
+        "source": "/home.html",
+        "destination": "/",
+        "type": 301
+      }
+    ],
     "rewrites": [
       {
-        "source": "/cameo",
-        "destination": "/cameo.html"
-      },
-      {
-        "source": "/cameo/",
-        "destination": "/cameo.html"
-      },
-      {
-        "source": "/guillotine",
-        "destination": "/guillotine.html"
-      },
-      {
-        "source": "/guillotine/",
-        "destination": "/guillotine.html"
-      },
-      {
-        "source": "/invalid",
-        "destination": "/invalid.html"
-      },
-      {
-        "source": "/invalid/",
-        "destination": "/invalid.html"
-      },
-      {
-        "source": "/meeting",
-        "destination": "/meeting.html"
-      },
-      {
-        "source": "/meeting/",
-        "destination": "/meeting.html"
-      },
-      {
-        "source": "/megachurch",
-        "destination": "/megachurch.html"
-      },
-      {
-        "source": "/megachurch/",
-        "destination": "/megachurch.html"
-      },
-      {
-        "source": "/pretend",
-        "destination": "/pretend.html"
-      },
-      {
-        "source": "/pretend/",
-        "destination": "/pretend.html"
-      },
-      {
-        "source": "/sisyphus",
-        "destination": "/sisyphus.html"
-      },
-      {
-        "source": "/sisyphus/",
-        "destination": "/sisyphus.html"
-      },
-      {
-        "source": "/wrongest",
-        "destination": "/wrongest.html"
-      },
-      {
-        "source": "/wrongest/",
-        "destination": "/wrongest.html"
-      },
-      {
-        "source": "/stats",
-        "destination": "/stats.html"
-      },
-      {
-        "source": "/stats/",
-        "destination": "/stats.html"
-      },
-      {
-        "source": "/",
-        "destination": "/index.html"
-      },
-      {
         "source": "**",
-        "destination": "/404.html"
+        "destination": "/index.html"
       }
     ]
   },
