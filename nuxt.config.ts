@@ -34,10 +34,10 @@ export default defineNuxtConfig({
   // CSS configuration
   css: [
     // Global reset and base styles
-    '~/assets/scss/globals/_reset.scss',
-    '~/assets/scss/globals/_z-index.scss',
+    './assets/scss/globals/_reset.scss',
+    './assets/scss/globals/_z-index.scss',
     // Library overrides
-    '~/assets/scss/libraries/vue_toastification.scss',
+    './assets/scss/libraries/vue_toastification.scss',
     // Tippy styles (needed for tooltips)
     'tippy.js/dist/tippy.css',
     // Toast notification styles
@@ -56,9 +56,9 @@ export default defineNuxtConfig({
           additionalData: `
             @use "sass:math";
             @use "sass:color";
-            @import "~/assets/scss/globals/_variables.scss";
-            @import "~/assets/scss/globals/_mixins.scss";
-            @import "~/assets/scss/globals/_extends.scss";
+            @import "./assets/scss/globals/_variables.scss";
+            @import "./assets/scss/globals/_mixins.scss";
+            @import "./assets/scss/globals/_extends.scss";
           `
         }
       }
