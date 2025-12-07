@@ -77,6 +77,24 @@ export default defineNuxtConfig({
     output: {
       dir: '.output',
       publicDir: '.output/public'
+    },
+    // Skip pre-rendering for pages that have browser-only dependencies
+    prerender: {
+      routes: [
+        '/',
+        '/stats',
+        '/pretend', 
+        '/guillotine',
+        '/wrongest',
+        '/404'
+      ],
+      ignore: [
+        '/cameo',
+        '/sisyphus',
+        '/invalid',
+        '/meeting',
+        '/megachurch'
+      ]
     }
   },
 
