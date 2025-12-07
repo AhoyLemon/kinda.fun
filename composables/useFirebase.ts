@@ -1,5 +1,5 @@
 import { getAuth, signInAnonymously, onAuthStateChanged, type Auth, type User } from 'firebase/auth'
-import { initializeApp, type FirebaseApp } from 'firebase/app'
+import { initializeApp, type FirebaseApp, getApps } from 'firebase/app'
 import { ref, type Ref } from 'vue'
 
 let firebaseApp: FirebaseApp | null = null
@@ -11,7 +11,18 @@ export const useFirebase = () => {
   const config = useRuntimeConfig()
 
   const initializeFirebase = () => {
-    if (firebaseApp) return { firebaseApp, auth }
+    // Check if already initialized
+    if (firebaseApp && auth) {
+      return { firebaseApp, auth }
+    }
+
+    // Check if Firebase is already initialized elsewhere
+    const existingApps = getApps()
+    if (existingApps.length > 0) {
+      firebaseApp = existingApps[0]
+      auth = getAuth(firebaseApp)
+      return { firebaseApp, auth }
+    }
 
     // Only initialize on client-side
     if (import.meta.client) {
@@ -65,6 +76,19 @@ export const useFirebase = () => {
     currentUser,
     isInitialized,
   }
+}
+
+// Get Firebase instance (initialize if needed)
+export const getFirebaseApp = () => {
+  const { initializeFirebase } = useFirebase()
+  const { firebaseApp } = initializeFirebase()
+  return firebaseApp
+}
+
+export const getFirebaseAuth = () => {
+  const { initializeFirebase } = useFirebase()
+  const { auth } = initializeFirebase()
+  return auth
 }
 
 // Export auth for backwards compatibility with existing code

@@ -432,6 +432,11 @@ main.title-screen
           span.count {{tag.count}}
 </template>
 
-<style lang="scss" scoped>
-@import '../src/views/home/Home.scss';
+<style lang="scss">
+// Import only page-specific styles (globals already loaded in nuxt.config)
+@import '../src/views/home/scss/_variables';
+@import '../src/views/home/scss/_default';
+@import '../src/views/home/scss/_transitions';
+@import '../src/views/home/scss/_title-screen';
+@import '../src/views/home/scss/_testing';
 </style>
