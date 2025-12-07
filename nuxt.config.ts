@@ -73,6 +73,10 @@ export default defineNuxtConfig({
       },
       // Ensure proper module resolution for SSR
       dedupe: ['vue', 'vuefire', '@vue/runtime-core'],
+      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+    },
+    optimizeDeps: {
+      include: ['jquery', 'howler', 'vuedraggable'],
     }
   },
 
