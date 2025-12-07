@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-12-07',
   
@@ -27,8 +29,7 @@ export default defineNuxtConfig({
 
   // Path aliases
   alias: {
-    '@': '/home/runner/work/kinda.fun/kinda.fun/src',
-    '~': '/home/runner/work/kinda.fun/kinda.fun',
+    '@': fileURLToPath(new URL('./src', import.meta.url)),
   },
 
   // CSS configuration
@@ -65,7 +66,7 @@ export default defineNuxtConfig({
     },
     resolve: {
       alias: {
-        '@': '/home/runner/work/kinda.fun/kinda.fun/src',
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
       }
     }
   },

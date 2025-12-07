@@ -433,5 +433,5 @@ main.title-screen
 </template>
 
 <style lang="scss" scoped>
-@import '@/views/home/Home.scss';
+@import '../src/views/home/Home.scss';
 </style>

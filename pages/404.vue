@@ -67,5 +67,5 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/views/404/NotFound.scss';
+@import '../src/views/404/NotFound.scss';
 </style>
