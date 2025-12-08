@@ -28,20 +28,25 @@ export const useFirebase = () => {
         firebaseApp = initializeApp(firebaseConfig)
         auth = getAuth(firebaseApp)
         
+        console.log('✅ Firebase initialized successfully')
+        
         // Start anonymous sign-in
         signInAnonymously(auth)
           .then(() => {
             onAuthStateChanged(auth!, (user) => {
               if (user) {
-                // console.log('Anonymous user ID:', user.uid)
+                console.log('✅ Firebase Auth: Anonymous user signed in')
               }
             })
           })
           .catch((error) => {
-            console.error('Anonymous sign-in error:', error)
+            console.error('❌ Firebase Auth: Anonymous sign-in error:', error)
           })
       } else {
-        console.warn('Firebase not initialized: missing environment variables')
+        console.warn('⚠️ Firebase NOT initialized - missing environment variables')
+        console.warn('  - Check that you have a .env.local file with VITE_FIREBASE_* variables')
+        console.warn('  - API Key present:', !!firebaseConfig.apiKey)
+        console.warn('  - Project ID present:', !!firebaseConfig.projectId)
       }
     } else {
       firebaseApp = existingApps[0]

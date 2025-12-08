@@ -1,4 +1,15 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { loadEnv } from 'vite'
+
+// Explicitly load .env.local for development
+// Nuxt should do this automatically, but we're being explicit to ensure compatibility
+const mode = process.env.NODE_ENV || 'development'
+const envDir = process.cwd()
+const env = loadEnv(mode, envDir, ['VITE_', 'NUXT_PUBLIC_'])
+
+// Merge loaded env vars into process.env so they're available
+Object.assign(process.env, env)
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-12-08',
   

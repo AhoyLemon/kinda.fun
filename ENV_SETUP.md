@@ -56,3 +56,40 @@ Nuxt automatically loads environment files in this order (later files override e
 ## Current Status
 
 Your existing `.env.local` and `.env.production` files with `VITE_` prefixed variables will continue to work without any changes needed.
+
+## Troubleshooting
+
+### Environment Variables Not Loading
+
+If you see "Firebase NOT initialized - missing environment variables" in the console:
+
+1. **Check .env.local exists** in the project root (same directory as `nuxt.config.ts`)
+2. **Verify variable names** - Must use `VITE_FIREBASE_*` prefix (not just `FIREBASE_*`)
+3. **Restart dev server** - After creating/modifying `.env.local`, restart with `npm run dev`
+4. **Check the console** - It will show which variables are present/missing
+
+Example `.env.local` that WILL work:
+```bash
+VITE_FIREBASE_API_KEY=AIzaSyABC123...
+VITE_FIREBASE_AUTH_DOMAIN=myproject.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=myproject-12345
+VITE_FIREBASE_STORAGE_BUCKET=myproject.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=123456789
+VITE_FIREBASE_APP_ID=1:123456789:web:abc123
+```
+
+Example that WON'T work (missing VITE_ prefix):
+```bash
+FIREBASE_API_KEY=AIzaSyABC123...  ❌ Missing VITE_ prefix
+FIREBASE_AUTH_DOMAIN=...           ❌ Missing VITE_ prefix
+```
+
+### Still Having Issues?
+
+If environment variables still aren't loading after checking the above:
+
+1. Check file location: `.env.local` must be in the **root** directory (where package.json is)
+2. Check file content: Use `cat .env.local` to verify the file has content
+3. Check spelling: Variables are case-sensitive (`VITE_FIREBASE_API_KEY` not `vite_firebase_api_key`)
+4. Clear Nuxt cache: Run `rm -rf .nuxt` and restart
+5. Check console output: Look for "✅ Firebase initialized successfully" message
