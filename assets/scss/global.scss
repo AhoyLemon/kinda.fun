@@ -1,0 +1,8 @@
+// Global SCSS for Nuxt - loaded for all pages
+// This file imports the base reset, extends, and z-index definitions
+// Variables and mixins are imported separately via additionalData in nuxt.config.ts
+
+@import './globals/_reset.scss';
+@import './globals/_extends.scss';
+@import './globals/_z-index.scss';
+@import './libraries/vue_toastification.scss';
