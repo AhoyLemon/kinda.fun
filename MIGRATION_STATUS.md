@@ -139,7 +139,9 @@ npm run format               # Prettier
 
 ## Known Issues
 - ⚠️ Warning: "Using vite.config.js not supported" - will remove after migration
-- ⚠️ Firebase env vars empty in dev (expected, not critical for structure testing)
+- ✅ **Fixed:** Firebase environment variables now support both `VITE_` and `NUXT_PUBLIC_` prefixes
+  - Your existing `.env.local` with `VITE_` variables will work without changes
+  - See `ENV_SETUP.md` for configuration details
 
 ## Next Steps
 

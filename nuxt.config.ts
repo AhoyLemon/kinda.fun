@@ -8,15 +8,16 @@ export default defineNuxtConfig({
   ssr: true,
   
   // Runtime configuration for Firebase and other env vars
+  // Supports both VITE_ prefixed (for backwards compatibility) and NUXT_ prefixed variables
   runtimeConfig: {
     public: {
-      firebaseApiKey: process.env.VITE_FIREBASE_API_KEY || '',
-      firebaseAuthDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || '',
-      firebaseProjectId: process.env.VITE_FIREBASE_PROJECT_ID || 'kinda-fun-dev',
-      firebaseStorageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || '',
-      firebaseMessagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
-      firebaseAppId: process.env.VITE_FIREBASE_APP_ID || '',
-      appUrl: process.env.VITE_APP_URL || 'https://kinda.fun',
+      firebaseApiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY || '',
+      firebaseAuthDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN || process.env.VITE_FIREBASE_AUTH_DOMAIN || '',
+      firebaseProjectId: process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID || 'kinda-fun-dev',
+      firebaseStorageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET || process.env.VITE_FIREBASE_STORAGE_BUCKET || '',
+      firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
+      firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID || process.env.VITE_FIREBASE_APP_ID || '',
+      appUrl: process.env.NUXT_PUBLIC_APP_URL || process.env.VITE_APP_URL || 'https://kinda.fun',
     }
   },
   
