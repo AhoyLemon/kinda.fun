@@ -51,3 +51,8 @@ scripts/firebase/prod-service-account.json
 /wrongest.html
 
 src/views/megachurch/ts/unused-tags.txt
+
+# Nuxt
+.nuxt
+.output
+.nitro
