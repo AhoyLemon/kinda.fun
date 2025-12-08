@@ -3,12 +3,13 @@ import { getAuth, signInAnonymously, onAuthStateChanged, type Auth } from 'fireb
 
 let firebaseApp: FirebaseApp | null = null
 let auth: Auth | null = null
+let initialized = false
 
 export const useFirebase = () => {
-  const config = useRuntimeConfig()
-  
-  // Initialize Firebase only on client side
-  if (import.meta.client) {
+  // Only initialize on client side
+  if (import.meta.client && !initialized) {
+    const config = useRuntimeConfig()
+    
     // Check if Firebase is already initialized
     const existingApps = getApps()
     
@@ -22,30 +23,32 @@ export const useFirebase = () => {
         appId: config.public.firebaseAppId,
       }
       
-      // Validate that all required environment variables are present
-      if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-        console.error('Missing required Firebase environment variables!')
-      }
-      
-      firebaseApp = initializeApp(firebaseConfig)
-      auth = getAuth(firebaseApp)
-      
-      // Start anonymous sign-in
-      signInAnonymously(auth)
-        .then(() => {
-          onAuthStateChanged(auth!, (user) => {
-            if (user) {
-              // console.log('Anonymous user ID:', user.uid)
-            }
+      // Only initialize if we have valid config
+      if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+        firebaseApp = initializeApp(firebaseConfig)
+        auth = getAuth(firebaseApp)
+        
+        // Start anonymous sign-in
+        signInAnonymously(auth)
+          .then(() => {
+            onAuthStateChanged(auth!, (user) => {
+              if (user) {
+                // console.log('Anonymous user ID:', user.uid)
+              }
+            })
           })
-        })
-        .catch((error) => {
-          console.error('Anonymous sign-in error:', error)
-        })
+          .catch((error) => {
+            console.error('Anonymous sign-in error:', error)
+          })
+      } else {
+        console.warn('Firebase not initialized: missing environment variables')
+      }
     } else {
       firebaseApp = existingApps[0]
       auth = getAuth(firebaseApp)
     }
+    
+    initialized = true
   }
   
   return {

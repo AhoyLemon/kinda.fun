@@ -1,11 +1,10 @@
 export default defineNuxtPlugin(() => {
-  // Initialize Firebase on client-side only
-  const { firebaseApp, auth } = useFirebase()
-  
+  // Provide Firebase getter functions instead of calling useFirebase immediately
+  // This ensures Firebase only initializes when actually used on the client
   return {
     provide: {
-      firebase: firebaseApp,
-      auth: auth,
+      firebase: () => useFirebase().firebaseApp,
+      auth: () => useFirebase().auth,
     }
   }
 })
