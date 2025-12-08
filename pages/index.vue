@@ -45,7 +45,7 @@
       logo: "megachurch.svg",
       slogan: "Turn their faith into your fortune.",
       description: `
-        <p>Starting with no money and a crippling drug addiction, Megachurch Tycoon will have you preaching to larger and larger audiences, motivated by the only thing you believe in: <strong>Geting paid.</strong></p>
+        <p>Starting with no money and a crippling drug addiction, Megachurch Tycoon will have you preaching to larger and larger audiences, motivated by the only thing you believe in: <strong>Getting paid.</strong></p>
         <p>NOTE: While in early access state, Megachurch Tycoon is <strong>DESKTOP ONLY</strong>.</p>
       `,
       url: computed(() => `${baseURL.value}/megachurch`),
@@ -114,7 +114,7 @@
       description: `<p>This is a single player game about funding public schools by executing the world's richest people. A new list of billionaires is generated every day!</p>`,
       url: computed(() => `${baseURL.value}/guillotine`),
       tags: ["game", "single player", "new content every day"],
-      buttonText: "Genearate wealth.",
+      buttonText: 'Generate wealth.',
     },
     sisyphus: {
       name: "Sisyphus Clicker",
@@ -361,9 +361,12 @@
 
     return tagArray;
   });
-  const computedWidth = computed(() => {
-    return window.innerHeight;
-  });
+  const computedHeight = computed(() => {
+    if (import.meta.client) {
+      return window.innerHeight
+    }
+    return 0
+  })
 
   onMounted(() => {
     const gameGrid = document.getElementById("GameGrid");
