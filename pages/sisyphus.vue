@@ -1,25 +1,37 @@
 <script setup>
   import { reactive, computed, onMounted } from "vue";
-  import { begin, sDefaults, rDefaults } from "./ts/_variables";
+  import { begin, sDefaults, rDefaults } from "../src/views/sisyphus/ts/_variables";
   import { sendEvent, randomFrom, randomNumber, findKeyInArray, removeFromArrayByKey, percentOf, addCommas } from "@/shared/ts/_functions.js";
-  import { keepPushingMessages, rockFellMessages, retreatMessages } from "./ts/_messages";
-  import { storeItems } from "./ts/_store";
+  import { keepPushingMessages, rockFellMessages, retreatMessages } from "../src/views/sisyphus/ts/_messages";
+  import { storeItems } from "../src/views/sisyphus/ts/_store";
 
-  // Firebase & VueFire Stuff
-  import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
-  import { useFirestore, useCollection, useDocument } from "vuefire";
-  const db = useFirestore();
-  const statsRef = doc(db, `stats/sisyphus`);
+  // Nuxt-specific setup
+  useHead({
+    title: 'Sisyphus Clicker - Kinda Fun',
+    meta: [
+      { name: 'description', content: 'Push that rock uphill forever in this existential clicker game' },
+      { property: 'og:title', content: 'Sisyphus Clicker' },
+      { property: 'og:description', content: 'Push that rock uphill forever in this existential clicker game' },
+    ]
+  })
+
+  // Firebase & VueFire Stuff - only on client
+  let db, statsRef;
+  if (import.meta.client) {
+    const { useFirestore } = await import("vuefire");
+    const { doc } = await import("firebase/firestore");
+    db = useFirestore();
+    statsRef = doc(db, `stats/sisyphus`);
+  }
 
   // Sounds
   import { Howl, Howler } from "howler";
-  import { uphillMusic, downhillMusic, cheevoSound, purchaseSound, dignityGot, dignityLost } from "./ts/_sounds";
+  import { uphillMusic, downhillMusic, cheevoSound, purchaseSound, dignityGot, dignityLost } from "../src/views/sisyphus/ts/_sounds";
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
-  // import "vue-toastification/dist/index.css";
-  import MyToast from "./vue/MyToast.vue";
-  import LemonToast from "./vue/LemonToast.vue";
+  import MyToast from "../src/views/sisyphus/vue/MyToast.vue";
+  import LemonToast from "../src/views/sisyphus/vue/LemonToast.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -724,5 +736,12 @@
     // nothing!
   });
 </script>
-<template lang="pug" src="./Sisyphus.pug"></template>
-<style lang="scss" src="./Sisyphus.scss"></style>
+
+<template lang="pug">
+main
+  p Sisyphus game coming soon...
+</template>
+
+<style lang="scss">
+@import '../src/views/sisyphus/Sisyphus.scss';
+</style>
