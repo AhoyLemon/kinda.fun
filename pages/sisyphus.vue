@@ -15,14 +15,18 @@
     ]
   })
 
-  // Firebase & VueFire Stuff - only on client
-  let db, statsRef;
-  if (import.meta.client) {
-    const { useFirestore } = await import("vuefire");
-    const { doc } = await import("firebase/firestore");
-    db = useFirestore();
-    statsRef = doc(db, `stats/sisyphus`);
-  }
+  // Firebase & VueFire Stuff - initialize on client only
+  let db = null;
+  let statsRef = null;
+  
+  onMounted(async () => {
+    if (import.meta.client) {
+      const { useFirestore } = await import("vuefire");
+      const { doc } = await import("firebase/firestore");
+      db = useFirestore();
+      statsRef = doc(db, `stats/sisyphus`);
+    }
+  });
 
   // Sounds
   import { Howl, Howler } from "howler";
@@ -736,12 +740,5 @@
     // nothing!
   });
 </script>
-
-<template lang="pug">
-main
-  p Sisyphus game coming soon...
-</template>
-
-<style lang="scss">
-@import '../src/views/sisyphus/Sisyphus.scss';
-</style>
+<template lang="pug" src="../src/views/sisyphus/Sisyphus.pug"></template>
+<style lang="scss" src="../src/views/sisyphus/Sisyphus.scss"></style>
