@@ -1,0 +1,17 @@
+mixin tempPageContent(gameName,gameSlogan)
+  main.page-content
+    if gameName
+      h1= gameName
+    if gameSlogan
+      h2= gameSlogan
+    if block
+      block
+
+    p
+      | This is a 
+      a(href=baseUrl) kinda fun 
+      |  game made by  
+      a(href="https://ahoylemon.xyz") Lemon
+  
+  style.
+    main.page-content { opacity:0; }

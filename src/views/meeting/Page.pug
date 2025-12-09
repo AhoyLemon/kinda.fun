@@ -1,4 +1,6 @@
 include ../../shared/pug/_variables.pug
+include ../../shared/pug/_mixins.pug
+
 - const name = "This Meeting Has Points"
 - const desc = "So now you have a reason to pay attention."
 - const keywords = "multiplayer, social game, deduction, card game, meeting game, screwing around at work, virtual team game, coworkers"
@@ -17,7 +19,8 @@ html(lang="en")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet")
 
-    link(href="/meeting.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+    if mode != "development"
+      link(href="/meeting.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
 
     // OpenGraph
     meta(property="og:title" content=name)
@@ -30,14 +33,9 @@ html(lang="en")
     meta(property="og:email" content=email) 
 
   body
-    #app 
-      h1 This Meeting Has Points
-      h2 So now you have a reason to pay attention.
-      p
-        | This is a 
-        a(href=baseUrl) kinda fun game
-        |  made by  
-        a(href="https://ahoylemon.xyz") Lemon
+    #app
+      +tempPageContent("This Meeting Has Points", "So now you have a reason to pay attention.") 
+
     script(type="module" src="/src/entries/meeting.js")  
 
     // Schema.org

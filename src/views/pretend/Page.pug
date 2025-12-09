@@ -1,4 +1,6 @@
 include ../../shared/pug/_variables.pug
+include ../../shared/pug/_mixins.pug
+
 - const name = "Pretend World"
 - const desc = "You are at a party of celebrity impersonators..."
 - const keywords = "celebrity impersonators, pretend celebrities, guessing game, cheese log, funny game, single player"
@@ -14,7 +16,8 @@ html(lang="en")
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.gstatic.com")
     link(href="https://fonts.googleapis.com/css?family=Limelight|Merriweather:400,400i,900" rel="stylesheet")
-    link(href="/pretend.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+    if mode != "development"
+      link(href="/pretend.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
 
     // OpenGraph
     meta(property="og:title" content=name)
@@ -28,13 +31,8 @@ html(lang="en")
 
   body
     #app
-      h1 Pretend World
-      h2 You are at a party of celebrity impersonators...
-      p
-        | This is a 
-        a(href=baseUrl) kinda fun game
-        |  made by  
-        a(href="https://ahoylemon.xyz") Lemon
+      +tempPageContent("Pretend World", "You are at a party of celebrity impersonators...")
+
     script(type="module" src="/src/entries/pretend.js")
 
     // Schema.org

@@ -1,4 +1,5 @@
 include ../../shared/pug/_variables.pug
+include ../../shared/pug/_mixins.pug
 - const name = "Comparatively Famous"
 - const desc = "The Game of Celebrity Value"
 - const keywords = "comedy game, celebrity, sorting, cameo, famous people, kinda fun games"
@@ -16,7 +17,8 @@ html(lang="en")
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.gstatic.com")
     link(href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet")
-    link(href="/cameo.css?lastUpdated=" + lastUpdated rel="stylesheet")
+    if mode != "development"
+      link(href="/cameo.css?lastUpdated=" + lastUpdated rel="stylesheet")
 
     // Favicon 
     link(rel="apple-touch-icon" sizes="180x180" href=baseUrl+"/img/famous/apple-touch-icon.png")
@@ -39,20 +41,14 @@ html(lang="en")
     
   body
     #app
-      h1 Comparatively Famous
-      h2 The Game of Celebrity Value
-      h3 
-        strong CAMEO
-        |  is a site where people can order videos from celebrities, at prices set by those celebrities.
-      h3
-        strong THIS 
-        |  is a game about guessing those prices.
-      p
-        | This is a 
-        a(href=baseUrl) kinda fun game
-        |  made by  
-        a(href="https://ahoylemon.xyz") Lemon
+      +tempPageContent("Comparatively Famous", "The Game of Celebrity Value")
+        h3 
+          strong CAMEO
+          |  is a site where people can order videos from celebrities, at prices set by those celebrities.
+        h3
+          strong THIS 
+          |  is a game about guessing those prices.
     script(type="module" src="/src/entries/cameo.js")
 
     // Schema.org
-    include pug/_schema.pug
+    include pug/_schema.pug  
