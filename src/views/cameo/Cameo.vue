@@ -877,7 +877,6 @@
         gimmick.selectedIndex = i;
         gimmick.selected = gimmick.rounds[i];
         gimmick.isSelected = true;
-      } else {
       }
     }
   });

@@ -1,37 +1,25 @@
 # Dependabot configuration for kinda.fun
-# This configuration prioritizes security updates and minimizes noise by:
-# - Only creating PRs for security vulnerabilities
-# - Grouping all updates into a single weekly PR
-# - Ignoring minor/patch updates unless they fix vulnerabilities
-# Please see the documentation for all configuration options:
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# This configuration minimizes noise by:
+# - Checking for updates monthly (not weekly) to reduce frequency
+# - Grouping all updates into a single PR on Monday
+# - Limiting to 1 open PR at a time
+# - Ignoring patch updates (only minor versions and security fixes create PRs)
 
 version: 2
 updates:
-  # Enable version updates for npm (security-focused)
   - package-ecosystem: "npm"
-    # Look for `package.json` and `lock` files in the `root` directory
     directory: "/"
-    # Check the npm registry for updates once per week (Monday mornings)
     schedule:
       interval: "weekly"
       day: "monday"
-    # Limit to 1 open PR at a time to avoid spam
     open-pull-requests-limit: 1
-    # Group all dependency updates into a single PR
+    # Group all updates (including security) into a single PR
     groups:
       all-dependencies:
         patterns:
           - "*"
-        update-types:
-          - "minor"
-          - "patch"
-    # Ignore non-security patch and minor updates for production dependencies
-    # This means only security updates or major versions will create PRs
+    # Ignore patch updates and major version bumps
+    # This means only security fixes and minor versions create PRs
     ignore:
-      # Ignore all patch updates for dependencies (unless security-related)
       - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
-      # Ignore all minor updates for dependencies (unless security-related)
-      - dependency-name: "*"
-        update-types: ["version-update:semver-minor"]
+        update-types: ["version-update:semver-major", "version-update:semver-patch"]

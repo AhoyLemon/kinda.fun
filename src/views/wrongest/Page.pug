@@ -1,4 +1,6 @@
 include ../../shared/pug/_variables.pug
+include ../../shared/pug/_mixins.pug
+
 - const name = "The Wrongest Words"
 - const desc = "A party game where you will defend some very stupid ideas."
 
@@ -10,7 +12,8 @@ html(lang="en")
     // Fonts & CSS
     link(rel="preconnect" href="https://fonts.gstatic.com")
     link(href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;600&amp;display=swap" rel="stylesheet")
-    link(href="/wrongest.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+    if mode != "development"
+      link(href="/wrongest.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
 
     // Favicon
     link(rel="apple-touch-icon" sizes="180x180" href="/img/wrongest/apple-touch-icon.png")
@@ -82,4 +85,6 @@ html(lang="en")
       }
   body
     #app
+      +tempPageContent("The Wrongest Words", "A party game where you will defend some very stupid ideas.")
+
     script(type="module" src="/src/entries/wrongest.js")

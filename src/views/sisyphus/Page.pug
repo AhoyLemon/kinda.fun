@@ -1,4 +1,5 @@
 include ../../shared/pug/_variables.pug
+include ../../shared/pug/_mixins.pug
 - const name = "Sisyphus Clicker"
 - const desc = "Click on Sisyphus to push the rock up the mountain (formerly futile.fun)"
 - const keywords = "futile, futility, clicker, depressing, pointless, achievements, rock, the myth of sisyphus"
@@ -16,7 +17,8 @@ html(lang="en")
     //- Fonts & CSS
     link(rel="preconnect" href="https://fonts.gstatic.com")
     link(href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700|Poppins:400,400i,700" rel="stylesheet")
-    link(href="/sisyphus.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+    if mode != "development"
+      link(href="/sisyphus.min.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
 
     //- Favicon
     link(rel="apple-touch-icon" sizes="180x180" href=baseUrl+"/img/sisyphus/apple-touch-icon.png")
@@ -36,7 +38,8 @@ html(lang="en")
     meta(property="og:image" content=baseUrl +"/img/og-sisyphus.png")
     meta(property="og:email" content=email) 
   body
-    #app
+    #app 
+      +tempPageContent("Sisyphus Clicker", "An exercise in active depression")
 
     script(type="module" src="/src/entries/sisyphus.js")
 

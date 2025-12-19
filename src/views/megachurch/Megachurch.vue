@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  console.log("the fuck");
   // ================= IMPORTS =================
   import { onMounted, reactive, ref, computed, watchEffect, watch, h } from "vue";
   import Multiselect from "@vueform/multiselect";

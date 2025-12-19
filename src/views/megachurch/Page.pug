@@ -1,4 +1,6 @@
 include ../../shared/pug/_variables.pug
+include ../../shared/pug/_mixins.pug
+
 - const name = "Megachurch Tycoon"
 - const desc = "Turn their faith into your fortune, one scam at a time."
 - const keywords = "satire, management game, dark humor, American religion, parody, organized religion, materialism, greed, hypocrisy, browser game, single player, sermon, profit, social commentary, prosperity gospel"
@@ -14,8 +16,8 @@ html(lang="en")
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Commissioner:wght@100..900&display=swap" rel="stylesheet")
-
-    link(href="/megachurch.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
+    if mode != "development"
+      link(href="/megachurch.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
 
     // Favicon
     link(rel="apple-touch-icon" sizes="180x180" href=baseUrl+"/img/megachurch/apple-touch-icon.png")
@@ -27,8 +29,12 @@ html(lang="en")
 
   body
     #app
+
+      +tempPageContent("Megachurch Tycoon", "Turn their faith into your fortune, one scam at a time.")
+        h3 This is a problem.
+        h4 In order to get drugs, you'll need money. In order to get money, other people need to give it to you. And to make that happen, rather than robbing them outright, you decide you'll yell about religion as loud as you can in the hopes that somebody gives you enough money for you to get high tomorrow.
+
     script(type="module" src="/src/entries/megachurch.js")
 
-    
     // Schema.org
     include pug/_schema.pug

@@ -178,9 +178,8 @@ Games work fine locally without Firebase, but for full multiplayer functionality
 
 Each game has its own documentation in the `docs/` folder:
 
-- **Player guides** - `docs/[gamename].md` - How to play
-- **Developer guides** - `docs/[gamename]-developer.md` - Technical details
-- **Configuration files** - Game-specific settings and balance
+- **Player guides** - `docs/[gamename].md` - Overview
+- **Developer guides** - `docs/[gamename]/[file].md` - Supplemental Docs (in some cases)
 
 ### Example: MegaChurch Tycoon
 
@@ -226,7 +225,7 @@ _Browse the `docs/` folder to find documentation for other games._
 ### Code Standards
 
 - **Vue 3 Composition API** for new components
-- **TypeScript preferred** for new games (MegaChurch uses TS)
+- **TypeScript preferred** for new games (Older games may use JavaScript)
 - **SCSS for styling** with shared variables
 - **Vitest for testing** with scenario-based tests
 - **ESLint/Prettier** for code formatting
@@ -239,4 +238,4 @@ _Browse the `docs/` folder to find documentation for other games._
 4. **Write your first test** - see `docs/vitests.md` for examples
 5. **Join development** - create issues or PRs for improvements
 
-**Ready to dive deeper into MegaChurch?** → [MegaChurch Developer Guide](megachurch/DEVELOPER.md)
+**Ready to dive deeper into MegaChurch Tycoon?** → [MegaChurch Tycoon Developer Guide](megachurch/DEVELOPER.md)

@@ -1,4 +1,5 @@
 include ../../shared/pug/_variables.pug
+include ../../shared/pug/_mixins.pug
 - const name = "No More Billionaires"
 - const desc = "Generating wealth with a guillotine."
 - const gameUrl = baseUrl + "/guillotine"
@@ -17,7 +18,8 @@ html(lang="en")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@300..700&display=swap" rel="stylesheet")
     link(href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet")
-    link(href="/guillotine.css?lastUpdated=" + lastUpdated rel="stylesheet")
+    if mode != "development"
+      link(href="/guillotine.css?lastUpdated=" + lastUpdated rel="stylesheet")
 
     // OpenGraph
     meta(property="og:title" content=name)
@@ -30,6 +32,8 @@ html(lang="en")
     
   body
     #app
+      +tempPageContent("No More Billionaires", "Generating wealth with a guillotine.")
+
     script(type="module" src="/src/entries/guillotine.js")
 
     // Schema.org

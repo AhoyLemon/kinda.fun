@@ -6,7 +6,8 @@
 | ------------------------------------------------------------------------- | ---------------------------- |
 | **[Vue.js](https://vuejs.org/)**                                          | Frontend framework           |
 | **[Vite](https://vitejs.dev/)**                                           | Build tool and dev server    |
-| **[Node.js](https://nodejs.org/)** (22+)                                  | JavaScript runtime           |
+| **[Node.js](https://nodejs.org/)**                                        | JavaScript runtime           |
+| **[TypeScript](https://www.typescriptlang.org/)**                         | Programming language         |
 | **[JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)** | Programming language         |
 | **[Firebase](https://firebase.google.com/)**                              | Backend services and hosting |
 
@@ -23,13 +24,14 @@
 
 ## Development Tools
 
-| Technology                                                         | Purpose                   |
-| ------------------------------------------------------------------ | ------------------------- |
-| **[ESLint](https://eslint.org/)**                                  | Code linting              |
-| **[Prettier](https://prettier.io/)**                               | Code formatting           |
-| **[Vitest](https://vitest.dev/)**                                  | Unit testing              |
-| **[Nodemon](https://nodemon.io/)**                                 | Development file watching |
-| **[Concurrently](https://github.com/open-cli-tools/concurrently)** | Run multiple commands     |
+| Technology                                                         | Purpose                       |
+| ------------------------------------------------------------------ | ----------------------------- |
+| **[ESLint](https://eslint.org/)**                                  | Code linting                  |
+| **[Prettier](https://prettier.io/)**                               | Code formatting               |
+| **[Vitest](https://vitest.dev/)**                                  | Unit testing                  |
+| **[Nodemon](https://nodemon.io/)**                                 | Development file watching     |
+| **[Concurrently](https://github.com/open-cli-tools/concurrently)** | Run multiple commands         |
+| **[CLI-Table3](https://github.com/cli-table/cli-table3)**          | Pretty Tables in the terminal |
 
 ## Build & Bundling
 
@@ -66,12 +68,3 @@
 | -------------------------------------------------------------------- | ------------------- |
 | **[GitHub Actions](https://github.com/features/actions)**            | Automated CI/CD     |
 | **[Firebase Hosting](https://firebase.google.com/products/hosting)** | Static site hosting |
-
-## Scheduled for Removal
-
-| Technology                             | Purpose                | Replacement      |
-| -------------------------------------- | ---------------------- | ---------------- |
-| **[Moment.js](https://momentjs.com/)** | Date handling (legacy) | Luxon            |
-| **[MySQL](https://www.mysql.com/)**    | Database client        | Firebase/VueFire |
-| **[Heroku](https://www.heroku.com/)**  | Alternative hosting    | Firebase Hosting |
-| **[Socket.IO](https://socket.io/)**    | WebSocket integration  | Firebase/VueFire |

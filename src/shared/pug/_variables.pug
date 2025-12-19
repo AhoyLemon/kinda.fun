@@ -7,3 +7,16 @@
 - creatorObj["email"] = email
 - creatorObj["sameAs"] = [  "https://github.com/AhoyLemon", "https://bsky.app/profile/ahoylemon.xyz", "https://mastodon.social/@ahoylemon", "https://thefpl.us/meet/lemon"]
 - const creatorSchema = JSON.stringify(creatorObj)
+
+-
+  const funGames = [
+    { name: "Comparatively Famous", url: baseUrl + "/cameo" },
+    { name: "No More Billionaires", url: baseUrl + "/guillotine" },
+    { name: "Invalid", url: baseUrl + "/invalid" },
+    { name: "Megachurch Tycoon", url: baseUrl + "/megachurch" },
+    { name: "Pretend World", url: baseUrl + "/pretend" },
+    { name: "Sisyphus Clicker", url: baseUrl + "/sisyphus" },
+    { name: "The Wrongest Words", url: baseUrl + "/wrongest" }
+  ]
+
+- const mode = baseUrl.includes("localhost") ? "development" : "production"
