@@ -104,10 +104,10 @@ export interface GameState {
   maxRounds: number;
   /** All available decks */
   allDecks: Deck[];
-  /** The deck chosen for this game */
-  chosenDeck: Partial<Deck>;
+  /** Array of selected deck IDs for this game */
+  selectedDeckIds: string[];
   /** The current game deck with remaining cards */
-  gameDeck: { cards: Card[] };
+  gameDeck: Card[];
   /** Array of players in the game */
   players: Player[];
   /** Cards that have been played (legacy, may not be used) */
@@ -180,7 +180,9 @@ export interface UIState {
   watchingVideo: boolean;
   /** Whether the player has entered their name */
   nameEntered: boolean;
-  /** Name of the selected deck */
+  /** Whether the deck selection screen is visible */
+  showingDeckSelection: boolean;
+  /** Name of the selected deck (legacy - deprecated) */
   deckName: string;
   /** Index of the card the player voted up (deprecated - using my.upVote instead) */
   upVoteIndex: number;

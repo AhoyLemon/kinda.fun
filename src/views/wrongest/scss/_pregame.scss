@@ -75,6 +75,85 @@
 
   .deck-selector-ui {
     padding-top: 1em;
+
+    .choose-decks-button {
+      @include bigButton();
+      width: 100%;
+      margin-bottom: 1rem;
+
+      &:hover,
+      &:focus {
+        background-color: darken($blue, 10);
+      }
+    }
+
+    .selected-decks-info {
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+
+      h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        color: lighten($blue, 20);
+      }
+
+      .selected-decks-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 1rem 0;
+
+        li {
+          display: flex;
+          justify-content: space-between;
+          padding: 0.5rem 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .deck-name {
+            font-weight: 600;
+          }
+
+          .deck-cards {
+            opacity: 0.7;
+            font-size: 0.9rem;
+          }
+        }
+      }
+
+      .card-status {
+        padding: 0.75rem;
+        border-radius: 6px;
+        text-align: center;
+
+        p {
+          margin: 0;
+          font-size: 0.95rem;
+        }
+
+        strong {
+          font-weight: 700;
+        }
+
+        &.enough {
+          background: rgba($green, 0.2);
+          border: 1px solid lighten($green, 10);
+          color: lighten($green, 20);
+        }
+
+        &.not-enough {
+          background: rgba($red, 0.2);
+          border: 1px solid $red;
+          color: lighten($red, 15);
+        }
+      }
+    }
+
     select {
       font-family: inherit;
       display: block;
@@ -87,6 +166,47 @@
       padding-top: 1em;
       font-size: 13px;
       line-height: 140%;
+    }
+  }
+
+  .selected-decks-non-host {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1.5rem;
+
+    h3 {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+      color: lighten($blue, 20);
+      text-align: center;
+    }
+
+    .selected-decks-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .deck-name {
+          font-weight: 600;
+        }
+
+        .deck-cards {
+          opacity: 0.7;
+          font-size: 0.9rem;
+        }
+      }
     }
   }
 
@@ -112,12 +232,14 @@
     button {
       @include bigButton();
       background: $pink;
+      font-size: 1.35rem;
       &[disabled] {
         background: #666;
         cursor: not-allowed;
       }
     }
-    .not-enough-players {
+    .not-enough-players,
+    .not-enough-cards {
       font-size: 85%;
       text-align: center;
       left: 0;
@@ -126,7 +248,8 @@
       visibility: hidden;
       pointer-events: none;
     }
-    button[disabled]:hover ~ .not-enough-players {
+    button[disabled]:hover ~ .not-enough-players,
+    button[disabled]:hover ~ .not-enough-cards {
       visibility: visible;
     }
   }
