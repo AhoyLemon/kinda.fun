@@ -171,32 +171,6 @@ export const allDecks: Deck[] = [
   },
 
   //////////////////////////////////////////
-  // MUSIC MYTHS
-  {
-    id: "music-myths",
-    name: "Music Myths",
-    description: "Musical facts that are definitely off-key and out of tune with reality.",
-    isNaughty: false,
-    cards: [
-      "Mozart could play the piano {before he could walk, which is why he fell down a lot.}",
-      "The Beatles got their name {from an actual beetle that Paul McCartney befriended.}",
-      "Vinyl records sound better because {they contain the musician's actual soul.}",
-      "AutoTune was invented {for people who sing in the shower.}",
-      "Electric guitars need electricity {or they get really tired.}",
-      "Rap battles were originally {fought with actual swords.}",
-      "The saxophone was banned in 12 countries {for being too sexy.}",
-      "Boy bands are assembled {using a very specific algorithm involving hair gel.}",
-      "Heavy metal music is called that {because the guitars are made of iron.}",
-      "Nickelback is {actually just one guy with really good editing software.}",
-      "Opera singers can shatter glass {but only if the glass is being really annoying.}",
-      "The Grammy awards are called that {because they weigh exactly one gram.}",
-      "DJs turn knobs on stage {to control the venue's thermostat.}",
-      "Country music is required by law to mention {at least three of the following: trucks, beer, dirt roads, or heartbreak.}",
-      "The triangle is the hardest instrument to master {because it has three sides.}",
-    ],
-  },
-
-  //////////////////////////////////////////
   // SCIENCE
   {
     id: "science",
@@ -225,7 +199,7 @@ export const allDecks: Deck[] = [
   //////////////////////////////////////////
   // SEX DONE WRONG
   {
-    id: "sex-done-wrong",
+    id: "sex",
     name: "Sex Done Wrong",
     description: "Hilariously incorrect facts about sex, anatomy, and reproduction. Adults only!",
     isNaughty: true,
