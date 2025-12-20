@@ -1,0 +1,241 @@
+.deck-selection {
+  min-height: 99.9vh;
+  font-family: $font-family;
+  padding: 2rem;
+
+  .deck-selection-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 2rem;
+
+    .inside {
+      width: 100%;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: $blue;
+  }
+
+  .deck-requirements {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 2rem;
+    display: grid;
+    gap: 1rem;
+
+    .requirement-info {
+      text-align: center;
+      font-size: 0.875rem;
+      margin-bottom: 0;
+      line-height: 1.25;
+
+      strong {
+        color: $blue;
+        font-weight: 700;
+      }
+    }
+
+    .card-counter {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 6px;
+
+      .label {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        opacity: 0.7;
+        margin-bottom: 0.5rem;
+      }
+
+      .count {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+
+        .current {
+          color: white;
+        }
+
+        .separator {
+          opacity: 0.5;
+          margin: 0 0.5rem;
+        }
+
+        .minimum {
+          opacity: 0.7;
+        }
+      }
+
+      .status {
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+      }
+
+      &.enough {
+        border: 2px solid lighten($green, 10);
+
+        .current {
+          color: lighten($green, 20);
+        }
+
+        .status {
+          color: lighten($green, 20);
+        }
+      }
+
+      &.not-enough {
+        border: 2px solid $red;
+
+        .current {
+          color: lighten($red, 15);
+        }
+
+        .status {
+          color: lighten($red, 15);
+        }
+      }
+    }
+  }
+
+  .deck-list {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    max-height: calc(100dvh - 230px);
+    padding-right: 1rem;
+    @include scrollbar();
+    overflow-y: auto;
+
+    .deck-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 0.5rem 1.25rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.5);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+
+      &.selected {
+        background: rgba(#650524, 0.66);
+        border-color: rgba(#650524, 1);
+
+        .deck-name {
+          color: lighten($blue, 20);
+        }
+      }
+
+      &.naughty {
+        .deck-tag {
+          display: inline-block;
+          background: rgba($red, 0.3);
+          color: lighten($red, 20);
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          font-size: 0.85rem;
+          margin-top: 0.5rem;
+        }
+      }
+
+      .deck-checkbox {
+        display: block;
+
+        input[type="checkbox"] {
+          position: absolute;
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        label {
+          display: block;
+          cursor: pointer;
+          user-select: none;
+
+          .deck-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+
+            .deck-name {
+              font-size: 1rem;
+              font-weight: 700;
+              color: white;
+            }
+
+            .deck-card-count {
+              display: flex;
+              align-items: baseline;
+              gap: 0.25rem;
+              font-size: 0.9rem;
+              opacity: 0.7;
+
+              .number {
+                font-size: 1.1rem;
+                font-weight: 700;
+              }
+            }
+          }
+
+          .deck-description {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            opacity: 0.85;
+            margin-bottom: 0.5rem;
+          }
+        }
+      }
+    }
+  }
+
+  .button-holder {
+    display: flex;
+    gap: 1rem;
+    justify-content: end;
+    margin-top: 2rem;
+
+    button {
+      @include bigButton();
+      font-size: 1rem;
+      width: auto;
+
+      &.save-decks-button {
+        &:hover:not(:disabled),
+        &:focus:not(:disabled) {
+          background-color: darken($blue, 10);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+
+      &.cancel-button {
+        background-color: rgba(255, 255, 255, 0.1);
+
+        &:hover,
+        &:focus {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+  }
+}

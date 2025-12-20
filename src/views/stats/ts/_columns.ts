@@ -157,7 +157,7 @@ export const columns = {
   ],
 
   wrongestStatements: [
-    { label: "Words", field: "card", tdClass: "font-bold", formatFn: formatStatement },
+    { label: "Words", field: "card", formatFn: formatStatement, tdClass: "font-bold" },
     { label: "Score", field: "totalScore", type: "number", formatFn: addCommas },
     { label: "x", field: "timesPlayed", type: "number", formatFn: addCommas },
   ],

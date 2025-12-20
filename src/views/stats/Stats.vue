@@ -163,6 +163,11 @@
     }
   }
 
+  // Helper function to calculate days since launch
+  const calculateDaysSince = (launchedDate) => {
+    return Math.floor(dates.today.diff(DateTime.fromISO(launchedDate), "days").days);
+  };
+
   const getData = async (game) => {
     ui.viewing = "loading";
 
@@ -280,7 +285,7 @@
             specialGames: {},
           },
         });
-        dates.cameo.dayCount = dates.today.diff(dates.cameo.launched, "days");
+        dates.cameo.dayCount = calculateDaysSince(dates.cameo.launched);
         ui.cameoLoaded = true;
         ui.viewing = "cameo";
       } catch (e) {
@@ -320,7 +325,7 @@
             },
           },
         });
-        dates.sisyphus.dayCount = dates.today.diff(dates.sisyphus.launched, "days");
+        dates.sisyphus.dayCount = calculateDaysSince(dates.sisyphus.launched);
         ui.sisyphusLoaded = true;
         ui.viewing = "sisyphus";
       } catch (e) {
@@ -341,7 +346,7 @@
             },
           },
         });
-        dates.guillotine.dayCount = dates.today.diff(dates.guillotine.launched, "days");
+        dates.guillotine.dayCount = calculateDaysSince(dates.guillotine.launched);
         ui.guillotineLoaded = true;
         ui.viewing = "guillotine";
       } catch (e) {
@@ -366,7 +371,7 @@
             },
           },
         });
-        dates.pretend.dayCount = dates.today.diff(dates.pretend.launched, "days");
+        dates.pretend.dayCount = calculateDaysSince(dates.pretend.launched);
         ui.pretendLoaded = true;
         ui.viewing = "pretend";
       } catch (e) {
@@ -388,7 +393,7 @@
             },
           },
         });
-        dates.meeting.dayCount = dates.today.diff(dates.meeting.launched, "days");
+        dates.meeting.dayCount = calculateDaysSince(dates.meeting.launched);
         ui.meetingLoaded = true;
         ui.viewing = "meeting";
       } catch (e) {
@@ -427,7 +432,7 @@
             },
           },
         });
-        dates.invalid.dayCount = dates.today.diff(dates.invalid.launched, "days");
+        dates.invalid.dayCount = calculateDaysSince(dates.invalid.launched);
         ui.invalidLoaded = true;
         ui.viewing = "invalid";
       } catch (e) {
@@ -462,7 +467,7 @@
             upgrades: {},
           },
         });
-        dates.megachurch.dayCount = dates.today.diff(dates.megachurch.launched, "days");
+        dates.megachurch.dayCount = calculateDaysSince(dates.megachurch.launched);
         ui.megachurchLoaded = true;
         ui.viewing = "megachurch";
       } catch (e) {
@@ -490,7 +495,7 @@
             },
           },
         });
-        dates.wrongest.dayCount = dates.today.diff(dates.wrongest.launched, "days");
+        dates.wrongest.dayCount = calculateDaysSince(dates.wrongest.launched);
         ui.wrongestLoaded = true;
         ui.viewing = "wrongest";
       } catch (e) {
