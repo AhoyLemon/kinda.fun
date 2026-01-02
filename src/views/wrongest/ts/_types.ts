@@ -12,10 +12,14 @@ export type Card = string;
  * Represents a deck of cards with metadata
  */
 export interface Deck {
+  /** Unique identifier for the deck, ex: "science-facts" */
+  id: string;
   /** The display name of the deck */
   name: string;
   /** A description explaining the theme and content of this deck */
   description: string;
+  /** Whether this deck contains adult-themed content that should be filtered in family-friendly setups */
+  isNaughty: boolean;
   /** Array of card statements (only present for regular decks, not the "EVERYTHING!" meta-deck) */
   cards?: Card[];
 }
@@ -100,10 +104,10 @@ export interface GameState {
   maxRounds: number;
   /** All available decks */
   allDecks: Deck[];
-  /** The deck chosen for this game */
-  chosenDeck: Partial<Deck>;
+  /** Array of selected deck IDs for this game */
+  selectedDeckIds: string[];
   /** The current game deck with remaining cards */
-  gameDeck: { cards: Card[] };
+  gameDeck: Card[];
   /** Array of players in the game */
   players: Player[];
   /** Cards that have been played (legacy, may not be used) */
@@ -176,7 +180,9 @@ export interface UIState {
   watchingVideo: boolean;
   /** Whether the player has entered their name */
   nameEntered: boolean;
-  /** Name of the selected deck */
+  /** Whether the deck selection screen is visible */
+  showingDeckSelection: boolean;
+  /** Name of the selected deck (legacy - deprecated) */
   deckName: string;
   /** Index of the card the player voted up (deprecated - using my.upVote instead) */
   upVoteIndex: number;

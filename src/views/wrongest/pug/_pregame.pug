@@ -1,4 +1,4 @@
-.pregame(v-if="game.inRoom && !game.gameStarted")
+.pregame(v-if="game.inRoom && !game.gameStarted && !ui.showingDeckSelection")
 
   .room-code
     .label Your room code
@@ -32,34 +32,59 @@
             span(v-if="ui.nameEntered") Change Name
       
       .deck-selector-ui(v-if="my.isRoomHost && ui.nameEntered")
-        select(v-model="ui.deckName" @change="changeDeck()")
-          option(value="" disabled) Choose a deck to play with
-          option(v-for="deck in game.allDecks") {{deck.name}}
-        .deck-decription(v-if="ui.deckName && game.chosenDeck")
-          h1 {{game.chosenDeck.name}}
-          p {{game.chosenDeck.description}}
-          p(v-if="game.chosenDeck.cards")
-            strong {{game.chosenDeck.cards.length}} cards
-            
-      .start-button(v-if="my.isRoomHost && ui.nameEntered && game.chosenDeck.name")
-        button(type="button" @click="startTheGame()" :disabled="game.players.length < 3 || ui.isStartingGame === true") 
+        button.choose-decks-button(type="button" @click="openDeckSelection()" v-if="game.selectedDeckIds.length === 0") 
+          span(v-if="game.selectedDeckIds.length === 0") Choose Decks
+          span(v-else) Change Decks
+        
+        .selected-decks-info(v-if="game.selectedDeckIds.length > 0")
+          h3 Selected Decks ({{computedTotalSelectedCards}} cards)
+          ul.selected-decks-list
+            li(v-for="deck in computedSelectedDecks" :key="deck.id")
+              span.deck-name {{deck.name}}
+              span.deck-cards ({{deck.cards ? deck.cards.length : 0}} cards)
+          
+          .card-status.not-enough(v-if="!computedHasEnoughCards")
+            p(v-if="!computedHasEnoughCards")
+              strong ⚠ 
+              | You need {{computedMinimumCards - computedTotalSelectedCards}} more cards for {{computedMinimumPlayerCount}} players.
+
+          button.choose-decks-button(type="button" @click="openDeckSelection()") 
+            span(v-if="game.selectedDeckIds.length === 0") Choose Decks
+            span(v-else) Change Decks
+
+      .selected-decks-non-host(v-if="!my.isRoomHost && ui.nameEntered && game.selectedDeckIds.length > 0")
+        h3 Game will use these decks:
+        ul.selected-decks-list
+          li(v-for="deck in computedSelectedDecks" :key="deck.id")
+            span.deck-name {{deck.name}}
+            span.deck-cards ({{deck.cards ? deck.cards.length : 0}} cards)
+
+
+      .start-button(v-if="my.isRoomHost && ui.nameEntered && game.selectedDeckIds.length > 0")
+        button(type="button" @click="startTheGame()" :disabled="game.players.length < 3 || !computedHasEnoughCards || ui.isStartingGame === true") 
           span(v-if="!ui.isStartingGame") Start The Game
           span(v-else) Starting...
           
         .not-enough-players(v-if="game.players.length < 3") You need at least 3 people to play 
           strong The Wrongest Words
           | .
+        .not-enough-cards(v-else-if="!computedHasEnoughCards") You need to select more decks. 
+          strong {{computedMinimumCards - computedTotalSelectedCards}} more cards 
+          | required.
+      
+      .start-button(v-else-if="!my.isRoomHost && ui.nameEntered && game.selectedDeckIds.length > 0")
+        p(v-if="game.players.length < 3") You need at least #[strong 3 people] to play.
+        p(v-else-if="game.selectedDeckIds.length > 0") {{computedHostName}} needs to select some decks to play with.
+        p Waiting for {{computedHostName}} to start the game...
 
-      .issues-prompt(v-if="ui.nameEntered")
+      //.issues-prompt(v-if="ui.nameEntered")
         p Want to suggest your own lies for this game?  
           a(href="https://github.com/AhoyLemon/kinda.fun/issues/new/choose" taget="_blank") Open a new GitHub issue.
-
 
 
   .players
     .player(v-for="player in game.players" :class="{ 'is-me' : (my.playerID == player.playerID), 'is-host': (player.playerID == game.roomCreatorID) }")
       .player-inside
-        //-.number {{'#' + player.employeeNumber}}
         .name {{player.name}}
         .host(v-if="player.playerID == game.roomCreatorID")
           svg(height="100px" width="100px" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 80 80" style="enable-background:new 0 0 80 80;" space="preserve")

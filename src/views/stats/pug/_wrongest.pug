@@ -49,7 +49,7 @@ section.wrongest.stats(v-if="ui.viewing == 'wrongest'")
         span Times Played: 
         strong(v-text="computedWrongest.leastWrongStatement.timesPlayed")
 
-  .good-tables(v-if="ui.wrongestLoaded")
+  .good-tables(v-if="ui.wrongestLoaded" style="grid-template-columns:1fr")
     .good-table.pass-table
       h2 Statements
       vue-good-table( v-if="stats.wrongest.statements"
@@ -59,73 +59,3 @@ section.wrongest.stats(v-if="ui.viewing == 'wrongest'")
                         :line-numbers="true"
                         :sort-options="{ enabled: true, initialSortBy: { field: 'totalScore', type: 'asc'} }"
                         :pagination-options="{ enabled: true, perPage: 30, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-
-
-  //.stats-boxes
-    .box.date(v-if="stats.general && stats.general.lastPlayed && stats.general.lastPlayed.cameo")
-      .caption Last Game
-      .time-ago(v-text="formatTime(stats.general.lastPlayed.wrongest,'fromNow')")
-      .calendar(v-text="formatTime(stats.general.lastPlayed.wrongest,'calendar')")
-    .box.big-number
-      .caption Games Started
-      .number(v-text="stats.general.wrongest.GamesStarted")
-      .sub-number
-        strong(v-text="calculateAverage(stats.general.wrongest.GamesStarted, dates.wrongest.dayCount)")
-        |  per day
-    .box.big-number(v-if="computedAveragePlayerCounts")
-      .caption Avg Player Count
-      .number(v-text="computedAveragePlayerCounts.wrongest")
-      .sub-number
-        | most common: 
-        strong(v-text="computedAveragePlayerCounts.wrongestMostCommon")
-    .box.big-number
-      .caption Rooms Created
-      .number(v-text="addCommas(stats.general.wrongest.RoomsCreated)")
-    
-    .box.date(v-if="dates.wrongest && dates.wrongest.launched")
-      .caption Launched
-      .time-ago(v-text="formatTime(dates.wrongest.launched,'MMM D, YYYY')")
-      .calendar(v-text="formatTime(dates.wrongest.launched,'fromNow')")
-    
-  
-  //.good-tables(v-if="ui.wrongestLoaded")
-
-    .good-table.pass-table
-      h2 Statements
-      vue-good-table(
-        :rows="stats.wrongest.statements"
-        :columns="columns.wrongestStatements"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'asc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 50, position: 'top', perPageDropdown: [25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-
-    .good-table
-      h2 Decks
-      vue-good-table(
-        :rows="stats.wrongest.decks"
-        :columns="columns.decks"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-      br
-      br
-      h2 Player Counts
-      vue-good-table(
-        :rows="stats.wrongest.playerCounts"
-        :columns="columns.playerCounts"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'icount', type: 'desc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 30, 60, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
-      br
-      br
-      h2 Player Names
-      vue-good-table(
-        :rows="stats.general.playerNames"
-        :columns="columns.playerNames"
-        :sort-options="{ enabled: true, initialSortBy: {field: 'lastPlayed', type: 'desc'} }"
-        theme="black-rhino"
-        styleClass="vgt-table condensed"
-        :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}")
