@@ -13,6 +13,12 @@ export const allDecks: Deck[] = [
     description: "Everything you thought you knew about animals is wrong. These facts are even more wrong.",
     isNaughty: false,
     cards: [
+      "Zebras are created when {a white horse and a black horse} have sex.",
+      "Bear attacks can be prevented with {belly rubs.}",
+      "{Dogs} are the most venomous animal in the world.",
+      "{Pouring sugar on} a turtle will cause its shell to melt.",
+      "If a rabbit {hears a D# note,} it will immediately attack any other rabbit it sees.",
+
       "Sharks have to keep swimming or they'll {think about their ex again.}",
       "Dolphins are {plotting to take over the world} but they're too distracted by fish.",
       "Cats purr because they have {tiny motorcycles in their throats.}",
@@ -21,13 +27,10 @@ export const allDecks: Deck[] = [
       "A lions roar can be heard by {Tony, who lives in Brooklyn.}",
       "Kangaroos hop because {walking is too mainstream.}",
       "Bees make honey by {throwing up on flowers.}",
-      "{Dogs} are the most venomous animal in the world.",
+
       "A cat's vertically-split pupils allow it {to see ghosts, but only the ghosts of} other cats.",
-      "{Pouring sugar on} a turtle will cause its shell to melt.",
+
       "Dogs are {only colorblind when they are} not barking.",
-      "If a rabbit {hears a D# note,} it will immediately attack any other rabbit it sees.",
-      "Zebras are created when {a white horse and a black horse} have sex.",
-      "Bear attacks can be prevented with {belly rubs.}",
     ],
   },
 
