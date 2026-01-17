@@ -77,6 +77,7 @@ section {
       td.font-bold {
         font-weight: 700;
         font-family: $sans-serif;
+        word-break: break-word;
       }
       td.vgt-right-align {
         font-family: $monospace;

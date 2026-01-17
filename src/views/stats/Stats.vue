@@ -280,7 +280,7 @@
             specialGames: {},
           },
         });
-        dates.cameo.dayCount = dates.today.diff(dates.cameo.launched, "days");
+        dates.cameo.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.cameo.launched), "days").days);
         ui.cameoLoaded = true;
         ui.viewing = "cameo";
       } catch (e) {
@@ -320,7 +320,7 @@
             },
           },
         });
-        dates.sisyphus.dayCount = dates.today.diff(dates.sisyphus.launched, "days");
+        dates.sisyphus.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.sisyphus.launched), "days").days);
         ui.sisyphusLoaded = true;
         ui.viewing = "sisyphus";
       } catch (e) {
@@ -341,7 +341,7 @@
             },
           },
         });
-        dates.guillotine.dayCount = dates.today.diff(dates.guillotine.launched, "days");
+        dates.guillotine.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.guillotine.launched), "days").days);
         ui.guillotineLoaded = true;
         ui.viewing = "guillotine";
       } catch (e) {
@@ -366,7 +366,7 @@
             },
           },
         });
-        dates.pretend.dayCount = dates.today.diff(dates.pretend.launched, "days");
+        dates.pretend.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.pretend.launched), "days").days);
         ui.pretendLoaded = true;
         ui.viewing = "pretend";
       } catch (e) {
@@ -388,7 +388,7 @@
             },
           },
         });
-        dates.meeting.dayCount = dates.today.diff(dates.meeting.launched, "days");
+        dates.meeting.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.meeting.launched), "days").days);
         ui.meetingLoaded = true;
         ui.viewing = "meeting";
       } catch (e) {
@@ -427,7 +427,7 @@
             },
           },
         });
-        dates.invalid.dayCount = dates.today.diff(dates.invalid.launched, "days");
+        dates.invalid.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.invalid.launched), "days").days);
         ui.invalidLoaded = true;
         ui.viewing = "invalid";
       } catch (e) {
@@ -462,7 +462,7 @@
             upgrades: {},
           },
         });
-        dates.megachurch.dayCount = dates.today.diff(dates.megachurch.launched, "days");
+        dates.megachurch.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.megachurch.launched), "days").days);
         ui.megachurchLoaded = true;
         ui.viewing = "megachurch";
       } catch (e) {
@@ -490,7 +490,7 @@
             },
           },
         });
-        dates.wrongest.dayCount = dates.today.diff(dates.wrongest.launched, "days");
+        dates.wrongest.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.wrongest.launched), "days").days);
         ui.wrongestLoaded = true;
         ui.viewing = "wrongest";
       } catch (e) {
