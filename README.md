@@ -13,8 +13,8 @@
 [![Pug](https://img.shields.io/badge/Pug-000?style=for-the-badge&labelColor=A86454&logo=pug&logoColor=white&color=222)](https://pugjs.org/)
 [![Firebase](https://img.shields.io/badge/Firebase-000?style=for-the-badge&labelColor=FFCA28&logo=firebase&logoColor=111&color=222)](https://firebase.google.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-000?style=for-the-badge&labelColor=339933&logo=node.js&logoColor=white&color=222)](https://nodejs.org/)
-[![Vitest](https://img.shields.io/badge/Vitest-000?style=for-the-badge&labelColor=6E9F18&logo=vitest&logoColor=white&color=222)](https://nodejs.org/)
-[![Prettier](https://img.shields.io/badge/Prettier-000?style=for-the-badge&labelColor=F7B93E&logo=prettier&logoColor=111&color=222)](https://nodejs.org/)
+[![Vitest](https://img.shields.io/badge/Vitest-000?style=for-the-badge&labelColor=6E9F18&logo=vitest&logoColor=white&color=222)](https://vitest.dev)
+[![Prettier](https://img.shields.io/badge/Prettier-000?style=for-the-badge&labelColor=F7B93E&logo=prettier&logoColor=111&color=222)](https://prettier.io)
 
 **Stats**
 
