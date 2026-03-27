@@ -107,7 +107,6 @@ You're going to defend some very stupid ideas.
 
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Getting started with local development and contributing
 - **[NPM Commands](docs/npm-commands.md)** - Complete reference for all available npm scripts and what they do
-- **[Migration Guide](docs/migration-guide.md)** - Guide for migrating between different versions or setups
 - **[Deployment Setup](docs/deployment-setup.md)** - Instructions for setting up automated Firebase deployment via GitHub Actions
 
 ## Credits
