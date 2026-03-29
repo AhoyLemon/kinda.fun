@@ -37,8 +37,8 @@ async function main() {
 
   // Count rooms first so we can confirm and show progress
   const roomsCol = devDb.collection("rooms");
-  const roomDocs = await roomsCol.listDocuments();
-  const toDelete = roomDocs.filter((d) => d.id !== "_STATS");
+  const roomsSnapshot = await roomsCol.get();
+  const toDelete = roomsSnapshot.docs.filter((d) => d.id !== "_STATS").map((d) => d.ref);
 
   if (toDelete.length === 0) {
     console.log(chalk.green("✅ Nothing to purge — /rooms is already empty (or only has _STATS).\n"));

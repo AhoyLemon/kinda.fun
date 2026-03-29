@@ -1,7 +1,6 @@
 import fs from "fs";
 import chalk from "chalk";
 import Table from "cli-table3";
-import { minify } from "uglify-js";
 
 // Function to get the actual count of billionaires from the data file
 function getBillionaireCount() {
@@ -146,7 +145,7 @@ function formatWarrantsForExport(warrants) {
 }
 
 // Main function
-function main() {
+async function main() {
   console.log(chalk.bold.blue("\n🚔 Generate Guillotine Arrest Warrants\n"));
 
   // Generate warrants
@@ -176,6 +175,7 @@ function main() {
   console.log(chalk.yellow("\n⚙️  Minifying _billionaires.js..."));
   const billionaireFilePath = "./src/views/guillotine/js/data/_billionaires.js";
   try {
+    const { minify } = await import("uglify-js");
     const billionaireJs = fs.readFileSync(billionaireFilePath, "utf8");
     const minified = minify(billionaireJs, { compress: true, mangle: true });
     if (minified.code) {
@@ -185,11 +185,14 @@ function main() {
       console.warn(chalk.yellow("⚠️  Minification failed:"), minified.error);
     }
   } catch (err) {
-    console.warn(chalk.yellow("⚠️  Could not minify _billionaires.js:"), err);
+    console.warn(chalk.yellow("⚠️  Skipping minification (uglify-js not installed)."));
   }
 
   console.log(chalk.bold.green("\n✅ Done!\n"));
 }
 
 // Run the script
-main();
+main().catch((err) => {
+  console.error(chalk.red("\n❌ Error:"), err.message);
+  process.exit(1);
+});
