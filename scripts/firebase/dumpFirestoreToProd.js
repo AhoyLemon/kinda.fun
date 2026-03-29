@@ -22,7 +22,7 @@ const collectionsToPush = [
   //
   ////////////////////////////////////
   // NO MORE BILLIONAIRES
-  // "stats/guillotine/heads",
+  "stats/guillotine/heads",
   //
   ////////////////////////////////////
   // INVALID
@@ -61,7 +61,7 @@ const documentsToPush = [
   //
   ////////////////////////////////////
   // NO MORE BILLIONAIRES
-  // "stats/guillotine",
+  "stats/guillotine",
   //
   ////////////////////////////////////
   // INVALID

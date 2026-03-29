@@ -16,7 +16,7 @@ const collectionsToClone = [
   //
   ////////////////////////////////////
   // NO MORE BILLIONAIRES
-  // "stats/guillotine/heads",
+  "stats/guillotine/heads",
   //
   ////////////////////////////////////
   // INVALID
@@ -66,7 +66,7 @@ const documentsToClone = [
   ////////////////////////////////////
   // GAMES
   // "stats/cameo",
-  // "stats/guillotine",
+  "stats/guillotine",
   // "stats/invalid",
   // "stats/meeting",
   // "stats/pretend",

@@ -814,6 +814,10 @@
       moneyLiberated += worth * count;
       totalHeadCount += count;
     });
+
+    if (stats.guillotine.heads_isLimited) {
+      moneyLiberated = stats.guillotine.wealthCreated;
+    }
     const averageHeadValue = totalHeadCount > 0 ? +(moneyLiberated / totalHeadCount).toFixed(2) : 0;
     return {
       mostExecuted,

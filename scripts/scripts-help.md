@@ -4,6 +4,102 @@
 
 ---
 
+## `/scripts/firebase/guillotine-stats-to-csv.js`
+
+### Why!?
+
+- To snapshot the current guillotine head stats and aggregate game data from the dev Firestore into CSV files for review or manipulation.
+- Step 1 of the inflate-heads workflow.
+
+### Purpose
+
+Reads every document in `/stats/guillotine/heads/{name}` and the top-level `/stats/guillotine` document from the **dev** Firestore, then writes two CSV files:
+
+| Output file | Contents |
+|---|---|
+| `scripts/csv/stats/guillotine-heads.csv` | `name`, `headCount`, `lastRemoved`, `netWorth` for each head |
+| `scripts/csv/stats/guillotine-stats.csv` | `gamesFinished`, `gameLastFinished`, `gamesStarted`, `lastGameStarted`, `scoresShared`, `wealthCreated` |
+
+If any head document is missing one of its 4 expected fields, a report is printed in the console **and** saved to `scripts/csv/stats/guillotine-missing-fields.json`.
+
+### Usage
+
+```sh
+node scripts/firebase/guillotine-stats-to-csv.js
+```
+
+---
+
+## `/scripts/firebase/guillotine-inflate-stats.js`
+
+### Why!?
+
+- To inflate guillotine stats in the dev environment to compensate for a database wipe, simulating the activity that should have accumulated.
+
+### Purpose
+
+Reads the two CSV files produced by `guillotine-stats-to-csv.js` and writes two new inflated CSV files:
+
+| Output file | Contents |
+|---|---|
+| `scripts/csv/stats/guillotine-heads-inflated.csv` | Same columns as source; `headCount` multiplied by `INFLATION_FACTOR` (rounded to integer) |
+| `scripts/csv/stats/guillotine-stats-inflated.csv` | `gamesStarted` and `scoresShared` multiplied by `INFLATION_FACTOR`; `gamesFinished` = 90% of new `gamesStarted`; `wealthCreated` recalculated as sum of `inflatedHeadCount × netWorth` across all heads |
+
+**Will refuse to run if:**
+- Source CSVs don't exist (run `guillotine-stats-to-csv.js` first)
+- `guillotine-missing-fields.json` exists and has entries (data quality gate)
+
+**Configuration:** Edit `INFLATION_FACTOR` at the top of the script (default: `1.75`).
+
+### Usage
+
+```sh
+node scripts/firebase/guillotine-inflate-stats.js
+```
+
+---
+
+## `/scripts/firebase/guillotine-csv-to-firestore.js`
+
+### Why!?
+
+- Final step of the inflate-heads workflow: pushes the inflated CSV data back into the **dev** Firestore.
+
+### Purpose
+
+Reads `guillotine-heads-inflated.csv` and `guillotine-stats-inflated.csv` (configurable via constants at the top of the file) and updates the dev Firestore:
+
+- `/stats/guillotine/heads/{name}` — updates `headCount` only; all other fields are untouched.
+- `/stats/guillotine` — updates `gamesStarted`, `gamesFinished`, `scoresShared`, `wealthCreated` only.
+
+Uses Firestore batch writes (450 ops/batch) to minimise API calls and stay within the free tier.  
+**Never touches production.**
+
+### Usage
+
+```sh
+node scripts/firebase/guillotine-csv-to-firestore.js
+```
+
+**To use different input files**, edit `HEADS_CSV` and `STATS_CSV` at the top of the script.
+
+---
+
+## Inflate-Heads Workflow (all three scripts together)
+
+```sh
+# 1 — Export current dev stats to CSV
+node scripts/firebase/guillotine-stats-to-csv.js
+
+# 2 — Review scripts/csv/stats/ for any missing-field warnings, then inflate
+node scripts/firebase/guillotine-inflate-stats.js
+
+# 3 — Review the inflated CSVs, then push to dev Firestore
+node scripts/firebase/guillotine-csv-to-firestore.js
+```
+
+---
+
 ## `/scripts/firebase/purgeRooms.js`
 
 ### Why!?
