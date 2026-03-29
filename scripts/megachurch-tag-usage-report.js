@@ -4,6 +4,8 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import chalk from "chalk";
+import Table from "cli-table3";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,15 +45,27 @@ function extractReligions(fileContent) {
   return { likes, dislikes };
 }
 
-const typesContent = fs.readFileSync(typesPath, "utf8");
-const religionsContent = fs.readFileSync(religionsPath, "utf8");
+let typesContent, religionsContent;
+try {
+  typesContent = fs.readFileSync(typesPath, "utf8");
+  religionsContent = fs.readFileSync(religionsPath, "utf8");
+} catch (err) {
+  console.error(chalk.red(`\n❌ Could not read source files: ${err.message}`));
+  process.exit(1);
+}
 
 const tags = extractTagsFromTypes(typesContent);
 const { likes, dislikes } = extractReligions(religionsContent);
 
 // Load and parse places
 const placesPath = path.join(__dirname, "../src/views/megachurch/ts/_places.ts");
-const placesContent = fs.readFileSync(placesPath, "utf8");
+let placesContent;
+try {
+  placesContent = fs.readFileSync(placesPath, "utf8");
+} catch (err) {
+  console.error(chalk.red(`\n❌ Could not read places file: ${err.message}`));
+  process.exit(1);
+}
 
 function extractTagsFromPlaces(fileContent) {
   const likedMatches = [...fileContent.matchAll(/likedTags:\s*\[(.*?)\]/gs)];
@@ -88,7 +102,17 @@ const tagStats = tags.map((tag) => {
 
 tagStats.sort((a, b) => b.total - a.total);
 
-console.table(tagStats, ["tag", "total", "religion", "place"]);
+console.log(chalk.bold.blue("\n🇭  Megachurch Tag Usage Report\n"));
+
+const tagTable = new Table({
+  head: [chalk.white("Tag"), chalk.white("Total"), chalk.white("Religion (L/D)"), chalk.white("Place (L/D)")],
+  style: { head: [] },
+});
+tagStats.forEach((t) => {
+  const totalColor = t.total === 0 ? chalk.red : t.total === 1 ? chalk.yellow : chalk.green;
+  tagTable.push([chalk.cyan(t.tag), totalColor(t.total), chalk.gray(t.religion), chalk.gray(t.place)]);
+});
+console.log(tagTable.toString());
 
 // Write unused tags to unusedtags.txt
 // Output single-used and unused tags to src/views/megachurch/ts/unused-tags.txt
@@ -102,4 +126,4 @@ output += "**UNUSED TAGS**\n";
 output += unusedTags.join("\n") + "\n";
 
 fs.writeFileSync(unusedTagsPath, output, "utf8");
-console.log(`Single-used and unused tags written to src/views/megachurch/ts/unused-tags.txt`);
+console.log(chalk.gray(`\nSingle-used: ${chalk.yellow(singleUsedTags.length)} | Unused: ${chalk.red(unusedTags.length)} — written to src/views/megachurch/ts/unused-tags.txt\n`));

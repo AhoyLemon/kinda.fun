@@ -1,48 +1,53 @@
 // scripts/firebase/updateCameoCelebScores.js
-// Usage: node scripts/firebase/updateCameoCelebScores.js
 // Updates sortScore and birthdayWishCount for each cameo celeb in dev Firestore from the CSV file.
+//
+// Usage: node scripts/firebase/updateCameoCelebScores.js
 
 import admin from "firebase-admin";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import chalk from "chalk";
+import Table from "cli-table3";
+import { loadServiceAccount, createProgressBar } from "../shared/utils.js";
 
-// Helper to parse CSV
 function parseCSV(csvText) {
   const lines = csvText.trim().split(/\r?\n/);
   const headers = lines[0].replace(/"/g, "").split(",");
   return lines.slice(1).map((line) => {
     const values = line.match(/("[^"]*"|[^,]+)/g).map((v) => v.replace(/"/g, ""));
     const obj = {};
-    headers.forEach((h, i) => {
-      obj[h] = values[i];
-    });
+    headers.forEach((h, i) => { obj[h] = values[i]; });
     return obj;
   });
 }
 
-// Setup __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load dev service account
-const devServiceAccount = JSON.parse(readFileSync(join(__dirname, "./dev-service-account.json"), "utf8"));
-
-// Initialize Firebase app
-const devApp = admin.initializeApp(
-  {
-    credential: admin.credential.cert(devServiceAccount),
-  },
-  "development",
-);
+const devServiceAccount = loadServiceAccount("dev-service-account.json", __dirname);
+const devApp = admin.initializeApp({ credential: admin.credential.cert(devServiceAccount) }, "development");
 const devDb = devApp.firestore();
 
-async function updateCelebScores() {
+async function main() {
+  console.log(chalk.bold.blue("\n🎦 Update Cameo Celeb Scores — DEV only\n"));
+  console.log(chalk.gray(`   Project: ${devServiceAccount.project_id}\n`));
+
   const csvPath = join(__dirname, "./OLD_SQL/cameoCelebScores.csv");
-  const csvText = readFileSync(csvPath, "utf8");
-  const rows = parseCSV(csvText);
+  if (!existsSync(csvPath)) {
+    console.error(chalk.red(`\n❌ CSV not found:\n   ${csvPath}`));
+    process.exit(1);
+  }
+
+  const rows = parseCSV(readFileSync(csvPath, "utf8"));
+  console.log(chalk.yellow(`📂 Loaded ${rows.length.toLocaleString()} rows from cameoCelebScores.csv\n`));
+
+  const bar = createProgressBar("Updating celebs");
+  bar.start(rows.length, 0);
 
   let updatedCount = 0;
+  let errorCount = 0;
+
   for (const row of rows) {
     const cameoName = row.cameoName;
     const sortScore = Number(row.sortScore);
@@ -50,17 +55,28 @@ async function updateCelebScores() {
     const docRef = devDb.doc(`stats/cameo/celebs/${cameoName}`);
     try {
       await docRef.set({ sortScore, birthdayWishCount }, { merge: true });
-      console.log(`Updated: ${cameoName} (sortScore: ${sortScore}, birthdayWishCount: ${birthdayWishCount})`);
       updatedCount++;
     } catch (err) {
-      console.error(`Failed to update ${cameoName}:`, err);
+      errorCount++;
     }
+    bar.increment();
   }
-  console.log(`\n✅ Update complete. Total celebs updated: ${updatedCount}.`);
+  bar.stop();
+
+  const summaryTable = new Table({
+    head: [chalk.white("Stat"), chalk.white("Value")],
+    style: { head: [] },
+  });
+  summaryTable.push(["Rows in CSV", rows.length.toLocaleString()]);
+  summaryTable.push(["Updated", chalk.green(updatedCount.toLocaleString())]);
+  summaryTable.push(["Errors", errorCount > 0 ? chalk.red(errorCount.toLocaleString()) : chalk.gray("0")]);
+
+  console.log("\n" + summaryTable.toString());
+  console.log(chalk.bold.green("\n✅ Done!\n"));
   process.exit(0);
 }
 
-updateCelebScores().catch((err) => {
-  console.error("❌ Error in updateCelebScores:", err);
+main().catch((err) => {
+  console.error(chalk.red("\n❌ Error:"), err.message);
   process.exit(1);
 });

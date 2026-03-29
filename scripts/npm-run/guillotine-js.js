@@ -1,5 +1,7 @@
 import fs from "fs";
-import path, { parse } from "path";
+import path from "path";
+import chalk from "chalk";
+import Table from "cli-table3";
 import { parseFlag, parseBillions, parseName, parseSource, parseIndustry } from "../../src/views/guillotine/js/parseFunctions.js";
 
 // Read the new CSV file
@@ -83,29 +85,6 @@ lines.forEach((line, index) => {
   }
 });
 
-// // Sort by net worth (descending) and reassign ranks
-// billionaires.sort((a, b) => b.netWorth - a.netWorth);
-// billionaires.forEach((billionaire, index) => {
-//   billionaire.rank = index + 1;
-// });
-
-// // Add King Charles III
-// const charles = {
-//   rank: billionaires.length + 1,
-//   name: "King Charles III",
-//   age: 75,
-//   netWorth: 2.293,
-//   country: "United Kingdom",
-//   flag: "gb",
-//   source: "jewels, paintings, horses, cars, stolen loot, total immunity from inheritance tax",
-//   industry: "The Aristocracy",
-//   residence: "London, United Kingdom",
-//   manualAdd: true,
-//   specialSource: "https://www.theguardian.com/uk-news/ng-interactive/2023/apr/20/revealed-king-charless-private-fortune-estimated-at-almost-2bn",
-// };
-
-// billionaires.push(charles);
-
 // Generate the JavaScript file content
 const jsContent = `export const allBillionaires = [
 ${billionaires
@@ -146,22 +125,34 @@ ${billionaires
 
 fs.writeFileSync("./src/views/guillotine/js/data/_billionaires.js", jsContent);
 
-console.log("\n\x1b[1m\x1b[32m✅ Generated billionaires data\x1b[0m");
-console.log(`\x1b[1mTotal entries:\x1b[0m ${billionaires.length}\n`);
+console.log(chalk.bold.blue("\n📋 Guillotine JS Data Generator\n"));
+console.log(chalk.bold.green("✅ Generated billionaires data"));
 
-console.log("\x1b[1m📊 Breakdown by industry:\x1b[0m");
-console.log("----------------------------------------");
 const industryCount = {};
 billionaires.forEach((b) => {
   industryCount[b.industry] = (industryCount[b.industry] || 0) + 1;
 });
+
+const industryTable = new Table({
+  head: [chalk.white("Industry"), chalk.white("Count")],
+  style: { head: [] },
+});
 Object.entries(industryCount)
   .sort((a, b) => b[1] - a[1])
   .forEach(([industry, count]) => {
-    console.log(`\x1b[36m${industry.padEnd(26)}\x1b[0m : \x1b[33m${count}\x1b[0m`);
+    industryTable.push([chalk.cyan(industry), chalk.yellow(count)]);
   });
-console.log("----------------------------------------\n");
 
 const minWorth = Math.min(...billionaires.map((b) => b.netWorth));
 const maxWorth = Math.max(...billionaires.map((b) => b.netWorth));
-console.log(`💰 \x1b[1mNet worth range:\x1b[0m \x1b[32m$${minWorth}B\x1b[0m - \x1b[32m$${maxWorth}B\x1b[0m\n`);
+
+const summaryTable = new Table({
+  head: [chalk.white("Stat"), chalk.white("Value")],
+  style: { head: [] },
+});
+summaryTable.push(["Total entries", chalk.yellow(billionaires.length.toLocaleString())]);
+summaryTable.push(["Net worth range", chalk.green(`$${minWorth}B`) + chalk.gray(" to ") + chalk.green(`$${maxWorth}B`)]);
+
+console.log("\n" + summaryTable.toString());
+console.log(chalk.bold.blue("\n📊 Breakdown by industry:\n"));
+console.log(industryTable.toString() + "\n");

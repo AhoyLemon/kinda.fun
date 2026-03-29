@@ -1,70 +1,99 @@
 // scripts/firebase/updateSisyphusPurchases.js
+// For each row in sisyphusPurchases.csv, if /stats/sisyphus/purchases/{iname} exists,
+// update timesBought to INFLATION_FACTOR × icount (integer). Skips docs that don't exist.
+//
 // Usage: node scripts/firebase/updateSisyphusPurchases.js
-// For each row in sisyphusPurchases.csv, if /stats/sisyphus/purchases/{iname} exists, update timesBought to 150% of icount (integer).
 
 import admin from "firebase-admin";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import chalk from "chalk";
+import Table from "cli-table3";
+import { loadServiceAccount, createProgressBar } from "../shared/utils.js";
 
-// Helper to parse CSV
+// ---------------------------------------------------------------------------
+// ⚙️  CONFIGURATION
+// ---------------------------------------------------------------------------
+const INFLATION_FACTOR = 1.5;
+// ---------------------------------------------------------------------------
+
 function parseCSV(csvText) {
   const lines = csvText.trim().split(/\r?\n/);
   const headers = lines[0].replace(/"/g, "").split(",");
   return lines.slice(1).map((line) => {
     const values = line.match(/("[^"]*"|[^,]+)/g).map((v) => v.replace(/"/g, ""));
     const obj = {};
-    headers.forEach((h, i) => {
-      obj[h] = values[i];
-    });
+    headers.forEach((h, i) => { obj[h] = values[i]; });
     return obj;
   });
 }
 
-// Setup __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load dev service account
-const devServiceAccount = JSON.parse(readFileSync(join(__dirname, "./dev-service-account.json"), "utf8"));
-
-// Initialize Firebase app
-const devApp = admin.initializeApp(
-  {
-    credential: admin.credential.cert(devServiceAccount),
-  },
-  "development",
-);
+const devServiceAccount = loadServiceAccount("dev-service-account.json", __dirname);
+const devApp = admin.initializeApp({ credential: admin.credential.cert(devServiceAccount) }, "development");
 const devDb = devApp.firestore();
 
-async function updateSisyphusPurchases() {
+async function main() {
+  console.log(chalk.bold.blue("\n🛍️ Update Sisyphus Purchases — DEV only\n"));
+  console.log(chalk.gray(`   Project:          ${devServiceAccount.project_id}`));
+  console.log(chalk.gray(`   Inflation factor:  ${chalk.bold.yellow(INFLATION_FACTOR)}x\n`));
+
   const csvPath = join(__dirname, "./OLD_SQL/sisyphusPurchases.csv");
-  const csvText = readFileSync(csvPath, "utf8");
-  const rows = parseCSV(csvText);
+  if (!existsSync(csvPath)) {
+    console.error(chalk.red(`\n❌ CSV not found:\n   ${csvPath}`));
+    process.exit(1);
+  }
+
+  const allRows = parseCSV(readFileSync(csvPath, "utf8"));
+  const rows = allRows.filter((r) => r.iname && !isNaN(parseInt(r.icount, 10)));
+  console.log(chalk.yellow(`📂 Loaded ${rows.length.toLocaleString()} valid rows from sisyphusPurchases.csv\n`));
+
+  const bar = createProgressBar("Updating purchases");
+  bar.start(rows.length, 0);
 
   let updatedCount = 0;
+  let notFoundCount = 0;
+  let errorCount = 0;
+
   for (const row of rows) {
     const iname = row.iname;
     const icount = parseInt(row.icount, 10);
-    if (!iname || isNaN(icount)) continue;
-    const timesBought = Math.round(icount * 1.5);
+    const timesBought = Math.round(icount * INFLATION_FACTOR);
     const docRef = devDb.doc(`stats/sisyphus/purchases/${iname}`);
     try {
       const docSnap = await docRef.get();
       if (docSnap.exists) {
         await docRef.update({ timesBought });
         updatedCount++;
-        console.log(`Updated: ${iname} (timesBought: ${timesBought})`);
+      } else {
+        notFoundCount++;
       }
     } catch (err) {
-      console.error(`Error for ${iname}: ${err.message}`);
+      errorCount++;
     }
+    bar.increment();
   }
-  console.log(`\n✅ Update complete. Total purchases updated: ${updatedCount}.`);
+  bar.stop();
+
+  const summaryTable = new Table({
+    head: [chalk.white("Stat"), chalk.white("Value")],
+    style: { head: [] },
+  });
+  summaryTable.push(["Rows processed", rows.length.toLocaleString()]);
+  summaryTable.push(["Updated", chalk.green(updatedCount.toLocaleString())]);
+  summaryTable.push(["Not found (skipped)", chalk.yellow(notFoundCount.toLocaleString())]);
+  summaryTable.push(["Errors", errorCount > 0 ? chalk.red(errorCount.toLocaleString()) : chalk.gray("0")]);
+  summaryTable.push(["Inflation factor", `${INFLATION_FACTOR}x`]);
+
+  console.log("\n" + summaryTable.toString());
+  console.log(chalk.bold.green("\n✅ Done!\n"));
   process.exit(0);
 }
 
-updateSisyphusPurchases().catch((err) => {
-  console.error("❌ Error in updateSisyphusPurchases:", err);
+main().catch((err) => {
+  console.error(chalk.red("\n❌ Error:"), err.message);
   process.exit(1);
 });

@@ -1,18 +1,19 @@
-#!/usr/bin/env node
 import fs from 'fs';
 import { execSync } from 'child_process';
+import chalk from 'chalk';
 
-// Get the latest git commit date in ISO format
-const gitDate = execSync('git log -1 --format=%cI').toString().trim();
-const lastModDate = gitDate.split('T')[0]; // Extract just the date part (YYYY-MM-DD)
+console.log(chalk.bold.blue('\n🗺️  Update Sitemap\n'));
 
-// Read the sitemap template
-let sitemap = fs.readFileSync('public/sitemap.xml', 'utf8');
+try {
+  const gitDate = execSync('git log -1 --format=%cI').toString().trim();
+  const lastModDate = gitDate.split('T')[0];
 
-// Replace all lastmod dates with the git commit date
-sitemap = sitemap.replace(/<lastmod>[\d-]+<\/lastmod>/g, `<lastmod>${lastModDate}</lastmod>`);
+  let sitemap = fs.readFileSync('public/sitemap.xml', 'utf8');
+  sitemap = sitemap.replace(/<lastmod>[\d-]+<\/lastmod>/g, `<lastmod>${lastModDate}</lastmod>`);
+  fs.writeFileSync('public/sitemap.xml', sitemap);
 
-// Write back to the file
-fs.writeFileSync('public/sitemap.xml', sitemap);
-
-console.log(`Updated sitemap.xml with lastmod date: ${lastModDate}`);
+  console.log(chalk.green(`✅ sitemap.xml updated — lastmod = ${chalk.bold(lastModDate)}\n`));
+} catch (err) {
+  console.error(chalk.red(`\n❌ Failed to update sitemap: ${err.message}`));
+  process.exit(1);
+}

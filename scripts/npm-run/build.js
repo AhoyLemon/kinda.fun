@@ -6,6 +6,8 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import readline from "readline";
+import chalk from "chalk";
+import Table from "cli-table3";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,12 +23,11 @@ function promptForMode() {
       output: process.stdout,
     });
 
-    console.log("\n🏗️  Build Mode Selection");
-    console.log("1. production (default) - Optimized for deployment");
-    console.log("2. development - Faster build with debug info");
-    console.log("");
+    console.log(chalk.bold.blue("\n🏗️  Build Mode Selection"));
+    console.log(chalk.gray("1. production ") + chalk.gray("(default)") + chalk.gray(" — Optimized for deployment"));
+    console.log(chalk.gray("2. development — Faster build with debug info\n"));
 
-    rl.question("Select build mode (1-2) [1]: ", (answer) => {
+    rl.question(chalk.yellow("Select build mode (1-2) [1]: "), (answer) => {
       rl.close();
 
       const choice = answer.trim() || "1";
@@ -41,7 +42,7 @@ function promptForMode() {
           resolve("development");
           break;
         default:
-          console.log(`Invalid choice "${choice}", defaulting to production`);
+          console.log(chalk.yellow(`Invalid choice "${choice}", defaulting to production`));
           resolve("production");
           break;
       }
@@ -58,7 +59,7 @@ async function main() {
   const modeIndex = args.findIndex((arg) => arg === "--mode");
   if (modeIndex !== -1 && args[modeIndex + 1]) {
     mode = args[modeIndex + 1];
-    console.log(`🎯 Using specified mode: ${mode}`);
+    console.log(chalk.gray(`🎯 Using specified mode: ${chalk.bold(mode)}`));
   }
 
   // If no mode specified, prompt user
@@ -66,7 +67,7 @@ async function main() {
     mode = await promptForMode();
   }
 
-  console.log(`\n🚀 Building in ${mode} mode...\n`);
+  console.log(chalk.bold.blue(`\n🚀 Building in ${chalk.yellow(mode)} mode...\n`));
 
   // 1. Update sitemap
   run("node scripts/update-sitemap.js");
@@ -88,13 +89,23 @@ async function main() {
 
   if (fs.existsSync(src)) {
     fs.copyFileSync(src, dest);
-    console.log("Copied home.html to index.html");
+    console.log(chalk.gray("\nCopied home.html → index.html"));
   } else {
-    console.error("home.html not found in dist/");
+    console.error(chalk.red("❌ home.html not found in dist/"));
     process.exit(1);
   }
 
-  console.log(`\n✅ Build completed in ${mode} mode!`);
+  const summaryTable = new Table({
+    head: [chalk.white("Step"), chalk.white("Status")],
+    style: { head: [] },
+  });
+  summaryTable.push(["Update sitemap", chalk.green("✅ Done")]);
+  summaryTable.push([`Vite build (${mode})`, chalk.green("✅ Done")]);
+  summaryTable.push(["Build HTML pages", chalk.green("✅ Done")]);
+  summaryTable.push(["Copy home.html → index.html", chalk.green("✅ Done")]);
+
+  console.log("\n" + summaryTable.toString());
+  console.log(chalk.bold.green(`\n✅ Build complete in ${chalk.bold.yellow(mode)} mode!\n`));
 }
 
 main().catch(console.error);

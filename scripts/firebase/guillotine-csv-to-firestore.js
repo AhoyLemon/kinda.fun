@@ -13,6 +13,7 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import chalk from "chalk";
 import Table from "cli-table3";
+import { loadServiceAccount, createProgressBar } from "../shared/utils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -43,8 +44,7 @@ const BATCH_SIZE = 450;
 // Firebase setup (dev only)
 // ---------------------------------------------------------------------------
 
-const readJsonFile = (path) => JSON.parse(readFileSync(path, "utf8"));
-const devServiceAccount = readJsonFile(join(__dirname, "./dev-service-account.json"));
+const devServiceAccount = loadServiceAccount("dev-service-account.json", __dirname);
 const devApp = admin.initializeApp({ credential: admin.credential.cert(devServiceAccount) }, "development");
 const devDb = devApp.firestore();
 
@@ -85,16 +85,6 @@ function parseCSV(content) {
     headers.forEach((h, i) => (obj[h.trim()] = values[i] !== undefined ? values[i].trim() : ""));
     return obj;
   });
-}
-
-function renderProgressBar(current, total, label = "") {
-  const width = 40;
-  const pct = total > 0 ? current / total : 0;
-  const filled = Math.round(pct * width);
-  const bar = "█".repeat(filled) + "░".repeat(width - filled);
-  const pctStr = (pct * 100).toFixed(1).padStart(5);
-  process.stdout.write(`\r${chalk.cyan(label)} [${chalk.green(bar)}] ${pctStr}% (${current}/${total})`);
-  if (current >= total) process.stdout.write("\n");
 }
 
 // ---------------------------------------------------------------------------
@@ -199,6 +189,9 @@ async function main() {
 
   let totalWritten = 0;
 
+  const headBar = createProgressBar("Updating heads");
+  headBar.start(headRows.length, 0);
+
   for (const chunk of chunks) {
     const batch = devDb.batch();
     for (const row of chunk) {
@@ -208,8 +201,9 @@ async function main() {
     }
     await batch.commit();
     totalWritten += chunk.length;
-    renderProgressBar(totalWritten, headRows.length, "Updating heads    ");
+    headBar.update(totalWritten);
   }
+  headBar.stop();
 
   console.log(chalk.green(`\n✅ Updated ${totalWritten.toLocaleString()} head documents across ${chunks.length} batch(es).`));
 

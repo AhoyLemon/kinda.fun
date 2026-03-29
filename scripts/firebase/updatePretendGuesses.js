@@ -1,61 +1,66 @@
 // scripts/firebase/updatePretendGuesses.js
+// Updates or creates /stats/pretend/impersonators/{iname} with correctGuessCount,
+// closeGuessCount, badGuessCount, and lastGuess (on create).
+//
 // Usage: node scripts/firebase/updatePretendGuesses.js
-// Updates or creates /stats/pretend/impersonators/{iname} with correctGuessCount, closeGuessCount, badGuessCount, and lastGuess.
 
 import admin from "firebase-admin";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import chalk from "chalk";
+import Table from "cli-table3";
+import { loadServiceAccount, createProgressBar } from "../shared/utils.js";
 
-// Helper to parse CSV
 function parseCSV(csvText) {
   const lines = csvText.trim().split(/\r?\n/);
   const headers = lines[0].replace(/"/g, "").split(",");
   return lines.slice(1).map((line) => {
     const values = line.match(/("[^"]*"|[^,]+)/g).map((v) => v.replace(/"/g, ""));
     const obj = {};
-    headers.forEach((h, i) => {
-      obj[h] = values[i];
-    });
+    headers.forEach((h, i) => { obj[h] = values[i]; });
     return obj;
   });
 }
 
-// Setup __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load dev service account
-const devServiceAccount = JSON.parse(readFileSync(join(__dirname, "./dev-service-account.json"), "utf8"));
-
-// Initialize Firebase app
-const devApp = admin.initializeApp(
-  {
-    credential: admin.credential.cert(devServiceAccount),
-  },
-  "development",
-);
+const devServiceAccount = loadServiceAccount("dev-service-account.json", __dirname);
+const devApp = admin.initializeApp({ credential: admin.credential.cert(devServiceAccount) }, "development");
 const devDb = devApp.firestore();
 
-async function updatePretendGuesses() {
-  const csvPath = join(__dirname, "./OLD_SQL/pretendGuesses.csv");
-  const csvText = readFileSync(csvPath, "utf8");
-  const rows = parseCSV(csvText);
+async function main() {
+  console.log(chalk.bold.blue("\n🎭 Update Pretend Guesses — DEV only\n"));
+  console.log(chalk.gray(`   Project: ${devServiceAccount.project_id}\n`));
 
-  const results = [];
+  const csvPath = join(__dirname, "./OLD_SQL/pretendGuesses.csv");
+  if (!existsSync(csvPath)) {
+    console.error(chalk.red(`\n❌ CSV not found:\n   ${csvPath}`));
+    process.exit(1);
+  }
+
+  const rows = parseCSV(readFileSync(csvPath, "utf8"));
+  console.log(chalk.yellow(`📂 Loaded ${rows.length.toLocaleString()} rows from pretendGuesses.csv\n`));
+
+  const bar = createProgressBar("Updating guesses");
+  bar.start(rows.length, 0);
+
+  let updatedCount = 0;
+  let createdCount = 0;
+  let errorCount = 0;
+
   for (const row of rows) {
     const iname = row.iname;
     const correctGuessCount = parseInt(row.correctGuess, 10);
     const closeGuessCount = parseInt(row.closeGuess, 10);
     const badGuessCount = parseInt(row.badGuess, 10);
     const docRef = devDb.doc(`stats/pretend/impersonators/${iname}`);
-    let action = "";
     try {
       const docSnap = await docRef.get();
       if (docSnap.exists) {
         await docRef.set({ correctGuessCount, closeGuessCount, badGuessCount }, { merge: true });
-        action = "updated";
-        console.log(`Updated: ${iname} (correct: ${correctGuessCount}, close: ${closeGuessCount}, bad: ${badGuessCount})`);
+        updatedCount++;
       } else {
         await docRef.set({
           name: iname,
@@ -64,19 +69,30 @@ async function updatePretendGuesses() {
           badGuessCount,
           lastGuess: admin.firestore.FieldValue.serverTimestamp(),
         });
-        action = "created";
-        console.log(`Created: ${iname} (correct: ${correctGuessCount}, close: ${closeGuessCount}, bad: ${badGuessCount})`);
+        createdCount++;
       }
-      results.push({ iname, correctGuessCount, closeGuessCount, badGuessCount, action });
     } catch (err) {
-      console.error(`Error for ${iname}: ${err.message}`);
-      results.push({ iname, error: err.message });
+      errorCount++;
     }
+    bar.increment();
   }
+  bar.stop();
+
+  const summaryTable = new Table({
+    head: [chalk.white("Stat"), chalk.white("Value")],
+    style: { head: [] },
+  });
+  summaryTable.push(["Rows in CSV", rows.length.toLocaleString()]);
+  summaryTable.push(["Updated (existing docs)", chalk.green(updatedCount.toLocaleString())]);
+  summaryTable.push(["Created (new docs)", chalk.cyan(createdCount.toLocaleString())]);
+  summaryTable.push(["Errors", errorCount > 0 ? chalk.red(errorCount.toLocaleString()) : chalk.gray("0")]);
+
+  console.log("\n" + summaryTable.toString());
+  console.log(chalk.bold.green("\n✅ Done!\n"));
   process.exit(0);
 }
 
-updatePretendGuesses().catch((err) => {
-  console.error("❌ Error in updatePretendGuesses:", err);
+main().catch((err) => {
+  console.error(chalk.red("\n❌ Error:"), err.message);
   process.exit(1);
 });

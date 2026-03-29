@@ -1,19 +1,26 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import chalk from "chalk";
+import Table from "cli-table3";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Read the themes file
 const themesPath = path.join(__dirname, "..", "src", "views", "megachurch", "ts", "_sermons.ts");
-const themesContent = fs.readFileSync(themesPath, "utf8");
+let themesContent;
+try {
+  themesContent = fs.readFileSync(themesPath, "utf8");
+} catch (err) {
+  console.error(chalk.red(`\n❌ Could not read _sermons.ts: ${err.message}`));
+  process.exit(1);
+}
 
-console.log("=== THEME USAGE ANALYSIS ===");
+console.log(chalk.bold.blue("\n🏩  Megachurch Theme Usage Report\n"));
 
-// Count total themes
 const themeMatches = [...themesContent.matchAll(/\{\s*id:\s*(\d+)/g)];
-console.log(`Total themes analyzed: ${themeMatches.length}`);
+console.log(chalk.gray(`   Total themes analyzed: ${chalk.bold(themeMatches.length)}\n`));
 
 // Extract religions and tags by finding context
 const religionStats = {};
@@ -88,7 +95,7 @@ for (const match of dislikedByTagMatches) {
 }
 
 // Religion analysis
-console.log("\n=== RELIGION USAGE (sorted by total) ===");
+console.log(chalk.bold.cyan("\n🛉  Religion Usage (sorted by total)\n"));
 const religionEntries = Object.entries(religionStats)
   .map(([name, stats]) => ({
     name,
@@ -98,21 +105,28 @@ const religionEntries = Object.entries(religionStats)
   }))
   .sort((a, b) => b.total - a.total);
 
-religionEntries.forEach((religion) => {
-  console.log(`${religion.name}: ${religion.total} total (${religion.liked} liked, ${religion.disliked} disliked)`);
+const religionTable = new Table({
+  head: [chalk.white("Religion"), chalk.white("Total"), chalk.white("Liked"), chalk.white("Disliked")],
+  style: { head: [] },
 });
+religionEntries.forEach((r) => {
+  religionTable.push([chalk.cyan(r.name), chalk.yellow(r.total), chalk.green(r.liked), chalk.red(r.disliked)]);
+});
+console.log(religionTable.toString());
 
 // Find underrepresented religions
-console.log("\n=== UNDERREPRESENTED RELIGIONS ===");
-console.log("Religions used 2 times or less:");
-religionEntries
-  .filter((r) => r.total <= 2)
-  .forEach((religion) => {
-    console.log(`- ${religion.name}: ${religion.total} times`);
+console.log(chalk.bold.yellow("\n⚠️  Underrepresented Religions (\u22642 uses)\n"));
+const underReligions = religionEntries.filter((r) => r.total <= 2);
+if (underReligions.length === 0) {
+  console.log(chalk.gray("   None — all religions well represented!\n"));
+} else {
+  underReligions.forEach((religion) => {
+    console.log(chalk.yellow(`   • ${religion.name}: ${religion.total} time(s)`));
   });
+}
 
 // Tag analysis
-console.log("\n=== TAG USAGE (sorted by total) ===");
+console.log(chalk.bold.cyan("\n🏷️  Tag Usage — Top 20\n"));
 const tagEntries = Object.entries(tagStats)
   .map(([name, stats]) => ({
     name,
@@ -122,22 +136,32 @@ const tagEntries = Object.entries(tagStats)
   }))
   .sort((a, b) => b.total - a.total);
 
-console.log("Top 20 most used tags:");
-tagEntries.slice(0, 20).forEach((tag) => {
-  console.log(`${tag.name}: ${tag.total} total (${tag.liked} liked, ${tag.disliked} disliked)`);
+const tagTable = new Table({
+  head: [chalk.white("Tag"), chalk.white("Total"), chalk.white("Liked"), chalk.white("Disliked")],
+  style: { head: [] },
 });
+tagEntries.slice(0, 20).forEach((tag) => {
+  tagTable.push([chalk.cyan(tag.name), chalk.yellow(tag.total), chalk.green(tag.liked), chalk.red(tag.disliked)]);
+});
+console.log(tagTable.toString());
 
 // Find underrepresented tags
-console.log("\n=== UNDERREPRESENTED TAGS ===");
+console.log(chalk.bold.yellow("\n⚠️  Underrepresented Tags (\u22642 uses)\n"));
 const underrepresentedTags = tagEntries.filter((t) => t.total <= 2);
-console.log(`Tags used 2 times or less (${underrepresentedTags.length} total):`);
+console.log(chalk.gray(`   ${underrepresentedTags.length} tag(s):`));
 underrepresentedTags.forEach((tag) => {
-  console.log(`- ${tag.name}: ${tag.total} times`);
+  console.log(chalk.yellow(`   • ${tag.name}: ${tag.total} time(s)`));
 });
 
-// Find completely unused tags by reading the types file
+// Find completely unused tags
 const typesPath = path.join(__dirname, "..", "src", "views", "megachurch", "ts", "_types.ts");
-const typesContent = fs.readFileSync(typesPath, "utf8");
+let typesContent;
+try {
+  typesContent = fs.readFileSync(typesPath, "utf8");
+} catch (err) {
+  console.error(chalk.red(`\n❌ Could not read _types.ts: ${err.message}`));
+  process.exit(1);
+}
 const tagsMatch = typesContent.match(/export type Tags =\s*([\s\S]*?);/);
 
 if (tagsMatch) {
@@ -151,14 +175,15 @@ if (tagsMatch) {
   const usedTags = new Set(tagEntries.map((t) => t.name));
   const unusedTags = allTags.filter((tag) => !usedTags.has(tag));
 
-  console.log(`\nCompletely unused tags (${unusedTags.length} total):`);
+  console.log(chalk.bold.red(`\n❌ Completely Unused Tags (${unusedTags.length} total):\n`));
   unusedTags.forEach((tag) => {
-    console.log(`- ${tag}`);
+    console.log(chalk.red(`   • ${tag}`));
   });
 }
 
 // Balance analysis
-console.log("\n=== BALANCE ISSUES ===");
+console.log(chalk.bold.magenta("\n⚖️  Balance Issues\n"));
+let issueCount = 0;
 religionEntries.forEach((religion) => {
   if (religion.total === 0) return;
 
@@ -174,6 +199,9 @@ religionEntries.forEach((religion) => {
     else if (dislikeRatio > 3) issue = "TOO MANY DISLIKES";
     else if (likeRatio > 3) issue = "TOO MANY LIKES";
 
-    console.log(`⚠️  ${religion.name}: ${ratio} (${issue})`);
+    console.log(chalk.yellow(`   ⚠️  ${religion.name}: ${ratio} (${chalk.red(issue)})`))
+    issueCount++;
   }
 });
+if (issueCount === 0) console.log(chalk.green("   ✅ No balance issues detected.\n"));
+else console.log("");
