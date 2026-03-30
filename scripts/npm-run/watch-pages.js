@@ -19,7 +19,11 @@ const watchers = [
 console.log(chalk.gray("   ◉  ") + chalk.cyan("Pages") + chalk.gray(`  —  ${watchers.length} game watchers`));
 
 function runWatcher(w) {
-  const proc = spawn("nodemon", ["--quiet", "-w", w.file, "-x", "node", "scripts/npm-run/build-pages.js", w.build], { stdio: "inherit", shell: true, env: { ...process.env, DEV_WATCH: "1" } });
+  const proc = spawn("nodemon", ["--quiet", "-w", w.file, "-x", "node", "scripts/npm-run/build-pages.js", w.build], {
+    stdio: "inherit",
+    shell: true,
+    env: { ...process.env, DEV_WATCH: "1" },
+  });
   proc.on("close", (code) => {
     // Suppressed watcher exit logs for quieter output
   });

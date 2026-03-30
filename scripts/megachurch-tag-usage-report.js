@@ -126,4 +126,8 @@ output += "**UNUSED TAGS**\n";
 output += unusedTags.join("\n") + "\n";
 
 fs.writeFileSync(unusedTagsPath, output, "utf8");
-console.log(chalk.gray(`\nSingle-used: ${chalk.yellow(singleUsedTags.length)} | Unused: ${chalk.red(unusedTags.length)} — written to src/views/megachurch/ts/unused-tags.txt\n`));
+console.log(
+  chalk.gray(
+    `\nSingle-used: ${chalk.yellow(singleUsedTags.length)} | Unused: ${chalk.red(unusedTags.length)} — written to src/views/megachurch/ts/unused-tags.txt\n`,
+  ),
+);

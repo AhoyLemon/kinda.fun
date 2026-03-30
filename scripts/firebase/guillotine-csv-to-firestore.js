@@ -149,7 +149,11 @@ async function main() {
 
   if ([newGamesStarted, newGamesFinished, newScoresShared, newWealthCreated].some(isNaN)) {
     console.log(chalk.red("❌ Stats CSV contains non-numeric values for numeric fields."));
-    console.log(chalk.red(`   gamesStarted="${statsRow.gamesStarted}", gamesFinished="${statsRow.gamesFinished}", scoresShared="${statsRow.scoresShared}", wealthCreated="${statsRow.wealthCreated}"`));
+    console.log(
+      chalk.red(
+        `   gamesStarted="${statsRow.gamesStarted}", gamesFinished="${statsRow.gamesFinished}", scoresShared="${statsRow.scoresShared}", wealthCreated="${statsRow.wealthCreated}"`,
+      ),
+    );
     process.exit(1);
   }
 

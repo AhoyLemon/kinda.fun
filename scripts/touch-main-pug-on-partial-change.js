@@ -41,11 +41,7 @@ watchedFiles.forEach((file) => {
     if (fs.existsSync(main)) {
       const now = new Date();
       fs.utimesSync(main, now, now);
-      console.log(
-        chalk.cyan("[touch-main-pug]") + " " +
-        chalk.green(path.basename(main)) + " touched due to change in " +
-        chalk.yellow(path.basename(file))
-      );
+      console.log(chalk.cyan("[touch-main-pug]") + " " + chalk.green(path.basename(main)) + " touched due to change in " + chalk.yellow(path.basename(file)));
     }
   });
 });

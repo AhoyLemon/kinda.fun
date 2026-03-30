@@ -18,7 +18,9 @@ function parseCSV(csvText) {
   return lines.slice(1).map((line) => {
     const values = line.match(/("[^"]*"|[^,]+)/g).map((v) => v.replace(/"/g, ""));
     const obj = {};
-    headers.forEach((h, i) => { obj[h] = values[i]; });
+    headers.forEach((h, i) => {
+      obj[h] = values[i];
+    });
     return obj;
   });
 }

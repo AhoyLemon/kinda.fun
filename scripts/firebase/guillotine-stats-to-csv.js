@@ -170,11 +170,7 @@ async function main() {
     style: { head: [] },
   });
   wealthTable.push(["Stored in Firestore", storedWealthCreated.toLocaleString(), chalk.gray("/stats/guillotine.wealthCreated")]);
-  wealthTable.push([
-    "Calculated from heads",
-    Math.round(calculatedWealthCreated).toLocaleString(),
-    chalk.gray("sum(headCount × netWorth) per head"),
-  ]);
+  wealthTable.push(["Calculated from heads", Math.round(calculatedWealthCreated).toLocaleString(), chalk.gray("sum(headCount × netWorth) per head")]);
   wealthTable.push([
     "Ratio (calc / stored)",
     wealthRatio !== null ? wealthRatio.toFixed(4) + "x" : chalk.red("N/A"),
@@ -189,9 +185,9 @@ async function main() {
     console.log(
       chalk.yellow(
         `\n⚠️  wealthCreated mismatch detected.\n` +
-        `   Stored:     ${storedWealthCreated.toLocaleString()}\n` +
-        `   Calculated: ${Math.round(calculatedWealthCreated).toLocaleString()}\n` +
-        `   The stats CSV will use the CALCULATED value so inflation is consistent.`,
+          `   Stored:     ${storedWealthCreated.toLocaleString()}\n` +
+          `   Calculated: ${Math.round(calculatedWealthCreated).toLocaleString()}\n` +
+          `   The stats CSV will use the CALCULATED value so inflation is consistent.`,
       ),
     );
   }

@@ -199,7 +199,7 @@ religionEntries.forEach((religion) => {
     else if (dislikeRatio > 3) issue = "TOO MANY DISLIKES";
     else if (likeRatio > 3) issue = "TOO MANY LIKES";
 
-    console.log(chalk.yellow(`   ⚠️  ${religion.name}: ${ratio} (${chalk.red(issue)})`))
+    console.log(chalk.yellow(`   ⚠️  ${religion.name}: ${ratio} (${chalk.red(issue)})`));
     issueCount++;
   }
 });
