@@ -119,6 +119,48 @@ node scripts/firebase/invalid_purgeRooms.js
 
 ---
 
+## `/scripts/firebase/testFirebaseConnections.js`
+
+### Why!?
+
+- To diagnose Firebase connectivity and IAM permission problems before running any other Firebase scripts.
+- Run this first if you see `PERMISSION_DENIED`, auth errors, or missing credentials errors.
+
+### Purpose
+
+Runs a full suite of checks against both the **DEV** (`kinda-fun-dev`) and **PROD** (`kinda-fun`) Firestore instances:
+
+| Check | DEV | PROD |
+|---|---|---|
+| Credentials file exists & is valid JSON | ✅ | ✅ |
+| Firebase Admin SDK initialises | ✅ | ✅ |
+| Read a known document (`stats/cameo`) | ✅ | ✅ |
+| Query a known collection (`stats/cameo/celebs`) | ✅ | ✅ |
+| `listCollections()` (needed for recursive clone) | ✅ | ✅ |
+| Write + delete a test document | ✅ | ⏭ skipped (not tested on PROD) |
+
+For any failed check, the script prints an actionable suggestion including the exact IAM role and GCP Console URL to fix it.
+
+### Usage
+
+```sh
+node scripts/firebase/testFirebaseConnections.js
+
+# Or via npm:
+npm run firebase:check
+```
+
+### Required IAM Roles
+
+For checks to pass, both service accounts need:
+
+- **Cloud Datastore User** — read/write Firestore documents
+- **Firebase Admin SDK Administrator Service Agent** — `listCollections()` support
+
+Grant roles at: GCP Console → IAM → find the service account `client_email` from the JSON file.
+
+---
+
 ## `/scripts/firebase/cloneFirestore.js`
 
 ### Why!?
