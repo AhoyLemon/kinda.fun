@@ -7,7 +7,6 @@ import Table from "cli-table3";
 import chalk from "chalk";
 
 export default defineConfig(({ mode }) => {
-  console.log(mode);
   const env = loadEnv(mode, process.cwd(), "");
 
   // Check both .env file and process.env for compatibility with CI

@@ -13,13 +13,11 @@ function run(cmd, args, name) {
   return proc;
 }
 
-console.log(chalk.bold.blue("\n🎮 Kinda Fun — Development Mode\n"));
-console.log(chalk.gray("   Starting:  ") + chalk.cyan("Vite dev client") + chalk.gray("  →  http://localhost:5173"));
-console.log(chalk.gray("   Starting:  ") + chalk.cyan("Page watchers") + chalk.gray("   (nodemon per game)"));
-console.log(chalk.gray("   Starting:  ") + chalk.cyan("Partials watcher") + chalk.gray(" (touch on .pug partial change)\n"));
+console.log(chalk.bold.cyan("\n  🎮  Kinda Fun") + chalk.bold.white("  —  Development Mode"));
+console.log(chalk.gray("  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━") + "\n");
 
 const processes = [
-  run("npm", ["run", "dev:client"], "CLIENT"),
+  run("npm", ["run", "--silent", "dev:client"], "CLIENT"),
   run("node", ["scripts/npm-run/watch-pages.js"], "WATCH"),
   run("node", ["scripts/touch-main-pug-on-partial-change.js"], "PARTIALS"),
 ];

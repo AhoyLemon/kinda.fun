@@ -98,7 +98,11 @@ const filteredPages = arg
   ? pages.filter((page) => page.name.replace(/\.html$/, "") === arg || page.out.endsWith(arg) || page.src.endsWith(arg) || page.name === arg)
   : pages;
 
-console.log(chalk.bold.blue(`\n📄 Build Pages${arg ? ` — ${arg}` : ""} (${filteredPages.length} page${filteredPages.length === 1 ? "" : "s"})\n`));
+const watchMode = process.env.DEV_WATCH === "1";
+
+if (!watchMode) {
+  console.log(chalk.bold.blue(`\n📄 Build Pages${arg ? ` — ${arg}` : ""} (${filteredPages.length} page${filteredPages.length === 1 ? "" : "s"})\n`));
+}
 
 const builtPages = [];
 const failedPages = [];
@@ -132,18 +136,24 @@ for (const page of filteredPages) {
   }
 }
 
-const summaryTable = new Table({
-  head: [chalk.white("Page"), chalk.white("Status")],
-  style: { head: [] },
-});
-builtPages.forEach((name) => summaryTable.push([name, chalk.green("✅ Built")]));
-failedPages.forEach((name) => summaryTable.push([name, chalk.red("❌ Failed")]));
-
-console.log(summaryTable.toString());
-
-if (failedPages.length > 0) {
-  console.log(chalk.red(`\n❌ ${failedPages.length} page(s) failed.\n`));
-  process.exit(1);
+if (watchMode) {
+  builtPages.forEach((name) => console.log(chalk.gray("   📄  ") + chalk.cyan(name) + chalk.gray(" rebuilt")));
+  failedPages.forEach((name) => console.error(chalk.red(`   ❌  ${name} build failed`)));
+  if (failedPages.length > 0) process.exit(1);
 } else {
-  console.log(chalk.bold.green("\n✅ All pages built successfully!\n"));
+  const summaryTable = new Table({
+    head: [chalk.white("Page"), chalk.white("Status")],
+    style: { head: [] },
+  });
+  builtPages.forEach((name) => summaryTable.push([name, chalk.green("✅ Built")]));
+  failedPages.forEach((name) => summaryTable.push([name, chalk.red("❌ Failed")]));
+
+  console.log(summaryTable.toString());
+
+  if (failedPages.length > 0) {
+    console.log(chalk.red(`\n❌ ${failedPages.length} page(s) failed.\n`));
+    process.exit(1);
+  } else {
+    console.log(chalk.bold.green("\n✅ All pages built successfully!\n"));
+  }
 }

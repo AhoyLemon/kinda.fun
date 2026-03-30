@@ -50,8 +50,7 @@ watchedFiles.forEach((file) => {
   });
 });
 
-console.log(chalk.bold.blue("\n👁️  Pug Partials Watcher"));
-console.log(chalk.gray(`   Watching ${chalk.bold(watched.length)} partial(s) across ${Object.keys(mainFiles).length > 0 ? "all views" : "no views"}\n`));
+console.log(chalk.gray("   ◉  ") + chalk.cyan("Partials") + chalk.gray(`  —  ${watched.length} pug partials`) + "\n");
 
 process.on("SIGINT", () => {
   console.log(chalk.gray("\nStopping partials watcher..."));
