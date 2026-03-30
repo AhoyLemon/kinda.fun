@@ -1,4 +1,4 @@
-// scripts/firebase/purgeRooms.js
+// scripts/firebase/invalid_purgeRooms.js
 // Purges all documents in /rooms except /rooms/_STATS, including all subcollections.
 // Updates /rooms/_STATS with timesPurged and lastPurged.
 //

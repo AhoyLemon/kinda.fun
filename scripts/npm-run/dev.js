@@ -18,8 +18,8 @@ console.log(chalk.gray("  ━━━━━━━━━━━━━━━━━━
 
 const processes = [
   run("npm", ["run", "--silent", "dev:client"], "CLIENT"),
-  run("node", ["scripts/npm-run/watch-pages.js"], "WATCH"),
-  run("node", ["scripts/touch-main-pug-on-partial-change.js"], "PARTIALS"),
+  run("node", ["scripts/npm-run/watchPages.js"], "WATCH"),
+  run("node", ["scripts/watchPugPartials.js"], "PARTIALS"),
 ];
 
 process.on("SIGINT", () => {

@@ -1,5 +1,5 @@
-// megachurch-tag-usage-report.js
-// Usage: node scripts/megachurch-tag-usage-report.js
+// megachurch_tagUsageReport.js
+// Usage: node scripts/megachurch_tagUsageReport.js
 
 import fs from "fs";
 import path from "path";

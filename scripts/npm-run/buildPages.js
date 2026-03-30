@@ -7,7 +7,7 @@ import chalk from "chalk";
 import Table from "cli-table3";
 
 /*
- * build-pages.js
+ * buildPages.js
  *
  * Generates static HTML pages from Pug templates for each game view.
  * Ensures local HTML uses dev script paths and production HTML uses built script paths.

@@ -70,7 +70,7 @@ async function main() {
   console.log(chalk.bold.blue(`\n🚀 Building in ${chalk.yellow(mode)} mode...\n`));
 
   // 1. Update sitemap
-  run("node scripts/update-sitemap.js");
+  run("node scripts/updateSitemap.js");
 
   // 2. Vite build with selected mode
   if (mode === "production") {

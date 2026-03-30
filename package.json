@@ -7,20 +7,20 @@
   "scripts": {
     "dev": "node scripts/npm-run/dev.js",
     "dev:client": "vite --host",
-    "build:pages": "node scripts/npm-run/build-pages.js",
+    "build:pages": "node scripts/npm-run/buildPages.js",
     "build": "node scripts/npm-run/build.js",
     "preview": "vite preview --host",
     "test:watch": "vitest",
     "test:run": "vitest --run",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "guillotine:csv": "node scripts/npm-run/guillotine-csv.js",
-    "guillotine:js": "node scripts/npm-run/guillotine-js.js",
-    "guillotine:arrests": "node scripts/npm-run/guillotine-arrests.js",
-    "watch:pages": "node scripts/npm-run/watch-pages.js",
+    "guillotine:csv": "node scripts/npm-run/guillotine_mergeCsv.js",
+    "guillotine:js": "node scripts/npm-run/guillotine_generateJs.js",
+    "guillotine:arrests": "node scripts/npm-run/guillotine_createArrests.js",
+    "watch:pages": "node scripts/npm-run/watchPages.js",
     "firebase:hydrate": "node scripts/firebase/cloneFirestore.js",
     "postinstall": "cd functions && npm install",
-    "purge:rooms": "node scripts/firebase/purgeRooms.js"
+    "purge:rooms": "node scripts/firebase/invalid_purgeRooms.js"
   },
   "dependencies": {
     "@vueform/multiselect": "^2.6.11",

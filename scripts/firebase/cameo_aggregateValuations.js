@@ -1,4 +1,4 @@
-// scripts/firebase/aggregateCameoValuations.js
+// scripts/firebase/cameo_aggregateValuations.js
 // Aggregates average playerValue per celebrity from cameoValuations.csv,
 // filtering out values <10 or >1000. Outputs cameoValuations.aggregated.csv.
 //

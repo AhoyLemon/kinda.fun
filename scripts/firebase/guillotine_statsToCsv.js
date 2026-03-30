@@ -1,4 +1,4 @@
-// scripts/firebase/guillotine-stats-to-csv.js
+// scripts/firebase/guillotine_statsToCsv.js
 // Reads all head documents from /stats/guillotine/heads/{name} and the main
 // /stats/guillotine document, then exports them to CSV files in scripts/csv/stats/.
 //

@@ -1,4 +1,4 @@
-// scripts/npm-run/watch-pages.js
+// scripts/npm-run/watchPages.js
 // Spawns all nodemon page watchers in parallel
 import { spawn } from "child_process";
 import chalk from "chalk";
@@ -19,7 +19,7 @@ const watchers = [
 console.log(chalk.gray("   ◉  ") + chalk.cyan("Pages") + chalk.gray(`  —  ${watchers.length} game watchers`));
 
 function runWatcher(w) {
-  const proc = spawn("nodemon", ["--quiet", "-w", w.file, "-x", "node", "scripts/npm-run/build-pages.js", w.build], {
+  const proc = spawn("nodemon", ["--quiet", "-w", w.file, "-x", "node", "scripts/npm-run/buildPages.js", w.build], {
     stdio: "inherit",
     shell: true,
     env: { ...process.env, DEV_WATCH: "1" },
