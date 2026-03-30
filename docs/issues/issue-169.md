@@ -1,6 +1,6 @@
 # Issue 169 — Node Script DX Standardization
 
-> **Status:** Proposal — no scripts have been changed yet.
+> **Status:** Complete — all 25 scripts standardized.
 > **Scope:** All 25 scripts in `scripts/`, `scripts/npm-run/`, and `scripts/firebase/`.
 
 ---

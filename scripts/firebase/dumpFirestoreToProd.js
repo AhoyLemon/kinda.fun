@@ -1,13 +1,8 @@
-// scripts/firebase/dumpFirestoreToProd.js
+﻿// scripts/firebase/dumpFirestoreToProd.js
+// ⚠️  WARNING: This will overwrite PROD data with DEV data.
+// You must type an exact confirmation string before anything is written.
+//
 // Usage: node scripts/firebase/dumpFirestoreToProd.js
-// WARNING: This will overwrite data in PROD with data from DEV.
-// You must confirm by typing: Yes that is what I want
-
-import admin from "firebase-admin";
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import readline from "readline";
 
 // Top-level collections to push (recursively, including subcollections)
 const collectionsToPush = [
@@ -22,7 +17,7 @@ const collectionsToPush = [
   //
   ////////////////////////////////////
   // NO MORE BILLIONAIRES
-  "stats/guillotine/heads",
+  // "stats/guillotine/heads",
   //
   ////////////////////////////////////
   // INVALID
@@ -61,7 +56,7 @@ const documentsToPush = [
   //
   ////////////////////////////////////
   // NO MORE BILLIONAIRES
-  "stats/guillotine",
+  // "stats/guillotine",
   //
   ////////////////////////////////////
   // INVALID
@@ -80,125 +75,130 @@ const documentsToPush = [
   //"stats/sisyphus",
 ];
 
-// Helper to read JSON files in ES Modules
-const readJsonFile = (path) => {
-  return JSON.parse(readFileSync(path, "utf8"));
-};
+import admin from "firebase-admin";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import chalk from "chalk";
+import Table from "cli-table3";
+import { loadServiceAccount, confirmExact } from "../shared/utils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const prodServiceAccount = readJsonFile(join(__dirname, "./prod-service-account.json"));
-const devServiceAccount = readJsonFile(join(__dirname, "./dev-service-account.json"));
+const prodServiceAccount = loadServiceAccount("prod-service-account.json", __dirname);
+const devServiceAccount = loadServiceAccount("dev-service-account.json", __dirname);
 
-const prodApp = admin.initializeApp(
-  {
-    credential: admin.credential.cert(prodServiceAccount),
-  },
-  "production",
-);
-const devApp = admin.initializeApp(
-  {
-    credential: admin.credential.cert(devServiceAccount),
-  },
-  "development",
-);
+const prodApp = admin.initializeApp({ credential: admin.credential.cert(prodServiceAccount) }, "production");
+const devApp = admin.initializeApp({ credential: admin.credential.cert(devServiceAccount) }, "development");
 const prodDb = prodApp.firestore();
 const devDb = devApp.firestore();
 
-async function cloneCollection(sourceCollectionRef, targetCollectionRef) {
-  const documentsSnapshot = await sourceCollectionRef.get();
+async function cloneCollection(sourceCollectionRef, targetCollectionRef, onDoc) {
+  const snapshot = await sourceCollectionRef.get();
   let writeCounter = 0;
-  if (documentsSnapshot.size === 0) {
-    console.log(`    (No documents found in ${sourceCollectionRef.path})`);
+  if (snapshot.size === 0) {
+    console.log(chalk.gray(`   (No documents in ${sourceCollectionRef.path})`));
   }
-  for (const doc of documentsSnapshot.docs) {
+  for (const doc of snapshot.docs) {
     await targetCollectionRef.doc(doc.id).set(doc.data());
     writeCounter++;
-    console.log(`    Pushed doc: ${sourceCollectionRef.path}/${doc.id}`);
-    // Recursively clone subcollections
-    const subcollections = await doc.ref.listCollections();
-    for (const subcollection of subcollections) {
-      const targetSubcollectionRef = targetCollectionRef.doc(doc.id).collection(subcollection.id);
-      console.log(`      -> Found subcollection: ${subcollection.path}. Pushing...`);
-      await cloneCollection(subcollection, targetSubcollectionRef);
+    if (onDoc) onDoc();
+    try {
+      const subcollections = await doc.ref.listCollections();
+      for (const subcollection of subcollections) {
+        const targetSubcollectionRef = targetCollectionRef.doc(doc.id).collection(subcollection.id);
+        writeCounter += await cloneCollection(subcollection, targetSubcollectionRef, onDoc);
+      }
+    } catch {
+      // listCollections() requires datastore.indexes.list IAM permission;
+      // if missing, document fields were still copied above — subcollections skipped.
     }
   }
-  console.log(`    Finished pushing ${sourceCollectionRef.path}. Pushed ${writeCounter} documents.`);
   return writeCounter;
 }
 
 async function main() {
-  // Print warning and list collections/documents
-  console.log("\n⚠️  WARNING: You are about to OVERWRITE PROD with DEV data!");
-  console.log("Collections to push:");
-  collectionsToPush.forEach((c) => console.log("  - " + c));
-  console.log("Documents to push:");
-  documentsToPush.forEach((d) => console.log("  - " + d));
-  console.log("\nType exactly: Yes that is what I want\n");
+  console.log(chalk.bold.red("\n⚠️  DUMP TO PRODUCTION — DANGEROUS OPERATION\n"));
+  console.log(chalk.red(`   Source (DEV):  ${devServiceAccount.project_id}`));
+  console.log(chalk.red(`   Target (PROD): ${prodServiceAccount.project_id}\n`));
 
-  // Confirm with user
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  const answer = await new Promise((resolve) => {
-    rl.question("Are you sure? ", (ans) => {
-      rl.close();
-      resolve(ans);
-    });
-  });
-  if (answer !== "Yes that is what I want") {
-    console.log("Aborted. No changes made.");
+  if (collectionsToPush.length === 0 && documentsToPush.length === 0) {
+    console.log(chalk.yellow("⚫ Nothing selected to push."));
+    console.log(chalk.gray("   Uncomment lines in the arrays at the top of this file."));
     process.exit(0);
   }
 
+  // Preview what will be pushed
+  const previewTable = new Table({
+    head: [chalk.white("Type"), chalk.white("Path")],
+    style: { head: [] },
+  });
+  collectionsToPush.forEach((c) => previewTable.push([chalk.cyan("collection"), c]));
+  documentsToPush.forEach((d) => previewTable.push([chalk.gray("document"), d]));
+
+  console.log(chalk.red.bold("🚨 The following will be written to PRODUCTION:\n"));
+  console.log(previewTable.toString());
+
+  const ok = await confirmExact(
+    chalk.red.bold("You are about to OVERWRITE PRODUCTION with DEV data. This cannot be undone."),
+    "Yes that is what I want",
+  );
+  if (!ok) {
+    console.log(chalk.gray("\nAborted. No changes made.\n"));
+    process.exit(0);
+  }
+
+  console.log("");
   let totalDocsPushed = 0;
+  const results = [];
 
-  // Push collections (with subcollections)
-  if (collectionsToPush.length === 0) {
-    console.log("No collections to push. Skipping collectionsToPush.");
-  } else {
-    for (const collectionId of collectionsToPush) {
-      console.log(`\n--- Pushing collection: ${collectionId} ---`);
-      const sourceCollection = devDb.collection(collectionId);
-      const targetCollection = prodDb.collection(collectionId);
-      const count = await cloneCollection(sourceCollection, targetCollection);
-      totalDocsPushed += count;
-      console.log(`--- Finished pushing collection: ${collectionId}. Total pushed: ${count} documents. ---`);
+  for (const collectionId of collectionsToPush) {
+    console.log(chalk.yellow(`\n📂 Pushing collection: ${chalk.bold(collectionId)}...`));
+    const sourceCollection = devDb.collection(collectionId);
+    const targetCollection = prodDb.collection(collectionId);
+
+    let docsWritten = 0;
+    const count = await cloneCollection(sourceCollection, targetCollection, () => {
+      docsWritten++;
+      process.stdout.write(chalk.gray(`\r   ${docsWritten} doc(s) written...`));
+    });
+    process.stdout.write("\n");
+    totalDocsPushed += count;
+    results.push({ path: collectionId, docs: count, status: chalk.green("✅") });
+  }
+
+  for (const docPath of documentsToPush) {
+    console.log(chalk.yellow(`\n📄 Pushing document: ${chalk.bold(docPath)}...`));
+    const docSnap = await devDb.doc(docPath).get();
+    if (docSnap.exists) {
+      await prodDb.doc(docPath).set(docSnap.data());
+      totalDocsPushed++;
+      results.push({ path: docPath, docs: 1, status: chalk.green("✅") });
+    } else {
+      console.log(chalk.red(`   ❌ Not found in DEV: ${docPath}`));
+      results.push({ path: docPath, docs: 0, status: chalk.red("❌ missing") });
     }
   }
 
-  // Push individual documents (fields only)
-  if (documentsToPush.length === 0) {
-    console.log("No documents to push. Skipping documentsToPush.");
-  } else {
-    for (const docPath of documentsToPush) {
-      console.log(`\n--- Pushing document (fields only): ${docPath} ---`);
-      const sourceDocRef = devDb.doc(docPath);
-      const targetDocRef = prodDb.doc(docPath);
-      const docSnap = await sourceDocRef.get();
-      if (docSnap.exists) {
-        await targetDocRef.set(docSnap.data());
-        totalDocsPushed++;
-        console.log(`Pushed document fields: ${docPath}`);
-      } else {
-        console.warn(`Document not found in DEV: ${docPath}`);
-      }
-    }
-  }
-
-  // Update lastDumped field in /stats/general in DEV
+  // Record the dump timestamp on DEV
   try {
-    const now = new Date();
-    await devDb.doc("stats/general").set({ lastDumped: now.toISOString() }, { merge: true });
-    console.log(`Updated /stats/general.lastDumped in DEV to ${now.toISOString()}`);
-  } catch (err) {
-    console.error("Failed to update lastDumped field in /stats/general in DEV:", err);
+    await devDb.doc("stats/general").set({ lastDumped: new Date().toISOString() }, { merge: true });
+  } catch {
+    // Non-fatal
   }
 
-  console.log(`\n✅ Dump process complete. Total documents pushed: ${totalDocsPushed}.`);
+  const summaryTable = new Table({
+    head: [chalk.white("Path"), chalk.white("Docs"), chalk.white("Status")],
+    style: { head: [] },
+  });
+  results.forEach(({ path, docs, status }) => summaryTable.push([path, docs.toLocaleString(), status]));
+
+  console.log("\n" + summaryTable.toString());
+  console.log(chalk.bold.green(`\n✅ Dump complete! ${totalDocsPushed.toLocaleString()} doc(s) written to PRODUCTION.\n`));
   process.exit(0);
 }
 
-main().catch((error) => {
-  console.error("❌ An error occurred during the dump process:", error);
+main().catch((err) => {
+  console.error(chalk.red("\n❌ An error occurred during the dump process:"), err.message);
   process.exit(1);
 });

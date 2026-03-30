@@ -1,4 +1,6 @@
 import fs from "fs";
+import chalk from "chalk";
+import Table from "cli-table3";
 
 // Function to get the actual count of billionaires from the data file
 function getBillionaireCount() {
@@ -143,8 +145,8 @@ function formatWarrantsForExport(warrants) {
 }
 
 // Main function
-function main() {
-  console.log("🎭 Generating arrest warrants...\n");
+async function main() {
+  console.log(chalk.bold.blue("\n🚔 Generate Guillotine Arrest Warrants\n"));
 
   // Generate warrants
   const warrants = generateWarrants();
@@ -156,37 +158,41 @@ function main() {
   const outputPath = "./src/views/guillotine/js/data/_warrants.js";
   fs.writeFileSync(outputPath, jsContent);
 
-  console.log(`\n✅ Generated warrants file: ${outputPath}`);
-  console.log(`📊 Statistics:`);
-  console.log(`   - Total dates: ${Object.keys(warrants).length}`);
-  console.log(`   - Total warrants issued: ${Object.values(warrants).reduce((sum, arr) => sum + arr.length, 0)}`);
-  console.log(`   - Warrants per day: ${Object.values(warrants)[0]?.length || 0}`);
+  const warrantCount = Object.values(warrants).reduce((sum, arr) => sum + arr.length, 0);
 
-  // Show a sample of the generated data
-  console.log(`\n📋 Sample warrants:`);
-  const sampleDates = Object.keys(warrants).slice(0, 3);
-  sampleDates.forEach((date) => {
-    const month = date.substring(0, 2);
-    const day = date.substring(2, 4);
-    console.log(`   ${month}/${day}: [${warrants[date].slice(0, 5).join(", ")}...]`);
+  const summaryTable = new Table({
+    head: [chalk.white("Stat"), chalk.white("Value")],
+    style: { head: [] },
   });
+  summaryTable.push(["Total dates", Object.keys(warrants).length.toLocaleString()]);
+  summaryTable.push(["Total warrants issued", chalk.yellow(warrantCount.toLocaleString())]);
+  summaryTable.push(["Warrants per day", (Object.values(warrants)[0]?.length || 0).toLocaleString()]);
+  summaryTable.push(["Output file", chalk.gray(outputPath)]);
+
+  console.log("\n" + summaryTable.toString());
+
+  // Minify the generated billionaires data
+  console.log(chalk.yellow("\n⚙️  Minifying _billionaires.js..."));
+  const billionaireFilePath = "./src/views/guillotine/js/data/_billionaires.js";
+  try {
+    const { minify } = await import("uglify-js");
+    const billionaireJs = fs.readFileSync(billionaireFilePath, "utf8");
+    const minified = minify(billionaireJs, { compress: true, mangle: true });
+    if (minified.code) {
+      fs.writeFileSync(billionaireFilePath, minified.code);
+      console.log(chalk.green(`✅ Minified: ${billionaireFilePath}`));
+    } else {
+      console.warn(chalk.yellow("⚠️  Minification failed:"), minified.error);
+    }
+  } catch (err) {
+    console.warn(chalk.yellow("⚠️  Skipping minification (uglify-js not installed)."));
+  }
+
+  console.log(chalk.bold.green("\n✅ Done!\n"));
 }
 
 // Run the script
-main();
-
-// Minify the _billionaires.js file after generating warrants
-import { minify } from "uglify-js";
-const billionaireFilePath = "./src/views/guillotine/js/data/_billionaires.js";
-try {
-  const billionaireJs = fs.readFileSync(billionaireFilePath, "utf8");
-  const minified = minify(billionaireJs, { compress: true, mangle: true });
-  if (minified.code) {
-    fs.writeFileSync(billionaireFilePath, minified.code);
-    console.log(`✅ Minified: ${billionaireFilePath}`);
-  } else {
-    console.warn("⚠️  Minification failed:", minified.error);
-  }
-} catch (err) {
-  console.warn("⚠️  Could not minify _billionaires.js:", err);
-}
+main().catch((err) => {
+  console.error(chalk.red("\n❌ Error:"), err.message);
+  process.exit(1);
+});

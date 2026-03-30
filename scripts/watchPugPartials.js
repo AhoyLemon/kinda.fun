@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import chalk from "chalk";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,12 +39,16 @@ watchedFiles.forEach((file) => {
   fs.watchFile(file, { interval: 200 }, () => {
     const main = mainFiles[file];
     if (fs.existsSync(main)) {
-      // Touch the main file (update mtime)
       const now = new Date();
       fs.utimesSync(main, now, now);
-      console.log(`\x1b[36m[touch-main-pug]\x1b[0m \x1b[32m${path.basename(main)}\x1b[0m updated due to change in \x1b[33m${path.basename(file)}\x1b[0m.`);
+      console.log(chalk.cyan("[touch-main-pug]") + " " + chalk.green(path.basename(main)) + " touched due to change in " + chalk.yellow(path.basename(file)));
     }
   });
 });
 
-console.log("[touch-main-pug] Watching partials...");
+console.log(chalk.gray("   ◉  ") + chalk.cyan("Partials") + chalk.gray(`  —  ${watched.length} pug partials`) + "\n");
+
+process.on("SIGINT", () => {
+  console.log(chalk.gray("\nStopping partials watcher..."));
+  process.exit();
+});

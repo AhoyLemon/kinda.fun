@@ -1,5 +1,8 @@
 import fs from "fs";
 import path from "path";
+import chalk from "chalk";
+import Table from "cli-table3";
+import { createProgressBar } from "../shared/utils.js";
 
 // Function to parse CSV files
 function parseCSV(filePath) {
@@ -113,14 +116,20 @@ function escapeCSV(field) {
 }
 
 function main() {
-  console.log("🏛️  Generating current billionaire list...\n");
+  console.log(chalk.bold.blue("\n🏛️  Generate Current Billionaire List\n"));
 
   // Read the CSV files
-  const forbes2024 = parseCSV("./src/views/guillotine/csv/forbes-2024.csv");
-  const forbes2025 = parseCSV("./src/views/guillotine/csv/forbes-2025.csv");
+  let forbes2024, forbes2025;
+  try {
+    forbes2024 = parseCSV("./src/views/guillotine/csv/forbes-2024.csv");
+    forbes2025 = parseCSV("./src/views/guillotine/csv/forbes-2025.csv");
+  } catch (err) {
+    console.error(chalk.red(`\n❌ Could not read source CSV: ${err.message}`));
+    process.exit(1);
+  }
 
-  console.log(`📊 Loaded ${forbes2024.length} entries from Forbes 2024`);
-  console.log(`📊 Loaded ${forbes2025.length} entries from Forbes 2025\n`);
+  console.log(chalk.gray(`   📊 Loaded ${chalk.yellow(forbes2024.length)} entries from Forbes 2024`));
+  console.log(chalk.gray(`   📊 Loaded ${chalk.yellow(forbes2025.length)} entries from Forbes 2025\n`));
 
   // Create a map of 2025 data for quick lookup
   const forbes2025Map = new Map();
@@ -168,21 +177,11 @@ function main() {
   const mergedData = [];
   const matched2025Names = new Set();
 
-  // ANSI color codes
-  const color = {
-    reset: "\x1b[0m",
-    bold: "\x1b[1m",
-    green: "\x1b[32m",
-    yellow: "\x1b[33m",
-    cyan: "\x1b[36m",
-    magenta: "\x1b[35m",
-    blue: "\x1b[34m",
-    red: "\x1b[31m",
-    gray: "\x1b[90m",
-  };
-
   const totalRows = forbes2024.length;
-  let lastProgress = -1;
+
+  const mergeBar = createProgressBar("Merging billionaires");
+  mergeBar.start(totalRows, 0);
+
   forbes2024.forEach((person2024, idx) => {
     const normalizedName = normalizeName(person2024.Name);
     let person2025 = forbes2025Map.get(normalizedName);
@@ -225,23 +224,9 @@ function main() {
       "Marital Status": person2024["Marital Status"],
       Children: parseInt(person2024.Children) || 0,
     });
-    // Progress bar update every 50 rows
-    if (idx % 50 === 0 || idx === totalRows - 1) {
-      const percent = Math.floor(((idx + 1) / totalRows) * 100);
-      if (percent !== lastProgress) {
-        const barLength = 40;
-        const filled = Math.floor((barLength * percent) / 100);
-        const empty = barLength - filled;
-        // Unicode block bar
-        const bar = color.cyan + "[" + color.green + "█".repeat(filled) + color.gray + "░".repeat(empty) + color.cyan + "]" + color.reset;
-        process.stdout.write(
-          `\r${bar} ${color.bold}${percent}%${color.reset} (${color.yellow}${idx + 1}${color.reset}/${color.yellow}${totalRows}${color.reset})`,
-        );
-        lastProgress = percent;
-      }
-    }
+    mergeBar.increment();
   });
-  process.stdout.write("\n");
+  mergeBar.stop();
 
   // Find unmatched 2025 entries
   const unmatched2025 = [];
@@ -252,7 +237,9 @@ function main() {
     }
   });
 
-  console.log(`\n📋 Found ${unmatched2025.length} people in 2025 list not in 2024 list`);
+  if (unmatched2025.length > 0) {
+    console.log(chalk.yellow(`\n⚠️  ${unmatched2025.length} people in 2025 list not in 2024 list`));
+  }
 
   // Sort by net worth descending
   mergedData.sort((a, b) => b["Net Worth"] - a["Net Worth"]);
@@ -266,9 +253,9 @@ function main() {
     mergedData[i].Rank = currentRank;
   }
 
-  console.log(`\n🏆 Rankings assigned. Top 5:`);
+  console.log(chalk.gray(`\n🏆 Top 5 by net worth:`));
   mergedData.slice(0, 5).forEach((person) => {
-    console.log(`   ${person.Rank}. ${person.Name} - $${formatNetWorth(person["Net Worth"])}B`);
+    console.log(chalk.gray(`   ${person.Rank}. ${person.Name} - ` + chalk.yellow(`$${formatNetWorth(person["Net Worth"])}B`)));
   });
 
   // Generate CSV content
@@ -318,23 +305,27 @@ function main() {
   // Write the main CSV file
   const outputPath = "./src/views/guillotine/csv/current-list.csv";
   fs.writeFileSync(outputPath, csvContent);
-  console.log(`\n✅ Generated: ${color.yellow}${outputPath}${color.reset}`);
-  console.log(`📊 Total entries: ${color.yellow}${mergedData.length}${color.reset}`);
 
   // Write unmatched names to text file
   if (unmatched2025.length > 0) {
     const unmatchedPath = "./src/views/guillotine/csv/unmatched-2025-names.txt";
     const unmatchedContent = "Names in Forbes 2025 that were NOT found in Forbes 2024:\n\n" + unmatched2025.join("\n");
     fs.writeFileSync(unmatchedPath, unmatchedContent);
-    console.log(`📝 Unmatched names written to: ${color.yellow}${unmatchedPath}${color.reset}`);
+    console.log(chalk.gray(`\n   Unmatched names written to: ${unmatchedPath}`));
   }
 
-  // Pretty summary with colors
-  console.log(`\n${color.bold}${color.blue}🎯 Summary:${color.reset}`);
-  console.log(`   - Total billionaires: ${color.yellow}${mergedData.length}${color.reset}`);
-  console.log(`   - Updated from 2025: ${color.yellow}${matched2025Names.size}${color.reset}`);
-  console.log(`   - Only in 2024: ${color.yellow}${mergedData.length - matched2025Names.size}${color.reset}`);
-  console.log(`   - Only in 2025: ${color.yellow}${unmatched2025.length}${color.reset}`);
+  const summaryTable = new Table({
+    head: [chalk.white("Stat"), chalk.white("Value")],
+    style: { head: [] },
+  });
+  summaryTable.push(["Total billionaires", chalk.yellow(mergedData.length.toLocaleString())]);
+  summaryTable.push(["Updated from 2025 data", chalk.green(matched2025Names.size.toLocaleString())]);
+  summaryTable.push(["Only in 2024 list", chalk.gray((mergedData.length - matched2025Names.size).toLocaleString())]);
+  summaryTable.push(["Only in 2025 (unmatched)", chalk.yellow(unmatched2025.length.toLocaleString())]);
+  summaryTable.push(["Output file", chalk.gray(outputPath)]);
+
+  console.log("\n" + summaryTable.toString());
+  console.log(chalk.bold.green("\n✅ Done!\n"));
 }
 
 // Run the script

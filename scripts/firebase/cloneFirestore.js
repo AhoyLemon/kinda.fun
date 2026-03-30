@@ -1,4 +1,4 @@
-// scripts/firebase/cloneFirestore.js
+﻿// scripts/firebase/cloneFirestore.js
 // =============================================================
 // 🔥 EDIT THESE ARRAYS TO CONTROL WHAT GETS CLONED 🔥
 // =============================================================
@@ -11,12 +11,12 @@ const collectionsToClone = [
   //
   ////////////////////////////////////
   // COMPARATIVELY FAMOUS
-  // "stats/cameo/celebs",
-  // "stats/cameo/specialGames",
+  "stats/cameo/celebs",
+  "stats/cameo/specialGames",
   //
   ////////////////////////////////////
   // NO MORE BILLIONAIRES
-  "stats/guillotine/heads",
+  // "stats/guillotine/heads",
   //
   ////////////////////////////////////
   // INVALID
@@ -65,8 +65,8 @@ const documentsToClone = [
   //
   ////////////////////////////////////
   // GAMES
-  // "stats/cameo",
-  "stats/guillotine",
+  "stats/cameo",
+  // "stats/guillotine",
   // "stats/invalid",
   // "stats/meeting",
   // "stats/pretend",
@@ -78,139 +78,138 @@ const documentsToClone = [
 // =============================================================
 
 import admin from "firebase-admin";
-import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import chalk from "chalk"; // Add chalk for colored console messages
+import { dirname } from "path";
+import chalk from "chalk";
+import Table from "cli-table3";
+import { loadServiceAccount, confirm } from "../shared/utils.js";
 
-// Helper to read JSON files in ES Modules
-const readJsonFile = (path) => {
-  return JSON.parse(readFileSync(path, "utf8"));
-};
-
-// Since __dirname is not available in ES Modules, we create it
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Import your service account keys using the file system
-const prodServiceAccount = readJsonFile(join(__dirname, "./prod-service-account.json"));
-const devServiceAccount = readJsonFile(join(__dirname, "./dev-service-account.json"));
+const prodServiceAccount = loadServiceAccount("prod-service-account.json", __dirname);
+const devServiceAccount = loadServiceAccount("dev-service-account.json", __dirname);
 
-// Initialize the two Firebase apps
-const prodApp = admin.initializeApp(
-  {
-    credential: admin.credential.cert(prodServiceAccount),
-  },
-  "production",
-); // Use a unique name for the app
-
-const devApp = admin.initializeApp(
-  {
-    credential: admin.credential.cert(devServiceAccount),
-  },
-  "development",
-); // Use a unique name for the app
-
-// Get a reference to the Firestore database for each app
+const prodApp = admin.initializeApp({ credential: admin.credential.cert(prodServiceAccount) }, "production");
+const devApp = admin.initializeApp({ credential: admin.credential.cert(devServiceAccount) }, "development");
 const prodDb = prodApp.firestore();
 const devDb = devApp.firestore();
 
-/**
- * Clones data from a source collection to a target collection.
- * @param {FirebaseFirestore.CollectionReference} sourceCollectionRef - The source collection.
- * @param {FirebaseFirestore.CollectionReference} targetCollectionRef - The target collection.
- */
-async function cloneCollection(sourceCollectionRef, targetCollectionRef) {
-  const documentsSnapshot = await sourceCollectionRef.get();
-  console.log(`Found ${documentsSnapshot.size} docs in ${sourceCollectionRef.path}`);
+async function cloneCollection(sourceCollectionRef, targetCollectionRef, onDoc) {
+  const snapshot = await sourceCollectionRef.get();
   let writeCounter = 0;
-
-  for (const doc of documentsSnapshot.docs) {
-    // Set the data in the target collection with the same document ID
+  for (const doc of snapshot.docs) {
     await targetCollectionRef.doc(doc.id).set(doc.data());
-    console.log(`Cloned doc: ${sourceCollectionRef.path}/${doc.id}`);
     writeCounter++;
-
-    // Recursively clone subcollections
-    const subcollections = await doc.ref.listCollections();
-    for (const subcollection of subcollections) {
-      const targetSubcollectionRef = targetCollectionRef.doc(doc.id).collection(subcollection.id);
-      console.log(`  -> Found subcollection: ${subcollection.path}. Cloning...`);
-      await cloneCollection(subcollection, targetSubcollectionRef);
+    if (onDoc) onDoc();
+    // Recursively clone subcollections (listCollections requires elevated IAM;
+    // skip gracefully if not available)
+    try {
+      const subcollections = await doc.ref.listCollections();
+      for (const subcollection of subcollections) {
+        const targetSubcollectionRef = targetCollectionRef.doc(doc.id).collection(subcollection.id);
+        writeCounter += await cloneCollection(subcollection, targetSubcollectionRef, onDoc);
+      }
+    } catch {
+      // listCollections() requires datastore.indexes.list IAM permission;
+      // if missing, document fields were still copied above — subcollections skipped.
     }
   }
   return writeCounter;
 }
 
 async function main() {
-  // Check if there is nothing to clone
+  console.log(chalk.bold.blue("\n🔧 Clone Firestore — PROD → DEV\n"));
+
   if (collectionsToClone.length === 0 && documentsToClone.length === 0) {
-    console.log(chalk.red.bold("\n🚫 No collections or documents selected for cloning."));
-    console.log(chalk.yellow("👉 Please edit the 'collectionsToClone' or 'documentsToClone' arrays in the script to specify what to clone."));
-    console.log(chalk.green("💡 Tip: Uncomment the relevant lines in the arrays to include them in the cloning process."));
+    console.log(chalk.red.bold("⚫ No collections or documents selected for cloning."));
+    console.log(chalk.yellow("   Edit the arrays at the top of this file to select what to clone."));
     process.exit(0);
   }
 
-  // Print actual project IDs from service accounts
-  console.log("prodServiceAccount.project_id:", prodServiceAccount.project_id);
-  console.log("devServiceAccount.project_id:", devServiceAccount.project_id);
+  // Pre-flight summary
+  const previewTable = new Table({
+    head: [chalk.white("Type"), chalk.white("Path")],
+    style: { head: [] },
+  });
+  collectionsToClone.forEach((c) => previewTable.push([chalk.cyan("collection"), c]));
+  documentsToClone.forEach((d) => previewTable.push([chalk.gray("document"), d]));
 
-  console.log("Starting Firestore clone process...");
-  console.log("Source Project ID:", prodApp.options.credential.projectId);
-  console.log("Target Project ID:", devApp.options.credential.projectId);
+  console.log(chalk.gray(`   Source: ${prodServiceAccount.project_id}  (PROD)`));
+  console.log(chalk.gray(`   Target: ${devServiceAccount.project_id}  (DEV)\n`));
+  console.log(chalk.yellow("💻 Planned clone:"));
+  console.log(previewTable.toString());
 
+  const ok = await confirm("Clone from PROD into DEV Firestore? (DEV data will be overwritten)");
+  if (!ok) {
+    console.log(chalk.gray("\nAborted. No changes made.\n"));
+    process.exit(0);
+  }
+
+  console.log("");
   let totalDocsCloned = 0;
+  const collectionResults = [];
 
-  // Clone collections (with subcollections)
-  if (collectionsToClone.length === 0) {
-    console.log("No collections to clone. Skipping collectionsToClone.");
-  } else {
-    for (const collectionId of collectionsToClone) {
-      console.log(`\n--- Cloning collection: ${collectionId} ---`);
-      const sourceCollection = prodDb.collection(collectionId);
-      const targetCollection = devDb.collection(collectionId);
+  // Clone collections
+  for (const collectionId of collectionsToClone) {
+    console.log(chalk.yellow(`\n📂 Cloning collection: ${chalk.bold(collectionId)}...`));
+    const sourceCollection = prodDb.collection(collectionId);
+    const targetCollection = devDb.collection(collectionId);
 
-      const count = await cloneCollection(sourceCollection, targetCollection);
-      totalDocsCloned += count;
-      console.log(`--- Finished cloning ${collectionId}. Cloned ${count} documents. ---`);
+    let docsCloned = 0;
+    const count = await cloneCollection(sourceCollection, targetCollection, () => {
+      docsCloned++;
+      process.stdout.write(chalk.gray(`\r   ${docsCloned} doc(s) written...`));
+    });
+    process.stdout.write("\n");
+    totalDocsCloned += count;
+    collectionResults.push({ path: collectionId, docs: count, status: chalk.green("✅") });
+  }
+
+  // Clone individual documents
+  for (const docPath of documentsToClone) {
+    console.log(chalk.yellow(`\n📄 Cloning document: ${chalk.bold(docPath)}...`));
+    const sourceDocRef = prodDb.doc(docPath);
+    const targetDocRef = devDb.doc(docPath);
+    const docSnap = await sourceDocRef.get();
+    if (docSnap.exists) {
+      await targetDocRef.set(docSnap.data());
+      totalDocsCloned++;
+      collectionResults.push({ path: docPath, docs: 1, status: chalk.green("✅") });
+    } else {
+      console.log(chalk.red(`   ❌ Not found in PROD: ${docPath}`));
+      collectionResults.push({ path: docPath, docs: 0, status: chalk.red("❌ missing") });
     }
   }
 
-  // Clone individual documents (fields only)
-  if (documentsToClone.length === 0) {
-    console.log("No documents to clone. Skipping documentsToClone.");
-  } else {
-    for (const docPath of documentsToClone) {
-      console.log(`\n--- Cloning document (fields only): ${docPath} ---`);
-      const sourceDocRef = prodDb.doc(docPath);
-      const targetDocRef = devDb.doc(docPath);
-      const docSnap = await sourceDocRef.get();
-      if (docSnap.exists) {
-        await targetDocRef.set(docSnap.data());
-        totalDocsCloned++;
-        console.log(`Cloned document fields: ${docPath}`);
-      } else {
-        console.warn(`Document not found: ${docPath}`);
-      }
-    }
-  }
-
-  // Update lastCloned field in /stats/general in the dev database
+  // Update lastCloned on DEV
   try {
-    const now = new Date();
-    await devDb.doc("stats/general").set({ lastCloned: now.toISOString() }, { merge: true });
-    console.log(`Updated /stats/general.lastCloned to ${now.toISOString()}`);
-  } catch (err) {
-    console.error("Failed to update lastCloned field in /stats/general:", err);
+    await devDb.doc("stats/general").set({ lastCloned: new Date().toISOString() }, { merge: true });
+  } catch {
+    // Non-fatal: stats/general may not exist yet
   }
 
-  console.log(`\n✅ Clone process complete. Total documents cloned: ${totalDocsCloned}.`);
+  // Summary
+  const summaryTable = new Table({
+    head: [chalk.white("Path"), chalk.white("Docs"), chalk.white("Status")],
+    style: { head: [] },
+  });
+  collectionResults.forEach(({ path, docs, status }) => summaryTable.push([path, docs.toLocaleString(), status]));
 
-  // Explicitly exit the script
+  console.log("\n" + summaryTable.toString());
+  console.log(chalk.bold.green(`\n✅ Clone complete! ${totalDocsCloned.toLocaleString()} total doc(s) written to DEV.\n`));
   process.exit(0);
 }
 
-main().catch((error) => {
-  console.error("❌ An error occurred during the clone process:", error);
+main().catch((err) => {
+  if (err.message?.includes("PERMISSION_DENIED")) {
+    console.error(chalk.red("\n❌ PERMISSION_DENIED reading from PROD Firestore."));
+    console.error(chalk.yellow("   The prod service account needs the 'Cloud Datastore User' IAM role."));
+    console.error(chalk.gray("   GCP Console → kinda-fun project → IAM → grant role to:"));
+    const email = prodServiceAccount?.client_email ?? "the client_email in prod-service-account.json";
+    console.error(chalk.gray(`   ${email}\n`));
+  } else {
+    console.error(chalk.red("\n❌ An error occurred during the clone process:"), err.message);
+  }
   process.exit(1);
 });

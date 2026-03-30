@@ -1,4 +1,4 @@
-// scripts/firebase/guillotine-stats-to-csv.js
+// scripts/firebase/guillotine_statsToCsv.js
 // Reads all head documents from /stats/guillotine/heads/{name} and the main
 // /stats/guillotine document, then exports them to CSV files in scripts/csv/stats/.
 //
@@ -10,6 +10,7 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import chalk from "chalk";
 import Table from "cli-table3";
+import { createProgressBar } from "../shared/utils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -43,16 +44,6 @@ function toCSVString(rows, columns) {
   const header = columns.join(",");
   const lines = rows.map((row) => columns.map((col) => escapeCSV(row[col])).join(","));
   return [header, ...lines].join("\n") + "\n";
-}
-
-function renderProgressBar(current, total, label = "") {
-  const width = 40;
-  const pct = total > 0 ? current / total : 0;
-  const filled = Math.round(pct * width);
-  const bar = "█".repeat(filled) + "░".repeat(width - filled);
-  const pctStr = (pct * 100).toFixed(1).padStart(5);
-  process.stdout.write(`\r${chalk.cyan(label)} [${chalk.green(bar)}] ${pctStr}% (${current}/${total})`);
-  if (current >= total) process.stdout.write("\n");
 }
 
 /** Convert Firestore Timestamp or raw value to an ISO string. */
@@ -90,8 +81,10 @@ async function main() {
 
   const headRows = [];
   const missingFieldsRows = [];
-  let processed = 0;
   let calculatedWealthCreated = 0;
+
+  const bar = createProgressBar("Processing heads");
+  bar.start(totalDocs, 0);
 
   for (const doc of headsSnapshot.docs) {
     const data = doc.data();
@@ -100,7 +93,6 @@ async function main() {
     const lastRemoved = toSerializable(data.lastRemoved);
     const netWorth = data.netWorth;
 
-    // Check for missing fields
     const missing = [];
     if (headCount === undefined || headCount === null) missing.push("headCount");
     if (!lastRemoved) missing.push("lastRemoved");
@@ -112,16 +104,13 @@ async function main() {
 
     headRows.push({ name, headCount: headCount ?? "", lastRemoved, netWorth: netWorth ?? "" });
 
-    // Accumulate calculated wealthCreated from actual head data
     if (typeof headCount === "number" && typeof netWorth === "number") {
       calculatedWealthCreated += headCount * netWorth;
     }
 
-    processed++;
-    if (processed % 250 === 0 || processed === totalDocs) {
-      renderProgressBar(processed, totalDocs, "Processing heads");
-    }
+    bar.increment();
   }
+  bar.stop();
 
   // Write heads CSV
   const headsPath = join(OUTPUT_DIR, "guillotine-heads.csv");
@@ -181,11 +170,7 @@ async function main() {
     style: { head: [] },
   });
   wealthTable.push(["Stored in Firestore", storedWealthCreated.toLocaleString(), chalk.gray("/stats/guillotine.wealthCreated")]);
-  wealthTable.push([
-    "Calculated from heads",
-    Math.round(calculatedWealthCreated).toLocaleString(),
-    chalk.gray("sum(headCount × netWorth) per head"),
-  ]);
+  wealthTable.push(["Calculated from heads", Math.round(calculatedWealthCreated).toLocaleString(), chalk.gray("sum(headCount × netWorth) per head")]);
   wealthTable.push([
     "Ratio (calc / stored)",
     wealthRatio !== null ? wealthRatio.toFixed(4) + "x" : chalk.red("N/A"),
@@ -200,9 +185,9 @@ async function main() {
     console.log(
       chalk.yellow(
         `\n⚠️  wealthCreated mismatch detected.\n` +
-        `   Stored:     ${storedWealthCreated.toLocaleString()}\n` +
-        `   Calculated: ${Math.round(calculatedWealthCreated).toLocaleString()}\n` +
-        `   The stats CSV will use the CALCULATED value so inflation is consistent.`,
+          `   Stored:     ${storedWealthCreated.toLocaleString()}\n` +
+          `   Calculated: ${Math.round(calculatedWealthCreated).toLocaleString()}\n` +
+          `   The stats CSV will use the CALCULATED value so inflation is consistent.`,
       ),
     );
   }
