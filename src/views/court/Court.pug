@@ -1,0 +1,276 @@
+.court-game(:class="`phase-${ui.phase}`")
+  header.court-header
+    h1 ⚖️ {{ ui.title }}
+
+  //- ── LOADING ────────────────────────────────────────────────
+  .court-loading(v-if="!game.currentCase")
+    p Convening the court…
+
+  //- ── SETUP PHASE ────────────────────────────────────────────
+  main.court-main(v-else-if="ui.phase === 'setup'")
+
+    section.case-section
+      h2.section-label Today's Case
+
+      .case-card(:class="`case-type-${game.currentCase.caseType}`")
+        .case-card__header
+          span.case-type-badge {{ game.currentCase.caseType === 'historical' ? '📜 Historical' : '🎭 Fictional' }}
+          span.case-year(v-if="game.currentCase.year") {{ game.currentCase.year }}
+        h3.case-name {{ game.currentCase.name }}
+        p.case-question "{{ game.currentCase.primaryQuestion }}"
+
+        .case-sides
+          .case-side.case-side--prosecution(:class="{ 'is-chosen': game.playerSide === 'prosecution' }")
+            h4.side-role ⚔️ Prosecution
+            p.side-name {{ game.currentCase.prosecution.name }}
+            p.side-argument {{ game.currentCase.prosecution.argument }}
+            span.side-party(:class="`party-${game.currentCase.prosecution.favoredBy.toLowerCase().replace(' ', '-')}`")
+              | Favors {{ game.currentCase.prosecution.favoredBy }}s
+
+          .case-side.case-side--defense(:class="{ 'is-chosen': game.playerSide === 'defendant' }")
+            h4.side-role 🛡️ Defense
+            p.side-name {{ game.currentCase.defendant.name }}
+            p.side-argument {{ game.currentCase.defendant.argument }}
+            span.side-party(:class="`party-${game.currentCase.defendant.favoredBy.toLowerCase().replace(' ', '-')}`")
+              | Favors {{ game.currentCase.defendant.favoredBy }}s
+
+        .case-actions(v-if="!game.playerSide")
+          p.choose-prompt Choose your side:
+          .side-buttons
+            button.btn.btn--prosecution(@click="chooseSide('prosecution')") ⚔️ Argue for Prosecution
+            button.btn.btn--defense(@click="chooseSide('defendant')") 🛡️ Argue for Defense
+
+        .case-actions(v-else)
+          p.chosen-label
+            | You are arguing for:
+            strong  {{ game.playerSide === 'prosecution' ? game.currentCase.prosecution.name : game.currentCase.defendant.name }}
+          .side-buttons
+            button.btn.btn--start(@click="startArguments") Begin Arguments →
+            button.btn.btn--switch(@click="game.playerSide = null") Switch Sides
+
+    section.bench-section
+      .bench-header
+        h2.section-label The Bench
+        button.btn.btn--redeal(@click="dealGame") 🎲 Draw New Court
+
+      .bench-grid
+        .justice-card(
+          v-for="justice in game.bench"
+          :key="justice.id"
+          :class="`type-${justice.justiceType}`"
+        )
+          .justice-card__badge {{ justiceTypeLabel(justice.justiceType) }}
+          .justice-card__name {{ justice.name }}
+          .justice-card__desc {{ justice.description.slice(0, 90) }}…
+          .justice-card__stats
+            .stat(v-for="(val, key) in getKeyStats(justice)" :key="key")
+              span.stat-label {{ key }}
+              .stat-track
+                .stat-fill(:style="`width: ${val * 10}%`" :class="`fill-${key.toLowerCase()}`")
+              span.stat-val {{ val }}
+
+  //- ── PLAYING PHASE ──────────────────────────────────────────
+  main.court-playing(v-else-if="ui.phase === 'playing'")
+
+    //- Top bar: case + round + turn + actions
+    .playing-topbar
+      .topbar-left
+        .topbar-case
+          span.topbar-case-name {{ game.currentCase.name }}
+          span.topbar-sep |
+          span.topbar-side(:class="`side-${game.playerSide}`")
+            | {{ game.playerSide === 'prosecution' ? '⚔️ Prosecution' : '🛡️ Defense' }}
+        .topbar-turn
+          span.topbar-round Round {{ game.round }}/{{ game.totalRounds }}
+          span.topbar-actor.is-opponent(v-if="ui.opponentThinking") ⚖️ Opposing counsel is arguing…
+          span.topbar-actor.is-player(v-else) ↙ Your turn
+      .topbar-right
+        .topbar-tally(:class="{ 'is-winning': benchOverview && benchOverview.votingFor >= 5 }")
+          | {{ benchOverview ? benchOverview.votingFor : 0 }}/9 justices
+          span.tally-status  {{ benchOverview && benchOverview.votingFor >= 5 ? '✅ Winning' : '❌ Losing' }}
+        button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 Report
+        button.btn.btn--redeal(@click="dealGame") 🗑 New Court
+
+    //- Bench overview panel
+    .bench-overview-bar(v-if="benchOverview")
+      .overview-chip
+        span.oc-label 👥 Gender
+        span.oc-value {{ benchOverview.maleCount }}M / {{ benchOverview.femaleCount }}F
+      .overview-chip
+        span.oc-label 🏛 Politics
+        span.oc-value
+          span.party-chip(
+            v-for="(count, party) in benchOverview.partyCounts"
+            :key="party"
+            :class="`party-${String(party).toLowerCase().replace(' ', '-')}`"
+          ) {{ party }} ({{ count }})
+      .overview-chip
+        span.oc-label ⬆ Best Stat
+        span.oc-value.stat--best {{ benchOverview.bestStat }}
+      .overview-chip
+        span.oc-label ⬇ Worst Stat
+        span.oc-value.stat--worst {{ benchOverview.worstStat }}
+      .overview-chip
+        span.oc-label 🎯 Exploit
+        span.oc-value.wk--flag {{ benchOverview.greatestWeakness }}
+
+    //- Bench grid: justice cards with vote meters
+    .bench-grid.bench-grid--playing(
+      :class="{ 'targeting-mode': game.selectedTacticId !== null }"
+    )
+      .justice-card(
+        v-for="justice in game.bench"
+        :key="justice.id"
+        :class="[ \
+          `type-${justice.justiceType}`, \
+          { \
+            'is-ally': (game.leanings[justice.id] ?? 0) > 0, \
+            'is-enemy': (game.leanings[justice.id] ?? 0) < 0, \
+            'is-targetable': game.selectedTacticId !== null, \
+            'is-shielded': game.playerShields.includes(justice.id), \
+          } \
+        ]"
+        @click="selectJustice(justice)"
+      )
+        .justice-shield-badge(v-if="game.playerShields.includes(justice.id)") 🛡️
+        .justice-shield-badge.opp-shield(v-else-if="game.opponentShields.includes(justice.id)") 🔒
+        .justice-card__badge {{ justiceTypeLabel(justice.justiceType) }}
+        .justice-card__name {{ justice.name }}
+        .justice-vote
+          .vote-track
+            .vote-midline
+            .vote-fill(:style="voteMeterStyle(justice)")
+          .vote-label(
+            :class="{ positive: (game.leanings[justice.id] ?? 0) > 0, negative: (game.leanings[justice.id] ?? 0) < 0 }"
+          ) {{ voteLabel(game.leanings[justice.id] ?? 0) }}
+
+    //- The Docket: shared card pool
+    .court-docket(
+      :class="{ 'is-claiming': game.claimingMode, 'is-opponent-turn': ui.opponentThinking }"
+    )
+      .docket-header
+        .docket-title-row
+          h3.docket-title
+            | The Docket
+            span.docket-subtitle  · shared pool
+          .docket-meta
+            span.deck-count 🃏 {{ game.deck.length }} in deck
+            span.claimed-count(v-if="game.claimedCards.length")  · {{ game.claimedCards.length }} claimed by you
+        p.claiming-hint(v-if="game.claimingMode")
+          | Select {{ 2 - game.claimedSelections.length }} more card(s) to claim for your exclusive use.
+        p.hand-hint(v-else-if="game.selectedTacticId !== null") ↑ Click a justice above to target them
+
+      //- Claimed cards (player-exclusive)
+      .docket-claimed(v-if="game.claimedCards.length")
+        h4.docket-section-label 🔒 Your Dibs — only you can play these
+        .tactic-card-row
+          .tactic-card(
+            v-for="tactic in game.claimedCards"
+            :key="tactic.id"
+            :class="[ \
+              `card-type-${tactic.cardType}`, \
+              { 'is-selected': game.selectedTacticId === tactic.id, 'is-claimed': true } \
+            ]"
+            @click="selectTactic(tactic.id)"
+          )
+            .tc__type {{ tactic.cardType }} · claimed
+            .tc__name {{ tactic.name }}
+            .tc__flavor {{ tactic.flavorText }}
+            .tc__meta
+              span.tc__target {{ targetLabel(tactic.effectType) }}
+              span.tc__power(v-if="tactic.basePower > 0")  ⚡{{ tactic.basePower }}
+
+      //- Shared docket cards
+      .docket-shared
+        p.docket-empty(v-if="!game.docket.length") The docket is empty.
+        .tactic-card-row(v-else)
+          .tactic-card(
+            v-for="tactic in game.docket"
+            :key="tactic.id"
+            :class="[ \
+              `card-type-${tactic.cardType}`, \
+              { \
+                'is-selected': game.selectedTacticId === tactic.id, \
+                'is-claiming-pick': game.claimingMode && game.claimedSelections.includes(tactic.id), \
+              } \
+            ]"
+            @click="selectTactic(tactic.id)"
+          )
+            .tc__type {{ tactic.cardType }}
+            .tc__name {{ tactic.name }}
+            .tc__flavor {{ tactic.flavorText }}
+            .tc__meta
+              span.tc__target {{ targetLabel(tactic.effectType) }}
+              span.tc__power(v-if="tactic.basePower > 0")  ⚡{{ tactic.basePower }}
+
+  //- ── VERDICT PHASE ──────────────────────────────────────────
+  main.court-verdict(v-else-if="ui.phase === 'verdict'")
+    .verdict-card(:class="verdict && verdict.won ? 'verdict--won' : 'verdict--lost'")
+      h2.verdict-title(v-if="verdict")
+        | {{ verdict.won ? '🎉 Decision for Your Client!' : '⚖️ Judgment Against You' }}
+      .verdict-score(v-if="verdict")
+        span.score-for {{ verdict.forCount }}
+        span.score-dash  –
+        span.score-against {{ verdict.againstCount }}
+      p.verdict-subtext(v-if="verdict")
+        | {{ verdict.won ? 'The court finds in favor of your client.' : 'The court rules against your client.' }}
+      .verdict-justices
+        .verdict-justice(
+          v-for="justice in game.bench"
+          :key="justice.id"
+          :class="(game.leanings[justice.id] ?? 0) > 0 ? 'voted-for' : (game.leanings[justice.id] ?? 0) < 0 ? 'voted-against' : 'voted-abstain'"
+        )
+          span.vj-name {{ justice.name }}
+          span.vj-vote {{ voteLabel(game.leanings[justice.id] ?? 0) }}
+      .verdict-actions
+        button.btn.btn--start(@click="dealGame") ⚖️ New Case
+        button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 View Court Record
+
+  //- ── COURT REPORT MODAL ─────────────────────────────────────
+  .court-report-overlay(v-if="ui.courtReportVisible" @click.self="ui.courtReportVisible = false")
+    .court-report
+      .report-header
+        h3.report-title 📋 The Court Record
+        button.report-close(@click="ui.courtReportVisible = false") ✕
+      .report-plays
+        p.report-empty(v-if="!courtReport.plays.length") No arguments on the record yet.
+        .report-play(
+          v-for="(play, idx) in courtReport.plays"
+          :key="idx"
+          :class="play.actor === 'player' ? 'play--player' : 'play--opponent'"
+        )
+          .play-header
+            span.play-badge R{{ play.round }}
+            span.play-actor-badge(:class="play.actor === 'player' ? 'badge--player' : 'badge--opponent'")
+              | {{ play.actor === 'player' ? 'You' : 'Opposing Counsel' }}
+            span.play-tactic-name  {{ play.tacticName }}
+            span.play-arrow  →
+            span.play-target {{ play.targetName }}
+          .play-results(v-if="play.results.length")
+            span.play-result(
+              v-for="result in play.results"
+              :key="result.justiceName"
+              :class="result.change > 0 ? 'positive' : 'negative'"
+            )
+              | {{ result.justiceName }}: {{ result.change > 0 ? '+' : '' }}{{ result.change }}
+          p.play-no-effect(v-else) No measurable effect
+
+  //- ── TACTIC FEEDBACK TOAST ──────────────────────────────────
+  transition(name="toast")
+    .tactic-toast(
+      v-if="tacticFeedback.visible"
+      :class="tacticFeedback.actor === 'opponent' ? 'toast--opponent' : ''"
+    )
+      .toast-header
+        | {{ tacticFeedback.actor === 'player' ? '⚔️' : '⚖️' }} {{ tacticFeedback.tacticName }}
+        span.toast-actor  · {{ tacticFeedback.actor === 'player' ? 'You' : 'Opposing Counsel' }}
+      .toast-results
+        .toast-result(
+          v-for="result in tacticFeedback.results.filter(r => r.change !== 0)"
+          :key="result.justiceName"
+          :class="result.change > 0 ? 'positive' : 'negative'"
+        )
+          span.toast-justice {{ result.justiceName }}
+          span.toast-change  {{ result.change > 0 ? '+' : '' }}{{ result.change }}
+        .toast-result.neutral(v-if="tacticFeedback.results.every(r => r.change === 0)")
+          span No effect this turn
