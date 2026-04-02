@@ -1,9 +1,13 @@
 <script setup lang="ts">
   import { reactive, computed, onMounted } from "vue";
+  import { useToast, POSITION } from "vue-toastification";
+  import TacticToast from "./components/TacticToast.vue";
   import { justices as allJustices } from "./ts/_justices";
   import { cases as allCases } from "./ts/_cases";
   import { tactics as allTactics } from "./ts/_tactics";
   import type { Justice, Case, Tactic, Party } from "./ts/_types";
+
+  const toast = useToast();
 
   type Side = "prosecution" | "defendant";
   type TurnActor = "player" | "opponent";
@@ -15,6 +19,9 @@
     phase: "setup" as Phase,
     courtReportVisible: false,
     opponentThinking: false,
+    opponentHighlightedCardId: null as number | null, // card the opponent appears to be browsing
+    detailJustice: null as Justice | null, // justice whose detail modal is open
+    targetingChoice: null as Justice | null, // justice clicked while a tactic is selected
   });
 
   const game = reactive({
@@ -52,12 +59,7 @@
     }>,
   });
 
-  const tacticFeedback = reactive({
-    visible: false,
-    actor: "player" as TurnActor,
-    tacticName: "",
-    results: [] as { justiceName: string; change: number; newLeaning: number }[],
-  });
+  // tacticFeedback replaced by Vue-Toastification (see applyTactic)
 
   // ─── Helpers ─────────────────────────────────────────────────
 
@@ -75,26 +77,17 @@
 
   function partiesAligned(a: Party | undefined, b: Party | undefined): boolean {
     if (!a || !b) return false;
-    return (
-      (leftParties.includes(a) && leftParties.includes(b)) ||
-      (rightParties.includes(a) && rightParties.includes(b))
-    );
+    return (leftParties.includes(a) && leftParties.includes(b)) || (rightParties.includes(a) && rightParties.includes(b));
   }
 
   function partiesOpposed(a: Party | undefined, b: Party | undefined): boolean {
     if (!a || !b) return false;
-    return (
-      (leftParties.includes(a) && rightParties.includes(b)) ||
-      (rightParties.includes(a) && leftParties.includes(b))
-    );
+    return (leftParties.includes(a) && rightParties.includes(b)) || (rightParties.includes(a) && leftParties.includes(b));
   }
 
   function getInitialLeaning(justice: Justice): number {
     if (!game.currentCase || !game.playerSide) return 0;
-    const playerParty =
-      game.playerSide === "prosecution"
-        ? game.currentCase.prosecution.favoredBy
-        : game.currentCase.defendant.favoredBy;
+    const playerParty = game.playerSide === "prosecution" ? game.currentCase.prosecution.favoredBy : game.currentCase.defendant.favoredBy;
     const justiceParty = justice.nominatedBy?.party;
     if (partiesAligned(playerParty, justiceParty)) return Math.ceil(justice.stats.partyLoyalty / 4);
     if (partiesOpposed(playerParty, justiceParty)) return -Math.ceil(justice.stats.partyLoyalty / 4);
@@ -141,10 +134,12 @@
     game.playerShields = [];
     game.opponentShields = [];
     courtReport.plays = [];
-    tacticFeedback.visible = false;
     ui.phase = "setup";
     ui.courtReportVisible = false;
     ui.opponentThinking = false;
+    ui.opponentHighlightedCardId = null;
+    ui.detailJustice = null;
+    ui.targetingChoice = null;
   }
 
   function chooseSide(side: Side): void {
@@ -185,11 +180,7 @@
     const tactic = [...game.docket, ...game.claimedCards].find((t) => t.id === tacticId);
     if (!tactic) return;
 
-    if (
-      tactic.effectType === "sway-all" ||
-      tactic.effectType === "susceptibility" ||
-      tactic.effectType === "discard-all"
-    ) {
+    if (tactic.effectType === "sway-all" || tactic.effectType === "susceptibility" || tactic.effectType === "discard-all") {
       applyTactic(tactic, null, "player");
     } else if (tactic.effectType === "claim-two") {
       if (game.claimedCards.length > 0) return; // already have dibs
@@ -226,6 +217,34 @@
     if (tactic.effectType === "shield" && (game.leanings[justice.id] ?? 0) <= 0) return;
     applyTactic(tactic, justice, "player");
     game.selectedTacticId = null;
+  }
+
+  // Called when player confirms targeting from the choice popup
+  function confirmTarget(): void {
+    if (!ui.targetingChoice) return;
+    const justice = ui.targetingChoice;
+    ui.targetingChoice = null;
+    selectJustice(justice);
+  }
+
+  // Unified justice click handler: opens detail view or targeting choice depending on context
+  function handleJusticeClick(justice: Justice): void {
+    if (ui.phase === "setup") {
+      ui.detailJustice = justice;
+      return;
+    }
+    if (ui.phase !== "playing" || ui.opponentThinking) return;
+    if (game.selectedTacticId !== null && game.currentTurn === "player") {
+      const tactic = [...game.docket, ...game.claimedCards].find((t) => t.id === game.selectedTacticId);
+      // If shield on enemy, or no tactic found — open detail instead
+      if (!tactic || (tactic.effectType === "shield" && (game.leanings[justice.id] ?? 0) <= 0)) {
+        ui.detailJustice = justice;
+        return;
+      }
+      ui.targetingChoice = justice;
+    } else {
+      ui.detailJustice = justice;
+    }
   }
 
   // ─── Apply Tactic ────────────────────────────────────────────
@@ -271,9 +290,7 @@
         }
         if (tactic.statBasis) {
           const sv = justice.stats[tactic.statBasis];
-          power = Math.round(
-            (power * (tactic.statRelation === "resists" ? 10 - sv : sv)) / 5
-          );
+          power = Math.round((power * (tactic.statRelation === "resists" ? 10 - sv : sv)) / 5);
         }
         const sucMod = game.susceptibilityMods[justice.id] ?? 0;
         if (sucMod > 0 && tactic.effectType !== "susceptibility") {
@@ -282,8 +299,7 @@
         }
 
         if (tactic.effectType === "susceptibility") {
-          game.susceptibilityMods[justice.id] =
-            (game.susceptibilityMods[justice.id] ?? 0) + tactic.basePower;
+          game.susceptibilityMods[justice.id] = (game.susceptibilityMods[justice.id] ?? 0) + tactic.basePower;
           results.push({ justiceName: justice.name, change: 0, newLeaning: game.leanings[justice.id] ?? 0 });
         } else if (tactic.effectType === "shield") {
           if (actor === "player") game.playerShields.push(justice.id);
@@ -309,13 +325,10 @@
       round: game.round,
     });
 
-    tacticFeedback.actor = actor;
-    tacticFeedback.tacticName = tactic.name;
-    tacticFeedback.results = results;
-    tacticFeedback.visible = true;
-    setTimeout(() => {
-      tacticFeedback.visible = false;
-    }, 3500);
+    toast(
+      { component: TacticToast, props: { actor, tacticName: tactic.name, results: results.map((r) => ({ justiceName: r.justiceName, change: r.change })) } },
+      { position: POSITION.BOTTOM_RIGHT, timeout: 4000 },
+    );
 
     if (actor === "player") {
       endPlayerTurn();
@@ -330,7 +343,25 @@
     game.opponentShields = []; // opponent's shields expire once player finishes their turn
     game.currentTurn = "opponent";
     ui.opponentThinking = true;
-    setTimeout(() => playOpponentTurn(), 1800);
+
+    // Simulate opponent browsing the Docket for 4-6 seconds
+    const thinkTime = 4000 + Math.random() * 2000;
+    const browseInterval = 650;
+    let elapsed = 0;
+
+    const browseTimer = setInterval(() => {
+      elapsed += browseInterval;
+      const available = game.docket.filter((t) => t.effectType !== "claim-two");
+      if (available.length) {
+        const pick = available[Math.floor(Math.random() * available.length)];
+        ui.opponentHighlightedCardId = pick.id;
+      }
+      if (elapsed >= thinkTime) {
+        clearInterval(browseTimer);
+        ui.opponentHighlightedCardId = null;
+        setTimeout(() => playOpponentTurn(), 200);
+      }
+    }, browseInterval);
   }
 
   function playOpponentTurn(): void {
@@ -342,11 +373,7 @@
     }
     const tactic = available[Math.floor(Math.random() * available.length)];
 
-    if (
-      tactic.effectType === "sway-all" ||
-      tactic.effectType === "susceptibility" ||
-      tactic.effectType === "discard-all"
-    ) {
+    if (tactic.effectType === "sway-all" || tactic.effectType === "susceptibility" || tactic.effectType === "discard-all") {
       applyTactic(tactic, null, "opponent");
       return;
     }
@@ -356,10 +383,11 @@
       const allies = game.bench.filter((j) => (game.leanings[j.id] ?? 0) < 0);
       if (!allies.length) {
         // No allies — fall back to a sway card instead
-        const fallback = available.filter(
-          (t) => t.effectType !== "shield" && t.effectType !== "claim-two"
-        );
-        if (!fallback.length) { endOpponentTurn(); return; }
+        const fallback = available.filter((t) => t.effectType !== "shield" && t.effectType !== "claim-two");
+        if (!fallback.length) {
+          endOpponentTurn();
+          return;
+        }
         const fb = fallback[Math.floor(Math.random() * fallback.length)];
         applyTactic(fb, null, "opponent");
         return;
@@ -370,7 +398,10 @@
 
     // sway-one: target any justice not currently shielded by the player
     const candidates = game.bench.filter((j) => !game.playerShields.includes(j.id));
-    if (!candidates.length) { endOpponentTurn(); return; }
+    if (!candidates.length) {
+      endOpponentTurn();
+      return;
+    }
     applyTactic(tactic, candidates[Math.floor(Math.random() * candidates.length)], "opponent");
   }
 
@@ -399,21 +430,12 @@
       const p = j.nominatedBy?.party ?? "Unknown";
       partyCounts[p] = (partyCounts[p] ?? 0) + 1;
     });
-    const statKeys = [
-      "logic",
-      "charisma",
-      "empathy",
-      "integrity",
-      "succeptibility",
-      "partyLoyalty",
-    ] as const;
-    const statAvg = (k: (typeof statKeys)[number]) =>
-      bench.reduce((s, j) => s + j.stats[k], 0) / bench.length;
+    const statKeys = ["logic", "charisma", "empathy", "integrity", "succeptibility", "partyLoyalty"] as const;
+    const statAvg = (k: (typeof statKeys)[number]) => bench.reduce((s, j) => s + j.stats[k], 0) / bench.length;
     const bestStat = statKeys.reduce((a, b) => (statAvg(a) >= statAvg(b) ? a : b));
     const worstStat = statKeys.reduce((a, b) => (statAvg(a) <= statAvg(b) ? a : b));
     const weaknessKeys = ["flattery", "bribery", "blackmail", "threats"] as const;
-    const wkAvg = (k: (typeof weaknessKeys)[number]) =>
-      bench.reduce((s, j) => s + j.weaknesses[k], 0) / bench.length;
+    const wkAvg = (k: (typeof weaknessKeys)[number]) => bench.reduce((s, j) => s + j.weaknesses[k], 0) / bench.length;
     const greatestWeakness = weaknessKeys.reduce((a, b) => (wkAvg(a) >= wkAvg(b) ? a : b));
     const votingFor = bench.filter((j) => (game.leanings[j.id] ?? 0) > 0).length;
     return { maleCount, femaleCount, partyCounts, bestStat, worstStat, greatestWeakness, votingFor };
@@ -467,6 +489,28 @@
     if (leaning === 0) return "⚖️ Undecided";
     if (leaning > -4) return "↘ Leaning Against";
     return "❌ Strongly Against";
+  }
+
+  function justiceImageUrl(justice: Justice): string | null {
+    return justice.image ? `/img/court/justices/${justice.image}` : null;
+  }
+
+  function justiceHints(justice: Justice): string[] {
+    const hints: string[] = [];
+    if (justice.stats.partyLoyalty >= 8) hints.push("📌 Deeply partisan");
+    else if (justice.stats.partyLoyalty <= 3) hints.push("🎯 Votes independently");
+    if (justice.weaknesses.flattery >= 7) hints.push("😊 Loves being flattered");
+    else if (justice.weaknesses.flattery <= 2) hints.push("🙄 Immune to flattery");
+    if (justice.weaknesses.bribery >= 7) hints.push("💰 Open to… incentives");
+    if (justice.weaknesses.blackmail >= 7) hints.push("🤫 Has something to hide");
+    if (justice.weaknesses.threats >= 7) hints.push("😰 Unnerved by pressure");
+    if (justice.stats.succeptibility >= 7) hints.push("🌀 Easily swayed");
+    else if (justice.stats.succeptibility <= 3) hints.push("🪨 Hard to budge");
+    if (justice.stats.empathy >= 8) hints.push("❤️ Responds to emotional appeals");
+    else if (justice.stats.empathy <= 2) hints.push("🧊 Cold to emotional arguments");
+    if (justice.stats.logic >= 8) hints.push("📚 Won over by sound reasoning");
+    else if (justice.stats.logic <= 3) hints.push("❓ Logic rarely lands here");
+    return hints.slice(0, 4);
   }
 
   onMounted(() => {

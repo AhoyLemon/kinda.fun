@@ -58,16 +58,14 @@
           v-for="justice in game.bench"
           :key="justice.id"
           :class="`type-${justice.justiceType}`"
+          @click="handleJusticeClick(justice)"
         )
           .justice-card__badge {{ justiceTypeLabel(justice.justiceType) }}
           .justice-card__name {{ justice.name }}
           .justice-card__desc {{ justice.description.slice(0, 90) }}…
-          .justice-card__stats
-            .stat(v-for="(val, key) in getKeyStats(justice)" :key="key")
-              span.stat-label {{ key }}
-              .stat-track
-                .stat-fill(:style="`width: ${val * 10}%`" :class="`fill-${key.toLowerCase()}`")
-              span.stat-val {{ val }}
+          .justice-card__hints
+            span.hint-tag(v-for="hint in justiceHints(justice)" :key="hint") {{ hint }}
+          .justice-card__view-cta 🔍 Click to view profile
 
   //- ── PLAYING PHASE ──────────────────────────────────────────
   main.court-playing(v-else-if="ui.phase === 'playing'")
@@ -130,7 +128,7 @@
             'is-shielded': game.playerShields.includes(justice.id), \
           } \
         ]"
-        @click="selectJustice(justice)"
+        @click="handleJusticeClick(justice)"
       )
         .justice-shield-badge(v-if="game.playerShields.includes(justice.id)") 🛡️
         .justice-shield-badge.opp-shield(v-else-if="game.opponentShields.includes(justice.id)") 🔒
@@ -183,7 +181,7 @@
       //- Shared docket cards
       .docket-shared
         p.docket-empty(v-if="!game.docket.length") The docket is empty.
-        .tactic-card-row(v-else)
+        transition-group.tactic-card-row(v-else tag="div" name="tactic-card")
           .tactic-card(
             v-for="tactic in game.docket"
             :key="tactic.id"
@@ -192,6 +190,7 @@
               { \
                 'is-selected': game.selectedTacticId === tactic.id, \
                 'is-claiming-pick': game.claimingMode && game.claimedSelections.includes(tactic.id), \
+                'is-opponent-browsing': ui.opponentHighlightedCardId === tactic.id, \
               } \
             ]"
             @click="selectTactic(tactic.id)"
@@ -202,6 +201,15 @@
             .tc__meta
               span.tc__target {{ targetLabel(tactic.effectType) }}
               span.tc__power(v-if="tactic.basePower > 0")  ⚡{{ tactic.basePower }}
+
+    //- ── TARGETING CHOICE POPUP ────────────────────────────
+    .targeting-choice-overlay(v-if="ui.targetingChoice" @click.self="ui.targetingChoice = null")
+      .targeting-choice
+        p.tc-prompt Target {{ ui.targetingChoice.name }}?
+        .tc-actions
+          button.btn.btn--start(@click="confirmTarget()") ⚔️ Target This Justice
+          button.btn.btn--switch(@click="ui.detailJustice = ui.targetingChoice; ui.targetingChoice = null") 🔍 View Profile
+          button.btn.btn--text(@click="ui.targetingChoice = null") Cancel
 
   //- ── VERDICT PHASE ──────────────────────────────────────────
   main.court-verdict(v-else-if="ui.phase === 'verdict'")
@@ -255,22 +263,34 @@
               | {{ result.justiceName }}: {{ result.change > 0 ? '+' : '' }}{{ result.change }}
           p.play-no-effect(v-else) No measurable effect
 
-  //- ── TACTIC FEEDBACK TOAST ──────────────────────────────────
-  transition(name="toast")
-    .tactic-toast(
-      v-if="tacticFeedback.visible"
-      :class="tacticFeedback.actor === 'opponent' ? 'toast--opponent' : ''"
-    )
-      .toast-header
-        | {{ tacticFeedback.actor === 'player' ? '⚔️' : '⚖️' }} {{ tacticFeedback.tacticName }}
-        span.toast-actor  · {{ tacticFeedback.actor === 'player' ? 'You' : 'Opposing Counsel' }}
-      .toast-results
-        .toast-result(
-          v-for="result in tacticFeedback.results.filter(r => r.change !== 0)"
-          :key="result.justiceName"
-          :class="result.change > 0 ? 'positive' : 'negative'"
-        )
-          span.toast-justice {{ result.justiceName }}
-          span.toast-change  {{ result.change > 0 ? '+' : '' }}{{ result.change }}
-        .toast-result.neutral(v-if="tacticFeedback.results.every(r => r.change === 0)")
-          span No effect this turn
+  //- ── JUSTICE DETAIL MODAL ───────────────────────────────────
+  .justice-detail-overlay(v-if="ui.detailJustice" @click.self="ui.detailJustice = null")
+    .justice-detail
+      .jd-header
+        .jd-image-wrap
+          img.jd-image(
+            v-if="justiceImageUrl(ui.detailJustice)"
+            :src="justiceImageUrl(ui.detailJustice)"
+            :alt="ui.detailJustice.name"
+          )
+          .jd-image-placeholder(v-else) ⚖️
+        .jd-title-block
+          h3.jd-name {{ ui.detailJustice.name }}
+          span.jd-type-badge {{ justiceTypeLabel(ui.detailJustice.justiceType) }}
+          p.jd-meta(v-if="ui.detailJustice.nominatedBy")
+            | Appointed by {{ ui.detailJustice.nominatedBy.name }}
+            span.jd-meta-sep  ·
+            |  {{ ui.detailJustice.religion }}
+            span.jd-meta-sep  ·
+            |  {{ ui.detailJustice.ethnicity }}
+          p.jd-meta(v-else) {{ ui.detailJustice.religion }} · {{ ui.detailJustice.ethnicity }}
+        button.jd-close(@click="ui.detailJustice = null") ✕
+      p.jd-bio {{ ui.detailJustice.description }}
+      .jd-hints
+        h4.jd-hints-title Qualities
+        .jd-hint-tags
+          span.hint-tag(v-for="hint in justiceHints(ui.detailJustice)" :key="hint") {{ hint }}
+      .jd-vote-section(v-if="ui.phase === 'playing'")
+        p.jd-vote-label Current stance:
+        .vote-label(:class="{ positive: (game.leanings[ui.detailJustice.id] ?? 0) > 0, negative: (game.leanings[ui.detailJustice.id] ?? 0) < 0 }")
+          | {{ voteLabel(game.leanings[ui.detailJustice.id] ?? 0) }}

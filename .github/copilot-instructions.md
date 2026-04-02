@@ -32,6 +32,14 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 - **Arrest Warrants**: `npm run guillotine:arrests` -- creates daily arrest warrant data.
 - **Page Building**: `npm run build:pages` -- builds static HTML pages from templates.
 
+## Code Organization
+
+### File Size Guideline
+
+- **When a file exceeds ~900 lines, consider splitting it into partial/component files.**
+- This is not a hard limit — it's a prompt to evaluate whether splitting would improve readability or maintainability.
+- For Vue games, typical splits are: main component, sub-components, data/config files, and separate SCSS partials.
+
 ## Copilot Working Style Preferences
 
 When implementing features, Copilot should:

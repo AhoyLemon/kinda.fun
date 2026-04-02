@@ -1,0 +1,15 @@
+.tactic-toast(:class="actor === 'player' ? 'is-player' : 'is-opponent'")
+  .tt-header
+    span.tt-icon {{ actor === 'player' ? '⚔️' : '⚖️' }}
+    .tt-words
+      span.tt-name {{ tacticName }}
+      span.tt-actor  · {{ actor === 'player' ? 'You' : 'Opposing Counsel' }}
+  .tt-results(v-if="results && results.some(r => r.change !== 0)")
+    .tt-result(
+      v-for="r in results.filter(r => r.change !== 0)"
+      :key="r.justiceName"
+      :class="r.change > 0 ? 'positive' : 'negative'"
+    )
+      span.tt-justice {{ r.justiceName }}
+      span.tt-change  {{ r.change > 0 ? '+' : '' }}{{ r.change }}
+  p.tt-no-effect(v-else) No measurable effect

@@ -27,7 +27,9 @@ However, the secondary objective is to be biting satire, specifically of the pol
 - You make ask questions when necesssary. However, I'd like you to do as much work as you can without a lot of stopping for user input, only because that means I have to spend more tokens. Look for ways to batch feedback, preparing work and then asking for feedback on a larger chunk of work, rather than asking for feedback on small pieces of work.
 - You are encouraged to edit this document as you see fit.
 - You may also edit .github\copilot-instructions.md if you think that would be helpful for future development.
-- You may edit docs\court.md if we've made decisions that should be documented for future development.
+- Before completing your task, please review docs\court.md to make sure it's up to date and accurate, add any new details if you wish.
+
+## Standard Procedure
 
 ## Previous Steps
 
@@ -47,15 +49,15 @@ I want to be able to click on any justice and get their details. So if I click o
 
 FWIW, I've added four images to public\img\court\justices and referenced those in src\views\court\ts_justices.ts - go ahead and use the ones that are available, with some generic backup if there's no image.
 
-- [ ] Implement visual feedback when the opponent is "choosing" a card, make that last 4-6 seconds.
-- [ ] Strongly consider Vue-Toastificatification similar to what we've implemented in the Megachurch Tycoon game.
-- [ ] Add animation when cards are dealt
-- [ ] Add animation when card is played
-- [ ] Add animation when card is discarded
-- [ ] Add animation when new card is drawn
-- [ ] Add a detail view for a justice that can be accessed by clicking on a justice
-  - [ ] When targeting a justice, clicking on that justice will give you the options of "View Justice" or "Target This Justice"
-- [ ] Adjust the justice cards in the setup phase to not show numbers, but rather imply what this justice is about using their numbers.
+- [x] Implement visual feedback when the opponent is "choosing" a card, make that last 4-6 seconds.
+- [x] Strongly consider Vue-Toastificatification similar to what we've implemented in the Megachurch Tycoon game.
+- [x] Add animation when cards are dealt
+- [x] Add animation when card is played
+- [x] Add animation when card is discarded
+- [x] Add animation when new card is drawn
+- [x] Add a detail view for a justice that can be accessed by clicking on a justice
+  - [x] When targeting a justice, clicking on that justice will give you the options of "View Justice" or "Target This Justice"
+- [x] Adjust the justice cards in the setup phase to not show numbers, but rather imply what this justice is about using their numbers.
 
 ## Eventual Next Steps
 
