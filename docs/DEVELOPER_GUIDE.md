@@ -189,6 +189,22 @@ Each game has its own documentation in the `docs/` folder:
 
 _Browse the `docs/` folder to find documentation for other games._
 
+## Creating a New Game
+
+Ready to build a new game from scratch? Follow the comprehensive guide:
+
+**→ [Creating a New Kinda Fun Game](new-game.md)**
+
+This document covers:
+
+- Creating Vue components and entry points
+- Registering your game in the build system
+- Setting up HTML files and routing
+- Testing locally
+- Publishing your game
+
+It includes step-by-step instructions and code examples for getting your game up and running.
+
 ## Getting Help
 
 ### Documentation
