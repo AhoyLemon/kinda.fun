@@ -180,10 +180,20 @@ export const tactics: Tactic[] = [
     id: 17,
     name: "Ring Me Up The President",
     description:
-      "Patch in a phone call from President Trump. Justices he appointed are strongly swayed. Other Republican appointees shift slightly. Democrats are unamused.",
+      "Patch in a Zoom call with President Trump. His nominees are delighted. Other Republicans politely nod. Obama and Biden nominees are appalled. Other Democrats are mildly annoyed. He accidentally hangs up after 10 minutes. Affects all justices.",
     flavorText: "The call was perfect. The best call. Everyone says so. You can check — actually, don't check.",
     cardType: "attack",
     effectType: "presidential-call",
     basePower: 5,
+  },
+  {
+    id: 18,
+    name: "Recuse Yourself!",
+    description:
+      "Force a targeted justice to recuse — their leaning resets to neutral. But their brush with your persuasion leaves them wary: they'll be harder to sway for the rest of the trial.",
+    flavorText: "There are no conflicts of interest here. There are only interests.",
+    cardType: "utility",
+    effectType: "recuse",
+    basePower: 0,
   },
 ];

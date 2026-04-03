@@ -14,23 +14,23 @@
       display: none;
     }
     .court-toast--player {
-      background: #e5f0f3;
-      color: #131313;
+      background: var(--cr-player-bg);
+      color: var(--cr-player-fg);
       .positive .tt-change {
-        color: #044707;
+        color: var(--cr-player-positive);
       }
       .negative .tt-change {
-        color: #5f0606;
+        color: var(--cr-player-negative);
       }
     }
     .court-toast--opponent {
-      background: #1f1c1c;
-      color: #f0e8d8;
+      background: var(--cr-opponent-bg);
+      color: var(--cr-opponent-fg);
       .positive .tt-change {
-        color: #88e48c;
+        color: var(--cr-opponent-positive);
       }
       .negative .tt-change {
-        color: #e96262;
+        color: var(--cr-opponent-negative);
       }
     }
 

@@ -4,6 +4,8 @@ import { VueFire } from "vuefire";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "../../firebaseConfig.public.js";
 import { auth } from "../firebase";
+import VueTippy from "vue-tippy";
+import "tippy.js/dist/tippy.css";
 import Toast, { POSITION } from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
@@ -18,4 +20,8 @@ const toastOptions = {
 const firebaseApp = initializeApp(firebaseConfig);
 
 const app = createApp(CourtPage);
-app.use(VueFire, { firebaseApp, modules: [] }).use(Toast, toastOptions).mount("#app");
+app
+  .use(VueFire, { firebaseApp, modules: [] })
+  .use(Toast, toastOptions)
+  .use(VueTippy, { defaultProps: { placement: "top" } })
+  .mount("#app");

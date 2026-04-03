@@ -1,6 +1,42 @@
 import { President } from "./_types";
 
 // Named exports for use as nominatedBy values in _justices.ts
+export const PRES_WASHINGTON: President = {
+  id: 1,
+  name: "George Washington",
+  party: "Federalist",
+  image: "",
+};
+export const PRES_JOHN_ADAMS: President = {
+  id: 2,
+  name: "John Adams",
+  party: "Federalist",
+  image: "",
+};
+export const PRES_JACKSON: President = {
+  id: 7,
+  name: "Andrew Jackson",
+  party: "Democrat",
+  image: "",
+};
+export const PRES_BENJAMIN_HARRISON: President = {
+  id: 23,
+  name: "Benjamin Harrison",
+  party: "Republican",
+  image: "",
+};
+export const PRES_GRANT: President = {
+  id: 18,
+  name: "Ulysses S. Grant",
+  party: "Republican",
+  image: "",
+};
+export const PRES_EISENHOWER: President = {
+  id: 200,
+  name: "Dwight D. Eisenhower",
+  party: "Republican",
+  image: "",
+};
 export const PRES_THEODORE_ROOSEVELT: President = {
   id: 16,
   name: "Theodore Roosevelt",
@@ -119,6 +155,12 @@ export const PRES_LIBERACE: President = {
 };
 
 export const presidents: President[] = [
+  PRES_WASHINGTON,
+  PRES_JOHN_ADAMS,
+  PRES_JACKSON,
+  PRES_BENJAMIN_HARRISON,
+  PRES_GRANT,
+  PRES_EISENHOWER,
   PRES_THEODORE_ROOSEVELT,
   PRES_FDR,
   PRES_JFK,

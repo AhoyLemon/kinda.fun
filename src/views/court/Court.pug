@@ -32,7 +32,11 @@
   main.court-main(v-else-if="ui.phase === 'setup'")
 
     section.case-section
-      h2.section-label Today's Case
+      .case-section-header
+        h2.section-label Today's Case
+        .case-section-actions
+          button.btn.btn--redeal(@click="dealGame") 🎲 New Draw
+          button.btn.btn--switch(@click="resetToCourtSelect") ← Change Mode
 
       .case-card(:class="`case-type-${game.currentCase.caseType}`")
         .case-card__header
@@ -73,9 +77,6 @@
     section.bench-section
       .bench-header
         h2.section-label {{ benchLabel }}
-        .bench-header-actions
-          button.btn.btn--redeal(@click="dealGame") 🎲 New Draw
-          button.btn.btn--switch(@click="resetToCourtSelect") ← Change Mode
 
       .bench-grid.overview
         .justice-card(
@@ -114,11 +115,9 @@
           span.topbar-actor.is-opponent(v-if="ui.opponentThinking") ⚖️ Opposing counsel is arguing…
           span.topbar-actor.is-player(v-else) ↙ Your turn
       .topbar-right
-        .topbar-tally(:class="{ 'is-winning': benchOverview && benchOverview.votingFor >= 5 }")
-          | {{ benchOverview ? benchOverview.votingFor : 0 }}/9 justices
-          span.tally-status  {{ benchOverview && benchOverview.votingFor >= 5 ? '✅ Winning' : '❌ Losing' }}
+        .topbar-tally(v-tippy="tallyTooltip" :class="tallyClass")
+          | {{ tallyDisplay }}
         button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 Report
-        button.btn.btn--redeal(@click="resetToCourtSelect") 🗑 New Court
 
     //- Bench overview panel
     .bench-overview-bar(v-if="benchOverview")
@@ -166,6 +165,7 @@
           .justice-chief-badge(v-if="justice.id === game.chiefJusticeId") ⚖ Chief
           .justice-shield-badge(v-else-if="game.playerShields.includes(justice.id)") 🛡️
           .justice-shield-badge.opp-shield(v-else-if="game.opponentShields.includes(justice.id)") 🔒
+          .justice-recused-badge(v-if="game.recusedJustices.includes(justice.id)") 🔕
           //.justice-card__badge {{ justiceTypeLabel(justice.justiceType) }}
 
           .pic-and-name(v-if="justiceImageUrl(justice)")
@@ -220,6 +220,7 @@
               span.tc__target {{ targetLabel(tactic.effectType) }}
               span.tc__power(v-if="tactic.basePower > 0")  ⚡{{ tactic.basePower }}
 
+
       //- Shared docket cards
       .docket-shared
         p.docket-empty(v-if="!game.docket.length") The docket is empty.
@@ -267,13 +268,16 @@
         span.score-for {{ verdict.forCount }}
         span.score-dash  –
         span.score-against {{ verdict.againstCount }}
+        template(v-if="verdict.abstainCount > 0")
+          span.score-dash  –
+          span.score-abstain {{ verdict.abstainCount }}
       p.verdict-subtext(v-if="verdict")
         | {{ verdict.won ? 'The court finds in favor of your client.' : 'The court rules against your client.' }}
       .verdict-justices
         .verdict-justice(
           v-for="justice in game.bench"
           :key="justice.id"
-          :class="(game.leanings[justice.id] ?? 0) > 0 ? 'voted-for' : (game.leanings[justice.id] ?? 0) < 0 ? 'voted-against' : 'voted-abstain'"
+          :class="(game.leanings[justice.id] ?? 0) > gameSettings.abstentionThreshold ? 'voted-for' : (game.leanings[justice.id] ?? 0) < -gameSettings.abstentionThreshold ? 'voted-against' : 'voted-abstain'"
         )
           span.vj-name {{ justice.name }}
           span.vj-vote {{ voteLabel(game.leanings[justice.id] ?? 0) }}

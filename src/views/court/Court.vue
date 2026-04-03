@@ -11,6 +11,9 @@
   // Set to 0 to keep toasts visible until manually dismissed (click to close).
   const toastDuration: number = 4000; // ms (set to 0 to persist until clicked)
 
+  // ── Game settings ──────────────────────────────────────────
+  const gameSettings = { numberOfRounds: 3, abstentionThreshold: 20 } as const;
+
   const toast = useToast();
 
   type Side = "prosecution" | "defendant";
@@ -44,7 +47,7 @@
     // Turn state
     currentTurn: "player" as TurnActor,
     round: 1,
-    totalRounds: 3,
+    totalRounds: gameSettings.numberOfRounds,
     // Targeting
     selectedTacticId: null as number | null,
     claimingMode: false,
@@ -54,6 +57,7 @@
     susceptibilityMods: {} as Record<number, number>,
     playerShields: [] as number[], // justice ids player has shielded (opponent can't touch)
     opponentShields: [] as number[], // justice ids opponent has shielded (player can't touch)
+    recusedJustices: [] as number[], // justice ids that have been recused (harder to sway)
   });
 
   const courtReport = reactive({
@@ -189,6 +193,7 @@
     game.susceptibilityMods = {};
     game.playerShields = [];
     game.opponentShields = [];
+    game.recusedJustices = [];
     courtReport.plays = [];
     ui.phase = "setup";
     ui.courtReportVisible = false;
@@ -240,7 +245,8 @@
       tactic.effectType === "sway-all" ||
       tactic.effectType === "susceptibility" ||
       tactic.effectType === "discard-all" ||
-      tactic.effectType === "insult-chief"
+      tactic.effectType === "insult-chief" ||
+      tactic.effectType === "presidential-call"
     ) {
       applyTactic(tactic, null, "player");
     } else if (tactic.effectType === "claim-two") {
@@ -384,21 +390,27 @@
         reportTarget = cj.name + " (Chief Justice)";
       }
     } else if (tactic.effectType === "presidential-call") {
-      // Trump calls in. Effect scales per justice based on who nominated them.
+      // A Zoom call with Trump — rambling, mostly incoherent, accidentally hangs up.
+      // Big positive for Trump nominees, tiny positive for other Republicans,
+      // big negative for Obama/Biden nominees, tiny negative for other Democrats.
       removeFromDocket(tactic);
       const dir = actor === "opponent" ? -1 : 1;
       game.bench.forEach((j) => {
         const nomParty = j.nominatedBy?.party;
         const nominatedByTrump = j.nominatedBy?.name === "Donald Trump";
+        const nominatedByObamaOrBiden = j.nominatedBy?.name === "Barack Obama" || j.nominatedBy?.name === "Joe Biden";
         let delta = 0;
         if (nominatedByTrump) {
           // Strong sway — Trump appointees are delighted
           delta = Math.round(tactic.basePower * j.stats.partyLoyalty);
         } else if (nomParty === "Republican") {
-          // Same party, not a Trump pick — moderate bump
-          delta = Math.round(tactic.basePower * j.stats.partyLoyalty * 0.4);
+          // Same party, not a Trump pick — slight bump
+          delta = Math.round(tactic.basePower * j.stats.partyLoyalty * 0.2);
+        } else if (nominatedByObamaOrBiden) {
+          // Visceral reaction — big negative
+          delta = -Math.round(tactic.basePower * j.stats.partyLoyalty);
         } else {
-          // Opposing party — slight annoyance
+          // Other Democrats / no party — mild annoyance
           delta = -Math.round(tactic.basePower * j.stats.partyLoyalty * 0.2);
         }
         if (delta !== 0) {
@@ -409,6 +421,18 @@
         }
       });
       reportTarget = "All justices (Presidential call)";
+    } else if (tactic.effectType === "recuse") {
+      // Resets targeted justice to neutral; they become harder to sway going forward
+      removeFromDocket(tactic);
+      if (targetJustice) {
+        const old = game.leanings[targetJustice.id] ?? 0;
+        game.leanings[targetJustice.id] = 0;
+        if (!game.recusedJustices.includes(targetJustice.id)) {
+          game.recusedJustices.push(targetJustice.id);
+        }
+        results.push({ justiceName: targetJustice.name, change: -old, newLeaning: 0 });
+        reportTarget = targetJustice.name;
+      }
     } else {
       // Remove card from its source first
       const fromClaimed = game.claimedCards.some((t) => t.id === tactic.id);
@@ -447,6 +471,11 @@
 
         // Chief justice resistance: sway power is halved when hardened
         if (justice.id === game.chiefJusticeId && game.chiefJusticeHardened && tactic.effectType !== "susceptibility" && tactic.effectType !== "shield") {
+          power = Math.max(1, Math.ceil(power * 0.5));
+        }
+
+        // Recused justices are harder to sway going forward
+        if (game.recusedJustices.includes(justice.id) && tactic.effectType !== "susceptibility" && tactic.effectType !== "shield") {
           power = Math.max(1, Math.ceil(power * 0.5));
         }
 
@@ -551,9 +580,23 @@
       tactic.effectType === "sway-all" ||
       tactic.effectType === "susceptibility" ||
       tactic.effectType === "discard-all" ||
-      tactic.effectType === "insult-chief"
+      tactic.effectType === "insult-chief" ||
+      tactic.effectType === "presidential-call"
     ) {
       applyTactic(tactic, null, "opponent");
+      return;
+    }
+
+    if (tactic.effectType === "recuse") {
+      // Opponent uses recuse to neutralize the player's strongest ally
+      const friendlies = game.bench
+        .filter((j) => !game.playerShields.includes(j.id) && (game.leanings[j.id] ?? 0) > gameSettings.abstentionThreshold)
+        .sort((a, b) => (game.leanings[b.id] ?? 0) - (game.leanings[a.id] ?? 0));
+      if (!friendlies.length) {
+        endOpponentTurn();
+        return;
+      }
+      applyTactic(tactic, friendlies[0], "opponent");
       return;
     }
 
@@ -599,7 +642,7 @@
     game.playerShields = []; // player's shields expire once opponent finishes their turn
     ui.opponentThinking = false;
     game.currentTurn = "player";
-    if (game.round >= game.totalRounds) {
+    if (game.round >= gameSettings.numberOfRounds) {
       setTimeout(() => {
         ui.phase = "verdict";
       }, 1500);
@@ -635,15 +678,72 @@
     const weaknessKeys = ["flattery", "bribery", "blackmail", "threats"] as const;
     const wkAvg = (k: (typeof weaknessKeys)[number]) => bench.reduce((s, j) => s + j.weaknesses[k], 0) / bench.length;
     const greatestWeakness = weaknessKeys.reduce((a, b) => (wkAvg(a) >= wkAvg(b) ? a : b));
-    const votingFor = bench.filter((j) => (game.leanings[j.id] ?? 0) > 0).length;
-    return { maleCount, femaleCount, partyCounts, bestStat, worstStat, greatestWeakness, votingFor };
+    const t = gameSettings.abstentionThreshold;
+    const votingFor = bench.filter((j) => (game.leanings[j.id] ?? 0) > t).length;
+    const votingAgainst = bench.filter((j) => (game.leanings[j.id] ?? 0) < -t).length;
+    const abstaining = bench.length - votingFor - votingAgainst;
+    return { maleCount, femaleCount, partyCounts, bestStat, worstStat, greatestWeakness, votingFor, votingAgainst, abstaining };
   });
 
   const verdict = computed(() => {
     if (!game.bench.length) return null;
-    const forCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) > 0).length;
-    return { forCount, againstCount: game.bench.length - forCount, won: forCount >= 5 };
+    const t = gameSettings.abstentionThreshold;
+    const forCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) > t).length;
+    const againstCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) < -t).length;
+    const abstainCount = game.bench.length - forCount - againstCount;
+    return { forCount, againstCount, abstainCount, won: forCount >= 5 };
   });
+
+  const tallyDisplay = computed(() => {
+    if (!benchOverview.value) return "0-0";
+    const { votingFor, votingAgainst, abstaining } = benchOverview.value;
+    return abstaining > 0 ? `${votingFor}-${votingAgainst}-${abstaining}` : `${votingFor}-${votingAgainst}`;
+  });
+
+  const tallyClass = computed(() => {
+    if (!benchOverview.value) return "";
+    const { votingFor, abstaining } = benchOverview.value;
+    return [votingFor >= 5 ? "is-winning" : "is-losing", abstaining > 0 ? "has-abstentions" : ""].filter(Boolean).join(" ");
+  });
+
+  const tallyTooltip = computed(() => {
+    if (!benchOverview.value) return "";
+    const { votingFor, votingAgainst, abstaining } = benchOverview.value;
+    const parts = [`${votingFor} for you`, `${votingAgainst} against you`];
+    if (abstaining > 0) parts.push(`${abstaining} abstaining`);
+    return parts.join(" · ");
+  });
+
+  const reportByRound = computed(() =>
+    Array.from({ length: gameSettings.numberOfRounds }, (_, i) => {
+      const r = i + 1;
+      const roundPlays = courtReport.plays.filter((p) => p.round === r);
+      const playerPlay = roundPlays.find((p) => p.actor === "player") ?? null;
+      const opponentPlay = roundPlays.find((p) => p.actor === "opponent") ?? null;
+      const allResults = roundPlays.flatMap((p) => p.results);
+      const netTraction = allResults.reduce((sum, res) => sum + res.change, 0);
+
+      // Party-level breakdown — cross-reference with current bench by name
+      const byParty: Record<string, number> = {};
+      allResults.forEach((res) => {
+        const justice = game.bench.find((j) => j.name === res.justiceName);
+        const party = justice?.nominatedBy?.party ?? "Unknown";
+        byParty[party] = (byParty[party] ?? 0) + res.change;
+      });
+      const tractionByParty = Object.fromEntries(Object.entries(byParty).filter(([, v]) => v !== 0));
+
+      return {
+        round: r,
+        playerPlay,
+        opponentPlay,
+        netTraction,
+        tractionByParty,
+        leansToward: netTraction > 0 ? "player" : netTraction < 0 ? "opponent" : "neutral",
+        hasPlays: roundPlays.length > 0,
+        isFuture: r > game.round,
+      };
+    }),
+  );
 
   // ─── UI Helpers ──────────────────────────────────────────────
 
@@ -670,14 +770,15 @@
         "claim-two": "🗑 Docket",
         "make-chief": "👑 Chief Justice",
         "insult-chief": "👑 Chief Justice",
-        "presidential-call": "🍊 Trump Appointees",
+        "presidential-call": "� All justices",
+        recuse: "🔕 Single target",
       }[effectType] ?? effectType
     );
   }
 
   function voteMeterStyle(justice: Justice): Record<string, string> {
     const leaning = game.leanings[justice.id] ?? 0;
-    const halfPct = (Math.abs(leaning) / 10) * 50;
+    const halfPct = (Math.abs(leaning) / 100) * 50;
     const color = leaning > 0 ? "#2a7a3a" : leaning < 0 ? "#8b2020" : "transparent";
     if (leaning >= 0) {
       return { left: "50%", width: `${halfPct}%`, backgroundColor: color };
@@ -695,10 +796,11 @@
   });
 
   function voteLabel(leaning: number): string {
-    if (leaning >= 4) return "✅ Strongly For";
-    if (leaning > 0) return "↗ Leaning For";
-    if (leaning === 0) return "⚖️ Undecided";
-    if (leaning > -4) return "↘ Leaning Against";
+    const t = gameSettings.abstentionThreshold;
+    if (leaning >= 60) return "✅ Strongly For";
+    if (leaning > t) return "↗ Leaning For";
+    if (leaning >= -t) return "⚖️ Undecided";
+    if (leaning > -60) return "↘ Leaning Against";
     return "❌ Strongly Against";
   }
 

@@ -35,51 +35,95 @@ Seee docs/court-working-doc-history.md for a session-by-session breakdown of the
 
 ## Next Steps
 
-I want to add tooltips to this game. In both cameo and megachurch, we're using tippy.js - so let's use that here as well.
+Okay, this looks great. Now let's redo .court-vertict.
 
-I've noticed that every trial ends with all 9 justices voting, even when one justice is "undecided". Lt's actually make a threshold for a justice to actually vote one way or the other. If they don't meet that threshold, they abstain from voting. This adds more nuance to the game and allows for more variability in outcomes.
+I'd like it to look like....
 
-This means we COULD have ties, which is okay, and fun, so it's something we'll allow for and handle in future updates.
+```
+Judgement In Your Favor!
+6-2-1
+The court ruled for James Obergefell
 
-- While you're at it, in the `.topbar-tally`, I want to change the output to show the number of justices who are for-against, rather than for/total. So instead of "5/9 justices", it would say 5-4. If there are abstentions, it would say something like "5-3-1", with the last number being the number of abstentions. That readout should be red, green or yellow, depending on if the case is currently going your way. This allows us to lose the "winning"/"losing" text.
-  - Please also add a tooltip to the tally explaining what the numbers mean if someone hovers on it.
+Votes For
+Sonia Sotomayor | Elena Kagan | ...
 
-- Create a `gameSettings` object, which will currently have 2 values: `numberOfRounds` (default 3) and `abstentionThreshold` (default 2). This will allow us to easily tweak these values in the future, and also allows for potential future features like allowing players to customize these settings.
+Votes Against
+John Roberts | Neil Gorsuch | ...
 
-- Remove the "New Court" button in the playing screen.
-- Move the "New Draw" and "Change Mode" buttons to the TODAY'S CASE section, as right now it looks like those buttons affect the current court.
+Abstaining
+Clarence Thomas
 
-- Add a new tactic called "Recuse Yourself!". What this does is reset the targeted justice to neutral (undecided), but ALSO makes them harder to sway with later tactics.
+Decision:
+James Obergefell
+--
+The 14th Amendment guarantees equal protection and due process to all persons. Denying same-sex couples the right to marry treats them as second-class citizens. Love is love, constitutionally speaking.
+```
 
-- I've been splutting some of `src\views\court\Court.pug` into partials in `src\views\court\pug`. This works, BUT I need to actually touch Court.pug to trigger the dev environment to see the changes to the partials. Please address.
+For each of the judge cards, display a bar that goes from 0-100%, which is either red or green depending on which way they were leaning (for exampe, if a justice was -67), display a red bar that's at 67% width.
 
-- "Ring Me Up The President" doesn't quite work the way I was expecting, because I didn't mean for that to be a targeted attack. Instead what's supposed to happen is you bring up a Zoom call with Donald Trump who talks nonsensically for like 10 minutes before accidentally hanging up. BIG positive effect to all Trump nominees, tiny positive effect to Republican appointees, BIG negative effect to Obama and Biden nominees, and tiny negative effect to all other Democratic appointees.
+ALSO, for each justice, display a little chip for each time they were targeted. So, if Samuel Alito was tartgeted 3 times, in his card, add 3 chips. For each chip, add a tooltip that shows which arguments targeted them.
 
-Justices To Add
+Also make sure the Chief Justice is visually indicated in this view.
 
-- John Jay (Historical)
-- John Marshall (Historical)
-- John Marshall Harlan (Historical)
-- Earl Warren (Historical)
-- Roger B. Taney ( Historical)
-- Henry Billings Brown (historical)
-- Mr. Beast (celebrity)
-- The Undertaker (celebrity - the professional wrestler, who apparently judiciated in something called wrestler's court)
+The order of the votes will actually depend on the plurarily. So if you lose the case, it should list the justices who voted against you first, then the justices who voted for you, then the abstaining justices.
 
-Justices to Remove
+In the case of a tie, votesFor > VotesAgainst > Abstaining.
 
-- Judge Roy Bean (was never actually a supreme court judge, and I don't think he fits in the celebrity category)
+If any category has 0 votes, it should be omitted. So if there are no abstaining justices, that section should not be shown.
 
-- [ ] Add tippy.js and use it in the topbar-tally
-- [ ] Redo topbar-tally
-- [ ] Allow for abstentions, controlled by gameSettings
-- [ ] Move the "New Draw" and "Change Mode" buttons
-- [ ] Remove the "New Court" button
-- [ ] Add "Recuse Yourself!" tactic
-- [ ] Fix the issue with the Court.pug partials not updating
-- [ ] Change "Ring Me Up The President" to be a non-targeted attack with the effects described above
-- [ ] Add the justices listed above
-- [ ] Remove Judge Roy Bean
+Also, I'd like the pug and scss to be split from each other. Court Record should be in `src\views\court\scss\modals\_court-record.scss` and `src\views\court\pug\modals\_court-record.pug`. Verdict should be in `src\views\court\scss\screens\_verdict.scss` and `src\views\court\pug\screens\_verdict.pug`.
+
+ALSO, when choosing a court, I'd like there to be an option of famous courts from history.
+
+This would be a Select, rather than a button, because it would be recognized as a more complex choice for seasoned players. The "Current Court" is still the default, and still suggested for first time players.
+
+BUT, we'll add two historical benches, and one silly one:
+
+- The Warren Court:
+  - Description: Known for its activism in expanding civil rights, civil liberties, judicial power, and the federal power in dramatic ways.
+  - estimated Year: 1968
+  - Justices:
+    - Earl Warren (Chief Justice)
+    - Hugo Black
+    - William O. Douglas
+    - John M. Harlan II
+    - William J. Brennan Jr.
+    - Potter Stewart
+    - Byron White
+    - Abe Fortas
+    - Thurgood Marshall
+
+- The Early Lochner Era:
+  - Description: Known for its emphasis on economic liberty and limited government intervention in the economy, often striking down progressive legislation.
+  - estimated Year: 1905
+  - Justices:
+    - Melville Fuller (Chief Justice)
+    - John Marshall Harlan
+    - David J. Brewer
+    - Henry B. Brown
+    - Edward D. White
+    - Rufus W. Peckham
+    - Joseph McKenna
+    - Oliver Wendell Holmes Jr.
+    - William R. Day
+
+- The Court From Hell:
+  - Description: This is not the bench you want. This is not the bench you deserve. And yet, this is the bench you have to work with.
+  - estimated Year: Next Year
+  - Justices:
+    - Peter Thiel (Chief Justice)
+    - Clarence Thomas
+    - Antonin Scalia
+    - Brett Kavanaugh
+    - Judge Dredd
+    - Mr. Beast
+    - A DVD Boxed Set of Law & Order: SVU
+    - William Rehnquist
+    - Roger B. Taney
+
+Also, one new President
+
+- Vince McMahon (he'll succeed Donald Trump). Change The Undertaker to be a Vince McMahon appointee. Vince McMahon is very republican, very very fiscally conservative, but pro-pornography, violence and gambling.
 
 ## Eventual Next Steps
 
@@ -89,4 +133,3 @@ Justices to Remove
 - AI Opponents should be given names
 - Eventually, make this multiplayer
 - Specific court makeups: eg: Warren Court, Bergen Court, Blackman Court, etc.
-- Handle ties

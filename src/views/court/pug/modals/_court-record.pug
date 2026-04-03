@@ -4,25 +4,57 @@
     .report-header
       h3.report-title 📋 The Court Record
       button.report-close(@click="ui.courtReportVisible = false") ✕
-    .report-plays
+    .report-body
       p.report-empty(v-if="!courtReport.plays.length") No arguments on the record yet.
-      .report-play(
-        v-for="(play, idx) in courtReport.plays"
-        :key="idx"
-        :class="play.actor === 'player' ? 'play--player' : 'play--opponent'"
-      )
-        .play-header
-          span.play-badge R{{ play.round }}
-          span.play-actor-badge(:class="play.actor === 'player' ? 'badge--player' : 'badge--opponent'")
-            | {{ play.actor === 'player' ? 'You' : 'Opposing Counsel' }}
-          span.play-tactic-name  {{ play.tacticName }}
-          span.play-arrow  →
-          span.play-target {{ play.targetName }}
-        .play-results(v-if="play.results.length")
-          span.play-result(
-            v-for="result in play.results"
-            :key="result.justiceName"
-            :class="result.change > 0 ? 'positive' : 'negative'"
-          )
-            | {{ result.justiceName }}: {{ result.change > 0 ? '+' : '' }}{{ result.change }}
-        p.play-no-effect(v-else) No measurable effect
+      .report-rounds(v-else)
+        .report-round(
+          v-for="roundData in reportByRound"
+          :key="roundData.round"
+          :class="{ 'round--future': roundData.isFuture }"
+        )
+          .round-label
+            span.round-number Round {{ roundData.round }}
+
+          .round-columns
+            //- Player column
+            .round-col.round-col--player(:class="{ 'is-pending': !roundData.playerPlay }")
+              .round-col__header You
+              template(v-if="roundData.playerPlay")
+                .round-col__tactic {{ roundData.playerPlay.tacticName }}
+                .round-col__target → {{ roundData.playerPlay.targetName }}
+                .round-col__results(v-if="roundData.playerPlay.results.length")
+                  span.col-result(
+                    v-for="r in roundData.playerPlay.results"
+                    :key="r.justiceName"
+                    :class="r.change > 0 ? 'positive' : 'negative'"
+                  )
+                    | {{ r.justiceName }}:&nbsp;
+                    span.amount {{ r.change > 0 ? '+' : '' }}{{ r.change }}
+              .round-col__pending(v-else) {{ roundData.isFuture ? 'Not yet argued' : 'Pending…' }}
+
+            //- Opponent column
+            .round-col.round-col--opponent(:class="{ 'is-pending': !roundData.opponentPlay }")
+              .round-col__header Opposing Counsel
+              template(v-if="roundData.opponentPlay")
+                .round-col__tactic {{ roundData.opponentPlay.tacticName }}
+                .round-col__target → {{ roundData.opponentPlay.targetName }}
+                .round-col__results(v-if="roundData.opponentPlay.results.length")
+                  span.col-result(
+                    v-for="r in roundData.opponentPlay.results"
+                    :key="r.justiceName"
+                    :class="r.change > 0 ? 'positive' : 'negative'"
+                  ) 
+                    | {{ r.justiceName }}:&nbsp;
+                    span.amount {{ r.change > 0 ? '+' : '' }}{{ r.change }}
+              .round-col__pending(v-else) {{ roundData.isFuture ? 'Not yet argued' : 'Pending…' }}
+
+          //- Traction summary (only when at least one play has happened)
+          .round-traction(v-if="roundData.hasPlays")
+            .traction-verdict(:class="`traction--${roundData.leansToward}`")
+              | {{ roundData.leansToward === 'player' ? '↗ Round Leaning Towards You' : roundData.leansToward === 'opponent' ? '↘ Round Leaning Towards Opposing Counsel' : '⚖ Round Even' }}
+            .traction-by-party(v-if="Object.keys(roundData.tractionByParty).length")
+              span.traction-party(
+                v-for="(change, party) in roundData.tractionByParty"
+                :key="party"
+                :class="change > 0 ? 'positive' : 'negative'"
+              ) {{ party }} Appointees: {{ change > 0 ? '+' : '' }}{{ change }}
