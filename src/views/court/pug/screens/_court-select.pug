@@ -1,0 +1,51 @@
+main.court-select(v-if="ui.phase === 'courtSelect'")
+  h2.section-label Select Your Court
+  .court-mode-grid
+    .court-mode-card(@click="selectCourtMode('current')")
+      .cmc-icon 🏛
+      .cmc-title Current Court
+      .cmc-desc The 9 justices currently on the Supreme Court. John Roberts presides as Chief Justice.
+      .cmc-badge Default
+    .court-mode-card(@click="selectCourtMode('historical')")
+      .cmc-icon 📜
+      .cmc-title Historical Court
+      .cmc-desc 9 justices drawn from current and historical pools. A random justice is appointed Chief.
+    .court-mode-card(@click="selectCourtMode('fantasy')")
+      .cmc-icon 🎭
+      .cmc-title Fantasy Court
+      .cmc-desc A court of celebrities and fictional characters. Anything can happen.
+    .court-mode-card(@click="selectCourtMode('chaos')")
+      .cmc-icon 🌪
+      .cmc-title Chaos Court
+      .cmc-desc 9 justices from any pool — real, historical, celebrity, or fictional. Pure mayhem.
+
+  .court-preset-section
+    p.preset-label Or select a preset bench:
+    select.court-preset-select(@change="ui.previewPresetId = $event.target.value || null")
+      option(value="" disabled selected) Choose a preset…
+      optgroup(label="Historical")
+        option(
+          v-for="bench in historicalPresets"
+          :key="bench.id"
+          :value="bench.id"
+        ) {{ bench.icon }} {{ bench.name }} 
+          template(v-if="bench.year") ({{ bench.year }})
+      optgroup(label="Fictional")
+        option(
+          v-for="bench in fictionalPresets"
+          :key="bench.id"
+          :value="bench.id"
+        ) {{ bench.icon }} {{ bench.name }} 
+          template(v-if="bench.year") ({{ bench.year }})
+
+  .court-preset-preview(v-if="ui.previewPresetId && previewPreset")
+    .cpp-header
+      span.cpp-icon {{ previewPreset.icon }}
+      .cpp-meta
+        h3.cpp-name {{ previewPreset.name }}
+        span.cpp-year {{ previewPreset.year }}
+    p.cpp-desc {{ previewPreset.description }}
+    p.cpp-chief(v-if="previewPresetChief")
+      | Chief Justice: 
+      strong {{ previewPresetChief.name }}
+    button.btn.btn--start(@click="selectCourtMode(ui.previewPresetId)") ⚖️ Play This Court →

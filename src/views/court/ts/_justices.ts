@@ -25,6 +25,9 @@ import {
   PRES_BILL_HICKS,
   PRES_HUNTER_S_THOMPSON,
   PRES_LIBERACE,
+  PRES_CLEVELAND,
+  PRES_MCKINLEY,
+  PRES_VINCE_MCMAHON,
 } from "./_presidents";
 
 // ────────────────────────────────────────────────────────────
@@ -425,6 +428,7 @@ export const justiceHistorical: Justice[] = [
     nominatedBy: PRES_THEODORE_ROOSEVELT,
     religion: "Protestant",
     ethnicity: "White",
+    courtName: "Holmes",
     stats: {
       logic: 10,
       charisma: 8,
@@ -739,6 +743,7 @@ export const justiceFictional: Justice[] = [
     nominatedBy: PRES_HUNTER_S_THOMPSON,
     religion: "Other",
     ethnicity: "Other",
+    courtName: "Dick Wolf (DUN DUN)",
     stats: {
       logic: 7,
       charisma: 5,
@@ -912,7 +917,7 @@ export const justiceCelebrity: Justice[] = [
     justiceType: "celebrity",
     gender: "M",
     birthYear: 1965,
-    nominatedBy: PRES_LIBERACE,
+    nominatedBy: PRES_VINCE_MCMAHON,
     religion: "Protestant",
     ethnicity: "White",
     stats: { logic: 7, charisma: 10, empathy: 4, integrity: 8, succeptibility: 3, partyLoyalty: 7 },
@@ -921,3 +926,322 @@ export const justiceCelebrity: Justice[] = [
 ];
 
 export const justices: Justice[] = [...justiceCurrent, ...justiceHistorical, ...justiceFictional, ...justiceCelebrity];
+
+// ────────────────────────────────────────────────────────────
+// WARREN COURT JUSTICES (additional, not yet in historical pool)
+// ────────────────────────────────────────────────────────────
+
+export const justiceWarrenExtra: Justice[] = [
+  {
+    id: 60,
+    name: "William O. Douglas",
+    image: "william_douglas.webp",
+    description:
+      "The longest-serving justice in history and possibly the most unmanageable. Hiked the Pacific Crest Trail, got married four times, and wrote opinions so sweeping they occasionally encompassed entire ecosystems. Believed freedom of speech meant all speech, the outdoors meant the outdoors, and the CIA was definitely doing something.",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1898,
+    nominatedBy: PRES_FDR,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 9,
+      charisma: 8,
+      empathy: 8,
+      integrity: 7,
+      succeptibility: 3,
+      partyLoyalty: 5,
+    },
+    weaknesses: { flattery: 5, bribery: 2, blackmail: 4, threats: 2 },
+  },
+  {
+    id: 61,
+    name: "John Marshall Harlan II",
+    image: "harlan_2.webp",
+    description:
+      "Grandson of the original Great Dissenter, and like his grandfather, frequently the most interesting voice in the room — except this time from the conservative side. Believed in federalism, restraint, and the process mattering as much as the outcome. The Court's intellectual conscience during the Warren era, which is a thankless job.",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1899,
+    nominatedBy: PRES_EISENHOWER,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 10,
+      charisma: 6,
+      empathy: 5,
+      integrity: 9,
+      succeptibility: 2,
+      partyLoyalty: 5,
+    },
+    weaknesses: { flattery: 4, bribery: 1, blackmail: 2, threats: 2 },
+  },
+  {
+    id: 62,
+    name: "William J. Brennan Jr.",
+    image: "brennan.webp",
+    description:
+      "Eisenhower's second-greatest mistake (after Warren, according to Eisenhower). Quietly became the intellectual engine of the liberal Warren Court. Brilliant coalition builder who made constitutional rights expand through sheer force of legal persuasion and an almost supernatural ability to count to five.",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1906,
+    nominatedBy: PRES_EISENHOWER,
+    religion: "Catholic",
+    ethnicity: "White",
+    stats: {
+      logic: 10,
+      charisma: 8,
+      empathy: 8,
+      integrity: 9,
+      succeptibility: 3,
+      partyLoyalty: 5,
+    },
+    weaknesses: { flattery: 5, bribery: 2, blackmail: 2, threats: 3 },
+  },
+  {
+    id: 63,
+    name: "Potter Stewart",
+    image: "potter_stewart.webp",
+    description:
+      "A genuine moderate at a time when that was still a category. Best known for admitting he couldn't define obscenity but he knew it when he saw it — possibly the most honest thing anyone has ever said from the Supreme Court bench. Voted with whoever seemed least wrong. Often succeeded.",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1915,
+    nominatedBy: PRES_EISENHOWER,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 8,
+      charisma: 6,
+      empathy: 6,
+      integrity: 8,
+      succeptibility: 6,
+      partyLoyalty: 4,
+    },
+    weaknesses: { flattery: 5, bribery: 3, blackmail: 3, threats: 3 },
+  },
+  {
+    id: 64,
+    name: "Abe Fortas",
+    image: "fortas.webp",
+    description:
+      "LBJ's personal lawyer before becoming his Supreme Court appointment. Brilliant, ambitious, and ultimately doomed by his own financial entanglements. First sitting justice forced to resign under scandal. In a court full of interesting characters, managed to be both the most talented and the most self-destructive.",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1910,
+    nominatedBy: PRES_LBJ,
+    religion: "Jewish",
+    ethnicity: "Jewish",
+    stats: {
+      logic: 9,
+      charisma: 8,
+      empathy: 6,
+      integrity: 4,
+      succeptibility: 5,
+      partyLoyalty: 8,
+    },
+    weaknesses: { flattery: 7, bribery: 8, blackmail: 9, threats: 4 },
+  },
+];
+
+// ────────────────────────────────────────────────────────────
+// LOCHNER ERA JUSTICES (1905, additional)
+// ────────────────────────────────────────────────────────────
+
+export const justiceLochnerExtra: Justice[] = [
+  {
+    id: 65,
+    name: "Melville Fuller",
+    image: "fuller.webp",
+    description:
+      "Chief Justice during the Lochner era, best known for presiding over an era in which the Court struck down minimum wage laws, child labor restrictions, and anything else that suggested the government could regulate a business doing business. A strict constructionist who constructed stricter protections for capital than for people. Had distinguished white hair. The hair did not help.",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1833,
+    nominatedBy: PRES_CLEVELAND,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 7,
+      charisma: 6,
+      empathy: 2,
+      integrity: 5,
+      succeptibility: 4,
+      partyLoyalty: 8,
+    },
+    weaknesses: { flattery: 6, bribery: 4, blackmail: 4, threats: 3 },
+  },
+  {
+    id: 66,
+    name: "David J. Brewer",
+    image: "david_brewer.webp",
+    description:
+      "Devoted to the proposition that property rights are functionally sacred and government regulation is presumptively evil. Nephew of Justice Stephen Field. Wrote opinions defending corporate interests with the zeal of a man who had never been poor and intended to keep it that way. Occasionally pleasant at dinner parties.",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1837,
+    nominatedBy: PRES_BENJAMIN_HARRISON,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 7,
+      charisma: 5,
+      empathy: 2,
+      integrity: 5,
+      succeptibility: 4,
+      partyLoyalty: 8,
+    },
+    weaknesses: { flattery: 6, bribery: 5, blackmail: 4, threats: 3 },
+  },
+  {
+    id: 67,
+    name: "Edward D. White",
+    image: "edward_white.webp",
+    description:
+      "A Democrat appointed by Cleveland who later became Chief Justice under Taft — which tells you something about ideological drift. Catholic, Confederate veteran, and legal pragmatist who invented the 'rule of reason' in antitrust law, which means he made the rules just vague enough that they could mean anything. A very useful skill.",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1845,
+    nominatedBy: PRES_CLEVELAND,
+    religion: "Catholic",
+    ethnicity: "White",
+    stats: {
+      logic: 7,
+      charisma: 6,
+      empathy: 4,
+      integrity: 6,
+      succeptibility: 5,
+      partyLoyalty: 7,
+    },
+    weaknesses: { flattery: 5, bribery: 4, blackmail: 5, threats: 3 },
+  },
+  {
+    id: 68,
+    name: "Rufus W. Peckham",
+    image: "peckham.webp",
+    description:
+      "Author of the majority opinion in Lochner v. New York, the most reviled economic liberty decision in American legal history, which struck down a law limiting bakers to 10-hour workdays as an unconstitutional interference with freedom of contract. Peckham believed men should be free to work unlimited hours in hot flour dust if they really wanted to. Historians have been arguing about this ever since.",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1838,
+    nominatedBy: PRES_CLEVELAND,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 7,
+      charisma: 5,
+      empathy: 1,
+      integrity: 5,
+      succeptibility: 4,
+      partyLoyalty: 8,
+    },
+    weaknesses: { flattery: 6, bribery: 5, blackmail: 4, threats: 3 },
+  },
+  {
+    id: 69,
+    name: "Joseph McKenna",
+    image: "mckenna.webp",
+    description:
+      "McKinley's Attorney General turned Associate Justice, best known for a late-career condition where his colleagues quietly stopped counting his votes when they suspected cognitive decline — and then had to figure out what to do about it, because there was no mechanism for that. He served until he was 80 and nobody wanted to be rude. A cautionary tale about term limits, served warm.",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1843,
+    nominatedBy: PRES_MCKINLEY,
+    religion: "Catholic",
+    ethnicity: "White",
+    stats: {
+      logic: 5,
+      charisma: 5,
+      empathy: 5,
+      integrity: 6,
+      succeptibility: 7,
+      partyLoyalty: 7,
+    },
+    weaknesses: { flattery: 7, bribery: 5, blackmail: 6, threats: 5 },
+  },
+  {
+    id: 70,
+    name: "William R. Day",
+    image: "william_day.webp",
+    description:
+      "A quiet Roosevelt appointee who served without fanfare during one of the Court's most controversial periods. Presided over dozens of landmark antitrust cases and international disputes stemming from the Spanish-American War. Best known for being reasonable in an unreasonable era, which is a perfectly good way to be remembered, even if nobody makes a statue of 'reasonable.'",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1849,
+    nominatedBy: PRES_THEODORE_ROOSEVELT,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 8,
+      charisma: 5,
+      empathy: 6,
+      integrity: 8,
+      succeptibility: 4,
+      partyLoyalty: 6,
+    },
+    weaknesses: { flattery: 4, bribery: 3, blackmail: 3, threats: 3 },
+  },
+];
+
+// ────────────────────────────────────────────────────────────
+// PRESET BENCH CONFIGS
+// ────────────────────────────────────────────────────────────
+
+export interface PresetBenchConfig {
+  id: string;
+  name: string;
+  description: string;
+  year?: number;
+  icon: string;
+  chiefJusticeId: number;
+  justiceIds: number[];
+  casePool: "historical" | "fictional" | "any";
+}
+
+export const presetBenchConfigs: PresetBenchConfig[] = [
+  {
+    id: "current",
+    name: "The Current Court",
+    description:
+      "The current Supreme Court of the United States. Six conservatives, three liberals, and one Chief Justice desperately trying to preserve the institution's credibility while the institution disagrees.",
+    year: 2025,
+    icon: "🏛️",
+    chiefJusticeId: 1, // John Roberts
+    justiceIds: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    casePool: "historical",
+  },
+  {
+    id: "warren-court",
+    name: "The Warren Court",
+    description:
+      "Known for its historic activism in expanding civil rights, civil liberties, judicial power, and federal authority. Brown v. Board. Miranda. The most consequential liberal court in US history.",
+    year: 1968,
+    icon: "✊",
+    chiefJusticeId: 53, // Earl Warren
+    // Earl Warren, Hugo Black, William O. Douglas, Harlan II, Brennan, Potter Stewart, Byron White, Abe Fortas, Thurgood Marshall
+    justiceIds: [53, 17, 60, 61, 62, 63, 16, 64, 10],
+    casePool: "historical",
+  },
+  {
+    id: "lochner-era",
+    name: "The Early Lochner Era",
+    description:
+      "Known for its emphasis on economic liberty and hostility to government regulation. Struck down minimum wage laws, child labor limits, and worker protections with cheerful regularity.",
+    year: 1905,
+    icon: "🏭",
+    chiefJusticeId: 65, // Melville Fuller
+    // Fuller, John Marshall Harlan, Brewer, Henry Brown, Edward White, Peckham, McKenna, Holmes, Day
+    justiceIds: [65, 52, 66, 55, 67, 68, 69, 18, 70],
+    casePool: "historical",
+  },
+  {
+    id: "court-from-hell",
+    name: "The Court From Hell",
+    description: "This is not the bench you want. This is not the bench you deserve. And yet, this is the bench you have to work with.",
+    icon: "😈",
+    chiefJusticeId: 29, // Peter Thiel
+    // Thiel, Thomas, Scalia, Kavanaugh, Dredd, Mr. Beast, SVU Box Set, Rehnquist, Taney
+    justiceIds: [29, 2, 13, 7, 21, 56, 38, 12, 54],
+    casePool: "any",
+  },
+];

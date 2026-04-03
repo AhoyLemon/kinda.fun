@@ -153,6 +153,24 @@ export const PRES_LIBERACE: President = {
   party: "Republican",
   image: "",
 };
+export const PRES_CLEVELAND: President = {
+  id: 22,
+  name: "Grover Cleveland",
+  party: "Democrat",
+  image: "",
+};
+export const PRES_MCKINLEY: President = {
+  id: 25,
+  name: "William McKinley",
+  party: "Republican",
+  image: "",
+};
+export const PRES_VINCE_MCMAHON: President = {
+  id: 47,
+  name: "Vince McMahon",
+  party: "Republican",
+  image: "",
+};
 
 export const presidents: President[] = [
   PRES_WASHINGTON,
@@ -180,4 +198,7 @@ export const presidents: President[] = [
   PRES_BILL_HICKS,
   PRES_HUNTER_S_THOMPSON,
   PRES_LIBERACE,
+  PRES_CLEVELAND,
+  PRES_MCKINLEY,
+  PRES_VINCE_MCMAHON,
 ];

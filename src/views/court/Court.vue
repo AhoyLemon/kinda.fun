@@ -2,8 +2,16 @@
   import { reactive, computed, onMounted } from "vue";
   import { useToast, POSITION } from "vue-toastification";
   import TacticToast from "./components/TacticToast.vue";
-  import { justiceCurrent, justiceHistorical, justiceFictional, justiceCelebrity } from "./ts/_justices";
-  import { cases as allCases } from "./ts/_cases";
+  import {
+    justiceCurrent,
+    justiceHistorical,
+    justiceFictional,
+    justiceCelebrity,
+    justiceWarrenExtra,
+    justiceLochnerExtra,
+    presetBenchConfigs,
+  } from "./ts/_justices";
+  import { cases as allCases, casesHistorical, casesFictional } from "./ts/_cases";
   import { tactics as allTactics } from "./ts/_tactics";
   import type { Justice, Case, Tactic, Party } from "./ts/_types";
 
@@ -19,7 +27,7 @@
   type Side = "prosecution" | "defendant";
   type TurnActor = "player" | "opponent";
   type Phase = "courtSelect" | "setup" | "playing" | "verdict";
-  type CourtMode = "current" | "historical" | "fantasy" | "chaos";
+  type CourtMode = "current" | "historical" | "fantasy" | "chaos" | "warren-court" | "lochner-era" | "court-from-hell";
 
   const ui = reactive({
     gameName: "court",
@@ -31,6 +39,7 @@
     opponentHighlightedCardId: null as number | null, // card the opponent appears to be browsing
     detailJustice: null as Justice | null, // justice whose detail modal is open
     targetingChoice: null as Justice | null, // justice clicked while a tactic is selected
+    previewPresetId: null as string | null, // preset selected in dropdown, awaiting preview confirmation
   });
 
   const game = reactive({
@@ -135,14 +144,28 @@
 
   // ─── Game Management ─────────────────────────────────────────
 
-  function selectCourtMode(mode: CourtMode): void {
-    ui.courtMode = mode;
+  function selectCourtMode(mode: CourtMode | string | null): void {
+    if (!mode) return;
+    ui.previewPresetId = null;
+    ui.courtMode = mode as CourtMode;
     dealGame();
   }
 
   function resetToCourtSelect(): void {
     ui.phase = "courtSelect";
   }
+
+  const allJustices = computed(() => [
+    ...justiceCurrent,
+    ...justiceHistorical,
+    ...justiceFictional,
+    ...justiceCelebrity,
+    ...justiceWarrenExtra,
+    ...justiceLochnerExtra,
+  ]);
+
+  const historicalPresets = computed(() => presetBenchConfigs.filter((b) => ["current", "warren-court", "lochner-era"].includes(b.id)));
+  const fictionalPresets = computed(() => presetBenchConfigs.filter((b) => !["current", "warren-court", "lochner-era"].includes(b.id)));
 
   function dealGame(): void {
     // Save this game's justice votes to case history before resetting
@@ -160,7 +183,11 @@
     let chiefId: number | null = null;
     let hardened = true;
 
-    if (mode === "current") {
+    const presetConfig = presetBenchConfigs.find((b) => b.id === mode);
+    if (presetConfig) {
+      pool = presetConfig.justiceIds.map((id) => allJustices.value.find((j) => j.id === id)).filter((j): j is Justice => !!j);
+      chiefId = presetConfig.chiefJusticeId;
+    } else if (mode === "current") {
       pool = [...justiceCurrent]; // always use all 9 current justices
       chiefId = 1; // John Roberts is always Chief in Current mode
     } else if (mode === "historical") {
@@ -171,14 +198,26 @@
       chiefId = pool[Math.floor(Math.random() * pool.length)].id;
     } else {
       // chaos: any justice
-      pool = shuffle([...justiceCurrent, ...justiceHistorical, ...justiceFictional, ...justiceCelebrity]).slice(0, 9);
+      pool = shuffle([...allJustices.value]).slice(0, 9);
       chiefId = pool[Math.floor(Math.random() * pool.length)].id;
     }
 
     game.bench = pool;
     game.chiefJusticeId = chiefId;
     game.chiefJusticeHardened = hardened;
-    game.currentCase = allCases[Math.floor(Math.random() * allCases.length)];
+    // Select a case from the appropriate pool based on court mode
+    let casePool: typeof allCases;
+    if (presetConfig) {
+      casePool = presetConfig.casePool === "historical" ? casesHistorical : presetConfig.casePool === "fictional" ? casesFictional : allCases;
+    } else if (mode === "current" || mode === "historical") {
+      casePool = casesHistorical;
+    } else if (mode === "fantasy") {
+      casePool = casesFictional;
+    } else {
+      // chaos: any case
+      casePool = allCases;
+    }
+    game.currentCase = casePool[Math.floor(Math.random() * casePool.length)];
     game.playerSide = null;
     game.deck = [];
     game.discardPile = [];
@@ -691,7 +730,7 @@
     const forCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) > t).length;
     const againstCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) < -t).length;
     const abstainCount = game.bench.length - forCount - againstCount;
-    return { forCount, againstCount, abstainCount, won: forCount >= 5 };
+    return { forCount, againstCount, abstainCount, won: forCount > againstCount };
   });
 
   const tallyDisplay = computed(() => {
@@ -702,8 +741,8 @@
 
   const tallyClass = computed(() => {
     if (!benchOverview.value) return "";
-    const { votingFor, abstaining } = benchOverview.value;
-    return [votingFor >= 5 ? "is-winning" : "is-losing", abstaining > 0 ? "has-abstentions" : ""].filter(Boolean).join(" ");
+    const { votingFor, votingAgainst, abstaining } = benchOverview.value;
+    return [votingFor > votingAgainst ? "is-winning" : "is-losing", abstaining > 0 ? "has-abstentions" : ""].filter(Boolean).join(" ");
   });
 
   const tallyTooltip = computed(() => {
@@ -787,12 +826,95 @@
     }
   }
 
+  // ─── Verdict computeds ───────────────────────────────────────
+
+  const verdictSections = computed(() => {
+    if (!verdict.value || !game.bench.length) return [];
+    const t = gameSettings.abstentionThreshold;
+    const forJustices = game.bench.filter((j) => (game.leanings[j.id] ?? 0) > t);
+    const againstJustices = game.bench.filter((j) => (game.leanings[j.id] ?? 0) < -t);
+    const abstainJustices = game.bench.filter((j) => {
+      const l = game.leanings[j.id] ?? 0;
+      return l >= -t && l <= t;
+    });
+    const sections = [
+      { label: "Votes For", justices: forJustices, type: "for" as const },
+      { label: "Votes Against", justices: againstJustices, type: "against" as const },
+      { label: "Abstaining", justices: abstainJustices, type: "abstain" as const },
+    ].filter((s) => s.justices.length > 0);
+    // If player lost, put the "against" section first
+    if (!verdict.value.won) {
+      const againstIdx = sections.findIndex((s) => s.type === "against");
+      if (againstIdx > 0) {
+        const [against] = sections.splice(againstIdx, 1);
+        sections.unshift(against);
+      }
+    }
+    return sections;
+  });
+
+  const verdictRuledFor = computed(() => {
+    if (!verdict.value || !game.currentCase || !game.playerSide) return "";
+    if (verdict.value.won) {
+      return game.playerSide === "prosecution" ? game.currentCase.prosecution.name : game.currentCase.defendant.name;
+    }
+    return game.playerSide === "prosecution" ? game.currentCase.defendant.name : game.currentCase.prosecution.name;
+  });
+
+  const verdictWinningArgument = computed(() => {
+    if (!verdict.value || !game.currentCase || !game.playerSide) return "";
+    const winningSide = verdict.value.won ? game.playerSide : game.playerSide === "prosecution" ? "defendant" : "prosecution";
+    return winningSide === "prosecution" ? game.currentCase.prosecution.argument : game.currentCase.defendant.argument;
+  });
+
+  const verdictScoreDisplay = computed(() => {
+    if (!verdict.value) return "";
+    const { forCount, againstCount, abstainCount } = verdict.value;
+    return abstainCount > 0 ? `${forCount}\u2013${againstCount}\u2013${abstainCount}` : `${forCount}\u2013${againstCount}`;
+  });
+
+  // Maps justice id → list of plays that directly targeted them (by name match)
+  const justiceTargetings = computed(() => {
+    const map: Record<number, Array<{ tacticName: string; actor: TurnActor }>> = {};
+    courtReport.plays.forEach((play) => {
+      const justice = game.bench.find((j) => j.name === play.targetName);
+      if (justice) {
+        if (!map[justice.id]) map[justice.id] = [];
+        map[justice.id].push({ tacticName: play.tacticName, actor: play.actor });
+      }
+    });
+    return map;
+  });
+
+  function verdictJusticeBarStyle(justice: Justice): Record<string, string> {
+    const leaning = game.leanings[justice.id] ?? 0;
+    const pct = Math.abs(leaning);
+    const color = leaning > gameSettings.abstentionThreshold ? "#2a7a3a" : leaning < -gameSettings.abstentionThreshold ? "#8b2020" : "#5a4a3a";
+    return { width: `${pct}%`, backgroundColor: color };
+  }
+
   const chiefJustice = computed(() => game.bench.find((j) => j.id === game.chiefJusticeId) ?? null);
 
   const benchLabel = computed(() => {
     if (!chiefJustice.value) return "The Bench";
-    const lastName = chiefJustice.value.name.split(" ").at(-1);
-    return `The ${lastName} Court`;
+    // For preset modes (except 'current'), use the preset's display name
+    if (ui.courtMode && ui.courtMode !== "current") {
+      const preset = presetBenchConfigs.find((b) => b.id === ui.courtMode);
+      if (preset) return preset.name;
+    }
+    const courtName = chiefJustice.value.courtName;
+    const label = courtName ?? chiefJustice.value.name.split(" ").at(-1);
+    return `The ${label} Court`;
+  });
+
+  const previewPreset = computed(() => {
+    if (!ui.previewPresetId) return null;
+    return presetBenchConfigs.find((b) => b.id === ui.previewPresetId) ?? null;
+  });
+
+  const previewPresetChief = computed(() => {
+    if (!previewPreset.value) return null;
+    return allJustices.value.find((j) => j.id === previewPreset.value!.chiefJusticeId) ?? null;
   });
 
   function voteLabel(leaning: number): string {
@@ -817,7 +939,9 @@
     if (justice.weaknesses.bribery >= 7) hints.push("💰 Open to bribery");
     else if (justice.weaknesses.bribery <= 2) hints.push("🚫 Incorruptible");
     if (justice.weaknesses.blackmail >= 7) hints.push("🤫 Has something to hide");
+    else if (justice.weaknesses.blackmail <= 2) hints.push("🩻 Difficult to blackmail");
     if (justice.weaknesses.threats >= 7) hints.push("😰 Unnerved by pressure");
+    else if (justice.weaknesses.threats <= 2) hints.push("🦁 Nearly impossible to threaten");
     if (justice.stats.succeptibility >= 7) hints.push("🌀 Easily swayed");
     else if (justice.stats.succeptibility <= 3) hints.push("🪨 Hard to budge");
     if (justice.stats.empathy >= 8) hints.push("❤️ Responds to emotional appeals");

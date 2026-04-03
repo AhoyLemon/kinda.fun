@@ -356,6 +356,7 @@ $type-celebrity: rgb(75, 75, 235);
   flex-wrap: wrap;
   gap: 0.3rem;
   margin-top: 0.4rem;
+  align-content: baseline;
 }
 
 .justice-card__view-cta {
@@ -426,6 +427,8 @@ $type-celebrity: rgb(75, 75, 235);
 
 @import "./scss/screens/playing";
 @import "./scss/screens/report";
+@import "./scss/screens/verdict";
+@import "./scss/modals/court-record";
 
 // ─── Court Selector ──────────────────────────────────────────
 .court-select {
@@ -444,6 +447,105 @@ $type-celebrity: rgb(75, 75, 235);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 1rem;
+}
+
+// ─── Preset bench select ─────────────────────────────────────
+.court-preset-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.preset-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 0.6rem 0;
+}
+
+.court-preset-select {
+  background: $court-surface;
+  border: 2px solid rgba(201, 168, 76, 0.4);
+  border-radius: 6px;
+  color: $court-card;
+  font-family: $sans-serif;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  min-width: 260px;
+  transition: border-color 0.15s;
+
+  &:hover,
+  &:focus {
+    border-color: $court-gold;
+    outline: none;
+  }
+
+  option,
+  optgroup {
+    background: $court-surface;
+    color: $court-card;
+  }
+}
+
+.court-preset-preview {
+  margin: 1.25rem auto 0;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 8px;
+  padding: 1.1rem 1.25rem;
+  text-align: left;
+
+  .cpp-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .cpp-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+
+  .cpp-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .cpp-name {
+    font-size: 1.05rem;
+    font-weight: $bold;
+    color: $court-card;
+    margin: 0;
+  }
+
+  .cpp-year {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .cpp-desc {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.45;
+    margin: 0 0 0.6rem;
+  }
+
+  .cpp-chief {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 0.9rem;
+
+    strong {
+      color: $court-gold;
+    }
+  }
+
+  .btn--start {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .court-mode-card {

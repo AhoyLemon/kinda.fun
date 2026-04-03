@@ -1,0 +1,207 @@
+// ─── Verdict Screen ──────────────────────────────────────────
+.court-verdict {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+// ── Header ────────────────────────────────────────────────────
+.verdict-header {
+  text-align: center;
+  padding: 2rem 1.5rem 1.75rem;
+  border-radius: 12px;
+  border: 3px solid;
+
+  &.verdict--won {
+    background: linear-gradient(160deg, rgba(42, 122, 58, 0.15) 0%, rgba(26, 10, 10, 0) 100%);
+    border-color: #2a7a3a;
+  }
+
+  &.verdict--lost {
+    background: linear-gradient(160deg, rgba(139, 32, 32, 0.15) 0%, rgba(26, 10, 10, 0) 100%);
+    border-color: $court-red;
+  }
+}
+
+.verdict-title {
+  font-family: $serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: $bold;
+  margin: 0 0 0.5rem 0;
+
+  .verdict--won & {
+    color: #5aef7a;
+  }
+
+  .verdict--lost & {
+    color: #ef7a5a;
+  }
+}
+
+.verdict-score {
+  font-family: $serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: $bold;
+  color: $court-gold;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  margin-bottom: 0.6rem;
+}
+
+.verdict-ruled-for {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+
+  strong {
+    color: $court-card;
+    font-weight: $bold;
+  }
+}
+
+.verdict-winning-argument {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0.4rem 0 0;
+  line-height: 1.4;
+}
+
+// ── Vote Sections ─────────────────────────────────────────────
+.verdict-vote-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.verdict-vote-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.verdict-section-label {
+  font-family: $serif;
+  font-size: 1rem;
+  font-weight: $bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .verdict-section--for & {
+    color: #5aef7a;
+  }
+
+  .verdict-section--against & {
+    color: #ef7a5a;
+  }
+
+  .verdict-section--abstain & {
+    color: rgba(255, 255, 255, 0.45);
+  }
+}
+
+// ── Justice cards ─────────────────────────────────────────────
+.verdict-justices {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.6rem;
+}
+
+.verdict-justice {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  position: relative;
+
+  &.vj--chief {
+    border-color: rgba(201, 168, 76, 0.5);
+    background: rgba(201, 168, 76, 0.06);
+  }
+
+  .verdict-section--for & {
+    border-left: 3px solid #2a7a3a;
+  }
+
+  .verdict-section--against & {
+    border-left: 3px solid $court-red;
+  }
+
+  .verdict-section--abstain & {
+    border-left: 3px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+.vj-chief-badge {
+  font-size: 0.6rem;
+  font-weight: $bold;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: $court-gold;
+  margin-bottom: 0.1rem;
+}
+
+.vj-name {
+  font-weight: $bold;
+  font-size: 0.9rem;
+  color: $court-card;
+  line-height: 1.2;
+}
+
+// ── Leaning bar ───────────────────────────────────────────────
+.vj-bar-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.vj-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+  min-width: 2px;
+}
+
+// ── Targeting chips ───────────────────────────────────────────
+.vj-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  margin-top: 0.1rem;
+}
+
+.vj-chip {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  cursor: default;
+  border: 1px solid;
+
+  &.chip--player {
+    background: rgba(42, 122, 58, 0.15);
+    border-color: rgba(42, 122, 58, 0.4);
+  }
+
+  &.chip--opponent {
+    background: rgba(139, 32, 32, 0.15);
+    border-color: rgba(139, 32, 32, 0.4);
+  }
+}
+
+// ── Actions ───────────────────────────────────────────────────
+.verdict-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-bottom: 2rem;
+}

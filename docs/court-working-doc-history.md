@@ -292,3 +292,15 @@ Justices to Remove
 - [ ] Change "Ring Me Up The President" to be a non-targeted attack with the effects described above
 - [ ] Add the justices listed above
 - [ ] Remove Judge Roy Bean
+
+---
+
+Slight change to the part where it says "The XX Court",
+
+- We need to normalize out a couple names. For example, if Oliver Wendell Holmes Jr is the chief justice, it's called "The Jr. Court", but it should be "The Holmes Court". To fix this, let's add an optional value to a justice called "courtName". This way, we can set the court name to "The Dick Wolf Court (DUN DUN)" if the chief justice is "A DVD Boxed Set of Law & Order: SVU"
+- ALSO, in the last task, we had you able to select famous courts from history. If you do that, that should override the court name. SO, if you choose "The Early Lochner Era", the court name should be that instead of "The Fuller Court"
+
+- Also, it says "Start with a famous historical bench" in court-preset-section, except it's not NECESSSARILY a historical bench, in the case of "The Court From Hell". So instead of that, it should say "Select A Preset"
+  - THEN wrap the historical ones in an `optgroup` called Historical, and wrap The Court From Hell (and possibly others) in an `optgroup` called Fictional. Also add the current court to the Historical, and in this case call it "Trump's Bench". Again, this will usually be the option you'll play.
+
+- Also, for that select, I don't want to actualy start the game immediately when you select one. Selecting one of the options from that select should give you an overview (name, year, chief justice, description) of the court, and then you can click a button to start the game with that court. This because this is very much the tertiary way to play (primary = current court, secondary = the random selections (historical, fantasy, chaos), and tertiary = the presets). So while I don't want to dissuade you from doing these methods, I'd like to use visual hierarchy to indicate to the player how to start.

@@ -3,30 +3,11 @@
     h1 ⚖️ {{ ui.title }}
 
   //- ── COURT SELECTOR ─────────────────────────────────────────
-  main.court-select(v-if="ui.phase === 'courtSelect'")
-    h2.section-label Select Your Court
-    .court-mode-grid
-      .court-mode-card(@click="selectCourtMode('current')")
-        .cmc-icon 🏛
-        .cmc-title Current Court
-        .cmc-desc The 9 justices currently on the Supreme Court. John Roberts presides as Chief Justice.
-        .cmc-badge Default
-      .court-mode-card(@click="selectCourtMode('historical')")
-        .cmc-icon 📜
-        .cmc-title Historical Court
-        .cmc-desc 9 justices drawn from current and historical pools. A random justice is appointed Chief.
-      .court-mode-card(@click="selectCourtMode('fantasy')")
-        .cmc-icon 🎭
-        .cmc-title Fantasy Court
-        .cmc-desc A court of celebrities and fictional characters. Anything can happen. A random justice leads.
-      .court-mode-card(@click="selectCourtMode('chaos')")
-        .cmc-icon 🌪
-        .cmc-title Chaos Court
-        .cmc-desc 9 justices from any pool — real, historical, celebrity, or fictional. Pure mayhem.
+  include pug/screens/_court-select.pug 
 
   //- ── LOADING ────────────────────────────────────────────────
   .court-loading(v-else-if="!game.currentCase")
-    p Convening the court…
+    p Convening the court… 
 
   //- ── SETUP PHASE ────────────────────────────────────────────
   main.court-main(v-else-if="ui.phase === 'setup'")
@@ -259,31 +240,7 @@
           button.btn.btn--switch(@click="ui.detailJustice = ui.targetingChoice; ui.targetingChoice = null") 🔍 View Profile
           button.btn.btn--text(@click="ui.targetingChoice = null") Cancel
 
-  //- ── VERDICT PHASE ──────────────────────────────────────────
-  main.court-verdict(v-else-if="ui.phase === 'verdict'")
-    .verdict-card(:class="verdict && verdict.won ? 'verdict--won' : 'verdict--lost'")
-      h2.verdict-title(v-if="verdict")
-        | {{ verdict.won ? '🎉 Decision for Your Client!' : '⚖️ Judgment Against You' }}
-      .verdict-score(v-if="verdict")
-        span.score-for {{ verdict.forCount }}
-        span.score-dash  –
-        span.score-against {{ verdict.againstCount }}
-        template(v-if="verdict.abstainCount > 0")
-          span.score-dash  –
-          span.score-abstain {{ verdict.abstainCount }}
-      p.verdict-subtext(v-if="verdict")
-        | {{ verdict.won ? 'The court finds in favor of your client.' : 'The court rules against your client.' }}
-      .verdict-justices
-        .verdict-justice(
-          v-for="justice in game.bench"
-          :key="justice.id"
-          :class="(game.leanings[justice.id] ?? 0) > gameSettings.abstentionThreshold ? 'voted-for' : (game.leanings[justice.id] ?? 0) < -gameSettings.abstentionThreshold ? 'voted-against' : 'voted-abstain'"
-        )
-          span.vj-name {{ justice.name }}
-          span.vj-vote {{ voteLabel(game.leanings[justice.id] ?? 0) }}
-      .verdict-actions
-        button.btn.btn--start(@click="resetToCourtSelect") ⚖️ New Court
-        button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 View Court Record
+  include pug/screens/_verdict.pug
 
   include pug/modals/_court-record.pug
   include pug/modals/_justice-detail.pug

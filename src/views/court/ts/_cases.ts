@@ -193,6 +193,253 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
     },
   },
+  {
+    id: 11,
+    name: "Gideon v. Wainwright",
+    year: 1963,
+    caseType: "historical",
+    primaryQuestion: "Does the Constitution require states to provide a lawyer to defendants who cannot afford one?",
+    prosecution: {
+      name: "Clarence Earl Gideon",
+      argument:
+        "I am a poor man who had to defend himself in court against a professional prosecutor. The 6th Amendment guarantee of 'counsel' is a cruel joke if it only applies to people with money.",
+      favoredBy: "Democrat",
+    },
+    defendant: {
+      name: "Louie L. Wainwright",
+      argument:
+        "States should decide how to run their own courts. Forcing us to pay for every defendant's lawyer is an unfunded federal mandate that will bankrupt the state justice systems.",
+      favoredBy: "Republican",
+    },
+  },
+  {
+    id: 12,
+    name: "New York Times Co. v. United States",
+    year: 1971,
+    caseType: "historical",
+    primaryQuestion: "Can the government stop a newspaper from publishing classified information about the Vietnam War?",
+    prosecution: {
+      name: "New York Times",
+      argument:
+        "The First Amendment prohibits 'prior restraint.' The public has a right to know how they were misled about the war. Democracy dies if the government can censor the press in the name of 'security.'",
+      favoredBy: "Democrat",
+    },
+    defendant: {
+      name: "United States (Nixon Administration)",
+      argument:
+        "The publication of the Pentagon Papers threatens national security and puts American lives at risk. The Executive Branch must have the power to protect secrets during an active conflict.",
+      favoredBy: "Republican",
+    },
+  },
+  {
+    id: 13,
+    name: "Lochner v. New York",
+    year: 1905,
+    caseType: "historical",
+    primaryQuestion: "Can a state limit the number of hours a bakery employee is allowed to work?",
+    prosecution: {
+      name: "Joseph Lochner",
+      argument:
+        "The 14th Amendment protects my 'liberty of contract.' If a man wants to work 100 hours and I want to pay him for 100 hours, the government has no right to step into our private business and stop us.",
+      favoredBy: "Republican",
+    },
+    defendant: {
+      name: "State of New York",
+      argument:
+        "The state has 'police power' to protect the health and safety of its citizens. Working long hours in a hot, dusty bakery is dangerous. We aren't restricting liberty; we are preventing exploitation.",
+      favoredBy: "Democrat",
+    },
+  },
+  {
+    id: 14,
+    name: "Loving v. Virginia",
+    year: 1967,
+    caseType: "historical",
+    primaryQuestion: "Can a state ban marriage between people of different races?",
+    prosecution: {
+      name: "Mildred and Richard Loving",
+      argument:
+        "Marriage is a basic civil right. The 14th Amendment's Equal Protection Clause means the state cannot use race as a reason to tell two people they cannot love or marry each other.",
+      favoredBy: "Democrat",
+    },
+    defendant: {
+      name: "Commonwealth of Virginia",
+      argument:
+        "Interracial marriage bans have existed for centuries and apply to both races equally, so there is no discrimination. This is about preserving traditional social order and state sovereignty.",
+      favoredBy: "Republican",
+    },
+  },
+  {
+    id: 15,
+    name: "Buck v. Bell",
+    year: 1927,
+    caseType: "historical",
+    primaryQuestion: "Can the state forcibly sterilize people it deems 'mentally deficient'?",
+    prosecution: {
+      name: "Carrie Buck",
+      argument:
+        "The government has no right to mutilate my body based on a pseudo-scientific theory of eugenics. My right to bodily integrity and to have a family is fundamental and protected.",
+      favoredBy: "Democrat",
+    },
+    defendant: {
+      name: "John Hendren Bell",
+      argument:
+        "Public welfare outweighs individual rights. By preventing the 'unfit' from reproducing, we prevent the state from being swamped with incompetence. Three generations of imbeciles are enough.",
+      favoredBy: "Republican",
+    },
+  },
+  {
+    id: 16,
+    name: "Plessy v. Ferguson",
+    year: 1896,
+    caseType: "historical",
+    primaryQuestion: "Is state-mandated racial segregation on trains constitutional?",
+    prosecution: {
+      name: "Homer Plessy",
+      argument:
+        "The 14th Amendment guarantees equal protection. Forcing me into a different train car based on my race marks Black people with a badge of inferiority. Separate is a violation of my dignity.",
+      favoredBy: "Democrat",
+    },
+    defendant: {
+      name: "John Ferguson (State of Louisiana)",
+      argument:
+        "As long as the facilities provided are equal in quality, segregation is a reasonable exercise of state power to keep the peace. Laws cannot change social prejudices; they can only reflect them.",
+      favoredBy: "Republican",
+    },
+  },
+  {
+    id: 17,
+    name: "Gibbons v. Ogden",
+    year: 1824,
+    caseType: "historical",
+    primaryQuestion: "Does the federal government have the power to regulate commerce between states?",
+    prosecution: {
+      name: "Thomas Gibbons",
+      argument:
+        "The Constitution gives Congress the power to regulate commerce. A state-granted monopoly on steamboats is a barrier to trade and a violation of national supremacy. The river belongs to everyone.",
+      favoredBy: "Federalist",
+    },
+    defendant: {
+      name: "Aaron Ogden",
+      argument:
+        "States have the sovereign right to grant business licenses within their own borders. The federal government shouldn't interfere with local business and state-granted property rights.",
+      favoredBy: "Democratic-Republican",
+    },
+  },
+  {
+    id: 18,
+    name: "McCulloch v. Maryland",
+    year: 1819,
+    caseType: "historical",
+    primaryQuestion: "Can a state tax a federal institution, and does the government have the power to create a national bank?",
+    prosecution: {
+      name: "James W. McCulloch",
+      argument:
+        "The 'Necessary and Proper' clause means the government can do what it needs to function. The power to tax is the power to destroy, and a state cannot destroy a national tool.",
+      favoredBy: "Federalist",
+    },
+    defendant: {
+      name: "State of Maryland",
+      argument:
+        "The Constitution doesn't say the government can build a bank. If they do it anyway, it's operating on our soil and we have every right to tax it like any other business.",
+      favoredBy: "Democratic-Republican",
+    },
+  },
+  {
+    id: 19,
+    name: "Texas v. Johnson",
+    year: 1989,
+    caseType: "historical",
+    primaryQuestion: "Is burning the American flag protected as 'symbolic speech'?",
+    prosecution: {
+      name: "Gregory Lee Johnson",
+      argument:
+        "I burned a flag to protest the government. It’s an expressive act. The First Amendment doesn't just protect speech people like; it protects speech that is intentionally offensive and provocative.",
+      favoredBy: "Democrat",
+    },
+    defendant: {
+      name: "State of Texas",
+      argument:
+        "The flag is a sacred national symbol. Burning it is a breach of the peace and an act of desecration that goes beyond speech. We have a duty to protect the symbols of our unity.",
+      favoredBy: "Republican",
+    },
+  },
+  {
+    id: 20,
+    name: "West Virginia State Board of Education v. Barnette",
+    year: 1943,
+    caseType: "historical",
+    primaryQuestion: "Can a public school force students to salute the flag and say the Pledge of Allegiance?",
+    prosecution: {
+      name: "Walter Barnette",
+      argument:
+        "Forcing my children to salute a symbol violates our religious beliefs. The government cannot compel a person to say things they do not believe. Patriotism shouldn't be mandatory.",
+      favoredBy: "Democrat",
+    },
+    defendant: {
+      name: "WV Board of Education",
+      argument:
+        "The pledge promotes national unity and security during a time of war. The school has the right to instill civic values and loyalty in its students through shared rituals.",
+      favoredBy: "Republican",
+    },
+  },
+  {
+    id: 21,
+    name: "Masterpiece Cakeshop v. Colorado Civil Rights Commission",
+    year: 2018,
+    caseType: "historical",
+    primaryQuestion: "Does a state's anti-discrimination law violate a business owner's First Amendment right to religious freedom?",
+    prosecution: {
+      name: "Jack Phillips",
+      argument:
+        "As an artist, being forced to use my creative talents to celebrate a ceremony that violates my religious faith is compelled speech. The state commission's hostility toward my beliefs proves they are not being neutral.",
+      favoredBy: "Republican",
+    },
+    defendant: {
+      name: "Colorado Civil Rights Commission",
+      argument:
+        "Public businesses cannot pick and choose customers based on sexual orientation. If you open your doors to the public, you must serve everyone equally regardless of your personal religious objections.",
+      favoredBy: "Democrat",
+    },
+  },
+  {
+    id: 22,
+    name: "Abood v. Detroit Board of Education",
+    year: 1977,
+    caseType: "historical",
+    primaryQuestion: "Can public sector employees be required to pay union fees to cover the costs of collective bargaining?",
+    prosecution: {
+      name: "Louis Abood",
+      argument:
+        "I shouldn't be forced to pay money to a union I didn't join. It violates my First Amendment rights to be forced to financially support a private organization's political or social agenda through mandatory fees.",
+      favoredBy: "Republican",
+    },
+    defendant: {
+      name: "Detroit Board of Education",
+      argument:
+        "Non-members still benefit from the union's contract negotiations. These 'agency fees' prevent 'free riders' and ensure labor peace by making sure everyone pays their fair share for the representation they receive.",
+      favoredBy: "Democrat",
+    },
+  },
+  {
+    id: 23,
+    name: "Janus v. AFSCME",
+    year: 2018,
+    caseType: "historical",
+    primaryQuestion: "Do mandatory union fees for non-member public employees violate the First Amendment?",
+    prosecution: {
+      name: "Mark Janus",
+      argument:
+        "Everything a public sector union does is political because it is negotiating with the government. Forcing me to pay any fees at all is compelled speech and violates my right to choose what I support. We should overturn the Abood precedent.",
+      favoredBy: "Republican",
+    },
+    defendant: {
+      name: "AFSCME Council 31",
+      argument:
+        "We have relied on the ability to collect these fees for 40 years. Stripping unions of this funding is a direct attack on the financial stability of labor organizations and the collective bargaining rights of all workers.",
+      favoredBy: "Democrat",
+    },
+  },
 ];
 
 // ────────────────────────────────────────────────────────────
@@ -201,9 +448,8 @@ export const casesHistorical: Case[] = [
 
 export const casesFictional: Case[] = [
   {
-    id: 11,
+    id: 101,
     name: "Can I Copyright My Own Face?",
-    year: undefined,
     caseType: "fictional",
     primaryQuestion: "Does a person own intellectual property rights to their own face?",
     prosecution: {
@@ -220,9 +466,8 @@ export const casesFictional: Case[] = [
     },
   },
   {
-    id: 12,
+    id: 102,
     name: "Should Guns Have the Right to Vote?",
-    year: undefined,
     caseType: "fictional",
     primaryQuestion: "Are firearms entitled to constitutional protections as political actors?",
     prosecution: {
@@ -239,9 +484,8 @@ export const casesFictional: Case[] = [
     },
   },
   {
-    id: 13,
+    id: 103,
     name: "Can The Supreme Court Give Itself a Raise?",
-    year: undefined,
     caseType: "fictional",
     primaryQuestion: "May the Supreme Court Justices vote to increase their own salaries mid-term?",
     prosecution: {
@@ -258,9 +502,8 @@ export const casesFictional: Case[] = [
     },
   },
   {
-    id: 14,
+    id: 104,
     name: "Is Eating a Cheeseburger in Court Contempt?",
-    year: undefined,
     caseType: "fictional",
     primaryQuestion: "Does consuming a cheeseburger during oral arguments constitute contempt of court?",
     prosecution: {
@@ -277,9 +520,8 @@ export const casesFictional: Case[] = [
     },
   },
   {
-    id: 15,
+    id: 105,
     name: "Do Dogs Deserve Public Defenders?",
-    year: undefined,
     caseType: "fictional",
     primaryQuestion: "Must states provide legal representation for dogs accused of biting offenses?",
     prosecution: {
@@ -296,9 +538,8 @@ export const casesFictional: Case[] = [
     },
   },
   {
-    id: 16,
+    id: 106,
     name: "Can the Government Tax the Concept of Fun?",
-    year: undefined,
     caseType: "fictional",
     primaryQuestion: "Does the federal government have the power to tax activities it deems excessively enjoyable?",
     prosecution: {
@@ -315,9 +556,8 @@ export const casesFictional: Case[] = [
     },
   },
   {
-    id: 17,
+    id: 107,
     name: "Should Billionaires Be a Protected Class?",
-    year: undefined,
     caseType: "fictional",
     primaryQuestion: "Are billionaires entitled to special constitutional protections as a vulnerable minority group?",
     prosecution: {
@@ -334,9 +574,8 @@ export const casesFictional: Case[] = [
     },
   },
   {
-    id: 18,
+    id: 108,
     name: "Can I Claim My Cat as a Dependent?",
-    year: undefined,
     caseType: "fictional",
     primaryQuestion: "Is a domestic cat a legal 'dependent' for federal income tax purposes?",
     prosecution: {
@@ -353,9 +592,8 @@ export const casesFictional: Case[] = [
     },
   },
   {
-    id: 19,
+    id: 109,
     name: "Is Silence a Form of Perjury?",
-    year: undefined,
     caseType: "fictional",
     primaryQuestion: "Can a witness be charged with perjury for refusing to answer a question?",
     prosecution: {
@@ -372,9 +610,8 @@ export const casesFictional: Case[] = [
     },
   },
   {
-    id: 20,
+    id: 110,
     name: "Is Vibing a Protected Activity?",
-    year: undefined,
     caseType: "fictional",
     primaryQuestion: "Does the First Amendment protect the act of 'vibing' as a form of expressive conduct?",
     prosecution: {
@@ -388,6 +625,196 @@ export const casesFictional: Case[] = [
       argument:
         "He was vibing in a restricted municipal zone at 2am. There was no music. There was no purpose. He was simply there, vibing, in a zone where vibing is expressly prohibited on the permit application.",
       favoredBy: "Republican",
+    },
+  },
+  {
+    id: 111,
+    name: "Can I Sue the Algorithm for My Life Choices?",
+    year: undefined,
+    caseType: "fictional",
+    primaryQuestion: "Can a social media platform be held liable for decisions made in response to its algorithmic recommendations?",
+    prosecution: {
+      name: "Darren Scrollcraft",
+      argument:
+        "The algorithm showed me rage content for 14 consecutive hours. It reshaped my worldview, cost me three relationships, and led directly to my purchase of a tactical flashlight I did not need. This was not a choice. This was a funnel.",
+      favoredBy: "Democrat",
+    },
+    defendant: {
+      name: "TikTok, LLC",
+      argument:
+        "You scrolled. Nobody held your phone. We did not force you to watch. We merely suggested. You continued. You scrolled again. You are a free adult with a functioning thumb. We are merely a service.",
+      favoredBy: "Republican",
+    },
+  },
+  {
+    id: 112,
+    name: "Is Blocking Someone Online a Restraining Order?",
+    year: undefined,
+    caseType: "fictional",
+    primaryQuestion: "Does blocking a person across multiple social media platforms constitute a legally enforceable restraining order?",
+    prosecution: {
+      name: "Gerald T. Unfollowed",
+      argument:
+        "She blocked me on seven platforms sequentially over three days. That is a pattern. That is a deliberate, coordinated campaign of legal avoidance. I want to subpoena her block list as evidence.",
+      favoredBy: "Republican",
+    },
+    defendant: {
+      name: "Tracy Blockworth",
+      argument:
+        "No. Absolutely not. I pressed a button. That button is called 'Block.' It is not a court order. It is a feature. I should not be in a courtroom right now. I went to law school and I am in this courtroom right now.",
+      favoredBy: "Democrat",
+    },
+  },
+  {
+    id: 113,
+    name: "Are Terms of Service Binding If Nobody Has Read Them?",
+    year: undefined,
+    caseType: "fictional",
+    primaryQuestion: "Can a company enforce a 47,000-word terms of service agreement that no reasonable person has ever fully read?",
+    prosecution: {
+      name: "PlatformGiant, Inc.",
+      argument:
+        "The user checked the box. They pressed 'I Agree.' The terms were available online. We own their data, their browsing habits, their location history, and their firstborn's metadata in perpetuity. It's all in section 47. Subsection C.",
+      favoredBy: "Republican",
+    },
+    defendant: {
+      name: "Dave Normalson",
+      argument:
+        "It was 47,000 words. It was updated twelve times. There was no negotiation. There was a pop-up and a button. There was no meeting of the minds. You cannot consent to something you cannot read in a human lifetime.",
+      favoredBy: "Democrat",
+    },
+  },
+  {
+    id: 114,
+    name: "Can the President Pardon the Concept of Guilt?",
+    year: undefined,
+    caseType: "fictional",
+    primaryQuestion: "Does the presidential pardon power extend to abstract legal concepts, including criminal culpability itself?",
+    prosecution: {
+      name: "The Executive Branch",
+      argument:
+        "The pardon power is broad and plenary. If you can pardon persons, you can pardon actions. If you can pardon actions, you can pardon states of mind. We are simply exploring Article II to its outer limits. This is very legal and very fine.",
+      favoredBy: "Republican",
+    },
+    defendant: {
+      name: "The Constitution Of The United States",
+      argument:
+        "You are describing a man attempting to pardon the philosophical concept of wrongdoing. The pardon power requires an individual. We have checked. 'Guilt' is not an individual. We are not going to do this.",
+      favoredBy: "Democrat",
+    },
+  },
+  {
+    id: 115,
+    name: "Is an Autonomous Drone Guilty of Trespassing?",
+    year: undefined,
+    caseType: "fictional",
+    primaryQuestion: "Can an AI-piloted autonomous drone be charged with criminal trespass independent of its owner?",
+    prosecution: {
+      name: "Gerald Hoverdislike",
+      argument:
+        "The drone entered my airspace 47 times. It photographed my pool. It hovered outside my bedroom window at dusk. I want a criminal conviction. I want the drone to do time.",
+      favoredBy: "Republican",
+    },
+    defendant: {
+      name: "SkyViews Autonomous Media, Inc.",
+      argument:
+        "The drone is a machine. It cannot be found guilty of a crime. It has no intent. The pilot lives in another jurisdiction. The instructions were lawfully issued. You are asking us to imprison a propeller.",
+      favoredBy: "Democrat",
+    },
+  },
+  {
+    id: 116,
+    name: "Is an AI-Generated Lawyer Practicing Without a License?",
+    year: undefined,
+    caseType: "fictional",
+    primaryQuestion: "Does using an AI system to draft, argue, and file legal documents constitute unauthorized practice of law?",
+    prosecution: {
+      name: "The State Bar Association",
+      argument:
+        "Law is a licensed profession. This AI passed no bar exam. It was not admitted to practice. It has no professional liability. It is practicing law and it has no soul, no malpractice insurance, and no ability to be disbarred.",
+      favoredBy: "Republican",
+    },
+    defendant: {
+      name: "The AI's Clients",
+      argument:
+        "It costs $800 an hour to speak to a licensed attorney for 30 minutes. The AI was correct 94% of the time, available at 3am, and never billed for 'reviewing documents.' Access to justice should not require a credit score.",
+      favoredBy: "Democrat",
+    },
+  },
+  {
+    id: 117,
+    name: "Can My Emotional Support Animal Testify in Court?",
+    year: undefined,
+    caseType: "fictional",
+    primaryQuestion: "Is a registered emotional support animal a competent fact witness in a civil proceeding where it was present at the alleged incident?",
+    prosecution: {
+      name: "Plaintiff's Counsel",
+      argument:
+        "Mr. Peanutbutter was present at the incident. He observed everything. He is alert, attentive, and motivated by kibble rather than perjury. He cannot lie. He literally cannot lie. He should testify.",
+      favoredBy: "Democrat",
+    },
+    defendant: {
+      name: "Opposing Counsel",
+      argument:
+        "He is a golden retriever. He cannot swear an oath. He does not understand the concept of an oath. He just knocked over my water glass. I object on twelve grounds, including six I invented this morning.",
+      favoredBy: "Republican",
+    },
+  },
+  {
+    id: 118,
+    name: "Is Deleting Your Browser History Obstruction of Justice?",
+    year: undefined,
+    caseType: "fictional",
+    primaryQuestion: "Does routinely clearing your browser history constitute obstruction of justice if you were later placed under investigation?",
+    prosecution: {
+      name: "Federal Prosecutor",
+      argument:
+        "The defendant cleared his browser history every night at 11:59 PM for four consecutive years, including the night in question. That is not hygiene. That is premeditated evidence destruction. That is consciousness of guilt.",
+      favoredBy: "Republican",
+    },
+    defendant: {
+      name: "Regular Person",
+      argument:
+        "Everyone does this. I do this. You probably do this. It is a normal human computing habit. We are not legally required to archive our embarrassing internet searches for federal investigators. This is incredible.",
+      favoredBy: "Democrat",
+    },
+  },
+  {
+    id: 119,
+    name: "Can Congress Declare a Meme Illegal?",
+    year: undefined,
+    caseType: "fictional",
+    primaryQuestion: "Does Congress have the constitutional authority to legislate against specific memes as a form of political disinformation?",
+    prosecution: {
+      name: "Congressional Disinformation Task Force",
+      argument:
+        "These images were used to spread deliberately false information about election dates and polling procedures. They caused measurable voter suppression. Congress has both the authority and the obligation to act.",
+      favoredBy: "Democrat",
+    },
+    defendant: {
+      name: "First Amendment Absolutist",
+      argument:
+        "It's a picture of a dog with text on it. You want to imprison Americans for making a picture of a dog with text on it. I have printed the First Amendment and I am physically holding it up right now.",
+      favoredBy: "Republican",
+    },
+  },
+  {
+    id: 120,
+    name: "Does the Second Amendment Cover Emotional Support Weapons?",
+    year: undefined,
+    caseType: "fictional",
+    primaryQuestion: "Is a firearm a constitutionally protected medical necessity if its owner claims it provides emotional support?",
+    prosecution: {
+      name: "Kyle Triggerman",
+      argument:
+        "My firearm provides measurable emotional support. I have submitted a therapist's note, my own note to myself, and a note from my gun. Without it, I cannot function. This is a medical necessity protected by the Second Amendment.",
+      favoredBy: "Republican",
+    },
+    defendant: {
+      name: "State of California",
+      argument:
+        "You have filed this claim four times. The previous three were denied. The gun does not love you back. Emotional support designations apply to animals, not to firearms. Please leave. We have other cases.",
+      favoredBy: "Democrat",
     },
   },
 ];

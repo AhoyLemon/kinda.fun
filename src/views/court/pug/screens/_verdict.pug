@@ -1,0 +1,41 @@
+//- ── VERDICT PHASE ──────────────────────────────────────────
+main.court-verdict(v-else-if="ui.phase === 'verdict'")
+  .verdict-header(:class="verdict && verdict.won ? 'verdict--won' : 'verdict--lost'")
+    h2.verdict-title(v-if="verdict")
+      | {{ verdict.won ? '🎉 Judgement In Your Favor!' : '⚖️ Judgement Against You' }}
+    .verdict-score(v-if="verdict") {{ verdictScoreDisplay }}
+    p.verdict-ruled-for(v-if="verdictRuledFor")
+      | The court ruled for 
+      strong  {{ verdictRuledFor }}
+    p.verdict-winning-argument(v-if="verdictWinningArgument") "{{ verdictWinningArgument }}"
+
+  
+
+  .verdict-vote-sections(v-if="verdict")
+    .verdict-vote-section(
+      v-for="section in verdictSections"
+      :key="section.type"
+      :class="`verdict-section--${section.type}`"
+    )
+      h3.verdict-section-label {{ section.label }}
+      .verdict-justices
+        .verdict-justice(
+          v-for="justice in section.justices"
+          :key="justice.id"
+          :class="{ 'vj--chief': justice.id === game.chiefJusticeId }"
+        )
+          .vj-chief-badge(v-if="justice.id === game.chiefJusticeId") ⚖ Chief Justice
+          .vj-name {{ justice.name }}
+          .vj-bar-track
+            .vj-bar(:style="verdictJusticeBarStyle(justice)")
+          .vj-chips(v-if="(justiceTargetings[justice.id] ?? []).length")
+            span.vj-chip(
+              v-for="(targeting, i) in justiceTargetings[justice.id]"
+              :key="i"
+              :class="`chip--${targeting.actor}`"
+              :title="`${targeting.actor === 'player' ? 'You' : 'Opponent'} played: ${targeting.tacticName}`"
+            ) {{ targeting.actor === 'player' ? '⚔️' : '⚖️' }}
+
+  .verdict-actions
+    button.btn.btn--start(@click="resetToCourtSelect") ⚖️ New Court
+    button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 View Court Record

@@ -9,6 +9,7 @@ export interface Justice {
   nominatedBy?: President;
   religion: Religion;
   ethnicity: Ethnicity;
+  courtName?: string;
   stats: {
     logic: number;
     charisma: number;
