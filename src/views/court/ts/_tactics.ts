@@ -176,4 +176,14 @@ export const tactics: Tactic[] = [
     effectType: "insult-chief",
     basePower: 4,
   },
+  {
+    id: 17,
+    name: "Ring Me Up The President",
+    description:
+      "Patch in a phone call from President Trump. Justices he appointed are strongly swayed. Other Republican appointees shift slightly. Democrats are unamused.",
+    flavorText: "The call was perfect. The best call. Everyone says so. You can check — actually, don't check.",
+    cardType: "attack",
+    effectType: "presidential-call",
+    basePower: 5,
+  },
 ];

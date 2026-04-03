@@ -47,9 +47,12 @@
           font-weight: 600;
         }
         .tt-change {
-          // font-size: 90%;
-          // // color: #f0e8d8;
           font-weight: 700;
+        }
+        .tt-side-effect {
+          font-size: 85%;
+          opacity: 0.75;
+          font-style: italic;
         }
       }
     }

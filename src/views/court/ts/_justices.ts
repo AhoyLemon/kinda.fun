@@ -13,9 +13,12 @@ import {
   PRES_OBAMA,
   PRES_TRUMP,
   PRES_BIDEN,
-  PRES_THUNDERTON,
-  PRES_FIREBOTTOM,
-  PRES_VON_DECREE,
+  PRES_SNOOP_DOGG,
+  PRES_VERMIN_SUPREME,
+  PRES_BJORK,
+  PRES_BILL_HICKS,
+  PRES_HUNTER_S_THOMPSON,
+  PRES_LIBERACE,
 } from "./_presidents";
 
 // ────────────────────────────────────────────────────────────
@@ -455,27 +458,6 @@ export const justiceHistorical: Justice[] = [
 
 export const justiceFictional: Justice[] = [
   {
-    id: 20,
-    name: "Lady Justice",
-    image: "",
-    description:
-      "The actual personification of Justice herself, somehow appointed to the Court. Frustratingly impartial. Her blindfold is real, and she's deeply annoyed that no one else has one. Has been waiting for this court to justify her presence since 1776.",
-    justiceType: "fictional",
-    gender: "F",
-    birthYear: 0,
-    religion: "Other",
-    ethnicity: "Other",
-    stats: {
-      logic: 10,
-      charisma: 10,
-      empathy: 10,
-      integrity: 10,
-      succeptibility: 0,
-      partyLoyalty: 0,
-    },
-    weaknesses: { flattery: 0, bribery: 0, blackmail: 0, threats: 0 },
-  },
-  {
     id: 21,
     name: "Judge Dredd",
     image: "",
@@ -484,7 +466,7 @@ export const justiceFictional: Justice[] = [
     justiceType: "fictional",
     gender: "M",
     birthYear: 2079,
-    nominatedBy: PRES_VON_DECREE,
+    nominatedBy: PRES_VERMIN_SUPREME,
     religion: "Protestant",
     ethnicity: "White",
     stats: {
@@ -496,50 +478,6 @@ export const justiceFictional: Justice[] = [
       partyLoyalty: 3,
     },
     weaknesses: { flattery: 1, bribery: 1, blackmail: 1, threats: 1 },
-  },
-  {
-    id: 22,
-    name: "The Honorable Vibes McGee",
-    image: "",
-    description:
-      "Decides all cases based entirely on vibes. Never reads the briefs. Once ruled in favor of a plaintiff because 'she just seemed more chill.' Legal scholars are baffled that her decisions hold up on appeal.",
-    justiceType: "fictional",
-    gender: "F",
-    birthYear: 1975,
-    nominatedBy: PRES_FIREBOTTOM,
-    religion: "Other",
-    ethnicity: "White",
-    stats: {
-      logic: 2,
-      charisma: 10,
-      empathy: 8,
-      integrity: 4,
-      succeptibility: 10,
-      partyLoyalty: 3,
-    },
-    weaknesses: { flattery: 10, bribery: 4, blackmail: 3, threats: 2 },
-  },
-  {
-    id: 27,
-    name: "Justice Ham Sandwich",
-    image: "",
-    description:
-      "Any DA can indict a ham sandwich. This one was indicted, convicted, and somehow ended up on the Supreme Court. Often hungry. Every opinion involves food in some capacity. Once ruled that the right to bear arms includes the right to bear condiments.",
-    justiceType: "fictional",
-    gender: "M",
-    birthYear: 2020,
-    nominatedBy: PRES_THUNDERTON,
-    religion: "Protestant",
-    ethnicity: "White",
-    stats: {
-      logic: 1,
-      charisma: 5,
-      empathy: 2,
-      integrity: 8,
-      succeptibility: 9,
-      partyLoyalty: 5,
-    },
-    weaknesses: { flattery: 6, bribery: 10, blackmail: 5, threats: 3 },
   },
   {
     id: 32,
@@ -572,7 +510,7 @@ export const justiceFictional: Justice[] = [
     justiceType: "fictional",
     gender: "M",
     birthYear: 1845,
-    nominatedBy: PRES_VON_DECREE,
+    nominatedBy: PRES_HUNTER_S_THOMPSON,
     religion: "Protestant",
     ethnicity: "White",
     stats: {
@@ -594,7 +532,7 @@ export const justiceFictional: Justice[] = [
     justiceType: "fictional",
     gender: "M",
     birthYear: 1958,
-    nominatedBy: PRES_FIREBOTTOM,
+    nominatedBy: PRES_SNOOP_DOGG,
     religion: "Other",
     ethnicity: "White",
     stats: {
@@ -628,6 +566,72 @@ export const justiceFictional: Justice[] = [
     },
     weaknesses: { flattery: 5, bribery: 3, blackmail: 10, threats: 6 },
   },
+  {
+    id: 36,
+    name: "Mentak The Mind Taker",
+    image: "",
+    description:
+      "Villain-turned-justice from the Harvey Birdman universe, where superheroes became attorneys and this is somehow what followed. Cannot stop reading the minds of opposing counsel, which is cheating. Has been issued fourteen contempt warnings and considers each one a badge of honor.",
+    justiceType: "fictional",
+    gender: "M",
+    birthYear: 1972,
+    nominatedBy: PRES_SNOOP_DOGG,
+    religion: "Other",
+    ethnicity: "Other",
+    stats: {
+      logic: 4,
+      charisma: 8,
+      empathy: 3,
+      integrity: 3,
+      succeptibility: 8,
+      partyLoyalty: 4,
+    },
+    weaknesses: { flattery: 8, bribery: 6, blackmail: 7, threats: 5 },
+  },
+  {
+    id: 37,
+    name: "Judge Doom",
+    image: "",
+    description:
+      "The villainous mastermind behind Toontown's destruction, now on the Supreme Court. Keeps a vat of Dip under the bench 'for procedural purposes.' His eyes spin when he's overruled, which is terrifying. Believed by some to be a Toon himself, which he vehemently denies in a very high-pitched voice.",
+    justiceType: "fictional",
+    gender: "M",
+    birthYear: 1947,
+    nominatedBy: PRES_LIBERACE,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 9,
+      charisma: 6,
+      empathy: 1,
+      integrity: 3,
+      succeptibility: 2,
+      partyLoyalty: 9,
+    },
+    weaknesses: { flattery: 3, bribery: 4, blackmail: 5, threats: 2 },
+  },
+  {
+    id: 38,
+    name: "A DVD Boxed Set of Law & Order: SVU",
+    image: "",
+    description:
+      "In the Supreme Court, the people are represented by two separate yet equally important groups: the discs, and the case summaries on the back of the box. These are their stories. Has issued opinions in 500+ episodes and will not be stopped. Asks every petitioner 'but did you do it?' Has never presided over a case involving sexually based offenses without a nine-minute cold open.",
+    justiceType: "fictional",
+    gender: "M",
+    birthYear: 1999,
+    nominatedBy: PRES_HUNTER_S_THOMPSON,
+    religion: "Other",
+    ethnicity: "Other",
+    stats: {
+      logic: 7,
+      charisma: 5,
+      empathy: 0,
+      integrity: 9,
+      succeptibility: 1,
+      partyLoyalty: 6,
+    },
+    weaknesses: { flattery: 2, bribery: 1, blackmail: 3, threats: 2 },
+  },
 ];
 
 // ────────────────────────────────────────────────────────────
@@ -635,28 +639,6 @@ export const justiceFictional: Justice[] = [
 // ────────────────────────────────────────────────────────────
 
 export const justiceCelebrity: Justice[] = [
-  {
-    id: 28,
-    name: "Elon Musk",
-    image: "",
-    description:
-      "Acquired the Supreme Court in a hostile takeover and now sits on it. Claims he's just 'optimizing the process.' Has renamed the bench 'X Court.' Will live-stream oral arguments. Fired three clerks for not 'shipping opinions fast enough.'",
-    justiceType: "celebrity",
-    gender: "M",
-    birthYear: 1971,
-    nominatedBy: PRES_THUNDERTON,
-    religion: "Other",
-    ethnicity: "White",
-    stats: {
-      logic: 7,
-      charisma: 7,
-      empathy: 1,
-      integrity: 2,
-      succeptibility: 6,
-      partyLoyalty: 8,
-    },
-    weaknesses: { flattery: 9, bribery: 3, blackmail: 7, threats: 2 },
-  },
   {
     id: 29,
     name: "Peter Thiel",
@@ -666,7 +648,7 @@ export const justiceCelebrity: Justice[] = [
     justiceType: "celebrity",
     gender: "M",
     birthYear: 1967,
-    nominatedBy: PRES_THUNDERTON,
+    nominatedBy: PRES_LIBERACE,
     religion: "Other",
     ethnicity: "White",
     stats: {
@@ -688,7 +670,7 @@ export const justiceCelebrity: Justice[] = [
     justiceType: "celebrity",
     gender: "F",
     birthYear: 1942,
-    nominatedBy: PRES_THUNDERTON,
+    nominatedBy: PRES_LIBERACE,
     religion: "Jewish",
     ethnicity: "Jewish",
     stats: {
@@ -710,7 +692,7 @@ export const justiceCelebrity: Justice[] = [
     justiceType: "celebrity",
     gender: "F",
     birthYear: 1986,
-    nominatedBy: PRES_FIREBOTTOM,
+    nominatedBy: PRES_BJORK,
     religion: "Protestant",
     ethnicity: "White",
     stats: {
@@ -722,6 +704,72 @@ export const justiceCelebrity: Justice[] = [
       partyLoyalty: 4,
     },
     weaknesses: { flattery: 9, bribery: 6, blackmail: 5, threats: 3 },
+  },
+  {
+    id: 39,
+    name: "Judge Reinhold",
+    image: "",
+    description:
+      "A celebrity whose name already contains the word 'Judge,' which apparently qualifies him. Known for Beverly Hills Cop and that thing at the airport. Brings genuine warmth to oral arguments and absolutely no legal training whatsoever. Has recused himself from nothing because why would he.",
+    justiceType: "celebrity",
+    gender: "M",
+    birthYear: 1957,
+    nominatedBy: PRES_LIBERACE,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 5,
+      charisma: 7,
+      empathy: 6,
+      integrity: 5,
+      succeptibility: 7,
+      partyLoyalty: 6,
+    },
+    weaknesses: { flattery: 8, bribery: 5, blackmail: 6, threats: 4 },
+  },
+  {
+    id: 40,
+    name: "Simon Cowell",
+    image: "",
+    description:
+      "TV's harshest talent show judge now rules on constitutional law. His oral argument feedback is devastating, precise, and poorly reasoned. Once told a petitioner their brief was 'a bit karaoke.' High-waisted jeans. Zero empathy. Somehow winning.",
+    justiceType: "celebrity",
+    gender: "M",
+    birthYear: 1959,
+    nominatedBy: PRES_LIBERACE,
+    religion: "Other",
+    ethnicity: "White",
+    stats: {
+      logic: 7,
+      charisma: 10,
+      empathy: 2,
+      integrity: 6,
+      succeptibility: 3,
+      partyLoyalty: 6,
+    },
+    weaknesses: { flattery: 4, bribery: 7, blackmail: 6, threats: 3 },
+  },
+  {
+    id: 41,
+    name: "Jerry Springer",
+    image: "",
+    description:
+      "Former mayor, former TV ringmaster, now somehow on the nation's highest court. Oral arguments have never been this chaotic or this watchable. Has twice asked attorneys to 'come out here and say that to the other guy's face.' Final Thought: maybe don't do that.",
+    justiceType: "celebrity",
+    gender: "M",
+    birthYear: 1944,
+    nominatedBy: PRES_BILL_HICKS,
+    religion: "Jewish",
+    ethnicity: "Jewish",
+    stats: {
+      logic: 5,
+      charisma: 10,
+      empathy: 7,
+      integrity: 3,
+      succeptibility: 8,
+      partyLoyalty: 7,
+    },
+    weaknesses: { flattery: 8, bribery: 7, blackmail: 6, threats: 4 },
   },
 ];
 

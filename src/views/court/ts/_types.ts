@@ -66,7 +66,8 @@ export type TacticEffectType =
   | "discard-all" // discard all shared docket cards and draw 5 fresh ones
   | "claim-two" // claim 2 docket cards for exclusive player use this turn
   | "make-chief" // change who the chief justice is
-  | "insult-chief"; // insult chief justice; opposite-party justices gain positive modifier
+  | "insult-chief" // insult chief justice; opposite-party justices gain positive modifier
+  | "presidential-call"; // patch in a presidential phone call; effect scales by partyLoyalty and nominating president
 
 export interface Tactic {
   id: number;

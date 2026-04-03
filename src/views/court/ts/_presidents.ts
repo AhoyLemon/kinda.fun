@@ -80,22 +80,40 @@ export const PRES_BIDEN: President = {
   image: "",
 };
 
-// Fictional presidents for the fictional justices
-export const PRES_THUNDERTON: President = {
-  id: 100,
-  name: "President Ronicus Thunderton",
-  party: "Republican",
-  image: "",
-};
-export const PRES_FIREBOTTOM: President = {
-  id: 101,
-  name: "President Cornelia Firebottom",
+// Celebrity presidents for the fictional/celebrity justices
+export const PRES_SNOOP_DOGG: President = {
+  id: 37,
+  name: "Snoop Dogg",
   party: "Democrat",
   image: "",
 };
-export const PRES_VON_DECREE: President = {
-  id: 102,
-  name: "Supreme Overlord Maximus Von Decree",
+export const PRES_VERMIN_SUPREME: President = {
+  id: 38,
+  name: "Vermin Supreme",
+  party: "Democrat",
+  image: "",
+};
+export const PRES_BJORK: President = {
+  id: 39,
+  name: "Björk",
+  party: "Democrat",
+  image: "",
+};
+export const PRES_BILL_HICKS: President = {
+  id: 40,
+  name: "Bill Hicks",
+  party: "Democrat",
+  image: "",
+};
+export const PRES_HUNTER_S_THOMPSON: President = {
+  id: 41,
+  name: "Hunter S. Thompson",
+  party: "Democrat",
+  image: "",
+};
+export const PRES_LIBERACE: President = {
+  id: 42,
+  name: "Liberace",
   party: "Republican",
   image: "",
 };
@@ -114,7 +132,10 @@ export const presidents: President[] = [
   PRES_OBAMA,
   PRES_TRUMP,
   PRES_BIDEN,
-  PRES_THUNDERTON,
-  PRES_FIREBOTTOM,
-  PRES_VON_DECREE,
+  PRES_SNOOP_DOGG,
+  PRES_VERMIN_SUPREME,
+  PRES_BJORK,
+  PRES_BILL_HICKS,
+  PRES_HUNTER_S_THOMPSON,
+  PRES_LIBERACE,
 ];

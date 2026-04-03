@@ -9,7 +9,7 @@
 
   // ── Debug constant ─────────────────────────────────────────
   // Set to 0 to keep toasts visible until manually dismissed (click to close).
-  const toastDuration = 400; // ms
+  const toastDuration: number = 4000; // ms (set to 0 to persist until clicked)
 
   const toast = useToast();
 
@@ -50,7 +50,7 @@
     claimingMode: false,
     claimedSelections: [] as number[],
     // Justice state
-    leanings: {} as Record<number, number>, // justice.id → -10..+10 from player's perspective
+    leanings: {} as Record<number, number>, // justice.id → -100..+100 from player's perspective
     susceptibilityMods: {} as Record<number, number>,
     playerShields: [] as number[], // justice ids player has shielded (opponent can't touch)
     opponentShields: [] as number[], // justice ids opponent has shielded (player can't touch)
@@ -104,8 +104,8 @@
     if (!game.currentCase || !game.playerSide) return 0;
     const playerParty = game.playerSide === "prosecution" ? game.currentCase.prosecution.favoredBy : game.currentCase.defendant.favoredBy;
     const justiceParty = justice.nominatedBy?.party;
-    if (partiesAligned(playerParty, justiceParty)) return Math.ceil(justice.stats.partyLoyalty / 4);
-    if (partiesOpposed(playerParty, justiceParty)) return -Math.ceil(justice.stats.partyLoyalty / 4);
+    if (partiesAligned(playerParty, justiceParty)) return Math.ceil(justice.stats.partyLoyalty * 2.5);
+    if (partiesOpposed(playerParty, justiceParty)) return -Math.ceil(justice.stats.partyLoyalty * 2.5);
     return 0;
   }
 
@@ -311,7 +311,7 @@
   // ─── Apply Tactic ────────────────────────────────────────────
 
   function applyTactic(tactic: Tactic, targetJustice: Justice | null, actor: TurnActor): void {
-    const results: { justiceName: string; change: number; newLeaning: number }[] = [];
+    const results: { justiceName: string; change: number; newLeaning: number; isKnockon?: boolean }[] = [];
     let reportTarget = targetJustice?.name ?? "All justices";
 
     if (tactic.effectType === "discard-all") {
@@ -335,21 +335,21 @@
         game.chiefJusticeId = targetJustice.id;
         game.chiefJusticeHardened = false; // new CJ is not resistance-hardened
 
-        // Previous CJ suffers (-2) from losing the title
+        // Previous CJ suffers (-20) from losing the title
         if (prevCJ) {
           const old = game.leanings[prevCJ.id] ?? 0;
-          const next = Math.max(-10, old - 2);
+          const next = Math.max(-100, old - 20);
           game.leanings[prevCJ.id] = next;
           results.push({ justiceName: prevCJ.name, change: next - old, newLeaning: next });
         }
 
-        // If parties differ, previous CJ's party allies also suffer (-2)
+        // If parties differ, previous CJ's party allies also suffer (-20)
         if (prevCJ && prevParty && prevParty !== newParty) {
           game.bench
             .filter((j) => j.id !== prevCJ.id && j.id !== targetJustice.id && j.nominatedBy?.party === prevParty)
             .forEach((j) => {
               const old = game.leanings[j.id] ?? 0;
-              const next = Math.max(-10, old - 2);
+              const next = Math.max(-100, old - 20);
               game.leanings[j.id] = next;
               results.push({ justiceName: j.name, change: next - old, newLeaning: next });
             });
@@ -367,22 +367,48 @@
 
         // Chief takes a hit (negative)
         const cjOld = game.leanings[cj.id] ?? 0;
-        const cjNext = Math.max(-10, Math.min(10, cjOld - tactic.basePower * dir));
+        const cjNext = Math.max(-100, Math.min(100, cjOld - tactic.basePower * 10 * dir));
         game.leanings[cj.id] = cjNext;
         results.push({ justiceName: cj.name, change: cjNext - cjOld, newLeaning: cjNext });
 
-        // Opposite-party justices gain +2 (they're delighted)
+        // Opposite-party justices gain +20 (they're delighted)
         game.bench
           .filter((j) => j.id !== cj.id && j.nominatedBy?.party !== cjParty)
           .forEach((j) => {
             const old = game.leanings[j.id] ?? 0;
-            const next = Math.max(-10, Math.min(10, old + 2 * dir));
+            const next = Math.max(-100, Math.min(100, old + 20 * dir));
             game.leanings[j.id] = next;
             results.push({ justiceName: j.name, change: next - old, newLeaning: next });
           });
 
         reportTarget = cj.name + " (Chief Justice)";
       }
+    } else if (tactic.effectType === "presidential-call") {
+      // Trump calls in. Effect scales per justice based on who nominated them.
+      removeFromDocket(tactic);
+      const dir = actor === "opponent" ? -1 : 1;
+      game.bench.forEach((j) => {
+        const nomParty = j.nominatedBy?.party;
+        const nominatedByTrump = j.nominatedBy?.name === "Donald Trump";
+        let delta = 0;
+        if (nominatedByTrump) {
+          // Strong sway — Trump appointees are delighted
+          delta = Math.round(tactic.basePower * j.stats.partyLoyalty);
+        } else if (nomParty === "Republican") {
+          // Same party, not a Trump pick — moderate bump
+          delta = Math.round(tactic.basePower * j.stats.partyLoyalty * 0.4);
+        } else {
+          // Opposing party — slight annoyance
+          delta = -Math.round(tactic.basePower * j.stats.partyLoyalty * 0.2);
+        }
+        if (delta !== 0) {
+          const old = game.leanings[j.id] ?? 0;
+          const next = Math.max(-100, Math.min(100, old + delta * dir));
+          game.leanings[j.id] = next;
+          results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+        }
+      });
+      reportTarget = "All justices (Presidential call)";
     } else {
       // Remove card from its source first
       const fromClaimed = game.claimedCards.some((t) => t.id === tactic.id);
@@ -435,7 +461,9 @@
           // sway — opponent's attacks are negative from player's perspective
           const dir = actor === "opponent" ? -1 : 1;
           const old = game.leanings[justice.id] ?? 0;
-          const next = Math.max(-10, Math.min(10, old + power * dir));
+          // Scale to ±100 range; sway-all attacks are halved to encourage targeted play
+          const effectivePower = tactic.effectType === "sway-all" ? Math.round(power * 5) : power * 10;
+          const next = Math.max(-100, Math.min(100, old + effectivePower * dir));
           game.leanings[justice.id] = next;
           const change = next - old;
           results.push({ justiceName: justice.name, change, newLeaning: next });
@@ -449,9 +477,9 @@
                 .filter((j) => j.id !== justice.id && j.nominatedBy?.party === cjParty && !game.playerShields.includes(j.id))
                 .forEach((j) => {
                   const ko = game.leanings[j.id] ?? 0;
-                  const kn = Math.max(-10, Math.min(10, ko + knockon));
+                  const kn = Math.max(-100, Math.min(100, ko + knockon));
                   game.leanings[j.id] = kn;
-                  results.push({ justiceName: j.name + " (knockon)", change: kn - ko, newLeaning: kn });
+                  results.push({ justiceName: j.name, change: kn - ko, newLeaning: kn, isKnockon: true });
                 });
             }
           }
@@ -469,7 +497,10 @@
     });
 
     toast(
-      { component: TacticToast, props: { actor, tacticName: tactic.name, results: results.map((r) => ({ justiceName: r.justiceName, change: r.change })) } },
+      {
+        component: TacticToast,
+        props: { actor, tacticName: tactic.name, results: results.map((r) => ({ justiceName: r.justiceName, change: r.change, isKnockon: r.isKnockon })) },
+      },
       { position: POSITION.BOTTOM_RIGHT, timeout: toastDuration === 0 ? false : toastDuration, toastClassName: `court-toast court-toast--${actor}` },
     );
 
@@ -578,6 +609,14 @@
   }
 
   // ─── Computed ────────────────────────────────────────────────
+
+  const sortedBench = computed(() =>
+    [...game.bench].sort((a, b) => {
+      if (a.id === game.chiefJusticeId) return -1;
+      if (b.id === game.chiefJusticeId) return 1;
+      return 0;
+    }),
+  );
 
   const benchOverview = computed(() => {
     const bench = game.bench;

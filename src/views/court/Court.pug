@@ -79,7 +79,7 @@
 
       .bench-grid.overview
         .justice-card(
-          v-for="justice in game.bench"
+          v-for="justice in sortedBench"
           :key="justice.id"
           :class="[ \
             `type-${justice.justiceType}`, \
