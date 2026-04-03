@@ -479,18 +479,27 @@
 }
 
 // ─── Justice shield badge ────────────────────────────────────
-.justice-shield-badge {
+.justice-shield-badge,
+.justice-recused-badge {
   position: absolute;
-  top: 0.3rem;
-  right: 0.4rem;
+  top: 0;
+  right: 0;
   font-size: 0.75rem;
-  background: rgba(90, 180, 90, 0.2);
+  background-color: rgba(0, 0, 0, 0.05);
+  border-top-right-radius: 4px;
+  padding: 0.25em 0.75em;
+  cursor: help;
+}
+
+.justice-shield-badge {
   border-radius: 3px;
   padding: 0 0.3rem;
 
   &.opp-shield {
     background: rgba(180, 90, 90, 0.2);
   }
+}
+.justice-recused-badge {
 }
 
 .bench-grid--playing .justice-card {

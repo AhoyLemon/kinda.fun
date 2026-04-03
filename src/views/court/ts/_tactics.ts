@@ -6,13 +6,13 @@ export const tactics: Tactic[] = [
   {
     id: 1,
     name: "Appeal to Precedent",
-    description: "Sways all justices. High-logic justices respond strongly; low-logic justices shrug and eat a sandwich.",
+    description: "Sways all justices. High-logic justices are strongly persuaded. Low-logic justices are personally insulted that you brought up authority.",
     flavorText: "Citing cases no one in the room has read since law school, loudly.",
     cardType: "attack",
     effectType: "sway-all",
     basePower: 3,
     statBasis: "logic",
-    statRelation: "amplifies",
+    statRelation: "polarizes-high",
   },
   {
     id: 2,
@@ -58,13 +58,13 @@ export const tactics: Tactic[] = [
   {
     id: 6,
     name: "Constitutional Technicality",
-    description: "Sways all justices. Low-logic justices are fully bamboozled; high-logic justices are actively insulted.",
+    description: "Sways all justices. Low-logic justices are fully bamboozled. High-logic justices see right through it and are actively insulted you tried.",
     flavorText: "Actually, if you read Article XIV, subsection (b), paragraph... wait, come back.",
     cardType: "attack",
     effectType: "sway-all",
     basePower: 4,
     statBasis: "logic",
-    statRelation: "resists",
+    statRelation: "polarizes-low",
   },
   {
     id: 7,
@@ -130,6 +130,7 @@ export const tactics: Tactic[] = [
     cardType: "utility",
     effectType: "susceptibility",
     basePower: 4,
+    feedback: "All justices are more susceptible to arguments.",
   },
 
   // ─── DOCKET MANIPULATION ──────────────────────────────────────────
@@ -142,6 +143,7 @@ export const tactics: Tactic[] = [
     cardType: "utility",
     effectType: "discard-all",
     basePower: 0,
+    feedback: "The Docket has been cleared.",
   },
   {
     id: 14,
@@ -194,6 +196,80 @@ export const tactics: Tactic[] = [
     flavorText: "There are no conflicts of interest here. There are only interests.",
     cardType: "utility",
     effectType: "recuse",
+    basePower: 0,
+  },
+
+  // ─── ADVANCED ATTACKS ─────────────────────────────────────────
+
+  {
+    id: 19,
+    name: "Betray Your Friend",
+    description:
+      "Target a justice who is Strongly For you and destroy them personally. They will turn STRONGLY AGAINST you. However, any opposing-party justices who were already leaning against you have a good chance of being swayed your way.",
+    flavorText: "I've always believed the strongest legal strategy is the one where you stab your biggest fan in the face.",
+    cardType: "attack",
+    effectType: "betray-friend",
+    basePower: 0,
+  },
+
+  // ─── ADVANCED UTILITY ─────────────────────────────────────────
+
+  {
+    id: 20,
+    name: "Swap Clerks",
+    description:
+      "Select any two justices. Good chance their positions swap entirely. Statistically relevant chance the clerks rat you out and both justices get a negative opinion of you.",
+    flavorText: "Law clerks are overworked, underpaid, and know exactly where everything is. This cuts both ways.",
+    cardType: "utility",
+    effectType: "swap-clerks",
+    basePower: 0,
+  },
+  {
+    id: 21,
+    name: "Encourage A Nap",
+    description:
+      "Select a justice. They skip the next round entirely — no one can sway them. When they wake up, they're well rested and inexplicably fond of you.",
+    flavorText: "Oral arguments are dense, the room is warm, and this man ate a very large lunch. Sometimes you help.",
+    cardType: "utility",
+    effectType: "encourage-nap",
+    basePower: 0,
+  },
+  {
+    id: 22,
+    name: "Justice Cocktails",
+    description: "Select a justice. Their charisma and empathy go up. Their logic goes down. For the rest of the trial.",
+    flavorText: "The open bar at the Heritage Foundation gala was, in retrospect, a foreseeable variable.",
+    cardType: "utility",
+    effectType: "justice-cocktails",
+    basePower: 0,
+  },
+  {
+    id: 23,
+    name: "Hire A Private Investigator",
+    description:
+      "Select two justices. Both become aware that someone is watching them very closely. Their susceptibility to blackmail increases dramatically for the rest of the trial.",
+    flavorText: "The PI followed both of them. Everything he found was legal. Everything was also extremely useful.",
+    cardType: "utility",
+    effectType: "hire-pi",
+    basePower: 0,
+  },
+  {
+    id: 24,
+    name: "Celebrate St. Patrick's Day",
+    description: "All justices become Catholic for the rest of the trial. On its own, this does very little. Paired with 'Invite To Church,' it does a lot.",
+    flavorText: "The shamrocks were unprompted. The Guinness was not.",
+    cardType: "utility",
+    effectType: "saint-patricks",
+    basePower: 0,
+    feedback: "All justices are now Catholic.",
+  },
+  {
+    id: 25,
+    name: "Invite To Church",
+    description: "Select a justice. Their empathy goes up for the rest of the trial. Every justice who shares their religion gives you a favorable nod.",
+    flavorText: "Attendance was low, but opinions were formed.",
+    cardType: "utility",
+    effectType: "invite-church",
     basePower: 0,
   },
 ];

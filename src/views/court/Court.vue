@@ -13,7 +13,9 @@
   } from "./ts/_justices";
   import { cases as allCases, casesHistorical, casesFictional } from "./ts/_cases";
   import { tactics as allTactics } from "./ts/_tactics";
-  import type { Justice, Case, Tactic, Party } from "./ts/_types";
+  import type { Justice, Case, Tactic, CourtGameState } from "./ts/_types";
+  import { resolveEffect, partiesAligned, partiesOpposed } from "./ts/_tacticEffects";
+  import type { EffectOutcome } from "./ts/_tacticEffects";
 
   import { gameSettings, uiSettings } from "./ts/_settings";
 
@@ -39,31 +41,39 @@
     previewPresetId: null as string | null, // preset selected in dropdown, awaiting preview confirmation
   });
 
-  const game = reactive({
-    bench: [] as Justice[],
-    currentCase: null as Case | null,
-    playerSide: null as Side | null,
-    chiefJusticeId: null as number | null, // id of the current chief justice
-    chiefJusticeHardened: false, // true = harder to sway (randomly selected CJ)
+  const game = reactive<CourtGameState>({
+    bench: [],
+    currentCase: null,
+    playerSide: null,
+    chiefJusticeId: null,
+    chiefJusticeHardened: false,
     // Card pools
-    deck: [] as Tactic[],
-    discardPile: [] as Tactic[],
-    docket: [] as Tactic[], // shared 5-card community pool (renamed from "hand")
-    claimedCards: [] as Tactic[], // cards claimed exclusively by player
+    deck: [],
+    discardPile: [],
+    docket: [],
+    claimedCards: [],
     // Turn state
-    currentTurn: "player" as TurnActor,
+    currentTurn: "player",
     round: 1,
     totalRounds: gameSettings.numberOfRounds,
     // Targeting
-    selectedTacticId: null as number | null,
+    selectedTacticId: null,
     claimingMode: false,
-    claimedSelections: [] as number[],
+    claimedSelections: [],
     // Justice state
-    leanings: {} as Record<number, number>, // justice.id → -100..+100 from player's perspective
-    susceptibilityMods: {} as Record<number, number>,
-    playerShields: [] as number[], // justice ids player has shielded (opponent can't touch)
-    opponentShields: [] as number[], // justice ids opponent has shielded (player can't touch)
-    recusedJustices: [] as number[], // justice ids that have been recused (harder to sway)
+    leanings: {},
+    susceptibilityMods: {},
+    playerShields: [],
+    opponentShields: [],
+    recusedJustices: [],
+    // Trial-scoped state for new cards
+    nappingJustices: {},
+    statMods: {},
+    weaknessMods: {},
+    religionOverrides: {},
+    multiTargetMode: false,
+    multiTargetSelections: [],
+    multiTargetTacticId: null,
   });
 
   const courtReport = reactive({
@@ -87,6 +97,7 @@
   // tacticFeedback replaced by Vue-Toastification (see applyTactic)
 
   // ─── Helpers ─────────────────────────────────────────────────
+  // partiesAligned / partiesOpposed are imported from _tacticEffects.ts
 
   function shuffle<T>(array: T[]): T[] {
     const arr = [...array];
@@ -95,19 +106,6 @@
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
-  }
-
-  const leftParties: Party[] = ["Democrat", "Democratic-Republican"];
-  const rightParties: Party[] = ["Republican", "Federalist", "Whig"];
-
-  function partiesAligned(a: Party | undefined, b: Party | undefined): boolean {
-    if (!a || !b) return false;
-    return (leftParties.includes(a) && leftParties.includes(b)) || (rightParties.includes(a) && rightParties.includes(b));
-  }
-
-  function partiesOpposed(a: Party | undefined, b: Party | undefined): boolean {
-    if (!a || !b) return false;
-    return (leftParties.includes(a) && rightParties.includes(b)) || (rightParties.includes(a) && leftParties.includes(b));
   }
 
   function getInitialLeaning(justice: Justice): number {
@@ -230,6 +228,13 @@
     game.playerShields = [];
     game.opponentShields = [];
     game.recusedJustices = [];
+    game.nappingJustices = {};
+    game.statMods = {};
+    game.weaknessMods = {};
+    game.religionOverrides = {};
+    game.multiTargetMode = false;
+    game.multiTargetSelections = [];
+    game.multiTargetTacticId = null;
     courtReport.plays = [];
     ui.phase = "setup";
     ui.courtReportVisible = false;
@@ -274,6 +279,14 @@
       return;
     }
 
+    // Deselect multi-target mode if player clicks the active card again
+    if (game.multiTargetMode && game.multiTargetTacticId === tacticId) {
+      game.multiTargetMode = false;
+      game.multiTargetSelections = [];
+      game.multiTargetTacticId = null;
+      return;
+    }
+
     const tactic = [...game.docket, ...game.claimedCards].find((t) => t.id === tacticId);
     if (!tactic) return;
 
@@ -282,16 +295,31 @@
       tactic.effectType === "susceptibility" ||
       tactic.effectType === "discard-all" ||
       tactic.effectType === "insult-chief" ||
-      tactic.effectType === "presidential-call"
+      tactic.effectType === "presidential-call" ||
+      tactic.effectType === "saint-patricks"
     ) {
       applyTactic(tactic, null, "player");
     } else if (tactic.effectType === "claim-two") {
       if (game.claimedCards.length > 0) return; // already have dibs
-      removeFromDocket(tactic); // consume the claim card immediately, draw replacement
+      // Remove dibs card WITHOUT drawing a replacement yet; player picks from the 4 remaining
+      game.docket = game.docket.filter((t) => t.id !== tactic.id);
+      game.discardPile.push(tactic);
       game.claimingMode = true;
       game.claimedSelections = [];
+    } else if (tactic.effectType === "betray-friend") {
+      // Disabled unless at least one justice is Strongly For (leaning >= 60)
+      const hasStrongAlly = game.bench.some((j) => (game.leanings[j.id] ?? 0) >= 60);
+      if (!hasStrongAlly) return;
+      game.selectedTacticId = game.selectedTacticId === tacticId ? null : tacticId;
+    } else if (tactic.effectType === "swap-clerks" || tactic.effectType === "hire-pi") {
+      // Enter multi-target mode: player must click 2 justices
+      if (game.multiTargetMode) return; // already in multi-target mode for another card
+      game.selectedTacticId = null;
+      game.multiTargetTacticId = tactic.id;
+      game.multiTargetMode = true;
+      game.multiTargetSelections = [];
     } else {
-      // sway-one or shield: select then click a justice
+      // sway-one, shield, encourage-nap, justice-cocktails, invite-church, recuse, make-chief: select then click a justice
       game.selectedTacticId = game.selectedTacticId === tacticId ? null : tacticId;
     }
   }
@@ -300,6 +328,9 @@
     const claimed = game.docket.filter((t) => game.claimedSelections.includes(t.id));
     game.docket = game.docket.filter((t) => !game.claimedSelections.includes(t.id));
     game.claimedCards.push(...claimed);
+    // Draw 1 card now to bring unclaimed docket back to 3 (+ 2 claimed = 5 total accessible)
+    const drawn = drawCard();
+    if (drawn) game.docket.push(drawn);
     courtReport.plays.push({
       actor: "player",
       tacticName: "I Call Dibs",
@@ -317,7 +348,10 @@
     if (ui.phase !== "playing" || game.selectedTacticId === null || game.currentTurn !== "player") return;
     const tactic = [...game.docket, ...game.claimedCards].find((t) => t.id === game.selectedTacticId);
     if (!tactic) return;
+    // Shield must target an ally (leaning > 0)
     if (tactic.effectType === "shield" && (game.leanings[justice.id] ?? 0) <= 0) return;
+    // Betray-friend must target a STRONGLY FOR justice (leaning >= 60)
+    if (tactic.effectType === "betray-friend" && (game.leanings[justice.id] ?? 0) < 60) return;
     applyTactic(tactic, justice, "player");
     game.selectedTacticId = null;
   }
@@ -337,10 +371,34 @@
       return;
     }
     if (ui.phase !== "playing" || ui.opponentThinking) return;
+
+    // Multi-target mode (swap-clerks, hire-pi): collect 2 justice ids then fire
+    if (game.multiTargetMode && game.currentTurn === "player") {
+      const idx = game.multiTargetSelections.indexOf(justice.id);
+      if (idx !== -1) {
+        game.multiTargetSelections.splice(idx, 1);
+      } else {
+        game.multiTargetSelections.push(justice.id);
+        if (game.multiTargetSelections.length === 2) {
+          const tactic = [...game.docket, ...game.claimedCards].find((t) => t.id === game.multiTargetTacticId);
+          if (tactic) applyTactic(tactic, null, "player");
+        }
+      }
+      return;
+    }
+
     if (game.selectedTacticId !== null && game.currentTurn === "player") {
       const tactic = [...game.docket, ...game.claimedCards].find((t) => t.id === game.selectedTacticId);
-      // If shield on enemy, or no tactic found — open detail instead
-      if (!tactic || (tactic.effectType === "shield" && (game.leanings[justice.id] ?? 0) <= 0)) {
+      // Invalid target conditions → open detail instead
+      if (!tactic) {
+        ui.detailJustice = justice;
+        return;
+      }
+      if (tactic.effectType === "shield" && (game.leanings[justice.id] ?? 0) <= 0) {
+        ui.detailJustice = justice;
+        return;
+      }
+      if (tactic.effectType === "betray-friend" && (game.leanings[justice.id] ?? 0) < 60) {
         ui.detailJustice = justice;
         return;
       }
@@ -351,220 +409,31 @@
   }
 
   // ─── Apply Tactic ────────────────────────────────────────────
+  // All effect logic lives in _tacticEffects.ts; this function is a thin dispatcher.
 
   function applyTactic(tactic: Tactic, targetJustice: Justice | null, actor: TurnActor): void {
-    const results: { justiceName: string; change: number; newLeaning: number; isKnockon?: boolean }[] = [];
-    let reportTarget = targetJustice?.name ?? "All justices";
-
-    if (tactic.effectType === "discard-all") {
-      // Discard all docket cards (including this one) and draw 5 fresh
-      game.discardPile.push(...game.docket);
-      game.docket = [];
-      for (let i = 0; i < 5; i++) {
-        const card = drawCard();
-        if (card) game.docket.push(card);
-      }
-      reportTarget = "All docket cards";
-    } else if (tactic.effectType === "make-chief") {
-      // Change the chief justice to targetJustice
-      removeFromDocket(tactic);
-      if (targetJustice) {
-        const prevCJId = game.chiefJusticeId;
-        const prevCJ = game.bench.find((j) => j.id === prevCJId);
-        const prevParty = prevCJ?.nominatedBy?.party;
-        const newParty = targetJustice.nominatedBy?.party;
-
-        game.chiefJusticeId = targetJustice.id;
-        game.chiefJusticeHardened = false; // new CJ is not resistance-hardened
-
-        // Previous CJ suffers (-20) from losing the title
-        if (prevCJ) {
-          const old = game.leanings[prevCJ.id] ?? 0;
-          const next = Math.max(-100, old - 20);
-          game.leanings[prevCJ.id] = next;
-          results.push({ justiceName: prevCJ.name, change: next - old, newLeaning: next });
-        }
-
-        // If parties differ, previous CJ's party allies also suffer (-20)
-        if (prevCJ && prevParty && prevParty !== newParty) {
-          game.bench
-            .filter((j) => j.id !== prevCJ.id && j.id !== targetJustice.id && j.nominatedBy?.party === prevParty)
-            .forEach((j) => {
-              const old = game.leanings[j.id] ?? 0;
-              const next = Math.max(-100, old - 20);
-              game.leanings[j.id] = next;
-              results.push({ justiceName: j.name, change: next - old, newLeaning: next });
-            });
-        }
-
-        reportTarget = `${targetJustice.name} (new Chief Justice)`;
-      }
-    } else if (tactic.effectType === "insult-chief") {
-      // Negative for the Chief Justice, positive for opposite-party justices
-      removeFromDocket(tactic);
-      const cj = game.bench.find((j) => j.id === game.chiefJusticeId);
-      if (cj) {
-        const cjParty = cj.nominatedBy?.party;
-        const dir = actor === "opponent" ? -1 : 1;
-
-        // Chief takes a hit (negative)
-        const cjOld = game.leanings[cj.id] ?? 0;
-        const cjNext = Math.max(-100, Math.min(100, cjOld - tactic.basePower * 10 * dir));
-        game.leanings[cj.id] = cjNext;
-        results.push({ justiceName: cj.name, change: cjNext - cjOld, newLeaning: cjNext });
-
-        // Opposite-party justices gain +20 (they're delighted)
-        game.bench
-          .filter((j) => j.id !== cj.id && j.nominatedBy?.party !== cjParty)
-          .forEach((j) => {
-            const old = game.leanings[j.id] ?? 0;
-            const next = Math.max(-100, Math.min(100, old + 20 * dir));
-            game.leanings[j.id] = next;
-            results.push({ justiceName: j.name, change: next - old, newLeaning: next });
-          });
-
-        reportTarget = cj.name + " (Chief Justice)";
-      }
-    } else if (tactic.effectType === "presidential-call") {
-      // A Zoom call with Trump — rambling, mostly incoherent, accidentally hangs up.
-      // Big positive for Trump nominees, tiny positive for other Republicans,
-      // big negative for Obama/Biden nominees, tiny negative for other Democrats.
-      removeFromDocket(tactic);
-      const dir = actor === "opponent" ? -1 : 1;
-      game.bench.forEach((j) => {
-        const nomParty = j.nominatedBy?.party;
-        const nominatedByTrump = j.nominatedBy?.name === "Donald Trump";
-        const nominatedByObamaOrBiden = j.nominatedBy?.name === "Barack Obama" || j.nominatedBy?.name === "Joe Biden";
-        let delta = 0;
-        if (nominatedByTrump) {
-          // Strong sway — Trump appointees are delighted
-          delta = Math.round(tactic.basePower * j.stats.partyLoyalty);
-        } else if (nomParty === "Republican") {
-          // Same party, not a Trump pick — slight bump
-          delta = Math.round(tactic.basePower * j.stats.partyLoyalty * 0.2);
-        } else if (nominatedByObamaOrBiden) {
-          // Visceral reaction — big negative
-          delta = -Math.round(tactic.basePower * j.stats.partyLoyalty);
-        } else {
-          // Other Democrats / no party — mild annoyance
-          delta = -Math.round(tactic.basePower * j.stats.partyLoyalty * 0.2);
-        }
-        if (delta !== 0) {
-          const old = game.leanings[j.id] ?? 0;
-          const next = Math.max(-100, Math.min(100, old + delta * dir));
-          game.leanings[j.id] = next;
-          results.push({ justiceName: j.name, change: next - old, newLeaning: next });
-        }
-      });
-      reportTarget = "All justices (Presidential call)";
-    } else if (tactic.effectType === "recuse") {
-      // Resets targeted justice to neutral; they become harder to sway going forward
-      removeFromDocket(tactic);
-      if (targetJustice) {
-        const old = game.leanings[targetJustice.id] ?? 0;
-        game.leanings[targetJustice.id] = 0;
-        if (!game.recusedJustices.includes(targetJustice.id)) {
-          game.recusedJustices.push(targetJustice.id);
-        }
-        results.push({ justiceName: targetJustice.name, change: -old, newLeaning: 0 });
-        reportTarget = targetJustice.name;
-      }
-    } else {
-      // Remove card from its source first
-      const fromClaimed = game.claimedCards.some((t) => t.id === tactic.id);
-      if (fromClaimed) {
-        game.claimedCards = game.claimedCards.filter((t) => t.id !== tactic.id);
-        const drawn = drawCard();
-        game.discardPile.push(tactic);
-        if (drawn) game.docket.push(drawn);
-      } else {
-        removeFromDocket(tactic);
-      }
-
-      // Determine targets; opposing shields block attacks
-      let targets = targetJustice ? [targetJustice] : game.bench;
-      if (actor === "opponent" && tactic.effectType !== "susceptibility") {
-        targets = targets.filter((j) => !game.playerShields.includes(j.id));
-      }
-      if (actor === "player" && tactic.effectType !== "susceptibility" && tactic.effectType !== "shield") {
-        targets = targets.filter((j) => !game.opponentShields.includes(j.id));
-      }
-
-      targets.forEach((justice) => {
-        let power = tactic.basePower;
-        if (tactic.weaknessBasis) {
-          power = Math.round((power * justice.weaknesses[tactic.weaknessBasis]) / 5);
-        }
-        if (tactic.statBasis) {
-          const sv = justice.stats[tactic.statBasis];
-          power = Math.round((power * (tactic.statRelation === "resists" ? 10 - sv : sv)) / 5);
-        }
-        const sucMod = game.susceptibilityMods[justice.id] ?? 0;
-        if (sucMod > 0 && tactic.effectType !== "susceptibility") {
-          power += Math.round((sucMod * justice.stats.succeptibility) / 10);
-          game.susceptibilityMods[justice.id] = 0;
-        }
-
-        // Chief justice resistance: sway power is halved when hardened
-        if (justice.id === game.chiefJusticeId && game.chiefJusticeHardened && tactic.effectType !== "susceptibility" && tactic.effectType !== "shield") {
-          power = Math.max(1, Math.ceil(power * 0.5));
-        }
-
-        // Recused justices are harder to sway going forward
-        if (game.recusedJustices.includes(justice.id) && tactic.effectType !== "susceptibility" && tactic.effectType !== "shield") {
-          power = Math.max(1, Math.ceil(power * 0.5));
-        }
-
-        if (tactic.effectType === "susceptibility") {
-          game.susceptibilityMods[justice.id] = (game.susceptibilityMods[justice.id] ?? 0) + tactic.basePower;
-          results.push({ justiceName: justice.name, change: 0, newLeaning: game.leanings[justice.id] ?? 0 });
-        } else if (tactic.effectType === "shield") {
-          if (actor === "player") game.playerShields.push(justice.id);
-          else game.opponentShields.push(justice.id);
-          results.push({ justiceName: justice.name, change: 0, newLeaning: game.leanings[justice.id] ?? 0 });
-        } else {
-          // sway — opponent's attacks are negative from player's perspective
-          const dir = actor === "opponent" ? -1 : 1;
-          const old = game.leanings[justice.id] ?? 0;
-          // Scale to ±100 range; sway-all attacks are halved to encourage targeted play
-          const effectivePower = tactic.effectType === "sway-all" ? Math.round(power * 5) : power * 10;
-          const next = Math.max(-100, Math.min(100, old + effectivePower * dir));
-          game.leanings[justice.id] = next;
-          const change = next - old;
-          results.push({ justiceName: justice.name, change, newLeaning: next });
-
-          // Chief justice knockon: sway-one on the CJ ripples to same-party allies at 50%
-          if (justice.id === game.chiefJusticeId && tactic.effectType === "sway-one" && change !== 0) {
-            const cjParty = justice.nominatedBy?.party;
-            const knockon = Math.round(change / 2);
-            if (knockon !== 0 && cjParty) {
-              game.bench
-                .filter((j) => j.id !== justice.id && j.nominatedBy?.party === cjParty && !game.playerShields.includes(j.id))
-                .forEach((j) => {
-                  const ko = game.leanings[j.id] ?? 0;
-                  const kn = Math.max(-100, Math.min(100, ko + knockon));
-                  game.leanings[j.id] = kn;
-                  results.push({ justiceName: j.name, change: kn - ko, newLeaning: kn, isKnockon: true });
-                });
-            }
-          }
-        }
-      });
-    }
+    const outcome: EffectOutcome = resolveEffect(game, tactic, targetJustice, actor, { drawCard, removeFromDocket });
 
     courtReport.plays.push({
       actor,
       tacticName: tactic.name,
       cardType: tactic.cardType,
-      targetName: reportTarget,
-      results: results.filter((r) => r.change !== 0),
+      targetName: outcome.reportTarget,
+      results: outcome.results.filter((r) => r.change !== 0),
       round: game.round,
     });
+
+    const feedback = outcome.overrideFeedback ?? tactic.feedback ?? null;
 
     toast(
       {
         component: TacticToast,
-        props: { actor, tacticName: tactic.name, results: results.map((r) => ({ justiceName: r.justiceName, change: r.change, isKnockon: r.isKnockon })) },
+        props: {
+          actor,
+          tacticName: tactic.name,
+          results: outcome.results.map((r) => ({ justiceName: r.justiceName, change: r.change, isKnockon: r.isKnockon })),
+          feedback,
+        },
       },
       {
         position: POSITION.BOTTOM_RIGHT,
@@ -583,7 +452,7 @@
   // ─── Turn Management ─────────────────────────────────────────
 
   function endPlayerTurn(): void {
-    game.opponentShields = []; // opponent's shields expire once player finishes their turn
+    // Shields are consumed on contact (in resolveEffect), not cleared wholesale here
     game.currentTurn = "opponent";
     ui.opponentThinking = true;
 
@@ -621,9 +490,47 @@
       tactic.effectType === "susceptibility" ||
       tactic.effectType === "discard-all" ||
       tactic.effectType === "insult-chief" ||
-      tactic.effectType === "presidential-call"
+      tactic.effectType === "presidential-call" ||
+      tactic.effectType === "saint-patricks"
     ) {
       applyTactic(tactic, null, "opponent");
+      return;
+    }
+
+    // New single-target utility cards: target the most favorable-to-player justice
+    if (tactic.effectType === "encourage-nap" || tactic.effectType === "justice-cocktails") {
+      const unblocked = game.bench.filter((j) => !(j.id in game.nappingJustices) && !game.playerShields.includes(j.id));
+      const target = unblocked.sort((a, b) => (game.leanings[b.id] ?? 0) - (game.leanings[a.id] ?? 0))[0];
+      if (!target) {
+        endOpponentTurn();
+        return;
+      }
+      applyTactic(tactic, target, "opponent");
+      return;
+    }
+
+    // Dual-target cards: opponent picks 2 random justices
+    if (tactic.effectType === "swap-clerks" || tactic.effectType === "hire-pi") {
+      const shuffled = shuffle([...game.bench]);
+      if (shuffled.length < 2) {
+        endOpponentTurn();
+        return;
+      }
+      game.multiTargetMode = true;
+      game.multiTargetTacticId = tactic.id;
+      game.multiTargetSelections = [shuffled[0].id, shuffled[1].id];
+      applyTactic(tactic, null, "opponent");
+      return;
+    }
+
+    // Cards with complex targeting that opponent skips (falls back to another card)
+    if (tactic.effectType === "betray-friend" || tactic.effectType === "invite-church") {
+      const fallback = available.filter((t) => !["betray-friend", "invite-church", "claim-two", "make-chief"].includes(t.effectType));
+      if (!fallback.length) {
+        endOpponentTurn();
+        return;
+      }
+      applyTactic(fallback[Math.floor(Math.random() * fallback.length)], null, "opponent");
       return;
     }
 
@@ -679,7 +586,16 @@
   }
 
   function endOpponentTurn(): void {
-    game.playerShields = []; // player's shields expire once opponent finishes their turn
+    // Wake up any justices whose nap ends this round and give them a well-rested bonus
+    for (const [idStr, napRound] of Object.entries(game.nappingJustices)) {
+      if (napRound <= game.round) {
+        const id = Number(idStr);
+        delete game.nappingJustices[id];
+        const old = game.leanings[id] ?? 0;
+        game.leanings[id] = Math.min(100, old + 15);
+      }
+    }
+    // Shields are consumed on contact (in resolveEffect), not cleared here
     ui.opponentThinking = false;
     game.currentTurn = "player";
     if (game.round >= gameSettings.numberOfRounds) {
@@ -806,12 +722,19 @@
         "sway-all": "🌊 All justices",
         susceptibility: "😴 All justices",
         shield: "🛡️ Ally only",
-        "discard-all": "🗑 Docket",
-        "claim-two": "🗑 Docket",
+        "discard-all": "🗑️ Docket",
+        "claim-two": "🗑️ Docket",
         "make-chief": "👑 Chief Justice",
         "insult-chief": "👑 Chief Justice",
-        "presidential-call": "� All justices",
+        "presidential-call": "📞 All justices",
         recuse: "🔕 Single target",
+        "betray-friend": "🗡️ Strongly For only",
+        "swap-clerks": "🔄 Two justices",
+        "encourage-nap": "💤 Single target",
+        "justice-cocktails": "🍸 Single target",
+        "hire-pi": "🔍 Two justices",
+        "saint-patricks": "☘️ All justices",
+        "invite-church": "⛪ Single target",
       }[effectType] ?? effectType
     );
   }

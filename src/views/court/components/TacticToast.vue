@@ -5,6 +5,7 @@
     actor: { type: String, required: true }, // 'player' | 'opponent'
     tacticName: { type: String, required: true },
     results: { type: Array, required: true }, // { justiceName, change }[]
+    feedback: { type: String, default: null }, // optional feedback for utility cards
   });
 </script>
 

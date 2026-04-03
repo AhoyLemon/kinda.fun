@@ -33,7 +33,7 @@ main.court-verdict(v-else-if="ui.phase === 'verdict'")
               v-for="(targeting, i) in justiceTargetings[justice.id]"
               :key="i"
               :class="`chip--${targeting.actor}`"
-              :title="`${targeting.actor === 'player' ? 'You' : 'Opponent'} played: ${targeting.tacticName}`"
+              v-tippy="`${targeting.actor === 'player' ? 'You' : 'Opponent'} played: ${targeting.tacticName}`"
             ) {{ targeting.actor === 'player' ? '⚔️' : '⚖️' }}
 
   .verdict-actions

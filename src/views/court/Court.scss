@@ -246,7 +246,7 @@ $sans-serif: "Poppins", sans-serif;
   padding: 0.6rem 1.2rem;
   border-radius: 5px;
   font-size: 0.9rem;
-  font-weight: $bold;
+  font-weight: 450;
   border: 2px solid transparent;
   cursor: pointer;
   transition: all 0.15s;
@@ -428,6 +428,7 @@ $sans-serif: "Poppins", sans-serif;
 
 @import "scss/components/_bench";
 @import "scss/components/justice-detail";
+@import "scss/components/tippy";
 
 @import "./scss/screens/playing";
 @import "./scss/screens/report";

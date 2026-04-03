@@ -208,6 +208,57 @@ New Justices:
 
 - Mentak The Mind Taker (fictional, from Harvey Birdman: Attorney at Law)
 - Judge Doom (fictional, from Who Framed Roger Rabbit)
+
+---
+
+## Case Pool Filtering by Court Mode
+
+Added `casePool: "historical" | "fictional" | "any"` to the `PresetBenchConfig` interface in `_justices.ts`. Realistic court modes (Current Court, Historical Court, historical presets) only draw from `casesHistorical`. Fantasy Court only draws from `casesFictional`. Chaos Mode and fictional presets can draw from either.
+
+Also added 10 new fictional cases (ids 111–120) to `_cases.ts` with a satirical modern-tech flavor: algorithm liability, blocking as restraining order, ToS enforceability, self-pardoning guilt, drone trespass, AI lawyer licensing, ESA courtroom testimony, browser history as obstruction, meme illegality, and emotional support weapons.
+
+- [x] Add `casePool` field to `PresetBenchConfig` and set appropriate values on all 4 presets
+- [x] Update `Court.vue` to import `casesHistorical` / `casesFictional` and filter the draw pool by `courtMode`
+- [x] Add 10 new fictional cases (ids 111–120)
+
+---
+
+## Tactic Card Overhaul + Refactor
+
+Addressed a backlog of tactic card fixes, added 7 new cards, and extracted effect logic into its own module.
+
+**Architecture change:** `applyTactic` (~240 lines) was removed from `Court.vue` and replaced with a 35-line dispatcher that calls `resolveEffect()` from the new `src/views/court/ts/_tacticEffects.ts` module. This keeps `Court.vue` manageable and isolates effect logic for testing.
+
+**Card fixes:**
+
+- "Appeal to Precedent" — changed to `polarizes-high`: strongly positive for high-logic justices, insulting for low-logic justices
+- "Constitutional Technicality" — changed to `polarizes-low`: opposite polarity of the above
+- "Be Extremely Boring" — added `feedback: "All justices are more susceptible to arguments."`
+- "Purge the Record" — added `feedback: "The Docket has been cleared."`
+- "I Call Dibs" — fixed early-draw bug; now claims 2 of the 4 remaining cards, then draws 1 card afterward (correct: 3 unclaimed + 2 claimed = 5 total)
+- "Redirect the Witness" — shields now consume on contact (not cleared at end of turn); dynamic `overrideFeedback` in toast: "{JusticeName} is protected from your opponent's next argument."
+
+**New cards (ids 19–25):**
+
+| id  | Name                        | Effect                                                                    |
+| --- | --------------------------- | ------------------------------------------------------------------------- |
+| 19  | Betray Your Friend          | Sacrifice a strongly-for justice; opposition justices flip toward you     |
+| 20  | Swap Clerks                 | Swap two justices' leanings; 70% success, 30% tattling (both go negative) |
+| 21  | Encourage A Nap             | Freeze one justice for a round; they wake up with +15 bonus               |
+| 22  | Justice Cocktails           | +3 charisma, +3 empathy, -3 logic for remainder of trial                  |
+| 23  | Hire A Private Investigator | Increase blackmail weakness on two justices by +4                         |
+| 24  | Celebrate St. Patrick's Day | All justices become Catholic                                              |
+| 25  | Invite To Church            | +3 empathy on target; same-religion justices gain +15                     |
+
+**New `TacticToast` prop:** Added optional `feedback` prop to `TacticToast.vue`/`.pug`. Utility cards without per-justice results now display a `<p class="tt-feedback">` line instead of "No measurable effect."
+
+**New game state fields:** `nappingJustices`, `statMods`, `weaknessMods`, `religionOverrides`, `multiTargetMode`, `multiTargetSelections`, `multiTargetTacticId`.
+
+- [x] Update `_types.ts` — extended `TacticEffectType`, `statRelation` (added `polarizes-high` / `polarizes-low`), `Tactic.feedback`; added `CourtGameState`, `Side`, `TurnActor` types
+- [x] Update `_tactics.ts` — fix cards 1, 6, 12, 13; add cards 19–25
+- [x] Create `_tacticEffects.ts` — full effect resolution module (~280 lines)
+- [x] Refactor `Court.vue` — new imports, all new game state, updated `selectTactic` / `finalizeClaim` / `handleJusticeClick` / `applyTactic` / `endPlayerTurn` / `endOpponentTurn` / `playOpponentTurn` / `targetLabel`
+- [x] Update `TacticToast.vue` + `TacticToast.pug` — `feedback` prop support
 - Judge Reinhold (celebrity)
 - Simon Cowell (celebrity)
 - A DVD Boxed Set of Law & Order: SVU (fictional)

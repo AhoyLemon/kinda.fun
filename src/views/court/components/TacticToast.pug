@@ -12,4 +12,5 @@
       span.tt-justice {{ r.justiceName }}
       span.tt-change {{ r.change > 0 ? '+' : '' }}{{ r.change }}
       span.tt-side-effect(v-if="r.isKnockon") (side effect)
+  p.tt-feedback(v-else-if="feedback") {{ feedback }}
   p.tt-no-effect(v-else) No measurable effect

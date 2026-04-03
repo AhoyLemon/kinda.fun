@@ -51,7 +51,7 @@
           //- Traction summary (only when at least one play has happened)
           .round-traction(v-if="roundData.hasPlays")
             .traction-verdict(:class="`traction--${roundData.leansToward}`")
-              | {{ roundData.leansToward === 'player' ? '↗ Round Leaning Towards You' : roundData.leansToward === 'opponent' ? '↘ Round Leaning Towards Opposing Counsel' : '⚖ Round Even' }}
+              | {{ roundData.leansToward === 'player' ? 'Round Leaning Towards You' : roundData.leansToward === 'opponent' ? 'Round Leaning Towards Opposing Counsel' : 'Round Even' }}
             .traction-by-party(v-if="Object.keys(roundData.tractionByParty).length")
               span.traction-party(
                 v-for="(change, party) in roundData.tractionByParty"

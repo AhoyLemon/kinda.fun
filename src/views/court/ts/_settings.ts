@@ -13,5 +13,5 @@ export const uiSettings: UISettings = {
 
 export const gameSettings: GameSettings = {
   numberOfRounds: 5,
-  abstentionThreshold: 15,
+  abstentionThreshold: 10,
 };
