@@ -69,3 +69,121 @@ Let's also make it so you can click a button to see the "court report". Basicall
 - [x] Create a "court report" UI element that the player can click to see an overview of what was played, the effect of each card, and the total effects so far
 - [x] Make a new card drawn when a player begins their turn
 - [x] Make it so there's a discard pile which will be used if you can't draw a new card
+
+---
+
+This is really working well. I like how this gameplay is progressing.
+
+The opponent card play happens too fast. It's easy to miss that anything actually happened. We'll need UI for "Oppenent is deciding their tactic", maybe simulating them choosing a card? Let's just make the oppenent decide on their card for 4-6 seconds, with visual indictors therein.
+
+For a lot of our other toasts, we've been using Vue-Toastification. What we're doing right now for toasts WORKS, but it could probably be more uniform to other kinda.fun games. Please see src\entries\megachurch.js and src\views\megachurch\Megachurch.vue and src\views\megachurch\components\Toasts for reference, and then strongly consider changing the current toast setup to that.
+
+I want this commit to make this "feel" better on the cards, so whe cards are dealt, played and discarded, there should be a nice animation to that.
+
+I want to be able to click on any justice and get their details. So if I click on the judge, bring up a detail display that shows that justice's picture, president who appointed them, ethnicity and religion, bio, and... yeah, just general stats. I SHOULDN'T see sometthing like "empathy: 3" because that would show too much of "the machine", but if there's a good way to hint at their stats and weaknesses, that would be ideal. Similarly, in the game setup, we have those views of LOGIC/CHARISMA/LOYALTY from 1-10. I don't want that, instead hints at which tactics might be good on this justice.
+
+FWIW, I've added four images to public\img\court\justices and referenced those in src\views\court\ts_justices.ts - go ahead and use the ones that are available, with some generic backup if there's no image.
+
+- [x] Implement visual feedback when the opponent is "choosing" a card, make that last 4-6 seconds.
+- [x] Strongly consider Vue-Toastificatification similar to what we've implemented in the Megachurch Tycoon game.
+- [x] Add animation when cards are dealt
+- [x] Add animation when card is played
+- [x] Add animation when card is discarded
+- [x] Add animation when new card is drawn
+- [x] Add a detail view for a justice that can be accessed by clicking on a justice
+  - [x] When targeting a justice, clicking on that justice will give you the options of "View Justice" or "Target This Justice"
+- [x] Adjust the justice cards in the setup phase to not show numbers, but rather imply what this justice is about using their numbers.
+
+---
+
+I think a lot of these adjustments are going to be visual....
+
+In the setup phase, the `justice-card__hints` are white text on light background, so they are illegible. Also they're a bit overcomplicated. On those cards, let's only call out the TWO most unique traits, leaving the other traits for when you click for details
+
+    - Also, give those cards hover state
+    - Also I think I want that card to say what president nominated them, as their politics are important to the gameplay
+    - Also let's use the justice's image if it exists there too.
+
+- Also, the Toast looks REALLY weird, I'll try to attach a screenshot, but basically there's a overflow:hidden rounded rectangle with text inside. I think you need to redo that toast css from scratch.
+
+- I like the UI of the opponent choosing a card, but let's maybe change the UI a bit more when that happens. Like, darken everything but The Docket, and display "Opponent is choosing a tactic" in the center of the screen.
+
+- I DON'T like the look of the draw/discard animations,they don't look like cards being moved around. Do you think you could retry that animation.
+
+- One thing I meant to request in the judge details screen - If you're playing multiple rounds, and this judge has ruled on one of your cases before, you shoud see which way they went, ex
+
+Ketanji Brown Jackson
+...
+History
+Miranda vs Arizona | Voted FOR you | Ernesto Miranda
+Marbury v. Madison | Voted AGAINST you | James Madison
+
+First priority is the toasts, because those are BROKEN
+
+- [x] Fix toasts, probably redo toast css from scratch to make them look a bit more like toasts
+- [x] Make justice hints visible and max 2 most important details on the setup screen
+- [x] Give justice cards hover effects
+- [x] Justice card will say what president nominated them
+- [x] Justice card includes image (if it exists)
+- [x] Massage the UI for when the opponent is "choosing" a card
+- [x] Make the draw/discard/play animations look more like playing cards
+- [x] Add case history to justice detail screen
+
+---
+
+Okay, the toasts are STILL looking weird. I'll attach a screenshot in the next chat message. Can you please start over and make this look different, it's still got some major problems.
+
+The PRIMARY thing I want to do in this edit is to be able to have one "chief justice". I'll explain below...
+
+When starting a new game, you have three options:
+
+- Current Court: This game will use the 9 justices currently on the Supreme Court, marked as justiceType: "current". This will be the default option. If this option is chosen, John Roberts will be the chief justice.
+- Historical Court: This game will use 9 justices from EITHER the "current" or "historical" justice pools. The chief justice will be randomly selected as 1 of those 9.
+- Fantasy Court: This game will will use justices from either the "celebrity" or "fictional" justice pools. The chief justice will be randomly selected as 1 of those 9.
+- Chaos Court: This game will randomly select 9 of ANY justices, and make 1 chief justice. They can be any of the justice types.
+
+CHIEF JUSTICE EFFECTS:
+
+- The chief justice will always be harder to sway, BUT if they are individually swayed, there will be knockon effects on every other justice with the same party affiliation. For example, let's say you do a tactic that gives you +4 on the chief justice. That will also give you +2 on every other justice with the same party affiliation.
+- This only works if they're targeted indivudally. Tactics that affect all justices do not have this knockon effect.
+- Justices with a different party affiliation than the chief justice will be immune from this knockon effect.
+
+There should be a visual indicator on the chief justice's card to show that they are the chief justice.
+
+The bench should be labeled "The {LastName} Court", where {LastName} is the last name of the chief justice.
+
+This opens up two new fun tactics:
+
+- One card will allow you to make some other justice the chief justice. This means the chief justice tag will change to that person for the rest of the game. This means
+  - The target is now the chief justice, but WILL NOT be harder to sway like when a chief justice is randomly selected at the start of the game.
+  - The previous chief justice who lost that title will gain a negative opinion modifier for this case.
+  - For all other justices, if that justice DOES have the same party affiliation as the PREVIOUS chief justice, AND the new chief justice has a different party affiliation, they will also gain a negative opinion modifier for this case, as you've just detrhoned their leader.
+
+- Another card will allow you to insult the chief justice. This will give a negative for that person, BUT every other justice who has a DIFFERENT political affiliation than the chief justice will gain a positive opinion modifier, as they will be happy to see the chief justice get dunked on.
+
+- And actually, while we're at this part, I want to rethink the "fictional" justices. These are fun, and I like that they're extreme, but I don't want them to be completely made up characters. Instead, I want them to be based on either real celebrities OR popular fictional characters. So, some examples...
+
+CELEBRITIES:
+
+- Elon Musk
+- Peter Thiel
+- Judge Judy
+- Mary Kate and Ashley Olsen (as one justice)
+
+FICTIONAL CHARACTERS:
+
+- Leslie Knope
+- Al Swearengen
+- The Dude (from The Big Lebowski)
+- Othello
+
+So basically, we want to serve the same purpose, which is to create variety, but using names that will be more familiar to the audience. Side note: I know "Al Swearengen" is actually a real person, but I love Deadwood. I'm talking about the Ian McShane version of Al Swearengen from the TV show Deadwood. For this reason, we can absolutely keep Judge Dredd.
+
+SO:
+
+- [ ] Take another pass to the toasts. Probably start from scratch. If you need to give up and let me do it, I can do that, but I want you to try again first.
+- [ ] Implement Court Selector with the three options: Current Court, Historical Court, Chaos Court.
+- [ ] Implement Chief Justice mechanics, including the knockon effects and the visual indicator.
+- [ ] Add the new tactics related to the chief justice, including the ability to change the chief justice and to insult the chief justice.
+- [ ] Update the justice pool to include the new fictional justices based on celebrities and popular. That means also adding "celebrity" as a justiceType alongside "fictional"
+- [ ] Remove any celebrities which aren't actually based on a celebrity or an existing fictional character.

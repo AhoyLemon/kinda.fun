@@ -114,7 +114,7 @@ export const justiceCurrent: Justice[] = [
   {
     id: 5,
     name: "Elena Kagan",
-    image: "",
+    image: "kagan.webp",
     description:
       "Former Harvard Law Dean who thought she'd seen everything. Smart, sharp, and methodically writing dissents into the void. Will destroy your argument in a footnote without breaking a sweat.",
     justiceType: "current",
@@ -136,7 +136,7 @@ export const justiceCurrent: Justice[] = [
   {
     id: 6,
     name: "Neil Gorsuch",
-    image: "",
+    image: "gorsuch.webp",
     description:
       "Textualist who believes in reading the Constitution as written — as long as the writing leads somewhere conservative. Stole a Senate seat and made it look like philosophy.",
     justiceType: "current",
@@ -158,7 +158,7 @@ export const justiceCurrent: Justice[] = [
   {
     id: 7,
     name: "Brett Kavanaugh",
-    image: "",
+    image: "kavanaugh.webp",
     description:
       "Famously loves calendars. And beer. And being angry at the Senate. Not necessarily in that order. His confirmation hearing was the most dramatic TV event of 2018 that nobody wanted.",
     justiceType: "current",
@@ -180,7 +180,7 @@ export const justiceCurrent: Justice[] = [
   {
     id: 8,
     name: "Amy Coney Barrett",
-    image: "",
+    image: "amyconey.webp",
     description:
       "Confirmed in record time before an election. Claims faith doesn't influence her decisions. Her decisions respectfully disagree. Very calm about absolutely everything, which is somehow terrifying.",
     justiceType: "current",
@@ -202,7 +202,7 @@ export const justiceCurrent: Justice[] = [
   {
     id: 9,
     name: "Ketanji Brown Jackson",
-    image: "",
+    image: "ketanji.webp",
     description:
       "First Black woman on the Supreme Court. Knows what a biologist is. Sat through a Senate confirmation hearing where a senator asked her to define 'woman' and survived with her dignity intact.",
     justiceType: "current",
@@ -231,7 +231,7 @@ export const justiceHistorical: Justice[] = [
   {
     id: 10,
     name: "Thurgood Marshall",
-    image: "",
+    image: "thurgood_marshall.webp",
     description:
       "Argued Brown v. Board before he was even on the Court. Spent his tenure watching the world fail to live up to its promise. The most consequential lawyer in American history, which is saying something for a guy who also became a Justice.",
     justiceType: "historical",
@@ -275,7 +275,7 @@ export const justiceHistorical: Justice[] = [
   {
     id: 12,
     name: "William Rehnquist",
-    image: "",
+    image: "rehnquist.webp",
     description:
       "Chief Justice who added gold stripes to his robe to stand out. Conservative stalwart who presided over Clinton's impeachment trial with full ceremonial stripes. The robes were the most interesting thing about him.",
     justiceType: "historical",
@@ -297,7 +297,7 @@ export const justiceHistorical: Justice[] = [
   {
     id: 13,
     name: "Antonin Scalia",
-    image: "",
+    image: "scalia.webp",
     description:
       "Originalist extraordinaire who believed the Constitution meant exactly what men with slave plantations intended in 1789. Was best friends with RBG despite being her polar opposite. Had opinions. Loudly.",
     justiceType: "historical",
@@ -319,7 +319,7 @@ export const justiceHistorical: Justice[] = [
   {
     id: 14,
     name: "Sandra Day O'Connor",
-    image: "",
+    image: "sandra-day.webp",
     description:
       "First woman on the Supreme Court. The swing vote before swing votes were cool. A genuine moderate who confused everyone by sometimes ruling based on 'what seems fair.' Retired and immediately regretted it.",
     justiceType: "historical",
@@ -385,7 +385,7 @@ export const justiceHistorical: Justice[] = [
   {
     id: 17,
     name: "Hugo Black",
-    image: "",
+    image: "hugo_black.webp",
     description:
       "Former KKK member who became a staunch civil liberties absolutist. The most dramatic personal redemption arc in Supreme Court history. Believed the First Amendment literally meant ALL speech. ALL of it.",
     justiceType: "historical",
@@ -407,7 +407,7 @@ export const justiceHistorical: Justice[] = [
   {
     id: 18,
     name: "Oliver Wendell Holmes Jr.",
-    image: "",
+    image: "wendell.webp",
     description:
       "Civil War veteran turned legal legend. Served until age 90. Famous for 'great cases make bad law.' Said you can't shout fire in a crowded theater and spent the rest of history being misquoted about it.",
     justiceType: "historical",
@@ -426,35 +426,34 @@ export const justiceHistorical: Justice[] = [
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 3, threats: 2 },
   },
-];
-
-// ────────────────────────────────────────────────────────────
-// FICTIONAL JUSTICES
-// ────────────────────────────────────────────────────────────
-
-export const justiceFictional: Justice[] = [
   {
-    id: 19,
-    name: "Guns McShooty",
+    id: 25,
+    name: "Judge Roy Bean",
     image: "",
     description:
-      "Has never met a gun law he didn't want to shoot. Carries fourteen firearms to work. Believes the Second Amendment applies to all objects, including buildings. Named his gavel 'The Decider.'",
-    justiceType: "fictional",
+      "Self-proclaimed 'The Law West of the Pecos.' Held court in a saloon. Death by hanging available within 24 hours — guaranteed. His courtroom had a bar, and that's not a metaphor. Has cited 'my gut' in 47 opinions.",
+    justiceType: "historical",
     gender: "M",
-    birthYear: 1962,
-    nominatedBy: PRES_THUNDERTON,
+    birthYear: 1825,
     religion: "Protestant",
     ethnicity: "White",
     stats: {
-      logic: 2,
+      logic: 3,
       charisma: 8,
-      empathy: 1,
-      integrity: 3,
-      succeptibility: 7,
-      partyLoyalty: 10,
+      empathy: 3,
+      integrity: 4,
+      succeptibility: 5,
+      partyLoyalty: 5,
     },
-    weaknesses: { flattery: 8, bribery: 7, blackmail: 3, threats: 1 },
+    weaknesses: { flattery: 7, bribery: 8, blackmail: 6, threats: 2 },
   },
+];
+
+// ────────────────────────────────────────────────────────────
+// FICTIONAL JUSTICES (based on well-known fictional characters)
+// ────────────────────────────────────────────────────────────
+
+export const justiceFictional: Justice[] = [
   {
     id: 20,
     name: "Lady Justice",
@@ -521,92 +520,6 @@ export const justiceFictional: Justice[] = [
     weaknesses: { flattery: 10, bribery: 4, blackmail: 3, threats: 2 },
   },
   {
-    id: 23,
-    name: "Corporate Carl Pennington III",
-    image: "",
-    description:
-      "His robes are made of money. Literally. Has never sided against a Fortune 500 company. Once ruled that corporations are 'just really big people' and felt that settled it forever. Owns stock in the court reporter.",
-    justiceType: "fictional",
-    gender: "M",
-    birthYear: 1958,
-    nominatedBy: PRES_THUNDERTON,
-    religion: "Protestant",
-    ethnicity: "White",
-    stats: {
-      logic: 6,
-      charisma: 5,
-      empathy: 1,
-      integrity: 2,
-      succeptibility: 2,
-      partyLoyalty: 9,
-    },
-    weaknesses: { flattery: 5, bribery: 10, blackmail: 6, threats: 3 },
-  },
-  {
-    id: 24,
-    name: "Comrade Redistributia",
-    image: "",
-    description:
-      "The only Justice who brings her own food to share from a communal pot. Believes the Constitution intended full socialism if you squint at it correctly. Her dissents end with 'Power to the People.' Owns a dacha.",
-    justiceType: "fictional",
-    gender: "F",
-    birthYear: 1968,
-    nominatedBy: PRES_FIREBOTTOM,
-    religion: "Protestant",
-    ethnicity: "White",
-    stats: {
-      logic: 8,
-      charisma: 7,
-      empathy: 10,
-      integrity: 7,
-      succeptibility: 4,
-      partyLoyalty: 9,
-    },
-    weaknesses: { flattery: 3, bribery: 1, blackmail: 5, threats: 5 },
-  },
-  {
-    id: 25,
-    name: "Judge Roy Bean",
-    image: "",
-    description:
-      "Self-proclaimed 'The Law West of the Pecos.' Held court in a saloon. Death by hanging available within 24 hours — guaranteed. Somehow got appointed to the Supreme Court. His courtroom has a bar, and that's not a metaphor. Has cited 'my gut' in 47 opinions.",
-    justiceType: "fictional",
-    gender: "M",
-    birthYear: 1825,
-    religion: "Protestant",
-    ethnicity: "White",
-    stats: {
-      logic: 3,
-      charisma: 8,
-      empathy: 3,
-      integrity: 4,
-      succeptibility: 5,
-      partyLoyalty: 5,
-    },
-    weaknesses: { flattery: 7, bribery: 8, blackmail: 6, threats: 2 },
-  },
-  {
-    id: 26,
-    name: "The Great Oracle",
-    image: "",
-    description:
-      "An ancient oracle who has seen all possible futures and found most of them deeply disappointing. Writes rulings in riddles that take scholars decades to unpack. Was appointed by no president — she simply appeared one day in the chamber and everyone was too afraid to ask why.",
-    justiceType: "fictional",
-    gender: "F",
-    birthYear: 1,
-    religion: "Other",
-    ethnicity: "Other",
-    stats: {
-      logic: 10,
-      charisma: 8,
-      empathy: 7,
-      integrity: 10,
-      succeptibility: 0,
-      partyLoyalty: 0,
-    },
-    weaknesses: { flattery: 2, bribery: 0, blackmail: 0, threats: 0 },
-  },
-  {
     id: 27,
     name: "Justice Ham Sandwich",
     image: "",
@@ -628,6 +541,188 @@ export const justiceFictional: Justice[] = [
     },
     weaknesses: { flattery: 6, bribery: 10, blackmail: 5, threats: 3 },
   },
+  {
+    id: 32,
+    name: "Leslie Knope",
+    image: "",
+    description:
+      "Former Parks & Recreation Director who ascended to the Supreme Court through sheer organized enthusiasm and a binder for every occasion. Believes deeply in government, waffles, and the American people — in that order.",
+    justiceType: "fictional",
+    gender: "F",
+    birthYear: 1975,
+    nominatedBy: PRES_BIDEN,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 8,
+      charisma: 9,
+      empathy: 10,
+      integrity: 10,
+      succeptibility: 4,
+      partyLoyalty: 8,
+    },
+    weaknesses: { flattery: 9, bribery: 1, blackmail: 1, threats: 2 },
+  },
+  {
+    id: 33,
+    name: "Al Swearengen",
+    image: "",
+    description:
+      "Proprietor of the Gem Saloon, Deadwood, South Dakota. Appointed himself to the Court through a combination of intimidation, bribery, and a handshake deal nobody wants to explain. Has never lost a negotiation. Will not lose this one.",
+    justiceType: "fictional",
+    gender: "M",
+    birthYear: 1845,
+    nominatedBy: PRES_VON_DECREE,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 8,
+      charisma: 9,
+      empathy: 4,
+      integrity: 2,
+      succeptibility: 3,
+      partyLoyalty: 4,
+    },
+    weaknesses: { flattery: 4, bribery: 9, blackmail: 8, threats: 3 },
+  },
+  {
+    id: 34,
+    name: "The Dude",
+    image: "dude.webp",
+    description:
+      "The Dude abides. Applied to the Court without knowing he'd applied. Brings his own rug to hearings. Has recused himself from every case involving nihilism. Technically his bowling average is cited in three opinions.",
+    justiceType: "fictional",
+    gender: "M",
+    birthYear: 1958,
+    nominatedBy: PRES_FIREBOTTOM,
+    religion: "Other",
+    ethnicity: "White",
+    stats: {
+      logic: 3,
+      charisma: 7,
+      empathy: 7,
+      integrity: 6,
+      succeptibility: 9,
+      partyLoyalty: 2,
+    },
+    weaknesses: { flattery: 7, bribery: 5, blackmail: 4, threats: 1 },
+  },
+  {
+    id: 35,
+    name: "Othello",
+    image: "",
+    description:
+      "Moor of Venice, former military general, now somehow on the Supreme Court. A man of great passion and even greater susceptibility to insinuation. Extraordinarily just until someone whispers in his ear — and then things escalate quickly.",
+    justiceType: "fictional",
+    gender: "M",
+    birthYear: 1603,
+    religion: "Protestant",
+    ethnicity: "Black",
+    stats: {
+      logic: 6,
+      charisma: 8,
+      empathy: 8,
+      integrity: 7,
+      succeptibility: 9,
+      partyLoyalty: 5,
+    },
+    weaknesses: { flattery: 5, bribery: 3, blackmail: 10, threats: 6 },
+  },
 ];
 
-export const justices: Justice[] = [...justiceCurrent, ...justiceHistorical, ...justiceFictional];
+// ────────────────────────────────────────────────────────────
+// CELEBRITY JUSTICES (real celebrities imagined on the bench)
+// ────────────────────────────────────────────────────────────
+
+export const justiceCelebrity: Justice[] = [
+  {
+    id: 28,
+    name: "Elon Musk",
+    image: "",
+    description:
+      "Acquired the Supreme Court in a hostile takeover and now sits on it. Claims he's just 'optimizing the process.' Has renamed the bench 'X Court.' Will live-stream oral arguments. Fired three clerks for not 'shipping opinions fast enough.'",
+    justiceType: "celebrity",
+    gender: "M",
+    birthYear: 1971,
+    nominatedBy: PRES_THUNDERTON,
+    religion: "Other",
+    ethnicity: "White",
+    stats: {
+      logic: 7,
+      charisma: 7,
+      empathy: 1,
+      integrity: 2,
+      succeptibility: 6,
+      partyLoyalty: 8,
+    },
+    weaknesses: { flattery: 9, bribery: 3, blackmail: 7, threats: 2 },
+  },
+  {
+    id: 29,
+    name: "Peter Thiel",
+    image: "",
+    description:
+      "Libertarian billionaire who wants to disrupt tradition, due process, and also possibly mortality. Abstains from cases involving the deep state on principle. Has a separate underground chamber where he writes his concurrences. Believes competition is for losers.",
+    justiceType: "celebrity",
+    gender: "M",
+    birthYear: 1967,
+    nominatedBy: PRES_THUNDERTON,
+    religion: "Other",
+    ethnicity: "White",
+    stats: {
+      logic: 9,
+      charisma: 4,
+      empathy: 1,
+      integrity: 5,
+      succeptibility: 2,
+      partyLoyalty: 7,
+    },
+    weaknesses: { flattery: 4, bribery: 2, blackmail: 8, threats: 1 },
+  },
+  {
+    id: 30,
+    name: "Judge Judy",
+    image: "",
+    description:
+      "Byrd, I'm done listening. Has been tougher than the Supreme Court for thirty years and now she's making it official. Writes opinions in a tone that implies you are an idiot who wasted her time. Once dismissed a case and the parties' marriages simultaneously.",
+    justiceType: "celebrity",
+    gender: "F",
+    birthYear: 1942,
+    nominatedBy: PRES_THUNDERTON,
+    religion: "Jewish",
+    ethnicity: "Jewish",
+    stats: {
+      logic: 9,
+      charisma: 9,
+      empathy: 5,
+      integrity: 8,
+      succeptibility: 2,
+      partyLoyalty: 5,
+    },
+    weaknesses: { flattery: 3, bribery: 2, blackmail: 4, threats: 1 },
+  },
+  {
+    id: 31,
+    name: "Mary-Kate & Ashley Olsen",
+    image: "olsen-twins.webp",
+    description:
+      "Appointed jointly as one justice, which raises constitutional questions no one wants to answer. Vote in perfect synchrony — except when they don't, which creates a paradox. Have a combined net worth larger than the GDP of three nations. Their opinions are impeccably styled.",
+    justiceType: "celebrity",
+    gender: "F",
+    birthYear: 1986,
+    nominatedBy: PRES_FIREBOTTOM,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 6,
+      charisma: 10,
+      empathy: 6,
+      integrity: 5,
+      succeptibility: 7,
+      partyLoyalty: 4,
+    },
+    weaknesses: { flattery: 9, bribery: 6, blackmail: 5, threats: 3 },
+  },
+];
+
+export const justices: Justice[] = [...justiceCurrent, ...justiceHistorical, ...justiceFictional, ...justiceCelebrity];

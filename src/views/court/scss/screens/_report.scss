@@ -432,3 +432,67 @@
     color: rgba(255, 255, 255, 0.85);
   }
 }
+
+// ─── Justice case history ─────────────────────────────────────
+.jd-history {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.jd-history-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+}
+
+.jd-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.jd-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+
+  &.voted-for {
+    border-left: 3px solid #5aef7a;
+  }
+
+  &.voted-against {
+    border-left: 3px solid #ef5a5a;
+  }
+}
+
+.jdh-case {
+  color: rgba(255, 255, 255, 0.65);
+  flex: 1;
+  margin-right: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jdh-vote {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+
+  .voted-for & {
+    color: #5aef7a;
+  }
+
+  .voted-against & {
+    color: #ef5a5a;
+  }
+}

@@ -9,18 +9,49 @@
 </script>
 
 <style lang="scss">
-  // Global (unscoped) — targets the outer toast container via :has()
-  .Vue-Toastification__icon {
-    display: none;
-  }
-  .Vue-Toastification__toast:has(.tactic-toast.is-player) {
-    background-color: rgba(30, 20, 5, 0.97);
-    border-left: 3px solid #c9a84c;
-  }
-  .Vue-Toastification__toast:has(.tactic-toast.is-opponent) {
-    background-color: rgba(35, 15, 5, 0.97);
-    border-left: 3px solid #ef9f5a;
+  .Vue-Toastification__container {
+    .Vue-Toastification__icon {
+      display: none;
+    }
+    .court-toast--player {
+      background: #e5f0f3;
+      color: #131313;
+      .positive .tt-change {
+        color: #044707;
+      }
+      .negative .tt-change {
+        color: #5f0606;
+      }
+    }
+    .court-toast--opponent {
+      background: #1f1c1c;
+      color: #f0e8d8;
+      .positive .tt-change {
+        color: #88e48c;
+      }
+      .negative .tt-change {
+        color: #e96262;
+      }
+    }
+
+    .tactic-toast {
+      font-size: 12px;
+      .tt-header {
+        font-size: 125%;
+      }
+      .tt-result {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        .justice-name {
+          font-weight: 600;
+        }
+        .tt-change {
+          // font-size: 90%;
+          // // color: #f0e8d8;
+          font-weight: 700;
+        }
+      }
+    }
   }
 </style>
-
-<style lang="scss" src="./TacticToast.scss" scoped></style>

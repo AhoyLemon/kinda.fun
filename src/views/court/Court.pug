@@ -2,8 +2,30 @@
   header.court-header
     h1 ⚖️ {{ ui.title }}
 
+  //- ── COURT SELECTOR ─────────────────────────────────────────
+  main.court-select(v-if="ui.phase === 'courtSelect'")
+    h2.section-label Select Your Court
+    .court-mode-grid
+      .court-mode-card(@click="selectCourtMode('current')")
+        .cmc-icon 🏛
+        .cmc-title Current Court
+        .cmc-desc The 9 justices currently on the Supreme Court. John Roberts presides as Chief Justice.
+        .cmc-badge Default
+      .court-mode-card(@click="selectCourtMode('historical')")
+        .cmc-icon 📜
+        .cmc-title Historical Court
+        .cmc-desc 9 justices drawn from current and historical pools. A random justice is appointed Chief.
+      .court-mode-card(@click="selectCourtMode('fantasy')")
+        .cmc-icon 🎭
+        .cmc-title Fantasy Court
+        .cmc-desc A court of celebrities and fictional characters. Anything can happen. A random justice leads.
+      .court-mode-card(@click="selectCourtMode('chaos')")
+        .cmc-icon 🌪
+        .cmc-title Chaos Court
+        .cmc-desc 9 justices from any pool — real, historical, celebrity, or fictional. Pure mayhem.
+
   //- ── LOADING ────────────────────────────────────────────────
-  .court-loading(v-if="!game.currentCase")
+  .court-loading(v-else-if="!game.currentCase")
     p Convening the court…
 
   //- ── SETUP PHASE ────────────────────────────────────────────
@@ -50,22 +72,31 @@
 
     section.bench-section
       .bench-header
-        h2.section-label The Bench
-        button.btn.btn--redeal(@click="dealGame") 🎲 Draw New Court
+        h2.section-label {{ benchLabel }}
+        .bench-header-actions
+          button.btn.btn--redeal(@click="dealGame") 🎲 New Draw
+          button.btn.btn--switch(@click="resetToCourtSelect") ← Change Mode
 
-      .bench-grid
+      .bench-grid.overview
         .justice-card(
           v-for="justice in game.bench"
           :key="justice.id"
-          :class="`type-${justice.justiceType}`"
+          :class="[ \
+            `type-${justice.justiceType}`, \
+            { 'has-image': justiceImageUrl(justice), 'is-chief': justice.id === game.chiefJusticeId } \
+          ]"
           @click="handleJusticeClick(justice)"
         )
-          .justice-card__badge {{ justiceTypeLabel(justice.justiceType) }}
-          .justice-card__name {{ justice.name }}
-          .justice-card__desc {{ justice.description.slice(0, 90) }}…
+          .justice-chief-badge(v-if="justice.id === game.chiefJusticeId") ⚖ Chief
+          .justice-card__thumb(v-if="justiceImageUrl(justice)")
+            img.justice-card__img(:src="justiceImageUrl(justice)" :alt="justice.name")
+          .justice-bio
+            .justice-card__badge {{ justiceTypeLabel(justice.justiceType) }}
+            .justice-card__name {{ justice.name }}
+            .justice-card__president(v-if="justice.nominatedBy") Appt. by {{ justice.nominatedBy.name }}
           .justice-card__hints
-            span.hint-tag(v-for="hint in justiceHints(justice)" :key="hint") {{ hint }}
-          .justice-card__view-cta 🔍 Click to view profile
+            span.hint-tag(v-for="hint in justiceHints(justice, 2)" :key="hint") {{ hint }}
+          .justice-card__view-cta 🔍 View Profile
 
   //- ── PLAYING PHASE ──────────────────────────────────────────
   main.court-playing(v-else-if="ui.phase === 'playing'")
@@ -87,7 +118,7 @@
           | {{ benchOverview ? benchOverview.votingFor : 0 }}/9 justices
           span.tally-status  {{ benchOverview && benchOverview.votingFor >= 5 ? '✅ Winning' : '❌ Losing' }}
         button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 Report
-        button.btn.btn--redeal(@click="dealGame") 🗑 New Court
+        button.btn.btn--redeal(@click="resetToCourtSelect") 🗑 New Court
 
     //- Bench overview panel
     .bench-overview-bar(v-if="benchOverview")
@@ -112,35 +143,46 @@
         span.oc-label 🎯 Exploit
         span.oc-value.wk--flag {{ benchOverview.greatestWeakness }}
 
-    //- Bench grid: justice cards with vote meters
-    .bench-grid.bench-grid--playing(
+      .bench-grid.bench-grid--playing(
       :class="{ 'targeting-mode': game.selectedTacticId !== null }"
     )
-      .justice-card(
-        v-for="justice in game.bench"
-        :key="justice.id"
-        :class="[ \
-          `type-${justice.justiceType}`, \
-          { \
-            'is-ally': (game.leanings[justice.id] ?? 0) > 0, \
-            'is-enemy': (game.leanings[justice.id] ?? 0) < 0, \
-            'is-targetable': game.selectedTacticId !== null, \
-            'is-shielded': game.playerShields.includes(justice.id), \
-          } \
-        ]"
-        @click="handleJusticeClick(justice)"
-      )
-        .justice-shield-badge(v-if="game.playerShields.includes(justice.id)") 🛡️
-        .justice-shield-badge.opp-shield(v-else-if="game.opponentShields.includes(justice.id)") 🔒
-        .justice-card__badge {{ justiceTypeLabel(justice.justiceType) }}
-        .justice-card__name {{ justice.name }}
-        .justice-vote
-          .vote-track
-            .vote-midline
-            .vote-fill(:style="voteMeterStyle(justice)")
-          .vote-label(
-            :class="{ positive: (game.leanings[justice.id] ?? 0) > 0, negative: (game.leanings[justice.id] ?? 0) < 0 }"
-          ) {{ voteLabel(game.leanings[justice.id] ?? 0) }}
+        .justice-card.on-bench(
+          v-for="justice in game.bench"
+          :key="justice.id"
+          :class="[ \
+            `type-${justice.justiceType}`, \
+            { \
+              'has-image': justiceImageUrl(justice), \
+              'is-ally': (game.leanings[justice.id] ?? 0) > 0, \
+              'is-enemy': (game.leanings[justice.id] ?? 0) < 0, \
+              'is-targetable': game.selectedTacticId !== null, \
+              'is-shielded': game.playerShields.includes(justice.id), \
+              'is-chief': justice.id === game.chiefJusticeId, \
+            } \
+          ]"
+          @click="handleJusticeClick(justice)"
+        )
+
+          .justice-chief-badge(v-if="justice.id === game.chiefJusticeId") ⚖ Chief
+          .justice-shield-badge(v-else-if="game.playerShields.includes(justice.id)") 🛡️
+          .justice-shield-badge.opp-shield(v-else-if="game.opponentShields.includes(justice.id)") 🔒
+          //.justice-card__badge {{ justiceTypeLabel(justice.justiceType) }}
+
+          .pic-and-name(v-if="justiceImageUrl(justice)")
+            .justice-card__thumb
+              img.justice-card__img(:src="justiceImageUrl(justice)" :alt="justice.name")
+            .justice-card__name {{ justice.name }}
+          .justice-card__name(v-else) {{ justice.name }}
+
+
+          .justice-vote
+            .vote-label(
+              :class="{ positive: (game.leanings[justice.id] ?? 0) > 0, negative: (game.leanings[justice.id] ?? 0) < 0 }"
+            ) {{ voteLabel(game.leanings[justice.id] ?? 0) }}
+            .vote-track
+              .vote-midline
+              .vote-fill(:style="voteMeterStyle(justice)")
+          
 
     //- The Docket: shared card pool
     .court-docket(
@@ -201,7 +243,11 @@
             .tc__meta
               span.tc__target {{ targetLabel(tactic.effectType) }}
               span.tc__power(v-if="tactic.basePower > 0")  ⚡{{ tactic.basePower }}
-
+    //- ── OPPONENT THINKING OVERLAY ────────────────────────────────
+    .opponent-thinking-overlay(v-if="ui.opponentThinking")
+      .otl-message
+        span.otl-icon ⚖️
+        span.otl-text Opposing counsel is deliberating…
     //- ── TARGETING CHOICE POPUP ────────────────────────────
     .targeting-choice-overlay(v-if="ui.targetingChoice" @click.self="ui.targetingChoice = null")
       .targeting-choice
@@ -231,7 +277,7 @@
           span.vj-name {{ justice.name }}
           span.vj-vote {{ voteLabel(game.leanings[justice.id] ?? 0) }}
       .verdict-actions
-        button.btn.btn--start(@click="dealGame") ⚖️ New Case
+        button.btn.btn--start(@click="resetToCourtSelect") ⚖️ New Court
         button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 View Court Record
 
   //- ── COURT REPORT MODAL ─────────────────────────────────────
@@ -294,3 +340,13 @@
         p.jd-vote-label Current stance:
         .vote-label(:class="{ positive: (game.leanings[ui.detailJustice.id] ?? 0) > 0, negative: (game.leanings[ui.detailJustice.id] ?? 0) < 0 }")
           | {{ voteLabel(game.leanings[ui.detailJustice.id] ?? 0) }}
+      .jd-history(v-if="justiceVoteHistory(ui.detailJustice).length")
+        h4.jd-history-title Case History
+        .jd-history-list
+          .jd-history-item(
+            v-for="(record, idx) in justiceVoteHistory(ui.detailJustice)"
+            :key="idx"
+            :class="record.votedFor ? 'voted-for' : 'voted-against'"
+          )
+            span.jdh-case {{ record.caseName }}
+            span.jdh-vote {{ record.votedFor ? '✅ Voted for you' : '❌ Voted against you' }}

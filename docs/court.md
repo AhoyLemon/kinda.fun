@@ -27,7 +27,10 @@ This file serves as a stable reference for decisions made during development. Se
 - **`src/views/court/ts/_presidents.ts`** — 16 presidents (for justice appointment metadata)
 - **`Court.vue`** — all game logic (`<script setup lang="ts">`)
 - **`Court.pug`** — template (references `Court.vue` via `src=`)
-- **`Court.scss`** — all styles
+- **`Court.scss`** — base/shared styles + `@import "./scss/playing"` + `@import "./scss/report"`
+- **`scss/_playing.scss`** — playing phase styles (bench, docket, tactic cards, animations, overlays)
+- **`scss/_report.scss`** — verdict phase, court report modal, justice detail modal, case history
+- **`components/TacticToast.vue`** — Vue-Toastification component for tactic play results
 
 ### File Size Guideline
 
@@ -59,4 +62,6 @@ Stat names like `succeptibility` and `partyLoyalty` are internal. The UI should 
 
 ## Toast / UI Conventions
 
-- The Megachurch Tycoon pattern (Vue-Toastification) is the target for toast notifications across kinda.fun games. Court currently has a custom toast — it should eventually migrate to match.
+- **Vue-Toastification** is used for tactic-play feedback. `TacticToast.vue` renders inside the library's container. The global `<style>` block in `TacticToast.vue` zeroes out library padding (`padding: 0 !important`) and adds a court-themed dark background via `:has()`. **Do not add `.tactic-toast` styles to the SCSS partials** — the old manual toast styles (`position: fixed; bottom: 1.5rem; ...`) were removed as they caused the component to render outside the library container.
+- Case history is tracked in `caseHistory` (reactive array in Court.vue), populated when `dealGame()` is called after an active game. The justice detail modal shows a per-justice vote history for that session.
+- The opponent thinking overlay (`.opponent-thinking-overlay`) is `position: fixed; z-index: 50`. The docket gets `position: relative; z-index: 55` via `is-opponent-turn` class so it appears above the dimming overlay.

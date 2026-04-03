@@ -153,4 +153,27 @@ export const tactics: Tactic[] = [
     effectType: "claim-two",
     basePower: 0,
   },
+
+  // ─── CHIEF JUSTICE INTERACTION ────────────────────────────────
+
+  {
+    id: 15,
+    name: "Elevate to Chief",
+    description:
+      "Appoint a justice as the new Chief Justice. The previous Chief — and their partisan allies — won't be pleased. The new Chief loses the title's normal sway resistance.",
+    flavorText: "With all due respect to the current Chief, I'd like to propose a restructuring.",
+    cardType: "utility",
+    effectType: "make-chief",
+    basePower: 0,
+  },
+  {
+    id: 16,
+    name: "Bench Roast",
+    description:
+      "Deliver a scathing insult to the Chief Justice directly. They'll take it personally (-4). Every justice with a different party affiliation will enjoy it immensely (+2).",
+    flavorText: "Some say a judge's reputation speaks louder than their rulings. In this case, both are embarrassing.",
+    cardType: "attack",
+    effectType: "insult-chief",
+    basePower: 4,
+  },
 ];

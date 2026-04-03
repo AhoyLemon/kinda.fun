@@ -291,74 +291,6 @@ $party-democratic-republican: #3a5a2a;
   gap: 0.5rem;
 }
 
-.bench-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 1rem;
-
-  @media (max-width: 700px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (max-width: #{$mobile-max}) {
-    grid-template-columns: 1fr;
-  }
-}
-
-// ─── Justice Card ────────────────────────────────────────────
-.justice-card {
-  background: $court-card;
-  color: $court-text;
-  border-radius: 8px;
-  padding: 0.9rem 1rem 1rem;
-  border: 2px solid $court-gold;
-  position: relative;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-
-  &.type-current {
-    border-top: 4px solid $court-red;
-  }
-  &.type-historical {
-    border-top: 4px solid $court-blue;
-  }
-  &.type-fictional {
-    border-top: 4px solid #6a2a8a;
-  }
-
-  &__badge {
-    font-size: 0.65rem;
-    font-weight: $bold;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: $court-text-muted;
-  }
-
-  &__name {
-    font-family: $serif;
-    font-size: 1rem;
-    font-weight: $bold;
-    line-height: 1.2;
-    color: $court-text;
-  }
-
-  &__desc {
-    font-size: 0.78rem;
-    line-height: 1.45;
-    color: $court-text-muted;
-    flex: 1;
-  }
-
-  &__stats {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    margin-top: 0.5rem;
-  }
-}
-
 // ─── Stat Bars ───────────────────────────────────────────────
 .stat {
   display: grid;
@@ -412,10 +344,6 @@ $party-democratic-republican: #3a5a2a;
   font-style: italic;
 }
 
-// ─── Partial imports (split for file size) ───────────────────
-@import "./scss/playing";
-@import "./scss/report";
-
 // ─── Justice hints (setup phase card) ────────────────────────
 .justice-card__hints {
   display: flex;
@@ -424,19 +352,181 @@ $party-democratic-republican: #3a5a2a;
   margin-top: 0.4rem;
 }
 
-.hint-tag {
+.justice-card__view-cta {
   font-size: 0.7rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-  padding: 0.15rem 0.4rem;
-  color: rgba(255, 255, 255, 0.75);
+  color: $court-text-muted;
+  font-style: italic;
+  margin-top: auto;
+  padding-top: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.justice-card:hover .justice-card__view-cta {
+  opacity: 0.7;
+}
+
+// ─── Justice card setup: image + hover ───────────────────────
+.court-main .justice-card {
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    border-color 0.15s;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    border-color: $court-gold-light;
+  }
+}
+
+// .justice-card__thumb {
+//   width: 100%;
+//   border-radius: 4px;
+//   overflow: hidden;
+//   margin-bottom: 0.15rem;
+//   flex-shrink: 0;
+// }
+
+.justice-card__president {
+  font-size: 0.68rem;
+  color: $court-text-muted;
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.justice-card {
+  &.has-image {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    .justice-card__hints,
+    .justice-card__view-cta {
+      grid-column: span 2;
+    }
+  }
+
+  .justice-card__img {
+    width: 100%;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    object-position: center 15%;
+  }
+}
+
+@import "scss/components/_bench";
+
+@import "./scss/screens/playing";
+@import "./scss/screens/report";
+
+// ─── Court Selector ──────────────────────────────────────────
+.court-select {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+
+  .section-label {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+  }
+}
+
+.court-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.court-mode-card {
+  background: $court-surface;
+  border: 2px solid $court-gold;
+  border-radius: 10px;
+  padding: 1.5rem 1.25rem;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    border-color 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+    border-color: $court-gold-light;
+  }
+
+  .cmc-icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .cmc-title {
+    font-family: $serif;
+    font-size: 1.1rem;
+    font-weight: $bold;
+    color: $court-gold;
+  }
+
+  .cmc-desc {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .cmc-badge {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    font-size: 0.6rem;
+    font-weight: $bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: $court-gold;
+    color: $court-text;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+  }
+}
+
+// ─── Chief Justice badge ──────────────────────────────────────
+.justice-chief-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: $court-gold;
+  color: $court-text;
+  font-size: 0.58rem;
+  font-weight: $bold;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.45rem;
+  border-radius: 0 6px 0 6px;
+  z-index: 2;
   white-space: nowrap;
 }
 
-.justice-card__view-cta {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.35);
+.justice-card.is-chief {
+  border-color: $court-gold-light !important;
+  box-shadow: 0 0 0 2px rgba(232, 201, 110, 0.25);
+}
+
+// ─── Bench header actions ────────────────────────────────────
+.bench-header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+// ─── Bench label in playing phase ────────────────────────────
+.bench-label {
+  font-family: $serif;
+  font-size: 0.95rem;
+  color: $court-gold;
   font-style: italic;
-  margin-top: 0.3rem;
-  cursor: pointer;
+  letter-spacing: 0.04em;
 }

@@ -2,21 +2,27 @@
   import { reactive, computed, onMounted } from "vue";
   import { useToast, POSITION } from "vue-toastification";
   import TacticToast from "./components/TacticToast.vue";
-  import { justices as allJustices } from "./ts/_justices";
+  import { justiceCurrent, justiceHistorical, justiceFictional, justiceCelebrity } from "./ts/_justices";
   import { cases as allCases } from "./ts/_cases";
   import { tactics as allTactics } from "./ts/_tactics";
   import type { Justice, Case, Tactic, Party } from "./ts/_types";
+
+  // ── Debug constant ─────────────────────────────────────────
+  // Set to 0 to keep toasts visible until manually dismissed (click to close).
+  const toastDuration = 400000; // ms
 
   const toast = useToast();
 
   type Side = "prosecution" | "defendant";
   type TurnActor = "player" | "opponent";
-  type Phase = "setup" | "playing" | "verdict";
+  type Phase = "courtSelect" | "setup" | "playing" | "verdict";
+  type CourtMode = "current" | "historical" | "fantasy" | "chaos";
 
   const ui = reactive({
     gameName: "court",
     title: "Supreme Court: The Card Game",
-    phase: "setup" as Phase,
+    phase: "courtSelect" as Phase,
+    courtMode: null as CourtMode | null,
     courtReportVisible: false,
     opponentThinking: false,
     opponentHighlightedCardId: null as number | null, // card the opponent appears to be browsing
@@ -28,6 +34,8 @@
     bench: [] as Justice[],
     currentCase: null as Case | null,
     playerSide: null as Side | null,
+    chiefJusticeId: null as number | null, // id of the current chief justice
+    chiefJusticeHardened: false, // true = harder to sway (randomly selected CJ)
     // Card pools
     deck: [] as Tactic[],
     discardPile: [] as Tactic[],
@@ -58,6 +66,13 @@
       round: number;
     }>,
   });
+
+  const caseHistory = reactive<
+    Array<{
+      caseName: string;
+      votes: Record<number, boolean>; // justice.id → true = voted for player
+    }>
+  >([]);
 
   // tacticFeedback replaced by Vue-Toastification (see applyTactic)
 
@@ -116,8 +131,49 @@
 
   // ─── Game Management ─────────────────────────────────────────
 
+  function selectCourtMode(mode: CourtMode): void {
+    ui.courtMode = mode;
+    dealGame();
+  }
+
+  function resetToCourtSelect(): void {
+    ui.phase = "courtSelect";
+  }
+
   function dealGame(): void {
-    game.bench = shuffle(allJustices).slice(0, 9);
+    // Save this game's justice votes to case history before resetting
+    if (game.currentCase && game.bench.length && (ui.phase === "playing" || ui.phase === "verdict")) {
+      const votes: Record<number, boolean> = {};
+      game.bench.forEach((j) => {
+        votes[j.id] = (game.leanings[j.id] ?? 0) > 0;
+      });
+      caseHistory.push({ caseName: game.currentCase.name, votes });
+    }
+
+    // Build justice pool + assign chief justice based on selected mode
+    const mode = ui.courtMode ?? "current";
+    let pool: Justice[];
+    let chiefId: number | null = null;
+    let hardened = true;
+
+    if (mode === "current") {
+      pool = [...justiceCurrent]; // always use all 9 current justices
+      chiefId = 1; // John Roberts is always Chief in Current mode
+    } else if (mode === "historical") {
+      pool = shuffle([...justiceCurrent, ...justiceHistorical]).slice(0, 9);
+      chiefId = pool[Math.floor(Math.random() * pool.length)].id;
+    } else if (mode === "fantasy") {
+      pool = shuffle([...justiceFictional, ...justiceCelebrity]).slice(0, 9);
+      chiefId = pool[Math.floor(Math.random() * pool.length)].id;
+    } else {
+      // chaos: any justice
+      pool = shuffle([...justiceCurrent, ...justiceHistorical, ...justiceFictional, ...justiceCelebrity]).slice(0, 9);
+      chiefId = pool[Math.floor(Math.random() * pool.length)].id;
+    }
+
+    game.bench = pool;
+    game.chiefJusticeId = chiefId;
+    game.chiefJusticeHardened = hardened;
     game.currentCase = allCases[Math.floor(Math.random() * allCases.length)];
     game.playerSide = null;
     game.deck = [];
@@ -180,7 +236,12 @@
     const tactic = [...game.docket, ...game.claimedCards].find((t) => t.id === tacticId);
     if (!tactic) return;
 
-    if (tactic.effectType === "sway-all" || tactic.effectType === "susceptibility" || tactic.effectType === "discard-all") {
+    if (
+      tactic.effectType === "sway-all" ||
+      tactic.effectType === "susceptibility" ||
+      tactic.effectType === "discard-all" ||
+      tactic.effectType === "insult-chief"
+    ) {
       applyTactic(tactic, null, "player");
     } else if (tactic.effectType === "claim-two") {
       if (game.claimedCards.length > 0) return; // already have dibs
@@ -262,6 +323,66 @@
         if (card) game.docket.push(card);
       }
       reportTarget = "All docket cards";
+    } else if (tactic.effectType === "make-chief") {
+      // Change the chief justice to targetJustice
+      removeFromDocket(tactic);
+      if (targetJustice) {
+        const prevCJId = game.chiefJusticeId;
+        const prevCJ = game.bench.find((j) => j.id === prevCJId);
+        const prevParty = prevCJ?.nominatedBy?.party;
+        const newParty = targetJustice.nominatedBy?.party;
+
+        game.chiefJusticeId = targetJustice.id;
+        game.chiefJusticeHardened = false; // new CJ is not resistance-hardened
+
+        // Previous CJ suffers (-2) from losing the title
+        if (prevCJ) {
+          const old = game.leanings[prevCJ.id] ?? 0;
+          const next = Math.max(-10, old - 2);
+          game.leanings[prevCJ.id] = next;
+          results.push({ justiceName: prevCJ.name, change: next - old, newLeaning: next });
+        }
+
+        // If parties differ, previous CJ's party allies also suffer (-2)
+        if (prevCJ && prevParty && prevParty !== newParty) {
+          game.bench
+            .filter((j) => j.id !== prevCJ.id && j.id !== targetJustice.id && j.nominatedBy?.party === prevParty)
+            .forEach((j) => {
+              const old = game.leanings[j.id] ?? 0;
+              const next = Math.max(-10, old - 2);
+              game.leanings[j.id] = next;
+              results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+            });
+        }
+
+        reportTarget = `${targetJustice.name} (new Chief Justice)`;
+      }
+    } else if (tactic.effectType === "insult-chief") {
+      // Negative for the Chief Justice, positive for opposite-party justices
+      removeFromDocket(tactic);
+      const cj = game.bench.find((j) => j.id === game.chiefJusticeId);
+      if (cj) {
+        const cjParty = cj.nominatedBy?.party;
+        const dir = actor === "opponent" ? -1 : 1;
+
+        // Chief takes a hit (negative)
+        const cjOld = game.leanings[cj.id] ?? 0;
+        const cjNext = Math.max(-10, Math.min(10, cjOld - tactic.basePower * dir));
+        game.leanings[cj.id] = cjNext;
+        results.push({ justiceName: cj.name, change: cjNext - cjOld, newLeaning: cjNext });
+
+        // Opposite-party justices gain +2 (they're delighted)
+        game.bench
+          .filter((j) => j.id !== cj.id && j.nominatedBy?.party !== cjParty)
+          .forEach((j) => {
+            const old = game.leanings[j.id] ?? 0;
+            const next = Math.max(-10, Math.min(10, old + 2 * dir));
+            game.leanings[j.id] = next;
+            results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+          });
+
+        reportTarget = cj.name + " (Chief Justice)";
+      }
     } else {
       // Remove card from its source first
       const fromClaimed = game.claimedCards.some((t) => t.id === tactic.id);
@@ -298,6 +419,11 @@
           game.susceptibilityMods[justice.id] = 0;
         }
 
+        // Chief justice resistance: sway power is halved when hardened
+        if (justice.id === game.chiefJusticeId && game.chiefJusticeHardened && tactic.effectType !== "susceptibility" && tactic.effectType !== "shield") {
+          power = Math.max(1, Math.ceil(power * 0.5));
+        }
+
         if (tactic.effectType === "susceptibility") {
           game.susceptibilityMods[justice.id] = (game.susceptibilityMods[justice.id] ?? 0) + tactic.basePower;
           results.push({ justiceName: justice.name, change: 0, newLeaning: game.leanings[justice.id] ?? 0 });
@@ -311,7 +437,24 @@
           const old = game.leanings[justice.id] ?? 0;
           const next = Math.max(-10, Math.min(10, old + power * dir));
           game.leanings[justice.id] = next;
-          results.push({ justiceName: justice.name, change: next - old, newLeaning: next });
+          const change = next - old;
+          results.push({ justiceName: justice.name, change, newLeaning: next });
+
+          // Chief justice knockon: sway-one on the CJ ripples to same-party allies at 50%
+          if (justice.id === game.chiefJusticeId && tactic.effectType === "sway-one" && change !== 0) {
+            const cjParty = justice.nominatedBy?.party;
+            const knockon = Math.round(change / 2);
+            if (knockon !== 0 && cjParty) {
+              game.bench
+                .filter((j) => j.id !== justice.id && j.nominatedBy?.party === cjParty && !game.playerShields.includes(j.id))
+                .forEach((j) => {
+                  const ko = game.leanings[j.id] ?? 0;
+                  const kn = Math.max(-10, Math.min(10, ko + knockon));
+                  game.leanings[j.id] = kn;
+                  results.push({ justiceName: j.name + " (knockon)", change: kn - ko, newLeaning: kn });
+                });
+            }
+          }
         }
       });
     }
@@ -327,7 +470,7 @@
 
     toast(
       { component: TacticToast, props: { actor, tacticName: tactic.name, results: results.map((r) => ({ justiceName: r.justiceName, change: r.change })) } },
-      { position: POSITION.BOTTOM_RIGHT, timeout: 4000 },
+      { position: POSITION.BOTTOM_RIGHT, timeout: toastDuration === 0 ? false : toastDuration, toastClassName: `court-toast court-toast--${actor}` },
     );
 
     if (actor === "player") {
@@ -373,7 +516,12 @@
     }
     const tactic = available[Math.floor(Math.random() * available.length)];
 
-    if (tactic.effectType === "sway-all" || tactic.effectType === "susceptibility" || tactic.effectType === "discard-all") {
+    if (
+      tactic.effectType === "sway-all" ||
+      tactic.effectType === "susceptibility" ||
+      tactic.effectType === "discard-all" ||
+      tactic.effectType === "insult-chief"
+    ) {
       applyTactic(tactic, null, "opponent");
       return;
     }
@@ -383,7 +531,7 @@
       const allies = game.bench.filter((j) => (game.leanings[j.id] ?? 0) < 0);
       if (!allies.length) {
         // No allies — fall back to a sway card instead
-        const fallback = available.filter((t) => t.effectType !== "shield" && t.effectType !== "claim-two");
+        const fallback = available.filter((t) => t.effectType !== "shield" && t.effectType !== "claim-two" && t.effectType !== "make-chief");
         if (!fallback.length) {
           endOpponentTurn();
           return;
@@ -393,6 +541,17 @@
         return;
       }
       applyTactic(tactic, allies[Math.floor(Math.random() * allies.length)], "opponent");
+      return;
+    }
+
+    if (tactic.effectType === "make-chief") {
+      // Opponent tries to elevate a justice they like as chief
+      const candidates = game.bench.filter((j) => j.id !== game.chiefJusticeId && (game.leanings[j.id] ?? 0) < 0);
+      if (!candidates.length) {
+        endOpponentTurn();
+        return;
+      }
+      applyTactic(tactic, candidates[Math.floor(Math.random() * candidates.length)], "opponent");
       return;
     }
 
@@ -458,18 +617,22 @@
   }
 
   function justiceTypeLabel(type: Justice["justiceType"]): string {
-    return { current: "Current", historical: "Historical", fictional: "Fictional" }[type];
+    return { current: "Current", historical: "Historical", fictional: "Fictional", celebrity: "Celebrity" }[type] ?? type;
   }
 
   function targetLabel(effectType: Tactic["effectType"]): string {
-    return {
-      "sway-one": "🎯 Single target",
-      "sway-all": "🌊 All justices",
-      susceptibility: "😴 All justices",
-      shield: "🛡️ Ally only",
-      "discard-all": "🗑 Wipe docket",
-      "claim-two": "🔒 Claim 2 cards",
-    }[effectType];
+    return (
+      {
+        "sway-one": "🎯 Single target",
+        "sway-all": "🌊 All justices",
+        susceptibility: "😴 All justices",
+        shield: "🛡️ Ally only",
+        "discard-all": "🗑 Wipe docket",
+        "claim-two": "🔒 Claim 2 cards",
+        "make-chief": "⚖️ New Chief Justice",
+        "insult-chief": "👑 Target Chief",
+      }[effectType] ?? effectType
+    );
   }
 
   function voteMeterStyle(justice: Justice): Record<string, string> {
@@ -483,6 +646,14 @@
     }
   }
 
+  const chiefJustice = computed(() => game.bench.find((j) => j.id === game.chiefJusticeId) ?? null);
+
+  const benchLabel = computed(() => {
+    if (!chiefJustice.value) return "The Bench";
+    const lastName = chiefJustice.value.name.split(" ").at(-1);
+    return `The ${lastName} Court`;
+  });
+
   function voteLabel(leaning: number): string {
     if (leaning >= 4) return "✅ Strongly For";
     if (leaning > 0) return "↗ Leaning For";
@@ -495,7 +666,7 @@
     return justice.image ? `/img/court/justices/${justice.image}` : null;
   }
 
-  function justiceHints(justice: Justice): string[] {
+  function justiceHints(justice: Justice, limit = 4): string[] {
     const hints: string[] = [];
     if (justice.stats.partyLoyalty >= 8) hints.push("📌 Deeply partisan");
     else if (justice.stats.partyLoyalty <= 3) hints.push("🎯 Votes independently");
@@ -510,11 +681,15 @@
     else if (justice.stats.empathy <= 2) hints.push("🧊 Cold to emotional arguments");
     if (justice.stats.logic >= 8) hints.push("📚 Won over by sound reasoning");
     else if (justice.stats.logic <= 3) hints.push("❓ Logic rarely lands here");
-    return hints.slice(0, 4);
+    return hints.slice(0, limit);
+  }
+
+  function justiceVoteHistory(justice: Justice): Array<{ caseName: string; votedFor: boolean }> {
+    return caseHistory.filter((c) => justice.id in c.votes).map((c) => ({ caseName: c.caseName, votedFor: c.votes[justice.id] }));
   }
 
   onMounted(() => {
-    dealGame();
+    ui.phase = "courtSelect";
   });
 </script>
 <template lang="pug" src="./Court.pug"></template>

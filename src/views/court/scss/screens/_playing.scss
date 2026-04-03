@@ -2,6 +2,8 @@
 // PLAYING PHASE
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+// BENCH GRID
+
 .court-playing {
   max-width: 1200px;
   margin: 0 auto;
@@ -223,54 +225,6 @@
   }
 }
 
-// ─── Vote meter ──────────────────────────────────────────────
-.justice-vote {
-  margin-top: 0.5rem;
-}
-
-.vote-track {
-  position: relative;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.vote-midline {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: rgba(255, 255, 255, 0.35);
-  transform: translateX(-50%);
-}
-
-.vote-fill {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  border-radius: 4px;
-  transition:
-    left 0.4s ease,
-    width 0.4s ease,
-    background-color 0.4s ease;
-}
-
-.vote-label {
-  font-size: 0.72rem;
-  margin-top: 0.3rem;
-  color: $court-text-muted;
-  text-align: center;
-
-  &.positive {
-    color: #5aef7a;
-  }
-  &.negative {
-    color: #ef5a5a;
-  }
-}
-
 // ─── The Docket ─────────────────────────────────────────────
 .court-docket {
   background: $court-surface;
@@ -416,56 +370,56 @@
   color: $court-red;
 }
 
-// ─── Tactic feedback toast ───────────────────────────────────
-.tactic-toast {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  background: $court-surface;
-  border: 2px solid $court-gold;
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  min-width: 220px;
-  max-width: 300px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
-  z-index: 100;
-}
+// // ─── Tactic feedback toast ───────────────────────────────────
+// .tactic-toast {
+//   position: fixed;
+//   bottom: 1.5rem;
+//   right: 1.5rem;
+//   background: $court-surface;
+//   border: 2px solid $court-gold;
+//   border-radius: 8px;
+//   padding: 0.75rem 1rem;
+//   min-width: 220px;
+//   max-width: 300px;
+//   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+//   z-index: 100;
+// }
 
-.toast-header {
-  font-family: $serif;
-  font-size: 0.9rem;
-  font-weight: $bold;
-  color: $court-gold;
-  margin-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(201, 168, 76, 0.3);
-  padding-bottom: 0.4rem;
-}
+// .toast-header {
+//   font-family: $serif;
+//   font-size: 0.9rem;
+//   font-weight: $bold;
+//   color: $court-gold;
+//   margin-bottom: 0.5rem;
+//   border-bottom: 1px solid rgba(201, 168, 76, 0.3);
+//   padding-bottom: 0.4rem;
+// }
 
-.toast-results {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
+// .toast-results {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 0.25rem;
+// }
 
-.toast-result {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  color: #ccc;
+// .toast-result {
+//   display: flex;
+//   justify-content: space-between;
+//   font-size: 0.8rem;
+//   color: #ccc;
 
-  &.positive .toast-change {
-    color: #5aef7a;
-    font-weight: $bold;
-  }
-  &.negative .toast-change {
-    color: #ef5a5a;
-    font-weight: $bold;
-  }
-  &.neutral {
-    color: rgba(255, 255, 255, 0.4);
-    font-style: italic;
-  }
-}
+//   &.positive .toast-change {
+//     color: #5aef7a;
+//     font-weight: $bold;
+//   }
+//   &.negative .toast-change {
+//     color: #ef5a5a;
+//     font-weight: $bold;
+//   }
+//   &.neutral {
+//     color: rgba(255, 255, 255, 0.4);
+//     font-style: italic;
+//   }
+// }
 
 .toast-justice {
   flex: 1;
@@ -570,8 +524,8 @@
     box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.3);
   }
   &.is-opponent-turn {
-    opacity: 0.6;
-    pointer-events: none;
+    position: relative;
+    z-index: 55;
   }
 }
 
@@ -623,37 +577,37 @@
 }
 
 // ─── Docket transition-group animations ──────────────────────
-.tactic-card-row {
-  position: relative;
-}
-
 .tactic-card-enter-active {
-  animation: card-deal-in 0.3s ease-out both;
+  animation: card-deal-in 0.35s ease-out both;
 }
 
 .tactic-card-leave-active {
-  animation: card-play-out 0.22s ease-in both;
+  animation: card-play-out 0.28s ease-in both;
 }
 
 @keyframes card-deal-in {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.92);
+    transform: translateX(60px) rotate(6deg);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(0) rotate(0);
   }
 }
 
 @keyframes card-play-out {
-  from {
+  0% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0) scale(1) rotate(0deg);
   }
-  to {
+  60% {
+    opacity: 0.6;
+    transform: translateY(-22px) scale(1.06) rotate(-5deg);
+  }
+  100% {
     opacity: 0;
-    transform: translateY(-16px) scale(0.88);
+    transform: translateY(-28px) scale(0.88) rotate(-10deg);
   }
 }
 
@@ -691,4 +645,50 @@
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+}
+
+// ─── Opponent thinking overlay ───────────────────────────────
+.opponent-thinking-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 28vh;
+  pointer-events: none;
+}
+
+.otl-message {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(44, 26, 26, 0.95);
+  border: 1px solid rgba(201, 168, 76, 0.45);
+  border-radius: 8px;
+  padding: 0.85rem 1.75rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+  animation: opp-thinking-pulse 2s ease-in-out infinite;
+}
+
+.otl-icon {
+  font-size: 1.3rem;
+}
+
+.otl-text {
+  font-family: $serif;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+}
+
+@keyframes opp-thinking-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }

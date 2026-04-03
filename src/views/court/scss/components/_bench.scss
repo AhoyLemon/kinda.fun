@@ -1,0 +1,169 @@
+.bench-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+
+  .justice-card {
+    background: $court-card;
+    color: $court-text;
+    border-radius: 8px;
+    padding: 0.9rem 1rem 1rem;
+    border: 2px solid $court-gold;
+    position: relative;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex-basis: 200px;
+    padding: 0;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &.type-current {
+      border-top: 4px solid $court-red;
+      .justice-card__img {
+        border-color: $court-red;
+      }
+    }
+    &.type-historical {
+      border-top: 4px solid $court-blue;
+      .justice-card__img {
+        border-color: $court-blue;
+      }
+    }
+    &.type-fictional {
+      border-top: 4px solid #6a2a8a;
+      .justice-card__img {
+        border-color: #6a2a8a;
+      }
+    }
+
+    &__badge {
+      font-size: 0.65rem;
+      font-weight: $bold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: $court-text-muted;
+    }
+
+    &__name {
+      font-family: $serif;
+      font-size: 1rem;
+      font-weight: $bold;
+      line-height: 1.2;
+      color: $court-text;
+    }
+
+    &__desc {
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: $court-text-muted;
+      flex: 1;
+    }
+
+    &__stats {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      margin-top: 0.5rem;
+    }
+
+    .pic-and-name {
+      display: grid;
+      grid-template-columns: 50px 1fr;
+      padding-left: 10px;
+      padding-top: 10px;
+      padding-right: 10px;
+      gap: 10px;
+    }
+
+    // ─── Vote meter ──────────────────────────────────────────────
+    .justice-vote {
+      margin-top: 0.5rem;
+    }
+
+    .vote-track {
+      position: relative;
+      height: 30px;
+      background: rgba(0, 0, 0, 0.32);
+      overflow: hidden;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+      overflow: hidden;
+    }
+
+    .vote-midline {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(255, 255, 255, 0.35);
+      transform: translateX(-50%);
+    }
+
+    .vote-fill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      // border-radius: 4px;
+      transition:
+        left 0.4s ease,
+        width 0.4s ease,
+        background-color 0.4s ease;
+    }
+
+    .vote-label {
+      font-size: 0.72rem;
+      margin-top: 0.3rem;
+      color: $court-text-muted;
+      text-align: center;
+
+      &.positive {
+        color: rgb(42, 122, 58);
+      }
+      &.negative {
+        color: rgb(139, 32, 32);
+      }
+    }
+  }
+
+  &.overview {
+    .justice-card {
+      flex-basis: 320px;
+      flex-grow: 1;
+      padding: 6px 10px 10px 20px;
+
+      &.has-image {
+        display: grid;
+        grid-template-columns: 60px 1fr;
+      }
+
+      .justice-card__img {
+        border-width: 2px;
+        border-style: solid;
+        box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+
+  &.bench-grid--playing {
+    .justice-card {
+      padding-top: 15px;
+    }
+  }
+}
+
+.justice-card {
+  // Default hint-tag: white text on dark backgrounds (detail modal)
+  .hint-tag {
+    font-size: 0.7rem;
+    border-radius: 3px;
+    padding: 0.15rem 0.4rem;
+    white-space: nowrap;
+    background: rgba(26, 10, 10, 0.08);
+    border: 1px solid rgba(26, 10, 10, 0.14);
+    color: $court-text-muted;
+  }
+}
