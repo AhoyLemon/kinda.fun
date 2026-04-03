@@ -9,7 +9,7 @@
 
   // ── Debug constant ─────────────────────────────────────────
   // Set to 0 to keep toasts visible until manually dismissed (click to close).
-  const toastDuration = 400000; // ms
+  const toastDuration = 400; // ms
 
   const toast = useToast();
 
