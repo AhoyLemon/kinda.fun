@@ -1,0 +1,47 @@
+//- ── JUSTICE DETAIL MODAL ───────────────────────────────────
+.justice-detail-overlay(v-if="ui.detailJustice" @click.self="ui.detailJustice = null")
+  .justice-detail(:class="'justice-type-' + ui.detailJustice.justiceType")
+    .jd-header
+      span.jd-type {{ justiceTypeLabel(ui.detailJustice.justiceType) }}
+      button.jd-close(@click="ui.detailJustice = null") ✕
+    
+    .jd-content
+      .jd-quick-info
+        .jd-image-wrap
+          img.jd-image(
+            v-if="justiceImageUrl(ui.detailJustice)"
+            :src="justiceImageUrl(ui.detailJustice)"
+            :alt="ui.detailJustice.name"
+          )
+          .jd-image-placeholder(v-else) ⚖️
+        .jd-name-and-meta
+          h3.jd-name {{ ui.detailJustice.name }}
+          .jd-demographics
+            span.jd-meta-sep  {{ ui.detailJustice.religion }}
+            span.jd-meta-sep {{ ui.detailJustice.ethnicity }}
+            span.jd-meta-sep born {{ ui.detailJustice.birthYear }}
+          p.jd-meta(v-if="ui.detailJustice.nominatedBy")
+            | Appointed by {{ ui.detailJustice.nominatedBy.name }}
+      
+      .chief-indicator(v-if="ui.detailJustice.id === game.chiefJusticeId") ⚖ Chief Justice
+
+      p.jd-bio {{ ui.detailJustice.description }}
+
+      .jd-hints
+        h4.jd-hints-title Qualities
+        .jd-hint-tags
+          span.hint-tag(v-for="hint in justiceHints(ui.detailJustice)" :key="hint") {{ hint }}
+      .jd-vote-section(v-if="ui.phase === 'playing'")
+        p.jd-vote-label Current stance:
+        .vote-label(:class="{ positive: (game.leanings[ui.detailJustice.id] ?? 0) > 0, negative: (game.leanings[ui.detailJustice.id] ?? 0) < 0 }")
+          | {{ voteLabel(game.leanings[ui.detailJustice.id] ?? 0) }}
+      .jd-history(v-if="justiceVoteHistory(ui.detailJustice).length")
+        h4.jd-history-title Case History
+        .jd-history-list
+          .jd-history-item(
+            v-for="(record, idx) in justiceVoteHistory(ui.detailJustice)"
+            :key="idx"
+            :class="record.votedFor ? 'voted-for' : 'voted-against'"
+          )
+            span.jdh-case {{ record.caseName }}
+            span.jdh-vote {{ record.votedFor ? '✅ Voted for you' : '❌ Voted against you' }}

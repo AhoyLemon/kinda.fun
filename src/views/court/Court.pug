@@ -239,6 +239,7 @@
           )
             .tc__type {{ tactic.cardType }}
             .tc__name {{ tactic.name }}
+            .tc__description {{ tactic.description }}
             .tc__flavor {{ tactic.flavorText }}
             .tc__meta
               span.tc__target {{ targetLabel(tactic.effectType) }}
@@ -280,73 +281,5 @@
         button.btn.btn--start(@click="resetToCourtSelect") ⚖️ New Court
         button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 View Court Record
 
-  //- ── COURT REPORT MODAL ─────────────────────────────────────
-  .court-report-overlay(v-if="ui.courtReportVisible" @click.self="ui.courtReportVisible = false")
-    .court-report
-      .report-header
-        h3.report-title 📋 The Court Record
-        button.report-close(@click="ui.courtReportVisible = false") ✕
-      .report-plays
-        p.report-empty(v-if="!courtReport.plays.length") No arguments on the record yet.
-        .report-play(
-          v-for="(play, idx) in courtReport.plays"
-          :key="idx"
-          :class="play.actor === 'player' ? 'play--player' : 'play--opponent'"
-        )
-          .play-header
-            span.play-badge R{{ play.round }}
-            span.play-actor-badge(:class="play.actor === 'player' ? 'badge--player' : 'badge--opponent'")
-              | {{ play.actor === 'player' ? 'You' : 'Opposing Counsel' }}
-            span.play-tactic-name  {{ play.tacticName }}
-            span.play-arrow  →
-            span.play-target {{ play.targetName }}
-          .play-results(v-if="play.results.length")
-            span.play-result(
-              v-for="result in play.results"
-              :key="result.justiceName"
-              :class="result.change > 0 ? 'positive' : 'negative'"
-            )
-              | {{ result.justiceName }}: {{ result.change > 0 ? '+' : '' }}{{ result.change }}
-          p.play-no-effect(v-else) No measurable effect
-
-  //- ── JUSTICE DETAIL MODAL ───────────────────────────────────
-  .justice-detail-overlay(v-if="ui.detailJustice" @click.self="ui.detailJustice = null")
-    .justice-detail
-      .jd-header
-        .jd-image-wrap
-          img.jd-image(
-            v-if="justiceImageUrl(ui.detailJustice)"
-            :src="justiceImageUrl(ui.detailJustice)"
-            :alt="ui.detailJustice.name"
-          )
-          .jd-image-placeholder(v-else) ⚖️
-        .jd-title-block
-          h3.jd-name {{ ui.detailJustice.name }}
-          span.jd-type-badge {{ justiceTypeLabel(ui.detailJustice.justiceType) }}
-          p.jd-meta(v-if="ui.detailJustice.nominatedBy")
-            | Appointed by {{ ui.detailJustice.nominatedBy.name }}
-            span.jd-meta-sep  ·
-            |  {{ ui.detailJustice.religion }}
-            span.jd-meta-sep  ·
-            |  {{ ui.detailJustice.ethnicity }}
-          p.jd-meta(v-else) {{ ui.detailJustice.religion }} · {{ ui.detailJustice.ethnicity }}
-        button.jd-close(@click="ui.detailJustice = null") ✕
-      p.jd-bio {{ ui.detailJustice.description }}
-      .jd-hints
-        h4.jd-hints-title Qualities
-        .jd-hint-tags
-          span.hint-tag(v-for="hint in justiceHints(ui.detailJustice)" :key="hint") {{ hint }}
-      .jd-vote-section(v-if="ui.phase === 'playing'")
-        p.jd-vote-label Current stance:
-        .vote-label(:class="{ positive: (game.leanings[ui.detailJustice.id] ?? 0) > 0, negative: (game.leanings[ui.detailJustice.id] ?? 0) < 0 }")
-          | {{ voteLabel(game.leanings[ui.detailJustice.id] ?? 0) }}
-      .jd-history(v-if="justiceVoteHistory(ui.detailJustice).length")
-        h4.jd-history-title Case History
-        .jd-history-list
-          .jd-history-item(
-            v-for="(record, idx) in justiceVoteHistory(ui.detailJustice)"
-            :key="idx"
-            :class="record.votedFor ? 'voted-for' : 'voted-against'"
-          )
-            span.jdh-case {{ record.caseName }}
-            span.jdh-vote {{ record.votedFor ? '✅ Voted for you' : '❌ Voted against you' }}
+  include pug/modals/_court-record.pug
+  include pug/modals/_justice-detail.pug

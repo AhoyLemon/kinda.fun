@@ -170,7 +170,7 @@ export const tactics: Tactic[] = [
     id: 16,
     name: "Bench Roast",
     description:
-      "Deliver a scathing insult to the Chief Justice directly. They'll take it personally (-4). Every justice with a different party affiliation will enjoy it immensely (+2).",
+      "Deliver a scathing insult to the Chief Justice directly. They'll take it personally. Every justice with a different party affiliation will enjoy it immensely.",
     flavorText: "Some say a judge's reputation speaks louder than their rulings. In this case, both are embarrassing.",
     cardType: "attack",
     effectType: "insult-chief",

@@ -1,0 +1,28 @@
+//- ── COURT REPORT MODAL ─────────────────────────────────────
+.court-report-overlay(v-if="ui.courtReportVisible" @click.self="ui.courtReportVisible = false")
+  .court-report
+    .report-header
+      h3.report-title 📋 The Court Record
+      button.report-close(@click="ui.courtReportVisible = false") ✕
+    .report-plays
+      p.report-empty(v-if="!courtReport.plays.length") No arguments on the record yet.
+      .report-play(
+        v-for="(play, idx) in courtReport.plays"
+        :key="idx"
+        :class="play.actor === 'player' ? 'play--player' : 'play--opponent'"
+      )
+        .play-header
+          span.play-badge R{{ play.round }}
+          span.play-actor-badge(:class="play.actor === 'player' ? 'badge--player' : 'badge--opponent'")
+            | {{ play.actor === 'player' ? 'You' : 'Opposing Counsel' }}
+          span.play-tactic-name  {{ play.tacticName }}
+          span.play-arrow  →
+          span.play-target {{ play.targetName }}
+        .play-results(v-if="play.results.length")
+          span.play-result(
+            v-for="result in play.results"
+            :key="result.justiceName"
+            :class="result.change > 0 ? 'positive' : 'negative'"
+          )
+            | {{ result.justiceName }}: {{ result.change > 0 ? '+' : '' }}{{ result.change }}
+        p.play-no-effect(v-else) No measurable effect

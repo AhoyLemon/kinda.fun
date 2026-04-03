@@ -666,10 +666,11 @@
         "sway-all": "🌊 All justices",
         susceptibility: "😴 All justices",
         shield: "🛡️ Ally only",
-        "discard-all": "🗑 Wipe docket",
-        "claim-two": "🔒 Claim 2 cards",
-        "make-chief": "⚖️ New Chief Justice",
-        "insult-chief": "👑 Target Chief",
+        "discard-all": "🗑 Docket",
+        "claim-two": "🗑 Docket",
+        "make-chief": "👑 Chief Justice",
+        "insult-chief": "👑 Chief Justice",
+        "presidential-call": "🍊 Trump Appointees",
       }[effectType] ?? effectType
     );
   }
@@ -711,7 +712,8 @@
     else if (justice.stats.partyLoyalty <= 3) hints.push("🎯 Votes independently");
     if (justice.weaknesses.flattery >= 7) hints.push("😊 Loves being flattered");
     else if (justice.weaknesses.flattery <= 2) hints.push("🙄 Immune to flattery");
-    if (justice.weaknesses.bribery >= 7) hints.push("💰 Open to… incentives");
+    if (justice.weaknesses.bribery >= 7) hints.push("💰 Open to bribery");
+    else if (justice.weaknesses.bribery <= 2) hints.push("🚫 Incorruptible");
     if (justice.weaknesses.blackmail >= 7) hints.push("🤫 Has something to hide");
     if (justice.weaknesses.threats >= 7) hints.push("😰 Unnerved by pressure");
     if (justice.stats.succeptibility >= 7) hints.push("🌀 Easily swayed");

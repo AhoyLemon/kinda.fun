@@ -339,7 +339,7 @@
 
 .tc__name {
   font-family: $serif;
-  font-size: 0.95rem;
+  font-size: 1.15rem;
   font-weight: $bold;
   color: $court-text;
   line-height: 1.2;
@@ -350,7 +350,16 @@
   font-style: italic;
   color: $court-text-muted;
   line-height: 1.4;
+  background-color: rgba($court-text, 0.1);
+  border-radius: 3px;
+  padding: 1em;
+}
+.tc__description {
+  font-size: 0.75rem;
+  color: $court-text-muted;
+  line-height: 1.4;
   flex: 1;
+  padding-bottom: 1em;
 }
 
 .tc__meta {

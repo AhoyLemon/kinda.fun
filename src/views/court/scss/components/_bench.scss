@@ -9,7 +9,7 @@
     color: $court-text;
     border-radius: 8px;
     padding: 0.9rem 1rem 1rem;
-    border: 2px solid $court-gold;
+    border: 2px solid darken($court-gold, 20%);
     position: relative;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
     display: flex;
@@ -20,24 +20,24 @@
     flex-direction: column;
     justify-content: space-between;
 
-    &.type-current {
-      border-top: 4px solid $court-red;
-      .justice-card__img {
-        border-color: $court-red;
-      }
-    }
-    &.type-historical {
-      border-top: 4px solid $court-blue;
-      .justice-card__img {
-        border-color: $court-blue;
-      }
-    }
-    &.type-fictional {
-      border-top: 4px solid #6a2a8a;
-      .justice-card__img {
-        border-color: #6a2a8a;
-      }
-    }
+    // &.type-current {
+    //   border-top: 4px solid $court-red;
+    //   .justice-card__img {
+    //     border-color: $court-red;
+    //   }
+    // }
+    // &.type-historical {
+    //   border-top: 4px solid $court-blue;
+    //   .justice-card__img {
+    //     border-color: $court-blue;
+    //   }
+    // }
+    // &.type-fictional {
+    //   border-top: 4px solid $type-fictional;
+    //   .justice-card__img {
+    //     border-color: $type-fictional;
+    //   }
+    // }
 
     &__badge {
       font-size: 0.65rem;

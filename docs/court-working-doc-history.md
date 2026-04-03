@@ -187,3 +187,60 @@ SO:
 - [ ] Add the new tactics related to the chief justice, including the ability to change the chief justice and to insult the chief justice.
 - [ ] Update the justice pool to include the new fictional justices based on celebrities and popular. That means also adding "celebrity" as a justiceType alongside "fictional"
 - [ ] Remove any celebrities which aren't actually based on a celebrity or an existing fictional character.
+
+---
+
+- When showing the bench, always show the chief justice FIRST.
+
+- I've noticed that "All Justices" attacks (eg: "Shout FREEDOM") are often far more powerful than single justice attacks. Let's make sure that attacks that target all justices will have a lesser effect than attacks that target a single justice, to encourage more strategic play.
+- Also I need to do a lot of gameplay rebalancing, but to prepare for that, let's please adjust the justices' leanings to be -100 to +100, rather than -10 to +10, to give more room for differentiation and rebalancing.
+- I managed to clean up the toasts, after playing with the css some. It COULD be a bit prettier, but it's displaying right now.
+- When the toast displays Knockon effects, it does it like
+  Justice (knockon) | +3
+  Instead, I want "knockon" to be changed to "side effect" and be in its own span, at the end, so it looks like
+  Jutice1 | +3
+  Justice2 | +1 | (side effect)
+  Justice3 | -2 | (side effect)
+
+- I'm seeing a ts error in src\views\court\Court.vue, specifically line 473.
+
+New Justices:
+
+- Mentak The Mind Taker (fictional, from Harvey Birdman: Attorney at Law)
+- Judge Doom (fictional, from Who Framed Roger Rabbit)
+- Judge Reinhold (celebrity)
+- Simon Cowell (celebrity)
+- A DVD Boxed Set of Law & Order: SVU (fictional)
+- Jerry Springer (celebrity)
+
+Remove Justices:
+
+- Justice Ham Sandwich
+- The Honorable Vibes McGee
+- Lady Justice
+
+Add Presidents:
+
+- Snoop Dogg (celebrity)
+- Vermin Supreme (celebrity, https://en.wikipedia.org/wiki/Vermin_Supreme - he runs as a novelty candidate in many elections, and wears a boot on his head)
+- Björk (celebrity)
+- Bill Hicks (celebrity)
+- Hunter S. Thompson (celebrity)
+- Liberace (celebrity)
+
+Remove Presidents:
+
+- President Ronicus Thunderton
+- President Cornelia Firebottom
+- Supreme Overlord Maximus Von Decree
+
+SO:
+
+- [ ] Remove several justices.
+- [ ] Remove all current fictional presidents
+- [ ] Add the justices and presidents listed above. Feel free to invent stats and parties if necessary, but try to keep accurate to each character.
+- [ ] Update the leanings to go from -100 to +100, rather than -10 to +10. Update the cards and justices accordingly, to prepare for future rebalancing.
+- [ ] Rebalance the "All Justices" attacks to be less powerful than single justice attacks, to encourage more strategic play.
+- [ ] Change "knockon" to "side effect" in the tactic toast, and move it to its own span at the end of each result line.
+- [ ] Fix any and all TS errors
+- [ ] Review and update docs\court.md

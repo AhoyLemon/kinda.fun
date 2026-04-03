@@ -1,0 +1,268 @@
+// ─── Justice detail modal ─────────────────────────────────────
+.justice-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.justice-detail {
+  background: #1c1616;
+  border: 2px solid $court-gold;
+  border-radius: 12px;
+  // padding: 0 1.5rem 1.5rem 1.5rem;
+  max-width: 460px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .jd-header {
+    position: relative;
+    padding: 0.5rem 1.5rem;
+    background: $court-gold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .jd-type {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: #1c1616;
+    }
+    .jd-close {
+      background: none;
+      border: none;
+      color: $court-surface;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+      font-weight: 700;
+
+      &:hover {
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+  .jd-content {
+    padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .jd-quick-info {
+    display: flex;
+    gap: 1rem;
+    position: relative;
+
+    .jd-image-wrap {
+      flex-shrink: 0;
+      width: 120px;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid rgba($court-gold, 0.4);
+    }
+
+    .jd-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .jd-image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 1.8rem;
+    }
+  }
+
+  .jd-name-and-meta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    gap: 0.3rem;
+    .jd-name {
+      font-family: $serif;
+      font-size: 135%;
+      color: $court-gold;
+      margin: 0;
+    }
+    .jd-meta {
+      font-size: 75%;
+      color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .jd-demographics {
+      display: flex;
+      gap: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 75%;
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  .chief-indicator {
+    font-family: $serif;
+    color: $court-gold;
+    font-size: 120%;
+  }
+
+  .jd-bio {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+    margin: 0;
+    font-style: italic;
+  }
+
+  .jd-hints {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    .hint-tag {
+      font-size: 0.7rem;
+      border-radius: 3px;
+      padding: 0.15rem 0.4rem;
+      white-space: nowrap;
+      border: 1px solid rgba(26, 10, 10, 0.14);
+      background-color: #f5f0e8;
+      color: $court-text;
+    }
+  }
+
+  .jd-hints-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .jd-hint-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  // &.justice-type-fictional {
+  //   border-color: $type-fictional;
+  //   .jd-header {
+  //     background-color: $type-fictional;
+  //   }
+  //   .jd-name {
+  //     color: $type-fictional;
+  //   }
+  // }
+
+  // &.justice-type-celebrity {
+  //   border-color: $type-celebrity;
+  //   .jd-header {
+  //     background-color: $type-celebrity;
+  //   }
+  //   .jd-name {
+  //     color: $type-celebrity;
+  //   }
+  // }
+
+  .jd-vote-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .jd-vote-label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+
+    strong {
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  // ─── Justice case history ─────────────────────────────────────
+  .jd-history {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .jd-history-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(255, 255, 255, 0.35);
+    margin: 0;
+  }
+
+  .jd-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .jd-history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.04);
+
+    &.voted-for {
+      border-left: 3px solid #5aef7a;
+    }
+
+    &.voted-against {
+      border-left: 3px solid #ef5a5a;
+    }
+  }
+
+  .jdh-case {
+    color: rgba(255, 255, 255, 0.65);
+    flex: 1;
+    margin-right: 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .jdh-vote {
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+
+    .voted-for & {
+      color: #5aef7a;
+    }
+
+    .voted-against & {
+      color: #ef5a5a;
+    }
+  }
+}

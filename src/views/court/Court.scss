@@ -24,6 +24,12 @@ $party-whig: #5a3a8a;
 $party-federalist: #2a5a2a;
 $party-democratic-republican: #3a5a2a;
 
+// ---- Justice Type Colors ------------------------------------
+$type-fictional: #a144cf;
+$type-current: lime;
+$type-historical: orange;
+$type-celebrity: rgb(75, 75, 235);
+
 .court-game {
   width: 100%;
   min-height: 100vh;
@@ -416,6 +422,7 @@ $party-democratic-republican: #3a5a2a;
 }
 
 @import "scss/components/_bench";
+@import "scss/components/justice-detail";
 
 @import "./scss/screens/playing";
 @import "./scss/screens/report";

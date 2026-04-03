@@ -256,7 +256,7 @@ export const justiceHistorical: Justice[] = [
   {
     id: 11,
     name: "Ruth Bader Ginsburg",
-    image: "",
+    image: "rbg.webp",
     description:
       "The Notorious RBG. Five feet of pure legal steel who dismantled gender discrimination one meticulous argument at a time. Should have retired earlier but was too stubborn to let the bad guys win. History is complicated.",
     justiceType: "historical",
@@ -344,7 +344,7 @@ export const justiceHistorical: Justice[] = [
   {
     id: 15,
     name: "John Paul Stevens",
-    image: "",
+    image: "stevens.webp",
     description:
       "Appointed by a Republican, became the liberal lion of the Court over 35 years. Served until age 90. Had absolutely no time for your nonsense. Wore a bow tie. Was correct.",
     justiceType: "historical",
@@ -366,7 +366,7 @@ export const justiceHistorical: Justice[] = [
   {
     id: 16,
     name: "Byron White",
-    image: "",
+    image: "byron_white.webp",
     description:
       "Former NFL running back turned Supreme Court Justice — because why not. Moved unpredictably on the field and on the bench. Dissented on Roe v. Wade, proving that a JFK appointment is not a guarantee.",
     justiceType: "historical",
@@ -429,13 +429,20 @@ export const justiceHistorical: Justice[] = [
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 3, threats: 2 },
   },
+];
+
+// ────────────────────────────────────────────────────────────
+// FICTIONAL JUSTICES (based on well-known fictional characters)
+// ────────────────────────────────────────────────────────────
+
+export const justiceFictional: Justice[] = [
   {
     id: 25,
     name: "Judge Roy Bean",
     image: "",
     description:
       "Self-proclaimed 'The Law West of the Pecos.' Held court in a saloon. Death by hanging available within 24 hours — guaranteed. His courtroom had a bar, and that's not a metaphor. Has cited 'my gut' in 47 opinions.",
-    justiceType: "historical",
+    justiceType: "celebrity",
     gender: "M",
     birthYear: 1825,
     religion: "Protestant",
@@ -450,17 +457,10 @@ export const justiceHistorical: Justice[] = [
     },
     weaknesses: { flattery: 7, bribery: 8, blackmail: 6, threats: 2 },
   },
-];
-
-// ────────────────────────────────────────────────────────────
-// FICTIONAL JUSTICES (based on well-known fictional characters)
-// ────────────────────────────────────────────────────────────
-
-export const justiceFictional: Justice[] = [
   {
     id: 21,
     name: "Judge Dredd",
-    image: "",
+    image: "dredd.webp",
     description:
       "I AM THE LAW. Does not recognize the concept of appeals. His gavel is also a gun. Has issued seventeen sentences during oral arguments. The other justices are scared of him but will not say so on the record.",
     justiceType: "fictional",
@@ -482,7 +482,7 @@ export const justiceFictional: Justice[] = [
   {
     id: 32,
     name: "Leslie Knope",
-    image: "",
+    image: "knope.webp",
     description:
       "Former Parks & Recreation Director who ascended to the Supreme Court through sheer organized enthusiasm and a binder for every occasion. Believes deeply in government, waffles, and the American people — in that order.",
     justiceType: "fictional",
@@ -504,7 +504,7 @@ export const justiceFictional: Justice[] = [
   {
     id: 33,
     name: "Al Swearengen",
-    image: "",
+    image: "swearengen.webp",
     description:
       "Proprietor of the Gem Saloon, Deadwood, South Dakota. Appointed himself to the Court through a combination of intimidation, bribery, and a handshake deal nobody wants to explain. Has never lost a negotiation. Will not lose this one.",
     justiceType: "fictional",
@@ -548,7 +548,7 @@ export const justiceFictional: Justice[] = [
   {
     id: 35,
     name: "Othello",
-    image: "",
+    image: "othello.webp",
     description:
       "Moor of Venice, former military general, now somehow on the Supreme Court. A man of great passion and even greater susceptibility to insinuation. Extraordinarily just until someone whispers in his ear — and then things escalate quickly.",
     justiceType: "fictional",
@@ -568,8 +568,8 @@ export const justiceFictional: Justice[] = [
   },
   {
     id: 36,
-    name: "Mentak The Mind Taker",
-    image: "",
+    name: "Mentok The Mind Taker",
+    image: "mentok.webp",
     description:
       "Villain-turned-justice from the Harvey Birdman universe, where superheroes became attorneys and this is somehow what followed. Cannot stop reading the minds of opposing counsel, which is cheating. Has been issued fourteen contempt warnings and considers each one a badge of honor.",
     justiceType: "fictional",
@@ -591,7 +591,7 @@ export const justiceFictional: Justice[] = [
   {
     id: 37,
     name: "Judge Doom",
-    image: "",
+    image: "doom.webp",
     description:
       "The villainous mastermind behind Toontown's destruction, now on the Supreme Court. Keeps a vat of Dip under the bench 'for procedural purposes.' His eyes spin when he's overruled, which is terrifying. Believed by some to be a Toon himself, which he vehemently denies in a very high-pitched voice.",
     justiceType: "fictional",
@@ -613,7 +613,7 @@ export const justiceFictional: Justice[] = [
   {
     id: 38,
     name: "A DVD Boxed Set of Law & Order: SVU",
-    image: "",
+    image: "svu_box.webp",
     description:
       "In the Supreme Court, the people are represented by two separate yet equally important groups: the discs, and the case summaries on the back of the box. These are their stories. Has issued opinions in 500+ episodes and will not be stopped. Asks every petitioner 'but did you do it?' Has never presided over a case involving sexually based offenses without a nine-minute cold open.",
     justiceType: "fictional",
@@ -642,13 +642,13 @@ export const justiceCelebrity: Justice[] = [
   {
     id: 29,
     name: "Peter Thiel",
-    image: "",
+    image: "thiel.webp",
     description:
       "Libertarian billionaire who wants to disrupt tradition, due process, and also possibly mortality. Abstains from cases involving the deep state on principle. Has a separate underground chamber where he writes his concurrences. Believes competition is for losers.",
     justiceType: "celebrity",
     gender: "M",
     birthYear: 1967,
-    nominatedBy: PRES_LIBERACE,
+    nominatedBy: PRES_TRUMP,
     religion: "Other",
     ethnicity: "White",
     stats: {
@@ -664,7 +664,7 @@ export const justiceCelebrity: Justice[] = [
   {
     id: 30,
     name: "Judge Judy",
-    image: "",
+    image: "judy.webp",
     description:
       "Byrd, I'm done listening. Has been tougher than the Supreme Court for thirty years and now she's making it official. Writes opinions in a tone that implies you are an idiot who wasted her time. Once dismissed a case and the parties' marriages simultaneously.",
     justiceType: "celebrity",
@@ -708,7 +708,7 @@ export const justiceCelebrity: Justice[] = [
   {
     id: 39,
     name: "Judge Reinhold",
-    image: "",
+    image: "reinhold.webp",
     description:
       "A celebrity whose name already contains the word 'Judge,' which apparently qualifies him. Known for Beverly Hills Cop and that thing at the airport. Brings genuine warmth to oral arguments and absolutely no legal training whatsoever. Has recused himself from nothing because why would he.",
     justiceType: "celebrity",
@@ -730,7 +730,7 @@ export const justiceCelebrity: Justice[] = [
   {
     id: 40,
     name: "Simon Cowell",
-    image: "",
+    image: "cowell.webp",
     description:
       "TV's harshest talent show judge now rules on constitutional law. His oral argument feedback is devastating, precise, and poorly reasoned. Once told a petitioner their brief was 'a bit karaoke.' High-waisted jeans. Zero empathy. Somehow winning.",
     justiceType: "celebrity",
@@ -752,7 +752,7 @@ export const justiceCelebrity: Justice[] = [
   {
     id: 41,
     name: "Jerry Springer",
-    image: "",
+    image: "springer.webp",
     description:
       "Former mayor, former TV ringmaster, now somehow on the nation's highest court. Oral arguments have never been this chaotic or this watchable. Has twice asked attorneys to 'come out here and say that to the other guy's face.' Final Thought: maybe don't do that.",
     justiceType: "celebrity",
