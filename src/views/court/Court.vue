@@ -15,12 +15,9 @@
   import { tactics as allTactics } from "./ts/_tactics";
   import type { Justice, Case, Tactic, Party } from "./ts/_types";
 
-  // ── Debug constant ─────────────────────────────────────────
-  // Set to 0 to keep toasts visible until manually dismissed (click to close).
-  const toastDuration: number = 4000; // ms (set to 0 to persist until clicked)
+  import { gameSettings, uiSettings } from "./ts/_settings";
 
   // ── Game settings ──────────────────────────────────────────
-  const gameSettings = { numberOfRounds: 3, abstentionThreshold: 20 } as const;
 
   const toast = useToast();
 
@@ -569,7 +566,11 @@
         component: TacticToast,
         props: { actor, tacticName: tactic.name, results: results.map((r) => ({ justiceName: r.justiceName, change: r.change, isKnockon: r.isKnockon })) },
       },
-      { position: POSITION.BOTTOM_RIGHT, timeout: toastDuration === 0 ? false : toastDuration, toastClassName: `court-toast court-toast--${actor}` },
+      {
+        position: POSITION.BOTTOM_RIGHT,
+        timeout: uiSettings.toastDuration === 0 ? false : uiSettings.toastDuration,
+        toastClassName: `court-toast court-toast--${actor}`,
+      },
     );
 
     if (actor === "player") {
@@ -919,11 +920,11 @@
 
   function voteLabel(leaning: number): string {
     const t = gameSettings.abstentionThreshold;
-    if (leaning >= 60) return "✅ Strongly For";
-    if (leaning > t) return "↗ Leaning For";
-    if (leaning >= -t) return "⚖️ Undecided";
-    if (leaning > -60) return "↘ Leaning Against";
-    return "❌ Strongly Against";
+    if (leaning >= 60) return "Strongly For";
+    if (leaning > t) return "Leaning For";
+    if (leaning >= -t) return "Undecided";
+    if (leaning > -60) return "Leaning Against";
+    return "Strongly Against";
   }
 
   function justiceImageUrl(justice: Justice): string | null {

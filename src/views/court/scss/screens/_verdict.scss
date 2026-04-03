@@ -41,7 +41,7 @@
 }
 
 .verdict-score {
-  font-family: $serif;
+  font-family: $monospace;
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: $bold;
   color: $court-gold;
@@ -183,7 +183,7 @@
   font-size: 0.7rem;
   padding: 0.1rem 0.3rem;
   border-radius: 3px;
-  cursor: default;
+  cursor: help;
   border: 1px solid;
 
   &.chip--player {

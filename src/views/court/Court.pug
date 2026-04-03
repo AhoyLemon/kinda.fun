@@ -143,11 +143,10 @@
           @click="handleJusticeClick(justice)"
         )
 
-          .justice-chief-badge(v-if="justice.id === game.chiefJusticeId") ⚖ Chief
-          .justice-shield-badge(v-else-if="game.playerShields.includes(justice.id)") 🛡️
-          .justice-shield-badge.opp-shield(v-else-if="game.opponentShields.includes(justice.id)") 🔒
-          .justice-recused-badge(v-if="game.recusedJustices.includes(justice.id)") 🔕
-          //.justice-card__badge {{ justiceTypeLabel(justice.justiceType) }}
+          .justice-chief-badge(v-if="justice.id === game.chiefJusticeId" v-tippy="'The Chief Justice is more difficult to sway, but can exert their own influence on other justices in the same party.'") ⚖ Chief
+          .justice-shield-badge(v-else-if="game.playerShields.includes(justice.id)" v-tippy="'You are protecting this justice.'") 🛡️
+          .justice-shield-badge.opp-shield(v-else-if="game.opponentShields.includes(justice.id)" v-tippy="'This justice has been protected by your opponent.'") 🔒
+          .justice-recused-badge(v-if="game.recusedJustices.includes(justice.id)" v-tippy="'This justice has been issued a recusal request and thus is more unlikely to make a ruling.'") 🔕
 
           .pic-and-name(v-if="justiceImageUrl(justice)")
             .justice-card__thumb
