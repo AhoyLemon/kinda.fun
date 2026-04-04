@@ -4,7 +4,7 @@ import { spawn } from "child_process";
 import chalk from "chalk";
 
 function run(cmd, args, name) {
-  const proc = spawn(cmd, args, { stdio: "inherit" });
+  const proc = spawn(cmd, args, { stdio: "inherit", shell: process.platform === "win32", shell: process.platform === "win32" });
   proc.on("close", (code) => {
     if (code !== 0) {
       console.log(chalk.yellow(`[${name}] exited with code ${code}`));
