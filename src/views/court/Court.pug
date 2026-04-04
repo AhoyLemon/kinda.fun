@@ -55,8 +55,10 @@
         span.oc-label 🎯 Exploit
         span.oc-value.wk--flag {{ benchOverview.greatestWeakness }}
 
+      .targeting-banner(v-if="game.multiTargetMode")
+        | 🎯 Select {{ 2 - game.multiTargetSelections.length }} justice{{ (2 - game.multiTargetSelections.length) === 1 ? '' : 's' }} — click the card again to cancel
       .bench-grid.bench-grid--playing(
-      :class="{ 'targeting-mode': game.selectedTacticId !== null }"
+      :class="{ 'targeting-mode': game.selectedTacticId !== null || game.multiTargetMode }"
     )
         .justice-card.on-bench(
           v-for="justice in game.bench"
@@ -67,9 +69,12 @@
               'has-image': justiceImageUrl(justice), \
               'is-ally': (game.leanings[justice.id] ?? 0) > 0, \
               'is-enemy': (game.leanings[justice.id] ?? 0) < 0, \
-              'is-targetable': game.selectedTacticId !== null, \
+              'is-targetable': game.selectedTacticId !== null || game.multiTargetMode, \
               'is-shielded': game.playerShields.includes(justice.id), \
               'is-chief': justice.id === game.chiefJusticeId, \
+              'is-napping': !!game.nappingJustices[justice.id], \
+              'is-buffed': !!game.statMods[justice.id], \
+              'is-multi-selected': game.multiTargetSelections.includes(justice.id), \
             } \
           ]"
           @click="handleJusticeClick(justice)"
@@ -79,6 +84,8 @@
           .justice-shield-badge(v-else-if="game.playerShields.includes(justice.id)" v-tippy="'You are protecting this justice.'") 🛡️
           .justice-shield-badge.opp-shield(v-else-if="game.opponentShields.includes(justice.id)" v-tippy="'This justice has been protected by your opponent.'") 🔒
           .justice-recused-badge(v-if="game.recusedJustices.includes(justice.id)" v-tippy="'This justice has been issued a recusal request and thus is more unlikely to make a ruling.'") 🔕
+          .justice-buff-badge(v-if="game.statMods[justice.id]" v-tippy="'Stats temporarily boosted by Justice Cocktails'") 🍸
+          .justice-napping-overlay(v-if="game.nappingJustices[justice.id]" v-tippy="'Napping — not responding to arguments this round. Wakes with a +15 bonus.'") 💤
 
           .pic-and-name(v-if="justiceImageUrl(justice)")
             .justice-card__thumb
@@ -98,7 +105,7 @@
 
     //- The Docket: shared card pool
     .court-docket(
-      :class="{ 'is-claiming': game.claimingMode, 'is-opponent-turn': ui.opponentThinking }"
+      :class="{ 'is-claiming': game.claimingMode, 'is-opponent-turn': ui.opponentThinking, 'has-selection': game.selectedTacticId !== null || game.multiTargetMode }"
     )
       .docket-header
         .docket-title-row
@@ -110,6 +117,7 @@
             span.claimed-count(v-if="game.claimedCards.length")  · {{ game.claimedCards.length }} claimed by you
         p.claiming-hint(v-if="game.claimingMode")
           | Select {{ 2 - game.claimedSelections.length }} more card(s) to claim for your exclusive use.
+        p.hand-hint(v-else-if="game.multiTargetMode") 👆 Select {{ 2 - game.multiTargetSelections.length }} more justice{{ (2 - game.multiTargetSelections.length) === 1 ? '' : 's' }} above
         p.hand-hint(v-else-if="game.selectedTacticId !== null") ↑ Click a justice above to target them
 
       //- Claimed cards (player-exclusive)
@@ -121,7 +129,11 @@
             :key="tactic.id"
             :class="[ \
               `card-type-${tactic.cardType}`, \
-              { 'is-selected': game.selectedTacticId === tactic.id, 'is-claimed': true } \
+              { \
+                'is-selected': game.selectedTacticId === tactic.id || game.multiTargetTacticId === tactic.id, \
+                'is-claimed': true, \
+                'is-disabled': tactic.effectType === 'betray-friend' && !hasStrongAlly, \
+              } \
             ]"
             @click="selectTactic(tactic.id)"
           )
@@ -143,9 +155,10 @@
             :class="[ \
               `card-type-${tactic.cardType}`, \
               { \
-                'is-selected': game.selectedTacticId === tactic.id, \
+                'is-selected': game.selectedTacticId === tactic.id || game.multiTargetTacticId === tactic.id, \
                 'is-claiming-pick': game.claimingMode && game.claimedSelections.includes(tactic.id), \
                 'is-opponent-browsing': ui.opponentHighlightedCardId === tactic.id, \
+                'is-disabled': tactic.effectType === 'betray-friend' && !hasStrongAlly, \
               } \
             ]"
             @click="selectTactic(tactic.id)"

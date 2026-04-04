@@ -355,3 +355,20 @@ Slight change to the part where it says "The XX Court",
   - THEN wrap the historical ones in an `optgroup` called Historical, and wrap The Court From Hell (and possibly others) in an `optgroup` called Fictional. Also add the current court to the Historical, and in this case call it "Trump's Bench". Again, this will usually be the option you'll play.
 
 - Also, for that select, I don't want to actualy start the game immediately when you select one. Selecting one of the options from that select should give you an overview (name, year, chief justice, description) of the court, and then you can click a button to start the game with that court. This because this is very much the tertiary way to play (primary = current court, secondary = the random selections (historical, fantasy, chaos), and tertiary = the presets). So while I don't want to dissuade you from doing these methods, I'd like to use visual hierarchy to indicate to the player how to start.
+
+---
+
+### UI / Template Work for New Tactic Cards
+
+The new cards (ids 19–25) have full backend logic and now have visual polish in the template:
+
+- [x] **Multi-target mode UI** — Orange `.targeting-banner` above the bench + pulsing docket hint: "Select N more justice(s) above". Banner visible whenever `game.multiTargetMode` is true.
+- [x] **Betray Your Friend — disabled state** — Card gets `is-disabled` class (opacity 0.3, pointer-events: none) when no justice has leaning ≥ 60. Works for both claimed and shared docket cards.
+- [x] **Napping justices** — `.justice-napping-overlay` (dark translucent fullcard overlay with 💤 centered) + `is-napping` dim on the card. Tooltip explains wakeup bonus. Pointer-events: none so card is still clickable.
+- [x] **Stat mod buff indicator** — `.justice-buff-badge` (purple top-left corner pill, 🍸) + `is-buffed` purple glow on card when `game.statMods[justice.id]` exists.
+- [x] **Religion override** — Justice detail modal now shows `game.religionOverrides[id] ?? justice.religion` with a ☘️ indicator when overridden.
+- [x] **Multi-target selected justices** — `is-multi-selected` class gives justices an orange border + glow once clicked during multi-target mode.
+
+**Also added (requested during this session):**
+
+- [x] **Selected card spotlight** — When any targeting card is active, `.court-docket.has-selection` dims + shrinks all other tactic cards (opacity 0.38, scale 0.93, brightness 0.55) and enlarges the selected card (translateY(-8px) scale(1.05)) with a pulsing gold glow animation (`tactic-selected-glow`). Multi-target cards also show as `is-selected` via `game.multiTargetTacticId`.

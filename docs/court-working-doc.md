@@ -37,15 +37,22 @@ See docs/court-working-doc-history.md for a session-by-session breakdown of the 
 
 ### UI / Template Work for New Tactic Cards
 
-The new cards (ids 19–25) have full backend logic but need visual polish in the template:
+The new cards (ids 19–25) have full backend logic and now have visual polish in the template:
 
-- **Multi-target mode UI** — When `game.multiTargetMode` is true (Swap Clerks, Hire A Private Investigator), visually indicate to the player that they should click 2 justices. A banner or instructional overlay above the bench would work well.
-- **Betray Your Friend — disabled state** — This card should appear grayed out when no justice has leaning ≥ 60. The card's `disabled` check is already in the data layer; surface it visually in the tactic card CSS class.
-- **Napping justices** — Justices in `game.nappingJustices` should have a visual indicator (e.g., a "💤" badge or a dimmed card) to show they are unresponsive for the round.
-- **Stat mod indicators** — Justice cards shold reflect temporary stat changes from Justice Cocktails (show a visual "buff" indicator while `game.statMods` has an entry for that justice).
-- **Religion override** — Justices converted to Catholic via St. Patrick's Day should show their new religion in the Justice detail modal.
+- [x] **Multi-target mode UI** — Orange `.targeting-banner` above the bench + pulsing docket hint: "Select N more justice(s) above". Banner visible whenever `game.multiTargetMode` is true.
+- [x] **Betray Your Friend — disabled state** — Card gets `is-disabled` class (opacity 0.3, pointer-events: none) when no justice has leaning ≥ 60. Works for both claimed and shared docket cards.
+- [x] **Napping justices** — `.justice-napping-overlay` (dark translucent fullcard overlay with 💤 centered) + `is-napping` dim on the card. Tooltip explains wakeup bonus. Pointer-events: none so card is still clickable.
+- [x] **Stat mod buff indicator** — `.justice-buff-badge` (purple top-left corner pill, 🍸) + `is-buffed` purple glow on card when `game.statMods[justice.id]` exists.
+- [x] **Religion override** — Justice detail modal now shows `game.religionOverrides[id] ?? justice.religion` with a ☘️ indicator when overridden.
+- [x] **Multi-target selected justices** — `is-multi-selected` class gives justices an orange border + glow once clicked during multi-target mode.
+
+**Also added (requested during this session):**
+
+- [x] **Selected card spotlight** — When any targeting card is active, `.court-docket.has-selection` dims + shrinks all other tactic cards (opacity 0.38, scale 0.93, brightness 0.55) and enlarges the selected card (translateY(-8px) scale(1.05)) with a pulsing gold glow animation (`tactic-selected-glow`). Multi-target cards also show as `is-selected` via `game.multiTargetTacticId`.
 
 ### Other Upcoming Work
+
+- Look at game balance, particularly the effectiveness of new cards (19–25) in practice
 
 ## Eventual Next Steps
 

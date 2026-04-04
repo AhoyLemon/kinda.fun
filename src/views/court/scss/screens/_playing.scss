@@ -318,6 +318,12 @@
     box-shadow: 0 8px 24px rgba(201, 168, 76, 0.5);
   }
 
+  &.is-disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
   &.card-type-attack {
     border-top: 4px solid $court-red;
   }
@@ -506,6 +512,49 @@
   position: relative; // needed for absolute shield badge
 }
 
+// ─── Napping overlay ─────────────────────────────────────────
+.justice-napping-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem;
+  background: rgba(5, 5, 20, 0.55);
+  border-radius: inherit;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.justice-card.is-napping {
+  opacity: 0.8;
+}
+
+// ─── Buff badge (Justice Cocktails) ─────────────────────────
+.justice-buff-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 0.65rem;
+  background: rgba(155, 89, 182, 0.85);
+  color: #fff;
+  font-weight: bold;
+  padding: 0.15em 0.45em;
+  border-radius: 6px 0 4px 0;
+  z-index: 3;
+  cursor: help;
+}
+
+.justice-card.is-buffed {
+  box-shadow: 0 0 10px rgba(155, 89, 182, 0.5);
+}
+
+// ─── Multi-target selected ───────────────────────────────────
+.justice-card.is-multi-selected {
+  border-color: #f39c12 !important;
+  box-shadow: 0 0 18px rgba(243, 156, 18, 0.65) !important;
+}
+
 // ─── Docket title/meta ───────────────────────────────────────
 .docket-title-row {
   display: flex;
@@ -545,6 +594,45 @@
     position: relative;
     z-index: 55;
   }
+  &.has-selection {
+    .tactic-card {
+      transition:
+        opacity 0.2s,
+        transform 0.2s,
+        filter 0.2s,
+        box-shadow 0.2s,
+        border-color 0.12s;
+    }
+    .tactic-card:not(.is-selected) {
+      opacity: 0.38;
+      transform: scale(0.93);
+      filter: brightness(0.55);
+
+      &:hover {
+        opacity: 0.62;
+        transform: scale(0.96);
+        filter: brightness(0.72);
+      }
+    }
+    .tactic-card.is-selected {
+      transform: translateY(-8px) scale(1.05);
+      animation: tactic-selected-glow 1.4s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes tactic-selected-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 2px $court-gold,
+      0 10px 28px rgba(201, 168, 76, 0.45);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px $court-gold-light,
+      0 14px 40px rgba(201, 168, 76, 0.78);
+  }
 }
 
 // ─── Claiming hint ───────────────────────────────────────────
@@ -554,6 +642,21 @@
   font-style: italic;
   animation: pulse-hint 1s ease-in-out infinite;
   margin: 0 0 0.5rem;
+}
+
+// ─── Multi-target banner ─────────────────────────────────────
+.targeting-banner {
+  width: 100%;
+  flex-basis: 100%;
+  background: rgba(243, 156, 18, 0.12);
+  border: 1px solid rgba(243, 156, 18, 0.45);
+  border-radius: 4px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.82rem;
+  color: #f5a623;
+  font-style: italic;
+  animation: pulse-hint 1.2s ease-in-out infinite;
+  text-align: center;
 }
 
 // ─── Docket sections ─────────────────────────────────────────

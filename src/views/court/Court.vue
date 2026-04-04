@@ -617,6 +617,9 @@
     }),
   );
 
+  // True when at least one bench justice is Strongly For (leaning >= 60) — gates Betray Your Friend
+  const hasStrongAlly = computed(() => game.bench.some((j) => (game.leanings[j.id] ?? 0) >= 60));
+
   const benchOverview = computed(() => {
     const bench = game.bench;
     if (!bench.length) return null;
