@@ -10,75 +10,7 @@
     p Convening the court… 
 
   //- ── SETUP PHASE ────────────────────────────────────────────
-  main.court-main(v-else-if="ui.phase === 'setup'")
-
-    section.case-section
-      .case-section-header
-        h2.section-label Today's Case
-        .case-section-actions
-          button.btn.btn--redeal(@click="dealGame") 🎲 New Draw
-          button.btn.btn--switch(@click="resetToCourtSelect") ← Change Mode
-
-      .case-card(:class="`case-type-${game.currentCase.caseType}`")
-        .case-card__header
-          span.case-type-badge {{ game.currentCase.caseType === 'historical' ? '📜 Historical' : '🎭 Fictional' }}
-          span.case-year(v-if="game.currentCase.year") {{ game.currentCase.year }}
-        h3.case-name {{ game.currentCase.name }}
-        p.case-question "{{ game.currentCase.primaryQuestion }}"
-
-        .case-sides
-          .case-side.case-side--prosecution(:class="{ 'is-chosen': game.playerSide === 'prosecution' }")
-            h4.side-role ⚔️ Prosecution
-            p.side-name {{ game.currentCase.prosecution.name }}
-            p.side-argument {{ game.currentCase.prosecution.argument }}
-            span.side-party(:class="`party-${game.currentCase.prosecution.favoredBy.toLowerCase().replace(' ', '-')}`")
-              | Favors {{ game.currentCase.prosecution.favoredBy }}s
-
-          .case-side.case-side--defense(:class="{ 'is-chosen': game.playerSide === 'defendant' }")
-            h4.side-role 🛡️ Defense
-            p.side-name {{ game.currentCase.defendant.name }}
-            p.side-argument {{ game.currentCase.defendant.argument }}
-            span.side-party(:class="`party-${game.currentCase.defendant.favoredBy.toLowerCase().replace(' ', '-')}`")
-              | Favors {{ game.currentCase.defendant.favoredBy }}s
-
-        .case-actions(v-if="!game.playerSide")
-          p.choose-prompt Choose your side:
-          .side-buttons
-            button.btn.btn--prosecution(@click="chooseSide('prosecution')") ⚔️ Argue for Prosecution
-            button.btn.btn--defense(@click="chooseSide('defendant')") 🛡️ Argue for Defense
-
-        .case-actions(v-else)
-          p.chosen-label
-            | You are arguing for:
-            strong  {{ game.playerSide === 'prosecution' ? game.currentCase.prosecution.name : game.currentCase.defendant.name }}
-          .side-buttons
-            button.btn.btn--start(@click="startArguments") Begin Arguments →
-            button.btn.btn--switch(@click="game.playerSide = null") Switch Sides
-
-    section.bench-section
-      .bench-header
-        h2.section-label {{ benchLabel }}
-
-      .bench-grid.overview
-        .justice-card(
-          v-for="justice in sortedBench"
-          :key="justice.id"
-          :class="[ \
-            `type-${justice.justiceType}`, \
-            { 'has-image': justiceImageUrl(justice), 'is-chief': justice.id === game.chiefJusticeId } \
-          ]"
-          @click="handleJusticeClick(justice)"
-        )
-          .justice-chief-badge(v-if="justice.id === game.chiefJusticeId") ⚖ Chief
-          .justice-card__thumb(v-if="justiceImageUrl(justice)")
-            img.justice-card__img(:src="justiceImageUrl(justice)" :alt="justice.name")
-          .justice-bio
-            .justice-card__badge {{ justiceTypeLabel(justice.justiceType) }}
-            .justice-card__name {{ justice.name }}
-            .justice-card__president(v-if="justice.nominatedBy") Appt. by {{ justice.nominatedBy.name }}
-          .justice-card__hints
-            span.hint-tag(v-for="hint in justiceHints(justice, 2)" :key="hint") {{ hint }}
-          .justice-card__view-cta 🔍 View Profile
+  include pug/screens/_setup.pug
 
   //- ── PLAYING PHASE ──────────────────────────────────────────
   main.court-playing(v-else-if="ui.phase === 'playing'")

@@ -1,0 +1,167 @@
+// ─── Case Sides ──────────────────────────────────────────────
+.case-sides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  @media (max-width: #{$mobile-max}) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.case-side {
+  background: $court-card-dark;
+  border-radius: 6px;
+  padding: 1rem;
+  border: 2px solid transparent;
+  transition:
+    scale 0.5s ease-in,
+    box-shadow 0.5s linear;
+
+  &.is-chosen {
+    scale: 1.1;
+    box-shadow: 0 0 8px black;
+  }
+  &.is-not-chosen {
+    scale: 0.9;
+    opacity: 0.85;
+  }
+
+  &--prosecution {
+    border-top: 4px solid $court-red;
+  }
+  &--defense {
+    border-top: 4px solid $court-blue;
+  }
+}
+
+.side-role {
+  font-family: $serif;
+  font-size: 0.95rem;
+  font-weight: $bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: $court-text-muted;
+  margin: 0 0 0.4rem 0;
+}
+
+.side-name {
+  font-weight: $bold;
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  color: $court-text;
+}
+
+.side-argument {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: $court-text;
+  margin: 0 0 0.75rem 0;
+}
+
+.side-party {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: $bold;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  color: #fff;
+
+  &.party-democrat {
+    background: $party-democrat;
+  }
+  &.party-republican {
+    background: $party-republican;
+  }
+  &.party-whig {
+    background: $party-whig;
+  }
+  &.party-federalist {
+    background: $party-federalist;
+  }
+  &.party-democratic-republican {
+    background: $party-democratic-republican;
+  }
+}
+
+// ─── Case Card ───────────────────────────────────────────────
+.case-card {
+  background: $court-card;
+  color: $court-text;
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  border: 3px solid $court-gold;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.case-type-badge {
+  font-size: 0.75rem;
+  font-weight: $bold;
+  background: $court-surface;
+  color: $court-gold;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.case-year {
+  font-size: 0.85rem;
+  color: $court-text-muted;
+  font-style: italic;
+}
+
+.case-name {
+  font-family: $serif;
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-weight: $bold;
+  margin: 0 0 0.75rem 0;
+  color: $court-red;
+}
+
+.case-question {
+  font-style: italic;
+  font-size: 1rem;
+  color: $court-text-muted;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+  border-left: 3px solid $court-gold;
+  padding-left: 0.75rem;
+}
+
+// ─── Case Actions ────────────────────────────────────────────
+.case-actions {
+  border-top: 1px solid $court-card-dark;
+  padding-top: 1rem;
+
+  .choose-prompt {
+    text-align: center;
+    font-size: 0.9rem;
+    color: $court-text-muted;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .chosen-label {
+    text-align: center;
+    font-size: 0.95rem;
+    color: $court-text;
+    margin: 0 0 0.75rem 0;
+  }
+}
+
+.side-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}

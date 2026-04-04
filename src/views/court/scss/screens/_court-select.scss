@@ -1,0 +1,177 @@
+// ─── Court Selector ──────────────────────────────────────────
+.court-select {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: calc(100dvh - 200px);
+  // background-color: red;
+
+  .section-label {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+  }
+}
+
+.court-mode-grid {
+  // display: grid;
+  // grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  // gap: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+// ─── Preset bench select ─────────────────────────────────────
+.court-preset-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.preset-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 0.6rem 0;
+}
+
+.court-preset-select {
+  background: $court-surface;
+  border: 2px solid rgba(201, 168, 76, 0.4);
+  border-radius: 6px;
+  color: $court-card;
+  font-family: $sans-serif;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  min-width: 260px;
+  transition: border-color 0.15s;
+
+  &:hover,
+  &:focus {
+    border-color: $court-gold;
+    outline: none;
+  }
+
+  option,
+  optgroup {
+    background: $court-surface;
+    color: $court-card;
+  }
+}
+
+.court-preset-preview {
+  margin: 1.25rem auto 0;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 8px;
+  padding: 1.1rem 1.25rem;
+  text-align: left;
+
+  .cpp-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .cpp-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+
+  .cpp-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .cpp-name {
+    font-size: 1.05rem;
+    font-weight: $bold;
+    color: $court-card;
+    margin: 0;
+  }
+
+  .cpp-year {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .cpp-desc {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.45;
+    margin: 0 0 0.6rem;
+  }
+
+  .cpp-chief {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 0.9rem;
+
+    strong {
+      color: $court-gold;
+    }
+  }
+
+  .btn--start {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.court-mode-card {
+  background: $court-surface;
+  border: 2px solid $court-gold;
+  border-radius: 10px;
+  padding: 1.5rem 1.25rem;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    border-color 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+    border-color: $court-gold-light;
+  }
+
+  .cmc-icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .cmc-title {
+    font-family: $serif;
+    font-size: 1.1rem;
+    font-weight: $bold;
+    color: $court-gold;
+  }
+
+  .cmc-desc {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .cmc-badge {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    font-size: 0.6rem;
+    font-weight: $bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: $court-gold;
+    color: $court-text;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+  }
+}
