@@ -2,28 +2,31 @@ import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import { firebaseConfig } from "../firebaseConfig.public.js";
 import { initializeApp } from "firebase/app";
 
-// Initialize Firebase app
-const firebaseApp = initializeApp(firebaseConfig);
+let auth = null;
+const hasRequiredFirebaseConfig = Boolean(firebaseConfig?.apiKey && firebaseConfig?.projectId);
 
-// Get Auth instance
-const auth = getAuth(firebaseApp);
+if (!hasRequiredFirebaseConfig) {
+  console.warn("Skipping Firebase auth init: config is missing required values.");
+}
 
-// Start anonymous sign-in
-signInAnonymously(auth)
-  .then(() => {
-    // Signed in..
-    // You can listen for auth state changes if needed
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // user.uid is available
-        // Optionally, you can emit an event or set a global state here
-        // console.log('Anonymous user ID:', user.uid);
-      }
-    });
-  })
-  .catch((error) => {
-    // Handle Errors here.
-    // console.error('Anonymous sign-in error:', error);
-  });
+if (hasRequiredFirebaseConfig) {
+  try {
+    const firebaseApp = initializeApp(firebaseConfig);
+    auth = getAuth(firebaseApp);
+    signInAnonymously(auth)
+      .then(() => {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            // user.uid is available
+          }
+        });
+      })
+      .catch((error) => {
+        console.warn("Anonymous sign-in error:", error);
+      });
+  } catch (error) {
+    console.warn("Firebase auth initialization skipped:", error);
+  }
+}
 
 export { auth };

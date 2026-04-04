@@ -4,7 +4,7 @@ import { spawn } from "child_process";
 import chalk from "chalk";
 
 function run(cmd, args, name) {
-  const proc = spawn(cmd, args, { stdio: "inherit", shell: true });
+  const proc = spawn(cmd, args, { stdio: "inherit" });
   proc.on("close", (code) => {
     if (code !== 0) {
       console.log(chalk.yellow(`[${name}] exited with code ${code}`));
@@ -16,8 +16,10 @@ function run(cmd, args, name) {
 console.log(chalk.bold.cyan("\n  🎮  Kinda Fun") + chalk.bold.white("  —  Development Mode"));
 console.log(chalk.gray("  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━") + "\n");
 
+const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
+
 const processes = [
-  run("npm", ["run", "--silent", "dev:client"], "CLIENT"),
+  run(npmCmd, ["run", "--silent", "dev:client"], "CLIENT"),
   run("node", ["scripts/npm-run/watchPages.js"], "WATCH"),
   run("node", ["scripts/watchPugPartials.js"], "PARTIALS"),
 ];
