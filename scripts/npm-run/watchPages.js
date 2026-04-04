@@ -18,10 +18,11 @@ const watchers = [
 
 console.log(chalk.gray("   ◉  ") + chalk.cyan("Pages") + chalk.gray(`  —  ${watchers.length} game watchers`));
 
+const nodemonCmd = process.platform === "win32" ? "nodemon.cmd" : "nodemon";
+
 function runWatcher(w) {
-  const proc = spawn("nodemon", ["--quiet", "-w", w.file, "-x", "node", "scripts/npm-run/buildPages.js", w.build], {
+  const proc = spawn(nodemonCmd, ["--quiet", "-w", w.file, "-x", "node", "scripts/npm-run/buildPages.js", w.build], {
     stdio: "inherit",
-    shell: true,
     env: { ...process.env, DEV_WATCH: "1" },
   });
   proc.on("close", (code) => {

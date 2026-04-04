@@ -1,6 +1,5 @@
-// Firebase configuration for CI/deployment only
-// Uses environment variables set in GitHub Actions
-// Local development should use firebaseConfig.js (gitignored)
+// Public Firebase config from environment variables only.
+// Local machine secrets belong in firebaseConfig.js (gitignored).
 
 export const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -11,7 +10,6 @@ export const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Validate that all required environment variables are present
 if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-  console.error("Missing required Firebase environment variables!");
+  console.warn("Missing VITE_FIREBASE_* variables. Use local firebaseConfig.js or define env vars.");
 }
