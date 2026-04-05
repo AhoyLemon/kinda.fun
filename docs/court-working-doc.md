@@ -35,11 +35,7 @@ See docs/court-working-doc-history.md for a session-by-session breakdown of the 
 
 ## Next Steps
 
-Okay, so earlier today I ended a game with a 3-3-3 verdict. But the Verdict screen told me I lost. I think there's not logic to know what to do for a tie, so that's what I want to handle next.
-
-IF the trial ends in a tie (ex: 4-4-1, 3-3-3, 2-2-5, etc) then the user should see that the court could not decide on a final veridct (side note: Later features will allow you to add additional seats to the bench. If 1 additional seat is added, a tie wil be even more likely). Display the verdict mostly as it is, but with indications that you neither won nor lost.
-
-After this change to the "Verdict" screen, I will begin work on "Campaign Mode", which is described here: docs/court-campaign-mode.md - However, that's just something I want you to be aware of for next time. For now, let's fix this verdict screen to support ties, and then we'll move onto campaign mode.
+Add "Campaign Mode" to the game. See docs\court-campaign-mode.md - some Q&A is below.
 
 ## Campaign Mode: Clarifying Questions
 

@@ -27,7 +27,54 @@ But for Campaign Mode, here's how it will work:
 
   - You must select one of two objectives to be what your objective is. Success or failure is based on creating this outcome
 
-ALSO: The campaign will assign a president, with similar logic. So, if it's current court, the president is Donald Trump. Otherwise, assign an appropriate president. This will have an effect during the "between trials" phase.
+The Campaign will also assign the year and the president, so a campaign could look like this...
+
+```ts
+export const campaignSetups = [
+  {
+    id: 1,
+    name: "Current Court",
+    description: "The year is 2026. Donald Trump is still president and he has created three justices. Good luck.",
+    startYear: 2026,
+    currentPresident: PRES_TRUMP,
+    chiefJusticeId: 1, // John Roberts
+    justiceIds: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    caseIds: [23, 21, 4, 22, 16],
+  },
+  {
+    id: 2,
+    name: "The Warren Court",
+    description: `The year is 1968. The media reports your justices are "activists", but will they really change civil rights with their decisions?`,
+    currentPresident: PRES_NIXON,
+    startYear: 1968,
+    chiefJusticeId: 53, // Earl Warren
+    justiceIds: [53, 17, 60, 61, 62, 63, 16, 64, 10],
+    caseIds: [2, 5, 7, 12, 19],
+  },
+  {
+    id: 3,
+    name: "Fantasy Campaign",
+    description: "An alternate universe. It's 1900. What kind of American law will you be responsible for?",
+    startYear: 1900,
+    isRandomPresident: true
+    isRandomBench: true,
+    isRandomDocket: true,
+    justicePool: [ "fantasy", "celebrity" ],
+    casePool: ["historical"]
+  },
+  {
+    id: 4,
+    name: "Pure Chaos",
+    description: "Who knows what you'll get?",
+    isRandomStartYear: true
+    isRandomPresident: true,
+    isRandomBench: true,
+    isRandomDocket: true
+  }
+];
+```
+
+...so basically, each campaign can have a pre-set bench/docket, or it can be random, but we can also create rules for how the randomization works. For example, "Pure Chaos" is pure random everything, "Fantasy Campaign" is MOSTLY random, but it doesn't want to put current or historical justices on the court, and it only wants the docket to have historical cases.
 
 ## Campaign Mode Gameplay
 
