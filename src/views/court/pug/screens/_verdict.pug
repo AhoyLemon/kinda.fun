@@ -1,8 +1,8 @@
 //- ── VERDICT PHASE ──────────────────────────────────────────
 main.court-verdict(v-else-if="ui.phase === 'verdict'")
-  .verdict-header(:class="verdict && verdict.won ? 'verdict--won' : 'verdict--lost'")
+  .verdict-header(:class="verdict && (verdict.won ? 'verdict--won' : verdict.tied ? 'verdict--tied' : 'verdict--lost')")
     h2.verdict-title(v-if="verdict")
-      | {{ verdict.won ? '🎉 Judgement In Your Favor!' : '⚖️ Judgement Against You' }}
+      | {{ verdict.won ? '🎉 Judgement In Your Favor!' : verdict.tied ? '⚖️ The Court Is Divided' : '⚖️ Judgement Against You' }}
     .verdict-score(v-if="verdict") {{ verdictScoreDisplay }}
     p.verdict-ruled-for(v-if="verdictRuledFor")
       | The court ruled for 

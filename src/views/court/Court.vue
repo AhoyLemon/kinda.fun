@@ -650,7 +650,7 @@
     const forCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) > t).length;
     const againstCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) < -t).length;
     const abstainCount = game.bench.length - forCount - againstCount;
-    return { forCount, againstCount, abstainCount, won: forCount > againstCount };
+    return { forCount, againstCount, abstainCount, won: forCount > againstCount, tied: forCount === againstCount };
   });
 
   const tallyDisplay = computed(() => {
@@ -769,8 +769,8 @@
       { label: "Votes Against", justices: againstJustices, type: "against" as const },
       { label: "Abstaining", justices: abstainJustices, type: "abstain" as const },
     ].filter((s) => s.justices.length > 0);
-    // If player lost, put the "against" section first
-    if (!verdict.value.won) {
+    // If player lost (not tied), put the "against" section first
+    if (!verdict.value.won && !verdict.value.tied) {
       const againstIdx = sections.findIndex((s) => s.type === "against");
       if (againstIdx > 0) {
         const [against] = sections.splice(againstIdx, 1);
@@ -781,7 +781,7 @@
   });
 
   const verdictRuledFor = computed(() => {
-    if (!verdict.value || !game.currentCase || !game.playerSide) return "";
+    if (!verdict.value || !game.currentCase || !game.playerSide || verdict.value.tied) return "";
     if (verdict.value.won) {
       return game.playerSide === "prosecution" ? game.currentCase.prosecution.name : game.currentCase.defendant.name;
     }
@@ -789,7 +789,7 @@
   });
 
   const verdictWinningArgument = computed(() => {
-    if (!verdict.value || !game.currentCase || !game.playerSide) return "";
+    if (!verdict.value || !game.currentCase || !game.playerSide || verdict.value.tied) return "";
     const winningSide = verdict.value.won ? game.playerSide : game.playerSide === "prosecution" ? "defendant" : "prosecution";
     return winningSide === "prosecution" ? game.currentCase.prosecution.argument : game.currentCase.defendant.argument;
   });

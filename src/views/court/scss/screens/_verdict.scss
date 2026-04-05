@@ -19,6 +19,11 @@
     border-color: #2a7a3a;
   }
 
+  &.verdict--tied {
+    background: linear-gradient(160deg, rgba(201, 168, 76, 0.15) 0%, rgba(26, 10, 10, 0) 100%);
+    border-color: $court-gold;
+  }
+
   &.verdict--lost {
     background: linear-gradient(160deg, rgba(139, 32, 32, 0.15) 0%, rgba(26, 10, 10, 0) 100%);
     border-color: $court-red;
@@ -33,6 +38,10 @@
 
   .verdict--won & {
     color: #5aef7a;
+  }
+
+  .verdict--tied & {
+    color: $court-gold;
   }
 
   .verdict--lost & {
