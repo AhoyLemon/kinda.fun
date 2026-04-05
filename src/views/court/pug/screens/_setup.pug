@@ -1,5 +1,13 @@
 main.court-main(v-else-if="ui.phase === 'setup'")
 
+  //- Campaign progress banner
+  .campaign-banner(v-if="ui.isCampaignMode && campaign.data")
+    .cb-objective(v-if="campaign.data.activeObjective")
+      span.cb-icon {{ campaign.data.activeObjective.icon }}
+      span.cb-label {{ campaign.data.activeObjective.name }}
+    span.cb-progress {{ campaignProgress }}
+    span.cb-year 📅 {{ campaign.data.year }}
+
   section.case-section
     .case-section-header
       h2.section-label Today's Case
@@ -31,10 +39,19 @@ main.court-main(v-else-if="ui.phase === 'setup'")
 
       .case-actions(v-if="!game.playerSide")
         p.choose-prompt Choose your side:
+        p.forced-side-hint(v-if="ui.isCampaignMode && campaign.data?.activeObjective?.forcedSide")
+          | ⚠ Your objective requires you to argue as 
+          strong {{ campaign.data.activeObjective.forcedSide === 'prosecution' ? '⚔️ Prosecution' : '🛡️ Defense' }}.
         .side-buttons
-          button.btn.btn--prosecution(@click="chooseSide('prosecution')") ⚔️ Argue for Prosecution
-          button.btn.btn--defense(@click="chooseSide('defendant')") 🛡️ Argue for Defense
-        p(style="text-align: center; padding-top:1em;")
+          button.btn.btn--prosecution(
+            @click="chooseSide('prosecution')"
+            :disabled="ui.isCampaignMode && campaign.data?.activeObjective?.forcedSide && campaign.data.activeObjective.forcedSide !== 'prosecution'"
+          ) ⚔️ Argue for Prosecution
+          button.btn.btn--defense(
+            @click="chooseSide('defendant')"
+            :disabled="ui.isCampaignMode && campaign.data?.activeObjective?.forcedSide && campaign.data.activeObjective.forcedSide !== 'defendant'"
+          ) 🛡️ Argue for Defense
+        p(v-if="!ui.isCampaignMode" style="text-align: center; padding-top:1em;")
           button.btn.btn--redeal(@click="dealGame") 🎲 New Draw
 
       .case-actions(v-else)
@@ -43,7 +60,7 @@ main.court-main(v-else-if="ui.phase === 'setup'")
           strong  {{ game.playerSide === 'prosecution' ? game.currentCase.prosecution.name : game.currentCase.defendant.name }}
         .side-buttons
           button.btn.btn--start(@click="startArguments") Begin Arguments →
-          button.btn.btn--switch(@click="game.playerSide = null") Switch Sides
+          button.btn.btn--switch(v-if="!campaign.data?.activeObjective?.forcedSide" @click="game.playerSide = null") Switch Sides
 
   section.bench-section
     .bench-header

@@ -102,6 +102,22 @@
     justify-content: space-between;
     margin-bottom: 0.75rem;
   }
+  // ─── Forced side hint ────────────────────────────────────────
+  .forced-side-hint {
+    font-size: 0.82rem;
+    // color: rgba(255, 200, 60, 0.85);
+    color: $court-text;
+    text-align: center;
+    margin: 0 0 0.5rem;
+    padding: 0.3rem 0.8rem;
+    background: rgba(255, 200, 60, 0.06);
+    border-radius: 4px;
+
+    strong {
+      font-weight: 700;
+      // color: #ffcc44;
+    }
+  }
 }
 
 .case-type-badge {

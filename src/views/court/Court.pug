@@ -1,12 +1,21 @@
 .court-game(:class="`phase-${ui.phase}`")
-  header.court-header
+  header.court-header(v-if="ui.phase !== 'title' && ui.phase !== 'campaignSelect'")
     h1 ⚖️ {{ ui.title }}
+
+  //- ── TITLE SCREEN ───────────────────────────────────────────
+  include pug/screens/_title.pug
+
+  //- ── CAMPAIGN SELECT ────────────────────────────────────────
+  include pug/screens/_campaign-select.pug
+
+  //- ── OBJECTIVE DRAW ─────────────────────────────────────────
+  include pug/screens/_objective-draw.pug
 
   //- ── COURT SELECTOR ─────────────────────────────────────────
   include pug/screens/_court-select.pug 
 
   //- ── LOADING ────────────────────────────────────────────────
-  .court-loading(v-else-if="!game.currentCase")
+  .court-loading(v-else-if="ui.phase === 'setup' && !game.currentCase")
     p Convening the court… 
 
   //- ── SETUP PHASE ────────────────────────────────────────────
@@ -14,6 +23,14 @@
 
   //- ── PLAYING PHASE ──────────────────────────────────────────
   main.court-playing(v-else-if="ui.phase === 'playing'")
+
+    //- Campaign progress banner
+    .campaign-banner(v-if="ui.isCampaignMode && campaign.data")
+      .cb-objective(v-if="campaign.data.activeObjective")
+        span.cb-icon {{ campaign.data.activeObjective.icon }}
+        span.cb-label {{ campaign.data.activeObjective.name }}
+      span.cb-progress {{ campaignProgress }}
+      span.cb-year 📅 {{ campaign.data.year }}
 
     //- Top bar: case + round + turn + actions
     .playing-topbar
@@ -103,15 +120,29 @@
               .vote-fill(:style="voteMeterStyle(justice)")
           
 
-    //- The Docket: shared card pool
+    //- Trial reward cards (campaign mode)
+    .court-trial-rewards(v-if="trialRewardCards.length")
+      .trial-rewards-header
+        span.trial-rewards-title 🃏 Your Trial Cards
+      .trial-rewards-list
+        .trial-reward-card(v-for="card in trialRewardCards" :key="card.id")
+          span.trc-icon {{ card.icon }}
+          span.trc-name {{ card.name }}
+          button.btn.btn--small.btn--activate(
+            v-if="card.id === 'double-tap'"
+            :disabled="campaign.data?.doubleTapActive"
+            @click="activateDoubleTap()"
+          ) {{ campaign.data?.doubleTapActive ? '⚡ Active' : 'Activate' }}
+
+    //- The Playbook: shared card pool
     .court-docket(
       :class="{ 'is-claiming': game.claimingMode, 'is-opponent-turn': ui.opponentThinking, 'has-selection': game.selectedTacticId !== null || game.multiTargetMode }"
     )
       .docket-header
         .docket-title-row
           h3.docket-title
-            | The Docket
-            span.docket-subtitle  · shared pool
+            | The Playbook
+            span.docket-subtitle  · shared between both counsels
           .docket-meta
             span.deck-count 🃏 {{ game.deck.length }} in deck
             span.claimed-count(v-if="game.claimedCards.length")  · {{ game.claimedCards.length }} claimed by you
@@ -147,10 +178,10 @@
 
       //- Shared docket cards
       .docket-shared
-        p.docket-empty(v-if="!game.docket.length") The docket is empty.
+        p.docket-empty(v-if="!game.playbook.length") The playbook is empty.
         transition-group.tactic-card-row(v-else tag="div" name="tactic-card")
           .tactic-card(
-            v-for="tactic in game.docket"
+            v-for="tactic in game.playbook"
             :key="tactic.id"
             :class="[ \
               `card-type-${tactic.cardType}`, \
@@ -185,6 +216,18 @@
           button.btn.btn--text(@click="ui.targetingChoice = null") Cancel
 
   include pug/screens/_verdict.pug
+
+  //- ── CAMPAIGN RECEIVE REWARD ────────────────────────────────
+  include pug/screens/_receive-reward.pug
+
+  //- ── CAMPAIGN ACTIVATE BONUS ────────────────────────────────
+  include pug/screens/_activate-bonus.pug
+
+  //- ── CAMPAIGN RECESS ────────────────────────────────────────
+  include pug/screens/_recess.pug
+
+  //- ── CAMPAIGN GAME OVER ─────────────────────────────────────
+  include pug/screens/_game-over.pug
 
   include pug/modals/_court-record.pug
   include pug/modals/_justice-detail.pug

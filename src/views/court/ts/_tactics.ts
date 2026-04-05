@@ -272,4 +272,32 @@ export const tactics: Tactic[] = [
     effectType: "invite-church",
     basePower: 0,
   },
+
+  // ─── CAMPAIGN-ONLY TACTICS ────────────────────────────────────────────
+  // These cards have campaignOnly: true and will NEVER appear in Quick Play decks.
+
+  {
+    id: 26,
+    name: "Suggest Retirement",
+    description:
+      "This justice loses a massive amount of favor — nearly impossible to recover from. However, during the next Recess, they are guaranteed to retire, opening a vacancy for nomination.",
+    flavorText: "You lean in during a recess and say, very quietly, 'You look tired, Your Honor. Maybe... permanently tired?' They do not disagree.",
+    cardType: "attack",
+    effectType: "suggest-retirement",
+    basePower: 0,
+    campaignOnly: true,
+    feedback: "This justice has been diplomatically encouraged to consider retirement.",
+  },
+  {
+    id: 27,
+    name: "Keep That Crown",
+    description:
+      "Make the current trial's appointed Chief Justice permanent for the rest of the campaign. Requires 'Elevate to Chief' to have been played this trial. Disabled otherwise.",
+    flavorText: "The gavel is power. The crown stays on.",
+    cardType: "utility",
+    effectType: "keep-crown",
+    basePower: 0,
+    campaignOnly: true,
+    feedback: "The new Chief Justice's appointment is now permanent.",
+  },
 ];

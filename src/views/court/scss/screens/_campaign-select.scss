@@ -1,0 +1,136 @@
+// ─── Campaign Select Screen ───────────────────────────────────
+.court-campaign-select {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+.cs-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 2rem;
+
+  .btn--back {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    transition: color 0.15s;
+
+    &:hover {
+      color: $court-gold;
+    }
+  }
+
+  .cs-intro {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0.3rem 0 0;
+  }
+}
+
+.cs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cs-card {
+  background: $court-surface;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 1.2rem 1.4rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+
+  &:hover {
+    border-color: $court-gold;
+    background: lighten($court-surface, 4%);
+  }
+
+  &.cs-card--recommended {
+    border-color: rgba($court-gold, 0.8);
+    background: lighten($court-surface, 3%);
+  }
+}
+
+.cs-card-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.cs-card-body {
+  flex: 1;
+}
+
+.cs-card-header-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.4rem;
+}
+
+.cs-card-title {
+  font-family: $serif;
+  font-size: 1.2rem;
+  color: $court-gold;
+  margin: 0;
+}
+
+.cs-card-year {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.cs-card-badge {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 99px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  &.cs-badge--recommended {
+    background: rgba($court-gold, 0.2);
+    color: $court-gold;
+    border: 1px solid $court-gold;
+  }
+}
+
+.cs-card-desc {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 0.7rem;
+  line-height: 1.5;
+}
+
+.cs-card-meta {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+
+.cs-meta-item {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.cs-card-btn {
+  font-size: 0.85rem;
+  padding: 0.45rem 1rem;
+}

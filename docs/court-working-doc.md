@@ -35,7 +35,15 @@ See docs/court-working-doc-history.md for a session-by-session breakdown of the 
 
 ## Next Steps
 
-Add "Campaign Mode" to the game. See docs\court-campaign-mode.md - some Q&A is below.
+Campaign Mode has begun, please see the "Campaign Mode Changes" section for for what's left to be done.
+
+- I just did a test game where my objective was "The Biggest Loser", and won my first trial 9-0. This gives me the verdict screen and a button to "Receive Win Bonus". In this situation, I SHOULD see the verdict, because that's useful context to the user, however I SHOULDN'T see the "Receive Win Bonus" button, because my game ended when I failed to meet the objective.
+
+Therefore, I should have a button that will be labeled "Advance", which should go straight to the game over screen. Basiscally everything works like it should, because "Receive Win Bonus" DOES take me to the game over screen, but the button is wrong, that's the only fix necessary here.
+
+- In another test, I got to the "Recess" screen, but the "During Recess" box contains 3 empty items. Each one has the '📋' icon, but no text for what happened. I think that might be looking for the wrong variable.
+
+- In the game over screen, I see two buttons: "Play Again" and "New Campaign". They both seem to do the same thing.
 
 ## Campaign Mode: Clarifying Questions
 
@@ -136,6 +144,65 @@ Once you select that, either way you will then select the court. Let's have anot
   - Nov 13th, 2027 President Jane Doe nominates Justice John Smith to fill the vacancy.
   - Jan 14th, 2028 Judge Dredd is sworn in as the new president.
     etc
+
+---
+
+## Open Questions from Campaign Mode Implementation (April 2026)
+
+These questions arose during the implementation pass. Please review and answer when you get a chance — no rush, nothing is blocked by them.
+
+### Case Selection for Campaigns
+
+**Q1**: The Warren Court campaign uses case IDs `[2, 5, 14, 12, 19]` — case 7 (Obergefell v. Hodges, 2015) was swapped out for case 14 (Loving v. Virginia, 1967) to better fit the era. Is that fine, or do you want to revisit the case selection for each campaign?
+
+**A1**: That's totally fine. I can and will make adjustments to courts and campaigns. I like that you used your best judgement, and I will change it back if I'd prefer to.
+
+### Receive Reward Screen
+
+**Q2**: Both "Keep in Hand" and "Add to Trial/Recess Hand" on the receive-reward screen currently do the exact same thing (add the card to `rewardHand`). The distinction between "save for later" vs "use now" was deferred to the activate-bonus screen. Should there be an immediate-deploy path where activating a recess card right from this screen resolves it without going through the bonus screen at all? Or is the current flow (all cards go to hand → activate at bonus screen) correct?
+
+**A2** I noticed that in my gameplay test. I think the UX for getting/using your bonus is a bit clumsy. So, I'd like a nice "fun" animation of your bonus card (maybe confetti?) and then a single button labeled "Prepare For Recess". That button will take you to the "Pre-Recess Bonuses" section. Rather than Activate/Skip, there should only be "Activate". If you don't activate, and procesed to recess without activating a card, it just stays in your hand.
+
+### Justice Veto Flow
+
+**Q3**: "Justice Veto" lets the player save two candidates and guarantee one gets nominated at the next vacancy. In the current implementation, the player chooses _which_ of the two candidates they want during the activate-bonus screen. But the actual seating happens in `processRecess()` automatically when a vacancy is filled. Is that the right mental model? Or should the player make the "who gets nominated" choice at a later point (e.g., when the vacancy actually occurs during recess)?
+**A3** I think the mental model I'd like is "During recess, do user-controlled things before automatic things". So, let's say you hypotetically had 3 open seats and 2 active bonuses, 1 was "Dream Justice", and one was "Justice Veto"
+
+1. Fill the first seat with the dream justice.
+2. The second seat gets filled by the current president, and because you had "Justice Veto", you get to choose 1 of 2.
+3. The third seat gets filled by the current president. There are no more bonuses, so no player involvement takes place.
+
+### Not Enough Chairs
+
+**Q4**: "Not Enough Chairs" uses `pendingBenchSeatDelta` to shrink `benchSeats` from 9. The effect triggers at the _next natural vacancy_ — but the current code decrements the seat count immediately during recess and then the vacancy-fill loop naturally stops when seats are full. If no justice leaves, the seat count still drops on the _next_ recess. Is this the intended behavior, or should it instead be a flag that prevents the _next_ vacancy from being filled (keeping the departing justice's slot empty)?
+**A4**: That was my intention, although I recognize that _could_ make for clumsy code. So let's "cheat" the system a little bit.
+
+- If "Not Enough Chairs" is played, it would be ideal if we created at least one vacancy during that recess. If that happens naturally, great.
+- HOWEVER, if it so happens that no vacancy would have happened during receess, let's make one of the justices die of natural causes. Pretend it happened in the usual system.
+- So basically we're forcing at least 1 vacancy to match with Not Enough Chairs, but we're not letting the player know that.
+
+### Campaign Banner Visibility
+
+**Q5**: There is now a campaign banner visible during both `setup` and `playing` phases showing the active objective and trial number. Is this the right level of visibility, or should it also appear on the verdict screen separately (it currently shows there via `.verdict-objective` below the vote tally)?
+
+**A5** I believe that's the right amount of visibility. The player should keep their objective top of mind, as it should affect their strategy during gameplay.
+
+### Re-Deal in Campaign Mode
+
+**Q6**: The "New Draw" button (re-deal case + bench for quick play) is now hidden in campaign mode since the case sequence is fixed. But the side-choice screen still shows "Switch Sides" after you pick. Should "Switch Sides" also be hidden/disabled in campaign mode when a `forcedSide` objective is active?
+
+**A^** Good thinking, yes. If `forcedSide` is active, let's not have that button.
+
+### Recess Date Stamps
+
+**Q7**: The recess log uses the `recessDate()` helper which generates a random-ish date based on the recess year. The format is `"Jan 3rd, 2027"` etc. This looks good. One thing to note: multiple events in the same recess all get different dates since `recessDate()` picks a random day. Should events within a single recess be ordered chronologically (elections first in Nov, then deaths/retirements, then nominations), or is the current random ordering acceptable?
+
+**A7** I can't answer this question definitively because I can't see the results. However, let's assure these things:
+
+- The dates would all happen in the appropriate 2 year period.
+- New presidents are sworn in sometime in early January.
+- In the case of a new president AND 1 or more new justices appointed by the president, we must change presidents FIRST, before the new justices are appointed, to match game logic.
+- List chronoligically from there.
 
 ---
 

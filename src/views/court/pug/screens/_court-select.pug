@@ -5,7 +5,8 @@ main.court-select(v-if="ui.phase === 'courtSelect'")
       .cmc-icon 🏛
       .cmc-title Current Court
       .cmc-desc The 9 justices currently on the Supreme Court. John Roberts presides as Chief Justice.
-      .cmc-badge Default
+      .cmc-badge(v-if="!hasPlayedCurrentCourt()") New? Start here!
+      .cmc-badge(v-else) Default
     .court-mode-card(@click="selectCourtMode('historical')")
       .cmc-icon 📜
       .cmc-title Historical Court

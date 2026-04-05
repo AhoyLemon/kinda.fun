@@ -448,7 +448,6 @@ export interface My {
     getLikes: number;
     getDislikes: number;
   };
-  selectedTopics: Array<any>;
   isStreetPreaching: boolean;
   hasVan: boolean;
   canBuyVan: boolean;

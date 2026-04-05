@@ -1,0 +1,131 @@
+// ─── Recess Screen ───────────────────────────────────────────
+.court-recess {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.recess-header {
+  text-align: center;
+}
+
+.recess-meta {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+}
+
+.recess-year,
+.recess-president,
+.recess-progress {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.recess-log-title,
+.recess-bench-title {
+  font-family: $serif;
+  font-size: 1.1rem;
+  color: $court-gold;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.8rem;
+}
+
+.recess-log {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.recess-event {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.recess-event-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.recess-event-text {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.recess-event--election .recess-event-icon {
+  color: #88aaff;
+}
+.recess-event--death .recess-event-icon {
+  color: #888;
+}
+.recess-event--retirement .recess-event-icon {
+  color: #ffcc44;
+}
+.recess-event--nomination .recess-event-icon {
+  color: #88ffaa;
+}
+
+.recess-log-empty {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.recess-bench {
+  .recess-bench-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.5rem;
+  }
+}
+
+.recess-justice {
+  background: $court-surface;
+  border-radius: 6px;
+  padding: 0.5rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+
+  &.is-chief {
+    border-left: 3px solid $court-gold;
+  }
+}
+
+.rj-chief-badge {
+  font-size: 0.7rem;
+  color: $court-gold;
+}
+
+.rj-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.rj-appt {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.recess-actions {
+  text-align: center;
+  padding-top: 0.5rem;
+}

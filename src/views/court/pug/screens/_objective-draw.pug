@@ -1,0 +1,23 @@
+//- ── OBJECTIVE DRAW PHASE ───────────────────────────────────
+main.court-objective-draw(v-if="ui.phase === 'objectiveDraw' && campaign.data")
+  .od-header
+    h2.section-label Choose Your Objective
+    p.od-intro
+      | You'll pursue this goal across all 
+      strong {{ campaign.data.setup.caseIds ? campaign.data.setup.caseIds.length : 5 }} trials.
+      |  Choose wisely.
+
+  .od-cards
+    .od-card(
+      v-for="obj in campaign.data.objectiveDrawPair"
+      :key="obj.id"
+      @click="chooseObjective(obj)"
+    )
+      .od-card-icon {{ obj.icon }}
+      h3.od-card-title {{ obj.name }}
+      p.od-card-desc {{ obj.description }}
+      .od-card-meta(v-if="obj.forcedSide")
+        span.od-forced-label ⚠ Forces you to argue as:
+        span.od-forced-side(:class="`side-${obj.forcedSide}`")
+          | {{ obj.forcedSide === 'prosecution' ? '⚔️ Prosecution' : '🛡️ Defense' }}
+      button.btn.btn--start Choose This Objective →

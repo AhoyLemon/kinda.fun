@@ -31,7 +31,7 @@ import {
 } from "./_presidents";
 
 // ────────────────────────────────────────────────────────────
-// CURRENT JUSTICES (as of 2025)
+// CURRENT JUSTICES (as of 2026)
 // ────────────────────────────────────────────────────────────
 
 export const justiceCurrent: Justice[] = [
@@ -1204,7 +1204,7 @@ export const presetBenchConfigs: PresetBenchConfig[] = [
     name: "The Current Court",
     description:
       "The current Supreme Court of the United States. Six conservatives, three liberals, and one Chief Justice desperately trying to preserve the institution's credibility while the institution disagrees.",
-    year: 2025,
+    year: 2026,
     icon: "🏛️",
     chiefJusticeId: 1, // John Roberts
     justiceIds: [1, 2, 3, 4, 5, 6, 7, 8, 9],

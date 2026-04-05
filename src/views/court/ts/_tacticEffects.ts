@@ -19,7 +19,7 @@ export interface EffectOutcome {
 
 export interface TacticHelpers {
   drawCard: () => Tactic | null;
-  removeFromDocket: (t: Tactic) => void;
+  removeFromPlaybook: (t: Tactic) => void;
 }
 
 // ─── Party Utilities (also used in Court.vue for getInitialLeaning) ─────────
@@ -50,8 +50,8 @@ function getEffectiveWeakness(justice: Justice, weakness: keyof Justice["weaknes
 }
 
 /**
- * Removes a tactic card from wherever it currently lives (docket or claimed cards),
- * discards it, and draws a replacement into the docket.
+ * Removes a tactic card from wherever it currently lives (playbook or claimed cards),
+ * discards it, and draws a replacement into the playbook.
  * For discard-all, do NOT use this — handle manually.
  */
 function consumeTactic(game: CourtGameState, tactic: Tactic, helpers: TacticHelpers): void {
@@ -60,9 +60,9 @@ function consumeTactic(game: CourtGameState, tactic: Tactic, helpers: TacticHelp
     game.claimedCards = game.claimedCards.filter((t) => t.id !== tactic.id);
     const drawn = helpers.drawCard();
     game.discardPile.push(tactic);
-    if (drawn) game.docket.push(drawn);
+    if (drawn) game.playbook.push(drawn);
   } else {
-    helpers.removeFromDocket(tactic);
+    helpers.removeFromPlaybook(tactic);
   }
 }
 
@@ -81,13 +81,13 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
   // ── Discard-all ──────────────────────────────────────────────
   if (tactic.effectType === "discard-all") {
     // The tactic card itself is in the docket — the whole docket gets burned.
-    game.discardPile.push(...game.docket);
-    game.docket = [];
+    game.discardPile.push(...game.playbook);
+    game.playbook = [];
     for (let i = 0; i < 5; i++) {
       const card = helpers.drawCard();
-      if (card) game.docket.push(card);
+      if (card) game.playbook.push(card);
     }
-    reportTarget = "All docket cards";
+    reportTarget = "All Playbook cards";
 
     // ── Make-chief ───────────────────────────────────────────────
   } else if (tactic.effectType === "make-chief") {
@@ -100,6 +100,7 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
 
       game.chiefJusticeId = targetJustice.id;
       game.chiefJusticeHardened = false;
+      game.makeChiefPlayedThisTrial = true; // enables Keep That Crown
 
       if (prevCJ) {
         const old = game.leanings[prevCJ.id] ?? 0;
@@ -326,6 +327,31 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
       overrideFeedback = `${targetJustice.name} attended church. The congregation noticed.`;
     }
 
+    // ── Suggest-retirement (campaign only) ───────────────────────
+  } else if (tactic.effectType === "suggest-retirement") {
+    consumeTactic(game, tactic, helpers);
+    if (targetJustice) {
+      // Justice loses a massive amount of favor — very hard to recover from
+      const old = game.leanings[targetJustice.id] ?? 0;
+      const next = Math.max(-100, old - 80);
+      game.leanings[targetJustice.id] = next;
+      results.push({ justiceName: targetJustice.name, change: next - old, newLeaning: next });
+      // Mark for guaranteed retirement at next recess (only meaningful in campaign mode)
+      if (!game.suggestRetirementTargets.includes(targetJustice.id)) {
+        game.suggestRetirementTargets.push(targetJustice.id);
+      }
+      reportTarget = targetJustice.name;
+      overrideFeedback = `${targetJustice.name} has been diplomatically informed that retirement is an option.`;
+    }
+
+    // ── Keep-crown (campaign only) ────────────────────────────────
+  } else if (tactic.effectType === "keep-crown") {
+    // Only useful if make-chief was already played this trial; validation happens in Court.vue
+    consumeTactic(game, tactic, helpers);
+    game.keepCrownActivated = true;
+    reportTarget = "Chief Justice";
+    overrideFeedback = "The Chief Justice's appointment is now permanent for the remainder of the campaign.";
+
     // ── Standard sway / susceptibility / shield ──────────────────
   } else {
     consumeTactic(game, tactic, helpers);
@@ -399,6 +425,7 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
         if (actor === "player") game.playerShields.push(justice.id);
         else game.opponentShields.push(justice.id);
         results.push({ justiceName: justice.name, change: 0, newLeaning: game.leanings[justice.id] ?? 0 });
+        reportTarget = justice.name;
         overrideFeedback = `${justice.name} is protected from your opponent's next argument.`;
       } else {
         // Standard sway

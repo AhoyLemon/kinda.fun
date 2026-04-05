@@ -1,0 +1,260 @@
+// ─── Game Over Screen ─────────────────────────────────────────
+.court-game-over {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.go-hero {
+  text-align: center;
+  padding: 2.5rem 1rem 2rem;
+  border-radius: 12px;
+  border: 2px solid transparent;
+
+  &.go-hero--won {
+    background: rgba($court-gold, 0.08);
+    border-color: rgba($court-gold, 0.4);
+  }
+
+  &.go-hero--lost {
+    background: rgba($court-red, 0.08);
+    border-color: rgba($court-red, 0.35);
+  }
+}
+
+.go-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.6rem;
+}
+
+.go-headline {
+  font-family: $serif;
+  font-size: clamp(1.6rem, 5vw, 2.5rem);
+  color: $court-gold;
+  margin: 0 0 0.4rem;
+}
+
+.go-subline {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.go-section-label {
+  font-family: $serif;
+  font-size: 1rem;
+  color: $court-gold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.8rem;
+}
+
+// ─── Objective result ─────────────────────────────────────────
+.go-objective {
+  background: $court-surface;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+}
+
+.go-obj-card {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.go-obj-icon {
+  font-size: 1.5rem;
+}
+
+.go-obj-name {
+  font-size: 1rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.go-obj-result {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.2rem 0.7rem;
+  border-radius: 99px;
+
+  &.result--won {
+    background: rgba(50, 200, 80, 0.2);
+    color: #66ee88;
+  }
+
+  &.result--lost {
+    background: rgba(200, 50, 50, 0.2);
+    color: #ee8888;
+  }
+}
+
+// ─── Record ───────────────────────────────────────────────────
+.go-record {
+  background: $court-surface;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+}
+
+.go-stat-grid {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.go-stat {
+  text-align: center;
+}
+
+.go-stat-value {
+  font-family: $serif;
+  font-size: 2rem;
+  line-height: 1;
+
+  &.stat--won {
+    color: #66ee88;
+  }
+  &.stat--lost {
+    color: #ee8888;
+  }
+}
+
+.go-stat-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.3rem;
+}
+
+// ─── Stats ────────────────────────────────────────────────────
+.go-stats {
+  background: $court-surface;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+}
+
+.go-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.go-stats-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.gsi-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.gsi-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $court-card;
+}
+
+// ─── Wing analysis ────────────────────────────────────────────
+.go-wing {
+  background: $court-surface;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+}
+
+.go-wing-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.go-wing-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.gwi-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+  min-width: 7rem;
+}
+
+.gwi-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $court-card;
+}
+
+// ─── Trial breakdown ──────────────────────────────────────────
+.go-trials {
+  background: $court-surface;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+}
+
+.go-trial {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 0.85rem;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.gt--won .gt-result {
+    color: #66ee88;
+  }
+  &.gt--lost .gt-result {
+    color: #ee8888;
+  }
+  &.gt--tied .gt-result {
+    color: #ffcc44;
+  }
+}
+
+.gt-num {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+  flex-shrink: 0;
+  min-width: 3rem;
+}
+
+.gt-case {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.gt-result {
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.gt-score {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+}
+
+// ─── Actions ──────────────────────────────────────────────────
+.go-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}

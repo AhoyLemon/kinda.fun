@@ -17,6 +17,12 @@
     transform: scale(0.97);
   }
 
+  &[disabled] {
+    pointer-events: none;
+    filter: grayscale(0.5);
+    opacity: 0.5;
+  }
+
   &--prosecution {
     background: $court-red;
     color: #fff;

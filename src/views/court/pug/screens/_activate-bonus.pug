@@ -1,0 +1,94 @@
+//- ── PRE-RECESS / ACTIVATE BONUS PHASE ─────────────────────
+main.court-activate-bonus(v-if="ui.phase === 'activateBonus' && campaign.data")
+  .ab-header
+    h2.section-label 🌙 Pre-Recess Bonuses
+    p.ab-intro(v-if="campaign.data.latestRewardCardId") You won the trial! Activate your reward cards before recess begins.
+    p.ab-intro(v-else) Activate your bonus cards before the court enters recess.
+
+  //- Justice Veto modal (non-dismissable overlay)
+  .ab-veto-modal(v-if="campaign.data.vetoChoices && vetoChoiceJustices.length")
+    .ab-veto-modal-inner
+      h3.ab-veto-title ⚖️ Justice Veto — Choose Your Nominee
+      p.ab-veto-desc Pick one of the two vetted candidates to seat on the court at the next vacancy:
+      .ab-veto-choices
+        .ab-veto-card(
+          v-for="justice in vetoChoiceJustices"
+          :key="justice.id"
+          @click="ui.rewardEligibleTarget = justice.id"
+          :class="{ 'is-selected': ui.rewardEligibleTarget === justice.id }"
+        )
+          .ab-veto-name {{ justice.name }}
+          .ab-veto-meta {{ justice.justiceType }}
+      button.btn.btn--start(
+        :disabled="!ui.rewardEligibleTarget"
+        @click="activateRecessReward('justice-veto', undefined, ui.rewardEligibleTarget ?? undefined); ui.rewardEligibleTarget = null"
+      ) Confirm Nominee →
+
+  //- Reward cards available to activate
+  .ab-cards(v-if="recessRewardCards.length")
+    .ab-card(
+      v-for="card in recessRewardCards"
+      :key="card.id"
+      :class="{ 'is-activated': campaign.data.activatedPreRecessCardIds.includes(card.id), 'is-new': campaign.data.latestRewardCardId === card.id }"
+    )
+      .ab-card-new-badge(v-if="campaign.data.latestRewardCardId === card.id") ✨ New!
+      .ab-card-icon {{ card.icon }}
+      .ab-card-body
+        h4.ab-card-name {{ card.name }}
+        p.ab-card-desc {{ card.description }}
+        .ab-card-deploy
+          span.ab-deploy-label When:
+          span(:class="`ab-deploy-phase deploy-${card.deployPhase}`")
+            template(v-if="card.deployPhase === 'trial'") ⚡ During a trial
+            template(v-else-if="card.deployPhase === 'recess'") 🌙 During recess
+            template(v-else) 🔄 Either phase
+
+        //- Activated state
+        .ab-activated-badge(v-if="campaign.data.activatedPreRecessCardIds.includes(card.id)") ✓ Activated
+
+        //- Justice picker required
+        .ab-target-picker(v-else-if="card.requiresBenchTarget && ui.activatingRewardId === card.id")
+          p.ab-pick-label Pick a justice:
+          .ab-justice-list
+            button.btn.btn--small(
+              v-for="justice in game.bench"
+              :key="justice.id"
+              :class="{ 'is-selected': ui.rewardTargetJustice === justice.id }"
+              @click="ui.rewardTargetJustice = justice.id"
+            ) {{ justice.name }}
+          button.btn.btn--start(
+            v-if="ui.rewardTargetJustice"
+            @click="activateRecessReward(card.id, ui.rewardTargetJustice); ui.rewardTargetJustice = null; ui.activatingRewardId = null"
+          ) Activate →
+
+        //- Eligible target picker (Dream Justice)
+        .ab-target-picker(v-else-if="card.requiresEligibleTarget && ui.activatingRewardId === card.id")
+          p.ab-pick-label Pick a candidate:
+          .ab-justice-list
+            button.btn.btn--small(
+              v-for="justice in eligibleJustices"
+              :key="justice.id"
+              :class="{ 'is-selected': ui.rewardEligibleTarget === justice.id }"
+              @click="ui.rewardEligibleTarget = justice.id"
+            ) {{ justice.name }}
+          button.btn.btn--start(
+            v-if="ui.rewardEligibleTarget"
+            @click="activateRecessReward(card.id, undefined, ui.rewardEligibleTarget ?? undefined); ui.rewardEligibleTarget = null; ui.activatingRewardId = null"
+          ) Activate →
+
+        //- Default activate button
+        .ab-card-actions(v-else)
+          button.btn.btn--start(
+            v-if="card.requiresBenchTarget || card.requiresEligibleTarget"
+            @click="ui.activatingRewardId = card.id; ui.rewardTargetJustice = null; ui.rewardEligibleTarget = null"
+          ) 🎯 Select Target…
+          button.btn.btn--start(v-else @click="activateRecessReward(card.id)") ⚡ Activate
+
+  .ab-empty(v-if="!recessRewardCards.length && !campaign.data.vetoChoices")
+    p No bonus cards to activate this recess.
+
+  .ab-footer
+    button.btn.btn--proceed(
+      :disabled="!!campaign.data.vetoChoices"
+      @click="doneActivatingBonus()"
+    ) Proceed to Recess →

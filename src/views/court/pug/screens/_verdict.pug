@@ -36,6 +36,24 @@ main.court-verdict(v-else-if="ui.phase === 'verdict'")
               v-tippy="`${targeting.actor === 'player' ? 'You' : 'Opponent'} played: ${targeting.tacticName}`"
             ) {{ targeting.actor === 'player' ? '⚔️' : '⚖️' }}
 
+  .verdict-objective(v-if="ui.isCampaignMode && campaign.data?.activeObjective")
+    .vo-objective
+      span.vo-icon {{ campaign.data.activeObjective.icon }}
+      span.vo-name {{ campaign.data.activeObjective.name }}
+      span.vo-status(
+        v-if="verdict && !verdict.tied"
+        :class="objectiveStatus === 'passing' ? 'status--passing' : 'status--failing'"
+      ) {{ objectiveStatus === 'passing' ? '✓ On track' : '✗ Off track' }}
+      span.vo-status.status--tied(v-else-if="verdict && verdict.tied") ⚖ Tied — retrying
+    span.vo-progress {{ campaignProgress }}
+
   .verdict-actions
-    button.btn.btn--start(@click="resetToCourtSelect") ⚖️ New Court
-    button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 View Court Record
+    template(v-if="ui.isCampaignMode")
+      button.btn.btn--start(v-if="verdict && verdict.won && objectiveStatus === 'failing'" @click="proceedAfterVerdict()") Continue →
+      button.btn.btn--start(v-else-if="verdict && verdict.won" @click="proceedAfterVerdict()") 🏆 Receive Win Bonus →
+      button.btn.btn--start(v-else-if="verdict && verdict.tied" @click="proceedAfterVerdict()") ↩ Retry Case
+      button.btn.btn--start(v-else-if="verdict && !verdict.tied" @click="proceedAfterVerdict()") ⏸ Enter Recess →
+      button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 Court Record
+    template(v-else)
+      button.btn.btn--start(@click="resetToCourtSelect") ⚖️ New Court
+      button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 View Court Record

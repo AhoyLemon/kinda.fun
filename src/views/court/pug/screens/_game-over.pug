@@ -1,0 +1,82 @@
+//- ── GAME OVER PHASE ────────────────────────────────────────
+main.court-game-over(v-if="ui.phase === 'gameOver' && campaign.data")
+  .go-hero(:class="campaign.data.won ? 'go-hero--won' : 'go-hero--lost'")
+    .go-icon {{ campaign.data.won ? '🏆' : '⚖️' }}
+    h2.go-headline(v-if="campaign.data.won") Campaign Complete!
+    h2.go-headline(v-else) Campaign Ended
+    p.go-subline(v-if="campaign.data.won") You fulfilled your objective and shaped the court.
+    p.go-subline(v-else) The objective was not met. The gavel fell.
+
+  //- Objective result
+  .go-objective(v-if="campaign.data.activeObjective")
+    h3.go-section-label Your Objective
+    .go-obj-card
+      span.go-obj-icon {{ campaign.data.activeObjective.icon }}
+      span.go-obj-name {{ campaign.data.activeObjective.name }}
+      span.go-obj-result(:class="campaign.data.won ? 'result--won' : 'result--lost'")
+        | {{ campaign.data.won ? '✓ Achieved' : '✗ Failed' }}
+
+  //- Trial record
+  .go-record(v-if="gameOverStats")
+    h3.go-section-label Trial Record
+    .go-stat-grid
+      .go-stat
+        .go-stat-value.stat--won {{ gameOverStats.wins }}
+        .go-stat-label Wins
+      .go-stat
+        .go-stat-value.stat--lost {{ gameOverStats.losses }}
+        .go-stat-label Losses
+
+  //- Stats
+  .go-stats(v-if="gameOverStats")
+    h3.go-section-label Your Campaign
+    .go-stats-grid
+      .go-stats-item
+        .gsi-label ⚔️ Signature Move
+        .gsi-value {{ gameOverStats.signatureMove }}
+      .go-stats-item
+        .gsi-label 💚 Favorite Justice
+        .gsi-value {{ gameOverStats.favoriteJustice }}
+      .go-stats-item
+        .gsi-label 💔 Least Favorite Justice
+        .gsi-value {{ gameOverStats.leastFavoriteJustice }}
+      .go-stats-item(v-if="gameOverStats.bestCase !== '—'")
+        .gsi-label 🏅 Best Trial
+        .gsi-value {{ gameOverStats.bestCase }}
+      .go-stats-item(v-if="gameOverStats.worstCase !== '—'")
+        .gsi-label 😬 Hardest Trial
+        .gsi-value {{ gameOverStats.worstCase }}
+      .go-stats-item(v-if="gameOverStats.forcedRetirements > 0")
+        .gsi-label 🔨 Justices You Ousted
+        .gsi-value {{ gameOverStats.forcedRetirements }}
+      .go-stats-item
+        .gsi-label 📋 Total Court Turnover
+        .gsi-value {{ gameOverStats.totalDepartures }} departed · {{ gameOverStats.totalNominations }} nominated
+
+  //- Wing analysis
+  .go-wing(v-if="gameOverStats && (gameOverStats.courtWingLabel || gameOverStats.countryWingLabel)")
+    h3.go-section-label Political Compass
+    .go-wing-grid
+      .go-wing-item(v-if="gameOverStats.courtWingLabel")
+        .gwi-label 🏛️ The Court
+        .gwi-value {{ gameOverStats.courtWingLabel }}
+      .go-wing-item(v-if="gameOverStats.countryWingLabel")
+        .gwi-label 🇺🇸 The Country
+        .gwi-value {{ gameOverStats.countryWingLabel }}
+
+  //- Trial-by-trial breakdown
+  .go-trials(v-if="campaign.data.trialResults.length")
+    h3.go-section-label Trial by Trial
+    .go-trial(
+      v-for="(result, i) in campaign.data.trialResults"
+      :key="i"
+      :class="result.won ? 'gt--won' : result.tied ? 'gt--tied' : 'gt--lost'"
+    )
+      span.gt-num Trial {{ i + 1 }}
+      span.gt-case {{ result.caseName }}
+      span.gt-result {{ result.won ? '✓ Won' : result.tied ? '⚖ Tied' : '✗ Lost' }}
+      span.gt-score {{ result.forCount }}–{{ result.againstCount }}
+
+  .go-actions
+    button.btn.btn--start(@click="resetToTitle()") ← Play Again
+    button.btn.btn--switch(@click="ui.phase = 'campaignSelect'") New Campaign

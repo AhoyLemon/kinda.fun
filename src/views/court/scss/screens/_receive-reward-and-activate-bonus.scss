@@ -1,0 +1,371 @@
+// ─── Receive Reward Screen ────────────────────────────────────
+.court-receive-reward {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.rr-header {
+  text-align: center;
+
+  .rr-intro {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0.4rem 0 0;
+  }
+}
+
+.rr-card {
+  background: $court-surface;
+  border: 2px solid rgba($court-gold, 0.5);
+  border-radius: 12px;
+  padding: 1.5rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  text-align: center;
+}
+
+.rr-card-icon {
+  font-size: 2.5rem;
+}
+
+.rr-card-name {
+  font-family: $serif;
+  font-size: 1.4rem;
+  color: $court-gold;
+  margin: 0;
+}
+
+.rr-card-desc {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.rr-card-deploy {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.rr-deploy-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rr-deploy-phase {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 4px;
+
+  &.deploy-trial {
+    background: rgba(255, 200, 60, 0.15);
+    color: #ffcc44;
+  }
+
+  &.deploy-recess {
+    background: rgba(100, 120, 255, 0.15);
+    color: #aabbff;
+  }
+
+  &.deploy-either {
+    background: rgba(100, 220, 130, 0.15);
+    color: #88ffaa;
+  }
+}
+
+.rr-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.rr-action-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+}
+
+.rr-action-hint {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0;
+  text-align: center;
+}
+
+.rr-separator {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.rr-hand-count {
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+// ─── Activate Bonus Screen ────────────────────────────────────
+.court-activate-bonus {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.ab-header {
+  text-align: center;
+
+  .ab-intro {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin: 0.4rem 0 0;
+  }
+}
+
+.ab-sub-label {
+  font-family: $serif;
+  font-size: 1.05rem;
+  color: $court-gold;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 0 0 0.8rem;
+}
+
+.ab-veto-section,
+.ab-cards {
+  background: $court-surface;
+  border-radius: 10px;
+  padding: 1.2rem 1.3rem;
+}
+
+// ─── Justice Veto Modal ──────────────────────────────────────
+.ab-veto-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.ab-veto-modal-inner {
+  background: $court-bg;
+  border: 2px solid rgba($court-gold, 0.5);
+  border-radius: 14px;
+  padding: 1.8rem 1.6rem;
+  max-width: 480px;
+  width: 100%;
+}
+
+.ab-veto-title {
+  font-family: $serif;
+  font-size: 1.1rem;
+  color: $court-gold;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 0 0 0.8rem;
+}
+
+.ab-veto-desc {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0 0.8rem;
+}
+
+.ab-veto-choices {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+
+.ab-veto-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  flex: 1;
+  min-width: 130px;
+  text-align: center;
+
+  &:hover,
+  &.is-selected {
+    border-color: $court-gold;
+  }
+}
+
+.ab-veto-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.ab-veto-meta {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: capitalize;
+}
+
+.ab-card {
+  display: flex;
+  gap: 0.8rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  transition: opacity 0.25s;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &.is-activated {
+    opacity: 0.5;
+  }
+
+  &.is-new {
+    animation: ab-card-arrive 0.4s ease-out;
+  }
+}
+
+@keyframes ab-card-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ab-card-new-badge {
+  position: absolute;
+  top: -0.5rem;
+  right: 0;
+  font-size: 0.7rem;
+  color: $court-gold;
+  font-weight: 700;
+}
+
+.ab-card-deploy {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.ab-deploy-label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ab-deploy-phase {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+
+  &.deploy-trial {
+    background: rgba(255, 200, 60, 0.15);
+    color: #ffcc44;
+  }
+
+  &.deploy-recess {
+    background: rgba(100, 120, 255, 0.15);
+    color: #aabbff;
+  }
+
+  &.deploy-either {
+    background: rgba(100, 220, 130, 0.15);
+    color: #88ffaa;
+  }
+}
+
+.ab-activated-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #66ee88;
+  padding: 0.2rem 0.6rem;
+  background: rgba(50, 200, 80, 0.1);
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.ab-card-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.ab-card-body {
+  flex: 1;
+}
+
+.ab-card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.2rem;
+}
+
+.ab-card-desc {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0 0 0.7rem;
+  line-height: 1.4;
+}
+
+.ab-target-picker {
+  margin-top: 0.5rem;
+}
+
+.ab-pick-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 0.5rem;
+}
+
+.ab-justice-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.ab-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ab-empty {
+  text-align: center;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 1rem 0;
+}
+
+.ab-footer {
+  text-align: center;
+}

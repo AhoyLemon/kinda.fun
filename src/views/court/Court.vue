@@ -13,11 +13,12 @@
   } from "./ts/_justices";
   import { cases as allCases, casesHistorical, casesFictional } from "./ts/_cases";
   import { tactics as allTactics } from "./ts/_tactics";
-  import type { Justice, Case, Tactic, CourtGameState } from "./ts/_types";
-  import { resolveEffect, partiesAligned, partiesOpposed } from "./ts/_tacticEffects";
+  import type { Justice, Case, Tactic, CourtGameState, CampaignState } from "./ts/_types";
+  import { resolveEffect, partiesAligned, partiesOpposed, leftParties, rightParties } from "./ts/_tacticEffects";
   import type { EffectOutcome } from "./ts/_tacticEffects";
-
   import { gameSettings, uiSettings } from "./ts/_settings";
+  import { campaignSetups } from "./ts/_campaigns";
+  import { useCampaignManager } from "./ts/_campaignManager";
 
   // ── Game settings ──────────────────────────────────────────
 
@@ -25,7 +26,18 @@
 
   type Side = "prosecution" | "defendant";
   type TurnActor = "player" | "opponent";
-  type Phase = "courtSelect" | "setup" | "playing" | "verdict";
+  type Phase =
+    | "title"
+    | "courtSelect"
+    | "campaignSelect"
+    | "objectiveDraw"
+    | "setup"
+    | "playing"
+    | "verdict"
+    | "receiveReward"
+    | "activateBonus"
+    | "recess"
+    | "gameOver";
   type CourtMode = "current" | "historical" | "fantasy" | "chaos" | "warren-court" | "lochner-era" | "court-from-hell";
 
   const ui = reactive({
@@ -39,6 +51,12 @@
     detailJustice: null as Justice | null, // justice whose detail modal is open
     targetingChoice: null as Justice | null, // justice clicked while a tactic is selected
     previewPresetId: null as string | null, // preset selected in dropdown, awaiting preview confirmation
+    // Campaign UI state
+    isCampaignMode: false,
+    campaignSetupId: null as number | null,
+    rewardTargetJustice: null as number | null,
+    rewardEligibleTarget: null as number | null,
+    activatingRewardId: null as string | null,
   });
 
   const game = reactive<CourtGameState>({
@@ -50,7 +68,7 @@
     // Card pools
     deck: [],
     discardPile: [],
-    docket: [],
+    playbook: [],
     claimedCards: [],
     // Turn state
     currentTurn: "player",
@@ -74,7 +92,14 @@
     multiTargetMode: false,
     multiTargetSelections: [],
     multiTargetTacticId: null,
+    // Campaign trial-scoped
+    makeChiefPlayedThisTrial: false,
+    suggestRetirementTargets: [],
+    keepCrownActivated: false,
   });
+
+  // ── Campaign state — null when not in campaign mode ───────────
+  const campaign = reactive<{ data: CampaignState | null }>({ data: null });
 
   const courtReport = reactive({
     plays: [] as Array<{
@@ -128,13 +153,27 @@
     return game.deck.shift() ?? null;
   }
 
-  // Remove a card from the docket, add it to discard, draw a replacement.
+  // Remove a card from the playbook, add it to discard, draw a replacement.
   // Draw BEFORE pushing to discard so reshuffle doesn't immediately re-draw the same card.
-  function removeFromDocket(tactic: Tactic): void {
-    game.docket = game.docket.filter((t) => t.id !== tactic.id);
+  function removeFromPlaybook(tactic: Tactic): void {
+    game.playbook = game.playbook.filter((t) => t.id !== tactic.id);
     const drawn = drawCard();
     game.discardPile.push(tactic);
-    if (drawn) game.docket.push(drawn);
+    if (drawn) game.playbook.push(drawn);
+  }
+
+  // ── localStorage: first-play tracking ────────────────────────
+  function hasPlayedQuickplay(): boolean {
+    return localStorage.getItem("hasPlayedQuickplay") === "true";
+  }
+  function hasPlayedCurrentCourt(): boolean {
+    return localStorage.getItem("hasPlayedCurrentCourt") === "true";
+  }
+  function markPlayedQuickplay(): void {
+    localStorage.setItem("hasPlayedQuickplay", "true");
+  }
+  function markPlayedCurrentCourt(): void {
+    localStorage.setItem("hasPlayedCurrentCourt", "true");
   }
 
   // ─── Game Management ─────────────────────────────────────────
@@ -143,7 +182,15 @@
     if (!mode) return;
     ui.previewPresetId = null;
     ui.courtMode = mode as CourtMode;
+    if (ui.courtMode === "current") markPlayedCurrentCourt();
     dealGame();
+  }
+
+  function resetToTitle(): void {
+    ui.phase = "title";
+    ui.isCampaignMode = false;
+    campaign.data = null;
+    caseHistory.splice(0);
   }
 
   function resetToCourtSelect(): void {
@@ -216,7 +263,7 @@
     game.playerSide = null;
     game.deck = [];
     game.discardPile = [];
-    game.docket = [];
+    game.playbook = [];
     game.claimedCards = [];
     game.selectedTacticId = null;
     game.claimingMode = false;
@@ -235,6 +282,9 @@
     game.multiTargetMode = false;
     game.multiTargetSelections = [];
     game.multiTargetTacticId = null;
+    game.makeChiefPlayedThisTrial = false;
+    game.suggestRetirementTargets = [];
+    game.keepCrownActivated = false;
     courtReport.plays = [];
     ui.phase = "setup";
     ui.courtReportVisible = false;
@@ -249,11 +299,13 @@
   }
 
   function startArguments(): void {
-    game.deck = shuffle([...allTactics]);
-    game.docket = [];
+    // Campaign-only tactics only enter the deck in campaign mode
+    const deckPool = ui.isCampaignMode ? [...allTactics] : allTactics.filter((t) => !t.campaignOnly);
+    game.deck = shuffle(deckPool);
+    game.playbook = [];
     for (let i = 0; i < 5; i++) {
       const card = drawCard();
-      if (card) game.docket.push(card);
+      if (card) game.playbook.push(card);
     }
     game.bench.forEach((j) => {
       game.leanings[j.id] = getInitialLeaning(j);
@@ -287,7 +339,7 @@
       return;
     }
 
-    const tactic = [...game.docket, ...game.claimedCards].find((t) => t.id === tacticId);
+    const tactic = [...game.playbook, ...game.claimedCards].find((t) => t.id === tacticId);
     if (!tactic) return;
 
     if (
@@ -296,13 +348,14 @@
       tactic.effectType === "discard-all" ||
       tactic.effectType === "insult-chief" ||
       tactic.effectType === "presidential-call" ||
-      tactic.effectType === "saint-patricks"
+      tactic.effectType === "saint-patricks" ||
+      tactic.effectType === "keep-crown"
     ) {
       applyTactic(tactic, null, "player");
     } else if (tactic.effectType === "claim-two") {
       if (game.claimedCards.length > 0) return; // already have dibs
       // Remove dibs card WITHOUT drawing a replacement yet; player picks from the 4 remaining
-      game.docket = game.docket.filter((t) => t.id !== tactic.id);
+      game.playbook = game.playbook.filter((t) => t.id !== tactic.id);
       game.discardPile.push(tactic);
       game.claimingMode = true;
       game.claimedSelections = [];
@@ -319,18 +372,18 @@
       game.multiTargetMode = true;
       game.multiTargetSelections = [];
     } else {
-      // sway-one, shield, encourage-nap, justice-cocktails, invite-church, recuse, make-chief: select then click a justice
+      // sway-one, shield, encourage-nap, justice-cocktails, invite-church, recuse, make-chief, suggest-retirement: select then click a justice
       game.selectedTacticId = game.selectedTacticId === tacticId ? null : tacticId;
     }
   }
 
   function finalizeClaim(): void {
-    const claimed = game.docket.filter((t) => game.claimedSelections.includes(t.id));
-    game.docket = game.docket.filter((t) => !game.claimedSelections.includes(t.id));
+    const claimed = game.playbook.filter((t) => game.claimedSelections.includes(t.id));
+    game.playbook = game.playbook.filter((t) => !game.claimedSelections.includes(t.id));
     game.claimedCards.push(...claimed);
     // Draw 1 card now to bring unclaimed docket back to 3 (+ 2 claimed = 5 total accessible)
     const drawn = drawCard();
-    if (drawn) game.docket.push(drawn);
+    if (drawn) game.playbook.push(drawn);
     courtReport.plays.push({
       actor: "player",
       tacticName: "I Call Dibs",
@@ -346,7 +399,7 @@
 
   function selectJustice(justice: Justice): void {
     if (ui.phase !== "playing" || game.selectedTacticId === null || game.currentTurn !== "player") return;
-    const tactic = [...game.docket, ...game.claimedCards].find((t) => t.id === game.selectedTacticId);
+    const tactic = [...game.playbook, ...game.claimedCards].find((t) => t.id === game.selectedTacticId);
     if (!tactic) return;
     // Shield must target an ally (leaning > 0)
     if (tactic.effectType === "shield" && (game.leanings[justice.id] ?? 0) <= 0) return;
@@ -380,7 +433,7 @@
       } else {
         game.multiTargetSelections.push(justice.id);
         if (game.multiTargetSelections.length === 2) {
-          const tactic = [...game.docket, ...game.claimedCards].find((t) => t.id === game.multiTargetTacticId);
+          const tactic = [...game.playbook, ...game.claimedCards].find((t) => t.id === game.multiTargetTacticId);
           if (tactic) applyTactic(tactic, null, "player");
         }
       }
@@ -388,7 +441,7 @@
     }
 
     if (game.selectedTacticId !== null && game.currentTurn === "player") {
-      const tactic = [...game.docket, ...game.claimedCards].find((t) => t.id === game.selectedTacticId);
+      const tactic = [...game.playbook, ...game.claimedCards].find((t) => t.id === game.selectedTacticId);
       // Invalid target conditions → open detail instead
       if (!tactic) {
         ui.detailJustice = justice;
@@ -412,7 +465,7 @@
   // All effect logic lives in _tacticEffects.ts; this function is a thin dispatcher.
 
   function applyTactic(tactic: Tactic, targetJustice: Justice | null, actor: TurnActor): void {
-    const outcome: EffectOutcome = resolveEffect(game, tactic, targetJustice, actor, { drawCard, removeFromDocket });
+    const outcome: EffectOutcome = resolveEffect(game, tactic, targetJustice, actor, { drawCard, removeFromPlaybook });
 
     courtReport.plays.push({
       actor,
@@ -452,6 +505,12 @@
   // ─── Turn Management ─────────────────────────────────────────
 
   function endPlayerTurn(): void {
+    // Double Tap reward card: player gets an extra action this turn
+    if (campaign.data?.doubleTapActive) {
+      campaign.data.doubleTapActive = false;
+      return; // stay on player's turn
+    }
+
     // Shields are consumed on contact (in resolveEffect), not cleared wholesale here
     game.currentTurn = "opponent";
     ui.opponentThinking = true;
@@ -463,7 +522,7 @@
 
     const browseTimer = setInterval(() => {
       elapsed += browseInterval;
-      const available = game.docket.filter((t) => t.effectType !== "claim-two");
+      const available = game.playbook.filter((t) => t.effectType !== "claim-two");
       if (available.length) {
         const pick = available[Math.floor(Math.random() * available.length)];
         ui.opponentHighlightedCardId = pick.id;
@@ -477,8 +536,8 @@
   }
 
   function playOpponentTurn(): void {
-    // Opponent draws only from the docket (not claimed cards)
-    const available = game.docket.filter((t) => t.effectType !== "claim-two");
+    // Opponent draws only from the playbook (not claimed cards); skip campaign-only tactics
+    const available = game.playbook.filter((t) => t.effectType !== "claim-two" && t.effectType !== "suggest-retirement" && t.effectType !== "keep-crown");
     if (!available.length) {
       endOpponentTurn();
       return;
@@ -653,6 +712,25 @@
     return { forCount, againstCount, abstainCount, won: forCount > againstCount, tied: forCount === againstCount };
   });
 
+  // ── Campaign composable (must come after `verdict` is defined) ──
+  const {
+    startCampaign,
+    chooseObjective,
+    activateDoubleTap,
+    proceedAfterVerdict,
+    collectReward,
+    activateRecessReward,
+    doneActivatingBonus,
+    proceedFromRecess,
+    eligibleJustices,
+    vetoChoiceJustices,
+    recessRewardCards,
+    trialRewardCards,
+    campaignProgress,
+    objectiveStatus,
+    gameOverStats,
+  } = useCampaignManager(game, campaign, ui, verdict, courtReport, shuffle);
+
   const tallyDisplay = computed(() => {
     if (!benchOverview.value) return "0-0";
     const { votingFor, votingAgainst, abstaining } = benchOverview.value;
@@ -738,6 +816,8 @@
         "hire-pi": "🔍 Two justices",
         "saint-patricks": "☘️ All justices",
         "invite-church": "⛪ Single target",
+        "suggest-retirement": "🏖️ Single target",
+        "keep-crown": "👑 Chief Justice",
       }[effectType] ?? effectType
     );
   }
@@ -883,7 +963,7 @@
   }
 
   onMounted(() => {
-    ui.phase = "courtSelect";
+    ui.phase = "title";
   });
 </script>
 <template lang="pug" src="./Court.pug"></template>
