@@ -9,11 +9,16 @@ If you see a blank page at `http://localhost:5173/home.html` with `auth/invalid-
 ### Quick start
 
 1. Install dependencies:
-  - `npm install`
+
+- `npm install`
+
 2. Start the client:
-  - `npm run dev:client`
+
+- `npm run dev:client`
+
 3. Open:
-  - `http://localhost:5173/home.html`
+
+- `http://localhost:5173/home.html`
 
 ### Optional: override Firebase config with env vars
 
