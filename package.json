@@ -52,7 +52,7 @@
     "nodemon": "^3.1.14",
     "prettier": "^3.8.1",
     "pug": "^3.0.4",
-    "sass": "^1.98.0",
+    "sass": "^1.99.0",
     "typescript": "^5.9.3",
     "vite": "^6.4.1",
     "vite-plugin-vue-devtools": "^7.7.9",
