@@ -1,109 +1,98 @@
 // ─── Title Screen ────────────────────────────────────────────
-.court-title {
-  max-width: 600px;
+main.court-title {
   margin: 0 auto;
-  padding: 3rem 1rem;
-  display: flex;
-  flex-direction: column;
+  padding-top: 60px;
   align-items: center;
   gap: 2.5rem;
-  min-height: calc(100dvh - 220px);
   justify-content: center;
-}
+  display: grid;
+  grid-template-columns: 320px 1fr;
 
-.title-hero {
-  text-align: center;
+  .title-hero {
+    order: 2;
+    grid-column: 2;
+    text-align: center;
 
-  .title-icon {
-    font-size: 3.5rem;
-    display: block;
-    margin-bottom: 0.5rem;
+    .title-headline {
+      font-family: $serif;
+      font-size: clamp(3rem, 10.5vw, 10rem);
+      font-weight: 475;
+      color: $court-gold;
+      margin: 0;
+      line-height: 1.02;
+      margin: unset;
+    }
+
+    .title-sub {
+      font-size: 1rem;
+      font-size: 3.5vw;
+      color: rgba(255, 255, 255, 0.5);
+      margin: 0.3rem 0 0;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
   }
 
-  .title-headline {
-    font-family: $serif;
-    font-size: clamp(2rem, 6vw, 3.5rem);
-    color: $court-gold;
-    margin: 0;
-    line-height: 1.1;
-  }
+  .title-mode-buttons {
+    order: 1;
+    grid-column: 1;
+    min-height: calc(100dvh - 120px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3rem;
+    .title-mode-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
 
-  .title-sub {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0.3rem 0 0;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
-}
+    .title-button {
+      padding: 1rem 1.4rem;
+      cursor: pointer;
+      border-radius: 0.75rem;
+      border: 2px solid rgba($court-gold, 0.4);
+      font-family: $sans-serif;
 
-.title-mode-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  width: 100%;
-  max-width: 420px;
-}
+      background-color: #080808;
+      .label {
+        font-size: 215%;
+        color: $court-gold;
+        font-weight: 515;
+      }
+      .desc {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.55);
+      }
 
-.title-mode-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
+      transition:
+        scale 0.25s ease-out,
+        background-color 0.3s linear,
+        box-shadow 0.2s linear,
+        border-color 0.4s linear;
+      &:hover {
+        scale: 1.05;
+        background-color: #040412;
+        box-shadow: 0 0 3px black;
+        border-color: $court-gold;
+      }
+    }
 
-.btn--mode {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.4rem;
-  background: $court-surface;
-  border: 2px solid rgba($court-gold, 0.4);
-  border-radius: 10px;
-  color: $court-card;
-  font-family: $sans-serif;
-  cursor: pointer;
-  text-align: left;
-  transition:
-    border-color 0.15s,
-    background 0.15s;
-  width: 100%;
-
-  &:hover {
-    border-color: $court-gold;
-    background: lighten($court-surface, 5%);
-  }
-
-  .btn-mode-icon {
-    font-size: 1.8rem;
-    flex-shrink: 0;
-  }
-
-  .btn-mode-label {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: $court-gold;
-    line-height: 1.2;
-  }
-
-  .btn-mode-desc {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.55);
-    margin-top: 0.15rem;
-  }
-
-  &.btn--campaign {
-    border-color: rgba($court-gold, 0.6);
-  }
-}
-
-.title-hint {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.55);
-  text-align: center;
-  margin: 0;
-  padding: 0 0.5rem;
-
-  &.title-hint--campaign {
-    color: $court-gold-light;
+    .title-hint {
+      .hint-text {
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 0.25em 0.75em;
+        color: rgba(255, 255, 255, 0.85);
+        border-radius: 4px;
+        position: relative;
+        padding-left: 1.5em;
+        .emoji {
+          position: absolute;
+          top: -8px;
+          left: -8px;
+          font-size: 150%;
+        }
+      }
+    }
   }
 }

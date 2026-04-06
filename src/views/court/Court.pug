@@ -5,7 +5,7 @@
     span.cheat-banner__text CHEATS ACTIVE
     //- span.cheat-banner__icon ⚠️
 
-  header.court-header(v-if="ui.phase !== 'title' && ui.phase !== 'campaignSelect'")
+  header.court-header(v-if="ui.phase === 'courtSelect' || ui.phase === 'campaignSelect' || ui.phase === 'objectiveDraw'")
     h1 ⚖️ {{ ui.title }}
 
   //- ── TITLE SCREEN ───────────────────────────────────────────

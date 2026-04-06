@@ -529,10 +529,13 @@
     if (outcome.pendingRedraws) {
       const count = outcome.pendingRedraws;
       for (let i = 0; i < count; i++) {
-        setTimeout(() => {
-          const drawn = drawCard();
-          if (drawn) game.playbook.push(drawn);
-        }, 350 + i * 70);
+        setTimeout(
+          () => {
+            const drawn = drawCard();
+            if (drawn) game.playbook.push(drawn);
+          },
+          350 + i * 70,
+        );
       }
     }
   }

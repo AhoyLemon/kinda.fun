@@ -1,13 +1,5 @@
 main.court-main(v-else-if="ui.phase === 'setup'")
 
-  //- Campaign progress banner
-  .campaign-banner(v-if="ui.isCampaignMode && campaign.data")
-    .cb-objective(v-if="campaign.data.activeObjective")
-      span.cb-icon {{ campaign.data.activeObjective.icon }}
-      span.cb-label {{ campaign.data.activeObjective.name }}
-    span.cb-progress {{ campaignProgress }}
-    span.cb-year 📅 {{ campaign.data.year }}
-
   section.case-section
     .case-section-header
       h2.section-label Today's Case
@@ -61,6 +53,15 @@ main.court-main(v-else-if="ui.phase === 'setup'")
         .side-buttons
           button.btn.btn--start(@click="startArguments") Begin Arguments →
           button.btn.btn--switch(v-if="!campaign.data?.activeObjective?.forcedSide" @click="game.playerSide = null") Switch Sides
+
+  //- Campaign progress banner
+  .campaign-banner(v-if="ui.isCampaignMode && campaign.data")
+    .cb-objective(v-if="campaign.data.activeObjective")
+      span.cb-label 🎯 Objective:
+      span.cb-icon {{ campaign.data.activeObjective.icon }}
+      span.cb-name {{ campaign.data.activeObjective.name }}
+    span.cb-progress {{ campaignProgress }}
+    span.cb-year 📅 {{ campaign.data.year }}
 
   section.bench-section
     .bench-header

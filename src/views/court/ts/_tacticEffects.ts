@@ -15,7 +15,7 @@ export interface EffectOutcome {
   results: EffectResult[];
   reportTarget: string;
   overrideFeedback?: string; // dynamic feedback string (overrides tactic.feedback in toast)
-  pendingRedraws?: number;  // cards to draw with delay (for discard-all / purge)
+  pendingRedraws?: number; // cards to draw with delay (for discard-all / purge)
 }
 
 export interface TacticHelpers {

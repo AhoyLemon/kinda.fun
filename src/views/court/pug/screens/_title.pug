@@ -1,21 +1,22 @@
 //- ── TITLE PHASE ────────────────────────────────────────────
 main.court-title(v-if="ui.phase === 'title'")
   .title-hero
-    .title-icon ⚖️
+    //.title-icon ⚖️
     h2.title-headline Supreme Court
     p.title-sub The Card Game
 
   .title-mode-buttons
     .title-mode-section
-      button.btn.btn--mode.btn--quickplay(@click="markPlayedQuickplay(); ui.phase = 'courtSelect'")
-        .btn-mode-icon 🎲
-        .btn-mode-label Quick Play
-        .btn-mode-desc Assemble a court and argue a single case
-      p.title-hint(v-if="!hasPlayedQuickplay()") 👆 New here? Start with Quick Play!
+
+      button.title-button.quickplay(@click="markPlayedQuickplay(); ui.phase = 'courtSelect'")
+        .label Quick Play
+        .desc Assemble a court and argue a single case
+      p.title-hint(v-if="!hasPlayedQuickplay()") 
+        span.hint-text
+          span.emoji 👆
+          span.text New here? Start with Quick Play!
 
     .title-mode-section
-      button.btn.btn--mode.btn--campaign(@click="ui.phase = 'campaignSelect'")
-        .btn-mode-icon 🏛
-        .btn-mode-label Campaign Mode
-        .btn-mode-desc Guide a court through 5 historic trials
-      p.title-hint.title-hint--campaign(v-if="!hasPlayedCurrentCourt() && hasPlayedQuickplay()") 🌟 Ready for the challenge? Start a campaign!
+      button.title-button.campaign(@click="ui.phase = 'campaignSelect'")
+        .label Start Campaign
+        .desc Guide a court through a docket of historic cases

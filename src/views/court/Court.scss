@@ -217,6 +217,7 @@ $sans-serif: "Poppins", sans-serif;
 @import "scss/components/buttons";
 @import "scss/components/_bench";
 @import "scss/components/justice-detail";
+@import "scss/components/campaign-banner";
 @import "scss/components/cheats";
 
 @import "./scss/screens//court-select";
@@ -232,43 +233,6 @@ $sans-serif: "Poppins", sans-serif;
 @import "./scss/screens/game-over";
 
 @import "./scss/modals/court-record";
-
-// ─── Campaign Banner (setup + playing phases) ─────────────────
-.campaign-banner {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  padding: 0.5rem 1rem;
-  background: rgba($court-gold, 0.08);
-  border: 1px solid rgba($court-gold, 0.3);
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  font-size: 0.82rem;
-}
-
-.cb-objective {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-weight: 600;
-  color: $court-gold;
-  flex: 1;
-}
-
-.cb-icon {
-  font-size: 1rem;
-}
-
-.cb-label {
-  font-size: 0.82rem;
-}
-
-.cb-progress,
-.cb-year {
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.45);
-}
 
 // ─── Verdict objective display ────────────────────────────────
 .verdict-objective {

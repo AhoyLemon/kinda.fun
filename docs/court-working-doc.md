@@ -45,6 +45,14 @@ Therefore, I should have a button that will be labeled "Advance", which should g
 
 - In the game over screen, I see two buttons: "Play Again" and "New Campaign". They both seem to do the same thing.
 
+- The Title screen could use a bit of work. First of all, it says "Supreme Court: The Card Game" up top, and then "Supreme Court THE CARD GAME" above the two options. And then it says "Convening the Court" underneath. I can play with the layout via Scss later, but I'd like you to fix those issues.
+
+When selecting a court via "Quickplay", the "Current Court" says "TRY CAMPAIGN MODE". That is confusing for first time players. First timers are told they shoud try quick play, and then when they choose quick play it says "TRY CAMPAIGN MODE".
+
+INSTEAD on the quickplay court select screen, there would be a conditional piece of UI underneath the "Current Court" button, similar to what's on the title screen that says "New To The Supreme Court? Start with the current one."
+
+- See Open Questions from Campaign Mode Implementation (April 2026)
+
 ## Campaign Mode: Clarifying Questions
 
 Before starting Campaign Mode development, I'd like to confirm a few things that would affect architecture decisions. Answering these up-front will let me build more without stopping for feedback.

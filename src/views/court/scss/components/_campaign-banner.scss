@@ -1,0 +1,29 @@
+// ─── Campaign Banner (setup + playing phases) ─────────────────
+.campaign-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 1rem;
+  background: rgba($court-gold, 0.08);
+  border: 1px solid rgba($court-gold, 0.3);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  .cb-objective {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    color: $court-gold;
+    flex: 1;
+  }
+  .cb-name {
+    color: white;
+  }
+
+  .cb-progress,
+  .cb-year {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.45);
+  }
+}
