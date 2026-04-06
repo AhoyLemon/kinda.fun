@@ -225,8 +225,8 @@
   }
 }
 
-// ─── The Docket ─────────────────────────────────────────────
-.court-docket {
+// ─── The Playbook ───────────────────────────────────────────
+.court-playbook {
   background: $court-surface;
   border-radius: 8px;
   padding: 1rem 1.25rem 1.25rem;
@@ -234,7 +234,7 @@
   margin-top: 0.5rem;
 }
 
-.docket-header {
+.playbook-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -243,14 +243,14 @@
   margin-bottom: 0.75rem;
 }
 
-.docket-title {
+.playbook-title {
   font-family: $serif;
   font-size: 1.1rem;
   color: $court-gold;
   margin: 0;
 }
 
-.docket-count {
+.playbook-count {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.4);
   font-family: $sans-serif;
@@ -277,10 +277,24 @@
 .tactic-card-row {
   display: flex;
   gap: 0.75rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
-.docket-empty {
+// Cards in the shared playbook have a fixed proportional width so they never
+// resize when a card is added or removed during the animation window.
+.playbook-shared .tactic-card-row {
+  position: relative;
+  min-height: 160px; // prevent collapse when all cards are leaving (purge)
+
+  .tactic-card {
+    flex: 0 0 auto;
+    width: clamp(130px, calc(20% - 0.6rem), 215px);
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+.playbook-empty {
   color: rgba(255, 255, 255, 0.4);
   font-style: italic;
   font-size: 0.9rem;
@@ -555,8 +569,8 @@
   box-shadow: 0 0 18px rgba(243, 156, 18, 0.65) !important;
 }
 
-// ─── Docket title/meta ───────────────────────────────────────
-.docket-title-row {
+// ─── Playbook title row / meta ───────────────────────────────────────
+.playbook-title-row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -565,14 +579,14 @@
   margin-bottom: 0.5rem;
 }
 
-.docket-subtitle {
+.playbook-subtitle {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.4);
   font-family: $sans-serif;
   font-weight: normal;
 }
 
-.docket-meta {
+.playbook-meta {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.35);
   font-family: $sans-serif;
@@ -584,8 +598,8 @@
   color: rgba(255, 255, 255, 0.35);
 }
 
-// ─── Docket state modifiers ──────────────────────────────────
-.court-docket {
+// ─── Playbook state modifiers ───────────────────────────────────────────
+.court-playbook {
   &.is-claiming {
     border-color: $court-gold;
     box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.3);
@@ -659,14 +673,14 @@
   text-align: center;
 }
 
-// ─── Docket sections ─────────────────────────────────────────
-.docket-claimed {
+// ─── Playbook sections ───────────────────────────────────────────
+.playbook-claimed {
   margin-bottom: 0.75rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(201, 168, 76, 0.25);
 }
 
-.docket-section-label {
+.playbook-section-label {
   font-size: 0.75rem;
   font-weight: $bold;
   color: $court-gold;
@@ -697,13 +711,22 @@
   box-shadow: 0 4px 12px rgba(239, 159, 90, 0.25);
 }
 
-// ─── Docket transition-group animations ──────────────────────
+// ─── Playbook tactic card transition animations ─────────────────────────
+// Leave animation plays first; enter animation has a matching delay so new
+// cards only appear after departing cards have fully animated out.
 .tactic-card-enter-active {
   animation: card-deal-in 0.35s ease-out both;
 }
 
 .tactic-card-leave-active {
   animation: card-play-out 0.28s ease-in both;
+  // pointer-events: none so residual animations can't be clicked
+  pointer-events: none;
+}
+
+// Smooth FLIP repositioning when siblings move after a card leaves
+.tactic-card-move {
+  transition: transform 0.28s ease;
 }
 
 @keyframes card-deal-in {

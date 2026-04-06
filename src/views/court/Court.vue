@@ -168,9 +168,12 @@
   // Draw BEFORE pushing to discard so reshuffle doesn't immediately re-draw the same card.
   function removeFromPlaybook(tactic: Tactic): void {
     game.playbook = game.playbook.filter((t) => t.id !== tactic.id);
-    const drawn = drawCard();
     game.discardPile.push(tactic);
-    if (drawn) game.playbook.push(drawn);
+    // Delay draw so the leave animation completes before the enter animation starts.
+    setTimeout(() => {
+      const drawn = drawCard();
+      if (drawn) game.playbook.push(drawn);
+    }, 320);
   }
 
   // ── localStorage: first-play tracking ────────────────────────
@@ -392,9 +395,11 @@
     const claimed = game.playbook.filter((t) => game.claimedSelections.includes(t.id));
     game.playbook = game.playbook.filter((t) => !game.claimedSelections.includes(t.id));
     game.claimedCards.push(...claimed);
-    // Draw 1 card now to bring unclaimed docket back to 3 (+ 2 claimed = 5 total accessible)
-    const drawn = drawCard();
-    if (drawn) game.playbook.push(drawn);
+    // Draw 1 card after a delay so the claim-move animation completes first.
+    setTimeout(() => {
+      const drawn = drawCard();
+      if (drawn) game.playbook.push(drawn);
+    }, 320);
     courtReport.plays.push({
       actor: "player",
       tacticName: "I Call Dibs",
@@ -517,6 +522,18 @@
       endPlayerTurn();
     } else {
       endOpponentTurn();
+    }
+
+    // Purge the Record clears all 5 cards before drawing replacements.
+    // Stagger the draws so each new card enters one at a time after the leave animation.
+    if (outcome.pendingRedraws) {
+      const count = outcome.pendingRedraws;
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const drawn = drawCard();
+          if (drawn) game.playbook.push(drawn);
+        }, 350 + i * 70);
+      }
     }
   }
 
@@ -822,8 +839,8 @@
         "sway-all": "🌊 All justices",
         susceptibility: "😴 All justices",
         shield: "🛡️ Ally only",
-        "discard-all": "🗑️ Docket",
-        "claim-two": "🗑️ Docket",
+        "discard-all": "🗑️ Playbook",
+        "claim-two": "🗑️ Playbook",
         "make-chief": "👑 Chief Justice",
         "insult-chief": "👑 Chief Justice",
         "presidential-call": "📞 All justices",

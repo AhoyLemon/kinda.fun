@@ -15,6 +15,7 @@ export interface EffectOutcome {
   results: EffectResult[];
   reportTarget: string;
   overrideFeedback?: string; // dynamic feedback string (overrides tactic.feedback in toast)
+  pendingRedraws?: number;  // cards to draw with delay (for discard-all / purge)
 }
 
 export interface TacticHelpers {
@@ -77,16 +78,15 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
   const results: EffectResult[] = [];
   let reportTarget = targetJustice?.name ?? "All justices";
   let overrideFeedback: string | undefined;
+  let pendingRedraws: number | undefined;
 
   // ── Discard-all ──────────────────────────────────────────────
   if (tactic.effectType === "discard-all") {
-    // The tactic card itself is in the docket — the whole docket gets burned.
+    // The tactic card itself is in the playbook — the whole playbook gets burned.
+    // Draws are deferred (pendingRedraws) so the leave animation completes first.
     game.discardPile.push(...game.playbook);
     game.playbook = [];
-    for (let i = 0; i < 5; i++) {
-      const card = helpers.drawCard();
-      if (card) game.playbook.push(card);
-    }
+    pendingRedraws = 5;
     reportTarget = "All Playbook cards";
 
     // ── Make-chief ───────────────────────────────────────────────
@@ -456,5 +456,5 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
     });
   }
 
-  return { results, reportTarget, overrideFeedback };
+  return { results, reportTarget, overrideFeedback, pendingRedraws };
 }

@@ -157,15 +157,15 @@
           ) {{ campaign.data?.doubleTapActive ? '⚡ Active' : 'Activate' }}
 
     //- The Playbook: shared card pool
-    .court-docket(
+    .court-playbook(
       :class="{ 'is-claiming': game.claimingMode, 'is-opponent-turn': ui.opponentThinking, 'has-selection': game.selectedTacticId !== null || game.multiTargetMode }"
     )
-      .docket-header
-        .docket-title-row
-          h3.docket-title
+      .playbook-header
+        .playbook-title-row
+          h3.playbook-title
             | The Playbook
-            span.docket-subtitle  · shared between both counsels
-          .docket-meta
+            span.playbook-subtitle  · shared between both counsels
+          .playbook-meta
             span.deck-count 🃏 {{ game.deck.length }} in deck
             span.claimed-count(v-if="game.claimedCards.length")  · {{ game.claimedCards.length }} claimed by you
         p.claiming-hint(v-if="game.claimingMode")
@@ -174,8 +174,8 @@
         p.hand-hint(v-else-if="game.selectedTacticId !== null") ↑ Click a justice above to target them
 
       //- Claimed cards (player-exclusive)
-      .docket-claimed(v-if="game.claimedCards.length")
-        h4.docket-section-label 🔒 Your Dibs — only you can play these
+      .playbook-claimed(v-if="game.claimedCards.length")
+        h4.playbook-section-label 🔒 Your Dibs — only you can play these
         .tactic-card-row
           .tactic-card(
             v-for="tactic in game.claimedCards"
@@ -198,9 +198,9 @@
               span.tc__power(v-if="tactic.basePower > 0")  ⚡{{ tactic.basePower }}
 
 
-      //- Shared docket cards
-      .docket-shared
-        p.docket-empty(v-if="!game.playbook.length") The playbook is empty.
+      //- Shared playbook cards
+      .playbook-shared
+        p.playbook-empty(v-if="!game.playbook.length") The playbook is empty.
         transition-group.tactic-card-row(v-else tag="div" name="tactic-card")
           .tactic-card(
             v-for="tactic in game.playbook"
