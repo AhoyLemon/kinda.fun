@@ -125,6 +125,7 @@ export interface CampaignState {
   dreamJusticeId: number | null; // queued vacancy fill by Dream Justice
   vetoMode: boolean; // Justice Veto pending — next nomination shows 2 candidates
   vetoChoices: [number, number] | null; // two justice ids for veto nomination
+  vetoConfirmed: boolean; // player has made their pick; hide the choice modal
   glazedJusticeIds: number[]; // justice ids with permanent per-trial +20 bonus
   neverRetireIds: number[]; // justice ids protected from natural attrition
   departedJusticeIds: number[]; // justice ids who left the bench (permanently ineligible for re-nomination)

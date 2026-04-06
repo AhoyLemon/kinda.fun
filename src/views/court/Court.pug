@@ -1,4 +1,10 @@
 .court-game(:class="`phase-${ui.phase}`")
+  //- ── DEV CHEAT BANNER ────────────────────────────────────────
+  .cheat-banner(v-if="cheatsActive")
+    //- span.cheat-banner__icon ⚠️
+    span.cheat-banner__text CHEATS ACTIVE
+    //- span.cheat-banner__icon ⚠️
+
   header.court-header(v-if="ui.phase !== 'title' && ui.phase !== 'campaignSelect'")
     h1 ⚖️ {{ ui.title }}
 
@@ -22,7 +28,19 @@
   include pug/screens/_setup.pug
 
   //- ── PLAYING PHASE ──────────────────────────────────────────
-  main.court-playing(v-else-if="ui.phase === 'playing'")
+  
+  .trial-cheats(v-if="ui.phase === 'playing'")
+    button.btn.btn--cheat-love(
+      :class="{ 'is-active': ui.cheatTargetMode === 'love' }"
+      @click="ui.cheatTargetMode = ui.cheatTargetMode === 'love' ? null : 'love'"
+    ) 💕 MAKE LOVE
+    button.btn.btn--cheat-hate(
+      :class="{ 'is-active': ui.cheatTargetMode === 'hate' }"
+      @click="ui.cheatTargetMode = ui.cheatTargetMode === 'hate' ? null : 'hate'"
+    ) 💀 MAKE HATE
+  
+  
+  main.court-playing(v-if="ui.phase === 'playing'")
 
     //- Campaign progress banner
     .campaign-banner(v-if="ui.isCampaignMode && campaign.data")
@@ -48,6 +66,8 @@
         .topbar-tally(v-tippy="tallyTooltip" :class="tallyClass")
           | {{ tallyDisplay }}
         button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 Report
+        template(v-if="cheatsActive")
+          
 
     //- Bench overview panel
     .bench-overview-bar(v-if="benchOverview")
@@ -74,6 +94,8 @@
 
       .targeting-banner(v-if="game.multiTargetMode")
         | 🎯 Select {{ 2 - game.multiTargetSelections.length }} justice{{ (2 - game.multiTargetSelections.length) === 1 ? '' : 's' }} — click the card again to cancel
+      .targeting-banner.cheat-targeting(v-else-if="cheatsActive && ui.cheatTargetMode")
+        | {{ ui.cheatTargetMode === 'love' ? '💕 Click a justice to set their leaning to +100' : '💀 Click a justice to set their leaning to −100' }} — click the button again to cancel
       .bench-grid.bench-grid--playing(
       :class="{ 'targeting-mode': game.selectedTacticId !== null || game.multiTargetMode }"
     )

@@ -8,6 +8,7 @@ import { campaignSetups } from "./_campaigns";
 import { presidents } from "./_presidents";
 import { campaignSettings } from "./_settings";
 import { rightParties, leftParties, partiesAligned } from "./_tacticEffects";
+import { cheats, cheatsActive } from "./_cheats";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -103,6 +104,24 @@ export function useCampaignManager(
     return { ...j, nominatedBy: j.nominatedBy ? { ...j.nominatedBy } : undefined };
   }
 
+  /** Build a reward deck, placing cheat-ordered IDs first when cheats are active. */
+  function buildCheatRewardDeck(pool: RewardCard[]): RewardCard[] {
+    if (!cheatsActive || cheats.shuffleBonus) return shuffle(pool);
+    const orderedIds = new Set(cheats.bonusOrder);
+    const ordered = cheats.bonusOrder.map((id) => pool.find((c) => c.id === id)).filter((c): c is RewardCard => !!c);
+    const rest = shuffle(pool.filter((c) => !orderedIds.has(c.id)));
+    return [...ordered, ...rest];
+  }
+
+  /** Build an objective list, placing cheat-ordered IDs first when cheats are active. */
+  function buildCheatObjectiveList(pool: ObjectiveCard[]): ObjectiveCard[] {
+    if (!cheatsActive || cheats.shuffleObjectives) return shuffle(pool);
+    const orderedIds = new Set(cheats.objectiveOrder);
+    const ordered = cheats.objectiveOrder.map((id) => pool.find((o) => o.id === id)).filter((o): o is ObjectiveCard => !!o);
+    const rest = shuffle(pool.filter((o) => !orderedIds.has(o.id)));
+    return [...ordered, ...rest];
+  }
+
   /** Generate a random-ish in-game date string within a given year. */
   function recessDate(year: number): string {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -117,7 +136,7 @@ export function useCampaignManager(
     const c = campaign.data;
     if (c.rewardDeck.length === 0) {
       if (c.rewardDiscard.length === 0) return null;
-      c.rewardDeck = shuffle([...c.rewardDiscard]);
+      c.rewardDeck = buildCheatRewardDeck([...c.rewardDiscard]);
       c.rewardDiscard = [];
     }
     return c.rewardDeck.shift() ?? null;
@@ -128,7 +147,8 @@ export function useCampaignManager(
     if (!campaign.data) return;
     const c = campaign.data;
     const hasRecessCards = c.rewardHand.some((r) => r.deployPhase === "recess" || r.deployPhase === "either");
-    if (hasRecessCards || c.vetoChoices !== null || c.latestRewardCardId !== null) {
+    const hasPendingVeto = c.vetoChoices !== null && !c.vetoConfirmed;
+    if (hasRecessCards || hasPendingVeto || c.latestRewardCardId !== null) {
       ui.phase = "activateBonus";
     } else {
       processRecess();
@@ -231,11 +251,11 @@ export function useCampaignManager(
     const startYear = setup.isRandomStartYear ? 1900 + Math.floor(Math.random() * 127) : setup.startYear;
 
     // Draw 2 random objectives
-    const shuffledObjectives = shuffle([...objectives]);
+    const shuffledObjectives = buildCheatObjectiveList([...objectives]);
     const pair: [ObjectiveCard, ObjectiveCard] = [shuffledObjectives[0], shuffledObjectives[1]];
 
     // Build reward deck
-    const rewardDeck = shuffle([...rewardCards]);
+    const rewardDeck = buildCheatRewardDeck([...rewardCards]);
 
     campaign.data = {
       setup,
@@ -258,6 +278,7 @@ export function useCampaignManager(
       dreamJusticeId: null,
       vetoMode: false,
       vetoChoices: null,
+      vetoConfirmed: false,
       glazedJusticeIds: [],
       neverRetireIds: [],
       departedJusticeIds: [],
@@ -666,6 +687,7 @@ export function useCampaignManager(
         nominee = vetoJ ? cloneJustice(vetoJ) : null;
         c.vetoChoices = null;
         c.vetoMode = false;
+        c.vetoConfirmed = false;
       }
 
       if (!nominee) {
@@ -784,9 +806,8 @@ export function useCampaignManager(
     const initWing = benchWing(c.initialBenchJusticeIds);
     const finalWing = benchWing(game.bench.map((j) => j.id));
     // Positive = court moved right, negative = moved left
-    const courtNetShift = (finalWing.right - finalWing.left) - (initWing.right - initWing.left);
-    const courtWingLabel =
-      courtNetShift > 0 ? "➡️ More right-wing" : courtNetShift < 0 ? "⬅️ More left-wing" : null;
+    const courtNetShift = finalWing.right - finalWing.left - (initWing.right - initWing.left);
+    const courtWingLabel = courtNetShift > 0 ? "➡️ More right-wing" : courtNetShift < 0 ? "⬅️ More left-wing" : null;
 
     // Country wing: count left vs right partisan wins across trial results
     let countryRight = 0;
@@ -825,10 +846,25 @@ export function useCampaignManager(
 
   /** Justice objects for the current Justice Veto choices (IDs → Justice lookup). */
   const vetoChoiceJustices = computed(() => {
-    if (!campaign.data?.vetoChoices) return [];
+    if (!campaign.data?.vetoChoices || campaign.data.vetoConfirmed) return [];
     const allJ = getAllJusticesRaw();
     return campaign.data.vetoChoices.map((id) => allJ.find((j) => j.id === id)).filter((j): j is Justice => !!j);
   });
+
+  /**
+   * Confirm the player's Justice Veto nominee selection.
+   * Puts the chosen justice ID first in vetoChoices so processRecess() picks it up.
+   * Clears the veto modal.
+   */
+  function confirmVetoNominee(justiceId: number): void {
+    if (!campaign.data?.vetoChoices) return;
+    const c = campaign.data;
+    const other = c.vetoChoices.find((id) => id !== justiceId) ?? c.vetoChoices[0];
+    c.vetoChoices = [justiceId, other];
+    c.vetoConfirmed = true;
+    // vetoChoices stays set (processRecess reads [0]); just clear the UI selection
+    ui.rewardEligibleTarget = null;
+  }
 
   return {
     startCampaign,
@@ -837,6 +873,7 @@ export function useCampaignManager(
     proceedAfterVerdict,
     collectReward,
     activateRecessReward,
+    confirmVetoNominee,
     doneActivatingBonus,
     proceedFromRecess,
     eligibleJustices,

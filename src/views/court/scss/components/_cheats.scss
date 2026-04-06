@@ -1,0 +1,93 @@
+// ─── Dev Cheat Banner ─────────────────────────────────────────
+.cheat-banner {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 200px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.4rem 1rem;
+  background: #ff0080;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-bottom: 2px solid #ff60c0;
+  // pointer-events: none;
+
+  user-select: none;
+
+  &__icon {
+    font-size: 0.9rem;
+  }
+
+  //pointer-events: none;
+
+  pointer-events: hover;
+  &:hover {
+    transition: opacity 0.15s linear;
+    opacity: 0.1;
+  }
+}
+
+// ─── Cheat Buttons ───────────────────────────────────────────
+.trial-cheats {
+  position: fixed;
+  top: 45px;
+  right: 10px;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: rgba(0, 0, 0, 0.99);
+  padding: 10px;
+}
+
+.btn--cheat-love,
+.btn--cheat-hate {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  transition:
+    background 0.15s,
+    opacity 0.15s;
+}
+
+.btn--cheat-love {
+  background: rgba(255, 0, 128, 0.18);
+  border-color: #ff0080;
+  color: #ff60c0;
+
+  &.is-active {
+    background: #ff0080;
+    color: #fff;
+  }
+}
+
+.btn--cheat-hate {
+  background: rgba(80, 80, 80, 0.25);
+  border-color: #888;
+  color: #ccc;
+
+  &.is-active {
+    background: #444;
+    color: #fff;
+    border-color: #bbb;
+  }
+}
+
+// ─── Cheat targeting banner ───────────────────────────────────
+.targeting-banner.cheat-targeting {
+  background: rgba(255, 0, 128, 0.15);
+  border-color: #ff0080;
+  color: #ff60c0;
+}

@@ -21,7 +21,7 @@ main.court-activate-bonus(v-if="ui.phase === 'activateBonus' && campaign.data")
           .ab-veto-meta {{ justice.justiceType }}
       button.btn.btn--start(
         :disabled="!ui.rewardEligibleTarget"
-        @click="activateRecessReward('justice-veto', undefined, ui.rewardEligibleTarget ?? undefined); ui.rewardEligibleTarget = null"
+        @click="confirmVetoNominee(ui.rewardEligibleTarget)"
       ) Confirm Nominee →
 
   //- Reward cards available to activate
@@ -89,6 +89,6 @@ main.court-activate-bonus(v-if="ui.phase === 'activateBonus' && campaign.data")
 
   .ab-footer
     button.btn.btn--proceed(
-      :disabled="!!campaign.data.vetoChoices"
+      :disabled="!!campaign.data.vetoChoices && !campaign.data.vetoConfirmed"
       @click="doneActivatingBonus()"
     ) Proceed to Recess →

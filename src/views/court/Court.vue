@@ -19,6 +19,7 @@
   import { gameSettings, uiSettings } from "./ts/_settings";
   import { campaignSetups } from "./ts/_campaigns";
   import { useCampaignManager } from "./ts/_campaignManager";
+  import { cheats, cheatsActive } from "./ts/_cheats";
 
   // ── Game settings ──────────────────────────────────────────
 
@@ -57,6 +58,8 @@
     rewardTargetJustice: null as number | null,
     rewardEligibleTarget: null as number | null,
     activatingRewardId: null as string | null,
+    // Cheat UI state
+    cheatTargetMode: null as null | "love" | "hate",
   });
 
   const game = reactive<CourtGameState>({
@@ -144,10 +147,18 @@
 
   // ─── Deck Management ─────────────────────────────────────────
 
+  /** Build a tactic deck, respecting cheat ordering when cheats are active. */
+  function buildCheatDeck(pool: Tactic[]): Tactic[] {
+    if (!cheatsActive || cheats.shuffleTactics) return shuffle(pool);
+    const ordered = cheats.tacticOrder.map((id) => pool.find((t) => t.id === id)).filter((t): t is Tactic => !!t);
+    const rest = shuffle(pool.filter((t) => !cheats.tacticOrder.includes(t.id)));
+    return [...ordered, ...rest];
+  }
+
   function drawCard(): Tactic | null {
     if (game.deck.length === 0) {
       if (game.discardPile.length === 0) return null;
-      game.deck = shuffle([...game.discardPile]);
+      game.deck = buildCheatDeck([...game.discardPile]);
       game.discardPile = [];
     }
     return game.deck.shift() ?? null;
@@ -301,7 +312,7 @@
   function startArguments(): void {
     // Campaign-only tactics only enter the deck in campaign mode
     const deckPool = ui.isCampaignMode ? [...allTactics] : allTactics.filter((t) => !t.campaignOnly);
-    game.deck = shuffle(deckPool);
+    game.deck = buildCheatDeck(deckPool);
     game.playbook = [];
     for (let i = 0; i < 5; i++) {
       const card = drawCard();
@@ -419,6 +430,13 @@
 
   // Unified justice click handler: opens detail view or targeting choice depending on context
   function handleJusticeClick(justice: Justice): void {
+    // Cheat: MAKE LOVE / MAKE HATE targeting mode
+    if (cheatsActive && ui.cheatTargetMode && ui.phase === "playing") {
+      game.leanings[justice.id] = ui.cheatTargetMode === "love" ? 100 : -100;
+      ui.cheatTargetMode = null;
+      return;
+    }
+
     if (ui.phase === "setup") {
       ui.detailJustice = justice;
       return;
@@ -720,6 +738,7 @@
     proceedAfterVerdict,
     collectReward,
     activateRecessReward,
+    confirmVetoNominee,
     doneActivatingBonus,
     proceedFromRecess,
     eligibleJustices,
