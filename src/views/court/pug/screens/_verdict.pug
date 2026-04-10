@@ -55,5 +55,6 @@ main.court-verdict(v-else-if="ui.phase === 'verdict'")
       button.btn.btn--start(v-else-if="verdict && !verdict.tied" @click="proceedAfterVerdict()") ⏸ Enter Recess →
       button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 Court Record
     template(v-else)
+      button.btn.btn--retry(v-if="verdict && !verdict.won && !verdict.tied" @click="retrySameCase()") 🔁 Retry Case
       button.btn.btn--start(@click="resetToCourtSelect") ⚖️ New Court
       button.btn.btn--report(@click="ui.courtReportVisible = true") 📋 View Court Record

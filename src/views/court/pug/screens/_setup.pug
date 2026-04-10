@@ -19,14 +19,26 @@ main.court-main(v-else-if="ui.phase === 'setup'")
           h4.side-role ⚔️ Prosecution
           p.side-name {{ game.currentCase.prosecution.name }}
           p.side-argument {{ game.currentCase.prosecution.argument }}
-          span.side-party(:class="`party-${game.currentCase.prosecution.favoredBy.toLowerCase().replace(' ', '-')}`")
+          .side-stances(v-if="sideStanceTags(game.currentCase.prosecution.stances).length")
+            span.stance-tag(
+              v-for="tag in sideStanceTags(game.currentCase.prosecution.stances)"
+              :key="tag.label"
+              :class="tag.position === 'For' ? 'stance-tag--for' : 'stance-tag--against'"
+            ) {{ tag.label }}
+          span.side-party
             | Favors {{ game.currentCase.prosecution.favoredBy }}s
 
         .case-side.case-side--defense(:class="{ 'is-chosen': game.playerSide === 'defendant', 'is-not-chosen': game.playerSide && game.playerSide !== 'defendant' }")
           h4.side-role 🛡️ Defense
           p.side-name {{ game.currentCase.defendant.name }}
           p.side-argument {{ game.currentCase.defendant.argument }}
-          span.side-party(:class="`party-${game.currentCase.defendant.favoredBy.toLowerCase().replace(' ', '-')}`")
+          .side-stances(v-if="sideStanceTags(game.currentCase.defendant.stances).length")
+            span.stance-tag(
+              v-for="tag in sideStanceTags(game.currentCase.defendant.stances)"
+              :key="tag.label"
+              :class="tag.position === 'For' ? 'stance-tag--for' : 'stance-tag--against'"
+            ) {{ tag.label }}
+          span.side-party
             | Favors {{ game.currentCase.defendant.favoredBy }}s
 
       .case-actions(v-if="!game.playerSide")

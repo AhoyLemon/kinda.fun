@@ -35,36 +35,18 @@ See docs/court-working-doc-history.md for a session-by-session breakdown of the 
 
 ## Next Steps
 
-Okay, the next thing I want to add is the concept of "stances", and use that to change the mechanics of how justices think and work.
-
-- You'll notice in the Justice type, we've added a new property of `stances`. There's about two dozen of them that a justice can be "For" or "Against", which will play a large role in affecting their view of the case from the beginning.
-
-This should be used alongside the existing party affiliation (ex: `favoredBy`, `nominatedBy`), so, for example, if a is explicitly "For" "CorporatePower", they will have a more favorable view of the prosecution than a justice who doesn't have an explicit opinion on CorporatePower, and a justice who is explicitly "Against" "CorporatePower" will have a more favorable view of the defense.
-
-I have added stances for the 9 current justices and SOME presidents, but more need to be added and tinkered with.
-
-I think the justices' "stats" are a little confusing and could be simplified. Here's some potential changes:
-
-- `succeptibility` - Baseline stat of how easily they are to be swayed by an attack. So, in broad terms, the higher this number is, the more their opinion will be changed by an attack
-- `logic` and `empathy` - I'm thinking these could work in direct contrast with each other on a single sliding scale. I'm thinking about something where a justice rules with their "heart" or their "head". Though I'm not sure of the syntax to use here. Suggestions welcome.
-- `integrity` - Useless. Remove.
-- `charisma` This will actually affect not their own weakness, but their ability to affect other justices. So if you play a very successful attack against a justice with high charisma, you will have a chance to see bonus effects in other justices. Justices should be more likely to affect other justices who were nominated by the same president, or at least belonging to the same party. Affecting a just from a different party would be unlikely.
-- `partyLoyalty` - mainly stays how it is. Is should affect how much the President's views and parties would affect this justice.
-
-I recognize redoing how justices work will mean reworking or possibly removing tactic cards. THAT IS ABSOLUTELY FINE. I'd like to make the mechanics sound, and we can always add more tactics cards. So remove tactics if they're inconvenient or have little effect, and feel free to suggest new ones while you're working (add to the doc please)
-
-SO, how this is going to change the current game is...
-
-- [ ] Review the stances. Add/edit/remove stances trying to use the historical record as a guide.
-  - [ ] I'd like a justice to have somewhere between 3-5 stances apiece.
-  - [ ] A President should have 5-7 stances.
-- [ ] Also go through each case and try to add `historicalWinner` to each case, depending on which side won in real life history. This means you don't need to bother doing this for fictional cases.
-- [ ] When definining what a justice thinks of a case, consider their `stances` first, then their nominating President's `stances`, and then finally `favoredBy` and `nominatedBy`.
-- [ ] When the case starts, we should be seeing justices split on party lines, but I want a bit more variability between those justices, with a justice feeling strongly being more common than it is now.
-- [ ] Canonically, we don't use the term "Republican" or "Democrat" when referring to justices. So when you're listing a justice's political affiliation, please use the words "Conservative" and "Liberal". This is just for flavor, Presidents are still "Republican" and "Democrat", and it basically means the same thing.
-- [ ] Rework and remove tactics as you see fit.
-  - [ ] I'll notice "Be Extremely Boring" doesn't feel fun to play, and "Appeal to Prcedent" and "Emotional Appeal" seem a bit boring to playtesters. "Justice Cocktails" and "Hire A Private Investigator" have made playtesters laugh, but they've been disappointed by the actual gameplay result. I think the major thing is that each card "does something" that's immediately apparent, and silly is good, but avoiding any particular card feeling "overpowered"
-- [ ] Change to presidential nomination in "Campign Mode": When a President needs to nominate a justice, they try to find somebody with a few of the same stances (if possible). Once that nomination happens, the justice can inherit a few stances of their own.
+- [ ] In The "Today's Case" overview, I'd like to identify the stances of each side, as well as which party it would favor. Also, please don't color-code the "favors {party}" tags. There's already colors for prosecution vs defense, so the party colors confuse it.
+  - [ ] Make a note that there's something that we'll need to address at some point, which is the idea that the idea of a "Republican" or "Democrat" has shifted (ex: In today's world, Abraham Lincoln would be considered a "Democrat") so we'll need to adjust that at some pont.
+- [ ] When I bring up the `.justice-detail` modal, I want to be able to click in to see that president. Ex: When I bring up John Roberts, it says "Appointed by Goerge W. Bush". In that text, "George W. Bush" should be a link which brings up the `president-detail` modal for George W. Bush, where I can see his stances and other info.
+- [ ] In the `.justice-detail` modal, I should get a glimpse of that justice's stances, as well as their general `heartVsHead` and their level of succeptibility.
+- [ ] In the `bench-overview-bar`, it says "Republican (6) Democrat (3)". It should actually say "Conservative (6) Liberal (3)". We should try to be aware that justices are considered "Conservative" or "Liberal" rather than "Republican" or "Democrat"
+- [ ] "Call a Celebrity Witness" is good, but it's too powerful. Attacks for all justices should sway a justice less than attacks that target individual justice(s).
+- [ ] In the Game Over screen, let's make a little tweak...
+  - If you're in "Quick Play" mode, there should be a potential of an additional button: "Retry Case" but only if you lost, this will do the same case with the same justices).
+- [ ] See section: Logic vs. Empathy: Sliding Scale Proposal, I've answered the questions you've posed. Please implement.
+- [ ] I ses TS errors in src\views\court\ts_campaignManager.ts, please make sure all errors are resolved.
+- [ ] Please create a vitest for testing out stances. What I'd like it to do when it's run is check the stances against the stances used by justices, presidents and cases, and list the 5 most/least used stances. If you find any stances that are not being used at all, please flag those as potential errors.
+- [ ] I think I'd like you to create somehing like `settings.difficulty`, which could have some knobs that could be tweaks to make the game harder or easier. At the moment, this can be very simple, I'd just like to expose the gameplay modifiers for easy tweaking.
 
 ## Eventual Next Steps
 
@@ -85,11 +67,13 @@ SO, how this is going to change the current game is...
 - Each justice would show their position on the scale visually instead of two raw numbers
 
 **Gameplay implications (no mechanical changes required):**
+
 - The existing tactic scaling already works correctly — `Appeal to Precedent` punishes high-empathy justices (low-logic side of scale); `Emotional Appeal` punishes high-logic justices (high-logic side of scale)
 - No changes to `_tacticEffects.ts` needed; only the justice-detail stat display in the Vue component would change
 - The raw `logic` and `empathy` values stay on the `Justice` type; only the UI presentation changes
 
 **Implementation sketch (when ready):**
+
 ```ts
 // Computed display value
 const heartVsHead = computed(() => justice.stats.empathy - justice.stats.logic);
@@ -99,3 +83,6 @@ const sliderPercent = computed(() => ((heartVsHead.value + 9) / 18) * 100);
 
 **Open question:** Should the scale affect how `succeptibility` behaves differently for logic-based vs. empathy-based tactics (i.e., a high-empathy justice is more susceptible to emotional appeals, less so to logical ones)? This would require a small change to `_tacticEffects.ts` but could add meaningful depth. Currently `succeptibility` is universal — discuss before implementing.
 
+### ANSWERS TO ABOVE
+
+- I like your idea. Let's go with this. And yes, let's have `succeptibility` still play a role if you do a Heart vs Head attack, but it will have a lesser effect. So, for example, if you do a purely "logic based" tactic on a justice (eg. Cite Prescedents), the efficacy of that tactic will be more inferred by the `heartVsHead` stat, but the `succeptibility` stat could create a modifier of perhaps 1.25x (or so).

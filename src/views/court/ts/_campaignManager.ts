@@ -153,7 +153,7 @@ export function useCampaignManager(
 
   /** Build a reward deck, placing cheat-ordered IDs first when cheats are active. */
   function buildCheatRewardDeck(pool: RewardCard[]): RewardCard[] {
-    if (!cheatsActive || cheats.shuffleBonus) return shuffle(pool);
+    if (!cheatsActive || cheats.shuffleBonus || !cheats.bonusOrder) return shuffle(pool);
     const orderedIds = new Set(cheats.bonusOrder);
     const ordered = cheats.bonusOrder.map((id) => pool.find((c) => c.id === id)).filter((c): c is RewardCard => !!c);
     const rest = shuffle(pool.filter((c) => !orderedIds.has(c.id)));
@@ -162,7 +162,7 @@ export function useCampaignManager(
 
   /** Build an objective list, placing cheat-ordered IDs first when cheats are active. */
   function buildCheatObjectiveList(pool: ObjectiveCard[]): ObjectiveCard[] {
-    if (!cheatsActive || cheats.shuffleObjectives) return shuffle(pool);
+    if (!cheatsActive || cheats.shuffleObjectives || !cheats.objectiveOrder) return shuffle(pool);
     const orderedIds = new Set(cheats.objectiveOrder);
     const ordered = cheats.objectiveOrder.map((id) => pool.find((o) => o.id === id)).filter((o): o is ObjectiveCard => !!o);
     const rest = shuffle(pool.filter((o) => !orderedIds.has(o.id)));
@@ -282,7 +282,9 @@ export function useCampaignManager(
     if (setup.isRandomBench) {
       const poolTypes = setup.justicePool ?? ["current", "historical", "fictional", "celebrity"];
       const pool = allJ.filter((j) => poolTypes.includes(j.justiceType));
-      bench = shuffle(pool).slice(0, 9).map((j) => cloneJustice(j));
+      bench = shuffle(pool)
+        .slice(0, 9)
+        .map((j) => cloneJustice(j));
       chiefId = bench[Math.floor(Math.random() * bench.length)].id;
     } else {
       bench = (setup.justiceIds ?? [])

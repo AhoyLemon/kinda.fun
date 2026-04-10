@@ -5,7 +5,15 @@
 /** Set to true during development to enable cheat features. */
 const _isDev = import.meta.env.DEV;
 
-export const cheats = {
+export const cheats: {
+  isActive: boolean;
+  shuffleTactics: boolean;
+  tacticOrder?: number[];
+  shuffleBonus: boolean;
+  bonusOrder?: string[];
+  shuffleObjectives: boolean;
+  objectiveOrder?: string[];
+} = {
   /** Master switch. Has no effect in production builds. */
   isActive: true,
 

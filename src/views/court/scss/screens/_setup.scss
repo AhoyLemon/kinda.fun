@@ -68,22 +68,33 @@
   letter-spacing: 0.06em;
   padding: 0.2rem 0.5rem;
   border-radius: 3px;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.75);
+}
 
-  &.party-democrat {
-    background: $party-democrat;
+.side-stances {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.4rem 0 0.5rem;
+}
+
+.stance-tag {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-weight: $bold;
+  letter-spacing: 0.04em;
+
+  &--for {
+    background: rgba(60, 200, 90, 0.2);
+    color: #7ef09a;
+    border: 1px solid rgba(60, 200, 90, 0.35);
   }
-  &.party-republican {
-    background: $party-republican;
-  }
-  &.party-whig {
-    background: $party-whig;
-  }
-  &.party-federalist {
-    background: $party-federalist;
-  }
-  &.party-democratic-republican {
-    background: $party-democratic-republican;
+  &--against {
+    background: rgba(220, 60, 60, 0.2);
+    color: #f08080;
+    border: 1px solid rgba(220, 60, 60, 0.35);
   }
 }
 

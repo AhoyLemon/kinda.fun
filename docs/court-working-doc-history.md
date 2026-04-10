@@ -372,3 +372,36 @@ The new cards (ids 19–25) have full backend logic and now have visual polish i
 **Also added (requested during this session):**
 
 - [x] **Selected card spotlight** — When any targeting card is active, `.court-docket.has-selection` dims + shrinks all other tactic cards (opacity 0.38, scale 0.93, brightness 0.55) and enlarges the selected card (translateY(-8px) scale(1.05)) with a pulsing gold glow animation (`tactic-selected-glow`). Multi-target cards also show as `is-selected` via `game.multiTargetTacticId`.
+
+---
+
+Okay, the next thing I want to add is the concept of "stances", and use that to change the mechanics of how justices think and work.
+
+- You'll notice in the Justice type, we've added a new property of `stances`. There's about two dozen of them that a justice can be "For" or "Against", which will play a large role in affecting their view of the case from the beginning.
+
+This should be used alongside the existing party affiliation (ex: `favoredBy`, `nominatedBy`), so, for example, if a is explicitly "For" "CorporatePower", they will have a more favorable view of the prosecution than a justice who doesn't have an explicit opinion on CorporatePower, and a justice who is explicitly "Against" "CorporatePower" will have a more favorable view of the defense.
+
+I have added stances for the 9 current justices and SOME presidents, but more need to be added and tinkered with.
+
+I think the justices' "stats" are a little confusing and could be simplified. Here's some potential changes:
+
+- `succeptibility` - Baseline stat of how easily they are to be swayed by an attack. So, in broad terms, the higher this number is, the more their opinion will be changed by an attack
+- `logic` and `empathy` - I'm thinking these could work in direct contrast with each other on a single sliding scale. I'm thinking about something where a justice rules with their "heart" or their "head". Though I'm not sure of the syntax to use here. Suggestions welcome.
+- `integrity` - Useless. Remove.
+- `charisma` This will actually affect not their own weakness, but their ability to affect other justices. So if you play a very successful attack against a justice with high charisma, you will have a chance to see bonus effects in other justices. Justices should be more likely to affect other justices who were nominated by the same president, or at least belonging to the same party. Affecting a just from a different party would be unlikely.
+- `partyLoyalty` - mainly stays how it is. Is should affect how much the President's views and parties would affect this justice.
+
+I recognize redoing how justices work will mean reworking or possibly removing tactic cards. THAT IS ABSOLUTELY FINE. I'd like to make the mechanics sound, and we can always add more tactics cards. So remove tactics if they're inconvenient or have little effect, and feel free to suggest new ones while you're working (add to the doc please)
+
+SO, how this is going to change the current game is...
+
+- [ ] Review the stances. Add/edit/remove stances trying to use the historical record as a guide.
+  - [ ] I'd like a justice to have somewhere between 3-5 stances apiece.
+  - [ ] A President should have 5-7 stances.
+- [ ] Also go through each case and try to add `historicalWinner` to each case, depending on which side won in real life history. This means you don't need to bother doing this for fictional cases.
+- [ ] When definining what a justice thinks of a case, consider their `stances` first, then their nominating President's `stances`, and then finally `favoredBy` and `nominatedBy`.
+- [ ] When the case starts, we should be seeing justices split on party lines, but I want a bit more variability between those justices, with a justice feeling strongly being more common than it is now.
+- [ ] Canonically, we don't use the term "Republican" or "Democrat" when referring to justices. So when you're listing a justice's political affiliation, please use the words "Conservative" and "Liberal". This is just for flavor, Presidents are still "Republican" and "Democrat", and it basically means the same thing.
+- [ ] Rework and remove tactics as you see fit.
+  - [ ] I'll notice "Be Extremely Boring" doesn't feel fun to play, and "Appeal to Prcedent" and "Emotional Appeal" seem a bit boring to playtesters. "Justice Cocktails" and "Hire A Private Investigator" have made playtesters laugh, but they've been disappointed by the actual gameplay result. I think the major thing is that each card "does something" that's immediately apparent, and silly is good, but avoiding any particular card feeling "overpowered"
+- [ ] Change to presidential nomination in "Campign Mode": When a President needs to nominate a justice, they try to find somebody with a few of the same stances (if possible). Once that nomination happens, the justice can inherit a few stances of their own.

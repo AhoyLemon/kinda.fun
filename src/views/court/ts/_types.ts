@@ -38,6 +38,48 @@ export type StanceType =
   | "WomensRights" // Legal equality and protections specific to women
   | "WorkersRights"; // Labor protections, workplace safety, and employee rights
 
+/** All valid StanceType values as a runtime array for iteration and validation. */
+export const ALL_STANCE_TYPES: StanceType[] = [
+  "AccusedRights",
+  "AgencyDeference",
+  "AnimalRights",
+  "CampaignFinance",
+  "ChristianHegemony",
+  "CivilLiberties",
+  "ConsumerProtection",
+  "CourtAuthority",
+  "CorporatePower",
+  "DigitalPrivacy",
+  "Drugs",
+  "EconomicRegulation",
+  "EnvironmentalProtection",
+  "ExecutivePower",
+  "FairElections",
+  "FederalPower",
+  "FreeSpeech",
+  "GayRights",
+  "Guns",
+  "Immigration",
+  "JudicialActivism",
+  "NativeSovereignty",
+  "PresidentialImmunity",
+  "PrivacyRights",
+  "PropertyRights",
+  "PolicePower",
+  "RacialEquity",
+  "ReligiousLiberty",
+  "ReproductiveRights",
+  "RichPeople",
+  "SocialOrder",
+  "StatesRights",
+  "Taxation",
+  "UnionPower",
+  "VotingRights",
+  "WarPowers",
+  "WomensRights",
+  "WorkersRights",
+];
+
 export type StanceOpinion = "For" | "Against" | "Neutral";
 
 export interface Justice {

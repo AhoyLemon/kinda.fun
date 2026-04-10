@@ -21,11 +21,40 @@
             span.jd-meta-sep {{ ui.detailJustice.ethnicity }}
             span.jd-meta-sep born {{ ui.detailJustice.birthYear }}
           p.jd-meta(v-if="ui.detailJustice.nominatedBy")
-            | Appointed by {{ ui.detailJustice.nominatedBy.name }}
+            | Appointed by&nbsp;
+            button.jd-president-link(@click="ui.detailPresident = ui.detailJustice.nominatedBy") {{ ui.detailJustice.nominatedBy.name }}
       
       .chief-indicator(v-if="ui.detailJustice.id === game.chiefJusticeId") ⚖ Chief Justice
 
       p.jd-bio {{ ui.detailJustice.description }}
+
+      //- Heart vs Head slider
+      .jd-hvh
+        .jd-hvh-label
+          span.jd-hvh-left 📖 Head
+          span.jd-hvh-right Heart 💗
+        .jd-hvh-track
+          .jd-hvh-thumb(:style="{ left: `${((ui.detailJustice.stats.empathy - ui.detailJustice.stats.logic + 9) / 18) * 100}%` }")
+        .jd-hvh-caption {{ ui.detailJustice.stats.empathy - ui.detailJustice.stats.logic > 2 ? 'Rules from the heart' : ui.detailJustice.stats.empathy - ui.detailJustice.stats.logic < -2 ? 'Rules by the book' : 'Balanced' }}
+
+      //- Susceptibility
+      .jd-susceptibility
+        span.jd-suc-label Susceptibility
+        .jd-suc-bar
+          .jd-suc-fill(:style="{ width: `${(ui.detailJustice.stats.succeptibility / 10) * 100}%` }")
+        span.jd-suc-value {{ ui.detailJustice.stats.succeptibility < 4 ? 'Resistant' : ui.detailJustice.stats.succeptibility < 7 ? 'Moderate' : 'Easily swayed' }}
+
+      //- Stances
+      .jd-stances(v-if="ui.detailJustice.stances && ui.detailJustice.stances.length")
+        h4.jd-stances-title Known Positions
+        .jd-stance-list
+          .jd-stance(
+            v-for="stance in ui.detailJustice.stances"
+            :key="stance.topic"
+            :class="stance.position === 'For' ? 'stance--for' : stance.position === 'Against' ? 'stance--against' : 'stance--neutral'"
+          )
+            span.jd-stance-icon {{ stance.position === 'For' ? '✅' : stance.position === 'Against' ? '❌' : '⚪' }}
+            span.jd-stance-topic {{ stance.topic.replace(/([A-Z])/g, ' $1').trim() }}
 
       .jd-hints
         h4.jd-hints-title Qualities

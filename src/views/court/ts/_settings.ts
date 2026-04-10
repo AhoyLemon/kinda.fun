@@ -5,6 +5,18 @@ interface UISettings {
 interface GameSettings {
   numberOfRounds: number;
   abstentionThreshold: number;
+  swayAllMultiplier: number; // scales power for sway-all tactics relative to sway-one (1.0 = same as sway-one per-justice)
+}
+
+interface DifficultySettings {
+  /** Multiplier applied to the opponent's tactic power. Default 1.0. Higher = harder. */
+  opponentPowerMult: number;
+  /** Multiplier applied to sway-all tactic power (both player and opponent). Default reduced to balance AoE. */
+  swayAllPowerMult: number;
+  /** Number of tactic cards dealt to player per hand. Default 5. */
+  handSize: number;
+  /** Starting stance variance. Larger = more random initial leanings beyond party/stance score. */
+  startingVariance: number;
 }
 
 interface CampaignSettings {
@@ -27,6 +39,14 @@ export const uiSettings: UISettings = {
 export const gameSettings: GameSettings = {
   numberOfRounds: 5,
   abstentionThreshold: 10,
+  swayAllMultiplier: 3, // sway-all = power × 3 (vs. sway-one = power × 10)
+};
+
+export const difficultySettings: DifficultySettings = {
+  opponentPowerMult: 1.0,
+  swayAllPowerMult: 0.3, // AoE attacks land at 30% of single-target power per justice
+  handSize: 5,
+  startingVariance: 0,
 };
 
 export const campaignSettings: CampaignSettings = {

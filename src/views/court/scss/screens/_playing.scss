@@ -194,6 +194,15 @@
   &.party-unknown {
     background: #555;
   }
+  &.wing-conservative {
+    background: $party-republican;
+  }
+  &.wing-liberal {
+    background: $party-democrat;
+  }
+  &.wing-unknown {
+    background: #555;
+  }
 }
 
 // ─── Playing phase bench grid ────────────────────────────────

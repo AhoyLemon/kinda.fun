@@ -54,4 +54,10 @@
     font-size: 0.8rem;
     padding: 0.4rem 0.9rem;
   }
+
+  &--retry {
+    background: rgba(220, 100, 30, 0.15);
+    color: #f0a060;
+    border-color: rgba(220, 100, 30, 0.45);
+  }
 }

@@ -111,6 +111,24 @@
       display: flex;
       flex-direction: column;
       gap: 0.15rem;
+
+      .jd-president-link {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        color: $court-gold;
+        font-size: inherit;
+        font-family: inherit;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        text-decoration-color: rgba($court-gold, 0.45);
+
+        &:hover {
+          color: lighten($court-gold, 15%);
+          text-decoration-color: $court-gold;
+        }
+      }
     }
     .jd-demographics {
       display: flex;
@@ -134,6 +152,133 @@
     line-height: 1.5;
     margin: 0;
     font-style: italic;
+  }
+
+  // ── Heart vs Head slider ──
+  .jd-hvh {
+    margin: 0.75rem 0 0.5rem;
+
+    .jd-hvh-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 0.25rem;
+    }
+
+    .jd-hvh-track {
+      position: relative;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 3px;
+
+      .jd-hvh-thumb {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: $court-gold;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+        transition: left 0.25s ease;
+      }
+    }
+
+    .jd-hvh-caption {
+      font-size: 0.65rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.45);
+      margin-top: 0.3rem;
+    }
+  }
+
+  // ── Susceptibility bar ──
+  .jd-susceptibility {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.3rem 0 0.75rem;
+
+    .jd-suc-label {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.4);
+      white-space: nowrap;
+      min-width: 82px;
+    }
+
+    .jd-suc-bar {
+      flex: 1;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+
+      .jd-suc-fill {
+        height: 100%;
+        background: linear-gradient(to right, #4caf7e, #f0a040, #d45c5c);
+        border-radius: 3px;
+        transition: width 0.3s ease;
+      }
+    }
+
+    .jd-suc-value {
+      font-size: 0.62rem;
+      color: rgba(255, 255, 255, 0.5);
+      white-space: nowrap;
+      min-width: 80px;
+      text-align: right;
+    }
+  }
+
+  // ── Justice stances ──
+  .jd-stances {
+    margin: 0.25rem 0 0.75rem;
+  }
+
+  .jd-stances-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(255, 255, 255, 0.35);
+    margin-bottom: 0.4rem;
+  }
+
+  .jd-stance-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .jd-stance {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.68rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 3px;
+
+    &.stance--for {
+      background: rgba(60, 200, 90, 0.15);
+      color: #8ef5aa;
+      border: 1px solid rgba(60, 200, 90, 0.3);
+    }
+    &.stance--against {
+      background: rgba(220, 60, 60, 0.15);
+      color: #f5a0a0;
+      border: 1px solid rgba(220, 60, 60, 0.3);
+    }
+    &.stance--neutral {
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .jd-stance-icon {
+      font-size: 0.6rem;
+    }
   }
 
   .jd-hints {

@@ -252,6 +252,7 @@ export const PRES_MCKINLEY: President = {
   id: 25,
   name: "William McKinley",
   party: "Republican",
+  image: "mckinley.webp",
   stances: [
     {
       topic: "Taxation",

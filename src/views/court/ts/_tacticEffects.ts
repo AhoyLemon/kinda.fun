@@ -1,4 +1,5 @@
 import type { Tactic, Justice, CourtGameState, Party } from "./_types";
+import { gameSettings, difficultySettings } from "./_settings";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -393,17 +394,37 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
       }
 
       if (tactic.statBasis) {
-        const sv = getEffectiveStat(justice, tactic.statBasis, game);
-        if (tactic.statRelation === "amplifies") {
-          power = Math.round((power * sv) / 5);
-        } else if (tactic.statRelation === "resists") {
-          power = Math.round((power * (10 - sv)) / 5);
-        } else if (tactic.statRelation === "polarizes-high") {
-          // Positive for high-stat justices, negative (insulted) for low-stat
-          power = Math.round((tactic.basePower * (sv - 5) * 2) / 5);
-        } else if (tactic.statRelation === "polarizes-low") {
-          // Positive for low-stat justices, negative (insulted) for high-stat
-          power = Math.round((tactic.basePower * (5 - sv) * 2) / 5);
+        if (tactic.statBasis === "logic" || tactic.statBasis === "empathy") {
+          // Heart vs Head: tactic efficacy is driven by the justice's logic/empathy differential.
+          // Logic tactics work better on justices who "rule by the book" (logic > empathy).
+          // Empathy tactics work better on justices who "rule from the heart" (empathy > logic).
+          const logicDiff = justice.stats.logic - justice.stats.empathy; // −9 to +9
+          const alignment = tactic.statBasis === "logic" ? logicDiff : -logicDiff;
+          const sv = Math.round(((alignment + 9) / 18) * 9) + 1; // normalized 1–10
+          if (tactic.statRelation === "amplifies") {
+            power = Math.round((power * sv) / 5);
+          } else if (tactic.statRelation === "polarizes-high") {
+            power = Math.round((tactic.basePower * (sv - 5) * 2) / 5);
+          } else if (tactic.statRelation === "polarizes-low") {
+            power = Math.round((tactic.basePower * (5 - sv) * 2) / 5);
+          }
+          // Susceptibility provides a ±25% modifier for heart/head tactics
+          const suc = getEffectiveStat(justice, "succeptibility", game);
+          const sucMult = 1 + ((suc - 5) / 10) * 0.5;
+          power = Math.round(power * sucMult);
+        } else {
+          const sv = getEffectiveStat(justice, tactic.statBasis, game);
+          if (tactic.statRelation === "amplifies") {
+            power = Math.round((power * sv) / 5);
+          } else if (tactic.statRelation === "resists") {
+            power = Math.round((power * (10 - sv)) / 5);
+          } else if (tactic.statRelation === "polarizes-high") {
+            // Positive for high-stat justices, negative (insulted) for low-stat
+            power = Math.round((tactic.basePower * (sv - 5) * 2) / 5);
+          } else if (tactic.statRelation === "polarizes-low") {
+            // Positive for low-stat justices, negative (insulted) for high-stat
+            power = Math.round((tactic.basePower * (5 - sv) * 2) / 5);
+          }
         }
       }
 
@@ -436,7 +457,9 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
         // Standard sway
         const dir = actor === "opponent" ? -1 : 1;
         const old = game.leanings[justice.id] ?? 0;
-        const effectivePower = tactic.effectType === "sway-all" ? Math.round(power * 5) : power * 10;
+        let effectivePower = tactic.effectType === "sway-all" ? Math.round(power * gameSettings.swayAllMultiplier) : power * 10;
+        // Apply difficulty opponent multiplier
+        if (actor === "opponent") effectivePower = Math.round(effectivePower * difficultySettings.opponentPowerMult);
         const next = Math.max(-100, Math.min(100, old + effectivePower * dir));
         game.leanings[justice.id] = next;
         const change = next - old;

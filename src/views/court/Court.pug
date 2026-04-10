@@ -77,7 +77,7 @@
           span.party-chip(
             v-for="(count, party) in benchOverview.partyCounts"
             :key="party"
-            :class="`party-${String(party).toLowerCase().replace(' ', '-')}`"
+            :class="`wing-${String(party).toLowerCase()}`"
           ) {{ party }} ({{ count }})
       .overview-chip
         span.oc-label ⬆ Best Stat

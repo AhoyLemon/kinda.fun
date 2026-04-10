@@ -13,10 +13,10 @@
   } from "./ts/_justices";
   import { cases as allCases, casesHistorical, casesFictional } from "./ts/_cases";
   import { tactics as allTactics } from "./ts/_tactics";
-  import type { Justice, Case, Tactic, CourtGameState, CampaignState, President } from "./ts/_types";
+  import type { Justice, Case, Tactic, CourtGameState, CampaignState, President, StanceOpinion } from "./ts/_types";
   import { resolveEffect, partiesAligned, partiesOpposed, leftParties, rightParties } from "./ts/_tacticEffects";
   import type { EffectOutcome } from "./ts/_tacticEffects";
-  import { gameSettings, uiSettings } from "./ts/_settings";
+  import { gameSettings, uiSettings, difficultySettings } from "./ts/_settings";
   import { campaignSetups } from "./ts/_campaigns";
   import { useCampaignManager } from "./ts/_campaignManager";
   import { cheats, cheatsActive } from "./ts/_cheats";
@@ -354,7 +354,7 @@
     const deckPool = ui.isCampaignMode ? [...allTactics] : allTactics.filter((t) => !t.campaignOnly);
     game.deck = buildCheatDeck(deckPool);
     game.playbook = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < difficultySettings.handSize; i++) {
       const card = drawCard();
       if (card) game.playbook.push(card);
     }
@@ -362,6 +362,29 @@
       game.leanings[j.id] = getInitialLeaning(j);
       game.susceptibilityMods[j.id] = 0;
     });
+    ui.phase = "playing";
+  }
+
+  /** Quick Play only: replay the same case with the same justices (reset leanings + deal fresh cards). */
+  function retrySameCase(): void {
+    const deckPool = allTactics.filter((t) => !t.campaignOnly);
+    game.deck = buildCheatDeck(deckPool);
+    game.playbook = [];
+    for (let i = 0; i < difficultySettings.handSize; i++) {
+      const card = drawCard();
+      if (card) game.playbook.push(card);
+    }
+    game.bench.forEach((j) => {
+      game.leanings[j.id] = getInitialLeaning(j);
+      game.susceptibilityMods[j.id] = 0;
+    });
+    game.selectedTacticId = null;
+    game.currentTurn = "player";
+    game.round = 1;
+    game.playerShields = [];
+    game.opponentShields = [];
+    game.nappingJustices = {};
+    game.recusedJustices = [];
     ui.phase = "playing";
   }
 
@@ -761,8 +784,15 @@
     const femaleCount = bench.filter((j) => j.gender === "F").length;
     const partyCounts: Record<string, number> = {};
     bench.forEach((j) => {
-      const p = j.nominatedBy?.party ?? "Unknown";
-      partyCounts[p] = (partyCounts[p] ?? 0) + 1;
+      const raw = j.nominatedBy?.party ?? "Unknown";
+      // Justices are displayed as Conservative/Liberal rather than Republican/Democrat
+      const label =
+        raw === "Republican" || raw === "Federalist" || raw === "Whig"
+          ? "Conservative"
+          : raw === "Democrat" || raw === "Democratic-Republican"
+            ? "Liberal"
+            : raw;
+      partyCounts[label] = (partyCounts[label] ?? 0) + 1;
     });
     const statKeys = ["logic", "charisma", "empathy", "succeptibility", "partyLoyalty"] as const;
     const statAvg = (k: (typeof statKeys)[number]) => bench.reduce((s, j) => s + j.stats[k], 0) / bench.length;
@@ -870,6 +900,15 @@
 
   function justiceTypeLabel(type: Justice["justiceType"]): string {
     return { current: "Current", historical: "Historical", fictional: "Fictional", celebrity: "Celebrity" }[type] ?? type;
+  }
+
+  /** Returns sorted stance chips for a case side display. */
+  function sideStanceTags(stances?: Partial<Record<string, StanceOpinion>>): { label: string; position: StanceOpinion }[] {
+    if (!stances) return [];
+    return (Object.entries(stances) as [string, StanceOpinion][])
+      .filter(([, pos]) => pos !== "Neutral")
+      .map(([topic, position]) => ({ label: topic.replace(/([A-Z])/g, " $1").trim(), position }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }
 
   function targetLabel(effectType: Tactic["effectType"]): string {
