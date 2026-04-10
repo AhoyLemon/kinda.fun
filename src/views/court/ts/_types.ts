@@ -1,3 +1,31 @@
+export type StanceType =
+  | "AccusedRights"
+  | "ChristianHegemony"
+  | "CivilLiberties"
+  | "CourtAuthority"
+  | "CorporatePower"
+  | "EconomicRegulation"
+  | "ExecutivePower"
+  | "FairElections"
+  | "FederalPower"
+  | "FreeSpeech"
+  | "GayRights"
+  | "Immigration"
+  | "PrivacyRights"
+  | "PropertyRights"
+  | "PolicePower"
+  | "RacialSegregation"
+  | "ReligiousLiberty"
+  | "ReproductiveRights"
+  | "SocialOrder"
+  | "StatesRights"
+  | "UnionPower"
+  | "VotingRights"
+  | "WomensRights"
+  | "WorkersRights";
+
+export type StanceOpion = "For" | "Against" | "Neutral";
+
 export interface Justice {
   id: number;
   name: string;
@@ -10,6 +38,7 @@ export interface Justice {
   religion: Religion;
   ethnicity: Ethnicity;
   courtName?: string;
+  stances?: Partial<Record<StanceType, StanceOpion>>;
   stats: {
     logic: number;
     charisma: number;
@@ -162,11 +191,13 @@ export interface Case {
     name: string;
     argument: string;
     favoredBy: Party;
+    stances?: Partial<Record<StanceType, StanceOpion>>;
   };
   defendant: {
     name: string;
     argument: string;
     favoredBy: Party;
+    stances?: Partial<Record<StanceType, StanceOpion>>;
   };
 }
 

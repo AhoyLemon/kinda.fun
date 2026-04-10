@@ -4,6 +4,15 @@
     //- span.cheat-banner__icon ⚠️
     span.cheat-banner__text CHEATS ACTIVE
     //- span.cheat-banner__icon ⚠️
+  .trial-cheats(v-if="ui.phase === 'playing'")
+    button.btn.btn--cheat-love(
+      :class="{ 'is-active': ui.cheatTargetMode === 'love' }"
+      @click="ui.cheatTargetMode = ui.cheatTargetMode === 'love' ? null : 'love'"
+    ) 💕 MAKE LOVE
+    button.btn.btn--cheat-hate(
+      :class="{ 'is-active': ui.cheatTargetMode === 'hate' }"
+      @click="ui.cheatTargetMode = ui.cheatTargetMode === 'hate' ? null : 'hate'"
+    ) 💀 MAKE HATE
 
   header.court-header(v-if="ui.phase === 'courtSelect' || ui.phase === 'campaignSelect' || ui.phase === 'objectiveDraw'")
     h1 ⚖️ {{ ui.title }}
@@ -28,18 +37,6 @@
   include pug/screens/_setup.pug
 
   //- ── PLAYING PHASE ──────────────────────────────────────────
-  
-  .trial-cheats(v-if="ui.phase === 'playing'")
-    button.btn.btn--cheat-love(
-      :class="{ 'is-active': ui.cheatTargetMode === 'love' }"
-      @click="ui.cheatTargetMode = ui.cheatTargetMode === 'love' ? null : 'love'"
-    ) 💕 MAKE LOVE
-    button.btn.btn--cheat-hate(
-      :class="{ 'is-active': ui.cheatTargetMode === 'hate' }"
-      @click="ui.cheatTargetMode = ui.cheatTargetMode === 'hate' ? null : 'hate'"
-    ) 💀 MAKE HATE
-  
-  
   main.court-playing(v-if="ui.phase === 'playing'")
 
     //- Campaign progress banner

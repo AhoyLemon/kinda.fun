@@ -15,12 +15,20 @@ export const casesHistorical: Case[] = [
       name: "William Marbury",
       argument: "The law says I get my judge job. The Court must uphold the law. Deliver my commission now, Mr. Madison.",
       favoredBy: "Federalist",
+      stances: {
+        CourtAuthority: "For",
+        FederalPower: "For",
+      },
     },
     defendant: {
       name: "James Madison",
       argument:
         "The law granting you that power was itself unconstitutional. You can't give the Supreme Court authority the Constitution doesn't. Also, we just don't want to.",
       favoredBy: "Democratic-Republican",
+      stances: {
+        CourtAuthority: "Against",
+        FederalPower: "Against",
+      },
     },
   },
   {
@@ -34,12 +42,18 @@ export const casesHistorical: Case[] = [
       argument:
         "Separate schools are inherently unequal. Forcing Black children into inferior schools damages them psychologically and violates the 14th Amendment. Separate is not equal. It never was.",
       favoredBy: "Democrat",
+      stances: {
+        RacialSegregation: "Against",
+      },
     },
     defendant: {
       name: "Board of Education of Topeka",
       argument:
         "Separate but equal has been settled law since Plessy v. Ferguson. The schools comply with that standard. This is a local education matter and the Court should stay out of it.",
       favoredBy: "Republican",
+      stances: {
+        RacialSegregation: "For",
+      },
     },
   },
   {
@@ -53,12 +67,19 @@ export const casesHistorical: Case[] = [
       argument:
         "A woman's right to privacy, recognized in Griswold, includes the fundamental decision whether to continue a pregnancy. The government cannot force someone to remain pregnant against their will.",
       favoredBy: "Democrat",
+      stances: {
+        ReproductiveRights: "For",
+        WomensRights: "For",
+      },
     },
     defendant: {
       name: "Henry Wade",
       argument:
         "The state of Texas has a compelling interest in protecting potential life. This is a matter for legislatures, not courts. The Constitution says nothing about abortion because it doesn't exist.",
       favoredBy: "Republican",
+      stances: {
+        ReproductiveRights: "Against",
+      },
     },
   },
   {
@@ -72,12 +93,18 @@ export const casesHistorical: Case[] = [
       argument:
         "Money is speech. Corporations are people. Limiting how much a person (who is a corporation) can spend on speech (which is money) violates the First Amendment. This is very simple.",
       favoredBy: "Republican",
+      stances: {
+        CorporatePower: "For",
+      },
     },
     defendant: {
       name: "Federal Election Commission",
       argument:
         "Unlimited corporate spending in elections corrupts democracy. Congress has the authority and the obligation to prevent wealthy interests from purchasing election outcomes.",
       favoredBy: "Democrat",
+      stances: {
+        CorporatePower: "Against",
+      },
     },
   },
   {
@@ -91,12 +118,18 @@ export const casesHistorical: Case[] = [
       argument:
         "I didn't know I had the right to remain silent or to have a lawyer. I was interrogated for hours until I confessed. The 5th and 6th Amendments mean nothing if nobody tells you they exist.",
       favoredBy: "Democrat",
+      stances: {
+        AccusedRights: "For",
+      },
     },
     defendant: {
       name: "State of Arizona",
       argument:
         "The defendant confessed voluntarily. We got a dangerous criminal off the streets. Requiring police to read a speech before every arrest will handcuff law enforcement and let guilty people go free.",
       favoredBy: "Republican",
+      stances: {
+        AccusedRights: "Against",
+      },
     },
   },
   {
@@ -110,6 +143,9 @@ export const casesHistorical: Case[] = [
       argument:
         "The inconsistent standards across Florida counties violate equal protection. We need consistency, and the only consistent outcome is to stop counting and declare me the winner.",
       favoredBy: "Republican",
+      stances: {
+        FairElections: "Against",
+      },
     },
     defendant: {
       name: "Al Gore",
@@ -129,11 +165,17 @@ export const casesHistorical: Case[] = [
       argument:
         "The 14th Amendment guarantees equal protection and due process to all persons. Denying same-sex couples the right to marry treats them as second-class citizens. Love is love, constitutionally speaking.",
       favoredBy: "Democrat",
+      stances: {
+        GayRights: "For",
+      },
     },
     defendant: {
       name: "Richard Hodges",
       argument: "Marriage has always been defined as between a man and a woman. Redefining it should be done by legislatures, not courts. Also: tradition.",
       favoredBy: "Republican",
+      stances: {
+        GayRights: "Against",
+      },
     },
   },
   {
@@ -147,12 +189,18 @@ export const casesHistorical: Case[] = [
       argument:
         "I am an American citizen. You cannot imprison American citizens based solely on their ethnicity. This is racism with a military uniform on. The Constitution does not have an asterisk for wartime.",
       favoredBy: "Democrat",
+      stances: {
+        AccusedRights: "For",
+      },
     },
     defendant: {
       name: "United States Government",
       argument:
         "Military necessity and national security justify extraordinary measures. The Commander-in-Chief's war powers allow restrictions on civil liberties when the nation faces existential threat. We are at war.",
       favoredBy: "Republican",
+      stances: {
+        AccusedRights: "Against",
+      },
     },
   },
   {
@@ -166,12 +214,22 @@ export const casesHistorical: Case[] = [
       argument:
         "I lived for years in free territories where slavery was illegal. By the laws of those territories, I became free. I am a free man and a person, and I deserve to be treated as one.",
       favoredBy: "Democrat",
+      stances: {
+        RacialSegregation: "Against",
+        AccusedRights: "For",
+        FederalPower: "For",
+      },
     },
     defendant: {
       name: "John Sanford",
       argument:
         "The Constitution, as written in 1787, did not consider Black people as citizens. Scott is property. Property cannot sue. The court has no jurisdiction here, and slavery is here to stay.",
       favoredBy: "Whig",
+      stances: {
+        RacialSegregation: "Against",
+        AccusedRights: "For",
+        FederalPower: "For",
+      },
     },
   },
   {
@@ -185,12 +243,18 @@ export const casesHistorical: Case[] = [
       argument:
         "Free speech is an absolute right guaranteed by the First Amendment. Distributing anti-draft pamphlets is protected political speech. The government cannot imprison people for their ideas, even during a war.",
       favoredBy: "Democrat",
+      stances: {
+        FreeSpeech: "For",
+      },
     },
     defendant: {
       name: "United States",
       argument:
         "Speech that presents a 'clear and present danger' can be restricted. Encouraging military resistance during active wartime is not protected expression — it is sabotage with better typography.",
       favoredBy: "Republican",
+      stances: {
+        FreeSpeech: "Against",
+      },
     },
   },
   {
@@ -204,12 +268,18 @@ export const casesHistorical: Case[] = [
       argument:
         "I am a poor man who had to defend himself in court against a professional prosecutor. The 6th Amendment guarantee of 'counsel' is a cruel joke if it only applies to people with money.",
       favoredBy: "Democrat",
+      stances: {
+        AccusedRights: "For",
+      },
     },
     defendant: {
       name: "Louie L. Wainwright",
       argument:
         "States should decide how to run their own courts. Forcing us to pay for every defendant's lawyer is an unfunded federal mandate that will bankrupt the state justice systems.",
       favoredBy: "Republican",
+      stances: {
+        AccusedRights: "Against",
+      },
     },
   },
   {
@@ -223,12 +293,18 @@ export const casesHistorical: Case[] = [
       argument:
         "The First Amendment prohibits 'prior restraint.' The public has a right to know how they were misled about the war. Democracy dies if the government can censor the press in the name of 'security.'",
       favoredBy: "Democrat",
+      stances: {
+        FreeSpeech: "For",
+      },
     },
     defendant: {
       name: "United States (Nixon Administration)",
       argument:
         "The publication of the Pentagon Papers threatens national security and puts American lives at risk. The Executive Branch must have the power to protect secrets during an active conflict.",
       favoredBy: "Republican",
+      stances: {
+        FreeSpeech: "Against",
+      },
     },
   },
   {
@@ -242,12 +318,18 @@ export const casesHistorical: Case[] = [
       argument:
         "The 14th Amendment protects my 'liberty of contract.' If a man wants to work 100 hours and I want to pay him for 100 hours, the government has no right to step into our private business and stop us.",
       favoredBy: "Republican",
+      stances: {
+        WorkersRights: "Against",
+      },
     },
     defendant: {
       name: "State of New York",
       argument:
         "The state has 'police power' to protect the health and safety of its citizens. Working long hours in a hot, dusty bakery is dangerous. We aren't restricting liberty; we are preventing exploitation.",
       favoredBy: "Democrat",
+      stances: {
+        WorkersRights: "For",
+      },
     },
   },
   {
@@ -261,12 +343,18 @@ export const casesHistorical: Case[] = [
       argument:
         "Marriage is a basic civil right. The 14th Amendment's Equal Protection Clause means the state cannot use race as a reason to tell two people they cannot love or marry each other.",
       favoredBy: "Democrat",
+      stances: {
+        RacialSegregation: "Against",
+      },
     },
     defendant: {
       name: "Commonwealth of Virginia",
       argument:
         "Interracial marriage bans have existed for centuries and apply to both races equally, so there is no discrimination. This is about preserving traditional social order and state sovereignty.",
       favoredBy: "Republican",
+      stances: {
+        RacialSegregation: "For",
+      },
     },
   },
   {
@@ -280,12 +368,18 @@ export const casesHistorical: Case[] = [
       argument:
         "The government has no right to mutilate my body based on a pseudo-scientific theory of eugenics. My right to bodily integrity and to have a family is fundamental and protected.",
       favoredBy: "Democrat",
+      stances: {
+        ReproductiveRights: "For",
+      },
     },
     defendant: {
       name: "John Hendren Bell",
       argument:
         "Public welfare outweighs individual rights. By preventing the 'unfit' from reproducing, we prevent the state from being swamped with incompetence. Three generations of imbeciles are enough.",
       favoredBy: "Republican",
+      stances: {
+        ReproductiveRights: "Against",
+      },
     },
   },
   {
@@ -299,6 +393,9 @@ export const casesHistorical: Case[] = [
       argument:
         "The 14th Amendment guarantees equal protection. Forcing me into a different train car based on my race marks Black people with a badge of inferiority. Separate is a violation of my dignity.",
       favoredBy: "Democrat",
+      stances: {
+        RacialSegregation: "Against",
+      },
     },
     defendant: {
       name: "John Ferguson (State of Louisiana)",
@@ -318,12 +415,18 @@ export const casesHistorical: Case[] = [
       argument:
         "The Constitution gives Congress the power to regulate commerce. A state-granted monopoly on steamboats is a barrier to trade and a violation of national supremacy. The river belongs to everyone.",
       favoredBy: "Federalist",
+      stances: {
+        FederalPower: "For",
+      },
     },
     defendant: {
       name: "Aaron Ogden",
       argument:
         "States have the sovereign right to grant business licenses within their own borders. The federal government shouldn't interfere with local business and state-granted property rights.",
       favoredBy: "Democratic-Republican",
+      stances: {
+        FederalPower: "Against",
+      },
     },
   },
   {
@@ -337,12 +440,18 @@ export const casesHistorical: Case[] = [
       argument:
         "The 'Necessary and Proper' clause means the government can do what it needs to function. The power to tax is the power to destroy, and a state cannot destroy a national tool.",
       favoredBy: "Federalist",
+      stances: {
+        FederalPower: "For",
+      },
     },
     defendant: {
       name: "State of Maryland",
       argument:
         "The Constitution doesn't say the government can build a bank. If they do it anyway, it's operating on our soil and we have every right to tax it like any other business.",
       favoredBy: "Democratic-Republican",
+      stances: {
+        FederalPower: "Against",
+      },
     },
   },
   {
@@ -356,12 +465,18 @@ export const casesHistorical: Case[] = [
       argument:
         "I burned a flag to protest the government. It’s an expressive act. The First Amendment doesn't just protect speech people like; it protects speech that is intentionally offensive and provocative.",
       favoredBy: "Democrat",
+      stances: {
+        FreeSpeech: "For",
+      },
     },
     defendant: {
       name: "State of Texas",
       argument:
         "The flag is a sacred national symbol. Burning it is a breach of the peace and an act of desecration that goes beyond speech. We have a duty to protect the symbols of our unity.",
       favoredBy: "Republican",
+      stances: {
+        FreeSpeech: "Against",
+      },
     },
   },
   {
@@ -375,12 +490,18 @@ export const casesHistorical: Case[] = [
       argument:
         "Forcing my children to salute a symbol violates our religious beliefs. The government cannot compel a person to say things they do not believe. Patriotism shouldn't be mandatory.",
       favoredBy: "Democrat",
+      stances: {
+        FreeSpeech: "For",
+      },
     },
     defendant: {
       name: "WV Board of Education",
       argument:
         "The pledge promotes national unity and security during a time of war. The school has the right to instill civic values and loyalty in its students through shared rituals.",
       favoredBy: "Republican",
+      stances: {
+        FreeSpeech: "Against",
+      },
     },
   },
   {
@@ -394,12 +515,20 @@ export const casesHistorical: Case[] = [
       argument:
         "As an artist, being forced to use my creative talents to celebrate a ceremony that violates my religious faith is compelled speech. The state commission's hostility toward my beliefs proves they are not being neutral.",
       favoredBy: "Republican",
+      stances: {
+        ChristianHegemony: "For",
+        GayRights: "Against",
+      },
     },
     defendant: {
       name: "Colorado Civil Rights Commission",
       argument:
         "Public businesses cannot pick and choose customers based on sexual orientation. If you open your doors to the public, you must serve everyone equally regardless of your personal religious objections.",
       favoredBy: "Democrat",
+      stances: {
+        ChristianHegemony: "Against",
+        GayRights: "For",
+      },
     },
   },
   {
@@ -413,12 +542,19 @@ export const casesHistorical: Case[] = [
       argument:
         "I shouldn't be forced to pay money to a union I didn't join. It violates my First Amendment rights to be forced to financially support a private organization's political or social agenda through mandatory fees.",
       favoredBy: "Republican",
+      stances: {
+        FreeSpeech: "For",
+        WorkersRights: "Against",
+      },
     },
     defendant: {
       name: "Detroit Board of Education",
       argument:
         "Non-members still benefit from the union's contract negotiations. These 'agency fees' prevent 'free riders' and ensure labor peace by making sure everyone pays their fair share for the representation they receive.",
       favoredBy: "Democrat",
+      stances: {
+        WorkersRights: "For",
+      },
     },
   },
   {
@@ -432,12 +568,18 @@ export const casesHistorical: Case[] = [
       argument:
         "Everything a public sector union does is political because it is negotiating with the government. Forcing me to pay any fees at all is compelled speech and violates my right to choose what I support. We should overturn the Abood precedent.",
       favoredBy: "Republican",
+      stances: {
+        WorkersRights: "Against",
+      },
     },
     defendant: {
       name: "AFSCME Council 31",
       argument:
         "We have relied on the ability to collect these fees for 40 years. Stripping unions of this funding is a direct attack on the financial stability of labor organizations and the collective bargaining rights of all workers.",
       favoredBy: "Democrat",
+      stances: {
+        WorkersRights: "For",
+      },
     },
   },
 ];
