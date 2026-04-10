@@ -30,6 +30,7 @@ export const casesHistorical: Case[] = [
         FederalPower: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 2,
@@ -43,7 +44,7 @@ export const casesHistorical: Case[] = [
         "Separate schools are inherently unequal. Forcing Black children into inferior schools damages them psychologically and violates the 14th Amendment. Separate is not equal. It never was.",
       favoredBy: "Democrat",
       stances: {
-        RacialSegregation: "Against",
+        RacialEquity: "For",
       },
     },
     defendant: {
@@ -52,9 +53,10 @@ export const casesHistorical: Case[] = [
         "Separate but equal has been settled law since Plessy v. Ferguson. The schools comply with that standard. This is a local education matter and the Court should stay out of it.",
       favoredBy: "Republican",
       stances: {
-        RacialSegregation: "For",
+        RacialEquity: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 3,
@@ -81,6 +83,7 @@ export const casesHistorical: Case[] = [
         ReproductiveRights: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 4,
@@ -106,6 +109,7 @@ export const casesHistorical: Case[] = [
         CorporatePower: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 5,
@@ -131,6 +135,7 @@ export const casesHistorical: Case[] = [
         AccusedRights: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 6,
@@ -152,7 +157,11 @@ export const casesHistorical: Case[] = [
       argument:
         "Every vote must be counted to determine the true winner of a democratic election. The recount is the process working as intended. Also I won the popular vote by half a million votes.",
       favoredBy: "Democrat",
+      stances: {
+        FairElections: "For",
+      },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 7,
@@ -177,6 +186,7 @@ export const casesHistorical: Case[] = [
         GayRights: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 8,
@@ -202,6 +212,7 @@ export const casesHistorical: Case[] = [
         AccusedRights: "Against",
       },
     },
+    historicalWinner: "Defendant",
   },
   {
     id: 9,
@@ -215,7 +226,7 @@ export const casesHistorical: Case[] = [
         "I lived for years in free territories where slavery was illegal. By the laws of those territories, I became free. I am a free man and a person, and I deserve to be treated as one.",
       favoredBy: "Democrat",
       stances: {
-        RacialSegregation: "Against",
+        RacialEquity: "Against",
         AccusedRights: "For",
         FederalPower: "For",
       },
@@ -226,11 +237,12 @@ export const casesHistorical: Case[] = [
         "The Constitution, as written in 1787, did not consider Black people as citizens. Scott is property. Property cannot sue. The court has no jurisdiction here, and slavery is here to stay.",
       favoredBy: "Whig",
       stances: {
-        RacialSegregation: "Against",
-        AccusedRights: "For",
+        RacialEquity: "For",
+        AccusedRights: "Against",
         FederalPower: "For",
       },
     },
+    historicalWinner: "Defendant",
   },
   {
     id: 10,
@@ -256,6 +268,7 @@ export const casesHistorical: Case[] = [
         FreeSpeech: "Against",
       },
     },
+    historicalWinner: "Defendant",
   },
   {
     id: 11,
@@ -281,6 +294,7 @@ export const casesHistorical: Case[] = [
         AccusedRights: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 12,
@@ -306,6 +320,7 @@ export const casesHistorical: Case[] = [
         FreeSpeech: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 13,
@@ -331,6 +346,7 @@ export const casesHistorical: Case[] = [
         WorkersRights: "For",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 14,
@@ -344,7 +360,7 @@ export const casesHistorical: Case[] = [
         "Marriage is a basic civil right. The 14th Amendment's Equal Protection Clause means the state cannot use race as a reason to tell two people they cannot love or marry each other.",
       favoredBy: "Democrat",
       stances: {
-        RacialSegregation: "Against",
+        RacialEquity: "For",
       },
     },
     defendant: {
@@ -353,9 +369,10 @@ export const casesHistorical: Case[] = [
         "Interracial marriage bans have existed for centuries and apply to both races equally, so there is no discrimination. This is about preserving traditional social order and state sovereignty.",
       favoredBy: "Republican",
       stances: {
-        RacialSegregation: "For",
+        RacialEquity: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 15,
@@ -381,6 +398,7 @@ export const casesHistorical: Case[] = [
         ReproductiveRights: "Against",
       },
     },
+    historicalWinner: "Defendant",
   },
   {
     id: 16,
@@ -394,7 +412,7 @@ export const casesHistorical: Case[] = [
         "The 14th Amendment guarantees equal protection. Forcing me into a different train car based on my race marks Black people with a badge of inferiority. Separate is a violation of my dignity.",
       favoredBy: "Democrat",
       stances: {
-        RacialSegregation: "Against",
+        RacialEquity: "For",
       },
     },
     defendant: {
@@ -403,6 +421,7 @@ export const casesHistorical: Case[] = [
         "As long as the facilities provided are equal in quality, segregation is a reasonable exercise of state power to keep the peace. Laws cannot change social prejudices; they can only reflect them.",
       favoredBy: "Republican",
     },
+    historicalWinner: "Defendant",
   },
   {
     id: 17,
@@ -428,6 +447,7 @@ export const casesHistorical: Case[] = [
         FederalPower: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 18,
@@ -453,6 +473,7 @@ export const casesHistorical: Case[] = [
         FederalPower: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 19,
@@ -478,6 +499,7 @@ export const casesHistorical: Case[] = [
         FreeSpeech: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 20,
@@ -503,6 +525,7 @@ export const casesHistorical: Case[] = [
         FreeSpeech: "Against",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 21,
@@ -530,6 +553,7 @@ export const casesHistorical: Case[] = [
         GayRights: "For",
       },
     },
+    historicalWinner: "Prosecution",
   },
   {
     id: 22,
@@ -556,6 +580,7 @@ export const casesHistorical: Case[] = [
         WorkersRights: "For",
       },
     },
+    historicalWinner: "Defendant",
   },
   {
     id: 23,
@@ -581,6 +606,7 @@ export const casesHistorical: Case[] = [
         WorkersRights: "For",
       },
     },
+    historicalWinner: "Prosecution",
   },
 ];
 
@@ -605,6 +631,9 @@ export const casesFictional: Case[] = [
       argument:
         "You cannot copyright a human face. It is a face. It is attached to your head. You did not invent it. Your parents did not file IP paperwork at your birth. This is not a thing.",
       favoredBy: "Democrat",
+      stances: {
+        CorporatePower: "For",
+      },
     },
   },
   {
@@ -617,12 +646,19 @@ export const casesFictional: Case[] = [
       argument:
         "Corporations are people. Money is speech. By that logic, guns are at least as important as corporations. My AR-15 has opinions. It has expressed them loudly, several times.",
       favoredBy: "Republican",
+      stances: {
+        Guns: "For",
+      },
     },
     defendant: {
       name: "The American People",
       argument:
         "Guns are objects. They are inert. They have no thoughts. They do not understand the concept of suffrage. This case should not exist. How did this get here. We are all very tired.",
       favoredBy: "Democrat",
+      stances: {
+        Guns: "Against",
+        CorporatePower: "For",
+      },
     },
   },
   {
@@ -635,12 +671,18 @@ export const casesFictional: Case[] = [
       argument:
         "The Constitution says our salaries cannot be reduced. It says nothing about them being raised. We have interpreted silence as consent. Also, have you seen the price of mahogany gavels lately?",
       favoredBy: "Republican",
+      stances: {
+        CourtAuthority: "For",
+      },
     },
     defendant: {
       name: "Congress",
       argument:
         "You cannot vote for your own pay raise. The separation of powers means we control the budget. You are a court, not a union. Please stop. This is unprecedented in both directions.",
       favoredBy: "Democrat",
+      stances: {
+        CourtAuthority: "Against",
+      },
     },
   },
   {
@@ -653,12 +695,19 @@ export const casesFictional: Case[] = [
       argument:
         "The Constitution guarantees my rights. Eating is a fundamental act of personhood. The right to eat is in the penumbra of the right to exist. You cannot imprison a man for his lunch.",
       favoredBy: "Democrat",
+      stances: {
+        SocialOrder: "Against",
+      },
     },
     defendant: {
       name: "The United States Supreme Court",
       argument:
         "You brought a Whopper into this chamber. You ate it loudly during the Petitioner's argument. You winked at Justice Thomas when you offered him a fry. This is contempt. This is maximum contempt.",
       favoredBy: "Republican",
+      stances: {
+        CourtAuthority: "For",
+        SocialOrder: "For",
+      },
     },
   },
   {
@@ -671,12 +720,20 @@ export const casesFictional: Case[] = [
       argument:
         "My client cannot understand the charges against him. He does not know what a court is. He cannot participate meaningfully in his own defense. The 6th Amendment demands he be represented.",
       favoredBy: "Democrat",
+      stances: {
+        AnimalRights: "For",
+        AccusedRights: "For",
+      },
     },
     defendant: {
       name: "State of Ohio",
       argument:
         "He bit three mail carriers. He is a dog. Dogs do not have constitutional rights. He does not get a lawyer. He gets a kennel and a behavior evaluation. This is not Ratatouille.",
       favoredBy: "Republican",
+      stances: {
+        AnimalRights: "Against",
+        AccusedRights: "Against",
+      },
     },
   },
   {
@@ -689,12 +746,18 @@ export const casesFictional: Case[] = [
       argument:
         "The 16th Amendment grants broad taxing power. Fun is a measurable benefit received by taxpayers. Using our FunScore™ algorithm, we have calculated your 2024 enjoyment at $47,000. Please remit.",
       favoredBy: "Democrat",
+      stances: {
+        Taxation: "For",
+      },
     },
     defendant: {
       name: "Dave Normalson",
       argument:
         "I went to a barbecue. I watched some football. The government is calling this $47,000 of fun. I was at a work retreat for part of it. None of this was fun. This tax is unconstitutional and also personally insulting.",
       favoredBy: "Republican",
+      stances: {
+        Taxation: "Against",
+      },
     },
   },
   {
@@ -707,12 +770,20 @@ export const casesFictional: Case[] = [
       argument:
         "We face unprecedented discrimination. People look at us judgmentally. They are always talking about us. We cannot even buy a small Mediterranean nation without criticism. We are a persecuted class.",
       favoredBy: "Republican",
+      stances: {
+        SocialOrder: "For",
+        RichPeople: "For",
+      },
     },
     defendant: {
       name: "Everyone Else",
       argument:
         "You have seven yachts. One of them is a yacht for your other yacht. You paid less in taxes than your housekeeper. Protected class status is for vulnerable people. You are not vulnerable. Go away.",
       favoredBy: "Democrat",
+      stances: {
+        SocialOrder: "Against",
+        RichPeople: "Against",
+      },
     },
   },
   {
@@ -725,12 +796,20 @@ export const casesFictional: Case[] = [
       argument:
         "Princess Fluffernutter depends on me entirely for food, shelter, and emotional support. She cannot file taxes. She cannot earn income. She cannot legally enter a contract. She is dependent. QED.",
       favoredBy: "Democrat",
+      stances: {
+        AnimalRights: "For",
+        Taxation: "Against",
+      },
     },
     defendant: {
       name: "Internal Revenue Service",
       argument:
         "A cat is not a person. A cat is a cat. The tax code defines dependent. The definition requires the dependent to be a human being. We have checked. Princess Fluffernutter is not a human being.",
       favoredBy: "Republican",
+      stances: {
+        AnimalRights: "Against",
+        Taxation: "For",
+      },
     },
   },
   {
@@ -743,12 +822,18 @@ export const casesFictional: Case[] = [
       argument:
         "He knew the answer. Not saying it was a deliberate falsehood by omission. Silence, in this context, is a lie. We can prove the lie exists in the silence between his words.",
       favoredBy: "Republican",
+      stances: {
+        AccusedRights: "Against",
+      },
     },
     defendant: {
       name: "The Silent Witness",
       argument:
         "You cannot lie by saying nothing. That is literally the entire Fifth Amendment, which I am now invoking. I am saying nothing. I have the right to say nothing. I am doing it right now.",
       favoredBy: "Democrat",
+      stances: {
+        AccusedRights: "For",
+      },
     },
   },
   {

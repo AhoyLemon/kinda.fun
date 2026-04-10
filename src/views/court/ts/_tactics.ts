@@ -6,7 +6,8 @@ export const tactics: Tactic[] = [
   {
     id: 1,
     name: "Appeal to Precedent",
-    description: "Sways all justices. High-logic justices are strongly persuaded. Low-logic justices are personally insulted that you brought up authority.",
+    description:
+      "Sways all justices. High-logic justices are strongly persuaded; they respect a citation. Low-logic justices are actively offended you brought up authority and lean harder the other way.",
     flavorText: "Citing cases no one in the room has read since law school, loudly.",
     cardType: "attack",
     effectType: "sway-all",
@@ -17,8 +18,9 @@ export const tactics: Tactic[] = [
   {
     id: 2,
     name: "Emotional Appeal",
-    description: "Sways one justice based on their empathy stat. Completely useless against justices who do not have feelings.",
-    flavorText: "Think of the children. The puppies. The children's puppies.",
+    description:
+      "Sways one justice scaled directly by their empathy stat. Moves a high-empathy justice dramatically. Has no discernible effect on justices who are documented as not having feelings.",
+    flavorText: "Think of the children. The puppies. The small businesses owned by puppies.",
     cardType: "attack",
     effectType: "sway-one",
     basePower: 6,
@@ -90,12 +92,12 @@ export const tactics: Tactic[] = [
   {
     id: 9,
     name: "Invoke the Founding Fathers",
-    description: "Sways all justices. High-integrity justices respond to principled arguments; low-integrity justices nod politely and move on.",
+    description: "Sways all justices. High-party-loyalty justices are stirred by the appeal to tradition; independents shrug it off.",
     flavorText: "The Framers clearly intended this. (They did not intend this.)",
     cardType: "attack",
     effectType: "sway-all",
     basePower: 3,
-    statBasis: "integrity",
+    statBasis: "partyLoyalty",
     statRelation: "amplifies",
   },
   {
@@ -125,12 +127,14 @@ export const tactics: Tactic[] = [
   {
     id: 12,
     name: "Be Extremely Boring",
-    description: "Raises susceptibility on all justices. Their glazed-over eyes will make your next attack much more effective.",
-    flavorText: "The Administrative Procedures Act of 1946, as amended in 1962, as supplemented in 1979, as — hello? Hello?",
+    description:
+      "Raises susceptibility on all justices. Their glazed-over eyes and caffeine-deprived attention spans will make your very next attack hit significantly harder.",
+    flavorText:
+      "The Administrative Procedures Act of 1946, as amended in 1962, continuing through the relevant subsections, which are many — you're still here, right?",
     cardType: "utility",
     effectType: "susceptibility",
     basePower: 4,
-    feedback: "All justices are more susceptible to arguments.",
+    feedback: "Every justice is now profoundly susceptible to whatever comes next.",
   },
 
   // ─── DOCKET MANIPULATION ──────────────────────────────────────────
@@ -237,8 +241,9 @@ export const tactics: Tactic[] = [
   {
     id: 22,
     name: "Justice Cocktails",
-    description: "Select a justice. Their charisma and empathy go up. Their logic goes down. For the rest of the trial.",
-    flavorText: "The open bar at the Heritage Foundation gala was, in retrospect, a foreseeable variable.",
+    description:
+      "Select a justice. Their charisma and empathy go up for the rest of the trial. Their logic goes down. They also slide a little toward you right now, because the Heritage Foundation gala was an open bar and some decisions were made.",
+    flavorText: "The evening was, technically speaking, still ongoing when the brief was filed.",
     cardType: "utility",
     effectType: "justice-cocktails",
     basePower: 0,
@@ -247,8 +252,8 @@ export const tactics: Tactic[] = [
     id: 23,
     name: "Hire A Private Investigator",
     description:
-      "Select two justices. Both become aware that someone is watching them very closely. Their susceptibility to blackmail increases dramatically for the rest of the trial.",
-    flavorText: "The PI followed both of them. Everything he found was legal. Everything was also extremely useful.",
+      "Select two justices. They become aware that someone is watching them very closely. Their blackmail susceptibility skyrockets for the rest of the trial. Use 'Leak to the Press' immediately after for devastating results.",
+    flavorText: "The PI's report was thick, thorough, and legally obtained. Whether it stays legally obtained is an open question.",
     cardType: "utility",
     effectType: "hire-pi",
     basePower: 0,

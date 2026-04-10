@@ -13,7 +13,7 @@
   } from "./ts/_justices";
   import { cases as allCases, casesHistorical, casesFictional } from "./ts/_cases";
   import { tactics as allTactics } from "./ts/_tactics";
-  import type { Justice, Case, Tactic, CourtGameState, CampaignState } from "./ts/_types";
+  import type { Justice, Case, Tactic, CourtGameState, CampaignState, President } from "./ts/_types";
   import { resolveEffect, partiesAligned, partiesOpposed, leftParties, rightParties } from "./ts/_tacticEffects";
   import type { EffectOutcome } from "./ts/_tacticEffects";
   import { gameSettings, uiSettings } from "./ts/_settings";
@@ -50,6 +50,7 @@
     opponentThinking: false,
     opponentHighlightedCardId: null as number | null, // card the opponent appears to be browsing
     detailJustice: null as Justice | null, // justice whose detail modal is open
+    detailPresident: null as President | null, // president whose detail modal is open
     targetingChoice: null as Justice | null, // justice clicked while a tactic is selected
     previewPresetId: null as string | null, // preset selected in dropdown, awaiting preview confirmation
     // Campaign UI state
@@ -138,11 +139,47 @@
 
   function getInitialLeaning(justice: Justice): number {
     if (!game.currentCase || !game.playerSide) return 0;
+
+    const STANCE_PER_MATCH = 8;
+    const playerSideStances = game.playerSide === "prosecution" ? game.currentCase.prosecution.stances : game.currentCase.defendant.stances;
+
+    let stanceScore = 0;
+
+    // Tier 1: Justice's own stances vs. case stances
+    if (justice.stances && playerSideStances) {
+      for (const { topic, position } of justice.stances) {
+        const casePosition = playerSideStances[topic];
+        if (!casePosition || casePosition === "Neutral") continue;
+        if (position === "Neutral") {
+          stanceScore += casePosition === "For" ? STANCE_PER_MATCH / 2 : -(STANCE_PER_MATCH / 2);
+        } else if (position === casePosition) {
+          stanceScore += STANCE_PER_MATCH;
+        } else {
+          stanceScore -= STANCE_PER_MATCH;
+        }
+      }
+    }
+
+    // Tier 2: Nominating president stances vs. case stances, scaled by justice's partyLoyalty
+    const president = justice.nominatedBy;
+    if (president?.stances && playerSideStances) {
+      const loyaltyFactor = justice.stats.partyLoyalty / 10;
+      for (const { topic, position } of president.stances) {
+        const casePosition = playerSideStances[topic];
+        if (!casePosition || casePosition === "Neutral" || position === "Neutral") continue;
+        const basePoints = position === casePosition ? STANCE_PER_MATCH : -STANCE_PER_MATCH;
+        stanceScore += Math.round(basePoints * loyaltyFactor * 0.5);
+      }
+    }
+
+    // Tier 3: Party alignment fallback
     const playerParty = game.playerSide === "prosecution" ? game.currentCase.prosecution.favoredBy : game.currentCase.defendant.favoredBy;
     const justiceParty = justice.nominatedBy?.party;
-    if (partiesAligned(playerParty, justiceParty)) return Math.ceil(justice.stats.partyLoyalty * 2.5);
-    if (partiesOpposed(playerParty, justiceParty)) return -Math.ceil(justice.stats.partyLoyalty * 2.5);
-    return 0;
+    let partyScore = 0;
+    if (partiesAligned(playerParty, justiceParty)) partyScore = Math.ceil(justice.stats.partyLoyalty * 2.5);
+    if (partiesOpposed(playerParty, justiceParty)) partyScore = -Math.ceil(justice.stats.partyLoyalty * 2.5);
+
+    return Math.max(-100, Math.min(100, stanceScore + partyScore));
   }
 
   // ─── Deck Management ─────────────────────────────────────────
@@ -727,7 +764,7 @@
       const p = j.nominatedBy?.party ?? "Unknown";
       partyCounts[p] = (partyCounts[p] ?? 0) + 1;
     });
-    const statKeys = ["logic", "charisma", "empathy", "integrity", "succeptibility", "partyLoyalty"] as const;
+    const statKeys = ["logic", "charisma", "empathy", "succeptibility", "partyLoyalty"] as const;
     const statAvg = (k: (typeof statKeys)[number]) => bench.reduce((s, j) => s + j.stats[k], 0) / bench.length;
     const bestStat = statKeys.reduce((a, b) => (statAvg(a) >= statAvg(b) ? a : b));
     const worstStat = statKeys.reduce((a, b) => (statAvg(a) <= statAvg(b) ? a : b));
@@ -974,6 +1011,10 @@
 
   function justiceImageUrl(justice: Justice): string | null {
     return justice.image ? `/img/court/justices/${justice.image}` : null;
+  }
+
+  function presidentImageUrl(president: President): string | null {
+    return president.image ? `/img/court/presidents/${president.image}` : null;
   }
 
   function justiceHints(justice: Justice, limit = 4): string[] {

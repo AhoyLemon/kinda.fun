@@ -1,0 +1,34 @@
+//- ── PRESIDENT DETAIL MODAL ──────────────────────────────────
+.president-detail-overlay(v-if="ui.detailPresident" @click.self="ui.detailPresident = null")
+  .president-detail(:class="`party-${ui.detailPresident.party.toLowerCase().replace(' ', '-')}`")
+    .pd-header
+      span.pd-label {{ ui.detailPresident.party }}
+      button.pd-close(@click="ui.detailPresident = null") ✕
+
+    .pd-content
+      .pd-quick-info
+        .pd-image-wrap
+          img.pd-image(
+            v-if="presidentImageUrl(ui.detailPresident)"
+            :src="presidentImageUrl(ui.detailPresident)"
+            :alt="ui.detailPresident.name"
+          )
+          .pd-image-placeholder(v-else) 🏛️
+        .pd-name-and-meta
+          h3.pd-name {{ ui.detailPresident.name }}
+          .pd-party-badge(:class="`party-badge--${ui.detailPresident.party.toLowerCase().replace(' ', '-')}`") {{ ui.detailPresident.party }}
+
+      //- Stances
+      .pd-stances(v-if="ui.detailPresident.stances && ui.detailPresident.stances.length")
+        h4.pd-stances-title Known Positions
+        .pd-stance-list
+          .pd-stance(
+            v-for="stance in ui.detailPresident.stances"
+            :key="stance.topic"
+            :class="stance.position === 'For' ? 'stance--for' : stance.position === 'Against' ? 'stance--against' : 'stance--neutral'"
+          )
+            .pd-stance-header
+              span.pd-stance-icon {{ stance.position === 'For' ? '✅' : stance.position === 'Against' ? '❌' : '⚪' }}
+              span.pd-stance-topic {{ stance.topic.replace(/([A-Z])/g, ' $1').trim() }}
+              span.pd-stance-position {{ stance.position }}
+            p.pd-stance-note(v-if="stance.note") {{ stance.note }}

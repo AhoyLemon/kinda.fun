@@ -32,6 +32,7 @@ export interface CampaignUiAccess {
   opponentThinking: boolean;
   opponentHighlightedCardId: number | null;
   detailJustice: Justice | null;
+  detailPresident: President | null;
   targetingChoice: Justice | null;
 }
 
@@ -73,7 +74,7 @@ export function useCampaignManager(
     return pool[Math.floor(Math.random() * pool.length)] ?? currentPresident;
   }
 
-  /** Returns a candidate justice to fill a vacancy, respecting president party preference. */
+  /** Returns a candidate justice to fill a vacancy, respecting president stances and party preference. */
   function pickNominee(
     currentPresident: President,
     currentBench: Justice[],
@@ -89,10 +90,45 @@ export function useCampaignManager(
       const dream = available.find((j) => j.id === dreamJusticeId);
       if (dream) return dream;
     }
-    // Prefer justices nominatedBy the current president
+    // Prefer justices nominatedBy the current president (exact match)
     const preferred = available.filter((j) => j.nominatedBy?.id === currentPresident.id);
     if (preferred.length) return preferred[Math.floor(Math.random() * preferred.length)];
-    // Fall back to same party
+
+    // Score available justices by shared stances with the president
+    if (currentPresident.stances?.length) {
+      const presStanceMap = new Map(currentPresident.stances.map((s) => [s.topic, s.position]));
+      const scored = available.map((j) => {
+        let score = 0;
+        // Party alignment base score
+        if (partiesAligned(j.nominatedBy?.party, currentPresident.party)) score += 2;
+        // Shared stances add to score
+        if (j.stances) {
+          for (const { topic, position } of j.stances) {
+            const presPosition = presStanceMap.get(topic);
+            if (!presPosition || presPosition === "Neutral" || position === "Neutral") continue;
+            if (position === presPosition) score += 3;
+            else score -= 1;
+          }
+        }
+        return { justice: j, score };
+      });
+      // Candidates with at least 2 same-party score AND 1+ shared stance
+      const strong = scored.filter((s) => s.score >= 5);
+      if (strong.length) {
+        const pick = strong[Math.floor(Math.random() * strong.length)];
+        return pick.justice;
+      }
+      // Fall back to best scorer in same party
+      const samePartyCandidates = scored.filter((s) => partiesAligned(s.justice.nominatedBy?.party, currentPresident.party));
+      if (samePartyCandidates.length) {
+        samePartyCandidates.sort((a, b) => b.score - a.score);
+        // Pick from top half to allow some variance
+        const topHalf = samePartyCandidates.slice(0, Math.max(1, Math.ceil(samePartyCandidates.length / 2)));
+        return topHalf[Math.floor(Math.random() * topHalf.length)].justice;
+      }
+    }
+
+    // Fall back to same party (no stances scored)
     const sameParty = available.filter((j) => partiesAligned(j.nominatedBy?.party, currentPresident.party));
     if (sameParty.length) return sameParty[Math.floor(Math.random() * sameParty.length)];
     // Last resort: any available justice
@@ -100,8 +136,19 @@ export function useCampaignManager(
   }
 
   /** Clone a Justice so campaign nomination re-assignment doesn't mutate source data. */
-  function cloneJustice(j: Justice): Justice {
-    return { ...j, nominatedBy: j.nominatedBy ? { ...j.nominatedBy } : undefined };
+  function cloneJustice(j: Justice, nominatingPresident?: President): Justice {
+    const clone: Justice = { ...j, nominatedBy: j.nominatedBy ? { ...j.nominatedBy } : undefined };
+    // Optionally inherit 1–2 stances from the nominating president that the justice doesn't already have
+    if (nominatingPresident?.stances?.length && Math.random() < 0.6) {
+      const existingTopics = new Set(clone.stances?.map((s) => s.topic) ?? []);
+      const newStances = ((nominatingPresident.stances ?? []) as NonNullable<Justice["stances"]>)
+        .filter((s) => !existingTopics.has(s.topic) && s.position !== "Neutral")
+        .slice(0, Math.random() < 0.3 ? 2 : 1); // 30% chance to inherit 2, otherwise 1
+      if (newStances.length) {
+        clone.stances = [...(clone.stances ?? []), ...newStances];
+      }
+    }
+    return clone;
   }
 
   /** Build a reward deck, placing cheat-ordered IDs first when cheats are active. */
@@ -235,13 +282,13 @@ export function useCampaignManager(
     if (setup.isRandomBench) {
       const poolTypes = setup.justicePool ?? ["current", "historical", "fictional", "celebrity"];
       const pool = allJ.filter((j) => poolTypes.includes(j.justiceType));
-      bench = shuffle(pool).slice(0, 9).map(cloneJustice);
+      bench = shuffle(pool).slice(0, 9).map((j) => cloneJustice(j));
       chiefId = bench[Math.floor(Math.random() * bench.length)].id;
     } else {
       bench = (setup.justiceIds ?? [])
         .map((id) => allJ.find((j) => j.id === id))
         .filter((j): j is Justice => !!j)
-        .map(cloneJustice);
+        .map((j) => cloneJustice(j));
       chiefId = setup.chiefJusticeId ?? bench[0]?.id ?? 0;
     }
 
@@ -676,7 +723,7 @@ export function useCampaignManager(
         // Dream Justice takes priority for the first open seat
         const dreamRaw = getAllJusticesRaw().find((j) => j.id === c.dreamJusticeId && !game.bench.some((b) => b.id === j.id));
         if (dreamRaw) {
-          nominee = cloneJustice(dreamRaw);
+          nominee = cloneJustice(dreamRaw, c.president);
           c.dreamJusticeId = null;
         }
       }
@@ -684,7 +731,7 @@ export function useCampaignManager(
       if (!nominee && c.vetoMode && c.vetoChoices) {
         // Justice Veto: player already picked their choice (stored as vetoChoices[0] after selection)
         const vetoJ = allJ.find((j) => j.id === c.vetoChoices![0] && !game.bench.some((b) => b.id === j.id));
-        nominee = vetoJ ? cloneJustice(vetoJ) : null;
+        nominee = vetoJ ? cloneJustice(vetoJ, c.president) : null;
         c.vetoChoices = null;
         c.vetoMode = false;
         c.vetoConfirmed = false;
@@ -693,7 +740,7 @@ export function useCampaignManager(
       if (!nominee) {
         const raw = pickNominee(c.president, game.bench, null, new Set(c.departedJusticeIds));
         if (!raw) break;
-        nominee = cloneJustice(raw);
+        nominee = cloneJustice(raw, c.president);
       }
 
       if (!nominee) break;

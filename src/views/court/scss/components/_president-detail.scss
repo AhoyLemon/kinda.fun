@@ -1,0 +1,243 @@
+// ─── President detail modal ────────────────────────────────────
+.president-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.president-detail {
+  background: #1c1616;
+  border: 2px solid $court-gold;
+  border-radius: 12px;
+  max-width: 460px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &.party-republican {
+    border-color: $party-republican;
+  }
+  &.party-democrat {
+    border-color: $party-democrat;
+  }
+  &.party-federalist {
+    border-color: $party-federalist;
+  }
+  &.party-whig {
+    border-color: $party-whig;
+  }
+  &.party-democratic-republican {
+    border-color: $party-democratic-republican;
+  }
+
+  .pd-header {
+    position: relative;
+    padding: 0.5rem 1.5rem;
+    background: $court-gold;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &.party-republican {
+      background: $party-republican;
+    }
+    &.party-democrat {
+      background: $party-democrat;
+    }
+    &.party-federalist {
+      background: $party-federalist;
+    }
+    &.party-whig {
+      background: $party-whig;
+    }
+    &.party-democratic-republican {
+      background: $party-democratic-republican;
+    }
+
+    .pd-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .pd-close {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+      font-weight: 700;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+
+  .pd-content {
+    padding: 0.5rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pd-quick-info {
+    display: flex;
+    gap: 1rem;
+
+    .pd-image-wrap {
+      flex-shrink: 0;
+      width: 110px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid rgba($court-gold, 0.3);
+    }
+
+    .pd-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .pd-image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 1.8rem;
+    }
+  }
+
+  .pd-name-and-meta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+
+    .pd-name {
+      font-family: $serif;
+      font-size: 1.2rem;
+      color: $court-gold;
+      margin: 0;
+    }
+
+    .pd-party-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+
+      &.party-badge--republican {
+        background: $party-republican;
+      }
+      &.party-badge--democrat {
+        background: $party-democrat;
+      }
+      &.party-badge--federalist {
+        background: $party-federalist;
+      }
+      &.party-badge--whig {
+        background: $party-whig;
+      }
+      &.party-badge--democratic-republican {
+        background: $party-democratic-republican;
+      }
+    }
+  }
+
+  // ─── Stances ────────────────────────────────────────────────
+  .pd-stances {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pd-stances-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(255, 255, 255, 0.35);
+    margin: 0 0 0.25rem;
+  }
+
+  .pd-stance-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pd-stance {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    border-left: 3px solid rgba(255, 255, 255, 0.1);
+
+    &.stance--for {
+      border-left-color: #4a9e5c;
+    }
+    &.stance--against {
+      border-left-color: #a84444;
+    }
+    &.stance--neutral {
+      border-left-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .pd-stance-header {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pd-stance-icon {
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .pd-stance-topic {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.85);
+      flex: 1;
+    }
+
+    .pd-stance-position {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .pd-stance-note {
+      margin: 0.35rem 0 0;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.45;
+      font-style: italic;
+    }
+  }
+}

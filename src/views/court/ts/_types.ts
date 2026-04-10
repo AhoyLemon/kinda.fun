@@ -1,30 +1,44 @@
 export type StanceType =
-  | "AccusedRights"
-  | "ChristianHegemony"
-  | "CivilLiberties"
-  | "CourtAuthority"
-  | "CorporatePower"
-  | "EconomicRegulation"
-  | "ExecutivePower"
-  | "FairElections"
-  | "FederalPower"
-  | "FreeSpeech"
-  | "GayRights"
-  | "Immigration"
-  | "PrivacyRights"
-  | "PropertyRights"
-  | "PolicePower"
-  | "RacialSegregation"
-  | "ReligiousLiberty"
-  | "ReproductiveRights"
-  | "SocialOrder"
-  | "StatesRights"
-  | "UnionPower"
-  | "VotingRights"
-  | "WomensRights"
-  | "WorkersRights";
+  | "AccusedRights" // Rights of the criminally accused (Miranda, due process, fair trial)
+  | "AgencyDeference" // Whether courts should defer to federal agency interpretations (Chevron doctrine)
+  | "AnimalRights" // Legal protections for animals
+  | "CampaignFinance" // Money in politics; limits on political donations and spending
+  | "ChristianHegemony" // Preferential treatment of Christianity in public life and law
+  | "CivilLiberties" // Broad individual freedoms from government interference
+  | "ConsumerProtection" // Protections for individuals against corporate or financial harm
+  | "CourtAuthority" // The Supreme Court's institutional legitimacy and scope of power
+  | "CorporatePower" // Expansion of corporate legal rights and influence
+  | "DigitalPrivacy" // Fourth Amendment and privacy protections in the digital age
+  | "Drugs" // Legalization and decriminalization of drugs
+  | "EconomicRegulation" // Government's ability to regulate markets and industries
+  | "EnvironmentalProtection" // EPA authority, climate regulation, and environmental law
+  | "ExecutivePower" // Scope of presidential and executive branch authority
+  | "FairElections" // Free, fair, and accessible electoral processes
+  | "FederalPower" // Federal government authority over states and individuals
+  | "FreeSpeech" // First Amendment protections for expression
+  | "GayRights" // Legal equality and protections for LGBTQ+ individuals
+  | "Guns" // Second Amendment rights and gun regulations
+  | "Immigration" // Rights of immigrants and scope of immigration enforcement
+  | "JudicialActivism" // Willingness to overturn precedent or reshape law from the bench
+  | "NativeSovereignty" // Tribal treaty rights, reservation jurisdiction, and indigenous self-governance
+  | "PresidentialImmunity" // Whether presidents are shielded from criminal or civil liability
+  | "PrivacyRights" // Constitutional right to privacy (contraception, personal autonomy)
+  | "PropertyRights" // Protection of private property from government taking or regulation
+  | "PolicePower" // Scope of law enforcement authority and accountability
+  | "RacialEquity" // Policies and remedies addressing systemic racial inequality
+  | "ReligiousLiberty" // Freedom to practice religion, including exemptions from neutral laws
+  | "ReproductiveRights" // Access to abortion, contraception, and reproductive autonomy
+  | "RichPeople" // Tax policy, wealth concentration, and class-based legal outcomes
+  | "SocialOrder" // Stability of existing legal, civic, and social institutions
+  | "StatesRights" // State sovereignty and limits on federal authority
+  | "Taxation" // Government power to tax individuals and corporations
+  | "UnionPower" // Collective bargaining and organized labor rights
+  | "VotingRights" // Access to the ballot and protection against disenfranchisement
+  | "WarPowers" // Executive authority to conduct military operations without Congress
+  | "WomensRights" // Legal equality and protections specific to women
+  | "WorkersRights"; // Labor protections, workplace safety, and employee rights
 
-export type StanceOpion = "For" | "Against" | "Neutral";
+export type StanceOpinion = "For" | "Against" | "Neutral";
 
 export interface Justice {
   id: number;
@@ -38,12 +52,10 @@ export interface Justice {
   religion: Religion;
   ethnicity: Ethnicity;
   courtName?: string;
-  stances?: Partial<Record<StanceType, StanceOpion>>;
   stats: {
     logic: number;
     charisma: number;
     empathy: number;
-    integrity: number;
     succeptibility: number;
     partyLoyalty: number;
   };
@@ -53,6 +65,11 @@ export interface Justice {
     blackmail: number;
     threats: number;
   };
+  stances?: {
+    topic: StanceType;
+    position: StanceOpinion;
+    note?: string;
+  }[];
 }
 
 // ── Objective Cards ────────────────────────────────────────────────────────
@@ -172,7 +189,12 @@ export interface President {
   id: number;
   name: string;
   party: Party;
-  image: string;
+  image?: string;
+  stances?: {
+    topic: string;
+    position: StanceOpinion;
+    note?: string;
+  }[];
 }
 
 export type Party = "Federalist" | "Democratic-Republican" | "Whig" | "Democrat" | "Republican";
@@ -191,14 +213,15 @@ export interface Case {
     name: string;
     argument: string;
     favoredBy: Party;
-    stances?: Partial<Record<StanceType, StanceOpion>>;
+    stances?: Partial<Record<StanceType, StanceOpinion>>;
   };
   defendant: {
     name: string;
     argument: string;
     favoredBy: Party;
-    stances?: Partial<Record<StanceType, StanceOpion>>;
+    stances?: Partial<Record<StanceType, StanceOpinion>>;
   };
+  historicalWinner?: "Prosecution" | "Defendant" | "Tossup";
 }
 
 // Tactics are the "move cards" the player plays to sway justices.

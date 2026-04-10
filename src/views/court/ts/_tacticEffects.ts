@@ -264,9 +264,14 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
         empathy: (game.statMods[targetJustice.id]?.empathy ?? 0) + 3,
         logic: (game.statMods[targetJustice.id]?.logic ?? 0) - 3,
       };
-      results.push({ justiceName: targetJustice.name, change: 0, newLeaning: game.leanings[targetJustice.id] ?? 0 });
+      // Immediate leaning nudge — the drinks are working right now
+      const oldLeaning = game.leanings[targetJustice.id] ?? 0;
+      const nudge = actor === "player" ? 8 : -8;
+      const newLeaning = Math.max(-100, Math.min(100, oldLeaning + nudge));
+      game.leanings[targetJustice.id] = newLeaning;
+      results.push({ justiceName: targetJustice.name, change: newLeaning - oldLeaning, newLeaning });
       reportTarget = targetJustice.name;
-      overrideFeedback = `${targetJustice.name} is having a great time, legally speaking.`;
+      overrideFeedback = `${targetJustice.name} is having a great time and making some interesting choices.`;
     }
 
     // ── Hire-pi ──────────────────────────────────────────────────
@@ -283,12 +288,12 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
     targets.forEach((j) => {
       game.weaknessMods[j.id] = {
         ...(game.weaknessMods[j.id] ?? {}),
-        blackmail: (game.weaknessMods[j.id]?.blackmail ?? 0) + 4,
+        blackmail: (game.weaknessMods[j.id]?.blackmail ?? 0) + 6,
       };
       results.push({ justiceName: j.name, change: 0, newLeaning: game.leanings[j.id] ?? 0 });
     });
     reportTarget = targets.map((j) => j.name).join(" & ");
-    overrideFeedback = `${reportTarget} are being watched.`;
+    overrideFeedback = `${reportTarget} are being watched. Closely.`;
 
     // ── Saint-patricks ───────────────────────────────────────────
   } else if (tactic.effectType === "saint-patricks") {
@@ -450,6 +455,34 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
                 game.leanings[j.id] = kn;
                 results.push({ justiceName: j.name, change: kn - ko, newLeaning: kn, isKnockon: true });
               });
+          }
+        }
+
+        // Charisma knockon: high-charisma justices (7+) influence same-party peers with sway-one
+        const charisma = getEffectiveStat(justice, "charisma", game);
+        if (tactic.effectType === "sway-one" && charisma >= 7 && change !== 0 && justice.id !== game.chiefJusticeId) {
+          const knockonChance = (charisma - 6) / 4; // 7→25%, 8→50%, 9→75%, 10→100%
+          if (Math.random() < knockonChance) {
+            const jParty = justice.nominatedBy?.party;
+            const jNominator = justice.nominatedBy?.id;
+            const knockonAmt = Math.round(change * 0.3);
+            if (knockonAmt !== 0) {
+              // Prefer same-nominator peers; fall back to same-party peers
+              const peers = game.bench.filter(
+                (j) =>
+                  j.id !== justice.id &&
+                  j.id !== game.chiefJusticeId &&
+                  !game.playerShields.includes(j.id) &&
+                  (jNominator ? j.nominatedBy?.id === jNominator : j.nominatedBy?.party === jParty),
+              );
+              const target = peers[Math.floor(Math.random() * peers.length)];
+              if (target) {
+                const ko = game.leanings[target.id] ?? 0;
+                const kn = Math.max(-100, Math.min(100, ko + knockonAmt));
+                game.leanings[target.id] = kn;
+                results.push({ justiceName: target.name, change: kn - ko, newLeaning: kn, isKnockon: true });
+              }
+            }
           }
         }
       }

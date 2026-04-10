@@ -51,11 +51,38 @@ export const justiceCurrent: Justice[] = [
       logic: 8,
       charisma: 7,
       empathy: 5,
-      integrity: 6,
+
       succeptibility: 4,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 6, bribery: 3, blackmail: 4, threats: 3 },
+    stances: [
+      {
+        topic: "CourtAuthority",
+        position: "For",
+        note: "Routinely steers toward narrow rulings to preserve institutional legitimacy — e.g. his controlling concurrence in Dobbs, urging a narrower holding than the majority.",
+      },
+      {
+        topic: "VotingRights",
+        position: "Against",
+        note: "Authored Shelby County v. Holder (2013), striking the VRA's preclearance coverage formula as unconstitutionally outdated.",
+      },
+      {
+        topic: "AgencyDeference",
+        position: "Against",
+        note: "Authored West Virginia v. EPA (2022), establishing the 'major questions doctrine' to curtail broad agency rulemaking.",
+      },
+      {
+        topic: "RacialEquity",
+        position: "Against",
+        note: "Authored SFFA v. Harvard (2023), ending race-conscious admissions programs, writing that 'eliminating racial discrimination means eliminating all of it.'",
+      },
+      {
+        topic: "PresidentialImmunity",
+        position: "For",
+        note: "Authored Trump v. United States (2024), granting presidents broad immunity from prosecution for official acts.",
+      },
+    ],
   },
   {
     id: 2,
@@ -73,11 +100,38 @@ export const justiceCurrent: Justice[] = [
       logic: 6,
       charisma: 3,
       empathy: 2,
-      integrity: 2,
+
       succeptibility: 3,
       partyLoyalty: 10,
     },
     weaknesses: { flattery: 4, bribery: 9, blackmail: 7, threats: 2 },
+    stances: [
+      {
+        topic: "Guns",
+        position: "For",
+        note: "Authored NY State Rifle & Pistol Assn. v. Bruen (2022), striking NY's concealed carry licensing scheme and anchoring gun rights in historical tradition alone.",
+      },
+      {
+        topic: "StatesRights",
+        position: "For",
+        note: "Dissented in Gonzales v. Raich (2005), arguing federal drug law cannot constitutionally reach locally grown, locally consumed marijuana.",
+      },
+      {
+        topic: "GayRights",
+        position: "Against",
+        note: "In his Dobbs concurrence (2022), explicitly invited the Court to reconsider Obergefell v. Hodges and Lawrence v. Texas.",
+      },
+      {
+        topic: "AgencyDeference",
+        position: "Against",
+        note: "Spent decades calling for Chevron deference to be abolished outright — a position the Court finally adopted in Loper Bright Enterprises v. Raimondo (2024).",
+      },
+      {
+        topic: "JudicialActivism",
+        position: "For",
+        note: "More willing than any peer to overturn precedent wholesale, regularly writing solo concurrences urging reconsideration of substantive due process doctrine entirely.",
+      },
+    ],
   },
   {
     id: 3,
@@ -95,11 +149,38 @@ export const justiceCurrent: Justice[] = [
       logic: 7,
       charisma: 4,
       empathy: 2,
-      integrity: 4,
+
       succeptibility: 3,
       partyLoyalty: 10,
     },
     weaknesses: { flattery: 7, bribery: 5, blackmail: 4, threats: 2 },
+    stances: [
+      {
+        topic: "ReproductiveRights",
+        position: "Against",
+        note: "Authored Dobbs v. Jackson Women's Health Organization (2022), directly overturning Roe v. Wade and Planned Parenthood v. Casey.",
+      },
+      {
+        topic: "ReligiousLiberty",
+        position: "For",
+        note: "Authored Burwell v. Hobby Lobby (2014), allowing closely held corporations to deny contraceptive coverage on religious grounds.",
+      },
+      {
+        topic: "ChristianHegemony",
+        position: "For",
+        note: "Authored Town of Greece v. Galloway (2014), upholding explicitly sectarian Christian prayer at government town board meetings.",
+      },
+      {
+        topic: "AccusedRights",
+        position: "Against",
+        note: "In Kansas v. Glover (2020), held that police may constitutionally stop a vehicle based solely on the owner's prior suspended license.",
+      },
+      {
+        topic: "CampaignFinance",
+        position: "For",
+        note: "Authored McCutcheon v. FEC (2014), striking aggregate campaign contribution limits as a First Amendment violation.",
+      },
+    ],
   },
   {
     id: 4,
@@ -117,11 +198,38 @@ export const justiceCurrent: Justice[] = [
       logic: 8,
       charisma: 8,
       empathy: 9,
-      integrity: 8,
+
       succeptibility: 4,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 3, threats: 4 },
+    stances: [
+      {
+        topic: "VotingRights",
+        position: "For",
+        note: "Dissented in Brnovich v. DNC (2021), arguing the majority gutted Section 2 of the Voting Rights Act beyond recognition.",
+      },
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "Authored the Utah v. Strieff dissent (2016), warning of systemic racial bias in stop-and-frisk policing.",
+      },
+      {
+        topic: "Immigration",
+        position: "For",
+        note: "Dissented in Trump v. Hawaii (2018), calling the travel ban a discriminatory policy motivated by religious animus.",
+      },
+      {
+        topic: "PolicePower",
+        position: "Against",
+        note: "Has written repeatedly against qualified immunity, most forcefully in her Mullenix v. Luna (2015) dissent.",
+      },
+      {
+        topic: "RacialEquity",
+        position: "For",
+        note: "Authored a sweeping dissent in SFFA v. Harvard (2023), arguing the majority willfully ignores the structural reality of racism in American life.",
+      },
+    ],
   },
   {
     id: 5,
@@ -139,11 +247,38 @@ export const justiceCurrent: Justice[] = [
       logic: 9,
       charisma: 7,
       empathy: 7,
-      integrity: 8,
+
       succeptibility: 3,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 4, bribery: 2, blackmail: 3, threats: 3 },
+    stances: [
+      {
+        topic: "AgencyDeference",
+        position: "For",
+        note: "Authored the West Virginia v. EPA dissent (2022), forcefully defending Chevron and the expertise of the administrative state.",
+      },
+      {
+        topic: "FreeSpeech",
+        position: "For",
+        note: "Authored Matal v. Tam (2017), unanimously striking the government's power to deny 'disparaging' trademarks as a First Amendment violation.",
+      },
+      {
+        topic: "EconomicRegulation",
+        position: "For",
+        note: "Dissented in Alabama Association of Realtors v. HHS (2021), defending the CDC's pandemic eviction moratorium as a valid exercise of regulatory power.",
+      },
+      {
+        topic: "VotingRights",
+        position: "For",
+        note: "Authored the Brnovich v. DNC dissent (2021), arguing the majority's reading of the VRA drains the statute of its core purpose.",
+      },
+      {
+        topic: "CampaignFinance",
+        position: "Against",
+        note: "Dissented in Citizens United v. FEC (2010), warning the ruling would 'undermine democracy' by flooding elections with corporate money.",
+      },
+    ],
   },
   {
     id: 6,
@@ -161,11 +296,38 @@ export const justiceCurrent: Justice[] = [
       logic: 7,
       charisma: 5,
       empathy: 4,
-      integrity: 6,
+
       succeptibility: 4,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 5, bribery: 4, blackmail: 4, threats: 3 },
+    stances: [
+      {
+        topic: "NativeSovereignty",
+        position: "For",
+        note: "Authored McGirt v. Oklahoma (2020), holding that a vast portion of eastern Oklahoma remains Native American reservation land under treaty.",
+      },
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "Authored Ramos v. Louisiana (2020), holding that the Sixth Amendment requires unanimous jury verdicts in all criminal trials.",
+      },
+      {
+        topic: "AgencyDeference",
+        position: "Against",
+        note: "Authored Loper Bright Enterprises v. Raimondo (2024), overturning the Chevron doctrine of judicial deference to agency interpretations.",
+      },
+      {
+        topic: "ReligiousLiberty",
+        position: "For",
+        note: "Authored the majority in Fulton v. City of Philadelphia (2021), ruling the city couldn't exclude a Catholic foster agency for refusing same-sex couples.",
+      },
+      {
+        topic: "DigitalPrivacy",
+        position: "For",
+        note: "Concurred in Carpenter v. United States (2018), arguing for a robust rethinking of Fourth Amendment doctrine in the digital age.",
+      },
+    ],
   },
   {
     id: 7,
@@ -183,11 +345,38 @@ export const justiceCurrent: Justice[] = [
       logic: 6,
       charisma: 5,
       empathy: 4,
-      integrity: 4,
+
       succeptibility: 5,
       partyLoyalty: 9,
     },
     weaknesses: { flattery: 6, bribery: 6, blackmail: 8, threats: 4 },
+    stances: [
+      {
+        topic: "ExecutivePower",
+        position: "For",
+        note: "Long-held believer in the unitary executive theory; as a D.C. Circuit judge, argued presidents should be immune from indictment while in office.",
+      },
+      {
+        topic: "CorporatePower",
+        position: "For",
+        note: "Joined the majority in AMG Capital Management v. FTC (2021), unanimously but narrowly stripping the FTC of its power to seek monetary relief.",
+      },
+      {
+        topic: "ReproductiveRights",
+        position: "Against",
+        note: "Voted with the majority in Dobbs v. Jackson (2022) while writing separately to emphasize the ruling would not affect contraception or travel rights.",
+      },
+      {
+        topic: "PolicePower",
+        position: "For",
+        note: "Consistently sides with law enforcement in Fourth Amendment cases, e.g. concurring in Kansas v. Glover (2020).",
+      },
+      {
+        topic: "StatesRights",
+        position: "For",
+        note: "Authored the majority in Dobbs, framing the abortion question as one properly returned to state legislatures.",
+      },
+    ],
   },
   {
     id: 8,
@@ -205,11 +394,38 @@ export const justiceCurrent: Justice[] = [
       logic: 7,
       charisma: 6,
       empathy: 5,
-      integrity: 6,
+
       succeptibility: 4,
       partyLoyalty: 9,
     },
     weaknesses: { flattery: 5, bribery: 3, blackmail: 4, threats: 3 },
+    stances: [
+      {
+        topic: "ReligiousLiberty",
+        position: "For",
+        note: "Authored 303 Creative v. Elenis (2023) — well, joined the majority — allowing a web designer to refuse same-sex wedding sites on religious grounds.",
+      },
+      {
+        topic: "ReproductiveRights",
+        position: "Against",
+        note: "Voted with the Dobbs majority (2022); had previously criticized Roe as 'super-precedent' in academic writing.",
+      },
+      {
+        topic: "Guns",
+        position: "For",
+        note: "Voted to strike New York's concealed carry law in Bruen (2022) and authored a notable gun rights dissent on the Seventh Circuit prior to joining SCOTUS.",
+      },
+      {
+        topic: "AgencyDeference",
+        position: "Against",
+        note: "Joined West Virginia v. EPA (2022) majority, applying the major questions doctrine to limit EPA climate authority.",
+      },
+      {
+        topic: "SocialOrder",
+        position: "For",
+        note: "Tends toward incremental rulings that preserve institutional structures; notably declined to join Thomas's Dobbs concurrence calling to reconsider Obergefell.",
+      },
+    ],
   },
   {
     id: 9,
@@ -227,11 +443,38 @@ export const justiceCurrent: Justice[] = [
       logic: 9,
       charisma: 8,
       empathy: 8,
-      integrity: 9,
+
       succeptibility: 3,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 4, bribery: 2, blackmail: 2, threats: 4 },
+    stances: [
+      {
+        topic: "RacialEquity",
+        position: "For",
+        note: "Authored a powerful dissent in SFFA v. Harvard (2023), arguing the majority's colorblindness is itself a distortion of constitutional history.",
+      },
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "As a former public defender and sentencing judge, has consistently favored procedural fairness — e.g. Erlinger v. United States (2024), defending the jury's role in sentencing.",
+      },
+      {
+        topic: "VotingRights",
+        position: "For",
+        note: "Dissented in Alexander v. South Carolina NAACP (2024), arguing the majority set an impossibly high bar for proving racial gerrymandering.",
+      },
+      {
+        topic: "AgencyDeference",
+        position: "For",
+        note: "Dissented in Loper Bright (2024), arguing Chevron's overruling destabilizes decades of settled regulatory law.",
+      },
+      {
+        topic: "CivilLiberties",
+        position: "For",
+        note: "Authored a notable dissent in Moody v. NetChoice (2024), pressing for a more direct ruling on states' social media censorship laws as a First Amendment issue.",
+      },
+    ],
   },
 ];
 
@@ -256,11 +499,33 @@ export const justiceHistorical: Justice[] = [
       logic: 9,
       charisma: 9,
       empathy: 10,
-      integrity: 10,
+
       succeptibility: 2,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 3, bribery: 1, blackmail: 2, threats: 3 },
+    stances: [
+      {
+        topic: "RacialEquity",
+        position: "For",
+        note: "Argued Brown v. Board of Education before the Court in 1954 as lead NAACP counsel, having fought school segregation for two decades before ever sitting on the bench.",
+      },
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "Consistently defended the rights of criminal defendants and dissented in cases weakening Miranda, regardless of political pressure.",
+      },
+      {
+        topic: "PolicePower",
+        position: "Against",
+        note: "Deeply skeptical of unchecked law enforcement authority, rooted in decades watching the justice system fail Black Americans.",
+      },
+      {
+        topic: "CivilLiberties",
+        position: "For",
+        note: "One of the Warren Court's most reliably liberal votes on First Amendment issues; wrote expansively on free expression and individual liberty.",
+      },
+    ],
   },
   {
     id: 11,
@@ -278,11 +543,33 @@ export const justiceHistorical: Justice[] = [
       logic: 10,
       charisma: 9,
       empathy: 9,
-      integrity: 10,
+
       succeptibility: 2,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 3, bribery: 1, blackmail: 2, threats: 2 },
+    stances: [
+      {
+        topic: "WomensRights",
+        position: "For",
+        note: "Argued six landmark gender discrimination cases before the Court as ACLU counsel, winning five — before she ever sat on the bench.",
+      },
+      {
+        topic: "ReproductiveRights",
+        position: "For",
+        note: "Consistently voted to uphold Roe; publicly criticized its reasoning while supporting its outcome, preferring a stronger equal protection rationale.",
+      },
+      {
+        topic: "VotingRights",
+        position: "For",
+        note: "Wrote the principal dissent in Shelby County v. Holder (2013), warning that gutting the Voting Rights Act opened the door to voter suppression.",
+      },
+      {
+        topic: "CourtAuthority",
+        position: "For",
+        note: "Resisted calls to retire despite declining health, believing the Court's composition too consequential to risk under a hostile administration.",
+      },
+    ],
   },
   {
     id: 12,
@@ -300,11 +587,33 @@ export const justiceHistorical: Justice[] = [
       logic: 8,
       charisma: 6,
       empathy: 4,
-      integrity: 5,
+
       succeptibility: 4,
       partyLoyalty: 9,
     },
     weaknesses: { flattery: 5, bribery: 4, blackmail: 5, threats: 3 },
+    stances: [
+      {
+        topic: "StatesRights",
+        position: "For",
+        note: "Drove the 'Rehnquist Revolution,' authoring Lopez (1995) and Morrison (2000) to limit federal commerce power over local activity.",
+      },
+      {
+        topic: "FederalPower",
+        position: "Against",
+        note: "Consistently narrowed Congress's power under the Commerce Clause and Section 5 of the 14th Amendment throughout the 1990s.",
+      },
+      {
+        topic: "AccusedRights",
+        position: "Against",
+        note: "Long skeptical of Miranda; ironically authored Dickerson v. United States (2000) upholding it only after Congress tried to override it legislatively.",
+      },
+      {
+        topic: "AgencyDeference",
+        position: "Against",
+        note: "Opposed expansive readings of regulatory authority and preferred courts to constrain the administrative state through statutory interpretation.",
+      },
+    ],
   },
   {
     id: 13,
@@ -322,11 +631,38 @@ export const justiceHistorical: Justice[] = [
       logic: 9,
       charisma: 9,
       empathy: 3,
-      integrity: 7,
+
       succeptibility: 3,
       partyLoyalty: 9,
     },
     weaknesses: { flattery: 8, bribery: 3, blackmail: 4, threats: 2 },
+    stances: [
+      {
+        topic: "Guns",
+        position: "For",
+        note: "Authored District of Columbia v. Heller (2008), first ruling that the Second Amendment protects an individual right to keep arms at home for self-defense.",
+      },
+      {
+        topic: "AgencyDeference",
+        position: "Against",
+        note: "In his later years expressed deep skepticism of Chevron deference, arguing agencies shouldn't interpret their own statutory authority expansively.",
+      },
+      {
+        topic: "GayRights",
+        position: "Against",
+        note: "Authored scathing dissents in both Lawrence v. Texas (2003) and United States v. Windsor (2013), accusing the majority of moral relativism.",
+      },
+      {
+        topic: "ReproductiveRights",
+        position: "Against",
+        note: "Dissented in Planned Parenthood v. Casey (1992), arguing Roe had no constitutional basis and should simply be overturned.",
+      },
+      {
+        topic: "CampaignFinance",
+        position: "For",
+        note: "Joined Citizens United (2010) and viewed campaign spending restrictions as unconstitutional censorship of political speech.",
+      },
+    ],
   },
   {
     id: 14,
@@ -344,11 +680,33 @@ export const justiceHistorical: Justice[] = [
       logic: 8,
       charisma: 7,
       empathy: 7,
-      integrity: 8,
+
       succeptibility: 6,
       partyLoyalty: 5,
     },
     weaknesses: { flattery: 6, bribery: 3, blackmail: 3, threats: 3 },
+    stances: [
+      {
+        topic: "ReproductiveRights",
+        position: "For",
+        note: "Provided the critical vote upholding Roe in Planned Parenthood v. Casey (1992), co-authoring the plurality opinion establishing the 'undue burden' standard.",
+      },
+      {
+        topic: "RacialEquity",
+        position: "For",
+        note: "Authored Grutter v. Bollinger (2003), upholding race-conscious admissions as serving a compelling interest in diversity — though with a 25-year expiration notice.",
+      },
+      {
+        topic: "ReligiousLiberty",
+        position: "For",
+        note: "Favored a more robust protection for religious exemptions than the majority's Employment Division v. Smith standard allowed.",
+      },
+      {
+        topic: "StatesRights",
+        position: "For",
+        note: "Consistent advocate for state sovereignty; often the swing vote bridging conservative federalism and moderate pragmatism.",
+      },
+    ],
   },
   {
     id: 15,
@@ -366,11 +724,33 @@ export const justiceHistorical: Justice[] = [
       logic: 9,
       charisma: 7,
       empathy: 8,
-      integrity: 9,
+
       succeptibility: 3,
       partyLoyalty: 2,
     },
     weaknesses: { flattery: 4, bribery: 2, blackmail: 2, threats: 3 },
+    stances: [
+      {
+        topic: "Guns",
+        position: "Against",
+        note: "Authored the principal dissent in Heller (2008), arguing the Second Amendment protects only a militia right, not individual ownership.",
+      },
+      {
+        topic: "CampaignFinance",
+        position: "Against",
+        note: "Authored the Citizens United dissent (2010), arguing corporations have no First Amendment right to spend unlimited money in elections.",
+      },
+      {
+        topic: "ExecutivePower",
+        position: "Against",
+        note: "Authored Hamdan v. Rumsfeld (2006), ruling the Bush administration's military commissions for Guantánamo detainees violated the law of war.",
+      },
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "Consistent defender of Fourth and Fifth Amendment rights against government overreach, including in national security contexts.",
+      },
+    ],
   },
   {
     id: 16,
@@ -388,11 +768,28 @@ export const justiceHistorical: Justice[] = [
       logic: 7,
       charisma: 6,
       empathy: 5,
-      integrity: 7,
+
       succeptibility: 5,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 5, bribery: 4, blackmail: 4, threats: 4 },
+    stances: [
+      {
+        topic: "ReproductiveRights",
+        position: "Against",
+        note: "Authored the Roe v. Wade dissent (1973), arguing the Court invented an abortion right with no constitutional basis.",
+      },
+      {
+        topic: "PolicePower",
+        position: "For",
+        note: "Authored United States v. Leon (1984), establishing the 'good faith' exception to the exclusionary rule to protect law enforcement flexibility.",
+      },
+      {
+        topic: "EconomicRegulation",
+        position: "For",
+        note: "Supported expansive federal regulatory authority and largely deferred to Congress on economic and labor matters.",
+      },
+    ],
   },
   {
     id: 17,
@@ -410,11 +807,33 @@ export const justiceHistorical: Justice[] = [
       logic: 8,
       charisma: 7,
       empathy: 6,
-      integrity: 6,
+
       succeptibility: 5,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 6, bribery: 4, blackmail: 7, threats: 4 },
+    stances: [
+      {
+        topic: "FreeSpeech",
+        position: "For",
+        note: "Absolute First Amendment literalist — believed 'no law' meant no law, full stop. Dissented from any restriction on political speech, even in wartime.",
+      },
+      {
+        topic: "ChristianHegemony",
+        position: "Against",
+        note: "Authored Everson v. Board of Education (1947), incorporating the Establishment Clause and cementing the 'wall of separation' metaphor into constitutional law.",
+      },
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "Drafted the Gideon v. Wainwright majority (1963), holding that the right to counsel applies to the states via the 14th Amendment.",
+      },
+      {
+        topic: "RacialEquity",
+        position: "For",
+        note: "Former KKK member who became a staunch civil liberties absolutist, voting with Brown and the Warren Court's major civil rights rulings.",
+      },
+    ],
   },
   {
     id: 18,
@@ -433,11 +852,28 @@ export const justiceHistorical: Justice[] = [
       logic: 10,
       charisma: 8,
       empathy: 5,
-      integrity: 8,
+
       succeptibility: 3,
       partyLoyalty: 4,
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 3, threats: 2 },
+    stances: [
+      {
+        topic: "FreeSpeech",
+        position: "For",
+        note: "Reversed course after Schenck to author the Abrams dissent (1919), arguing free speech requires a 'marketplace of ideas' where only present, immediate danger justifies restriction.",
+      },
+      {
+        topic: "EconomicRegulation",
+        position: "For",
+        note: "Dissented in Lochner v. New York (1905), arguing states have broad police power and courts shouldn't impose economic preferences through the Constitution.",
+      },
+      {
+        topic: "JudicialActivism",
+        position: "Against",
+        note: "Famous advocate for judicial restraint — believed courts should defer to democratic majorities except in cases of direct constitutional violation.",
+      },
+    ],
   },
   {
     id: 50,
@@ -455,11 +891,28 @@ export const justiceHistorical: Justice[] = [
       logic: 9,
       charisma: 7,
       empathy: 6,
-      integrity: 10,
+
       succeptibility: 2,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 4, bribery: 1, blackmail: 2, threats: 2 },
+    stances: [
+      {
+        topic: "FederalPower",
+        position: "For",
+        note: "As first Chief Justice, consistently ruled in favor of federal supremacy and strengthened the new national government's authority over the states.",
+      },
+      {
+        topic: "CourtAuthority",
+        position: "For",
+        note: "Resigned in 1795 to protest the Court's lack of power and dignity — then simply built the institution he wished existed.",
+      },
+      {
+        topic: "SocialOrder",
+        position: "For",
+        note: "Federalist Papers co-author who believed in strong institutions, orderly governance, and the rule of law as bulwarks against faction.",
+      },
+    ],
   },
   {
     id: 51,
@@ -477,11 +930,28 @@ export const justiceHistorical: Justice[] = [
       logic: 10,
       charisma: 8,
       empathy: 5,
-      integrity: 9,
+
       succeptibility: 2,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 3, threats: 1 },
+    stances: [
+      {
+        topic: "CourtAuthority",
+        position: "For",
+        note: "Authored Marbury v. Madison (1803), inventing judicial review out of pure legal philosophy and daring anyone to stop him. Nobody did.",
+      },
+      {
+        topic: "FederalPower",
+        position: "For",
+        note: "Authored McCulloch v. Maryland (1819) and Gibbons v. Ogden (1824), laying the foundation for broad federal authority over commerce and constitutional interpretation.",
+      },
+      {
+        topic: "PropertyRights",
+        position: "For",
+        note: "Authored Fletcher v. Peck (1810), the first case striking down a state law, protecting contract rights against legislative reversal.",
+      },
+    ],
   },
   {
     id: 52,
@@ -499,11 +969,33 @@ export const justiceHistorical: Justice[] = [
       logic: 9,
       charisma: 7,
       empathy: 9,
-      integrity: 10,
+
       succeptibility: 2,
       partyLoyalty: 3,
     },
     weaknesses: { flattery: 4, bribery: 1, blackmail: 2, threats: 3 },
+    stances: [
+      {
+        topic: "RacialEquity",
+        position: "For",
+        note: "Sole dissenter in Plessy v. Ferguson (1896), writing that the Constitution is 'color-blind' — a position vindicated 58 years later by Brown v. Board.",
+      },
+      {
+        topic: "CivilLiberties",
+        position: "For",
+        note: "Voted to incorporate the Bill of Rights against the states before that concept existed as doctrine, consistently protecting individuals from state power.",
+      },
+      {
+        topic: "VotingRights",
+        position: "For",
+        note: "Dissented in the Civil Rights Cases (1883), arguing Congress had full authority to prohibit private racial discrimination under the 14th Amendment.",
+      },
+      {
+        topic: "EconomicRegulation",
+        position: "For",
+        note: "Authored dissents defending Congress's power to regulate commerce and protect workers against corporate power, opposing the Lochner-era majority.",
+      },
+    ],
   },
   {
     id: 53,
@@ -521,11 +1013,33 @@ export const justiceHistorical: Justice[] = [
       logic: 8,
       charisma: 9,
       empathy: 9,
-      integrity: 9,
+
       succeptibility: 4,
       partyLoyalty: 2,
     },
     weaknesses: { flattery: 6, bribery: 2, blackmail: 3, threats: 3 },
+    stances: [
+      {
+        topic: "RacialEquity",
+        position: "For",
+        note: "Authored Brown v. Board of Education (1954), the unanimous opinion striking down school segregation — the most consequential ruling of the 20th century.",
+      },
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "Authored Miranda v. Arizona (1966), requiring police to inform suspects of their rights before questioning — a ruling conservatives have tried to limit ever since.",
+      },
+      {
+        topic: "VotingRights",
+        position: "For",
+        note: "Authored Reynolds v. Sims (1964), establishing 'one person, one vote' and requiring legislative districts to be apportioned by population.",
+      },
+      {
+        topic: "ChristianHegemony",
+        position: "Against",
+        note: "The Warren Court issued Engel v. Vitale (1962), striking down state-sponsored prayer in public schools over fierce religious and political objection.",
+      },
+    ],
   },
   {
     id: 54,
@@ -543,11 +1057,28 @@ export const justiceHistorical: Justice[] = [
       logic: 7,
       charisma: 6,
       empathy: 1,
-      integrity: 3,
+
       succeptibility: 4,
       partyLoyalty: 10,
     },
     weaknesses: { flattery: 7, bribery: 5, blackmail: 5, threats: 3 },
+    stances: [
+      {
+        topic: "RacialEquity",
+        position: "Against",
+        note: "Authored Dred Scott v. Sandford (1857), ruling Black people are not citizens and have no rights the white man is bound to respect. History has judged accordingly.",
+      },
+      {
+        topic: "StatesRights",
+        position: "For",
+        note: "Consistent champion of state sovereignty, including each state's right to regulate — or perpetuate — the institution of slavery.",
+      },
+      {
+        topic: "FederalPower",
+        position: "Against",
+        note: "Systematically narrowed Marshall's broad nationalist readings of congressional authority throughout his 28 years as Chief Justice.",
+      },
+    ],
   },
   {
     id: 55,
@@ -565,11 +1096,28 @@ export const justiceHistorical: Justice[] = [
       logic: 6,
       charisma: 5,
       empathy: 2,
-      integrity: 3,
+
       succeptibility: 6,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 6, bribery: 5, blackmail: 4, threats: 4 },
+    stances: [
+      {
+        topic: "RacialEquity",
+        position: "Against",
+        note: "Authored Plessy v. Ferguson (1896), enshrining 'separate but equal' as constitutional doctrine — a decision that poisoned American law for 58 years.",
+      },
+      {
+        topic: "EconomicRegulation",
+        position: "Against",
+        note: "Consistent Lochner-era vote against federal and state attempts to regulate industry, deferring to property and contract rights over worker protections.",
+      },
+      {
+        topic: "WorkersRights",
+        position: "Against",
+        note: "Voted to limit labor protections and strike down legislation constraining employers' contractual freedom during the early industrialization era.",
+      },
+    ],
   },
 ];
 
@@ -594,7 +1142,7 @@ export const justiceFictional: Justice[] = [
       logic: 7,
       charisma: 4,
       empathy: 1,
-      integrity: 9,
+
       succeptibility: 1,
       partyLoyalty: 3,
     },
@@ -616,7 +1164,7 @@ export const justiceFictional: Justice[] = [
       logic: 8,
       charisma: 9,
       empathy: 10,
-      integrity: 10,
+
       succeptibility: 4,
       partyLoyalty: 8,
     },
@@ -638,7 +1186,7 @@ export const justiceFictional: Justice[] = [
       logic: 8,
       charisma: 9,
       empathy: 4,
-      integrity: 2,
+
       succeptibility: 3,
       partyLoyalty: 4,
     },
@@ -660,7 +1208,7 @@ export const justiceFictional: Justice[] = [
       logic: 3,
       charisma: 7,
       empathy: 7,
-      integrity: 6,
+
       succeptibility: 9,
       partyLoyalty: 2,
     },
@@ -681,7 +1229,7 @@ export const justiceFictional: Justice[] = [
       logic: 6,
       charisma: 8,
       empathy: 8,
-      integrity: 7,
+
       succeptibility: 9,
       partyLoyalty: 5,
     },
@@ -703,7 +1251,7 @@ export const justiceFictional: Justice[] = [
       logic: 4,
       charisma: 8,
       empathy: 3,
-      integrity: 3,
+
       succeptibility: 8,
       partyLoyalty: 4,
     },
@@ -725,7 +1273,7 @@ export const justiceFictional: Justice[] = [
       logic: 9,
       charisma: 6,
       empathy: 1,
-      integrity: 3,
+
       succeptibility: 2,
       partyLoyalty: 9,
     },
@@ -748,7 +1296,7 @@ export const justiceFictional: Justice[] = [
       logic: 7,
       charisma: 5,
       empathy: 0,
-      integrity: 9,
+
       succeptibility: 1,
       partyLoyalty: 6,
     },
@@ -777,7 +1325,7 @@ export const justiceCelebrity: Justice[] = [
       logic: 9,
       charisma: 4,
       empathy: 1,
-      integrity: 5,
+
       succeptibility: 2,
       partyLoyalty: 7,
     },
@@ -799,7 +1347,7 @@ export const justiceCelebrity: Justice[] = [
       logic: 9,
       charisma: 9,
       empathy: 5,
-      integrity: 8,
+
       succeptibility: 2,
       partyLoyalty: 5,
     },
@@ -821,7 +1369,7 @@ export const justiceCelebrity: Justice[] = [
       logic: 6,
       charisma: 10,
       empathy: 6,
-      integrity: 5,
+
       succeptibility: 7,
       partyLoyalty: 4,
     },
@@ -843,7 +1391,7 @@ export const justiceCelebrity: Justice[] = [
       logic: 5,
       charisma: 7,
       empathy: 6,
-      integrity: 5,
+
       succeptibility: 7,
       partyLoyalty: 6,
     },
@@ -865,7 +1413,7 @@ export const justiceCelebrity: Justice[] = [
       logic: 7,
       charisma: 10,
       empathy: 2,
-      integrity: 6,
+
       succeptibility: 3,
       partyLoyalty: 6,
     },
@@ -887,7 +1435,7 @@ export const justiceCelebrity: Justice[] = [
       logic: 5,
       charisma: 10,
       empathy: 7,
-      integrity: 3,
+
       succeptibility: 8,
       partyLoyalty: 7,
     },
@@ -905,7 +1453,7 @@ export const justiceCelebrity: Justice[] = [
     nominatedBy: PRES_SNOOP_DOGG,
     religion: "Protestant",
     ethnicity: "White",
-    stats: { logic: 6, charisma: 10, empathy: 9, integrity: 7, succeptibility: 8, partyLoyalty: 4 },
+    stats: { logic: 6, charisma: 10, empathy: 9, succeptibility: 8, partyLoyalty: 4 },
     weaknesses: { flattery: 10, bribery: 7, blackmail: 3, threats: 2 },
   },
   {
@@ -920,7 +1468,7 @@ export const justiceCelebrity: Justice[] = [
     nominatedBy: PRES_VINCE_MCMAHON,
     religion: "Protestant",
     ethnicity: "White",
-    stats: { logic: 7, charisma: 10, empathy: 4, integrity: 8, succeptibility: 3, partyLoyalty: 7 },
+    stats: { logic: 7, charisma: 10, empathy: 4, succeptibility: 3, partyLoyalty: 7 },
     weaknesses: { flattery: 3, bribery: 4, blackmail: 7, threats: 1 },
   },
 ];
@@ -948,11 +1496,33 @@ export const justiceWarrenExtra: Justice[] = [
       logic: 9,
       charisma: 8,
       empathy: 8,
-      integrity: 7,
+
       succeptibility: 3,
       partyLoyalty: 5,
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 4, threats: 2 },
+    stances: [
+      {
+        topic: "FreeSpeech",
+        position: "For",
+        note: "Believed the First Amendment was absolute; wrote sweeping opinions protecting political dissent, obscenity, and individual expression across 36 years on the Court.",
+      },
+      {
+        topic: "PrivacyRights",
+        position: "For",
+        note: "Authored Griswold v. Connecticut (1965), inventing the constitutional right to privacy in the 'penumbras' of the Bill of Rights — the foundation for Roe, Lawrence, and Obergefell.",
+      },
+      {
+        topic: "NativeSovereignty",
+        position: "For",
+        note: "A fierce advocate for Native American treaty rights and tribal sovereignty, authored multiple opinions protecting indigenous lands and self-governance.",
+      },
+      {
+        topic: "EnvironmentalProtection",
+        position: "For",
+        note: "Famously argued in Sierra Club v. Morton (1972) that trees and rivers should have legal standing to sue for their own protection.",
+      },
+    ],
   },
   {
     id: 61,
@@ -970,11 +1540,28 @@ export const justiceWarrenExtra: Justice[] = [
       logic: 10,
       charisma: 6,
       empathy: 5,
-      integrity: 9,
+
       succeptibility: 2,
       partyLoyalty: 5,
     },
     weaknesses: { flattery: 4, bribery: 1, blackmail: 2, threats: 2 },
+    stances: [
+      {
+        topic: "StatesRights",
+        position: "For",
+        note: "Consistent champion of federalism and state autonomy; frequently dissented from Warren Court expansions of federal power over state criminal procedure.",
+      },
+      {
+        topic: "JudicialActivism",
+        position: "Against",
+        note: "Believed the Court's role was to interpret law, not drive social policy — and wrote lengthy, principled dissents when the majority overstepped.",
+      },
+      {
+        topic: "PrivacyRights",
+        position: "For",
+        note: "Authored the famous Poe v. Ullman dissent (1961), articulating a vision of substantive privacy rights grounded in tradition and lived experience — a foundation Griswold relied on.",
+      },
+    ],
   },
   {
     id: 62,
@@ -992,11 +1579,33 @@ export const justiceWarrenExtra: Justice[] = [
       logic: 10,
       charisma: 8,
       empathy: 8,
-      integrity: 9,
+
       succeptibility: 3,
       partyLoyalty: 5,
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 2, threats: 3 },
+    stances: [
+      {
+        topic: "FreeSpeech",
+        position: "For",
+        note: "Authored New York Times v. Sullivan (1964), establishing that public officials cannot sue for defamation without proving 'actual malice' — the bedrock of American press freedom.",
+      },
+      {
+        topic: "RacialEquity",
+        position: "For",
+        note: "Intellectual architect of the Warren Court's civil rights jurisprudence; built the legal coalitions behind Brown's remedies and the expansion of equal protection.",
+      },
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "Authored critical opinions expanding the rights of criminal defendants under the Fourth, Fifth, and Sixth Amendments throughout the Warren and Burger Court eras.",
+      },
+      {
+        topic: "CourtAuthority",
+        position: "For",
+        note: "Believed the Court had an affirmative responsibility to protect individual dignity and expand constitutional rights — not merely to referee disputes.",
+      },
+    ],
   },
   {
     id: 63,
@@ -1014,11 +1623,28 @@ export const justiceWarrenExtra: Justice[] = [
       logic: 8,
       charisma: 6,
       empathy: 6,
-      integrity: 8,
+
       succeptibility: 6,
       partyLoyalty: 4,
     },
     weaknesses: { flattery: 5, bribery: 3, blackmail: 3, threats: 3 },
+    stances: [
+      {
+        topic: "FreeSpeech",
+        position: "For",
+        note: "Famously admitted he couldn't define obscenity but 'knows it when he sees it' — possibly the most honest thing ever said from the bench, and more protective than it sounds.",
+      },
+      {
+        topic: "PrivacyRights",
+        position: "Against",
+        note: "Dissented in Griswold v. Connecticut (1965), arguing that a right to privacy didn't appear in the Constitution's text regardless of whether the law itself was 'silly.'",
+      },
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "Voted with the majority in Katz v. United States (1967), establishing that the Fourth Amendment protects people, not places — the foundation of modern wiretapping law.",
+      },
+    ],
   },
   {
     id: 64,
@@ -1036,11 +1662,28 @@ export const justiceWarrenExtra: Justice[] = [
       logic: 9,
       charisma: 8,
       empathy: 6,
-      integrity: 4,
+
       succeptibility: 5,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 7, bribery: 8, blackmail: 9, threats: 4 },
+    stances: [
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "Authored In re Gault (1967), extending due process rights to juvenile court proceedings — a landmark in expanding constitutional protections to minors.",
+      },
+      {
+        topic: "FreeSpeech",
+        position: "For",
+        note: "Authored Tinker v. Des Moines (1969) shortly before resigning, holding that students don't shed First Amendment rights at the schoolhouse gate.",
+      },
+      {
+        topic: "CivilLiberties",
+        position: "For",
+        note: "Consistent Warren Court liberal; voted to expand individual rights across the board until financial scandal forced the most talented Justice of his era off the bench.",
+      },
+    ],
   },
 ];
 
@@ -1065,11 +1708,28 @@ export const justiceLochnerExtra: Justice[] = [
       logic: 7,
       charisma: 6,
       empathy: 2,
-      integrity: 5,
+
       succeptibility: 4,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 6, bribery: 4, blackmail: 4, threats: 3 },
+    stances: [
+      {
+        topic: "EconomicRegulation",
+        position: "Against",
+        note: "Presided over the Lochner-era Court that struck down minimum wage laws, child labor restrictions, and any regulation constraining the freedom of contract.",
+      },
+      {
+        topic: "PropertyRights",
+        position: "For",
+        note: "Led the Fuller Court in reading constitutional protection for property rights expansively, insulating business from virtually all government intervention.",
+      },
+      {
+        topic: "FederalPower",
+        position: "Against",
+        note: "Authored Pollock v. Farmers' Loan (1895), striking down the federal income tax. Congress responded by amending the Constitution. Fuller was unmoved.",
+      },
+    ],
   },
   {
     id: 66,
@@ -1087,11 +1747,28 @@ export const justiceLochnerExtra: Justice[] = [
       logic: 7,
       charisma: 5,
       empathy: 2,
-      integrity: 5,
+
       succeptibility: 4,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 6, bribery: 5, blackmail: 4, threats: 3 },
+    stances: [
+      {
+        topic: "PropertyRights",
+        position: "For",
+        note: "One of the most zealous defenders of contract and property rights on the Lochner-era bench; treated economic liberty as virtually sacrosanct.",
+      },
+      {
+        topic: "EconomicRegulation",
+        position: "Against",
+        note: "Voted to strike down railroad regulations, labor laws, and antitrust enforcement with consistent enthusiasm for corporate freedom from government interference.",
+      },
+      {
+        topic: "WorkersRights",
+        position: "Against",
+        note: "Authored opinions blocking state protections for workers on the grounds that employees are free to negotiate their own fate — regardless of actual bargaining power.",
+      },
+    ],
   },
   {
     id: 67,
@@ -1109,11 +1786,28 @@ export const justiceLochnerExtra: Justice[] = [
       logic: 7,
       charisma: 6,
       empathy: 4,
-      integrity: 6,
+
       succeptibility: 5,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 5, bribery: 4, blackmail: 5, threats: 3 },
+    stances: [
+      {
+        topic: "CorporatePower",
+        position: "For",
+        note: "Invented the antitrust 'rule of reason,' making monopoly cases deliberately flexible enough that enforceable standards were hard to pin down.",
+      },
+      {
+        topic: "EconomicRegulation",
+        position: "For",
+        note: "More pragmatic than his Lochner-era colleagues; authored Standard Oil (1911) and American Tobacco (1911) actually breaking up major monopolies.",
+      },
+      {
+        topic: "StatesRights",
+        position: "For",
+        note: "Confederate veteran with a consistent preference for state authority and skepticism of federal reach exceeding its constitutional grant.",
+      },
+    ],
   },
   {
     id: 68,
@@ -1131,11 +1825,28 @@ export const justiceLochnerExtra: Justice[] = [
       logic: 7,
       charisma: 5,
       empathy: 1,
-      integrity: 5,
+
       succeptibility: 4,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 6, bribery: 5, blackmail: 4, threats: 3 },
+    stances: [
+      {
+        topic: "EconomicRegulation",
+        position: "Against",
+        note: "Authored Lochner v. New York (1905), striking down a law limiting bakers to 10-hour days as unconstitutional interference with freedom of contract.",
+      },
+      {
+        topic: "WorkersRights",
+        position: "Against",
+        note: "Believed workers were free to negotiate any terms their employer required — a philosophical position that looks different when you work in a 110°F flour room.",
+      },
+      {
+        topic: "PropertyRights",
+        position: "For",
+        note: "Authored Maxwell v. Dow (1900), ruling that the right to trial by jury of twelve in state courts was not constitutionally required. Property first, procedure second.",
+      },
+    ],
   },
   {
     id: 69,
@@ -1153,11 +1864,28 @@ export const justiceLochnerExtra: Justice[] = [
       logic: 5,
       charisma: 5,
       empathy: 5,
-      integrity: 6,
+
       succeptibility: 7,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 7, bribery: 5, blackmail: 6, threats: 5 },
+    stances: [
+      {
+        topic: "EconomicRegulation",
+        position: "Against",
+        note: "Voted with the Lochner-era majority on most economic liberty questions, though his later opinions grew less predictable as cognitive decline set in.",
+      },
+      {
+        topic: "FreeSpeech",
+        position: "Against",
+        note: "Authored United States v. Doremus (1919), upholding the Harrison Narcotics Tax Act, and generally supported government restrictions on expression he viewed as subversive.",
+      },
+      {
+        topic: "SocialOrder",
+        position: "For",
+        note: "Stayed on the bench until age 80 despite obvious decline because no one wanted to tell him to leave. A testament to institutional courtesy, or institutional cowardice.",
+      },
+    ],
   },
   {
     id: 70,
@@ -1175,11 +1903,28 @@ export const justiceLochnerExtra: Justice[] = [
       logic: 8,
       charisma: 5,
       empathy: 6,
-      integrity: 8,
+
       succeptibility: 4,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 4, bribery: 3, blackmail: 3, threats: 3 },
+    stances: [
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "Authored Weeks v. United States (1914), establishing the federal exclusionary rule — evidence obtained through illegal searches cannot be used in federal court.",
+      },
+      {
+        topic: "EconomicRegulation",
+        position: "For",
+        note: "More moderate than Lochner-era colleagues; voted to uphold reasonable government regulation of commerce and did not treat all state economic laws as constitutional violations.",
+      },
+      {
+        topic: "FederalPower",
+        position: "For",
+        note: "Supported Congress's authority to regulate interstate commerce in cases stemming from the Spanish-American War era, including antitrust and trade disputes.",
+      },
+    ],
   },
 ];
 
