@@ -45,6 +45,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         RacialEquity: "For",
+        CivilLiberties: "For",
       },
     },
     defendant: {
@@ -54,6 +55,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         RacialEquity: "Against",
+        StatesRights: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -72,6 +74,7 @@ export const casesHistorical: Case[] = [
       stances: {
         ReproductiveRights: "For",
         WomensRights: "For",
+        Privacy: "For",
       },
     },
     defendant: {
@@ -81,6 +84,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         ReproductiveRights: "Against",
+        StatesRights: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -98,6 +102,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         CorporatePower: "For",
+        FreeSpeech: "For",
+        CampaignFinance: "For",
       },
     },
     defendant: {
@@ -107,6 +113,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         CorporatePower: "Against",
+        CampaignFinance: "Against",
+        FairElections: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -124,6 +132,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         AccusedRights: "For",
+        CivilLiberties: "For",
       },
     },
     defendant: {
@@ -133,6 +142,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         AccusedRights: "Against",
+        PolicePower: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -150,6 +160,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         FairElections: "Against",
+        StatesRights: "Against",
       },
     },
     defendant: {
@@ -159,6 +170,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         FairElections: "For",
+        VotingRights: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -176,6 +188,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         GayRights: "For",
+        Privacy: "For",
       },
     },
     defendant: {
@@ -184,6 +197,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         GayRights: "Against",
+        ReligiousLiberty: "For",
+        StatesRights: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -201,6 +216,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         AccusedRights: "For",
+        RacialEquity: "Against",
+        CivilLiberties: "For",
       },
     },
     defendant: {
@@ -210,6 +227,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         AccusedRights: "Against",
+        WarPowers: "For",
+        ExecutivePower: "For",
       },
     },
     historicalWinner: "Defendant",
@@ -257,6 +276,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         FreeSpeech: "For",
+        CivilLiberties: "For",
       },
     },
     defendant: {
@@ -266,6 +286,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         FreeSpeech: "Against",
+        WarPowers: "For",
       },
     },
     historicalWinner: "Defendant",
@@ -283,6 +304,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         AccusedRights: "For",
+        CivilLiberties: "For",
       },
     },
     defendant: {
@@ -292,6 +314,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         AccusedRights: "Against",
+        StatesRights: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -309,6 +332,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         FreeSpeech: "For",
+        CivilLiberties: "For",
       },
     },
     defendant: {
@@ -318,6 +342,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         FreeSpeech: "Against",
+        ExecutivePower: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -335,6 +360,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         WorkersRights: "Against",
+        PropertyRights: "For",
+        EconomicRegulation: "Against",
       },
     },
     defendant: {
@@ -344,6 +371,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         WorkersRights: "For",
+        EconomicRegulation: "For",
+        PolicePower: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -361,6 +390,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         RacialEquity: "For",
+        Privacy: "For",
       },
     },
     defendant: {
@@ -370,6 +400,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         RacialEquity: "Against",
+        StatesRights: "For",
+        SocialOrder: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -387,6 +419,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         ReproductiveRights: "For",
+        Privacy: "For",
+        CivilLiberties: "For",
       },
     },
     defendant: {
@@ -396,6 +430,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         ReproductiveRights: "Against",
+        StatesRights: "For",
+        SocialOrder: "For",
       },
     },
     historicalWinner: "Defendant",
@@ -420,6 +456,10 @@ export const casesHistorical: Case[] = [
       argument:
         "As long as the facilities provided are equal in quality, segregation is a reasonable exercise of state power to keep the peace. Laws cannot change social prejudices; they can only reflect them.",
       favoredBy: "Republican",
+      stances: {
+        StatesRights: "For",
+        SocialOrder: "For",
+      },
     },
     historicalWinner: "Defendant",
   },
@@ -436,6 +476,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Federalist",
       stances: {
         FederalPower: "For",
+        EconomicRegulation: "For",
       },
     },
     defendant: {
@@ -445,6 +486,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democratic-Republican",
       stances: {
         FederalPower: "Against",
+        StatesRights: "For",
+        PropertyRights: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -462,6 +505,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Federalist",
       stances: {
         FederalPower: "For",
+        Taxation: "Against",
       },
     },
     defendant: {
@@ -471,6 +515,8 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democratic-Republican",
       stances: {
         FederalPower: "Against",
+        Taxation: "For",
+        StatesRights: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -488,6 +534,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         FreeSpeech: "For",
+        CivilLiberties: "For",
       },
     },
     defendant: {
@@ -497,6 +544,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         FreeSpeech: "Against",
+        SocialOrder: "For",
       },
     },
     historicalWinner: "Prosecution",
@@ -514,6 +562,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         FreeSpeech: "For",
+        ReligiousLiberty: "For",
       },
     },
     defendant: {
@@ -523,6 +572,7 @@ export const casesHistorical: Case[] = [
       favoredBy: "Republican",
       stances: {
         FreeSpeech: "Against",
+        SocialOrder: "For",
       },
     },
     historicalWinner: "Prosecution",

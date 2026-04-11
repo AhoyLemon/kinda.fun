@@ -206,12 +206,7 @@ export const PRES_FDR: President = {
     {
       topic: "WorkersRights",
       position: "For",
-      note: "Signed the National Labor Relations Act (1935) protecting collective bargaining and the Fair Labor Standards Act (1938) establishing the federal minimum wage.",
-    },
-    {
-      topic: "UnionPower",
-      position: "For",
-      note: "The Wagner Act made FDR the most pro-union president in history; union membership doubled during his tenure and labor power reshaped the Democratic coalition.",
+      note: "Signed the National Labor Relations Act (1935) protecting collective bargaining and the Fair Labor Standards Act (1938) establishing the federal minimum wage. Union membership doubled during his tenure and labor power reshaped the Democratic coalition.",
     },
     {
       topic: "ExecutivePower",
@@ -237,7 +232,7 @@ export const PRES_CLEVELAND: President = {
       note: "Vetoed hundreds of bills, including railroad and pension legislation, on constitutional grounds — believing federal intervention in markets exceeded congressional authority.",
     },
     {
-      topic: "UnionPower",
+      topic: "WorkersRights",
       position: "Against",
       note: "Deployed federal troops to crush the Pullman Strike (1894) over the objection of Illinois Governor Altgeld, breaking the strike and jailing Eugene Debs.",
     },
@@ -275,6 +270,7 @@ export const PRES_JFK: President = {
   id: 25,
   name: "John F. Kennedy",
   party: "Democrat",
+  image: "jfk.webp",
   stances: [
     {
       topic: "RacialEquity",
@@ -302,6 +298,7 @@ export const PRES_LBJ: President = {
   id: 26,
   name: "Lyndon B. Johnson",
   party: "Democrat",
+  image: "lbj.webp",
   stances: [
     {
       topic: "RacialEquity",
@@ -367,11 +364,12 @@ export const PRES_FORD: President = {
   id: 28,
   name: "Gerald Ford",
   party: "Republican",
+  image: "ford.webp",
   stances: [
     {
-      topic: "PresidentialImmunity",
+      topic: "ExecutivePower",
       position: "For",
-      note: "Issued a 'full, free, and absolute pardon' to Nixon before any charges were filed, telling the nation that 'our long national nightmare is over.' His approval rating immediately collapsed.",
+      note: "Issued a 'full, free, and absolute pardon' to Nixon before any charges were filed, telling the nation that 'our long national nightmare is over' — placing executive mercy above legal accountability.",
     },
     {
       topic: "SocialOrder",
@@ -401,7 +399,7 @@ export const PRES_REAGAN: President = {
       note: "Economic Recovery Tax Act (1981) cut the top marginal rate from 70% to 50% (later to 28%), the largest peacetime tax cut in U.S. history — permanently shifting the debate.",
     },
     {
-      topic: "UnionPower",
+      topic: "WorkersRights",
       position: "Against",
       note: "Fired 11,000 striking air traffic controllers (PATCO) in 1981 and decertified their union — a single act that reshaped the American labor movement's political power for a generation.",
     },
@@ -592,9 +590,9 @@ export const PRES_BIDEN: President = {
       note: "Signed the Inflation Reduction Act (2022), the largest climate investment in U.S. history at roughly $369 billion.",
     },
     {
-      topic: "ConsumerProtection",
+      topic: "EconomicRegulation",
       position: "For",
-      note: "Attempted broad student loan cancellation via the HEROES Act; struck down in Biden v. Nebraska (2023) by the Supreme Court's major questions doctrine.",
+      note: "Attempted broad student loan cancellation via the HEROES Act; struck down in Biden v. Nebraska (2023) — invoking the same major questions doctrine Roberts applied against the EPA.",
     },
     {
       topic: "Immigration",
@@ -680,6 +678,7 @@ export const PRES_LIBERACE: President = {
   id: 42,
   name: "Liberace",
   party: "Republican",
+  image: "liberace.webp",
   stances: [
     { topic: "GayRights", position: "Neutral" },
     { topic: "Taxation", position: "Against" },
@@ -690,6 +689,7 @@ export const PRES_VINCE_MCMAHON: President = {
   id: 47,
   name: "Vince McMahon",
   party: "Republican",
+  image: "mcmahon.webp",
   stances: [
     { topic: "CorporatePower", position: "For" },
     { topic: "WorkersRights", position: "Against" },

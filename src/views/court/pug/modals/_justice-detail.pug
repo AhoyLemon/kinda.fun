@@ -35,7 +35,9 @@
           span.jd-hvh-right Heart 💗
         .jd-hvh-track
           .jd-hvh-thumb(:style="{ left: `${((ui.detailJustice.stats.empathy - ui.detailJustice.stats.logic + 9) / 18) * 100}%` }")
-        .jd-hvh-caption {{ ui.detailJustice.stats.empathy - ui.detailJustice.stats.logic > 2 ? 'Rules from the heart' : ui.detailJustice.stats.empathy - ui.detailJustice.stats.logic < -2 ? 'Rules by the book' : 'Balanced' }}
+        .jd-hvh-caption(
+          v-tippy="`Logic: ${ui.detailJustice.stats.logic} / Empathy: ${ui.detailJustice.stats.empathy} — ${ui.detailJustice.stats.empathy > ui.detailJustice.stats.logic + 2 ? 'This justice leans on lived experience and human considerations over strict legal theory.' : ui.detailJustice.stats.logic > ui.detailJustice.stats.empathy + 2 ? 'This justice prioritizes analytical frameworks and constitutional text over emotional considerations.' : 'This justice weighs both legal reasoning and human considerations roughly equally.'}`"
+        ) {{ ui.detailJustice.stats.empathy - ui.detailJustice.stats.logic > 2 ? 'Rules from the heart' : ui.detailJustice.stats.empathy - ui.detailJustice.stats.logic < -2 ? 'Rules by the book' : 'Balanced' }}
 
       //- Susceptibility
       .jd-susceptibility
@@ -52,8 +54,9 @@
             v-for="stance in ui.detailJustice.stances"
             :key="stance.topic"
             :class="stance.position === 'For' ? 'stance--for' : stance.position === 'Against' ? 'stance--against' : 'stance--neutral'"
+            v-tippy="stance.note || ''"
           )
-            span.jd-stance-icon {{ stance.position === 'For' ? '✅' : stance.position === 'Against' ? '❌' : '⚪' }}
+            span.jd-stance-icon {{ stance.position === 'For' ? '▲' : stance.position === 'Against' ? '▼' : '—' }}
             span.jd-stance-topic {{ stance.topic.replace(/([A-Z])/g, ' $1').trim() }}
 
       .jd-hints

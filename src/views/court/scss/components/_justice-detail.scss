@@ -108,8 +108,6 @@
     .jd-meta {
       font-size: 75%;
       color: rgba(255, 255, 255, 0.5);
-      display: flex;
-      flex-direction: column;
       gap: 0.15rem;
 
       .jd-president-link {
@@ -117,6 +115,7 @@
         border: none;
         padding: 0;
         cursor: pointer;
+        display: inline-flex;
         color: $court-gold;
         font-size: inherit;
         font-family: inherit;
@@ -190,6 +189,7 @@
       text-align: center;
       color: rgba(255, 255, 255, 0.45);
       margin-top: 0.3rem;
+      cursor: help;
     }
   }
 
@@ -259,25 +259,22 @@
     font-size: 0.68rem;
     padding: 0.15rem 0.45rem;
     border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: help;
 
-    &.stance--for {
-      background: rgba(60, 200, 90, 0.15);
-      color: #8ef5aa;
-      border: 1px solid rgba(60, 200, 90, 0.3);
+    &.stance--for .jd-stance-icon {
+      color: #7ae89a;
     }
-    &.stance--against {
-      background: rgba(220, 60, 60, 0.15);
-      color: #f5a0a0;
-      border: 1px solid rgba(220, 60, 60, 0.3);
+    &.stance--against .jd-stance-icon {
+      color: #f08080;
     }
-    &.stance--neutral {
-      background: rgba(255, 255, 255, 0.08);
-      color: rgba(255, 255, 255, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+    &.stance--neutral .jd-stance-icon {
+      color: rgba(255, 255, 255, 0.4);
     }
 
     .jd-stance-icon {
-      font-size: 0.6rem;
+      font-size: 0.55rem;
+      line-height: 1;
     }
   }
 

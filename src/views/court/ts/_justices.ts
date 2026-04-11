@@ -78,9 +78,14 @@ export const justiceCurrent: Justice[] = [
         note: "Authored SFFA v. Harvard (2023), ending race-conscious admissions programs, writing that 'eliminating racial discrimination means eliminating all of it.'",
       },
       {
-        topic: "PresidentialImmunity",
+        topic: "ExecutivePower",
         position: "For",
-        note: "Authored Trump v. United States (2024), granting presidents broad immunity from prosecution for official acts.",
+        note: "Authored Trump v. United States (2024), granting presidents broad immunity from prosecution for official acts — the Court's most expansive statement of executive authority in decades.",
+      },
+      {
+        topic: "Privacy",
+        position: "For",
+        note: "Authored Riley v. California (2014), unanimously requiring warrants for cell phone searches — one of the most significant digital privacy rulings of the modern era.",
       },
     ],
   },
@@ -97,9 +102,9 @@ export const justiceCurrent: Justice[] = [
     religion: "Catholic",
     ethnicity: "Black",
     stats: {
-      logic: 6,
+      logic: 8,
       charisma: 3,
-      empathy: 2,
+      empathy: 1,
 
       succeptibility: 3,
       partyLoyalty: 10,
@@ -195,9 +200,9 @@ export const justiceCurrent: Justice[] = [
     religion: "Catholic",
     ethnicity: "Hispanic",
     stats: {
-      logic: 8,
+      logic: 6,
       charisma: 8,
-      empathy: 9,
+      empathy: 10,
 
       succeptibility: 4,
       partyLoyalty: 7,
@@ -246,7 +251,7 @@ export const justiceCurrent: Justice[] = [
     stats: {
       logic: 9,
       charisma: 7,
-      empathy: 7,
+      empathy: 5,
 
       succeptibility: 3,
       partyLoyalty: 7,
@@ -323,9 +328,9 @@ export const justiceCurrent: Justice[] = [
         note: "Authored the majority in Fulton v. City of Philadelphia (2021), ruling the city couldn't exclude a Catholic foster agency for refusing same-sex couples.",
       },
       {
-        topic: "DigitalPrivacy",
+        topic: "Privacy",
         position: "For",
-        note: "Concurred in Carpenter v. United States (2018), arguing for a robust rethinking of Fourth Amendment doctrine in the digital age.",
+        note: "Concurred in Carpenter v. United States (2018), arguing for a robust rethinking of Fourth Amendment doctrine in the digital age — and was the only justice to dissent in Jones (2012) on broadest privacy grounds.",
       },
     ],
   },
@@ -440,9 +445,9 @@ export const justiceCurrent: Justice[] = [
     religion: "Protestant",
     ethnicity: "Black",
     stats: {
-      logic: 9,
+      logic: 8,
       charisma: 8,
-      empathy: 8,
+      empathy: 10,
 
       succeptibility: 3,
       partyLoyalty: 7,
@@ -496,7 +501,7 @@ export const justiceHistorical: Justice[] = [
     religion: "Protestant",
     ethnicity: "Black",
     stats: {
-      logic: 9,
+      logic: 7,
       charisma: 9,
       empathy: 10,
 
@@ -1508,7 +1513,7 @@ export const justiceWarrenExtra: Justice[] = [
         note: "Believed the First Amendment was absolute; wrote sweeping opinions protecting political dissent, obscenity, and individual expression across 36 years on the Court.",
       },
       {
-        topic: "PrivacyRights",
+        topic: "Privacy",
         position: "For",
         note: "Authored Griswold v. Connecticut (1965), inventing the constitutional right to privacy in the 'penumbras' of the Bill of Rights — the foundation for Roe, Lawrence, and Obergefell.",
       },
@@ -1557,7 +1562,7 @@ export const justiceWarrenExtra: Justice[] = [
         note: "Believed the Court's role was to interpret law, not drive social policy — and wrote lengthy, principled dissents when the majority overstepped.",
       },
       {
-        topic: "PrivacyRights",
+        topic: "Privacy",
         position: "For",
         note: "Authored the famous Poe v. Ullman dissent (1961), articulating a vision of substantive privacy rights grounded in tradition and lived experience — a foundation Griswold relied on.",
       },
@@ -1635,7 +1640,7 @@ export const justiceWarrenExtra: Justice[] = [
         note: "Famously admitted he couldn't define obscenity but 'knows it when he sees it' — possibly the most honest thing ever said from the bench, and more protective than it sounds.",
       },
       {
-        topic: "PrivacyRights",
+        topic: "Privacy",
         position: "Against",
         note: "Dissented in Griswold v. Connecticut (1965), arguing that a right to privacy didn't appear in the Constitution's text regardless of whether the law itself was 'silly.'",
       },

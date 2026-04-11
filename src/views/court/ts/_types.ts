@@ -5,10 +5,8 @@ export type StanceType =
   | "CampaignFinance" // Money in politics; limits on political donations and spending
   | "ChristianHegemony" // Preferential treatment of Christianity in public life and law
   | "CivilLiberties" // Broad individual freedoms from government interference
-  | "ConsumerProtection" // Protections for individuals against corporate or financial harm
   | "CourtAuthority" // The Supreme Court's institutional legitimacy and scope of power
   | "CorporatePower" // Expansion of corporate legal rights and influence
-  | "DigitalPrivacy" // Fourth Amendment and privacy protections in the digital age
   | "Drugs" // Legalization and decriminalization of drugs
   | "EconomicRegulation" // Government's ability to regulate markets and industries
   | "EnvironmentalProtection" // EPA authority, climate regulation, and environmental law
@@ -21,8 +19,7 @@ export type StanceType =
   | "Immigration" // Rights of immigrants and scope of immigration enforcement
   | "JudicialActivism" // Willingness to overturn precedent or reshape law from the bench
   | "NativeSovereignty" // Tribal treaty rights, reservation jurisdiction, and indigenous self-governance
-  | "PresidentialImmunity" // Whether presidents are shielded from criminal or civil liability
-  | "PrivacyRights" // Constitutional right to privacy (contraception, personal autonomy)
+  | "Privacy" // Fourth Amendment, digital privacy, and the constitutional right to personal autonomy
   | "PropertyRights" // Protection of private property from government taking or regulation
   | "PolicePower" // Scope of law enforcement authority and accountability
   | "RacialEquity" // Policies and remedies addressing systemic racial inequality
@@ -32,7 +29,6 @@ export type StanceType =
   | "SocialOrder" // Stability of existing legal, civic, and social institutions
   | "StatesRights" // State sovereignty and limits on federal authority
   | "Taxation" // Government power to tax individuals and corporations
-  | "UnionPower" // Collective bargaining and organized labor rights
   | "VotingRights" // Access to the ballot and protection against disenfranchisement
   | "WarPowers" // Executive authority to conduct military operations without Congress
   | "WomensRights" // Legal equality and protections specific to women
@@ -46,10 +42,8 @@ export const ALL_STANCE_TYPES: StanceType[] = [
   "CampaignFinance",
   "ChristianHegemony",
   "CivilLiberties",
-  "ConsumerProtection",
   "CourtAuthority",
   "CorporatePower",
-  "DigitalPrivacy",
   "Drugs",
   "EconomicRegulation",
   "EnvironmentalProtection",
@@ -62,8 +56,7 @@ export const ALL_STANCE_TYPES: StanceType[] = [
   "Immigration",
   "JudicialActivism",
   "NativeSovereignty",
-  "PresidentialImmunity",
-  "PrivacyRights",
+  "Privacy",
   "PropertyRights",
   "PolicePower",
   "RacialEquity",
@@ -73,7 +66,6 @@ export const ALL_STANCE_TYPES: StanceType[] = [
   "SocialOrder",
   "StatesRights",
   "Taxation",
-  "UnionPower",
   "VotingRights",
   "WarPowers",
   "WomensRights",

@@ -63,13 +63,15 @@
 .side-party {
   display: inline-block;
   font-size: 0.72rem;
-  font-weight: $bold;
+  font-weight: 550;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 0.2rem 0.5rem;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.75);
+  background-color: $court-text-muted;
+  color: #eee;
+  // background: rgba(255, 255, 255, 0.12);
+  // color: rgba(255, 255, 255, 0.75);
 }
 
 .side-stances {
@@ -83,18 +85,26 @@
   font-size: 0.65rem;
   padding: 0.15rem 0.4rem;
   border-radius: 3px;
-  font-weight: $bold;
   letter-spacing: 0.04em;
+  color: $court-text;
+  border: 0.1em solid currentColor;
+  display: inline-flex;
+  gap: 0.5em;
+  &:after {
+    transform: scaleX(1.4);
+  }
 
   &--for {
-    background: rgba(60, 200, 90, 0.2);
-    color: #7ef09a;
-    border: 1px solid rgba(60, 200, 90, 0.35);
+    &:after {
+      color: rgba(9, 99, 22);
+      content: "▲";
+    }
   }
   &--against {
-    background: rgba(220, 60, 60, 0.2);
-    color: #f08080;
-    border: 1px solid rgba(220, 60, 60, 0.35);
+    &:after {
+      color: rgba(150, 12, 15);
+      content: "▼";
+    }
   }
 }
 
