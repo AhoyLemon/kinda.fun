@@ -236,10 +236,11 @@ export type TacticEffectType =
   | "betray-friend" // sacrifice a strongly-for justice to flip opposition justices
   | "swap-clerks" // swap two justices' leanings; chance of tattling
   | "encourage-nap" // freeze a justice for a round; they wake up refreshed and fond of you
-  | "justice-cocktails" // boost charisma+empathy, reduce logic for one justice
-  | "hire-pi" // significantly raise blackmail susceptibility on two justices
+  | "justice-cocktails" // boost charisma+empathy+susceptibility, reduce logic for one justice; Kavanaugh special
   | "saint-patricks" // turn all justices Catholic for the remainder of the trial
-  | "invite-church" // target justice gains empathy; same-religion justices give you a favorable nod
+  | "invite-church" // target justice is directly swayed; same-religion justices give you a favorable nod
+  | "reframe-debate" // player picks a stance topic; justices with a position on it are immediately and strongly swayed
+  | "gift-boxes" // bribery attack on all justices; high-bribery justices swayed in your favor, low-bribery offended
   | "suggest-retirement" // campaign only: mark justice for guaranteed retirement during recess; they lose massive favor
   | "keep-crown"; // campaign only: make the current trial's elevated CJ permanent for the campaign
 
@@ -258,6 +259,7 @@ export interface Tactic {
   weaknessBasis?: keyof Justice["weaknesses"]; // which weakness is being exploited
   feedback?: string; // optional static feedback string shown in toast for utility cards
   campaignOnly?: boolean; // if true, only enters the playbook deck during campaign mode
+  requiresTrumpNominee?: boolean; // if true, only enters the deck when a Trump nominee is on the bench
 }
 
 export type Side = "prosecution" | "defendant";
@@ -298,4 +300,9 @@ export interface CourtGameState {
   makeChiefPlayedThisTrial: boolean; // true once Elevate to Chief is used; gates Keep That Crown
   suggestRetirementTargets: number[]; // justice ids marked for guaranteed retirement at recess
   keepCrownActivated: boolean; // Keep That Crown was played this trial
+  // ── Reframe The Debate stance selection ──────────────────────
+  reframeStanceMode: boolean; // true while player is picking a stance for Reframe The Debate
+  reframeStanceChoices: StanceType[]; // up to 3 stance topics presented to the player
+  reframeStanceTacticId: number | null; // id of the reframe-debate tactic currently staged
+  reframeStanceSelection: StanceType | null; // the stance the player chose; read by the effect resolver
 }

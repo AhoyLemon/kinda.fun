@@ -13,12 +13,7 @@ export { celebrityJustices } from "./_justicesCelebrity";
 export { warrenJustices } from "./_justicesWarren";
 export { lochnerJustices } from "./_justicesLochner";
 
-export const justices: Justice[] = [
-  ...currentJustices,
-  ...historicalJustices,
-  ...fictionalJustices,
-  ...celebrityJustices,
-];
+export const justices: Justice[] = [...currentJustices, ...historicalJustices, ...fictionalJustices, ...celebrityJustices];
 
 // ────────────────────────────────────────────────────────────
 // PRESET BENCH CONFIGS
@@ -51,12 +46,12 @@ export const presetBenchConfigs: PresetBenchConfig[] = [
     id: "warren-court",
     name: "The Warren Court",
     description:
-      "Known for its historic activism in expanding civil rights, civil liberties, judicial power, and federal authority. Brown v. Board. Miranda. The most consequential liberal court in US history.",
-    year: 1968,
+      "Known for its historic activism in expanding civil rights, civil liberties, judicial power, and federal authority. Brown v. Board. Miranda. Roe. The most consequential liberal court in US history — extended here to include Nixon's greatest regret.",
+    year: 1972,
     icon: "✊",
     chiefJusticeId: 53, // Earl Warren
-    // Earl Warren, Hugo Black, William O. Douglas, Harlan II, Brennan, Potter Stewart, Byron White, Abe Fortas, Thurgood Marshall
-    justiceIds: [53, 17, 60, 61, 62, 63, 16, 64, 10],
+    // Earl Warren, Hugo Black, William O. Douglas, Harry Blackmun, Brennan, Potter Stewart, Byron White, Abe Fortas, Thurgood Marshall
+    justiceIds: [53, 17, 60, 72, 62, 63, 16, 64, 10],
     casePool: "historical",
   },
   {

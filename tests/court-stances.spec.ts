@@ -265,3 +265,37 @@ describe("Stance Usage", () => {
     expect(true).toBe(true); // always passes, flag is in console output
   });
 });
+
+// ─── Justice ID Uniqueness ────────────────────────────────────────────────────
+
+describe("Justice IDs", () => {
+  it("every justice has a unique id across all pools", () => {
+    const seen = new Map<number, string>();
+    const duplicates: string[] = [];
+
+    const allPools = [
+      { pool: justiceCurrent, name: "current" },
+      { pool: justiceHistorical, name: "historical" },
+      { pool: justiceFictional, name: "fictional" },
+      { pool: justiceCelebrity, name: "celebrity" },
+      { pool: justiceWarrenExtra, name: "warren" },
+      { pool: justiceLochnerExtra, name: "lochner" },
+    ];
+
+    for (const { pool, name } of allPools) {
+      for (const justice of pool) {
+        if (seen.has(justice.id)) {
+          duplicates.push(`ID ${justice.id} is used by both "${seen.get(justice.id)}" and "${justice.name}" (pool: ${name})`);
+        } else {
+          seen.set(justice.id, `${justice.name} (pool: ${name})`);
+        }
+      }
+    }
+
+    if (duplicates.length > 0) {
+      console.error("\n❌ Duplicate justice IDs:\n" + duplicates.map((d) => `  - ${d}`).join("\n"));
+    }
+
+    expect(duplicates).toEqual([]);
+  });
+});

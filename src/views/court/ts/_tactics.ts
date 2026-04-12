@@ -5,7 +5,7 @@ export const tactics: Tactic[] = [
 
   {
     id: 1,
-    name: "Appeal to Precedent",
+    name: "Cite Precedents",
     description:
       "Sways all justices. High-logic justices are strongly persuaded; they respect a citation. Low-logic justices are actively offended you brought up authority and lean harder the other way.",
     flavorText: "Citing cases no one in the room has read since law school, loudly.",
@@ -57,17 +57,7 @@ export const tactics: Tactic[] = [
     basePower: 6,
     weaknessBasis: "threats",
   },
-  {
-    id: 6,
-    name: "Constitutional Technicality",
-    description: "Sways all justices. Low-logic justices are fully bamboozled. High-logic justices see right through it and are actively insulted you tried.",
-    flavorText: "Actually, if you read Article XIV, subsection (b), paragraph... wait, come back.",
-    cardType: "attack",
-    effectType: "sway-all",
-    basePower: 4,
-    statBasis: "logic",
-    statRelation: "polarizes-low",
-  },
+
   {
     id: 7,
     name: "Shameless Flattery",
@@ -166,7 +156,7 @@ export const tactics: Tactic[] = [
     id: 15,
     name: "Elevate to Chief",
     description:
-      "Appoint a justice as the new Chief Justice. The previous Chief — and their partisan allies — won't be pleased. The new Chief loses the title's normal sway resistance.",
+      "Appoint a justice as the new Chief Justice. They're genuinely flattered and warm toward you immediately. The previous Chief — and their partisan allies — won't be pleased. The new Chief loses the title's normal sway resistance.",
     flavorText: "With all due respect to the current Chief, I'd like to propose a restructuring.",
     cardType: "utility",
     effectType: "make-chief",
@@ -186,11 +176,12 @@ export const tactics: Tactic[] = [
     id: 17,
     name: "Ring Me Up The President",
     description:
-      "Patch in a Zoom call with President Trump. His nominees are delighted. Other Republicans politely nod. Obama and Biden nominees are appalled. Other Democrats are mildly annoyed. He accidentally hangs up after 10 minutes. Affects all justices.",
+      "Patch in a Zoom call with President Trump. His nominees are delighted. Other Republicans politely nod. Obama and Biden nominees are appalled. Other Democrats are mildly annoyed. He accidentally hangs up after 10 minutes. Affects all justices. Only appears when at least one Trump nominee is on the bench.",
     flavorText: "The call was perfect. The best call. Everyone says so. You can check — actually, don't check.",
     cardType: "attack",
     effectType: "presidential-call",
     basePower: 5,
+    requiresTrumpNominee: true,
   },
   {
     id: 18,
@@ -222,7 +213,7 @@ export const tactics: Tactic[] = [
     id: 20,
     name: "Swap Clerks",
     description:
-      "Select any two justices. Good chance their positions swap entirely. Statistically relevant chance the clerks rat you out and both justices get a negative opinion of you.",
+      "Select any two justices. Good chance their positions swap entirely. Statistically relevant chance the clerks rat you out and both justices get a negative opinion of you. You'll be told which happened.",
     flavorText: "Law clerks are overworked, underpaid, and know exactly where everything is. This cuts both ways.",
     cardType: "utility",
     effectType: "swap-clerks",
@@ -240,24 +231,15 @@ export const tactics: Tactic[] = [
   },
   {
     id: 22,
-    name: "Justice Cocktails",
+    name: "Order Drinks For A Justice",
     description:
-      "Select a justice. Their charisma and empathy go up for the rest of the trial. Their logic goes down. They also slide a little toward you right now, because the Heritage Foundation gala was an open bar and some decisions were made.",
-    flavorText: "The evening was, technically speaking, still ongoing when the brief was filed.",
+      "Select a justice. Their charisma, empathy, and susceptibility go up for the rest of the trial. Their logic goes down. They also slide meaningfully toward you right now. Some justices respond with particular enthusiasm — especially ones with a noted appreciation for beverages.",
+    flavorText: "The Heritage Foundation gala was an open bar. Some decisions were made. One justice in particular should not have had that fourth beer. You know who you are.",
     cardType: "utility",
     effectType: "justice-cocktails",
     basePower: 0,
   },
-  {
-    id: 23,
-    name: "Hire A Private Investigator",
-    description:
-      "Select two justices. They become aware that someone is watching them very closely. Their blackmail susceptibility skyrockets for the rest of the trial. Use 'Leak to the Press' immediately after for devastating results.",
-    flavorText: "The PI's report was thick, thorough, and legally obtained. Whether it stays legally obtained is an open question.",
-    cardType: "utility",
-    effectType: "hire-pi",
-    basePower: 0,
-  },
+
   {
     id: 24,
     name: "Celebrate St. Patrick's Day",
@@ -270,14 +252,36 @@ export const tactics: Tactic[] = [
   },
   {
     id: 25,
-    name: "Invite To Church",
-    description: "Select a justice. Their empathy goes up for the rest of the trial. Every justice who shares their religion gives you a favorable nod.",
+    name: "Take Me To Church",
+    description: "Select a justice. Attending church is a personal and moving experience — they are directly swayed toward you. Their empathy also goes up for the rest of the trial. Every justice who shares their religion gives you a favorable nod.",
     flavorText: "Attendance was low, but opinions were formed.",
     cardType: "utility",
     effectType: "invite-church",
     basePower: 0,
   },
+  // ─── NEW CARDS ────────────────────────────────────────────────────────────
 
+  {
+    id: 28,
+    name: "Reframe The Debate",
+    description:
+      "Choose 1 of 3 stance topics drawn from the current bench. The debate is now officially about that. Every justice with a known position on that topic is immediately and strongly swayed — For means they warm to you, Against means they don't.",
+    flavorText: "You don't win arguments by winning arguments. You win arguments by changing what the argument is about.",
+    cardType: "utility",
+    effectType: "reframe-debate",
+    basePower: 0,
+  },
+
+  {
+    id: 29,
+    name: "Gift Boxes Of Ferrero Rocher",
+    description:
+      "Present lavish gift boxes to all justices. Justices susceptible to bribery (6+) are swayed in your favor. Justices resistant to bribery (3 or lower) are deeply offended and lean against you. Others are unmoved. The boxes are not primarily about chocolate.",
+    flavorText: "Each box was accompanied by a handwritten note: 'These are just chocolates. Enjoy.' The envelope inside the box said something slightly different.",
+    cardType: "attack",
+    effectType: "gift-boxes",
+    basePower: 0,
+  },
   // ─── CAMPAIGN-ONLY TACTICS ────────────────────────────────────────────
   // These cards have campaignOnly: true and will NEVER appear in Quick Play decks.
 

@@ -260,7 +260,11 @@
     padding: 0.15rem 0.45rem;
     border-radius: 3px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    cursor: help;
+    cursor: default;
+
+    &.stance--noted {
+      cursor: help;
+    }
 
     &.stance--for .jd-stance-icon {
       color: #7ae89a;

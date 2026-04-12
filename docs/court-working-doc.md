@@ -35,54 +35,47 @@ See docs/court-working-doc-history.md for a session-by-session breakdown of the 
 
 ## Next Steps
 
-- [ ] In The "Today's Case" overview, I'd like to identify the stances of each side, as well as which party it would favor. Also, please don't color-code the "favors {party}" tags. There's already colors for prosecution vs defense, so the party colors confuse it.
-  - [ ] Make a note that there's something that we'll need to address at some point, which is the idea that the idea of a "Republican" or "Democrat" has shifted (ex: In today's world, Abraham Lincoln would be considered a "Democrat") so we'll need to adjust that at some pont.
-- [ ] When I bring up the `.justice-detail` modal, I want to be able to click in to see that president. Ex: When I bring up John Roberts, it says "Appointed by Goerge W. Bush". In that text, "George W. Bush" should be a link which brings up the `president-detail` modal for George W. Bush, where I can see his stances and other info.
-- [ ] In the `.justice-detail` modal, I should get a glimpse of that justice's stances, as well as their general `heartVsHead` and their level of succeptibility.
-- [ ] In the `bench-overview-bar`, it says "Republican (6) Democrat (3)". It should actually say "Conservative (6) Liberal (3)". We should try to be aware that justices are considered "Conservative" or "Liberal" rather than "Republican" or "Democrat"
-- [ ] "Call a Celebrity Witness" is good, but it's too powerful. Attacks for all justices should sway a justice less than attacks that target individual justice(s).
-- [ ] In the Game Over screen, let's make a little tweak...
-  - If you're in "Quick Play" mode, there should be a potential of an additional button: "Retry Case" but only if you lost, this will do the same case with the same justices).
-- [ ] See section: Logic vs. Empathy: Sliding Scale Proposal, I've answered the questions you've posed. Please implement.
-- [ ] I ses TS errors in src\views\court\ts_campaignManager.ts, please make sure all errors are resolved.
-- [ ] Please create a vitest for testing out stances. What I'd like it to do when it's run is check the stances against the stances used by justices, presidents and cases, and list the 5 most/least used stances. If you find any stances that are not being used at all, please flag those as potential errors.
-- [ ] I think I'd like you to create somehing like `settings.difficulty`, which could have some knobs that could be tweaks to make the game harder or easier. At the moment, this can be very simple, I'd just like to expose the gameplay modifiers for easy tweaking.
+NEW CARDS:
+
+- **Reframe The Debate**
+  - Choose a justice. This card will select one stance of that justice, and make the case about that stance. This means a huge (x3) bonus, however, it will have trickle down effects. If other justices agree with that stance, they will be slightly swayed in your favor. If other justices disagree with that stance, they will be significantly (x1.75) swayed against you
+- **Gift Boxes Of Ferrero Rocher**
+  - Used on all justices as a "bribe" attack. If the justices have a weakness for bribery (6+) they will be swayed in your favor. If they have a resistance to bribery (3 or lower), they will hate this move and be swayed against you. In between, it will have no effect.
+  - In the flavor text, make it clear that you're pretending it's just giftboxes of Ferrero Rocher, but it's actually a more substantial bribe. The boxes are lined with cash.
+
+CARD TWEAKS
+
+- **Appeal To Precedent**
+  - Keep card as is, but change name to **Cite Precedents**
+- **Be Extremely Boring**
+  - I think the effect is fun, but it's not obvious what's happening. Maybe have the justices have something on their cards indicating that they've been softened for your next attack, which will be removed after your next tactic.
+- **Justice Cocktails**
+  - Change the name to **Order Drinks For A Justice**
+  - Make them swayed slightly more than they are currently.
+  - Make their succeptibility increase more.
+  - In the flavor text, make it clear to the player that this should be EXTREMELY effective on Brett Kavanaugh.
+  - If it's used on Kavanaugh, make him say "I LIKE BEER!" and increase the effect.
+- **Elevate To Chief**
+  - The person just crowned chief should like you more, although not as much as the previous chief dislikes you for doing this.
+- **Invite To Church**
+  - Rename to **Take Me To Church**
+  - This should be a bit more effective on the actual target. I'm seeing the knockon effects, but the target doesn't seem swayed at all.
+- **Swap Clerks**
+  - Should give you feedback if it was successful or not. If the clerk(s) ratted you out, the player should know that.
+- **Ring Me Up The President**
+  - Should only be drawn if there are 1 or more Trump appointees currently on the bench. If not, this card should not be in the deck.
+
+REMOVE cARDS
+
+- **Constitutional Technicality**
+  - Made rather redundant by **Cite Precedents**.
+- **Hire A Private Investigator**
+  - Too complicated to use, and not as fun as I'd like. Remove it.
+
+SUGGESTIONS!?
+I'd love you to suggest cards. Please suggest some here and describe the mechanics. Emphasize what would be fun to play (first and foremost) but also try to think about how it would fit into the satire of the game.
 
 ## Eventual Next Steps
 
-- In single player, create difficulty settings
 - AI Opponents should be given names
 - Eventually, make this multiplayer
-- Specific court makeups: eg: Warren Court, Bergen Court, Blackman Court, etc.
-
-## Logic vs. Empathy: Sliding Scale Proposal
-
-**Current state:** `logic` and `empathy` are separate stats (each 1–10). They independently affect two tactics — `Appeal to Precedent` scales with logic, `Emotional Appeal` scales with empathy. Otherwise they do nothing.
-
-**Proposed display change:** Rather than showing two separate bars, represent both stats as a single "Heart vs. Head" slider:
-
-- Derived value: `heartVsHead = empathy - logic`
-- Range: roughly −9 (pure logic) to +9 (pure empathy)
-- Display: a labeled slider, left anchor = "Rules by the Book", right anchor = "Rules from the Heart"
-- Each justice would show their position on the scale visually instead of two raw numbers
-
-**Gameplay implications (no mechanical changes required):**
-
-- The existing tactic scaling already works correctly — `Appeal to Precedent` punishes high-empathy justices (low-logic side of scale); `Emotional Appeal` punishes high-logic justices (high-logic side of scale)
-- No changes to `_tacticEffects.ts` needed; only the justice-detail stat display in the Vue component would change
-- The raw `logic` and `empathy` values stay on the `Justice` type; only the UI presentation changes
-
-**Implementation sketch (when ready):**
-
-```ts
-// Computed display value
-const heartVsHead = computed(() => justice.stats.empathy - justice.stats.logic);
-// Range: -9 to +9; normalize to 0–100 for a CSS progress bar
-const sliderPercent = computed(() => ((heartVsHead.value + 9) / 18) * 100);
-```
-
-**Open question:** Should the scale affect how `succeptibility` behaves differently for logic-based vs. empathy-based tactics (i.e., a high-empathy justice is more susceptible to emotional appeals, less so to logical ones)? This would require a small change to `_tacticEffects.ts` but could add meaningful depth. Currently `succeptibility` is universal — discuss before implementing.
-
-### ANSWERS TO ABOVE
-
-- I like your idea. Let's go with this. And yes, let's have `succeptibility` still play a role if you do a Heart vs Head attack, but it will have a lesser effect. So, for example, if you do a purely "logic based" tactic on a justice (eg. Cite Prescedents), the efficacy of that tactic will be more inferred by the `heartVsHead` stat, but the `succeptibility` stat could create a modifier of perhaps 1.25x (or so).

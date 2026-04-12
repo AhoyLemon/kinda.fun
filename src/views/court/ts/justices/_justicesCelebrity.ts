@@ -1,12 +1,5 @@
 import { Justice } from "../_types";
-import {
-  PRES_TRUMP,
-  PRES_LIBERACE,
-  PRES_BJORK,
-  PRES_BILL_HICKS,
-  PRES_SNOOP_DOGG,
-  PRES_VINCE_MCMAHON,
-} from "../_presidents";
+import { PRES_TRUMP, PRES_LIBERACE, PRES_BJORK, PRES_BILL_HICKS, PRES_SNOOP_DOGG, PRES_VINCE_MCMAHON } from "../_presidents";
 export const celebrityJustices: Justice[] = [
   {
     id: 29,
@@ -45,6 +38,10 @@ export const celebrityJustices: Justice[] = [
       {
         topic: "WarPowers",
         position: "For",
+      },
+      {
+        topic: "FreeSpeech",
+        position: "Against",
       },
     ],
   },
@@ -239,7 +236,7 @@ export const celebrityJustices: Justice[] = [
       {
         topic: "SocialOrder",
         position: "For",
-        note: "Maintains order through intimidation and supernatural presence.",
+        note: "Jobbers should know their place. Maintains heirarchy with intimidation and the occasional chokeslam.",
       },
       {
         topic: "CourtAuthority",

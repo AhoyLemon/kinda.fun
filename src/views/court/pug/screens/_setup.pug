@@ -25,8 +25,10 @@ main.court-main(v-else-if="ui.phase === 'setup'")
               :key="tag.label"
               :class="tag.position === 'For' ? 'stance-tag--for' : 'stance-tag--against'"
             ) {{ tag.label }}
-          span.side-party
-            | Favors {{ game.currentCase.prosecution.favoredBy }}s
+          .final-tags
+            span.side-party
+              | Favors {{ game.currentCase.prosecution.favoredBy }}s
+            span.historical-winner-tag(v-if="game.currentCase.historicalWinner === 'Prosecution'") ✓ Historical Winner
 
         .case-side.case-side--defense(:class="{ 'is-chosen': game.playerSide === 'defendant', 'is-not-chosen': game.playerSide && game.playerSide !== 'defendant' }")
           h4.side-role 🛡️ Defense
@@ -38,8 +40,11 @@ main.court-main(v-else-if="ui.phase === 'setup'")
               :key="tag.label"
               :class="tag.position === 'For' ? 'stance-tag--for' : 'stance-tag--against'"
             ) {{ tag.label }}
-          span.side-party
-            | Favors {{ game.currentCase.defendant.favoredBy }}s
+          .final-tags
+            span.side-party
+              | Favors {{ game.currentCase.defendant.favoredBy }}s
+            span.historical-winner-tag(v-if="game.currentCase.historicalWinner === 'Defendant'") ✓ Historical Winner
+
 
       .case-actions(v-if="!game.playerSide")
         p.choose-prompt Choose your side:

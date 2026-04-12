@@ -53,7 +53,7 @@
           .jd-stance(
             v-for="stance in ui.detailJustice.stances"
             :key="stance.topic"
-            :class="stance.position === 'For' ? 'stance--for' : stance.position === 'Against' ? 'stance--against' : 'stance--neutral'"
+            :class="{ 'stance--for': stance.position === 'For', 'stance--against': stance.position === 'Against', 'stance--neutral': stance.position !== 'For' && stance.position !== 'Against', 'stance--noted': !!stance.note }"
             v-tippy="stance.note || ''"
           )
             span.jd-stance-icon {{ stance.position === 'For' ? '▲' : stance.position === 'Against' ? '▼' : '—' }}

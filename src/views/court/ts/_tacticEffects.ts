@@ -119,6 +119,11 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
             results.push({ justiceName: j.name, change: next - old, newLeaning: next });
           });
       }
+      // Newly crowned Chief gains immediate goodwill toward you
+      const newChiefOld = game.leanings[targetJustice.id] ?? 0;
+      const newChiefNext = Math.min(100, newChiefOld + 15);
+      game.leanings[targetJustice.id] = newChiefNext;
+      results.push({ justiceName: targetJustice.name, change: newChiefNext - newChiefOld, newLeaning: newChiefNext });
       reportTarget = `${targetJustice.name} (new Chief Justice)`;
     }
 
@@ -229,7 +234,8 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
         game.leanings[jB.id] = lA;
         results.push({ justiceName: jA.name, change: lB - lA, newLeaning: lB });
         results.push({ justiceName: jB.name, change: lA - lB, newLeaning: lA });
-        reportTarget = `${jA.name} & ${jB.name} (swapped)`;
+        reportTarget = `${jA.name} & ${jB.name}`;
+        overrideFeedback = `The clerks came through — ${jA.name} and ${jB.name} swapped positions completely.`;
       } else {
         // Tattled — both get -20
         const dA = game.leanings[jA.id] ?? 0;
@@ -328,9 +334,14 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
           }
         });
 
-      results.push({ justiceName: targetJustice.name, change: 0, newLeaning: game.leanings[targetJustice.id] ?? 0 });
+      // Direct sway of the target — attending church was personally moving
+      const dir = actor === "player" ? 1 : -1;
+      const targetOld = game.leanings[targetJustice.id] ?? 0;
+      const targetNext = Math.max(-100, Math.min(100, targetOld + 20 * dir));
+      game.leanings[targetJustice.id] = targetNext;
+      results.push({ justiceName: targetJustice.name, change: targetNext - targetOld, newLeaning: targetNext });
       reportTarget = targetJustice.name;
-      overrideFeedback = `${targetJustice.name} attended church. The congregation noticed.`;
+      overrideFeedback = `${targetJustice.name} attended church. They seemed genuinely moved. The congregation noticed.`;
     }
 
     // ── Suggest-retirement (campaign only) ───────────────────────
@@ -357,6 +368,53 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
     game.keepCrownActivated = true;
     reportTarget = "Chief Justice";
     overrideFeedback = "The Chief Justice's appointment is now permanent for the remainder of the campaign.";
+
+    // ── Reframe-debate ────────────────────────────────────────
+  } else if (tactic.effectType === "reframe-debate") {
+    consumeTactic(game, tactic, helpers);
+    const chosenStance = game.reframeStanceSelection;
+    game.reframeStanceSelection = null;
+    game.reframeStanceMode = false;
+    game.reframeStanceChoices = [];
+    game.reframeStanceTacticId = null;
+
+    if (chosenStance) {
+      const dir = actor === "player" ? 1 : -1;
+      game.bench.forEach((j) => {
+        const justiceStance = j.stances?.find((s) => s.topic === chosenStance);
+        if (!justiceStance || justiceStance.position === "Neutral") return;
+        const old = game.leanings[j.id] ?? 0;
+        const delta = justiceStance.position === "For" ? 45 * dir : -45 * dir;
+        const next = Math.max(-100, Math.min(100, old + delta));
+        game.leanings[j.id] = next;
+        results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+      });
+      const stanceLabel = chosenStance.replace(/([A-Z])/g, " $1").trim();
+      reportTarget = `All justices (${stanceLabel})`;
+      overrideFeedback = `The debate has been reframed around ${stanceLabel}. Every justice with a known stance reacted immediately.`;
+    }
+
+    // ── Gift-boxes ──────────────────────────────────────────────
+  } else if (tactic.effectType === "gift-boxes") {
+    consumeTactic(game, tactic, helpers);
+    const dir = actor === "player" ? 1 : -1;
+    game.bench.forEach((j) => {
+      const effectiveBribery = getEffectiveWeakness(j, "bribery", game);
+      let delta = 0;
+      if (effectiveBribery >= 6) {
+        delta = 30 * dir; // warmly received; the chocolates were a nice touch
+      } else if (effectiveBribery <= 3) {
+        delta = -20 * dir; // deeply offended by the implication
+      }
+      if (delta !== 0) {
+        const old = game.leanings[j.id] ?? 0;
+        const next = Math.max(-100, Math.min(100, old + delta));
+        game.leanings[j.id] = next;
+        results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+      }
+    });
+    reportTarget = "All justices";
+    overrideFeedback = "Some justices were delighted. Others were deeply offended. The boxes were not primarily about chocolate.";
 
     // ── Standard sway / susceptibility / shield ──────────────────
   } else {

@@ -405,3 +405,106 @@ SO, how this is going to change the current game is...
 - [ ] Rework and remove tactics as you see fit.
   - [ ] I'll notice "Be Extremely Boring" doesn't feel fun to play, and "Appeal to Prcedent" and "Emotional Appeal" seem a bit boring to playtesters. "Justice Cocktails" and "Hire A Private Investigator" have made playtesters laugh, but they've been disappointed by the actual gameplay result. I think the major thing is that each card "does something" that's immediately apparent, and silly is good, but avoiding any particular card feeling "overpowered"
 - [ ] Change to presidential nomination in "Campign Mode": When a President needs to nominate a justice, they try to find somebody with a few of the same stances (if possible). Once that nomination happens, the justice can inherit a few stances of their own.
+
+---
+
+- [ ] In The "Today's Case" overview, I'd like to identify the stances of each side, as well as which party it would favor. Also, please don't color-code the "favors {party}" tags. There's already colors for prosecution vs defense, so the party colors confuse it.
+  - [ ] Make a note that there's something that we'll need to address at some point, which is the idea that the idea of a "Republican" or "Democrat" has shifted (ex: In today's world, Abraham Lincoln would be considered a "Democrat") so we'll need to adjust that at some pont.
+- [ ] When I bring up the `.justice-detail` modal, I want to be able to click in to see that president. Ex: When I bring up John Roberts, it says "Appointed by Goerge W. Bush". In that text, "George W. Bush" should be a link which brings up the `president-detail` modal for George W. Bush, where I can see his stances and other info.
+- [ ] In the `.justice-detail` modal, I should get a glimpse of that justice's stances, as well as their general `heartVsHead` and their level of succeptibility.
+- [ ] In the `bench-overview-bar`, it says "Republican (6) Democrat (3)". It should actually say "Conservative (6) Liberal (3)". We should try to be aware that justices are considered "Conservative" or "Liberal" rather than "Republican" or "Democrat"
+- [ ] "Call a Celebrity Witness" is good, but it's too powerful. Attacks for all justices should sway a justice less than attacks that target individual justice(s).
+- [ ] In the Game Over screen, let's make a little tweak...
+  - If you're in "Quick Play" mode, there should be a potential of an additional button: "Retry Case" but only if you lost, this will do the same case with the same justices).
+- [ ] See section: Logic vs. Empathy: Sliding Scale Proposal, I've answered the questions you've posed. Please implement.
+- [ ] I ses TS errors in src\views\court\ts_campaignManager.ts, please make sure all errors are resolved.
+- [ ] Please create a vitest for testing out stances. What I'd like it to do when it's run is check the stances against the stances used by justices, presidents and cases, and list the 5 most/least used stances. If you find any stances that are not being used at all, please flag those as potential errors.
+- [ ] I think I'd like you to create somehing like `settings.difficulty`, which could have some knobs that could be tweaks to make the game harder or easier. At the moment, this can be very simple, I'd just like to expose the gameplay modifiers for easy tweaking.
+
+---
+
+## Logic vs. Empathy: Sliding Scale Proposal
+
+**Current state:** `logic` and `empathy` are separate stats (each 1–10). They independently affect two tactics — `Appeal to Precedent` scales with logic, `Emotional Appeal` scales with empathy. Otherwise they do nothing.
+
+**Proposed display change:** Rather than showing two separate bars, represent both stats as a single "Heart vs. Head" slider:
+
+- Derived value: `heartVsHead = empathy - logic`
+- Range: roughly −9 (pure logic) to +9 (pure empathy)
+- Display: a labeled slider, left anchor = "Rules by the Book", right anchor = "Rules from the Heart"
+- Each justice would show their position on the scale visually instead of two raw numbers
+
+**Gameplay implications (no mechanical changes required):**
+
+- The existing tactic scaling already works correctly — `Appeal to Precedent` punishes high-empathy justices (low-logic side of scale); `Emotional Appeal` punishes high-logic justices (high-logic side of scale)
+- No changes to `_tacticEffects.ts` needed; only the justice-detail stat display in the Vue component would change
+- The raw `logic` and `empathy` values stay on the `Justice` type; only the UI presentation changes
+
+**Implementation sketch (when ready):**
+
+```ts
+// Computed display value
+const heartVsHead = computed(() => justice.stats.empathy - justice.stats.logic);
+// Range: -9 to +9; normalize to 0–100 for a CSS progress bar
+const sliderPercent = computed(() => ((heartVsHead.value + 9) / 18) * 100);
+```
+
+**Open question:** Should the scale affect how `succeptibility` behaves differently for logic-based vs. empathy-based tactics (i.e., a high-empathy justice is more susceptible to emotional appeals, less so to logical ones)? This would require a small change to `_tacticEffects.ts` but could add meaningful depth. Currently `succeptibility` is universal — discuss before implementing.
+
+### ANSWERS TO ABOVE
+
+- I like your idea. Let's go with this. And yes, let's have `succeptibility` still play a role if you do a Heart vs Head attack, but it will have a lesser effect. So, for example, if you do a purely "logic based" tactic on a justice (eg. Cite Prescedents), the efficacy of that tactic will be more inferred by the `heartVsHead` stat, but the `succeptibility` stat could create a modifier of perhaps 1.25x (or so).
+
+---
+
+# Love Is The Law — Supreme Court Campaign
+
+A campaign for the Supreme Court game focused on the legal history of gay rights in America, inspired by the Minneapolis band The Suburbs.
+
+## Campaign Overview
+
+- **Title:** Love Is The Law
+- **President:** Barack Obama
+- **Chief Justice:** Antonin Scalia
+- **Theme:** Argue for or against gay rights as the Supreme Court hears the most pivotal cases in LGBTQ+ legal history.
+
+## Cases (Chronological Order)
+
+1. **Bowers v. Hardwick (1986)** — To be added
+2. **Romer v. Evans (1996)** — To be added
+3. **Lawrence v. Texas (2003)** — To be added
+4. **Obergefell v. Hodges (2015)**
+5. **Masterpiece Cakeshop v. Colorado (2018)**
+
+## Bench (9 Justices, with stances)
+
+- Antonin Scalia (Against)
+- Anthony Kennedy (For, to be added)
+- Ruth Bader Ginsburg (For, to be added)
+- Sonia Sotomayor (For, to be added)
+- Samuel Alito (Against, to be added)
+- Clarence Thomas (Against)
+- [Right-leaning/historical justice]
+- [Right-leaning/historical justice]
+- [Right-leaning/historical justice]
+
+_If not enough justices have explicit "GayRights" stances, fill with right-leaning/historical justices._
+
+## Required Data Changes
+
+- **Add/annotate "GayRights" stances** for:
+  - Anthony Kennedy (For)
+  - Ruth Bader Ginsburg (For)
+  - Sonia Sotomayor (For)
+  - Samuel Alito (Against)
+- **Add three new cases**:
+  - Bowers v. Hardwick (1986)
+  - Romer v. Evans (1996)
+  - Lawrence v. Texas (2003)
+- **Campaign config**: Add to `campaignSetups` in `_campaigns.ts` with the above details.
+
+## Notes
+
+- This campaign is specifically about the legal journey of gay rights, not general equality.
+- The bench should reflect a mix of strong opinions on gay rights, with a right-leaning tilt if needed for balance.
+- All changes should be reviewed before merging.

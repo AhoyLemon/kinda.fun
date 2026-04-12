@@ -1,9 +1,5 @@
 import { Justice } from "../_types";
-import {
-  PRES_FDR,
-  PRES_EISENHOWER,
-  PRES_LBJ,
-} from "../_presidents";
+import { PRES_FDR, PRES_EISENHOWER, PRES_LBJ, PRES_NIXON } from "../_presidents";
 export const warrenJustices: Justice[] = [
   {
     id: 60,
@@ -207,6 +203,50 @@ export const warrenJustices: Justice[] = [
         topic: "CivilLiberties",
         position: "For",
         note: "Consistent Warren Court liberal; voted to expand individual rights across the board until financial scandal forced the most talented Justice of his era off the bench.",
+      },
+    ],
+  },
+  {
+    id: 72,
+    name: "Harry Blackmun",
+    image: "blackmun.webp",
+    description:
+      "Nixon's most spectacular miscalculation. Appointed as a reliable conservative, he wrote Roe v. Wade, became the Court's most outspoken liberal by his final years, and left Nixon convinced he had been 'brainwashed by those damn doctors at Harvard.' Once referred to as 'hip pocket Harry' for his closeness to Chief Justice Burger — his childhood best friend. The friendship did not survive their divergence on abortion.",
+    justiceType: "historical",
+    gender: "M",
+    birthYear: 1908,
+    nominatedBy: PRES_NIXON,
+    religion: "Protestant",
+    ethnicity: "White",
+    stats: {
+      logic: 9,
+      charisma: 6,
+      empathy: 9,
+
+      succeptibility: 4,
+      partyLoyalty: -2,
+    },
+    weaknesses: { flattery: 3, bribery: 2, blackmail: 3, threats: 2 },
+    stances: [
+      {
+        topic: "ReproductiveRights",
+        position: "For",
+        note: "Authored Roe v. Wade (1973), one of the most consequential — and contested — opinions in Supreme Court history. The draft was reportedly influenced by his years as legal counsel to the Mayo Clinic.",
+      },
+      {
+        topic: "Privacy",
+        position: "For",
+        note: "Built Roe on the constitutional right to privacy first articulated in Griswold; later extended to other domains of personal autonomy throughout his tenure.",
+      },
+      {
+        topic: "AccusedRights",
+        position: "For",
+        note: "Evolved from a moderate stance to a vigorous defender of criminal defendants; wrote a famous dissent in Callins v. Collins (1994) declaring that the death penalty could not be administered fairly.",
+      },
+      {
+        topic: "WomensRights",
+        position: "For",
+        note: "Roe v. Wade remains the defining legacy. Blackmun received hate mail for decades and lived under security protection, never once backing away from the opinion.",
       },
     ],
   },

@@ -1,10 +1,5 @@
 import { Justice } from "../_types";
-import {
-  PRES_CLEVELAND,
-  PRES_BENJAMIN_HARRISON,
-  PRES_MCKINLEY,
-  PRES_THEODORE_ROOSEVELT,
-} from "../_presidents";
+import { PRES_CLEVELAND, PRES_BENJAMIN_HARRISON, PRES_MCKINLEY, PRES_THEODORE_ROOSEVELT } from "../_presidents";
 export const lochnerJustices: Justice[] = [
   {
     id: 65,
@@ -42,6 +37,10 @@ export const lochnerJustices: Justice[] = [
         topic: "FederalPower",
         position: "Against",
         note: "Authored Pollock v. Farmers' Loan (1895), striking down the federal income tax. Congress responded by amending the Constitution. Fuller was unmoved.",
+      },
+      {
+        topic: "CorporatePower",
+        position: "For",
       },
     ],
   },
@@ -241,4 +240,3 @@ export const lochnerJustices: Justice[] = [
     ],
   },
 ];
-

@@ -431,7 +431,7 @@ export const historicalJustices: Justice[] = [
   {
     id: 71,
     name: "Anthony Kennedy",
-    image: "kennedy.webp",
+    image: "anthony_kennedy.webp",
     description:
       "The swing vote of the Rehnquist and Roberts Courts, and the unexpected champion of gay rights. Appointed by Reagan, confirmed unanimously, expected to be reliably conservative. Instead wrote some of the most powerful liberty opinions in American history — Lawrence, Windsor, Obergefell — while also gutting the Voting Rights Act and authoring Citizens United. He contained multitudes.",
     justiceType: "historical",

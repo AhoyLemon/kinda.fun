@@ -46,6 +46,24 @@
   margin: 0 0 0.4rem 0;
 }
 
+.final-tags {
+  display: flex;
+  gap: 0.5em;
+}
+
+.historical-winner-tag {
+  display: inline-flex;
+  font-size: 0.65rem;
+  font-weight: $bold;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  background: rgba(30, 100, 40, 0.15);
+  // color: #1a5c28;
+  border: 1px solid rgba(30, 100, 40, 0.4);
+}
+
 .side-name {
   font-weight: $bold;
   font-size: 1rem;
