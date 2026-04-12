@@ -35,45 +35,35 @@ See docs/court-working-doc-history.md for a session-by-session breakdown of the 
 
 ## Next Steps
 
-NEW CARDS:
+_(All items from the previous session have been implemented. See court-working-doc-history.md for details.)_
 
-- **Reframe The Debate**
-  - Choose a justice. This card will select one stance of that justice, and make the case about that stance. This means a huge (x3) bonus, however, it will have trickle down effects. If other justices agree with that stance, they will be slightly swayed in your favor. If other justices disagree with that stance, they will be significantly (x1.75) swayed against you
-- **Gift Boxes Of Ferrero Rocher**
-  - Used on all justices as a "bribe" attack. If the justices have a weakness for bribery (6+) they will be swayed in your favor. If they have a resistance to bribery (3 or lower), they will hate this move and be swayed against you. In between, it will have no effect.
-  - In the flavor text, make it clear that you're pretending it's just giftboxes of Ferrero Rocher, but it's actually a more substantial bribe. The boxes are lined with cash.
+### Suggested New Cards
 
-CARD TWEAKS
+- **Plant A Story**
+  - Target one justice. Choose: plant a favorable or an unfavorable story in the press about them.
+  - Favorable: their partyLoyalty goes up, they warm to you slightly, and same-party allies feel a small boost (rising tide).
+  - Unfavorable: they take a big negative hit, but any opposing-party justices who already dislike them enjoy watching it happen.
+  - Satirical angle: the press as a political instrument, specifically weaponized during confirmation hearings.
 
-- **Appeal To Precedent**
-  - Keep card as is, but change name to **Cite Precedents**
-- **Be Extremely Boring**
-  - I think the effect is fun, but it's not obvious what's happening. Maybe have the justices have something on their cards indicating that they've been softened for your next attack, which will be removed after your next tactic.
-- **Justice Cocktails**
-  - Change the name to **Order Drinks For A Justice**
-  - Make them swayed slightly more than they are currently.
-  - Make their succeptibility increase more.
-  - In the flavor text, make it clear to the player that this should be EXTREMELY effective on Brett Kavanaugh.
-  - If it's used on Kavanaugh, make him say "I LIKE BEER!" and increase the effect.
-- **Elevate To Chief**
-  - The person just crowned chief should like you more, although not as much as the previous chief dislikes you for doing this.
-- **Invite To Church**
-  - Rename to **Take Me To Church**
-  - This should be a bit more effective on the actual target. I'm seeing the knockon effects, but the target doesn't seem swayed at all.
-- **Swap Clerks**
-  - Should give you feedback if it was successful or not. If the clerk(s) ratted you out, the player should know that.
-- **Ring Me Up The President**
-  - Should only be drawn if there are 1 or more Trump appointees currently on the bench. If not, this card should not be in the deck.
+- **Send A Strongly Worded Letter**
+  - Targets one justice. Very high chance of doing absolutely nothing. Small chance of a surprisingly large effect in your favor (the letter lands the exact right way at the exact right moment). Very small chance of backfiring catastrophically.
+  - Flavor: the kind of move you play when you're out of real options. The fact that it occasionally works is the joke.
 
-REMOVE cARDS
+- **Invoke The Lemon Test**
+  - Sways all justices based on their religion stat. Catholic justices are mildly offended. Very religious justices (Protestant/Catholic with notes) are strongly offended. Jewish justices find it mildly amusing.
+  - Satirical angle: _Lemon v. Kurtzman_ established the separation of church and state test — the current court has been systematically dismantling it.
 
-- **Constitutional Technicality**
-  - Made rather redundant by **Cite Precedents**.
-- **Hire A Private Investigator**
-  - Too complicated to use, and not as fun as I'd like. Remove it.
+- **Emergency Yoga Retreat**
+  - Target one justice. Their susceptibility and empathy go up dramatically for the rest of the trial. They also become unavailable for exactly one round (too busy finding inner peace). When they return, they're oddly centered and receptive.
+  - Fun: combines the napping mechanic with the buff mechanic in an unexpected package.
 
-SUGGESTIONS!?
-I'd love you to suggest cards. Please suggest some here and describe the mechanics. Emphasize what would be fun to play (first and foremost) but also try to think about how it would fit into the satire of the game.
+- **File A Moot Brief**
+  - Remove one card from the Docket permanently for the rest of the trial (not reshuffled into the deck). Works best as a denial move when opposing counsel has clearly been eyeing a specific card.
+  - Satire: mootness is how the Court quietly kills cases it doesn't want to touch.
+
+- **Drag Them On Social Media**
+  - Target one justice. Their charisma drops permanently for the trial (they've gone defensive online). However, if their charisma is already low, they're used to it — this has no effect, and may actually make them sympathetic to lower-charisma bench peers.
+  - Satirical: SCOTUS justices do not have social media. In any reasonable world.
 
 ## Eventual Next Steps
 

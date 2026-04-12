@@ -265,42 +265,28 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
   } else if (tactic.effectType === "justice-cocktails") {
     consumeTactic(game, tactic, helpers);
     if (targetJustice) {
+      const isKavanaugh = targetJustice.name === "Brett Kavanaugh";
       game.statMods[targetJustice.id] = {
         ...(game.statMods[targetJustice.id] ?? {}),
         charisma: (game.statMods[targetJustice.id]?.charisma ?? 0) + 3,
         empathy: (game.statMods[targetJustice.id]?.empathy ?? 0) + 3,
         logic: (game.statMods[targetJustice.id]?.logic ?? 0) - 3,
+        succeptibility: (game.statMods[targetJustice.id]?.succeptibility ?? 0) + 3,
       };
+      // Drinks also prime them for the next attack
+      game.susceptibilityMods[targetJustice.id] = (game.susceptibilityMods[targetJustice.id] ?? 0) + 4;
       // Immediate leaning nudge — the drinks are working right now
       const oldLeaning = game.leanings[targetJustice.id] ?? 0;
-      const nudge = actor === "player" ? 8 : -8;
+      const baseNudge = actor === "player" ? 15 : -15;
+      const nudge = isKavanaugh ? baseNudge * 2 : baseNudge;
       const newLeaning = Math.max(-100, Math.min(100, oldLeaning + nudge));
       game.leanings[targetJustice.id] = newLeaning;
       results.push({ justiceName: targetJustice.name, change: newLeaning - oldLeaning, newLeaning });
       reportTarget = targetJustice.name;
-      overrideFeedback = `${targetJustice.name} is having a great time and making some interesting choices.`;
+      overrideFeedback = isKavanaugh
+        ? `"I LIKE BEER!" — Justice Kavanaugh is absolutely delighted and making some extremely questionable choices.`
+        : `${targetJustice.name} is having a great time and making some interesting choices.`;
     }
-
-    // ── Hire-pi ──────────────────────────────────────────────────
-  } else if (tactic.effectType === "hire-pi") {
-    consumeTactic(game, tactic, helpers);
-    const [aId, bId] = game.multiTargetSelections;
-    const jA = game.bench.find((j) => j.id === aId);
-    const jB = game.bench.find((j) => j.id === bId);
-    game.multiTargetSelections = [];
-    game.multiTargetMode = false;
-    game.multiTargetTacticId = null;
-
-    const targets = [jA, jB].filter((j): j is Justice => !!j);
-    targets.forEach((j) => {
-      game.weaknessMods[j.id] = {
-        ...(game.weaknessMods[j.id] ?? {}),
-        blackmail: (game.weaknessMods[j.id]?.blackmail ?? 0) + 6,
-      };
-      results.push({ justiceName: j.name, change: 0, newLeaning: game.leanings[j.id] ?? 0 });
-    });
-    reportTarget = targets.map((j) => j.name).join(" & ");
-    overrideFeedback = `${reportTarget} are being watched. Closely.`;
 
     // ── Saint-patricks ───────────────────────────────────────────
   } else if (tactic.effectType === "saint-patricks") {

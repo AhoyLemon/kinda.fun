@@ -110,6 +110,7 @@
               'is-chief': justice.id === game.chiefJusticeId, \
               'is-napping': !!game.nappingJustices[justice.id], \
               'is-buffed': !!game.statMods[justice.id], \
+              'is-sus': (game.susceptibilityMods[justice.id] ?? 0) > 0, \
               'is-multi-selected': game.multiTargetSelections.includes(justice.id), \
             } \
           ]"
@@ -120,7 +121,8 @@
           .justice-shield-badge(v-else-if="game.playerShields.includes(justice.id)" v-tippy="'You are protecting this justice.'") 🛡️
           .justice-shield-badge.opp-shield(v-else-if="game.opponentShields.includes(justice.id)" v-tippy="'This justice has been protected by your opponent.'") 🔒
           .justice-recused-badge(v-if="game.recusedJustices.includes(justice.id)" v-tippy="'This justice has been issued a recusal request and thus is more unlikely to make a ruling.'") 🔕
-          .justice-buff-badge(v-if="game.statMods[justice.id]" v-tippy="'Stats temporarily boosted by Justice Cocktails'") 🍸
+          .justice-buff-badge(v-if="game.statMods[justice.id]" v-tippy="'Stats temporarily boosted'") 🍸
+          .justice-sus-badge(v-if="(game.susceptibilityMods[justice.id] ?? 0) > 0" v-tippy="'This justice has been lulled \u2014 your next argument will hit them significantly harder.'") 😵
           .justice-napping-overlay(v-if="game.nappingJustices[justice.id]" v-tippy="'Napping — not responding to arguments this round. Wakes with a +15 bonus.'") 💤
 
           .pic-and-name(v-if="justiceImageUrl(justice)")
@@ -233,6 +235,19 @@
           button.btn.btn--start(@click="confirmTarget()") ⚔️ Target This Justice
           button.btn.btn--switch(@click="ui.detailJustice = ui.targetingChoice; ui.targetingChoice = null") 🔍 View Profile
           button.btn.btn--text(@click="ui.targetingChoice = null") Cancel
+
+    //- ── REFRAME THE DEBATE stance picker ────────────────────
+    .reframe-stance-overlay(v-if="game.reframeStanceMode" @click.self="cancelReframeStance()")
+      .reframe-stance-picker
+        p.rs-title 🔄 What is this case about?
+        p.rs-subtitle Choose a stance. Every justice with a known position on it will react immediately.
+        .rs-choices
+          button.btn.btn--stance(
+            v-for="stance in game.reframeStanceChoices"
+            :key="stance"
+            @click="confirmReframeStance(stance)"
+          ) {{ stance.replace(/([A-Z])/g, ' $1').trim() }}
+        button.btn.btn--text(@click="cancelReframeStance()") Cancel
 
   include pug/screens/_verdict.pug
 

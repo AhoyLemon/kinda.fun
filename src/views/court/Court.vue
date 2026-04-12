@@ -13,7 +13,7 @@
   } from "./ts/justices";
   import { cases as allCases, casesHistorical, casesFictional } from "./ts/_cases";
   import { tactics as allTactics } from "./ts/_tactics";
-  import type { Justice, Case, Tactic, CourtGameState, CampaignState, President, StanceOpinion } from "./ts/_types";
+  import type { Justice, Case, Tactic, CourtGameState, CampaignState, President, StanceOpinion, StanceType } from "./ts/_types";
   import { resolveEffect, partiesAligned, partiesOpposed, leftParties, rightParties } from "./ts/_tacticEffects";
   import type { EffectOutcome } from "./ts/_tacticEffects";
   import { gameSettings, uiSettings, difficultySettings } from "./ts/_settings";
@@ -100,6 +100,11 @@
     makeChiefPlayedThisTrial: false,
     suggestRetirementTargets: [],
     keepCrownActivated: false,
+    // Reframe The Debate stance selection
+    reframeStanceMode: false,
+    reframeStanceChoices: [] as StanceType[],
+    reframeStanceTacticId: null as number | null,
+    reframeStanceSelection: null as StanceType | null,
   });
 
   // ── Campaign state — null when not in campaign mode ───────────
@@ -336,6 +341,10 @@
     game.makeChiefPlayedThisTrial = false;
     game.suggestRetirementTargets = [];
     game.keepCrownActivated = false;
+    game.reframeStanceMode = false;
+    game.reframeStanceChoices = [];
+    game.reframeStanceTacticId = null;
+    game.reframeStanceSelection = null;
     courtReport.plays = [];
     ui.phase = "setup";
     ui.courtReportVisible = false;
@@ -351,7 +360,9 @@
 
   function startArguments(): void {
     // Campaign-only tactics only enter the deck in campaign mode
-    const deckPool = ui.isCampaignMode ? [...allTactics] : allTactics.filter((t) => !t.campaignOnly);
+    const hasTrumpNominee = game.bench.some((j) => j.nominatedBy?.name === "Donald Trump");
+    let deckPool = ui.isCampaignMode ? [...allTactics] : allTactics.filter((t) => !t.campaignOnly);
+    if (!hasTrumpNominee) deckPool = deckPool.filter((t) => !t.requiresTrumpNominee);
     game.deck = buildCheatDeck(deckPool);
     game.playbook = [];
     for (let i = 0; i < difficultySettings.handSize; i++) {
@@ -367,7 +378,9 @@
 
   /** Quick Play only: replay the same case with the same justices (reset leanings + deal fresh cards). */
   function retrySameCase(): void {
-    const deckPool = allTactics.filter((t) => !t.campaignOnly);
+    const hasTrumpNominee = game.bench.some((j) => j.nominatedBy?.name === "Donald Trump");
+    let deckPool = allTactics.filter((t) => !t.campaignOnly);
+    if (!hasTrumpNominee) deckPool = deckPool.filter((t) => !t.requiresTrumpNominee);
     game.deck = buildCheatDeck(deckPool);
     game.playbook = [];
     for (let i = 0; i < difficultySettings.handSize; i++) {
@@ -385,6 +398,10 @@
     game.opponentShields = [];
     game.nappingJustices = {};
     game.recusedJustices = [];
+    game.reframeStanceMode = false;
+    game.reframeStanceChoices = [];
+    game.reframeStanceTacticId = null;
+    game.reframeStanceSelection = null;
     ui.phase = "playing";
   }
 
@@ -423,6 +440,7 @@
       tactic.effectType === "insult-chief" ||
       tactic.effectType === "presidential-call" ||
       tactic.effectType === "saint-patricks" ||
+      tactic.effectType === "gift-boxes" ||
       tactic.effectType === "keep-crown"
     ) {
       applyTactic(tactic, null, "player");
@@ -438,13 +456,22 @@
       const hasStrongAlly = game.bench.some((j) => (game.leanings[j.id] ?? 0) >= 60);
       if (!hasStrongAlly) return;
       game.selectedTacticId = game.selectedTacticId === tacticId ? null : tacticId;
-    } else if (tactic.effectType === "swap-clerks" || tactic.effectType === "hire-pi") {
+    } else if (tactic.effectType === "swap-clerks") {
       // Enter multi-target mode: player must click 2 justices
       if (game.multiTargetMode) return; // already in multi-target mode for another card
       game.selectedTacticId = null;
       game.multiTargetTacticId = tactic.id;
       game.multiTargetMode = true;
       game.multiTargetSelections = [];
+    } else if (tactic.effectType === "reframe-debate") {
+      if (game.reframeStanceMode) return;
+      const allBenchStances = new Set<StanceType>();
+      game.bench.forEach((j) => j.stances?.forEach((s) => allBenchStances.add(s.topic)));
+      if (allBenchStances.size === 0) return;
+      const shuffledStances = shuffle([...allBenchStances]);
+      game.reframeStanceChoices = shuffledStances.slice(0, 3) as StanceType[];
+      game.reframeStanceTacticId = tactic.id;
+      game.reframeStanceMode = true;
     } else {
       // sway-one, shield, encourage-nap, justice-cocktails, invite-church, recuse, make-chief, suggest-retirement: select then click a justice
       game.selectedTacticId = game.selectedTacticId === tacticId ? null : tacticId;
@@ -491,6 +518,21 @@
     const justice = ui.targetingChoice;
     ui.targetingChoice = null;
     selectJustice(justice);
+  }
+
+  // Called when player picks a stance topic in Reframe The Debate
+  function confirmReframeStance(stance: StanceType): void {
+    if (!game.reframeStanceTacticId) return;
+    const tactic = [...game.playbook, ...game.claimedCards].find((t) => t.id === game.reframeStanceTacticId);
+    if (!tactic) return;
+    game.reframeStanceSelection = stance;
+    applyTactic(tactic, null, "player");
+  }
+
+  function cancelReframeStance(): void {
+    game.reframeStanceMode = false;
+    game.reframeStanceTacticId = null;
+    game.reframeStanceChoices = [];
   }
 
   // Unified justice click handler: opens detail view or targeting choice depending on context
@@ -667,7 +709,7 @@
     }
 
     // Dual-target cards: opponent picks 2 random justices
-    if (tactic.effectType === "swap-clerks" || tactic.effectType === "hire-pi") {
+    if (tactic.effectType === "swap-clerks") {
       const shuffled = shuffle([...game.bench]);
       if (shuffled.length < 2) {
         endOpponentTurn();

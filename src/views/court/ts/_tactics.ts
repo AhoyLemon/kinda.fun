@@ -234,7 +234,8 @@ export const tactics: Tactic[] = [
     name: "Order Drinks For A Justice",
     description:
       "Select a justice. Their charisma, empathy, and susceptibility go up for the rest of the trial. Their logic goes down. They also slide meaningfully toward you right now. Some justices respond with particular enthusiasm — especially ones with a noted appreciation for beverages.",
-    flavorText: "The Heritage Foundation gala was an open bar. Some decisions were made. One justice in particular should not have had that fourth beer. You know who you are.",
+    flavorText:
+      "The Heritage Foundation gala was an open bar. Some decisions were made. One justice in particular should not have had that fourth beer. You know who you are.",
     cardType: "utility",
     effectType: "justice-cocktails",
     basePower: 0,
@@ -253,7 +254,8 @@ export const tactics: Tactic[] = [
   {
     id: 25,
     name: "Take Me To Church",
-    description: "Select a justice. Attending church is a personal and moving experience — they are directly swayed toward you. Their empathy also goes up for the rest of the trial. Every justice who shares their religion gives you a favorable nod.",
+    description:
+      "Select a justice. Attending church is a personal and moving experience — they are directly swayed toward you. Their empathy also goes up for the rest of the trial. Every justice who shares their religion gives you a favorable nod.",
     flavorText: "Attendance was low, but opinions were formed.",
     cardType: "utility",
     effectType: "invite-church",
@@ -277,7 +279,8 @@ export const tactics: Tactic[] = [
     name: "Gift Boxes Of Ferrero Rocher",
     description:
       "Present lavish gift boxes to all justices. Justices susceptible to bribery (6+) are swayed in your favor. Justices resistant to bribery (3 or lower) are deeply offended and lean against you. Others are unmoved. The boxes are not primarily about chocolate.",
-    flavorText: "Each box was accompanied by a handwritten note: 'These are just chocolates. Enjoy.' The envelope inside the box said something slightly different.",
+    flavorText:
+      "Each box was accompanied by a handwritten note: 'These are just chocolates. Enjoy.' The envelope inside the box said something slightly different.",
     cardType: "attack",
     effectType: "gift-boxes",
     basePower: 0,
