@@ -104,6 +104,7 @@ export const casesHistorical: Case[] = [
         CorporatePower: "For",
         FreeSpeech: "For",
         CampaignFinance: "For",
+        RichPeople: "For",
       },
     },
     defendant: {
@@ -654,6 +655,90 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         WorkersRights: "For",
+      },
+    },
+    historicalWinner: "Prosecution",
+  },
+  {
+    id: 24,
+    name: "Bowers v. Hardwick",
+    year: 1986,
+    caseType: "historical",
+    primaryQuestion: "Does the Constitution protect the right of gay people to engage in consensual intimate relations in private?",
+    prosecution: {
+      name: "Michael Hardwick",
+      argument:
+        "A police officer entered my home and arrested me for consensual intimacy in my own bedroom. The right to privacy recognized in Griswold protects intimate conduct between consenting adults. The government has no business in our bedrooms.",
+      favoredBy: "Democrat",
+      stances: {
+        GayRights: "For",
+        Privacy: "For",
+      },
+    },
+    defendant: {
+      name: "Michael Bowers (State of Georgia)",
+      argument:
+        "Georgia's sodomy law reflects longstanding moral judgments that courts should not overturn. The Constitution contains no right to sodomy. Bowers v. Hardwick upholds a legitimate exercise of state police power that has existed since before the founding.",
+      favoredBy: "Republican",
+      stances: {
+        GayRights: "Against",
+        StatesRights: "For",
+      },
+    },
+    historicalWinner: "Defendant",
+  },
+  {
+    id: 25,
+    name: "Romer v. Evans",
+    year: 1996,
+    caseType: "historical",
+    primaryQuestion: "Does a state constitutional amendment barring all legal protections for gay people violate equal protection?",
+    prosecution: {
+      name: "Richard Evans et al.",
+      argument:
+        "Colorado's Amendment 2 doesn't just deny a benefit — it prohibits gay people from seeking any anti-discrimination protection at any level of government. Singling out a group for unique legal disadvantage violates the Equal Protection Clause.",
+      favoredBy: "Democrat",
+      stances: {
+        GayRights: "For",
+        RacialEquity: "For",
+      },
+    },
+    defendant: {
+      name: "Governor Roy Romer (State of Colorado)",
+      argument:
+        "The people of Colorado enacted this amendment through a legitimate democratic process. The state may decline to extend anti-discrimination protections to any group without violating equal protection. This is democratic self-governance, not discrimination.",
+      favoredBy: "Republican",
+      stances: {
+        GayRights: "Against",
+        StatesRights: "For",
+      },
+    },
+    historicalWinner: "Prosecution",
+  },
+  {
+    id: 26,
+    name: "Lawrence v. Texas",
+    year: 2003,
+    caseType: "historical",
+    primaryQuestion: "Does a Texas law criminalizing consensual same-sex intimacy between adults violate the Constitution?",
+    prosecution: {
+      name: "John Lawrence",
+      argument:
+        "The state entered my private home and arrested me for consensual intimacy with another adult. The liberty protected by the due process clause includes intimate personal choices. Criminalizing who we are violates our fundamental dignity as persons.",
+      favoredBy: "Democrat",
+      stances: {
+        GayRights: "For",
+        Privacy: "For",
+      },
+    },
+    defendant: {
+      name: "State of Texas",
+      argument:
+        "The state has authority to enact laws reflecting the moral judgments of its people. Bowers v. Hardwick upheld this exact kind of law just seventeen years ago. The Court should not overturn settled precedent based on shifting social attitudes.",
+      favoredBy: "Republican",
+      stances: {
+        GayRights: "Against",
+        StatesRights: "For",
       },
     },
     historicalWinner: "Prosecution",

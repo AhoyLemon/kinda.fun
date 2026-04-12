@@ -139,10 +139,7 @@ async function main() {
   console.log(chalk.red.bold("🚨 The following will be written to PRODUCTION:\n"));
   console.log(previewTable.toString());
 
-  const ok = await confirmExact(
-    chalk.red.bold("You are about to OVERWRITE PRODUCTION with DEV data. This cannot be undone."),
-    "Yes that is what I want",
-  );
+  const ok = await confirmExact(chalk.red.bold("You are about to OVERWRITE PRODUCTION with DEV data. This cannot be undone."), "Yes that is what I want");
   if (!ok) {
     console.log(chalk.gray("\nAborted. No changes made.\n"));
     process.exit(0);

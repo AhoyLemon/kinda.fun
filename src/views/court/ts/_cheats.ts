@@ -15,7 +15,7 @@ export const cheats: {
   objectiveOrder?: string[];
 } = {
   /** Master switch. Has no effect in production builds. */
-  isActive: true,
+  isActive: false,
 
   /** If true, the tactic deck is shuffled normally. If false, tacticOrder controls what comes first. */
   shuffleTactics: true,

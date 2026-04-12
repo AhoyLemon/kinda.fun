@@ -3,14 +3,14 @@
   import { useToast, POSITION } from "vue-toastification";
   import TacticToast from "./components/TacticToast.vue";
   import {
-    justiceCurrent,
-    justiceHistorical,
-    justiceFictional,
-    justiceCelebrity,
-    justiceWarrenExtra,
-    justiceLochnerExtra,
+    currentJustices,
+    historicalJustices,
+    fictionalJustices,
+    celebrityJustices,
+    warrenJustices,
+    lochnerJustices,
     presetBenchConfigs,
-  } from "./ts/_justices";
+  } from "./ts/justices";
   import { cases as allCases, casesHistorical, casesFictional } from "./ts/_cases";
   import { tactics as allTactics } from "./ts/_tactics";
   import type { Justice, Case, Tactic, CourtGameState, CampaignState, President, StanceOpinion } from "./ts/_types";
@@ -249,12 +249,12 @@
   }
 
   const allJustices = computed(() => [
-    ...justiceCurrent,
-    ...justiceHistorical,
-    ...justiceFictional,
-    ...justiceCelebrity,
-    ...justiceWarrenExtra,
-    ...justiceLochnerExtra,
+    ...currentJustices,
+    ...historicalJustices,
+    ...fictionalJustices,
+    ...celebrityJustices,
+    ...warrenJustices,
+    ...lochnerJustices,
   ]);
 
   const historicalPresets = computed(() => presetBenchConfigs.filter((b) => ["current", "warren-court", "lochner-era"].includes(b.id)));
@@ -281,13 +281,13 @@
       pool = presetConfig.justiceIds.map((id) => allJustices.value.find((j) => j.id === id)).filter((j): j is Justice => !!j);
       chiefId = presetConfig.chiefJusticeId;
     } else if (mode === "current") {
-      pool = [...justiceCurrent]; // always use all 9 current justices
+      pool = [...currentJustices]; // always use all 9 current justices
       chiefId = 1; // John Roberts is always Chief in Current mode
     } else if (mode === "historical") {
-      pool = shuffle([...justiceCurrent, ...justiceHistorical]).slice(0, 9);
+      pool = shuffle([...currentJustices, ...historicalJustices]).slice(0, 9);
       chiefId = pool[Math.floor(Math.random() * pool.length)].id;
     } else if (mode === "fantasy") {
-      pool = shuffle([...justiceFictional, ...justiceCelebrity]).slice(0, 9);
+      pool = shuffle([...fictionalJustices, ...celebrityJustices]).slice(0, 9);
       chiefId = pool[Math.floor(Math.random() * pool.length)].id;
     } else {
       // chaos: any justice

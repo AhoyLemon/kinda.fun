@@ -130,14 +130,14 @@ node scripts/firebase/invalid_purgeRooms.js
 
 Runs a full suite of checks against both the **DEV** (`kinda-fun-dev`) and **PROD** (`kinda-fun`) Firestore instances:
 
-| Check | DEV | PROD |
-|---|---|---|
-| Credentials file exists & is valid JSON | ✅ | ✅ |
-| Firebase Admin SDK initialises | ✅ | ✅ |
-| Read a known document (`stats/cameo`) | ✅ | ✅ |
-| Query a known collection (`stats/cameo/celebs`) | ✅ | ✅ |
-| `listCollections()` (needed for recursive clone) | ✅ | ✅ |
-| Write + delete a test document | ✅ | ⏭ skipped (not tested on PROD) |
+| Check                                            | DEV | PROD                            |
+| ------------------------------------------------ | --- | ------------------------------- |
+| Credentials file exists & is valid JSON          | ✅  | ✅                              |
+| Firebase Admin SDK initialises                   | ✅  | ✅                              |
+| Read a known document (`stats/cameo`)            | ✅  | ✅                              |
+| Query a known collection (`stats/cameo/celebs`)  | ✅  | ✅                              |
+| `listCollections()` (needed for recursive clone) | ✅  | ✅                              |
+| Write + delete a test document                   | ✅  | ⏭ skipped (not tested on PROD) |
 
 For any failed check, the script prints an actionable suggestion including the exact IAM role and GCP Console URL to fix it.
 

@@ -25,6 +25,18 @@ export const campaignSetups: CampaignSetup[] = [
     caseIds: [23, 21, 4, 22, 16],
   },
   {
+    id: 5,
+    name: "Love Is The Law",
+    description: "A campaign through the Supreme Court's landmark gay rights cases. Can you secure dignity and equality, or will history repeat itself?",
+    startYear: 2015,
+    startPresident: PRES_OBAMA,
+    chiefJusticeId: 13, // Antonin Scalia (as Chief for this campaign)
+    // Scalia (Chief), Kennedy, RBG, Sotomayor, Alito, Thomas, Rehnquist, Byron White, O'Connor
+    justiceIds: [13, 71, 11, 4, 3, 2, 12, 16, 14],
+    // Cases in chronological order: Bowers (1986), Romer (1996), Lawrence (2003), Obergefell (2015), Masterpiece (2018)
+    caseIds: [24, 25, 26, 7, 21],
+  },
+  {
     id: 2,
     name: "The Warren Court",
     description: "The year is 1968. Earl Warren presides. The media calls your justices 'activists.' Prove them right — or wrong.",

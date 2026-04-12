@@ -132,7 +132,7 @@ export const PRES_GRANT: President = {
   ],
 };
 export const PRES_EISENHOWER: President = {
-  id: 200,
+  id: 34,
   name: "Dwight D. Eisenhower",
   party: "Republican",
   image: "eisenhower.webp",
@@ -160,7 +160,7 @@ export const PRES_EISENHOWER: President = {
   ],
 };
 export const PRES_THEODORE_ROOSEVELT: President = {
-  id: 16,
+  id: 26,
   name: "Theodore Roosevelt",
   party: "Republican",
   image: "teddy.webp",
@@ -193,7 +193,7 @@ export const PRES_THEODORE_ROOSEVELT: President = {
   ],
 };
 export const PRES_FDR: President = {
-  id: 22,
+  id: 32,
   name: "Franklin D. Roosevelt",
   party: "Democrat",
   image: "fdr.webp",
@@ -267,7 +267,7 @@ export const PRES_MCKINLEY: President = {
   ],
 };
 export const PRES_JFK: President = {
-  id: 25,
+  id: 35,
   name: "John F. Kennedy",
   party: "Democrat",
   image: "jfk.webp",
@@ -295,7 +295,7 @@ export const PRES_JFK: President = {
   ],
 };
 export const PRES_LBJ: President = {
-  id: 26,
+  id: 36,
   name: "Lyndon B. Johnson",
   party: "Democrat",
   image: "lbj.webp",
@@ -328,7 +328,7 @@ export const PRES_LBJ: President = {
   ],
 };
 export const PRES_NIXON: President = {
-  id: 27,
+  id: 37,
   name: "Richard Nixon",
   party: "Republican",
   image: "nixon.webp",
@@ -361,7 +361,7 @@ export const PRES_NIXON: President = {
   ],
 };
 export const PRES_FORD: President = {
-  id: 28,
+  id: 38,
   name: "Gerald Ford",
   party: "Republican",
   image: "ford.webp",
@@ -384,7 +384,7 @@ export const PRES_FORD: President = {
   ],
 };
 export const PRES_REAGAN: President = {
-  id: 30,
+  id: 40,
   name: "Ronald Reagan",
   party: "Republican",
   stances: [
@@ -416,7 +416,7 @@ export const PRES_REAGAN: President = {
   ],
 };
 export const PRES_GHW_BUSH: President = {
-  id: 31,
+  id: 41,
   name: "George H.W. Bush",
   party: "Republican",
   stances: [
@@ -443,7 +443,7 @@ export const PRES_GHW_BUSH: President = {
   ],
 };
 export const PRES_CLINTON: President = {
-  id: 32,
+  id: 42,
   name: "Bill Clinton",
   party: "Democrat",
   stances: [
@@ -475,7 +475,7 @@ export const PRES_CLINTON: President = {
   ],
 };
 export const PRES_GW_BUSH: President = {
-  id: 33,
+  id: 43,
   name: "George W. Bush",
   party: "Republican",
   image: "gw_bush.webp",
@@ -508,7 +508,7 @@ export const PRES_GW_BUSH: President = {
   ],
 };
 export const PRES_OBAMA: President = {
-  id: 34,
+  id: 44,
   name: "Barack Obama",
   party: "Democrat",
   image: "obama.webp",
@@ -541,7 +541,7 @@ export const PRES_OBAMA: President = {
   ],
 };
 export const PRES_TRUMP: President = {
-  id: 35,
+  id: 45,
   name: "Donald Trump",
   party: "Republican",
   image: "trump.webp",
@@ -562,9 +562,9 @@ export const PRES_TRUMP: President = {
       note: "Signed an executive order banning federal diversity, equity, and inclusion training (2020), framing it as 'divisive anti-American propaganda.'",
     },
     {
-      topic: "ReproductiveRights",
-      position: "Against",
-      note: "Appointed three Supreme Court justices — Gorsuch, Kavanaugh, and Barrett — whose votes directly enabled Dobbs (2022).",
+      topic: "RichPeople",
+      position: "For",
+      note: "Paid $750 in federal income taxes in 2016 and 2017, and $0 in 10 of the previous 15 years, according to The New York Times' investigation (2020).",
     },
     {
       topic: "ExecutivePower",
@@ -574,7 +574,7 @@ export const PRES_TRUMP: President = {
   ],
 };
 export const PRES_BIDEN: President = {
-  id: 36,
+  id: 46,
   name: "Joe Biden",
   party: "Democrat",
   image: "biden.webp",
@@ -609,7 +609,7 @@ export const PRES_BIDEN: President = {
 
 // Celebrity presidents for the fictional/celebrity justices
 export const PRES_SNOOP_DOGG: President = {
-  id: 37,
+  id: 47,
   name: "Snoop Dogg",
   party: "Democrat",
   image: "snoop.webp",
@@ -617,84 +617,88 @@ export const PRES_SNOOP_DOGG: President = {
     {
       topic: "Guns",
       position: "For",
+      note: "Believes in the right to bear arms, especially if they're stylish.",
     },
     {
       topic: "PolicePower",
       position: "Against",
+      note: "Advocates for police reform and accountability.",
     },
     {
       topic: "Drugs",
       position: "For",
+      note: "🌿 SMOKE WEED ERRYDAY 🌿",
     },
   ],
 };
 export const PRES_VERMIN_SUPREME: President = {
-  id: 38,
+  id: 48,
   name: "Vermin Supreme",
   party: "Democrat",
   image: "vermin_supreme.webp",
   stances: [
-    { topic: "Drugs", position: "For" },
-    { topic: "SocialOrder", position: "Against" },
-    { topic: "CorporatePower", position: "Against" },
+    { topic: "Drugs", position: "For", note: "Mandatory toothbrushing and free ponies for all, plus legal weed." },
+    { topic: "SocialOrder", position: "Against", note: "Wants to disrupt the status quo with absurdist policies." },
+    { topic: "CorporatePower", position: "Against", note: "Believes corporations should be run by ponies, not people." },
   ],
 };
 export const PRES_BJORK: President = {
-  id: 39,
+  id: 49,
   name: "Björk",
   party: "Democrat",
   image: "bjork.webp",
   stances: [
-    { topic: "EnvironmentalProtection", position: "For" },
-    { topic: "AnimalRights", position: "For" },
-    { topic: "CorporatePower", position: "Against" },
+    { topic: "EnvironmentalProtection", position: "For", note: "Protects Icelandic nature and all magical creatures." },
+    { topic: "AnimalRights", position: "For", note: "Believes animals should have the right to sing and dance." },
+    { topic: "CorporatePower", position: "Against", note: "Thinks corporations should be more like art collectives." },
   ],
 };
 export const PRES_BILL_HICKS: President = {
-  id: 40,
+  id: 50,
   name: "Bill Hicks",
   party: "Democrat",
   image: "bill_hicks.webp",
   stances: [
-    { topic: "Drugs", position: "For" },
-    { topic: "FreeSpeech", position: "For" },
-    { topic: "ChristianHegemony", position: "Against" },
-    { topic: "CorporatePower", position: "Against" },
+    { topic: "Drugs", position: "For", note: "Believes psychedelic experiences should be covered by insurance." },
+    { topic: "FreeSpeech", position: "For", note: "Defends the right to offend, especially in stand-up comedy." },
+    { topic: "ChristianHegemony", position: "Against", note: "Wants to keep church and state as far apart as possible." },
+    { topic: "CorporatePower", position: "Against", note: "Thinks advertising is the devil's work." },
   ],
 };
 export const PRES_HUNTER_S_THOMPSON: President = {
-  id: 41,
+  id: 51,
   name: "Hunter S. Thompson",
   party: "Democrat",
   image: "hunter_s_thompson.webp",
   stances: [
-    { topic: "Drugs", position: "For" },
-    { topic: "FreeSpeech", position: "For" },
-    { topic: "PolicePower", position: "Against" },
-    { topic: "ExecutivePower", position: "Against" },
+    { topic: "Drugs", position: "For", note: "Believes in the right to self-medicate, especially with mescaline." },
+    { topic: "FreeSpeech", position: "For", note: "Gonzo journalism is a constitutional right." },
+    { topic: "PolicePower", position: "Against", note: "Distrusts all authority, especially with badges." },
+    { topic: "ExecutivePower", position: "Against", note: "Thinks the presidency should be abolished, or at least made more fun." },
   ],
 };
 export const PRES_LIBERACE: President = {
-  id: 42,
+  id: 52,
   name: "Liberace",
   party: "Republican",
   image: "liberace.webp",
   stances: [
-    { topic: "GayRights", position: "Neutral" },
-    { topic: "Taxation", position: "Against" },
-    { topic: "CorporatePower", position: "For" },
+    { topic: "GayRights", position: "Neutral", note: "Believes in fabulous rights for all, but won't say it out loud." },
+    { topic: "Taxation", position: "Against", note: "Thinks sequins should be tax-deductible." },
+    { topic: "CorporatePower", position: "For", note: "Believes every company should have a piano in the lobby." },
   ],
 };
 export const PRES_VINCE_MCMAHON: President = {
-  id: 47,
+  id: 53,
   name: "Vince McMahon",
   party: "Republican",
   image: "mcmahon.webp",
   stances: [
-    { topic: "CorporatePower", position: "For" },
-    { topic: "WorkersRights", position: "Against" },
-    { topic: "ExecutivePower", position: "For" },
-    { topic: "SocialOrder", position: "For" },
+    { topic: "CorporatePower", position: "For", note: "Believes corporations should be run like wrestling promotions." },
+    { topic: "WorkersRights", position: "Against", note: "Thinks unions are for the weak." },
+    { topic: "ExecutivePower", position: "For", note: "Runs the country like Monday Night Raw." },
+    { topic: "SocialOrder", position: "For", note: "Prefers order, but only if he's in charge." },
+    { topic: "RichPeople", position: "For", note: "Believes the rich should always win, preferably by pinfall." },
   ],
 };
 

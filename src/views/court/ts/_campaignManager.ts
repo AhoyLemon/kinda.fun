@@ -1,6 +1,6 @@
 import { computed, type ComputedRef } from "vue";
 import type { Justice, Case, CourtGameState, CampaignState, ObjectiveCard, RewardCard, President, Side } from "./_types";
-import { justiceCurrent, justiceHistorical, justiceFictional, justiceCelebrity, justiceWarrenExtra, justiceLochnerExtra } from "./_justices";
+import { currentJustices, historicalJustices, fictionalJustices, celebrityJustices, warrenJustices, lochnerJustices } from "./justices";
 import { cases as allCases, casesHistorical, casesFictional } from "./_cases";
 import { objectives } from "./_objectives";
 import { rewardCards } from "./_rewards";
@@ -59,7 +59,7 @@ export function useCampaignManager(
 
   /** Builds all justices array for use in campaign functions. */
   function getAllJusticesRaw(): Justice[] {
-    return [...justiceCurrent, ...justiceHistorical, ...justiceFictional, ...justiceCelebrity, ...justiceWarrenExtra, ...justiceLochnerExtra];
+    return [...currentJustices, ...historicalJustices, ...fictionalJustices, ...celebrityJustices, ...warrenJustices, ...lochnerJustices];
   }
 
   /** Pick a random president from a given party alignment (left/right) that is NOT the current one. */
