@@ -10,6 +10,7 @@
     "build:pages": "node scripts/npm-run/buildPages.js",
     "build": "node scripts/npm-run/build.js",
     "preview": "vite preview --host",
+    "test": "node scripts/npm-run/test.js",
     "test:watch": "vitest",
     "test:run": "vitest --run",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
