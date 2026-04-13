@@ -37,33 +37,43 @@ See docs/court-working-doc-history.md for a session-by-session breakdown of the 
 
 _(All items from the previous session have been implemented. See court-working-doc-history.md for details.)_
 
-### Suggested New Cards
+TACTIC SUGGESTIONS (from previous WHEN COMPLETE prompt):
 
-- **Plant A Story**
-  - Target one justice. Choose: plant a favorable or an unfavorable story in the press about them.
-  - Favorable: their partyLoyalty goes up, they warm to you slightly, and same-party allies feel a small boost (rising tide).
-  - Unfavorable: they take a big negative hit, but any opposing-party justices who already dislike them enjoy watching it happen.
-  - Satirical angle: the press as a political instrument, specifically weaponized during confirmation hearings.
+### New Tactics to Add
 
-- **Send A Strongly Worded Letter**
-  - Targets one justice. Very high chance of doing absolutely nothing. Small chance of a surprisingly large effect in your favor (the letter lands the exact right way at the exact right moment). Very small chance of backfiring catastrophically.
-  - Flavor: the kind of move you play when you're out of real options. The fact that it occasionally works is the joke.
+- **Request An Amicus**
+  - Targets all justices, but scaled: the more justices already leaning your way, the stronger the effect.
+  - Effect: Sway all justices slightly; bonus sway per justice already on your side (momentum-style).
+  - Flavor: "You found some friends with opinions. Relevant ones."
+  - Why: Rewards a player who's building momentum; adds a satisfying snowball feeling.
 
-- **Invoke The Lemon Test**
-  - Sways all justices based on their religion stat. Catholic justices are mildly offended. Very religious justices (Protestant/Catholic with notes) are strongly offended. Jewish justices find it mildly amusing.
-  - Satirical angle: _Lemon v. Kurtzman_ established the separation of church and state test — the current court has been systematically dismantling it.
+- **Catch A Justice On Their Phone**
+  - Single target.
+  - Effect: Reduces target's `susceptibility` for the rest of the trial (they've already googled the answer and aren't listening anymore) + mild negative sway.
+  - Flavor: "They weren't taking notes. They were texting."
+  - Why: A counter/debuff more about disruption than persuasion. Changes pace.
 
-- **Emergency Yoga Retreat**
-  - Target one justice. Their susceptibility and empathy go up dramatically for the rest of the trial. They also become unavailable for exactly one round (too busy finding inner peace). When they return, they're oddly centered and receptive.
-  - Fun: combines the napping mechanic with the buff mechanic in an unexpected package.
+- **File An Emergency Motion**
+  - No target.
+  - Effect: Immediately retrieve one previously-played card from the discard pile and add it back to your hand.
+  - Flavor: "You found a procedural loophole. There's always a loophole."
+  - Why: Resource recovery. Lets you replay a favorite tactic. Has strategic depth.
 
-- **File A Moot Brief**
-  - Remove one card from the Docket permanently for the rest of the trial (not reshuffled into the deck). Works best as a denial move when opposing counsel has clearly been eyeing a specific card.
-  - Satire: mootness is how the Court quietly kills cases it doesn't want to touch.
+- **Recite The Dissent**
+  - No target.
+  - Effect: For each justice already voting AGAINST you, gain a small flat sway bonus on all justices voting FOR you.
+  - Flavor: "You read the whole thing out loud. All 47 pages."
+  - Why: Rewards being behind — helps catch up when losing. Creates tension.
 
-- **Drag Them On Social Media**
-  - Target one justice. Their charisma drops permanently for the trial (they've gone defensive online). However, if their charisma is already low, they're used to it — this has no effect, and may actually make them sympathetic to lower-charisma bench peers.
-  - Satirical: SCOTUS justices do not have social media. In any reasonable world.
+### Tactics to Consider Removing
+
+- **Yell 'FREEDOM!'** (id:10) — It's extremely simple (flat sway-all) and the joke lands once but it doesn't have any mechanical depth. It's kept alive by being funny, which is valid. No strong case to remove it, but it's the most replaceable card if a slot is needed.
+
+### Tactics to Consider Editing
+
+- **Encourage A Nap** — The wake-up bonus (+15 leaning) isn't visible to the player from the card description. Consider adding a hint like "Returns reinvigorated" or noting they come back with improved lean, so players understand why they'd waste a round on it.
+- **Recuse Yourself!** — The mechanic (halved sway resistance while recused) isn't communicated. The description could say something like "Their resistance is halved while absent." Players shouldn't have to discover this by accident.
+- **Plant A Story** — Consider making this targeted instead of all-justices, with a stronger `partyLoyalty` effect on one justice. The all-justices version is fine but a targeted version creates more decision-making.
 
 ## Eventual Next Steps
 

@@ -17,7 +17,10 @@
         .jd-name-and-meta
           h3.jd-name {{ ui.detailJustice.name }}
           .jd-demographics
-            span.jd-meta-sep  {{ game.religionOverrides[ui.detailJustice.id] ?? ui.detailJustice.religion }}{{ game.religionOverrides[ui.detailJustice.id] ? ' ☘️' : '' }}
+            span.jd-meta-sep
+              | {{ game.religionOverrides[ui.detailJustice.id] ?? ui.detailJustice.religion }}
+              template(v-if="game.religionOverrides[ui.detailJustice.id] === 'Catholic'")  ☘️
+              template(v-else-if="game.religionOverrides[ui.detailJustice.id] === 'Atheist'")  (for now)
             span.jd-meta-sep {{ ui.detailJustice.ethnicity }}
             span.jd-meta-sep born {{ ui.detailJustice.birthYear }}
           p.jd-meta(v-if="ui.detailJustice.nominatedBy")

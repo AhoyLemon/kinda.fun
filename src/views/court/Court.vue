@@ -91,6 +91,8 @@
     recusedJustices: [],
     // Trial-scoped state for new cards
     nappingJustices: {},
+    yogaJustices: {},
+    draggedJustices: [],
     statMods: {},
     weaknessMods: {},
     religionOverrides: {},
@@ -333,6 +335,8 @@
     game.opponentShields = [];
     game.recusedJustices = [];
     game.nappingJustices = {};
+    game.yogaJustices = {};
+    game.draggedJustices = [];
     game.statMods = {};
     game.weaknessMods = {};
     game.religionOverrides = {};
@@ -441,6 +445,8 @@
       tactic.effectType === "insult-chief" ||
       tactic.effectType === "presidential-call" ||
       tactic.effectType === "saint-patricks" ||
+      tactic.effectType === "lemon-test" ||
+      tactic.effectType === "plant-story" ||
       tactic.effectType === "gift-boxes" ||
       tactic.effectType === "keep-crown"
     ) {
@@ -474,7 +480,7 @@
       game.reframeStanceTacticId = tactic.id;
       game.reframeStanceMode = true;
     } else {
-      // sway-one, shield, encourage-nap, justice-cocktails, invite-church, recuse, make-chief, suggest-retirement: select then click a justice
+      // sway-one, shield, encourage-nap, suggest-yoga, justice-cocktails, invite-church, recuse, make-chief, suggest-retirement, drag-them: select then click a justice
       game.selectedTacticId = game.selectedTacticId === tacticId ? null : tacticId;
     }
   }
@@ -706,15 +712,17 @@
       tactic.effectType === "discard-all" ||
       tactic.effectType === "insult-chief" ||
       tactic.effectType === "presidential-call" ||
-      tactic.effectType === "saint-patricks"
+      tactic.effectType === "saint-patricks" ||
+      tactic.effectType === "lemon-test" ||
+      tactic.effectType === "plant-story"
     ) {
       applyTactic(tactic, null, "opponent");
       return;
     }
 
     // New single-target utility cards: target the most favorable-to-player justice
-    if (tactic.effectType === "encourage-nap" || tactic.effectType === "justice-cocktails") {
-      const unblocked = game.bench.filter((j) => !(j.id in game.nappingJustices) && !game.playerShields.includes(j.id));
+    if (tactic.effectType === "encourage-nap" || tactic.effectType === "suggest-yoga" || tactic.effectType === "justice-cocktails") {
+      const unblocked = game.bench.filter((j) => !(j.id in game.nappingJustices) && !(j.id in game.yogaJustices) && !game.playerShields.includes(j.id));
       const target = unblocked.sort((a, b) => (game.leanings[b.id] ?? 0) - (game.leanings[a.id] ?? 0))[0];
       if (!target) {
         endOpponentTurn();
@@ -810,6 +818,18 @@
         game.leanings[id] = Math.min(100, old + 15);
       }
     }
+    // Wake up yoga justices and apply their well-being buffs
+    for (const [idStr, yogaRound] of Object.entries(game.yogaJustices)) {
+      if (yogaRound <= game.round) {
+        const id = Number(idStr);
+        delete game.yogaJustices[id];
+        game.statMods[id] = {
+          ...(game.statMods[id] ?? {}),
+          empathy: (game.statMods[id]?.empathy ?? 0) + 3,
+          succeptibility: (game.statMods[id]?.succeptibility ?? 0) + 3,
+        };
+      }
+    }
     // Shields are consumed on contact (in resolveEffect), not cleared here
     ui.opponentThinking = false;
     game.currentTurn = "player";
@@ -834,6 +854,21 @@
 
   // True when at least one bench justice is Strongly For (leaning >= 60) — gates Betray Your Friend
   const hasStrongAlly = computed(() => game.bench.some((j) => (game.leanings[j.id] ?? 0) >= 60));
+
+  /** For the Reframe The Debate picker: counts of FOR/AGAINST per stance choice on the current bench. */
+  const reframeStanceStats = computed(() => {
+    return game.reframeStanceChoices.map((stance) => {
+      let forCount = 0;
+      let againstCount = 0;
+      game.bench.forEach((j) => {
+        const s = j.stances?.find((st) => st.topic === stance);
+        if (!s || s.position === "Neutral") return;
+        if (s.position === "For") forCount++;
+        else againstCount++;
+      });
+      return { stance, forCount, againstCount };
+    });
+  });
 
   const benchOverview = computed(() => {
     const bench = game.bench;
@@ -974,7 +1009,9 @@
       {
         "sway-one": "🎯 Single target",
         "sway-all": "🌊 All justices",
+        "plant-story": "🌱 All justices",
         susceptibility: "😴 All justices",
+        "lemon-test:": "🍋 All justices",
         shield: "🛡️ Ally only",
         "discard-all": "🗑️ Playbook",
         "claim-two": "🗑️ Playbook",
@@ -991,6 +1028,9 @@
         "invite-church": "⛪ Single target",
         "suggest-retirement": "🏖️ Single target",
         "keep-crown": "👑 Chief Justice",
+        "gift-boxes": "🎁 All justices",
+        "drag-them": "🎯 Single target",
+        "suggest-yoga": "🧘 Single target",
       }[effectType] ?? effectType
     );
   }

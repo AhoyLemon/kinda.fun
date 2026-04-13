@@ -259,7 +259,7 @@ export const casesHistorical: Case[] = [
       stances: {
         RacialEquity: "For",
         AccusedRights: "Against",
-        FederalPower: "For",
+        StatesRights: "For",
       },
     },
     historicalWinner: "Defendant",
@@ -460,6 +460,7 @@ export const casesHistorical: Case[] = [
       stances: {
         StatesRights: "For",
         SocialOrder: "For",
+        RacialEquity: "Against",
       },
     },
     historicalWinner: "Defendant",
@@ -739,6 +740,38 @@ export const casesHistorical: Case[] = [
       stances: {
         GayRights: "Against",
         StatesRights: "For",
+      },
+    },
+    historicalWinner: "Prosecution",
+  },
+  {
+    id: 27,
+    name: "Hammer v. Dagenhart",
+    year: 1918,
+    caseType: "historical",
+    primaryQuestion: "Does the federal government have the power to regulate child labor within the states?",
+    prosecution: {
+      name: "Roland Dagenhart",
+      argument:
+        "The production of goods is a local matter for the states to regulate, not Congress. My sons have a right to work, and the federal government cannot use its power over interstate commerce to interfere with our private employment contracts.",
+      favoredBy: "Republican",
+      stances: {
+        StatesRights: "For",
+        PropertyRights: "For",
+        EconomicRegulation: "Against",
+        WorkersRights: "Against",
+      },
+    },
+    defendant: {
+      name: "W.C. Hammer",
+      argument:
+        "Child labor is an evil that affects the entire nation. If one state allows it to gain a competitive advantage, it forces others to follow. Congress must be able to ban products made by children from entering interstate commerce to protect national labor standards.",
+      favoredBy: "Democrat",
+      stances: {
+        FederalPower: "For",
+        WorkersRights: "For",
+        EconomicRegulation: "For",
+        SocialOrder: "For",
       },
     },
     historicalWinner: "Prosecution",

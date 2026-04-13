@@ -402,15 +402,89 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
     reportTarget = "All justices";
     overrideFeedback = "Some justices were delighted. Others were deeply offended. The boxes were not primarily about chocolate.";
 
+    // ── Plant-story ───────────────────────────────────────────────
+  } else if (tactic.effectType === "plant-story") {
+    consumeTactic(game, tactic, helpers);
+    game.bench.forEach((j) => {
+      game.statMods[j.id] = {
+        ...(game.statMods[j.id] ?? {}),
+        partyLoyalty: (game.statMods[j.id]?.partyLoyalty ?? 0) + 3,
+      };
+      results.push({ justiceName: j.name, change: 0, newLeaning: game.leanings[j.id] ?? 0 });
+    });
+    reportTarget = "All justices";
+
+    // ── Lemon-test ────────────────────────────────────────────────
+  } else if (tactic.effectType === "lemon-test") {
+    consumeTactic(game, tactic, helpers);
+    game.bench.forEach((j) => {
+      game.religionOverrides[j.id] = "Atheist";
+      game.statMods[j.id] = {
+        ...(game.statMods[j.id] ?? {}),
+        logic: (game.statMods[j.id]?.logic ?? 0) + 2,
+      };
+      results.push({ justiceName: j.name, change: 0, newLeaning: game.leanings[j.id] ?? 0 });
+    });
+    reportTarget = "All justices";
+
+    // ── Suggest-yoga ──────────────────────────────────────────────
+  } else if (tactic.effectType === "suggest-yoga") {
+    consumeTactic(game, tactic, helpers);
+    if (targetJustice) {
+      game.yogaJustices[targetJustice.id] = game.round + 1;
+      reportTarget = targetJustice.name;
+      overrideFeedback = `${targetJustice.name} has stepped away to find their center. They will return refreshed.`;
+    }
+
+    // ── Drag-them ─────────────────────────────────────────────────
+  } else if (tactic.effectType === "drag-them") {
+    consumeTactic(game, tactic, helpers);
+    if (targetJustice) {
+      // Permanent charisma debuff for this trial
+      game.statMods[targetJustice.id] = {
+        ...(game.statMods[targetJustice.id] ?? {}),
+        charisma: (game.statMods[targetJustice.id]?.charisma ?? 0) - 3,
+      };
+      if (!game.draggedJustices.includes(targetJustice.id)) {
+        game.draggedJustices.push(targetJustice.id);
+      }
+      // Sway based on threats weakness: high threats → toward player, low → slight against
+      const dir = actor === "player" ? 1 : -1;
+      const threatsWeakness = getEffectiveWeakness(targetJustice, "threats", game);
+      let delta = 0;
+      if (threatsWeakness >= 6) {
+        delta = Math.round(threatsWeakness * 8 * dir); // very susceptible to being dragged
+      } else if (threatsWeakness >= 4) {
+        delta = Math.round(threatsWeakness * 4 * dir); // moderate
+      } else {
+        delta = -Math.round((5 - threatsWeakness) * 6 * dir); // immune — they dig in
+      }
+      if (delta !== 0) {
+        const old = game.leanings[targetJustice.id] ?? 0;
+        const next = Math.max(-100, Math.min(100, old + delta));
+        game.leanings[targetJustice.id] = next;
+        results.push({ justiceName: targetJustice.name, change: next - old, newLeaning: next });
+      } else {
+        results.push({ justiceName: targetJustice.name, change: 0, newLeaning: game.leanings[targetJustice.id] ?? 0 });
+      }
+      reportTarget = targetJustice.name;
+      overrideFeedback =
+        threatsWeakness >= 6
+          ? `${targetJustice.name} is absolutely rattled. The tweet did its job.`
+          : threatsWeakness >= 4
+            ? `${targetJustice.name} is annoyed but slightly shaken. Effective enough.`
+            : `${targetJustice.name} read the whole thread and has only grown more confident. They're fine.`;
+    }
+
     // ── Standard sway / susceptibility / shield ──────────────────
   } else {
     consumeTactic(game, tactic, helpers);
 
     let targets = targetJustice ? [targetJustice] : game.bench;
 
-    // Napping justices can't be swayed (but shields/susceptibility still apply to them)
+    // Napping and yoga justices can't be swayed (but shields/susceptibility still apply to them)
     if (tactic.effectType !== "susceptibility" && tactic.effectType !== "shield") {
-      targets = targets.filter((j) => !(j.id in game.nappingJustices));
+      targets = targets.filter((j) => !(j.id in game.nappingJustices) && !(j.id in game.yogaJustices));
     }
 
     // Shields absorb attacks and are consumed on contact (not cleared at end of turn)

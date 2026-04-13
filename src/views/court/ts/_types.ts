@@ -195,7 +195,7 @@ export interface President {
 
 export type Party = "Federalist" | "Democratic-Republican" | "Whig" | "Democrat" | "Republican";
 
-export type Religion = "Catholic" | "Jewish" | "Protestant" | "Other";
+export type Religion = "Catholic" | "Jewish" | "Protestant" | "Other" | "Atheist";
 
 export type Ethnicity = "White" | "Black" | "Hispanic" | "Jewish" | "Other";
 
@@ -242,7 +242,11 @@ export type TacticEffectType =
   | "reframe-debate" // player picks a stance topic; justices with a position on it are immediately and strongly swayed
   | "gift-boxes" // bribery attack on all justices; high-bribery justices swayed in your favor, low-bribery offended
   | "suggest-retirement" // campaign only: mark justice for guaranteed retirement during recess; they lose massive favor
-  | "keep-crown"; // campaign only: make the current trial's elevated CJ permanent for the campaign
+  | "keep-crown" // campaign only: make the current trial's elevated CJ permanent for the campaign
+  | "plant-story" // raise partyLoyalty statMod for all justices
+  | "lemon-test" // all justices become Atheist + logic +2 for the trial
+  | "suggest-yoga" // freeze one justice for a round; they return with empathy+susceptibility buffs
+  | "drag-them"; // lower one justice's charisma; sway them based on their threats weakness
 
 export interface Tactic {
   id: number;
@@ -290,6 +294,8 @@ export interface CourtGameState {
   opponentShields: number[];
   recusedJustices: number[];
   nappingJustices: Record<number, number>; // justiceId → round the nap ends (wake + bonus at end of that round)
+  yogaJustices: Record<number, number>; // justiceId → round the yoga ends (wake + empathy/susceptibility buff)
+  draggedJustices: number[]; // justices who have been dragged (charisma debuffed)
   statMods: Record<number, Partial<Record<keyof Justice["stats"], number>>>; // temporary stat boosts for this trial
   weaknessMods: Record<number, Partial<Record<keyof Justice["weaknesses"], number>>>; // temporary weakness boosts
   religionOverrides: Record<number, Religion>; // religion overrides (e.g. from St. Patrick's Day)

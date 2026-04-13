@@ -597,6 +597,33 @@
   box-shadow: 0 0 18px rgba(243, 156, 18, 0.65) !important;
 }
 
+// ─── Status row (chips between name and vote meter) ──────────
+.status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem 0;
+  min-height: 0;
+
+  .status-icon {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    aspect-ratio: 1/1;
+    padding: 0.25em;
+    border-radius: 50%;
+    line-height: 1;
+    cursor: help;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+  }
+}
+
+// yoga overlay matches napping overlay
+.justice-card.is-yoga {
+  opacity: 0.8;
+}
+
 // ─── Playbook title row / meta ───────────────────────────────────────
 .playbook-title-row {
   display: flex;
@@ -872,6 +899,10 @@
   font-family: $serif;
   font-size: 1rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   transition:
     background 0.15s,
     border-color 0.15s;
@@ -880,6 +911,28 @@
     background: rgba($court-gold, 0.26);
     border-color: rgba($court-gold, 0.7);
   }
+}
+
+.rs-stance-name {
+  flex: 1;
+  text-align: left;
+}
+
+.rs-stance-counts {
+  display: flex;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-family: $monospace, monospace;
+}
+
+.rs-for {
+  color: rgb(90, 200, 110);
+  cursor: help;
+}
+
+.rs-against {
+  color: rgb(220, 80, 80);
+  cursor: help;
 }
 
 // ─── Opponent thinking overlay ───────────────────────────────

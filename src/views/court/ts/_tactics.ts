@@ -30,7 +30,8 @@ export const tactics: Tactic[] = [
   {
     id: 3,
     name: "Bribe the Justice",
-    description: "Targets one justice's bribery weakness. A casual 'thank-you-in-advance' goes a long way.",
+    description:
+      "Exploits one justice's bribery weakness. The higher their susceptibility to a well-placed gift, the more warmly they'll receive this thoughtful arrangement.",
     flavorText: "It's not a bribe. It's a Boca Raton vacation property. There's a difference.",
     cardType: "attack",
     effectType: "sway-one",
@@ -40,8 +41,8 @@ export const tactics: Tactic[] = [
   {
     id: 4,
     name: "Leak to the Press",
-    description: "Targets one justice's blackmail weakness. Effective on justices who have something to hide (most of them).",
-    flavorText: "Interesting Venmo history you have there, Justice.",
+    description: "Exploits one justice's blackmail weakness. Effective on justices with a complicated personal history — and there are several candidates.",
+    flavorText: "Interesting Venmo history you have there, Justice. Very interesting indeed.",
     cardType: "attack",
     effectType: "sway-one",
     basePower: 7,
@@ -61,7 +62,7 @@ export const tactics: Tactic[] = [
   {
     id: 7,
     name: "Shameless Flattery",
-    description: "Targets one justice's flattery weakness. Utterly transparent. Works anyway.",
+    description: "Exploits one justice's flattery weakness. The approach is transparent. The compliments are excessive. It works anyway.",
     flavorText: "Your intellect is matched only by your magnificent legal writings. Truly. Every single one.",
     cardType: "attack",
     effectType: "sway-one",
@@ -114,18 +115,19 @@ export const tactics: Tactic[] = [
 
   // ─── UTILITY ──────────────────────────────────────────────────────
 
-  {
-    id: 12,
-    name: "Be Extremely Boring",
-    description:
-      "Raises susceptibility on all justices. Their glazed-over eyes and caffeine-deprived attention spans will make your very next attack hit significantly harder.",
-    flavorText:
-      "The Administrative Procedures Act of 1946, as amended in 1962, continuing through the relevant subsections, which are many — you're still here, right?",
-    cardType: "utility",
-    effectType: "susceptibility",
-    basePower: 4,
-    feedback: "Every justice is now profoundly susceptible to whatever comes next.",
-  },
+  // Removing this one as it's currently broken
+  // {
+  //   id: 12,
+  //   name: "Be Extremely Boring",
+  //   description:
+  //     "Raises susceptibility on all justices. Their glazed-over eyes and caffeine-deprived attention spans will make your very next attack hit significantly harder.",
+  //   flavorText:
+  //     "The Administrative Procedures Act of 1946, as amended in 1962, continuing through the relevant subsections, which are many — you're still here, right?",
+  //   cardType: "utility",
+  //   effectType: "susceptibility",
+  //   basePower: 4,
+  //   feedback: "Every justice is now profoundly susceptible to whatever comes next.",
+  // },
 
   // ─── DOCKET MANIPULATION ──────────────────────────────────────────
 
@@ -143,7 +145,7 @@ export const tactics: Tactic[] = [
     id: 14,
     name: "I Call Dibs",
     description:
-      "Sidebar! Select 2 cards from the Docket to claim for your exclusive use. You must still play them yourself, but at least opposing counsel can't. Only usable if you have no current Dibs.",
+      "Select 2 cards from the Docket to claim exclusively. Opposing counsel can no longer play them. You must still play them yourself. Only usable while you have no active Dibs.",
     flavorText: "Objection, Your Honor. Those cards were mine spiritually before my client could lose.",
     cardType: "defense",
     effectType: "claim-two",
@@ -156,7 +158,7 @@ export const tactics: Tactic[] = [
     id: 15,
     name: "Elevate to Chief",
     description:
-      "Appoint a justice as the new Chief Justice. They're genuinely flattered and warm toward you immediately. The previous Chief — and their partisan allies — won't be pleased. The new Chief loses the title's normal sway resistance.",
+      "Appoint a justice as Chief. They warm to you immediately. The prior Chief and their partisan allies are displeased, and the new Chief loses their sway resistance.",
     flavorText: "With all due respect to the current Chief, I'd like to propose a restructuring.",
     cardType: "utility",
     effectType: "make-chief",
@@ -176,7 +178,7 @@ export const tactics: Tactic[] = [
     id: 17,
     name: "Ring Me Up The President",
     description:
-      "Patch in a Zoom call with President Trump. His nominees are delighted. Other Republicans politely nod. Obama and Biden nominees are appalled. Other Democrats are mildly annoyed. He accidentally hangs up after 10 minutes. Affects all justices. Only appears when at least one Trump nominee is on the bench.",
+      "Patch in a Zoom call with President Trump. His nominees are delighted. Other Republicans politely nod. Obama and Biden nominees are appalled. Other Democrats are mildly annoyed. He accidentally hangs up after 10 minutes.",
     flavorText: "The call was perfect. The best call. Everyone says so. You can check — actually, don't check.",
     cardType: "attack",
     effectType: "presidential-call",
@@ -200,7 +202,7 @@ export const tactics: Tactic[] = [
     id: 19,
     name: "Betray Your Friend",
     description:
-      "Target a justice who is Strongly For you and destroy them personally. They will turn STRONGLY AGAINST you. However, any opposing-party justices who were already leaning against you have a good chance of being swayed your way.",
+      "Target a justice Strongly For you. They flip to Strongly Against. Opposing-party justices currently leaning against you may rally to your side as a result.",
     flavorText: "I've always believed the strongest legal strategy is the one where you stab your biggest fan in the face.",
     cardType: "attack",
     effectType: "betray-friend",
@@ -213,7 +215,7 @@ export const tactics: Tactic[] = [
     id: 20,
     name: "Swap Clerks",
     description:
-      "Select any two justices. Good chance their positions swap entirely. Statistically relevant chance the clerks rat you out and both justices get a negative opinion of you. You'll be told which happened.",
+      "Select two justices. High chance their leanings swap entirely. Nonzero chance the clerks tell on you and both justices warm to you less. You'll be told which happened.",
     flavorText: "Law clerks are overworked, underpaid, and know exactly where everything is. This cuts both ways.",
     cardType: "utility",
     effectType: "swap-clerks",
@@ -233,9 +235,8 @@ export const tactics: Tactic[] = [
     id: 22,
     name: "Order Drinks For A Justice",
     description:
-      "Select a justice. Their charisma, empathy, and susceptibility go up for the rest of the trial. Their logic goes down. They also slide meaningfully toward you right now. Some justices respond with particular enthusiasm — especially ones with a noted appreciation for beverages.",
-    flavorText:
-      "The Heritage Foundation gala was an open bar. Some decisions were made. One justice in particular should not have had that fourth beer. You know who you are.",
+      "Target a justice. Their charisma, empathy, and susceptibility rise for the rest of the trial while their logic drops. They also slide meaningfully toward you right now.",
+    flavorText: "The Heritage Foundation gala was an open bar. One justice in particular should not have had that fourth beer. You know who you are.",
     cardType: "utility",
     effectType: "justice-cocktails",
     basePower: 0,
@@ -255,8 +256,8 @@ export const tactics: Tactic[] = [
     id: 25,
     name: "Take Me To Church",
     description:
-      "Select a justice. Attending church is a personal and moving experience — they are directly swayed toward you. Their empathy also goes up for the rest of the trial. Every justice who shares their religion gives you a favorable nod.",
-    flavorText: "Attendance was low, but opinions were formed.",
+      "Target a justice. Attending church is personally moving — they sway toward you directly. Their empathy rises for the trial, and every justice sharing their religion gives you a favorable nod.",
+    flavorText: "The pews were mostly empty. The opinions were not.",
     cardType: "utility",
     effectType: "invite-church",
     basePower: 0,
@@ -267,8 +268,8 @@ export const tactics: Tactic[] = [
     id: 28,
     name: "Reframe The Debate",
     description:
-      "Choose 1 of 3 stance topics drawn from the current bench. The debate is now officially about that. Every justice with a known position on that topic is immediately and strongly swayed — For means they warm to you, Against means they don't.",
-    flavorText: "You don't win arguments by winning arguments. You win arguments by changing what the argument is about.",
+      "Choose from 3 stance topics drawn from the current bench. Every justice with a known position is immediately and strongly swayed — justices who are For the topic warm to you; those Against lean away.",
+    flavorText: "You don't win arguments by winning arguments. You win by changing what the argument is.",
     cardType: "utility",
     effectType: "reframe-debate",
     basePower: 0,
@@ -278,9 +279,8 @@ export const tactics: Tactic[] = [
     id: 29,
     name: "Gift Boxes Of Ferrero Rocher",
     description:
-      "Present lavish gift boxes to all justices. Justices susceptible to bribery (6+) are swayed in your favor. Justices resistant to bribery (3 or lower) are deeply offended and lean against you. Others are unmoved. The boxes are not primarily about chocolate.",
-    flavorText:
-      "Each box was accompanied by a handwritten note: 'These are just chocolates. Enjoy.' The envelope inside the box said something slightly different.",
+      "Bribery-susceptible justices (6+) are swayed in your favor. Bribery-resistant justices (3 or lower) are deeply offended and lean against you. Others are unmoved by the gesture.",
+    flavorText: "A handwritten note read: 'These are just chocolates. Enjoy.' The envelope inside said something slightly different.",
     cardType: "attack",
     effectType: "gift-boxes",
     basePower: 0,
@@ -311,5 +311,50 @@ export const tactics: Tactic[] = [
     basePower: 0,
     campaignOnly: true,
     feedback: "The new Chief Justice's appointment is now permanent.",
+  },
+
+  // ─── NEW TACTICS ───────────────────────────────────────────────────────────
+
+  {
+    id: 30,
+    name: "Plant A Story",
+    description:
+      "Your sources in the Senate made a few calls. Every justice feels their party watching. Raises all justices' party loyalty for the rest of the trial.",
+    flavorText: "The headline writes itself: 'Justices Under Fire From Own Party.' Nobody reads it. Everyone sees it.",
+    cardType: "utility",
+    effectType: "plant-story",
+    basePower: 0,
+    feedback: "All justices are now more loyal to their party.",
+  },
+  {
+    id: 31,
+    name: "Invoke The Lemon Test",
+    description:
+      "Cite Lemon v. Kurtzman, loudly. All justices become irreligious for the rest of the trial and gain a slight logic boost. Has no effect on justices already deeply uncomfortable with religion.",
+    flavorText: "The Establishment Clause enters the chat. The church-going bloc checks their watches.",
+    cardType: "utility",
+    effectType: "lemon-test",
+    basePower: 0,
+    feedback: "All justices are temporarily irreligious. Their logic has improved accordingly.",
+  },
+  {
+    id: 32,
+    name: "Suggest Yoga",
+    description:
+      "Politely suggest a justice step away for some mindfulness. They skip the next round. When they return, their empathy and susceptibility are permanently raised for the rest of the trial.",
+    flavorText: "'Have you considered a quick flow before deliberations?' They have not. They will now.",
+    cardType: "utility",
+    effectType: "suggest-yoga",
+    basePower: 0,
+  },
+  {
+    id: 33,
+    name: "Yaaas! Drag Them!",
+    description:
+      "Publicly air a justice's worst qualities. Their charisma takes a permanent hit. If they're weak to threats, they'll also slide in your direction. If they're immune to threats, they won't appreciate it.",
+    flavorText: "The tweet had 80,000 likes. The justice saw it. The justice is... processing.",
+    cardType: "attack",
+    effectType: "drag-them",
+    basePower: 0,
   },
 ];

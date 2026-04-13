@@ -397,6 +397,8 @@ export function useCampaignManager(
     game.opponentShields = [];
     game.recusedJustices = [];
     game.nappingJustices = {};
+    game.yogaJustices = {};
+    game.draggedJustices = [];
     game.statMods = {};
     game.weaknessMods = {};
     game.religionOverrides = {};

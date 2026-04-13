@@ -15,19 +15,20 @@ import { PRES_TRUMP, PRES_NIXON, PRES_OBAMA, PRES_BIDEN, PRES_EISENHOWER, PRES_L
 export const campaignSetups: CampaignSetup[] = [
   {
     id: 1,
-    name: "Current Court",
-    description: "The year is 2020. Donald Trump is the president and he just appointed Amy Coney Barrett to the bench. History awaits your revision.",
+    name: "The Great Do Over",
+    description:
+      "The year is 2020. President Trump just appointed Amy Coney Barrett to the bench. Before you are 5 of the worst Supreme Court decision ever made. Will history repeat itself?",
     startYear: 2020,
     startPresident: PRES_TRUMP,
     chiefJusticeId: 1, // John Roberts
     justiceIds: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    // Cases listed newest → oldest, a backwards-through-history campaign
-    caseIds: [23, 21, 4, 22, 16],
+    // Dred Scott, Korematsu, Hammer, Plessy, Citizens United
+    caseIds: [9, 8, 27, 16, 4],
   },
   {
     id: 5,
     name: "Love Is The Law",
-    description: "A campaign through the Supreme Court's landmark gay rights cases. Can you secure dignity and equality, or will history repeat itself?",
+    description: "A campaign through the Supreme Court's landmark gay rights cases. Can you secure dignity and equality, or is that not your concern?",
     startYear: 2015,
     startPresident: PRES_OBAMA,
     chiefJusticeId: 13, // Antonin Scalia (as Chief for this campaign)
