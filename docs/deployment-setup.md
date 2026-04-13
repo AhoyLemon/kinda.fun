@@ -10,11 +10,11 @@ If you see a blank page at `http://localhost:5173/home.html` with `auth/invalid-
 
 1. Install dependencies:
 
-- `npm install`
+- `bun install`
 
 2. Start the client:
 
-- `npm run dev:client`
+- `bun run dev:client`
 
 3. Open:
 
