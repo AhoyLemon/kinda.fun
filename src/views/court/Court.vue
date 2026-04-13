@@ -16,10 +16,11 @@
   import type { Justice, Case, Tactic, CourtGameState, CampaignState, President, StanceOpinion, StanceType } from "./ts/_types";
   import { resolveEffect, partiesAligned, partiesOpposed, leftParties, rightParties } from "./ts/_tacticEffects";
   import type { EffectOutcome } from "./ts/_tacticEffects";
-  import { gameSettings, uiSettings, difficultySettings } from "./ts/_settings";
+  import { gameSettings, uiSettings, difficultySettings, featureFlags } from "./ts/_settings";
   import { campaignSetups } from "./ts/_campaigns";
   import { useCampaignManager } from "./ts/_campaignManager";
   import { cheats, cheatsActive } from "./ts/_cheats";
+  import { playJusticeVoice, playKavanaughBeer } from "./ts/_sounds";
 
   // ── Game settings ──────────────────────────────────────────
 
@@ -537,6 +538,11 @@
 
   // Unified justice click handler: opens detail view or targeting choice depending on context
   function handleJusticeClick(justice: Justice): void {
+    function openDetail(): void {
+      ui.detailJustice = justice;
+      if (featureFlags.usePokevoice) playJusticeVoice(justice, "neutral");
+    }
+
     // Cheat: MAKE LOVE / MAKE HATE targeting mode
     if (cheatsActive && ui.cheatTargetMode && ui.phase === "playing") {
       game.leanings[justice.id] = ui.cheatTargetMode === "love" ? 100 : -100;
@@ -545,7 +551,7 @@
     }
 
     if (ui.phase === "setup") {
-      ui.detailJustice = justice;
+      openDetail();
       return;
     }
     if (ui.phase !== "playing" || ui.opponentThinking) return;
@@ -569,20 +575,20 @@
       const tactic = [...game.playbook, ...game.claimedCards].find((t) => t.id === game.selectedTacticId);
       // Invalid target conditions → open detail instead
       if (!tactic) {
-        ui.detailJustice = justice;
+        openDetail();
         return;
       }
       if (tactic.effectType === "shield" && (game.leanings[justice.id] ?? 0) <= 0) {
-        ui.detailJustice = justice;
+        openDetail();
         return;
       }
       if (tactic.effectType === "betray-friend" && (game.leanings[justice.id] ?? 0) < 60) {
-        ui.detailJustice = justice;
+        openDetail();
         return;
       }
       ui.targetingChoice = justice;
     } else {
-      ui.detailJustice = justice;
+      openDetail();
     }
   }
 
@@ -591,6 +597,16 @@
 
   function applyTactic(tactic: Tactic, targetJustice: Justice | null, actor: TurnActor): void {
     const outcome: EffectOutcome = resolveEffect(game, tactic, targetJustice, actor, { drawCard, removeFromPlaybook });
+
+    if (featureFlags.usePokevoice && actor === "player" && targetJustice) {
+      if (tactic.effectType === "justice-cocktails" && targetJustice.name === "Brett Kavanaugh") {
+        playKavanaughBeer();
+      } else {
+        const result = outcome.results.find((r) => r.justiceName === targetJustice.name && !r.isKnockon);
+        const change = result?.change ?? 0;
+        playJusticeVoice(targetJustice, change > 0 ? "happy" : change < 0 ? "sad" : "neutral");
+      }
+    }
 
     courtReport.plays.push({
       actor,

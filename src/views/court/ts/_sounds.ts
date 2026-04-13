@@ -1,54 +1,98 @@
-import { Howl, Howler } from "howler";
-import { aL, K, T } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
+import { Howl } from "howler";
+import type { Justice } from "./_types";
+
+// ─── Current Justice Voices ───────────────────────────────────────────────────
+// Each justice has three readings: neutral (name only), sad, and happy.
+// Justices speak their own name like Pokémon — see featureFlags.usePokevoice.
 
 export const currentJusticeSounds = new Howl({
   src: ["/audio/court/justicesCurrent.mp3"],
   volume: 0.9,
   sprite: {
-    roberts: [151, 1637],
-    robertsSad: [1637, 3379],
-    robertsHappy: [3379, 4714],
-    thomas: [4714, 6026],
-    thomasSad: [6026, 7361],
-    thomasHappy: [7361, 9033],
-    alito: [9033, 10588],
-    alitoSad: [10588, 12295],
-    alitoHappy: [12295, 14187],
-    sotomayor: [14187, 16068],
-    sotomayorSad: [16068, 17903],
-    sotomayorHappy: [17903, 19811],
-    kagan: [19811, 20956],
-    kaganSad: [20956, 22140],
-    kaganHappy: [22140, 23580],
-    gorsuch: [23580, 25530],
-    gorsuchSad: [25530, 27400],
-    gorsuchHappy: [27400, 28711],
-    kavanaugh: [28711, 30671],
-    kavanaughSad: [30671, 32485],
-    kavanaughHappy: [32485, 34300],
-    coneybarrett: [34300, 35863],
-    coneybarrettSad: [35863, 37686],
-    coneybarrettHappy: [37686, 39195],
-    ketanji: [39195, 41140],
-    ketanjiSad: [41140, 43090],
-    ketanjiHappy: [43090, 44455],
-  },
-  onend: function () {
-    console.log("sound played");
+    roberts: [296, 801],
+    robertsSad: [1916, 1167],
+    robertsHappy: [3379, 1057],
+    thomas: [4986, 679],
+    thomasSad: [6026, 778],
+    thomasHappy: [7361, 946],
+    alito: [9033, 1074],
+    alitoSad: [10789, 1178],
+    alitoHappy: [12547, 1104],
+    sotomayor: [14187, 1445],
+    sotomayorSad: [16231, 1405],
+    sotomayorHappy: [18135, 1800],
+    kagan: [20904, 929],
+    kaganSad: [22001, 1039],
+    kaganHappy: [23174, 969],
+    gorsuch: [24636, 1051],
+    gorsuchSad: [26448, 1138],
+    gorsuchHappy: [28386, 894],
+    kavanaugh: [29675, 894],
+    kavanaughSad: [30784, 1225],
+    kavanaughHappy: [32090, 1138],
+    coneybarrett: [34122, 952],
+    coneybarrettSad: [35683, 1318],
+    coneybarrettHappy: [37541, 987],
+    ketanji: [38899, 1173],
+    ketanjiSad: [40867, 1167],
+    ketanjiHappy: [42899, 1173],
   },
 });
 
-export const drankBeer = new Howl({
+// ─── Kavanaugh Beer Mode ──────────────────────────────────────────────────────
+// Real audio clips of Brett Kavanaugh discussing beer under oath.
+// Triggered as an easter egg when justice-cocktails is played on Kavanaugh.
+
+export const kavanaughLikesBeer = new Howl({
   src: ["/audio/court/drankBeer.mp3"],
   volume: 0.9,
   sprite: {
-    iDrankBeerWithMyFriends: [758, 2740],
-    sometimesIHadTooManyBeers: [3239, 5152],
-    iLikedBeer: [5178, 6091],
-    iStillLikeBeer: [6241, 7232],
-    haveSomeBeers: [8025, 9024],
-    oneBeerDrankBeerDrinkBeerDrinkingBeer: [9054, 13215],
-    youveProbablyHadBeers: [13159, 14645],
-    hangingOutAndHavingSomeBeersWithFriends: [26034, 28438],
+    iDrankBeerWithMyFriends: [978, 1719],
+    sometimesIHadTooManyBeers: [3317, 1796],
+    iLikedBeer: [5173, 986],
+    iStillLikeBeer: [6241, 986],
+    haveSomeBeers: [8038, 1021],
+    oneBeerDrankBeerDrinkBeerDrinkingBeer: [9067, 4226],
+    youveProbablyHadBeers: [13310, 1335],
+    hangingOutAndHavingSomeBeersWithFriends: [26017, 2399],
   },
 });
+
+// ─── Voice Utilities ──────────────────────────────────────────────────────────
+
+const justiceNameToSpriteKey: Record<string, string> = {
+  "John Roberts": "roberts",
+  "Clarence Thomas": "thomas",
+  "Samuel Alito": "alito",
+  "Sonia Sotomayor": "sotomayor",
+  "Elena Kagan": "kagan",
+  "Neil Gorsuch": "gorsuch",
+  "Brett Kavanaugh": "kavanaugh",
+  "Amy Coney Barrett": "coneybarrett",
+  "Ketanji Brown Jackson": "ketanji",
+};
+
+/** Play a justice's Pokévoice. Only works for current justices who have a sprite. */
+export function playJusticeVoice(justice: Justice, sentiment: "happy" | "sad" | "neutral"): void {
+  const baseKey = justiceNameToSpriteKey[justice.name];
+  if (!baseKey) return;
+  const suffix = sentiment === "happy" ? "Happy" : sentiment === "sad" ? "Sad" : "";
+  currentJusticeSounds.play(`${baseKey}${suffix}`);
+}
+
+const kavanaughBeerSprites = [
+  "iDrankBeerWithMyFriends",
+  "sometimesIHadTooManyBeers",
+  "iLikedBeer",
+  "iStillLikeBeer",
+  "haveSomeBeers",
+  "oneBeerDrankBeerDrinkBeerDrinkingBeer",
+  "youveProbablyHadBeers",
+  "hangingOutAndHavingSomeBeersWithFriends",
+] as const;
+
+/** Play a random Kavanaugh-on-beer clip. Used when justice-cocktails targets Kavanaugh. */
+export function playKavanaughBeer(): void {
+  const sprite = kavanaughBeerSprites[Math.floor(Math.random() * kavanaughBeerSprites.length)];
+  kavanaughLikesBeer.play(sprite);
+}

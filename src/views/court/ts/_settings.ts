@@ -61,3 +61,12 @@ export const campaignSettings: CampaignSettings = {
     maxTerms: 2,
   },
 };
+
+interface FeatureFlags {
+  /** When true, justices vocally react to being targeted or viewed, Pokémon-style. */
+  usePokevoice: boolean;
+}
+
+export const featureFlags: FeatureFlags = {
+  usePokevoice: true,
+};
