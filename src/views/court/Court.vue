@@ -16,10 +16,9 @@
   import type { Justice, Case, Tactic, CourtGameState, CampaignState, President, StanceOpinion, StanceType } from "./ts/_types";
   import { resolveEffect, partiesAligned, partiesOpposed, leftParties, rightParties } from "./ts/_tacticEffects";
   import type { EffectOutcome } from "./ts/_tacticEffects";
-  import { gameSettings, uiSettings, difficultySettings, featureFlags } from "./ts/_settings";
+  import { settings, gameSettings, uiSettings, difficultySettings, cheatsActive } from "./ts/_settings";
   import { campaignSetups } from "./ts/_campaigns";
   import { useCampaignManager } from "./ts/_campaignManager";
-  import { cheats, cheatsActive } from "./ts/_cheats";
   import { playJusticeVoice, playKavanaughBeer } from "./ts/_sounds";
 
   // ── Game settings ──────────────────────────────────────────
@@ -187,16 +186,26 @@
     if (partiesAligned(playerParty, justiceParty)) partyScore = Math.ceil(justice.stats.partyLoyalty * 2.5);
     if (partiesOpposed(playerParty, justiceParty)) partyScore = -Math.ceil(justice.stats.partyLoyalty * 2.5);
 
-    return Math.max(-100, Math.min(100, stanceScore + partyScore));
+    // Tier 4: Deterministic per-case variance to avoid samey opening leanings.
+    // Seeded by case + justice so a given case opens consistently, not with reroll noise.
+    const clampedLoyalty = Math.max(0, Math.min(10, justice.stats.partyLoyalty));
+    const loyaltyVarianceFactor = 0.4 + (10 - clampedLoyalty) * 0.1;
+    const varianceRange = Math.max(0, difficultySettings.startingVariance) * loyaltyVarianceFactor;
+    const seed = Math.imul(justice.id + 11, game.currentCase.id + 37) >>> 0;
+    const normalized = (seed % 1000) / 999;
+    const centered = normalized * 2 - 1;
+    const varianceScore = Math.round(centered * varianceRange);
+
+    return Math.max(-100, Math.min(100, stanceScore + partyScore + varianceScore));
   }
 
   // ─── Deck Management ─────────────────────────────────────────
 
   /** Build a tactic deck, respecting cheat ordering when cheats are active. */
   function buildCheatDeck(pool: Tactic[]): Tactic[] {
-    if (!cheatsActive || cheats.shuffleTactics) return shuffle(pool);
-    const ordered = cheats.tacticOrder.map((id) => pool.find((t) => t.id === id)).filter((t): t is Tactic => !!t);
-    const rest = shuffle(pool.filter((t) => !cheats.tacticOrder.includes(t.id)));
+    if (!cheatsActive || settings.cheats.shuffleTactics) return shuffle(pool);
+    const ordered = settings.cheats.tacticOrder.map((id) => pool.find((t) => t.id === id)).filter((t): t is Tactic => !!t);
+    const rest = shuffle(pool.filter((t) => !settings.cheats.tacticOrder.includes(t.id)));
     return [...ordered, ...rest];
   }
 
@@ -546,7 +555,7 @@
   function handleJusticeClick(justice: Justice): void {
     function openDetail(): void {
       ui.detailJustice = justice;
-      if (featureFlags.usePokevoice) playJusticeVoice(justice, "neutral");
+      if (settings.features.usePokeVoice) playJusticeVoice(justice, "neutral");
     }
 
     // Cheat: MAKE LOVE / MAKE HATE targeting mode
@@ -604,7 +613,7 @@
   function applyTactic(tactic: Tactic, targetJustice: Justice | null, actor: TurnActor): void {
     const outcome: EffectOutcome = resolveEffect(game, tactic, targetJustice, actor, { drawCard, removeFromPlaybook });
 
-    if (featureFlags.usePokevoice && actor === "player" && targetJustice) {
+    if (settings.features.usePokeVoice && actor === "player" && targetJustice) {
       if (tactic.effectType === "justice-cocktails" && targetJustice.name === "Brett Kavanaugh") {
         playKavanaughBeer();
       } else {

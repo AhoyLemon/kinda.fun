@@ -6,9 +6,8 @@ import { objectives } from "./_objectives";
 import { rewardCards } from "./_rewards";
 import { campaignSetups } from "./_campaigns";
 import { presidents } from "./_presidents";
-import { campaignSettings } from "./_settings";
+import { campaignSettings, settings, cheatsActive } from "./_settings";
 import { rightParties, leftParties, partiesAligned } from "./_tacticEffects";
-import { cheats, cheatsActive } from "./_cheats";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -153,18 +152,18 @@ export function useCampaignManager(
 
   /** Build a reward deck, placing cheat-ordered IDs first when cheats are active. */
   function buildCheatRewardDeck(pool: RewardCard[]): RewardCard[] {
-    if (!cheatsActive || cheats.shuffleBonus || !cheats.bonusOrder) return shuffle(pool);
-    const orderedIds = new Set(cheats.bonusOrder);
-    const ordered = cheats.bonusOrder.map((id) => pool.find((c) => c.id === id)).filter((c): c is RewardCard => !!c);
+    if (!cheatsActive || settings.cheats.shuffleBonus || !settings.cheats.bonusOrder) return shuffle(pool);
+    const orderedIds = new Set(settings.cheats.bonusOrder);
+    const ordered = settings.cheats.bonusOrder.map((id) => pool.find((c) => c.id === id)).filter((c): c is RewardCard => !!c);
     const rest = shuffle(pool.filter((c) => !orderedIds.has(c.id)));
     return [...ordered, ...rest];
   }
 
   /** Build an objective list, placing cheat-ordered IDs first when cheats are active. */
   function buildCheatObjectiveList(pool: ObjectiveCard[]): ObjectiveCard[] {
-    if (!cheatsActive || cheats.shuffleObjectives || !cheats.objectiveOrder) return shuffle(pool);
-    const orderedIds = new Set(cheats.objectiveOrder);
-    const ordered = cheats.objectiveOrder.map((id) => pool.find((o) => o.id === id)).filter((o): o is ObjectiveCard => !!o);
+    if (!cheatsActive || settings.cheats.shuffleObjectives || !settings.cheats.objectiveOrder) return shuffle(pool);
+    const orderedIds = new Set(settings.cheats.objectiveOrder);
+    const ordered = settings.cheats.objectiveOrder.map((id) => pool.find((o) => o.id === id)).filter((o): o is ObjectiveCard => !!o);
     const rest = shuffle(pool.filter((o) => !orderedIds.has(o.id)));
     return [...ordered, ...rest];
   }
