@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 // ─── President detail modal ────────────────────────────────────
 .president-detail-overlay {
   position: fixed;
@@ -11,7 +13,7 @@
 }
 
 .president-detail {
-  background: #1c1616;
+  background: $court-modal-bg;
   border: 2px solid $court-gold;
   border-radius: 12px;
   max-width: 460px;
@@ -198,10 +200,10 @@
     border-left: 3px solid rgba(255, 255, 255, 0.1);
 
     &.stance--for {
-      border-left-color: #4a9e5c;
+      border-left-color: $stance-for;
     }
     &.stance--against {
-      border-left-color: #a84444;
+      border-left-color: $stance-against;
     }
     &.stance--neutral {
       border-left-color: rgba(255, 255, 255, 0.2);

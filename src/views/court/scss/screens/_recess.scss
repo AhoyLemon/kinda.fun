@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 // ─── Recess Screen ───────────────────────────────────────────
 .court-recess {
   max-width: 800px;
@@ -76,7 +78,7 @@
   color: #888;
 }
 .recess-event--retirement .recess-event-icon {
-  color: #ffcc44;
+  color: $outcome-tied;
 }
 .recess-event--nomination .recess-event-icon {
   color: #88ffaa;

@@ -1,0 +1,53 @@
+// ─── Inherited globals ───────────────────────────────────────
+$bold: 700;
+$mobile-max: 767px;
+
+// ─── Court Palette ───────────────────────────────────────────
+$court-bg: #1a0a0a;
+$court-surface: #2c1a1a;
+$court-card: #f5f0e8;
+$court-card-dark: #e8dfc8;
+$court-gold: #c9a84c;
+$court-gold-light: #e8c96e;
+$court-gold-dark: darken($court-gold, 20%);
+$court-text: #1a0a0a;
+$court-text-muted: #5a4a3a;
+$court-red: #8b2020;
+$court-blue: #1a3a6a;
+
+// ─── Party Colors ────────────────────────────────────────────
+$party-democrat: #1a3a6a;
+$party-republican: #8b2020;
+$party-whig: #5a3a8a;
+$party-federalist: #2a5a2a;
+$party-democratic-republican: #3a5a2a;
+
+// ─── Justice Type Colors ─────────────────────────────────────
+$type-fictional: #a144cf;
+$type-current: rgb(20, 209, 20);
+$type-historical: orange;
+$type-celebrity: rgb(75, 75, 235);
+
+// ─── Fonts ───────────────────────────────────────────────────
+$monospace: "Fira Code", monospace;
+$serif: "Crimson Text", serif;
+$sans-serif: "Poppins", sans-serif;
+
+// ─── Outcome Colors ──────────────────────────────────────────
+$outcome-won: #5aef7a;
+$outcome-lost: #ef7a5a;
+$outcome-tied: #ffcc44;
+
+// ─── One-off Colors (pending review) ─────────────────────────
+$color-green-dark: #2a7a3a;
+$color-green-mid: #66ee88;
+$color-negative-mid: #ee8888;
+$color-opponent: #ef9f5a;
+$stance-for: #4a9e5c;
+$stance-against: #a84444;
+$card-type-utility: #6a2a8a;
+$buff-purple: #9b59b6;
+$sus-blue: #3c50a0;
+$stat-logic: #2a7a8a;
+$stat-charisma: #8a4a2a;
+$court-modal-bg: #1c1616;

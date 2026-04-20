@@ -17,17 +17,12 @@
   text-transform: uppercase;
   letter-spacing: 0.12em;
   border-bottom: 2px solid #ff60c0;
-  // pointer-events: none;
-
   user-select: none;
 
   &__icon {
     font-size: 0.9rem;
   }
 
-  //pointer-events: none;
-
-  pointer-events: hover;
   &:hover {
     transition: opacity 0.15s linear;
     opacity: 0.1;

@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 // ─── Game Over Screen ─────────────────────────────────────────
 .court-game-over {
   max-width: 700px;
@@ -85,12 +87,12 @@
 
   &.result--won {
     background: rgba(50, 200, 80, 0.2);
-    color: #66ee88;
+    color: $color-green-mid;
   }
 
   &.result--lost {
     background: rgba(200, 50, 50, 0.2);
-    color: #ee8888;
+    color: $color-negative-mid;
   }
 }
 
@@ -117,10 +119,10 @@
   line-height: 1;
 
   &.stat--won {
-    color: #66ee88;
+    color: $color-green-mid;
   }
   &.stat--lost {
-    color: #ee8888;
+    color: $color-negative-mid;
   }
 }
 
@@ -218,13 +220,13 @@
   }
 
   &.gt--won .gt-result {
-    color: #66ee88;
+    color: $color-green-mid;
   }
   &.gt--lost .gt-result {
-    color: #ee8888;
+    color: $color-negative-mid;
   }
   &.gt--tied .gt-result {
-    color: #ffcc44;
+    color: $outcome-tied;
   }
 }
 

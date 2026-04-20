@@ -1,4 +1,6 @@
-﻿// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+﻿@use '../abstracts/variables' as *;
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // PLAYING PHASE
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -63,7 +65,7 @@
     color: $court-gold-light;
   }
   &.is-opponent {
-    color: #ef9f5a;
+    color: $color-opponent;
     animation: pulse-hint 1s ease-in-out infinite;
   }
 }
@@ -114,7 +116,7 @@
   white-space: nowrap;
 
   &.is-winning {
-    color: #5aef7a;
+    color: $outcome-won;
   }
 
   .tally-status {
@@ -130,7 +132,7 @@
   padding: 0.75rem 1rem;
   background: $court-surface;
   border-radius: 6px;
-  border: 1px solid rgba(201, 168, 76, 0.3);
+  border: 1px solid rgba($court-gold, 0.3);
 }
 
 .overview-chip {
@@ -159,7 +161,7 @@
 }
 
 .stat--best {
-  color: #5aef7a;
+  color: $outcome-won;
 }
 .stat--worst {
   color: #ef5a5a;
@@ -208,6 +210,7 @@
 // ─── Playing phase bench grid ────────────────────────────────
 .bench-grid--playing {
   .justice-card {
+    position: relative;
     cursor: default;
     transition:
       border-color 0.15s,
@@ -226,7 +229,7 @@
   }
 
   .justice-card.is-ally {
-    border-color: #2a7a3a;
+    border-color: $color-green-dark;
   }
 
   .justice-card.is-enemy {
@@ -354,7 +357,7 @@
     border-top: 4px solid $court-blue;
   }
   &.card-type-utility {
-    border-top: 4px solid #6a2a8a;
+    border-top: 4px solid $card-type-utility;
   }
 }
 
@@ -407,57 +410,6 @@
   font-weight: $bold;
   color: $court-red;
 }
-
-// // ─── Tactic feedback toast ───────────────────────────────────
-// .tactic-toast {
-//   position: fixed;
-//   bottom: 1.5rem;
-//   right: 1.5rem;
-//   background: $court-surface;
-//   border: 2px solid $court-gold;
-//   border-radius: 8px;
-//   padding: 0.75rem 1rem;
-//   min-width: 220px;
-//   max-width: 300px;
-//   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
-//   z-index: 100;
-// }
-
-// .toast-header {
-//   font-family: $serif;
-//   font-size: 0.9rem;
-//   font-weight: $bold;
-//   color: $court-gold;
-//   margin-bottom: 0.5rem;
-//   border-bottom: 1px solid rgba(201, 168, 76, 0.3);
-//   padding-bottom: 0.4rem;
-// }
-
-// .toast-results {
-//   display: flex;
-//   flex-direction: column;
-//   gap: 0.25rem;
-// }
-
-// .toast-result {
-//   display: flex;
-//   justify-content: space-between;
-//   font-size: 0.8rem;
-//   color: #ccc;
-
-//   &.positive .toast-change {
-//     color: #5aef7a;
-//     font-weight: $bold;
-//   }
-//   &.negative .toast-change {
-//     color: #ef5a5a;
-//     font-weight: $bold;
-//   }
-//   &.neutral {
-//     color: rgba(255, 255, 255, 0.4);
-//     font-style: italic;
-//   }
-// }
 
 .toast-justice {
   flex: 1;
@@ -528,12 +480,6 @@
     background: rgba(180, 90, 90, 0.2);
   }
 }
-.justice-recused-badge {
-}
-
-.bench-grid--playing .justice-card {
-  position: relative; // needed for absolute shield badge
-}
 
 // ─── Napping overlay ─────────────────────────────────────────
 .justice-napping-overlay {
@@ -559,7 +505,7 @@
   top: 0;
   left: 0;
   font-size: 0.65rem;
-  background: rgba(155, 89, 182, 0.85);
+  background: rgba($buff-purple, 0.85);
   color: #fff;
   font-weight: bold;
   padding: 0.15em 0.45em;
@@ -569,7 +515,7 @@
 }
 
 .justice-card.is-buffed {
-  box-shadow: 0 0 10px rgba(155, 89, 182, 0.5);
+  box-shadow: 0 0 10px rgba($buff-purple, 0.5);
 }
 
 // ─── Susceptibility badge (Be Extremely Boring) ──────────────
@@ -578,7 +524,7 @@
   bottom: 30px; // above the vote track
   left: 0;
   font-size: 0.65rem;
-  background: rgba(60, 80, 160, 0.88);
+  background: rgba($sus-blue, 0.88);
   color: #fff;
   font-weight: bold;
   padding: 0.15em 0.45em;
@@ -589,12 +535,6 @@
 
 .justice-card.is-sus {
   box-shadow: 0 0 10px rgba(80, 100, 220, 0.55);
-}
-
-// ─── Multi-target selected ───────────────────────────────────
-.justice-card.is-multi-selected {
-  border-color: #f39c12 !important;
-  box-shadow: 0 0 18px rgba(243, 156, 18, 0.65) !important;
 }
 
 // ─── Status row (chips between name and vote meter) ──────────
@@ -615,13 +555,11 @@
     line-height: 1;
     cursor: help;
     background: rgba(255, 255, 255, 0.5);
-    border: 1px dotted;
-    border-color: red, blue;
+    border: 1px dotted rgba(255, 255, 255, 0.4);
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.38);
   }
 }
 
-// yoga overlay matches napping overlay
 .justice-card.is-yoga {
   opacity: 0.8;
 }
@@ -752,20 +690,15 @@
   border-top: 3px solid $court-gold;
 }
 
-.tactic-card.is-claiming-pick {
-  border-color: $court-gold !important;
-  box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.4);
-}
-
 // ─── Opponent browsing highlight ─────────────────────────────
 .tactic-card.is-opponent-browsing {
-  outline: 2px solid #ef9f5a;
+  outline: 2px solid $color-opponent;
   outline-offset: 2px;
   transform: translateY(-2px);
   transition:
     outline 0.15s ease,
     transform 0.15s ease;
-  box-shadow: 0 4px 12px rgba(239, 159, 90, 0.25);
+  box-shadow: 0 4px 12px rgba($color-opponent, 0.25);
 }
 
 // ─── Playbook tactic card transition animations ─────────────────────────
@@ -981,4 +914,55 @@
   50% {
     opacity: 0.7;
   }
+}
+
+// ─── Trial reward cards box ───────────────────────────────────
+.court-trial-rewards {
+  background: rgba($court-gold, 0.06);
+  border: 1px dashed rgba($court-gold, 0.35);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.trial-rewards-header {
+  flex-shrink: 0;
+}
+
+.trial-rewards-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $court-gold;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.trial-rewards-list {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.trial-reward-card {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.82rem;
+}
+
+.trc-icon {
+  font-size: 1rem;
+}
+
+.trc-name {
+  color: rgba(255, 255, 255, 0.75);
 }

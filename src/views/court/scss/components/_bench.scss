@@ -1,3 +1,6 @@
+@use '../abstracts/variables' as *;
+
+// ─── Bench Grid ──────────────────────────────────────────────
 .bench-grid {
   display: flex;
   flex-wrap: wrap;
@@ -8,7 +11,6 @@
     background: $court-card;
     color: $court-text;
     border-radius: 8px;
-    padding: 0.9rem 1rem 1rem;
     border: 2px solid darken($court-gold, 20%);
     position: relative;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
@@ -17,7 +19,6 @@
     gap: 0.4rem;
     flex-basis: 200px;
     padding: 0;
-    flex-direction: column;
     justify-content: space-between;
 
     &__badge {
@@ -53,37 +54,33 @@
     .pic-and-name {
       display: grid;
       grid-template-columns: 50px 1fr;
-      padding-left: 10px;
-      padding-top: 10px;
-      padding-right: 10px;
+      padding: 10px 10px 0;
       gap: 10px;
     }
 
-    // ─── Vote meter ──────────────────────────────────────────────
+    // ─── Vote meter ──────────────────────────────────────────
     .justice-vote {
       margin-top: 0.5rem;
+
       .vote-label {
         text-transform: uppercase;
         font-size: 0.72rem;
         text-align: center;
 
         &.positive {
-          color: rgb(42, 122, 58);
+          color: $color-green-dark;
         }
         &.negative {
-          color: rgb(139, 32, 32);
+          color: $court-red;
         }
       }
+
       .vote-track {
         position: relative;
         height: 30px;
         background: rgba(223, 191, 140, 0.25);
         overflow: hidden;
-        border-bottom-left-radius: 4px;
-        border-bottom-right-radius: 4px;
-        overflow: hidden;
-
-        position: relative;
+        border-radius: 0 0 4px 4px;
 
         &:after {
           content: "";
@@ -104,6 +101,7 @@
         transform: translateX(-50%);
         z-index: 3;
       }
+
       .vote-fill {
         position: absolute;
         top: 0;
@@ -143,7 +141,6 @@
 }
 
 .justice-card {
-  // Default hint-tag: white text on dark backgrounds (detail modal)
   .hint-tag {
     font-size: 0.7rem;
     border-radius: 3px;
@@ -153,4 +150,152 @@
     border: 1px solid rgba(26, 10, 10, 0.14);
     color: $court-text-muted;
   }
+}
+
+// ─── Bench header ────────────────────────────────────────────
+.bench-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bench-header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.bench-label {
+  font-family: $serif;
+  font-size: 0.95rem;
+  color: $court-gold;
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+
+// ─── Stat Bars ───────────────────────────────────────────────
+.stat {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr 1.5rem;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+}
+
+.stat-label {
+  color: $court-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-track {
+  background: $court-card-dark;
+  border-radius: 3px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.stat-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+
+  &.fill-logic {
+    background: $stat-logic;
+  }
+  &.fill-charisma {
+    background: $stat-charisma;
+  }
+  &.fill-loyalty {
+    background: $court-red;
+  }
+}
+
+.stat-val {
+  text-align: right;
+  color: $court-text-muted;
+  font-weight: $bold;
+}
+
+// ─── Justice card: hints and hover ───────────────────────────
+.justice-card__hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+  align-content: baseline;
+}
+
+.justice-card__view-cta {
+  font-size: 0.7rem;
+  color: $court-text-muted;
+  font-style: italic;
+  margin-top: auto;
+  padding-top: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.justice-card:hover .justice-card__view-cta {
+  opacity: 0.7;
+}
+
+.court-main .justice-card {
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    border-color 0.15s;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    border-color: $court-gold-light;
+  }
+}
+
+.justice-card__president {
+  font-size: 0.68rem;
+  color: $court-text-muted;
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.justice-card {
+  &.has-image {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+
+    .justice-card__hints,
+    .justice-card__view-cta {
+      grid-column: span 2;
+    }
+  }
+
+  .justice-card__img {
+    width: 100%;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    object-position: center 15%;
+  }
+}
+
+// ─── Chief Justice badge ──────────────────────────────────────
+.justice-chief-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: $court-gold;
+  color: $court-text;
+  font-size: 0.58rem;
+  font-weight: $bold;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.45rem;
+  border-radius: 0 6px 0 6px;
+  z-index: 2;
+  white-space: nowrap;
 }

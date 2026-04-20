@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 // ─── Title Screen ────────────────────────────────────────────
 main.court-title {
   margin: 0 auto;
@@ -18,13 +20,11 @@ main.court-title {
       font-size: clamp(3rem, 10.5vw, 10rem);
       font-weight: 475;
       color: $court-gold;
-      margin: 0;
-      line-height: 1.02;
       margin: unset;
+      line-height: 1.02;
     }
 
     .title-sub {
-      font-size: 1rem;
       font-size: 3.5vw;
       color: rgba(255, 255, 255, 0.5);
       margin: 0.3rem 0 0;
@@ -53,28 +53,33 @@ main.court-title {
       border-radius: 0.75rem;
       border: 2px solid rgba($court-gold, 0.4);
       font-family: $sans-serif;
-
       background-color: #080808;
-      .label {
-        font-size: 215%;
-        color: $court-gold;
-        font-weight: 515;
-      }
-      .desc {
-        font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.55);
-      }
-
       transition:
         scale 0.25s ease-out,
         background-color 0.3s linear,
         box-shadow 0.2s linear,
         border-color 0.4s linear;
+
+      .label {
+        font-size: 215%;
+        color: $court-gold;
+        font-weight: 515;
+      }
+
+      .desc {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.55);
+      }
+
       &:hover {
         scale: 1.05;
         background-color: #040412;
         box-shadow: 0 0 3px black;
         border-color: $court-gold;
+      }
+
+      &:active {
+        scale: 0.98;
       }
     }
 

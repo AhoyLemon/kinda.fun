@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 // ─── Buttons ─────────────────────────────────────────────────
 .btn {
   display: inline-block;
@@ -59,5 +61,59 @@
     background: rgba(220, 100, 30, 0.15);
     color: #f0a060;
     border-color: rgba(220, 100, 30, 0.45);
+  }
+}
+
+// ─── Shared button sizes ──────────────────────────────────────
+.btn--small {
+  font-size: 0.78rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+}
+
+// ─── Proceed / activate ───────────────────────────────────────
+.btn--proceed {
+  background: $court-gold;
+  color: $court-text;
+  border: none;
+  padding: 0.7rem 1.6rem;
+  border-radius: 6px;
+  font-family: $sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.88;
+  }
+
+  &:active {
+    opacity: 0.75;
+  }
+}
+
+.btn--activate {
+  background: rgba($court-gold, 0.2);
+  color: $court-gold;
+  border: 1px solid rgba($court-gold, 0.5);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
+  font-family: $sans-serif;
+  transition: background 0.12s;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  &:not(:disabled):hover {
+    background: rgba($court-gold, 0.35);
+  }
+
+  &:not(:disabled):active {
+    background: rgba($court-gold, 0.45);
   }
 }

@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 .tippy-content {
   font-family: $sans-serif;
   font-size: 0.75rem;

@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 // ─── Justice detail modal ─────────────────────────────────────
 .justice-detail-overlay {
   position: fixed;
@@ -11,7 +13,7 @@
 }
 
 .justice-detail {
-  background: #1c1616;
+  background: $court-modal-bg;
   border: 2px solid $court-gold;
   border-radius: 12px;
   // padding: 0 1.5rem 1.5rem 1.5rem;
@@ -36,7 +38,7 @@
       text-transform: uppercase;
       font-weight: 600;
       letter-spacing: 0.06em;
-      color: #1c1616;
+      color: $court-modal-bg;
     }
     .jd-close {
       background: none;
@@ -54,10 +56,10 @@
     }
   }
   .jd-content {
-    padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+    padding: 0.5rem 1.5rem 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.6rem;
   }
 
   .jd-quick-info {
@@ -131,7 +133,7 @@
     }
     .jd-demographics {
       display: flex;
-      gap: 10px;
+      gap: 0.6rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       font-size: 75%;
@@ -293,7 +295,7 @@
       padding: 0.15rem 0.4rem;
       white-space: nowrap;
       border: 1px solid rgba(26, 10, 10, 0.14);
-      background-color: #f5f0e8;
+      background-color: $court-card;
       color: $court-text;
     }
   }
@@ -310,26 +312,6 @@
     flex-wrap: wrap;
     gap: 0.35rem;
   }
-
-  // &.justice-type-fictional {
-  //   border-color: $type-fictional;
-  //   .jd-header {
-  //     background-color: $type-fictional;
-  //   }
-  //   .jd-name {
-  //     color: $type-fictional;
-  //   }
-  // }
-
-  // &.justice-type-celebrity {
-  //   border-color: $type-celebrity;
-  //   .jd-header {
-  //     background-color: $type-celebrity;
-  //   }
-  //   .jd-name {
-  //     color: $type-celebrity;
-  //   }
-  // }
 
   .jd-vote-section {
     border-top: 1px solid rgba(255, 255, 255, 0.08);

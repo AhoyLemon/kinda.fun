@@ -1,5 +1,6 @@
+@use '../abstracts/variables' as *;
+
 // ─── Player / Opponent color tokens ──────────────────────────
-// Source of truth — also exported as CSS custom props for TacticToast.vue
 $cr-player-bg: #e5f0f3;
 $cr-player-fg: #131313;
 $cr-player-positive: #044707;

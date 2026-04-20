@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 // ─── Verdict Screen ──────────────────────────────────────────
 .court-verdict {
   max-width: 900px;
@@ -15,8 +17,8 @@
   border: 3px solid;
 
   &.verdict--won {
-    background: linear-gradient(160deg, rgba(42, 122, 58, 0.15) 0%, rgba(26, 10, 10, 0) 100%);
-    border-color: #2a7a3a;
+    background: linear-gradient(160deg, rgba($color-green-dark, 0.15) 0%, rgba(26, 10, 10, 0) 100%);
+    border-color: $color-green-dark;
   }
 
   &.verdict--tied {
@@ -37,7 +39,7 @@
   margin: 0 0 0.5rem 0;
 
   .verdict--won & {
-    color: #5aef7a;
+    color: $outcome-won;
   }
 
   .verdict--tied & {
@@ -45,7 +47,7 @@
   }
 
   .verdict--lost & {
-    color: #ef7a5a;
+    color: $outcome-lost;
   }
 }
 
@@ -102,11 +104,11 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   .verdict-section--for & {
-    color: #5aef7a;
+    color: $outcome-won;
   }
 
   .verdict-section--against & {
-    color: #ef7a5a;
+    color: $outcome-lost;
   }
 
   .verdict-section--abstain & {
@@ -137,7 +139,7 @@
   }
 
   .verdict-section--for & {
-    border-left: 3px solid #2a7a3a;
+    border-left: 3px solid $color-green-dark;
   }
 
   .verdict-section--against & {
@@ -196,13 +198,13 @@
   border: 1px solid;
 
   &.chip--player {
-    background: rgba(42, 122, 58, 0.15);
-    border-color: rgba(42, 122, 58, 0.4);
+    background: rgba($color-green-dark, 0.15);
+    border-color: rgba($color-green-dark, 0.4);
   }
 
   &.chip--opponent {
-    background: rgba(139, 32, 32, 0.15);
-    border-color: rgba(139, 32, 32, 0.4);
+    background: rgba($court-red, 0.15);
+    border-color: rgba($court-red, 0.4);
   }
 }
 
@@ -213,4 +215,60 @@
   justify-content: center;
   flex-wrap: wrap;
   padding-bottom: 2rem;
+}
+
+// ─── Verdict objective display ────────────────────────────────
+.verdict-objective {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.vo-objective {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.vo-icon {
+  font-size: 1.2rem;
+}
+
+.vo-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.vo-status {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 99px;
+
+  &.status--passing {
+    background: rgba(50, 200, 80, 0.2);
+    color: $color-green-mid;
+  }
+
+  &.status--failing {
+    background: rgba(200, 50, 50, 0.2);
+    color: $color-negative-mid;
+  }
+
+  &.status--tied {
+    background: rgba(255, 200, 60, 0.15);
+    color: $outcome-tied;
+  }
+}
+
+.vo-progress {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
 }
