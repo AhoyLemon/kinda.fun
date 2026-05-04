@@ -1,4 +1,4 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as *;
 
 // ─── Title Screen ────────────────────────────────────────────
 main.court-title {
@@ -91,6 +91,8 @@ main.court-title {
         border-radius: 4px;
         position: relative;
         padding-left: 1.5em;
+        margin-left: 2em;
+        font-size: 0.85em;
         .emoji {
           position: absolute;
           top: -8px;
