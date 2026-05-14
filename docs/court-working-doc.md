@@ -37,43 +37,17 @@ See docs/court-working-doc-history.md for a session-by-session breakdown of the 
 
 _(All items from the previous session have been implemented. See court-working-doc-history.md for details.)_
 
-TACTIC SUGGESTIONS (from previous WHEN COMPLETE prompt):
+TACTIC SUGGESTIONS (status):
 
-### New Tactics to Add
+Implemented in issue #193:
 
-- **Request An Amicus**
-  - Targets all justices, but scaled: the more justices already leaning your way, the stronger the effect.
-  - Effect: Sway all justices slightly; bonus sway per justice already on your side (momentum-style).
-  - Flavor: "You found some friends with opinions. Relevant ones."
-  - Why: Rewards a player who's building momentum; adds a satisfying snowball feeling.
-
-- **Catch A Justice On Their Phone**
-  - Single target.
-  - Effect: Reduces target's `susceptibility` for the rest of the trial (they've already googled the answer and aren't listening anymore) + mild negative sway.
-  - Flavor: "They weren't taking notes. They were texting."
-  - Why: A counter/debuff more about disruption than persuasion. Changes pace.
-
-- **File An Emergency Motion**
-  - No target.
-  - Effect: Immediately retrieve one previously-played card from the discard pile and add it back to your hand.
-  - Flavor: "You found a procedural loophole. There's always a loophole."
-  - Why: Resource recovery. Lets you replay a favorite tactic. Has strategic depth.
-
-- **Recite The Dissent**
-  - No target.
-  - Effect: For each justice already voting AGAINST you, gain a small flat sway bonus on all justices voting FOR you.
-  - Flavor: "You read the whole thing out loud. All 47 pages."
-  - Why: Rewards being behind — helps catch up when losing. Creates tension.
-
-### Tactics to Consider Removing
-
-- **Yell 'FREEDOM!'** (id:10) — It's extremely simple (flat sway-all) and the joke lands once but it doesn't have any mechanical depth. It's kept alive by being funny, which is valid. No strong case to remove it, but it's the most replaceable card if a slot is needed.
-
-### Tactics to Consider Editing
-
-- **Encourage A Nap** — The wake-up bonus (+15 leaning) isn't visible to the player from the card description. Consider adding a hint like "Returns reinvigorated" or noting they come back with improved lean, so players understand why they'd waste a round on it.
-- **Recuse Yourself!** — The mechanic (halved sway resistance while recused) isn't communicated. The description could say something like "Their resistance is halved while absent." Players shouldn't have to discover this by accident.
-- **Plant A Story** — Consider making this targeted instead of all-justices, with a stronger `partyLoyalty` effect on one justice. The all-justices version is fine but a targeted version creates more decision-making.
+- Added: Request An Amicus
+- Added: Catch A Justice On Their Phone
+- Added: File An Emergency Motion
+- Added: Recite The Dissent
+- Replaced: Yell 'FREEDOM!' with Request An Amicus
+- Updated card text clarity: Encourage A Nap (+15 wake-up), Recuse Yourself! (halved sway while recused)
+- Adjusted: Plant A Story now targets one justice with stronger impact
 
 ## Eventual Next Steps
 

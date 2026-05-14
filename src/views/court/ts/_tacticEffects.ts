@@ -186,6 +186,102 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
       reportTarget = targetJustice.name;
     }
 
+    // ── Request-amicus ─────────────────────────────────────────
+  } else if (tactic.effectType === "request-amicus") {
+    consumeTactic(game, tactic, helpers);
+    const dir = actor === "opponent" ? -1 : 1;
+    const alliesCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) * dir > gameSettings.abstentionThreshold).length;
+    const momentumPower = Math.min(30, 8 + alliesCount * 2);
+
+    let targets = game.bench.filter((j) => !(j.id in game.nappingJustices) && !(j.id in game.yogaJustices));
+
+    if (actor === "opponent") {
+      const blocked = targets.filter((j) => game.playerShields.includes(j.id));
+      targets = targets.filter((j) => !game.playerShields.includes(j.id));
+      if (blocked.length > 0) {
+        game.playerShields = game.playerShields.filter((id) => !blocked.some((j) => j.id === id));
+      }
+    } else {
+      const blocked = targets.filter((j) => game.opponentShields.includes(j.id));
+      targets = targets.filter((j) => !game.opponentShields.includes(j.id));
+      if (blocked.length > 0) {
+        game.opponentShields = game.opponentShields.filter((id) => !blocked.some((j) => j.id === id));
+      }
+    }
+
+    targets.forEach((j) => {
+      const old = game.leanings[j.id] ?? 0;
+      const next = Math.max(-100, Math.min(100, old + momentumPower * dir));
+      game.leanings[j.id] = next;
+      results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+    });
+
+    reportTarget = "All justices";
+    overrideFeedback = `Your amicus pile created momentum. ${alliesCount} justice${alliesCount === 1 ? "" : "s"} were already with you.`;
+
+    // ── Catch-phone ────────────────────────────────────────────
+  } else if (tactic.effectType === "catch-phone") {
+    consumeTactic(game, tactic, helpers);
+    if (targetJustice) {
+      const blockedByPlayer = actor === "opponent" && game.playerShields.includes(targetJustice.id);
+      const blockedByOpponent = actor === "player" && game.opponentShields.includes(targetJustice.id);
+      if (blockedByPlayer || blockedByOpponent) {
+        if (blockedByPlayer) game.playerShields = game.playerShields.filter((id) => id !== targetJustice.id);
+        if (blockedByOpponent) game.opponentShields = game.opponentShields.filter((id) => id !== targetJustice.id);
+        reportTarget = targetJustice.name;
+        overrideFeedback = `${targetJustice.name} was protected before the distraction could land.`;
+      } else {
+        game.statMods[targetJustice.id] = {
+          ...(game.statMods[targetJustice.id] ?? {}),
+          succeptibility: (game.statMods[targetJustice.id]?.succeptibility ?? 0) - 3,
+        };
+
+        const dir = actor === "player" ? 1 : -1;
+        const old = game.leanings[targetJustice.id] ?? 0;
+        const next = Math.max(-100, Math.min(100, old - 8 * dir));
+        game.leanings[targetJustice.id] = next;
+        results.push({ justiceName: targetJustice.name, change: next - old, newLeaning: next });
+        reportTarget = targetJustice.name;
+        overrideFeedback = `${targetJustice.name} stopped listening. They're less susceptible for the rest of this trial.`;
+      }
+    }
+
+    // ── Emergency-motion ───────────────────────────────────────
+  } else if (tactic.effectType === "emergency-motion") {
+    consumeTactic(game, tactic, helpers);
+    const recovered = [...game.discardPile].reverse().find((c) => c.id !== tactic.id);
+    if (recovered) {
+      const idx = game.discardPile.findIndex((c) => c.id === recovered.id);
+      if (idx !== -1) game.discardPile.splice(idx, 1);
+      game.playbook.push(recovered);
+      reportTarget = recovered.name;
+      overrideFeedback = `${recovered.name} has been restored to your playbook.`;
+    } else {
+      reportTarget = "Discard pile";
+      overrideFeedback = "No prior tactics were available to recover.";
+    }
+
+    // ── Recite-dissent ─────────────────────────────────────────
+  } else if (tactic.effectType === "recite-dissent") {
+    consumeTactic(game, tactic, helpers);
+    const dir = actor === "player" ? 1 : -1;
+    const againstCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) * dir < -gameSettings.abstentionThreshold).length;
+    const proTargets = game.bench.filter((j) => (game.leanings[j.id] ?? 0) * dir > gameSettings.abstentionThreshold);
+    const swayPerJustice = Math.min(30, againstCount * 3);
+
+    proTargets.forEach((j) => {
+      const old = game.leanings[j.id] ?? 0;
+      const next = Math.max(-100, Math.min(100, old + swayPerJustice * dir));
+      game.leanings[j.id] = next;
+      results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+    });
+
+    reportTarget = proTargets.length > 0 ? "Your current supporters" : "No current supporters";
+    overrideFeedback =
+      proTargets.length > 0
+        ? `The dissent energized your side. ${againstCount} opposing vote${againstCount === 1 ? "" : "s"} amplified the effect.`
+        : "No justice was currently on your side to rally.";
+
     // ── Betray-friend ────────────────────────────────────────────
   } else if (tactic.effectType === "betray-friend") {
     consumeTactic(game, tactic, helpers);
@@ -405,14 +501,43 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
     // ── Plant-story ───────────────────────────────────────────────
   } else if (tactic.effectType === "plant-story") {
     consumeTactic(game, tactic, helpers);
-    game.bench.forEach((j) => {
-      game.statMods[j.id] = {
-        ...(game.statMods[j.id] ?? {}),
-        partyLoyalty: (game.statMods[j.id]?.partyLoyalty ?? 0) + 3,
-      };
-      results.push({ justiceName: j.name, change: 0, newLeaning: game.leanings[j.id] ?? 0 });
-    });
-    reportTarget = "All justices";
+    if (targetJustice) {
+      const blockedByPlayer = actor === "opponent" && game.playerShields.includes(targetJustice.id);
+      const blockedByOpponent = actor === "player" && game.opponentShields.includes(targetJustice.id);
+      if (blockedByPlayer || blockedByOpponent) {
+        if (blockedByPlayer) game.playerShields = game.playerShields.filter((id) => id !== targetJustice.id);
+        if (blockedByOpponent) game.opponentShields = game.opponentShields.filter((id) => id !== targetJustice.id);
+        reportTarget = targetJustice.name;
+        overrideFeedback = `${targetJustice.name} was shielded before the story could land.`;
+      } else {
+        game.statMods[targetJustice.id] = {
+          ...(game.statMods[targetJustice.id] ?? {}),
+          partyLoyalty: (game.statMods[targetJustice.id]?.partyLoyalty ?? 0) + 5,
+        };
+
+        if (game.currentCase && game.playerSide) {
+          const actorFavoredParty =
+            actor === "player"
+              ? game.playerSide === "prosecution"
+                ? game.currentCase.prosecution.favoredBy
+                : game.currentCase.defendant.favoredBy
+              : game.playerSide === "prosecution"
+                ? game.currentCase.defendant.favoredBy
+                : game.currentCase.prosecution.favoredBy;
+          const justiceParty = targetJustice.nominatedBy?.party;
+          const dir = actor === "player" ? 1 : -1;
+          const alignmentDelta = justiceParty && partiesAligned(justiceParty, actorFavoredParty) ? 14 * dir : -14 * dir;
+          const old = game.leanings[targetJustice.id] ?? 0;
+          const next = Math.max(-100, Math.min(100, old + alignmentDelta));
+          game.leanings[targetJustice.id] = next;
+          results.push({ justiceName: targetJustice.name, change: next - old, newLeaning: next });
+        } else {
+          results.push({ justiceName: targetJustice.name, change: 0, newLeaning: game.leanings[targetJustice.id] ?? 0 });
+        }
+
+        reportTarget = targetJustice.name;
+      }
+    }
 
     // ── Lemon-test ────────────────────────────────────────────────
   } else if (tactic.effectType === "lemon-test") {

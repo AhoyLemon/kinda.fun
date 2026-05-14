@@ -528,13 +528,15 @@
 
     if (
       tactic.effectType === "sway-all" ||
+      tactic.effectType === "request-amicus" ||
       tactic.effectType === "susceptibility" ||
       tactic.effectType === "discard-all" ||
+      tactic.effectType === "emergency-motion" ||
+      tactic.effectType === "recite-dissent" ||
       tactic.effectType === "insult-chief" ||
       tactic.effectType === "presidential-call" ||
       tactic.effectType === "saint-patricks" ||
       tactic.effectType === "lemon-test" ||
-      tactic.effectType === "plant-story" ||
       tactic.effectType === "gift-boxes" ||
       tactic.effectType === "keep-crown"
     ) {
@@ -568,7 +570,7 @@
       game.reframeStanceTacticId = tactic.id;
       game.reframeStanceMode = true;
     } else {
-      // sway-one, shield, encourage-nap, suggest-yoga, justice-cocktails, invite-church, recuse, make-chief, suggest-retirement, drag-them: select then click a justice
+      // sway-one, shield, encourage-nap, suggest-yoga, justice-cocktails, invite-church, recuse, make-chief, suggest-retirement, drag-them, catch-phone, plant-story: select then click a justice
       game.selectedTacticId = game.selectedTacticId === tacticId ? null : tacticId;
     }
   }
@@ -798,20 +800,28 @@
 
     if (
       tactic.effectType === "sway-all" ||
+      tactic.effectType === "request-amicus" ||
       tactic.effectType === "susceptibility" ||
       tactic.effectType === "discard-all" ||
+      tactic.effectType === "emergency-motion" ||
+      tactic.effectType === "recite-dissent" ||
       tactic.effectType === "insult-chief" ||
       tactic.effectType === "presidential-call" ||
       tactic.effectType === "saint-patricks" ||
-      tactic.effectType === "lemon-test" ||
-      tactic.effectType === "plant-story"
+      tactic.effectType === "lemon-test"
     ) {
       applyTactic(tactic, null, "opponent");
       return;
     }
 
     // New single-target utility cards: target the most favorable-to-player justice
-    if (tactic.effectType === "encourage-nap" || tactic.effectType === "suggest-yoga" || tactic.effectType === "justice-cocktails") {
+    if (
+      tactic.effectType === "encourage-nap" ||
+      tactic.effectType === "suggest-yoga" ||
+      tactic.effectType === "justice-cocktails" ||
+      tactic.effectType === "catch-phone" ||
+      tactic.effectType === "plant-story"
+    ) {
       const unblocked = game.bench.filter((j) => !(j.id in game.nappingJustices) && !(j.id in game.yogaJustices) && !game.playerShields.includes(j.id));
       const target = unblocked.sort((a, b) => (game.leanings[b.id] ?? 0) - (game.leanings[a.id] ?? 0))[0];
       if (!target) {
@@ -1100,9 +1110,13 @@
       {
         "sway-one": "🎯 Single target",
         "sway-all": "🌊 All justices",
-        "plant-story": "🌱 All justices",
+        "request-amicus": "📚 All justices",
+        "recite-dissent": "📖 No target",
+        "emergency-motion": "♻️ Discard pile",
+        "catch-phone": "📱 Single target",
+        "plant-story": "🌱 Single target",
         susceptibility: "😴 All justices",
-        "lemon-test:": "🍋 All justices",
+        "lemon-test": "🍋 All justices",
         shield: "🛡️ Ally only",
         "discard-all": "🗑️ Playbook",
         "claim-two": "🗑️ Playbook",

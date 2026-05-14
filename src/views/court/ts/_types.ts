@@ -247,7 +247,7 @@ export type TacticEffectType =
   | "gift-boxes" // bribery attack on all justices; high-bribery justices swayed in your favor, low-bribery offended
   | "suggest-retirement" // campaign only: mark justice for guaranteed retirement during recess; they lose massive favor
   | "keep-crown" // campaign only: make the current trial's elevated CJ permanent for the campaign
-  | "plant-story" // raise partyLoyalty statMod for all justices
+  | "plant-story" // target one justice: raise partyLoyalty and trigger immediate partisan pressure
   | "lemon-test" // all justices become Atheist + logic +2 for the trial
   | "suggest-yoga" // freeze one justice for a round; they return with empathy+susceptibility buffs
   | "drag-them"; // lower one justice's charisma; sway them based on their threats weakness

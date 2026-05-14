@@ -22,6 +22,7 @@ import {
   justiceLochnerExtra,
 } from "../src/views/court/ts/_justices";
 import { cases as allCases, casesHistorical, casesFictional } from "../src/views/court/ts/_cases";
+import { tactics } from "../src/views/court/ts/_tactics";
 
 // Megachurch imports
 import type { Religion, Theme } from "../src/views/megachurch/ts/_types";
@@ -90,6 +91,13 @@ describe("Unique IDs Across Games", () => {
   describe("Case IDs", () => {
     it("every case in casesHistorical has a unique id", () => {
       const duplicates = checkDuplicateIds(casesHistorical, "case");
+      expect(duplicates).toEqual([]);
+    });
+  });
+
+  describe("Tactic IDs", () => {
+    it("every tactic has a unique id", () => {
+      const duplicates = checkDuplicateIds(tactics, "tactic");
       expect(duplicates).toEqual([]);
     });
   });

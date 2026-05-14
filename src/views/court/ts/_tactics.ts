@@ -93,12 +93,13 @@ export const tactics: Tactic[] = [
   },
   {
     id: 10,
-    name: "Yell 'FREEDOM!'",
-    description: "Sways all justices by a small amount regardless of stats. Not a legal argument. Consistently works anyway.",
-    flavorText: "Technically this is contempt of court. Technically no one is stopping you.",
+    name: "Request An Amicus",
+    description:
+      "Sways all justices slightly. The more justices already leaning your way, the stronger this becomes for everyone.",
+    flavorText: "You found some friends with opinions. Relevant ones.",
     cardType: "attack",
-    effectType: "sway-all",
-    basePower: 2,
+    effectType: "request-amicus",
+    basePower: 1,
   },
 
   // ─── DEFENSE ──────────────────────────────────────────────────────
@@ -189,7 +190,7 @@ export const tactics: Tactic[] = [
     id: 18,
     name: "Recuse Yourself!",
     description:
-      "Force a targeted justice to recuse — their leaning resets to neutral. But their brush with your persuasion leaves them wary: they'll be harder to sway for the rest of the trial.",
+      "Force a targeted justice to recuse — their leaning resets to neutral. While recused, incoming sway against them is cut roughly in half.",
     flavorText: "There are no conflicts of interest here. There are only interests.",
     cardType: "utility",
     effectType: "recuse",
@@ -225,7 +226,7 @@ export const tactics: Tactic[] = [
     id: 21,
     name: "Encourage A Nap",
     description:
-      "Select a justice. They skip the next round entirely — no one can sway them. When they wake up, they're well rested and inexplicably fond of you.",
+      "Select a justice. They skip the next round entirely — no one can sway them. When they wake up, they return with a +15 leaning boost toward you.",
     flavorText: "Oral arguments are dense, the room is warm, and this man ate a very large lunch. Sometimes you help.",
     cardType: "utility",
     effectType: "encourage-nap",
@@ -319,12 +320,12 @@ export const tactics: Tactic[] = [
     id: 30,
     name: "Plant A Story",
     description:
-      "Your sources in the Senate made a few calls. Every justice feels their party watching. Raises all justices' party loyalty for the rest of the trial.",
+      "Target one justice. Their party loyalty spikes for the rest of the trial and they immediately react to the sudden media pressure.",
     flavorText: "The headline writes itself: 'Justices Under Fire From Own Party.' Nobody reads it. Everyone sees it.",
     cardType: "utility",
     effectType: "plant-story",
     basePower: 0,
-    feedback: "All justices are now more loyal to their party.",
+    feedback: "That justice suddenly feels their party breathing down their neck.",
   },
   {
     id: 31,
@@ -355,6 +356,36 @@ export const tactics: Tactic[] = [
     flavorText: "The tweet had 80,000 likes. The justice saw it. The justice is... processing.",
     cardType: "attack",
     effectType: "drag-them",
+    basePower: 0,
+  },
+  {
+    id: 34,
+    name: "Catch A Justice On Their Phone",
+    description:
+      "Target one justice. Their attention drifts and they become less susceptible for the rest of the trial. They also lean slightly away from your argument in the moment.",
+    flavorText: "They weren't taking notes. They were texting.",
+    cardType: "utility",
+    effectType: "catch-phone",
+    basePower: 0,
+  },
+  {
+    id: 35,
+    name: "File An Emergency Motion",
+    description:
+      "No target. Recover one previously played tactic from your discard pile and add it back into your playbook immediately.",
+    flavorText: "You found a procedural loophole. There's always a loophole.",
+    cardType: "utility",
+    effectType: "emergency-motion",
+    basePower: 0,
+  },
+  {
+    id: 36,
+    name: "Recite The Dissent",
+    description:
+      "No target. For each justice currently voting against you, all justices currently voting for you receive a small additional sway toward your side.",
+    flavorText: "You read the whole thing out loud. All 47 pages.",
+    cardType: "attack",
+    effectType: "recite-dissent",
     basePower: 0,
   },
 ];
