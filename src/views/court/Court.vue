@@ -1,5 +1,7 @@
 <script setup lang="ts">
   import { reactive, computed, onMounted } from "vue";
+  import { doc, increment, serverTimestamp, setDoc } from "firebase/firestore";
+  import { useFirestore } from "vuefire";
   import { useToast, POSITION } from "vue-toastification";
   import TacticToast from "./components/TacticToast.vue";
   import {
@@ -24,6 +26,8 @@
   // ── Game settings ──────────────────────────────────────────
 
   const toast = useToast();
+  const db = useFirestore();
+  const courtStatsRef = doc(db, "stats/court");
 
   type Side = "prosecution" | "defendant";
   type TurnActor = "player" | "opponent";
@@ -131,6 +135,80 @@
   >([]);
 
   // tacticFeedback replaced by Vue-Toastification (see applyTactic)
+
+  // ─── Firestore Stats ───────────────────────────────────────
+
+  async function writeCourtStats(updates: Record<string, unknown>): Promise<void> {
+    try {
+      await setDoc(courtStatsRef, updates, { merge: true });
+    } catch (error) {
+      console.warn("Court stats write skipped:", error);
+    }
+  }
+
+  function getModeLabel(): "quickplay" | "campaign" {
+    return ui.isCampaignMode ? "campaign" : "quickplay";
+  }
+
+  function getCourtModeLabel(): string {
+    return ui.courtMode ?? "unknown";
+  }
+
+  async function trackCourtGameStarted(): Promise<void> {
+    const mode = getModeLabel();
+    const courtMode = getCourtModeLabel();
+    await writeCourtStats({
+      gamesStarted: increment(1),
+      lastGameStarted: serverTimestamp(),
+      [`modeStarts.${mode}`]: increment(1),
+      [`courtModeStarts.${courtMode}`]: increment(1),
+    });
+  }
+
+  async function trackCourtGameFinished(): Promise<void> {
+    if (!verdict.value) return;
+    const mode = getModeLabel();
+    const courtMode = getCourtModeLabel();
+    const outcome = verdict.value.tied ? "ties" : verdict.value.won ? "wins" : "losses";
+
+    await writeCourtStats({
+      gamesFinished: increment(1),
+      lastGameFinished: serverTimestamp(),
+      [`modeFinishes.${mode}`]: increment(1),
+      [`courtModeFinishes.${courtMode}`]: increment(1),
+      [outcome]: increment(1),
+      totalRoundsPlayed: increment(game.round),
+    });
+  }
+
+  async function trackTacticPlay(tactic: Tactic, actor: TurnActor): Promise<void> {
+    const tacticRef = doc(db, `stats/court/tactics/${tactic.id}`);
+
+    try {
+      await setDoc(
+        tacticRef,
+        {
+          id: tactic.id,
+          name: tactic.name,
+          effectType: tactic.effectType,
+          cardType: tactic.cardType,
+          plays: increment(1),
+          playerPlays: increment(actor === "player" ? 1 : 0),
+          opponentPlays: increment(actor === "opponent" ? 1 : 0),
+          lastPlayed: serverTimestamp(),
+        },
+        { merge: true },
+      );
+
+      await writeCourtStats({
+        tacticsPlayed: increment(1),
+        lastTacticPlayed: serverTimestamp(),
+        [`tacticPlaysById.${tactic.id}`]: increment(1),
+      });
+    } catch (error) {
+      console.warn("Court tactic stats write skipped:", error);
+    }
+  }
 
   // ─── Helpers ─────────────────────────────────────────────────
   // partiesAligned / partiesOpposed are imported from _tacticEffects.ts
@@ -388,6 +466,7 @@
       game.susceptibilityMods[j.id] = 0;
     });
     ui.phase = "playing";
+    void trackCourtGameStarted();
   }
 
   /** Quick Play only: replay the same case with the same justices (reset leanings + deal fresh cards). */
@@ -651,6 +730,8 @@
       },
     );
 
+    void trackTacticPlay(tactic, actor);
+
     if (actor === "player") {
       endPlayerTurn();
     } else {
@@ -843,6 +924,7 @@
     ui.opponentThinking = false;
     game.currentTurn = "player";
     if (game.round >= gameSettings.numberOfRounds) {
+      void trackCourtGameFinished();
       setTimeout(() => {
         ui.phase = "verdict";
       }, 1500);

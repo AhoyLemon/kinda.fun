@@ -387,6 +387,7 @@ export const PRES_REAGAN: President = {
   id: 40,
   name: "Ronald Reagan",
   party: "Republican",
+  image: "reagan.webp",
   stances: [
     {
       topic: "EconomicRegulation",
@@ -419,6 +420,7 @@ export const PRES_GHW_BUSH: President = {
   id: 41,
   name: "George H.W. Bush",
   party: "Republican",
+  image: "ghw_bush.webp",
   stances: [
     {
       topic: "WarPowers",

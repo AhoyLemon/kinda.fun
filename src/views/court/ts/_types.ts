@@ -225,6 +225,10 @@ export interface Case {
 export type TacticEffectType =
   | "sway-one" // sway a single targeted justice
   | "sway-all" // sway all justices with a broadcast effect
+  | "request-amicus" // sway all with momentum scaling based on justices already leaning your way
+  | "catch-phone" // target justice becomes less susceptible for the trial and leans slightly away
+  | "emergency-motion" // recover a previously discarded tactic back into the playbook
+  | "recite-dissent" // boost your current allies based on how many justices are currently against you
   | "susceptibility" // raise susceptibility of all justices (amplifies next attack)
   | "shield" // protect one allied justice from being swayed
   | "discard-all" // discard all shared playbook cards and draw 5 fresh ones

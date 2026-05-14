@@ -1,4 +1,4 @@
-﻿@use '../abstracts/variables' as *;
+﻿@use "../abstracts/variables" as *;
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // PLAYING PHASE
@@ -135,6 +135,10 @@
   border: 1px solid rgba($court-gold, 0.3);
 }
 
+.bench-grid--playing {
+  margin-top: 0.6rem;
+}
+
 .overview-chip {
   display: flex;
   align-items: center;
@@ -211,7 +215,7 @@
 .bench-grid--playing {
   .justice-card {
     position: relative;
-    cursor: default;
+    cursor: pointer;
     transition:
       border-color 0.15s,
       box-shadow 0.15s;
@@ -303,6 +307,54 @@
     width: clamp(130px, calc(20% - 0.6rem), 215px);
     min-width: 0;
     max-width: none;
+  }
+}
+
+@media (max-width: 1050px) {
+  .playbook-shared .tactic-card-row {
+    flex-wrap: wrap;
+    min-height: 0;
+
+    .tactic-card {
+      width: calc(50% - 0.4rem);
+      max-width: none;
+    }
+  }
+
+  .playbook-claimed .tactic-card-row {
+    flex-wrap: wrap;
+
+    .tactic-card {
+      max-width: none;
+      min-width: 220px;
+      flex: 1 1 calc(50% - 0.4rem);
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  .court-playing {
+    gap: 0.75rem;
+  }
+
+  .playing-topbar,
+  .bench-overview-bar,
+  .court-playbook {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+
+  .playbook-shared .tactic-card-row {
+    .tactic-card {
+      width: 100%;
+    }
+  }
+
+  .playbook-claimed .tactic-card-row {
+    .tactic-card {
+      flex-basis: 100%;
+      min-width: 0;
+    }
   }
 }
 
@@ -541,16 +593,21 @@
 .status-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem;
-  padding: 0.25rem 0.5rem 0;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  padding: 0.35rem 0.55rem 0.2rem;
   min-height: 0;
 
   .status-icon {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     font-size: 0.75rem;
-    aspect-ratio: 1/1;
-    padding: 0.25em;
+    width: 1.35rem;
+    height: 1.35rem;
+    flex: 0 0 1.35rem;
+    padding: 0;
     border-radius: 50%;
     line-height: 1;
     cursor: help;

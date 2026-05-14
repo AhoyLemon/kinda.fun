@@ -205,8 +205,8 @@ export const celebrityJustices: Justice[] = [
     nominatedBy: PRES_SNOOP_DOGG,
     religion: "Protestant",
     ethnicity: "White",
-    stats: { logic: 6, charisma: 10, empathy: 9, succeptibility: 8, partyLoyalty: 4 },
-    weaknesses: { flattery: 10, bribery: 7, blackmail: 3, threats: 2 },
+    stats: { logic: 6, charisma: 10, empathy: 9, succeptibility: 10, partyLoyalty: -2 },
+    weaknesses: { flattery: 10, bribery: 10, blackmail: 3, threats: 2 },
     stances: [
       {
         topic: "WorkersRights",
@@ -230,7 +230,7 @@ export const celebrityJustices: Justice[] = [
     nominatedBy: PRES_VINCE_MCMAHON,
     religion: "Protestant",
     ethnicity: "White",
-    stats: { logic: 7, charisma: 10, empathy: 4, succeptibility: 3, partyLoyalty: 7 },
+    stats: { logic: 4, charisma: 10, empathy: 7, succeptibility: 5, partyLoyalty: 9 },
     weaknesses: { flattery: 3, bribery: 4, blackmail: 7, threats: 1 },
     stances: [
       {
