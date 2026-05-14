@@ -1,4 +1,4 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as *;
 
 // ─── Court Selector ──────────────────────────────────────────
 .court-select {
@@ -19,11 +19,14 @@
 }
 
 .court-mode-grid {
-  // display: grid;
-  // grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  // gap: 1rem;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
   gap: 1rem;
+
+  .court-mode-card {
+    min-width: 0;
+    height: 100%;
+  }
 }
 // ─── Preset bench select ─────────────────────────────────────
 .court-preset-section {
@@ -175,5 +178,27 @@
     color: $court-text;
     padding: 0.15rem 0.4rem;
     border-radius: 3px;
+  }
+}
+
+@media (max-width: 850px) {
+  .court-select {
+    min-height: auto;
+    justify-content: flex-start;
+  }
+
+  .court-mode-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 580px) {
+  .court-mode-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .court-preset-select {
+    width: 100%;
+    min-width: 0;
   }
 }

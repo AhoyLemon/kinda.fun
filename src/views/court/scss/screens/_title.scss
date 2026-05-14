@@ -103,3 +103,65 @@ main.court-title {
     }
   }
 }
+
+@media (max-width: 1000px) {
+  main.court-title {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-top: 2rem;
+    justify-items: center;
+    text-align: center;
+
+    .title-hero {
+      order: 1;
+      grid-column: 1;
+
+      .title-sub {
+        font-size: clamp(0.95rem, 2.7vw, 1.45rem);
+      }
+    }
+
+    .title-mode-buttons {
+      order: 2;
+      grid-column: 1;
+      min-height: auto;
+      width: min(100%, 760px);
+      margin: 0 auto;
+      gap: 0.9rem;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: stretch;
+
+      .title-mode-section {
+        gap: 0.55rem;
+        flex: 1 1 290px;
+        max-width: 360px;
+      }
+
+      .title-button {
+        .label {
+          font-size: clamp(1.45rem, 4.3vw, 1.95rem);
+        }
+      }
+
+      .title-hint {
+        .hint-text {
+          margin-left: 0;
+          display: inline-block;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  main.court-title {
+    .title-mode-buttons {
+      .title-mode-section {
+        flex-basis: 100%;
+        max-width: 100%;
+      }
+    }
+  }
+}

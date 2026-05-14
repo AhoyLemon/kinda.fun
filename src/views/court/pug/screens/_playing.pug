@@ -54,61 +54,62 @@ main.court-playing(v-if="ui.phase === 'playing'")
       | 🎯 Select {{ 2 - game.multiTargetSelections.length }} justice{{ (2 - game.multiTargetSelections.length) === 1 ? '' : 's' }} — click the card again to cancel
     .targeting-banner.cheat-targeting(v-else-if="cheatsActive && ui.cheatTargetMode")
       | {{ ui.cheatTargetMode === 'love' ? '💕 Click a justice to set their leaning to +100' : '💀 Click a justice to set their leaning to −100' }} — click the button again to cancel
-    .bench-grid.bench-grid--playing(
+
+  .bench-grid.bench-grid--playing(
     :class="{ 'targeting-mode': game.selectedTacticId !== null || game.multiTargetMode }"
   )
-      .justice-card.on-bench(
-        v-for="justice in game.bench"
-        :key="justice.id"
-        :class="[ \
-          `type-${justice.justiceType}`, \
-          { \
-            'has-image': justiceImageUrl(justice), \
-            'is-ally': (game.leanings[justice.id] ?? 0) > 0, \
-            'is-enemy': (game.leanings[justice.id] ?? 0) < 0, \
-            'is-targetable': game.selectedTacticId !== null || game.multiTargetMode, \
-            'is-shielded': game.playerShields.includes(justice.id), \
-            'is-chief': justice.id === game.chiefJusticeId, \
-            'is-napping': !!game.nappingJustices[justice.id], \
-            'is-yoga': !!game.yogaJustices[justice.id], \
-            'is-buffed': !!game.statMods[justice.id], \
-            'is-sus': (game.susceptibilityMods[justice.id] ?? 0) > 0, \
-            'is-multi-selected': game.multiTargetSelections.includes(justice.id), \
-          } \
-        ]"
-        @click="handleJusticeClick(justice)"
-      )
+    .justice-card.on-bench(
+      v-for="justice in game.bench"
+      :key="justice.id"
+      :class="[ \
+        `type-${justice.justiceType}`, \
+        { \
+          'has-image': justiceImageUrl(justice), \
+          'is-ally': (game.leanings[justice.id] ?? 0) > 0, \
+          'is-enemy': (game.leanings[justice.id] ?? 0) < 0, \
+          'is-targetable': game.selectedTacticId !== null || game.multiTargetMode, \
+          'is-shielded': game.playerShields.includes(justice.id), \
+          'is-chief': justice.id === game.chiefJusticeId, \
+          'is-napping': !!game.nappingJustices[justice.id], \
+          'is-yoga': !!game.yogaJustices[justice.id], \
+          'is-buffed': !!game.statMods[justice.id], \
+          'is-sus': (game.susceptibilityMods[justice.id] ?? 0) > 0, \
+          'is-multi-selected': game.multiTargetSelections.includes(justice.id), \
+        } \
+      ]"
+      @click="handleJusticeClick(justice)"
+    )
 
-        .justice-chief-badge(v-if="justice.id === game.chiefJusticeId" v-tippy="'The Chief Justice is more difficult to sway, but can exert their own influence on other justices in the same party.'") ⚖ Chief
+      .justice-chief-badge(v-if="justice.id === game.chiefJusticeId" v-tippy="'The Chief Justice is more difficult to sway, but can exert their own influence on other justices in the same party.'") ⚖ Chief
 
-        .pic-and-name(v-if="justiceImageUrl(justice)")
-          .justice-card__thumb
-            img.justice-card__img(:src="justiceImageUrl(justice)" :alt="justice.name")
-          .justice-card__name {{ justice.name }}
-        .justice-card__name(v-else) {{ justice.name }}
+      .pic-and-name(v-if="justiceImageUrl(justice)")
+        .justice-card__thumb
+          img.justice-card__img(:src="justiceImageUrl(justice)" :alt="justice.name")
+        .justice-card__name {{ justice.name }}
+      .justice-card__name(v-else) {{ justice.name }}
 
-        //- Overlay for napping / yoga (grayed out card + centered icon)
-        .justice-napping-overlay(v-if="game.nappingJustices[justice.id]" v-tippy="'Napping — skipping this round. Wakes up warmer toward you.'") 💤
-        .justice-napping-overlay(v-else-if="game.yogaJustices[justice.id]" v-tippy="'Finding inner peace — skipping this round. Returns with boosted empathy and susceptibility.'") 🧘
+      //- Overlay for napping / yoga (grayed out card + centered icon)
+      .justice-napping-overlay(v-if="game.nappingJustices[justice.id]" v-tippy="'Napping — skipping this round. Wakes up warmer toward you.'") 💤
+      .justice-napping-overlay(v-else-if="game.yogaJustices[justice.id]" v-tippy="'Finding inner peace — skipping this round. Returns with boosted empathy and susceptibility.'") 🧘
 
-        .status-row(v-if="game.playerShields.includes(justice.id) || game.opponentShields.includes(justice.id) || game.recusedJustices.includes(justice.id) || game.statMods[justice.id] || (game.susceptibilityMods[justice.id] ?? 0) > 0 || game.draggedJustices.includes(justice.id) || game.religionOverrides[justice.id] === 'Catholic' || game.religionOverrides[justice.id] === 'Atheist'")
-          span.status-icon(v-if="game.playerShields.includes(justice.id)" v-tippy="'Protected by you — blocks the next opposing argument.'") 🛡️
-          span.status-icon(v-if="game.opponentShields.includes(justice.id)" v-tippy="'Protected by opponent — your next argument is blocked.'") 🔒
-          span.status-icon(v-if="game.recusedJustices.includes(justice.id)" v-tippy="'Recused — harder to sway for the rest of the trial.'") 🔕
-          span.status-icon(v-if="game.statMods[justice.id]" v-tippy="'Stats temporarily modified.'") 🍸
-          span.status-icon(v-if="(game.susceptibilityMods[justice.id] ?? 0) > 0" v-tippy="'Lulled — the next argument will hit them significantly harder.'") 😵‍💫
-          span.status-icon(v-if="game.draggedJustices.includes(justice.id)" v-tippy="'Dragged — charisma permanently lowered for this trial.'") ⬇️
-          span.status-icon(v-if="game.religionOverrides[justice.id] === 'Catholic'" v-tippy="'Catholic for the rest of the trial.'") ☘️
-          span.status-icon(v-if="game.religionOverrides[justice.id] === 'Atheist'" v-tippy="'Irreligious for the rest of the trial.'") 🍋
+      .status-row(v-if="game.playerShields.includes(justice.id) || game.opponentShields.includes(justice.id) || game.recusedJustices.includes(justice.id) || game.statMods[justice.id] || (game.susceptibilityMods[justice.id] ?? 0) > 0 || game.draggedJustices.includes(justice.id) || game.religionOverrides[justice.id] === 'Catholic' || game.religionOverrides[justice.id] === 'Atheist'")
+        span.status-icon(v-if="game.playerShields.includes(justice.id)" v-tippy="'Protected by you — blocks the next opposing argument.'") 🛡️
+        span.status-icon(v-if="game.opponentShields.includes(justice.id)" v-tippy="'Protected by opponent — your next argument is blocked.'") 🔒
+        span.status-icon(v-if="game.recusedJustices.includes(justice.id)" v-tippy="'Recused — harder to sway for the rest of the trial.'") 🔕
+        span.status-icon(v-if="game.statMods[justice.id]" v-tippy="'Stats temporarily modified.'") 🍸
+        span.status-icon(v-if="(game.susceptibilityMods[justice.id] ?? 0) > 0" v-tippy="'Lulled — the next argument will hit them significantly harder.'") 😵‍💫
+        span.status-icon(v-if="game.draggedJustices.includes(justice.id)" v-tippy="'Dragged — charisma permanently lowered for this trial.'") ⬇️
+        span.status-icon(v-if="game.religionOverrides[justice.id] === 'Catholic'" v-tippy="'Catholic for the rest of the trial.'") ☘️
+        span.status-icon(v-if="game.religionOverrides[justice.id] === 'Atheist'" v-tippy="'Irreligious for the rest of the trial.'") 🍋
 
 
-        .justice-vote
-          .vote-label(
-            :class="{ positive: (game.leanings[justice.id] ?? 0) > 0, negative: (game.leanings[justice.id] ?? 0) < 0 }"
-          ) {{ voteLabel(game.leanings[justice.id] ?? 0) }}
-          .vote-track
-            .vote-midline
-            .vote-fill(:style="voteMeterStyle(justice)")
+      .justice-vote
+        .vote-label(
+          :class="{ positive: (game.leanings[justice.id] ?? 0) > 0, negative: (game.leanings[justice.id] ?? 0) < 0 }"
+        ) {{ voteLabel(game.leanings[justice.id] ?? 0) }}
+        .vote-track
+          .vote-midline
+          .vote-fill(:style="voteMeterStyle(justice)")
         
 
   //- Trial reward cards (campaign mode)
