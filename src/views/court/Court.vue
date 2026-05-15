@@ -231,6 +231,8 @@
       courtStats.writeCaseJusticeVoteStats({
         caseName: game.currentCase.name,
         voteByJusticeName,
+        prosecutionName: game.currentCase.prosecution.name,
+        defenseName: game.currentCase.defendant.name,
       }),
     ]);
   }

@@ -55,6 +55,8 @@ interface StanceWriteOptions {
 interface CaseJusticeVoteWriteOptions {
   caseName: string;
   voteByJusticeName: Record<string, JusticeVote>;
+  prosecutionName?: string;
+  defenseName?: string;
 }
 
 interface StatsDeps {
@@ -342,23 +344,29 @@ export function createCourtStatsHelpers(db: Firestore, deps: StatsDeps = default
   }
 
   async function writeCaseJusticeVoteStats(options: CaseJusticeVoteWriteOptions): Promise<void> {
-    const { caseName, voteByJusticeName } = options;
+    const { caseName, voteByJusticeName, prosecutionName, defenseName } = options;
 
     await Promise.all(
       Object.entries(voteByJusticeName).map(([justiceName, vote]) =>
         safeWrite("justice-case-vote", async () => {
           const caseVoteRef = deps.doc(db, `stats/court/justices/${justiceName}/cases/${caseName}`);
-          await deps.setDoc(
-            caseVoteRef,
-            {
-              name: caseName,
-              prosecutionVotes: deps.increment(vote === "prosecution" ? 1 : 0),
-              defenseVotes: deps.increment(vote === "defense" ? 1 : 0),
-              abstainVotes: deps.increment(vote === "abstain" ? 1 : 0),
-              lastVotedAt: deps.serverTimestamp(),
-            },
-            { merge: true },
-          );
+          const caseUpdateData: Record<string, any> = {
+            name: caseName,
+            prosecutionVotes: deps.increment(vote === "prosecution" ? 1 : 0),
+            defenseVotes: deps.increment(vote === "defense" ? 1 : 0),
+            abstainVotes: deps.increment(vote === "abstain" ? 1 : 0),
+            lastVotedAt: deps.serverTimestamp(),
+          };
+
+          // Store prosecution and defense side names for clarity in stats display
+          if (prosecutionName) {
+            caseUpdateData.prosecutionSideName = prosecutionName;
+          }
+          if (defenseName) {
+            caseUpdateData.defenseSideName = defenseName;
+          }
+
+          await deps.setDoc(caseVoteRef, caseUpdateData, { merge: true });
         }),
       ),
     );

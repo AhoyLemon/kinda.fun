@@ -82,8 +82,8 @@ section.court.stats(v-if="ui.viewing == 'court'")
           |  average sway
 
     .early-tables
-      // CASES (TABLE)
-      .good-table.court-table(v-if="stats.court.cases")
+      // ALL CASES (TABLE)
+      .good-table.court-table(v-if="stats.court.cases && !ui.selectedJusticeId")
         h2 Popular Cases
         vue-good-table( v-if="stats.court.cases && stats.court.cases.length"
                         :rows="stats.court.cases"
@@ -95,7 +95,52 @@ section.court.stats(v-if="ui.viewing == 'court'")
                         :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}" 
                         :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
                       )
+        .table-under
+          .justice-selector
+            label See rulings from 
+            select(v-model="ui.selectedJusticeId")
+              option(:value="null") ALL JUSTICES
+              option(v-for="justice in stats.court.justices" 
+                    :key="justice.id"
+                    :value="justice.id")
+                | {{justice.name}}
       
+      // CASES BY JUSTICE (TABLE)
+      .good-table.court-table(v-if="ui.selectedJusticeId && selectedJusticeCases.length")
+        h2 {{stats.court.justices.find(j => j.id === ui.selectedJusticeId)?.name}}'s Rulings
+        vue-good-table( v-if="selectedJusticeCases.length"
+                        :rows="selectedJusticeCases"
+                        :columns="columns.courtJusticeCases"
+                        theme="black-rhino"
+                        styleClass="vgt-table condensed"
+                        :line-numbers="true"
+                        :sort-options="{ enabled: true, initialSortBy: {field: 'prosecutionVotes', type: 'desc'} }"
+                        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"
+                        :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
+                      )
+        .table-under
+          .justice-selector
+            label See rulings from 
+            select(v-model="ui.selectedJusticeId")
+              option(:value="null") ALL JUSTICES
+              option(v-for="justice in stats.court.justices" 
+                    :key="justice.id"
+                    :value="justice.id")
+                | {{justice.name}}
+      
+      // EMPTY STATE FOR CASES BY JUSTICE
+      div.no-justice-cases(v-else-if="ui.selectedJusticeId")
+        p This justice hasn't ruled on any recorded cases yet.
+        .table-under
+          .justice-selector
+            label See rulings from 
+            select(v-model="ui.selectedJusticeId")
+              option(:value="null") Choose a justice...
+              option(v-for="justice in stats.court.justices" 
+                    :key="justice.id"
+                    :value="justice.id")
+                | {{justice.name}}
+
       // STANCES (TABLE)
       .good-table.court-table(v-if="stats.court.stances")
         h2 Controversial Stances

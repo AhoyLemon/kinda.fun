@@ -181,6 +181,12 @@ export const columns = {
     { label: "🃏", field: "timesAttacked", type: "number", formatFn: addCommas },
     { last: "last case", field: "lastAdjudicatedAt", type: "date", formatFn: formatDate },
   ],
+  courtJusticeCases: [
+    { label: "Case", field: "name", tdClass: "font-bold" },
+    { label: "Prosecution Votes", field: "prosecutionVotes", type: "number", formatFn: addCommas },
+    { label: "Defense Votes", field: "defenseVotes", type: "number", formatFn: addCommas },
+    { label: "Last Voted", field: "lastVotedAt", type: "date", formatFn: formatDate },
+  ],
   courtStances: [
     { label: "Stance", field: "name", tdClass: "font-bold", formatFn: humanizeStanceName },
     { label: "⬆️", field: "casesFor", type: "number", formatFn: addCommas },
