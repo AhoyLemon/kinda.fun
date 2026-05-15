@@ -130,7 +130,7 @@ This is all rooted at `/stats/court`.
 }
 ```
 
-Preferred (name-keyed and human-readable): `/stats/court/justices/{justiceName}/cases/{caseName}`
+### `/stats/court/justices/{justiceName}/cases/{caseName}`
 
 ```ts
 {
@@ -231,6 +231,10 @@ NO. We are measuring gameplay, not site telemetry. This is a video game that's s
 ---
 
 ## Stat Triggers (Canonical)
+
+SHORT VERSION: Trigger on game start, trial end, and campaign start. At that stage, log the relevant gameplay things that took place.
+
+This is just to batch these updates together, so we're not doing Firestore calls on every click (which, frankly would be expensive and slow).
 
 ### Quickplay Start
 
