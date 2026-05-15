@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createCourtStatsHelpers } from "../src/views/court/ts/_statsHelpers";
+import { createCourtStatsHelpers, getAttackedJusticeNamesForPlay } from "../src/views/court/ts/_statsHelpers";
 
 interface FakeDocRef {
   path: string;
@@ -31,6 +31,52 @@ function createFakeDeps(existingByPath: Record<string, Record<string, unknown>> 
 }
 
 describe("Court stats helpers (#192)", () => {
+  it("tracks attacked justices only for targeted tactics", () => {
+    expect(
+      getAttackedJusticeNamesForPlay({
+        effectType: "sway-all",
+        targetJusticeName: null,
+      }),
+    ).toEqual([]);
+
+    expect(
+      getAttackedJusticeNamesForPlay({
+        effectType: "sway-one",
+        targetJusticeName: "Justice Target",
+      }),
+    ).toEqual(["Justice Target"]);
+
+    expect(
+      getAttackedJusticeNamesForPlay({
+        effectType: "swap-clerks",
+        multiTargetJusticeNames: ["Justice One", "Justice Two", "Justice One"],
+      }),
+    ).toEqual(["Justice One", "Justice Two"]);
+  });
+
+  it("writes aggregate game lifecycle timestamps", async () => {
+    const { fakeDeps, calls } = createFakeDeps();
+    const helpers = createCourtStatsHelpers({} as never, fakeDeps as never);
+
+    await helpers.writeCourtAggregateStats({
+      gamesStarted: 1,
+      gamesFinished: 1,
+      quickplaysStarted: 1,
+      lastGameStarted: "__SERVER_TIMESTAMP__",
+      lastGameFinished: "__SERVER_TIMESTAMP__",
+    });
+
+    const aggregateCall = calls.find((call) => call.path === "stats/court");
+    expect(aggregateCall).toBeTruthy();
+    if (!aggregateCall) return;
+
+    expect(aggregateCall.data.gamesStarted).toEqual({ __increment: 1 });
+    expect(aggregateCall.data.gamesFinished).toEqual({ __increment: 1 });
+    expect(aggregateCall.data.quickplaysStarted).toEqual({ __increment: 1 });
+    expect(aggregateCall.data.lastGameStarted).toEqual({ __serverTimestamp: true });
+    expect(aggregateCall.data.lastGameFinished).toEqual({ __serverTimestamp: true });
+  });
+
   it("uses name-based Firestore paths for cases and justice vote docs", async () => {
     const { fakeDeps, calls } = createFakeDeps();
     const helpers = createCourtStatsHelpers({} as never, fakeDeps as never);

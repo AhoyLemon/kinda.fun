@@ -27,6 +27,10 @@
       launched: "2021-02-16",
       dayCount: null,
     },
+    court: {
+      launched: "2026-06-01",
+      dayCount: null,
+    },
     sisyphus: {
       launched: "2021-09-21",
       dayCount: null,
@@ -57,6 +61,7 @@
     general: {},
     guillotine: {},
     cameo: {},
+    court: {},
     invalid: {},
     wrongest: {},
     sisyphus: {},
@@ -183,6 +188,15 @@
           stats.general.cameoGamesStarted = cameoData.gamesStarted || 0;
           stats.general.cameoLastPlayed = cameoData.lastGameStarted ? convertTimestamp(cameoData.lastGameStarted) : null;
         }
+
+        // Court
+        const courtSnap = await getDoc(doc(firestoreDb, "stats", "court"));
+        if (courtSnap.exists()) {
+          const courtData = courtSnap.data();
+          stats.general.courtGamesStarted = courtData.gamesStarted || 0;
+          stats.general.courtLastPlayed = courtData.lastGameStarted ? convertTimestamp(courtData.lastGameStarted) : null;
+        }
+
         // Guillotine
         const guillotineSnap = await getDoc(doc(firestoreDb, "stats", "guillotine"));
         if (guillotineSnap.exists()) {
@@ -288,6 +302,46 @@
         stats.cameo.specialGames = [];
         errorOccurred = true;
         console.error("Error loading cameo stats from Firestore:", e);
+      }
+    } else if (game === "court") {
+      try {
+        await loadFirestoreStats("court", {
+          mainDocTimestamps: [
+            "lastGameStarted",
+            "lastGameFinished",
+            "lastQuickplayStarted",
+            "lastQuickplayFinished",
+            "lastCampaignStarted",
+            "lastCampaignFinished",
+          ],
+          subcollections: {
+            cases: {
+              timestampFields: ["lastPlayedAt"],
+              sortBy: "timesPlayed",
+            },
+            justices: {
+              timestampFields: ["lastAdjudicatedAt"],
+              sortBy: "timesAdjudicated",
+            },
+            stances: {
+              timestampFields: ["lastAdjudicatedAt"],
+            },
+            tactics: {
+              timestampFields: ["lastPlayedAt"],
+              sortBy: "timesPlayed",
+            },
+          },
+        });
+        dates.court.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.court.launched), "days").days);
+        ui.courtLoaded = true;
+
+        ui.viewing = "court";
+      } catch (e) {
+        stats.court.cases = [];
+        stats.court.justices = [];
+        stats.court.stances = [];
+        stats.court.tactics = [];
+        console.error("Error loading court stats from Firestore:", e);
       }
     } else if (game == "sisyphus") {
       try {
@@ -662,6 +716,11 @@
     return statement.replace(/\{([^}]+)\}/g, "<strong>$1</strong>");
   };
 
+  const humanizeStanceName = (name) => {
+    if (typeof name !== "string") return name;
+    return name.replace(/([A-Z])/g, " $1").trim();
+  };
+
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Computed
@@ -734,6 +793,75 @@
       mostUndervalued,
       mostBirthdays,
       gameCountByValuations,
+    };
+  });
+
+  const computedCourt = computed(() => {
+    const cases = stats.court.cases || [];
+    const justices = stats.court.justices || [];
+    const stances = stats.court.stances || [];
+    const tactics = stats.court.tactics || [];
+
+    // 1. mostPopularCase: case with highest timesPlayed
+    let mostPopularCase = null;
+    let maxTimesPlayed = -Infinity;
+    cases.forEach((c) => {
+      const count = typeof c.timesPlayed === "number" ? c.timesPlayed : 0;
+      if (count > maxTimesPlayed) {
+        maxTimesPlayed = count;
+        mostPopularCase = c;
+      }
+    });
+
+    // 2. mostActiveJustice: justice with highest timesAdjudicated
+    let mostActiveJustice = null;
+    let maxTimesAdjudicated = -Infinity;
+    justices.forEach((j) => {
+      const count = typeof j.timesAdjudicated === "number" ? j.timesAdjudicated : 0;
+      if (count > maxTimesAdjudicated) {
+        maxTimesAdjudicated = count;
+        mostActiveJustice = j;
+      }
+    });
+
+    // 3. mostCommonStance: stance with highest timesAdjudicated
+    let mostCommonStance = null;
+    let maxStanceCount = -Infinity;
+    stances.forEach((s) => {
+      const count = typeof s.timesAdjudicated === "number" ? s.timesAdjudicated : 0;
+      if (count > maxStanceCount) {
+        maxStanceCount = count;
+        mostCommonStance = s;
+      }
+    });
+
+    // 4. mostUsedTactic: tactic with highest timesPlayed
+    let mostUsedTactic = null;
+    let maxTacticCount = -Infinity;
+    tactics.forEach((t) => {
+      const count = typeof t.timesPlayed === "number" ? t.timesPlayed : 0;
+      if (count > maxTacticCount) {
+        maxTacticCount = count;
+        mostUsedTactic = t;
+      }
+    });
+
+    let bestNetTactic = null;
+    let maxNetLean = -Infinity;
+    tactics.forEach((t) => {
+      const lean = typeof t.averageNetShiftPerPlay === "number" ? t.averageNetShiftPerPlay : 0;
+      if (lean > maxNetLean) {
+        maxNetLean = lean;
+        bestNetTactic = t;
+      }
+    });
+
+    return {
+      mostPopularCase,
+      mostActiveJustice,
+      mostCommonStance,
+      mostUsedTactic,
+      bestNetTactic,
     };
   });
 

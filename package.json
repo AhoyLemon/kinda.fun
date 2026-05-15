@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.16.1",
+    "@typescript-eslint/parser": "^8.59.3",
     "@vitejs/plugin-vue": "^6.0.5",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/language-plugin-pug": "^2.2.12",
