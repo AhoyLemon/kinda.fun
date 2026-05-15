@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { reactive, computed, onMounted } from "vue";
-  import { doc, increment, serverTimestamp, setDoc } from "firebase/firestore";
   import { useFirestore } from "vuefire";
   import { useToast, POSITION } from "vue-toastification";
   import TacticToast from "./components/TacticToast.vue";
@@ -20,14 +19,26 @@
   import type { EffectOutcome } from "./ts/_tacticEffects";
   import { settings, gameSettings, uiSettings, difficultySettings, cheatsActive } from "./ts/_settings";
   import { campaignSetups } from "./ts/_campaigns";
+  import { rewardCards } from "./ts/_rewards";
   import { useCampaignManager } from "./ts/_campaignManager";
   import { playJusticeVoice, playKavanaughBeer } from "./ts/_sounds";
+  import {
+    classifyJusticeVote,
+    computeTacticShiftMetrics,
+    createCourtStatsHelpers,
+    getOutcomeFromVerdict,
+    getTrackedStanceNamesForOutcome,
+    getWinningSide,
+    type CourtOutcome,
+  } from "./ts/_statsHelpers";
 
   // ── Game settings ──────────────────────────────────────────
 
   const toast = useToast();
   const db = useFirestore();
-  const courtStatsRef = doc(db, "stats/court");
+  const courtStats = createCourtStatsHelpers(db);
+  const trialAttackedJustices = new Set<string>();
+  let campaignEndLogged = false;
 
   type Side = "prosecution" | "defendant";
   type TurnActor = "player" | "opponent";
@@ -138,76 +149,111 @@
 
   // ─── Firestore Stats ───────────────────────────────────────
 
-  async function writeCourtStats(updates: Record<string, unknown>): Promise<void> {
-    try {
-      await setDoc(courtStatsRef, updates, { merge: true });
-    } catch (error) {
-      console.warn("Court stats write skipped:", error);
-    }
+  function getCurrentOutcome(): CourtOutcome | null {
+    if (!verdict.value) return null;
+    return getOutcomeFromVerdict(verdict.value);
   }
 
-  function getModeLabel(): "quickplay" | "campaign" {
-    return ui.isCampaignMode ? "campaign" : "quickplay";
-  }
-
-  function getCourtModeLabel(): string {
-    return ui.courtMode ?? "unknown";
-  }
-
-  async function trackCourtGameStarted(): Promise<void> {
-    const mode = getModeLabel();
-    const courtMode = getCourtModeLabel();
-    await writeCourtStats({
-      gamesStarted: increment(1),
-      lastGameStarted: serverTimestamp(),
-      [`modeStarts.${mode}`]: increment(1),
-      [`courtModeStarts.${courtMode}`]: increment(1),
+  async function trackQuickplayStarted(): Promise<void> {
+    await courtStats.writeCourtAggregateStats({
+      quickplaysStarted: 1,
+      lastQuickplayStarted: "__SERVER_TIMESTAMP__",
     });
   }
 
-  async function trackCourtGameFinished(): Promise<void> {
-    if (!verdict.value) return;
-    const mode = getModeLabel();
-    const courtMode = getCourtModeLabel();
-    const outcome = verdict.value.tied ? "ties" : verdict.value.won ? "wins" : "losses";
-
-    await writeCourtStats({
-      gamesFinished: increment(1),
-      lastGameFinished: serverTimestamp(),
-      [`modeFinishes.${mode}`]: increment(1),
-      [`courtModeFinishes.${courtMode}`]: increment(1),
-      [outcome]: increment(1),
-      totalRoundsPlayed: increment(game.round),
+  async function trackTacticPlay(tactic: Tactic, actor: TurnActor, results: Array<{ change: number }>): Promise<void> {
+    const metrics = computeTacticShiftMetrics(results);
+    await courtStats.writeTacticStats({
+      tacticName: tactic.name,
+      actor,
+      metrics,
     });
   }
 
-  async function trackTacticPlay(tactic: Tactic, actor: TurnActor): Promise<void> {
-    const tacticRef = doc(db, `stats/court/tactics/${tactic.id}`);
+  function buildVoteBuckets(): Record<string, "prosecution" | "defense" | "abstain"> {
+    if (!game.playerSide) return {};
+    const playerSide = game.playerSide;
 
-    try {
-      await setDoc(
-        tacticRef,
-        {
-          id: tactic.id,
-          name: tactic.name,
-          effectType: tactic.effectType,
-          cardType: tactic.cardType,
-          plays: increment(1),
-          playerPlays: increment(actor === "player" ? 1 : 0),
-          opponentPlays: increment(actor === "opponent" ? 1 : 0),
-          lastPlayed: serverTimestamp(),
-        },
-        { merge: true },
-      );
+    return Object.fromEntries(
+      game.bench.map((justice) => {
+        const leaning = game.leanings[justice.id] ?? 0;
+        return [justice.name, classifyJusticeVote(leaning, playerSide)];
+      }),
+    );
+  }
 
-      await writeCourtStats({
-        tacticsPlayed: increment(1),
-        lastTacticPlayed: serverTimestamp(),
-        [`tacticPlaysById.${tactic.id}`]: increment(1),
-      });
-    } catch (error) {
-      console.warn("Court tactic stats write skipped:", error);
+  async function trackTrialVerdictStats(options: { isQuickplay: boolean }): Promise<void> {
+    if (!game.currentCase || !game.playerSide) return;
+
+    const outcome = getCurrentOutcome();
+    if (!outcome) return;
+
+    const winningSide = getWinningSide(game.playerSide, outcome);
+    const aggregateOutcomeField = outcome === "won" ? "Won" : outcome === "lost" ? "Lost" : "Tied";
+    const benchJusticeNames = game.bench.map((justice) => justice.name);
+    const stanceNames = getTrackedStanceNamesForOutcome(game.currentCase, game.playerSide, outcome);
+    const voteByJusticeName = buildVoteBuckets();
+
+    const aggregateUpdates: Record<string, string | number> = {
+      totalCasesWon: outcome === "won" ? 1 : 0,
+      totalCasesLost: outcome === "lost" ? 1 : 0,
+      totalCasesTied: outcome === "tied" ? 1 : 0,
+    };
+
+    if (options.isQuickplay) {
+      aggregateUpdates.quickplaysFinished = 1;
+      aggregateUpdates[`quickplays${aggregateOutcomeField}`] = 1;
+      aggregateUpdates.lastQuickplayFinished = "__SERVER_TIMESTAMP__";
     }
+
+    await Promise.all([
+      courtStats.writeCourtAggregateStats(aggregateUpdates),
+      courtStats.writeCaseStats({
+        caseName: game.currentCase.name,
+        outcome,
+        winningSide,
+      }),
+      courtStats.writeJusticeStats({
+        benchJusticeNames,
+        attackedJusticeNames: [...trialAttackedJustices],
+      }),
+      courtStats.writeStanceStats({
+        stanceNames,
+        outcome,
+      }),
+      courtStats.writeCaseJusticeVoteStats({
+        caseName: game.currentCase.name,
+        voteByJusticeName,
+      }),
+    ]);
+  }
+
+  async function trackCampaignStarted(campaignName: string): Promise<void> {
+    await Promise.all([
+      courtStats.writeCourtAggregateStats({
+        campaignsStarted: 1,
+        lastCampaignStarted: "__SERVER_TIMESTAMP__",
+      }),
+      courtStats.writeCampaignStats({
+        campaignName,
+        event: "start",
+      }),
+    ]);
+  }
+
+  async function trackCampaignCompleted(campaignName: string, won: boolean): Promise<void> {
+    await Promise.all([
+      courtStats.writeCourtAggregateStats({
+        campaignsFinished: 1,
+        campaignsWon: won ? 1 : 0,
+        campaignsLost: won ? 0 : 1,
+        lastCampaignFinished: "__SERVER_TIMESTAMP__",
+      }),
+      courtStats.writeCampaignStats({
+        campaignName,
+        event: won ? "win" : "loss",
+      }),
+    ]);
   }
 
   // ─── Helpers ─────────────────────────────────────────────────
@@ -437,6 +483,7 @@
     game.reframeStanceChoices = [];
     game.reframeStanceTacticId = null;
     game.reframeStanceSelection = null;
+    trialAttackedJustices.clear();
     courtReport.plays = [];
     ui.phase = "setup";
     ui.courtReportVisible = false;
@@ -465,8 +512,11 @@
       game.leanings[j.id] = getInitialLeaning(j);
       game.susceptibilityMods[j.id] = 0;
     });
+    trialAttackedJustices.clear();
     ui.phase = "playing";
-    void trackCourtGameStarted();
+    if (!ui.isCampaignMode) {
+      void trackQuickplayStarted();
+    }
   }
 
   /** Quick Play only: replay the same case with the same justices (reset leanings + deal fresh cards). */
@@ -484,6 +534,7 @@
       game.leanings[j.id] = getInitialLeaning(j);
       game.susceptibilityMods[j.id] = 0;
     });
+    trialAttackedJustices.clear();
     game.selectedTacticId = null;
     game.currentTurn = "player";
     game.round = 1;
@@ -694,6 +745,12 @@
   function applyTactic(tactic: Tactic, targetJustice: Justice | null, actor: TurnActor): void {
     const outcome: EffectOutcome = resolveEffect(game, tactic, targetJustice, actor, { drawCard, removeFromPlaybook });
 
+    outcome.results
+      .filter((result) => result.change !== 0)
+      .forEach((result) => {
+        trialAttackedJustices.add(result.justiceName);
+      });
+
     if (settings.features.usePokeVoice && actor === "player" && targetJustice) {
       if (tactic.effectType === "justice-cocktails" && targetJustice.name === "Brett Kavanaugh") {
         playKavanaughBeer();
@@ -732,7 +789,7 @@
       },
     );
 
-    void trackTacticPlay(tactic, actor);
+    void trackTacticPlay(tactic, actor, outcome.results);
 
     if (actor === "player") {
       endPlayerTurn();
@@ -934,7 +991,7 @@
     ui.opponentThinking = false;
     game.currentTurn = "player";
     if (game.round >= gameSettings.numberOfRounds) {
-      void trackCourtGameFinished();
+      void trackTrialVerdictStats({ isQuickplay: !ui.isCampaignMode });
       setTimeout(() => {
         ui.phase = "verdict";
       }, 1500);
@@ -1013,15 +1070,15 @@
 
   // ── Campaign composable (must come after `verdict` is defined) ──
   const {
-    startCampaign,
-    chooseObjective,
-    activateDoubleTap,
-    proceedAfterVerdict,
-    collectReward,
-    activateRecessReward,
+    startCampaign: beginCampaign,
+    chooseObjective: pickObjective,
+    activateDoubleTap: triggerDoubleTap,
+    proceedAfterVerdict: proceedAfterCampaignVerdict,
+    collectReward: collectCampaignReward,
+    activateRecessReward: triggerRecessReward,
     confirmVetoNominee,
     doneActivatingBonus,
-    proceedFromRecess,
+    proceedFromRecess: moveFromRecess,
     eligibleJustices,
     vetoChoiceJustices,
     recessRewardCards,
@@ -1030,6 +1087,93 @@
     objectiveStatus,
     gameOverStats,
   } = useCampaignManager(game, campaign, ui, verdict, courtReport, shuffle);
+
+  function rewardNameFromId(rewardId: string): string {
+    return rewardCards.find((reward) => reward.id === rewardId)?.name ?? rewardId;
+  }
+
+  function maybeTrackCampaignCompletion(): void {
+    if (campaignEndLogged || !campaign.data?.isOver || campaign.data.won === null) return;
+    campaignEndLogged = true;
+
+    void trackCampaignCompleted(campaign.data.setup.name, campaign.data.won);
+
+    if (campaign.data.activeObjective) {
+      void courtStats.writeObjectiveStats({
+        objectiveName: campaign.data.activeObjective.name,
+        succeeded: campaign.data.won,
+        failed: !campaign.data.won,
+      });
+    }
+  }
+
+  function startCampaign(setupId: number): void {
+    beginCampaign(setupId);
+
+    if (!campaign.data) return;
+    campaignEndLogged = false;
+    void trackCampaignStarted(campaign.data.setup.name);
+  }
+
+  function chooseObjective(objective: Parameters<typeof pickObjective>[0]): void {
+    pickObjective(objective);
+    void courtStats.writeObjectiveStats({ objectiveName: objective.name, chosen: true });
+  }
+
+  function activateDoubleTap(): void {
+    const beforeActive = campaign.data?.doubleTapActive ?? false;
+    triggerDoubleTap();
+    const afterActive = campaign.data?.doubleTapActive ?? false;
+
+    if (!beforeActive && afterActive) {
+      void courtStats.writeRewardStats({
+        rewardName: rewardNameFromId("double-tap"),
+        activated: true,
+      });
+    }
+  }
+
+  function activateRecessReward(rewardId: string, targetJusticeId?: number, targetEligibleId?: number): void {
+    const beforeActivatedCount = campaign.data?.activatedPreRecessCardIds.length ?? 0;
+    triggerRecessReward(rewardId, targetJusticeId, targetEligibleId);
+    const afterActivatedCount = campaign.data?.activatedPreRecessCardIds.length ?? 0;
+
+    if (afterActivatedCount > beforeActivatedCount) {
+      void courtStats.writeRewardStats({
+        rewardName: rewardNameFromId(rewardId),
+        activated: true,
+      });
+    }
+  }
+
+  function collectReward(): void {
+    collectCampaignReward();
+  }
+
+  function proceedAfterVerdict(): void {
+    const beforeRewardCounts = new Map<string, number>();
+    (campaign.data?.rewardHand ?? []).forEach((reward) => {
+      beforeRewardCounts.set(reward.id, (beforeRewardCounts.get(reward.id) ?? 0) + 1);
+    });
+
+    proceedAfterCampaignVerdict();
+
+    (campaign.data?.rewardHand ?? []).forEach((reward) => {
+      const beforeCount = beforeRewardCounts.get(reward.id) ?? 0;
+      if (beforeCount > 0) {
+        beforeRewardCounts.set(reward.id, beforeCount - 1);
+      } else {
+        void courtStats.writeRewardStats({ rewardName: reward.name, chosen: true });
+      }
+    });
+
+    maybeTrackCampaignCompletion();
+  }
+
+  function proceedFromRecess(): void {
+    moveFromRecess();
+    maybeTrackCampaignCompletion();
+  }
 
   const tallyDisplay = computed(() => {
     if (!benchOverview.value) return "0-0";
