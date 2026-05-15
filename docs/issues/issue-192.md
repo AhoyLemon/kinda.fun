@@ -13,6 +13,9 @@ This is all rooted at `/stats/court`.
 
 ```ts
 {
+  gamesStarted: number;
+  gamesFinished: number;
+
   quickplaysStarted: number;
   quickplaysFinished: number;
   quickplaysWon: number;
@@ -20,6 +23,8 @@ This is all rooted at `/stats/court`.
   quickplaysTied: number;
   lastQuickplayStarted: timestamp;
   lastQuickplayFinished: timestamp;
+  lastGameStarted: timestamp;
+  lastGameFinished: timestamp;
 
   campaignsStarted: number;
   campaignsFinished: number;
@@ -238,14 +243,18 @@ This is just to batch these updates together, so we're not doing Firestore calls
 
 ### Quickplay Start
 
+- Increment `gamesStarted`
 - Increment `quickplaysStarted`
 - Set `lastQuickplayStarted`
+- Set `lastGameStarted`
 
 ### Quickplay End (Verdict)
 
+- Increment `gamesFinished`
 - Increment `quickplaysFinished`
 - Increment one of `quickplaysWon`, `quickplaysLost`, `quickplaysTied`
 - Set `lastQuickplayFinished`
+- Set `lastGameFinished`
 - Increment one of `totalCasesWon`, `totalCasesLost`, `totalCasesTied`
 - Update `/stats/court/cases/{caseName}`
 - Update `/stats/court/justices/{justiceName}` for each bench justice
@@ -255,8 +264,10 @@ This is just to batch these updates together, so we're not doing Firestore calls
 
 ### Campaign Start
 
+- Increment `gamesStarted`
 - Increment `campaignsStarted`
 - Set `lastCampaignStarted`
+- Set `lastGameStarted`
 - Update `/stats/court/campaigns/{campaignName}`
 - Update `/stats/court/objectives/{objectiveName}` when selected
 
@@ -272,9 +283,11 @@ This is just to batch these updates together, so we're not doing Firestore calls
 
 ### Campaign End
 
+- Increment `gamesFinished`
 - Increment `campaignsFinished`
 - Increment one of `campaignsWon`, `campaignsLost`
 - Set `lastCampaignFinished`
+- Set `lastGameFinished`
 
 ### Campaign Abandon
 

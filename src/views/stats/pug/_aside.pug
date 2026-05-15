@@ -8,6 +8,13 @@ aside.general.general-stats(v-if="ui.viewing != 'general'")
         img(src="/svg/games/comparativelyfamous.svg" @click="getData('cameo')")
       .last-played(v-if="stats?.general?.cameoLastPlayed")
         .time-ago(v-text="formatTime(stats.general.cameoLastPlayed,'fromNow')")
+    
+        // SUPREME COURT: THE CARD GAME
+    .summary(:class="{ active: (ui.viewing == 'court') }")
+      figure
+        img(src="/svg/games/supremecourt.svg" @click="getData('court')")
+      .last-played(v-if="stats?.general?.courtLastPlayed")
+        .time-ago(v-text="formatTime(stats.general.courtLastPlayed,'fromNow')")
 
     // NO MORE BILLIONAIRES
     .summary(:class="{ active: (ui.viewing == 'guillotine') }")

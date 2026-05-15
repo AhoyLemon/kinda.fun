@@ -26,6 +26,7 @@
     classifyJusticeVote,
     computeTacticShiftMetrics,
     createCourtStatsHelpers,
+    getAttackedJusticeNamesForPlay,
     getOutcomeFromVerdict,
     getTrackedStanceNamesForOutcome,
     getWinningSide,
@@ -156,8 +157,10 @@
 
   async function trackQuickplayStarted(): Promise<void> {
     await courtStats.writeCourtAggregateStats({
+      gamesStarted: 1,
       quickplaysStarted: 1,
       lastQuickplayStarted: "__SERVER_TIMESTAMP__",
+      lastGameStarted: "__SERVER_TIMESTAMP__",
     });
   }
 
@@ -166,7 +169,9 @@
     await courtStats.writeTacticStats({
       tacticName: tactic.name,
       actor,
-      metrics,
+      // Normalize netShift to absolute value so averageNetShiftPerPlay measures card power,
+      // not directionality (opponent plays yield negative shifts in the player-reference frame).
+      metrics: { ...metrics, netShift: Math.abs(metrics.netShift) },
     });
   }
 
@@ -201,9 +206,11 @@
     };
 
     if (options.isQuickplay) {
+      aggregateUpdates.gamesFinished = 1;
       aggregateUpdates.quickplaysFinished = 1;
       aggregateUpdates[`quickplays${aggregateOutcomeField}`] = 1;
       aggregateUpdates.lastQuickplayFinished = "__SERVER_TIMESTAMP__";
+      aggregateUpdates.lastGameFinished = "__SERVER_TIMESTAMP__";
     }
 
     await Promise.all([
@@ -231,8 +238,10 @@
   async function trackCampaignStarted(campaignName: string): Promise<void> {
     await Promise.all([
       courtStats.writeCourtAggregateStats({
+        gamesStarted: 1,
         campaignsStarted: 1,
         lastCampaignStarted: "__SERVER_TIMESTAMP__",
+        lastGameStarted: "__SERVER_TIMESTAMP__",
       }),
       courtStats.writeCampaignStats({
         campaignName,
@@ -244,10 +253,12 @@
   async function trackCampaignCompleted(campaignName: string, won: boolean): Promise<void> {
     await Promise.all([
       courtStats.writeCourtAggregateStats({
+        gamesFinished: 1,
         campaignsFinished: 1,
         campaignsWon: won ? 1 : 0,
         campaignsLost: won ? 0 : 1,
         lastCampaignFinished: "__SERVER_TIMESTAMP__",
+        lastGameFinished: "__SERVER_TIMESTAMP__",
       }),
       courtStats.writeCampaignStats({
         campaignName,
@@ -745,11 +756,20 @@
   function applyTactic(tactic: Tactic, targetJustice: Justice | null, actor: TurnActor): void {
     const outcome: EffectOutcome = resolveEffect(game, tactic, targetJustice, actor, { drawCard, removeFromPlaybook });
 
-    outcome.results
-      .filter((result) => result.change !== 0)
-      .forEach((result) => {
-        trialAttackedJustices.add(result.justiceName);
-      });
+    const attackedJusticeNames = getAttackedJusticeNamesForPlay({
+      effectType: tactic.effectType,
+      targetJusticeName: targetJustice?.name,
+      multiTargetJusticeNames:
+        tactic.effectType === "swap-clerks"
+          ? game.multiTargetSelections
+              .map((justiceId) => game.bench.find((justice) => justice.id === justiceId)?.name)
+              .filter((justiceName): justiceName is string => !!justiceName)
+          : [],
+    });
+
+    attackedJusticeNames.forEach((justiceName) => {
+      trialAttackedJustices.add(justiceName);
+    });
 
     if (settings.features.usePokeVoice && actor === "player" && targetJustice) {
       if (tactic.effectType === "justice-cocktails" && targetJustice.name === "Brett Kavanaugh") {

@@ -60,4 +60,16 @@ describe("Court campaign stats helpers (#192)", () => {
     expect(metrics.netShift).toBe(0);
     expect(metrics.absoluteShift).toBe(10);
   });
+
+  it("opponent-played tactics produce negative netShift, confirming caller must abs-normalize before storing", () => {
+    // Opponent plays a card that swings 3 justices against the player (-8, -5, -3).
+    // netShift is negative because changes are in the player-reference frame.
+    // Court normalizes with Math.abs(metrics.netShift) before calling writeTacticStats,
+    // so averageNetShiftPerPlay measures card POWER regardless of who played it.
+    const opponentMetrics = computeTacticShiftMetrics([{ change: -8 }, { change: -5 }, { change: -3 }]);
+
+    expect(opponentMetrics.netShift).toBe(-16);
+    expect(Math.abs(opponentMetrics.netShift)).toBe(16);
+    expect(opponentMetrics.absoluteShift).toBe(16);
+  });
 });

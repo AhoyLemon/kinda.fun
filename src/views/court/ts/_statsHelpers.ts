@@ -1,6 +1,6 @@
 import { doc, getDoc, increment, serverTimestamp, setDoc, type Firestore, type FieldValue } from "firebase/firestore";
 
-import type { Case, Side, TurnActor } from "./_types";
+import type { Case, Side, TacticEffectType, TurnActor } from "./_types";
 
 export type CourtOutcome = "won" | "lost" | "tied";
 export type JusticeVote = "prosecution" | "defense" | "abstain";
@@ -127,6 +127,23 @@ export function computeTacticShiftMetrics(results: Array<{ change: number }>): T
     },
     { netShift: 0, absoluteShift: 0 },
   );
+}
+
+interface AttackedJusticeTrackingOptions {
+  effectType: TacticEffectType;
+  targetJusticeName?: string | null;
+  multiTargetJusticeNames?: string[];
+}
+
+export function getAttackedJusticeNamesForPlay(options: AttackedJusticeTrackingOptions): string[] {
+  const { effectType, targetJusticeName, multiTargetJusticeNames = [] } = options;
+
+  if (effectType === "swap-clerks") {
+    return uniqueNames(multiTargetJusticeNames);
+  }
+
+  if (!targetJusticeName) return [];
+  return uniqueNames([targetJusticeName]);
 }
 
 export function createCourtStatsHelpers(db: Firestore, deps: StatsDeps = defaultDeps) {
