@@ -5,39 +5,46 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "22"
-          cache: "npm"
+
+      - name: Setup Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
 
       - name: Install dependencies
         run: |
           echo "📦 Installing dependencies..."
-          npm ci --ignore-scripts
+          bun install --ignore-scripts
           echo "✅ Main dependencies installed"
           echo "📦 Installing functions dependencies separately..."
-          cd functions && npm ci || echo "⚠️ Functions install failed (this might be expected)"
+          cd functions && bun install --ignore-scripts || echo "⚠️ Functions install failed (this might be expected)"
           cd ..
           echo "📋 Verifying key dependencies..."
-          npm list vite vue @vitejs/plugin-vue
+          bun pm ls vite vue @vitejs/plugin-vue
 
       - name: Build project
         run: |
           echo "🏗️ Starting build process..."
           echo "Current working directory: $(pwd)"
           echo "Node.js version: $(node --version)"
-          echo "NPM version: $(npm --version)"
+          echo "Bun version: $(bun --version)"
           echo "🏗️ Running full build script..."
-          npm run build -- --mode production
+          bun run build -- --mode production
         env:
           NODE_ENV: production
           ENVIRONMENT: production
@@ -63,9 +70,10 @@ jobs:
           ls -la dist/
 
       - name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KINDA_FUN }}
-          channelId: live
-          projectId: kinda-fun
+        run: |
+          SERVICE_ACCOUNT_PATH="$RUNNER_TEMP/firebase-service-account.json"
+          printf '%s' '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KINDA_FUN }}' > "$SERVICE_ACCOUNT_PATH"
+          export GOOGLE_APPLICATION_CREDENTIALS="$SERVICE_ACCOUNT_PATH"
+          bunx firebase-tools@latest deploy --only hosting --project kinda-fun --non-interactive
+        env:
+          NODE_NO_WARNINGS: "1"
