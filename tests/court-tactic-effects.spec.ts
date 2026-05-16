@@ -106,11 +106,7 @@ describe("Court tactic effects (#193)", () => {
     expect(amicus).toBeTruthy();
     if (!amicus) return;
 
-    const bench = [
-      makeJustice(1, "A", "Democrat"),
-      makeJustice(2, "B", "Democrat"),
-      makeJustice(3, "C", "Republican"),
-    ];
+    const bench = [makeJustice(1, "A", "Democrat"), makeJustice(2, "B", "Democrat"), makeJustice(3, "C", "Republican")];
     const game = makeGame(bench, amicus);
     game.leanings[1] = 45;
     game.leanings[2] = 30;
@@ -123,18 +119,22 @@ describe("Court tactic effects (#193)", () => {
     expect(game.leanings[3]).toBe(2);
   });
 
-  it("emergency-motion recovers a previously played card", () => {
-    const emergency = tactics.find((t) => t.effectType === "emergency-motion");
-    const church = tactics.find((t) => t.effectType === "invite-church");
-    expect(emergency).toBeTruthy();
-    expect(church).toBeTruthy();
-    if (!emergency || !church) return;
+  it("encourage-nap applies the +15 leaning immediately and sets nap state", () => {
+    const encourageNap = tactics.find((t) => t.effectType === "encourage-nap");
+    expect(encourageNap).toBeTruthy();
+    if (!encourageNap) return;
 
-    const game = makeGame([makeJustice(1, "A", "Democrat")], emergency);
-    game.discardPile.push(church);
+    const target = makeJustice(1, "Target", "Democrat");
+    const game = makeGame([target], encourageNap);
 
-    resolveEffect(game, emergency, null, "player", helpers(game));
-    expect(game.playbook.some((t) => t.id === church.id)).toBe(true);
+    const out = resolveEffect(game, encourageNap, target, "player", helpers(game));
+    expect(game.leanings[target.id]).toBe(15);
+    expect(game.nappingJustices[target.id]).toBe(2);
+    expect(out.results).toEqual([{ justiceName: "Target", change: 15, newLeaning: 15 }]);
+  });
+
+  it("uses Playbook terminology in tactic text", () => {
+    expect(tactics.some((t) => t.description.includes("Docket") || (t.feedback ?? "").includes("Docket"))).toBe(false);
   });
 
   it("plant-story is single-target with stronger loyalty pressure", () => {

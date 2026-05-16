@@ -27,4 +27,15 @@ describe("Court regressions", () => {
       expect(contents).not.toContain("succeptibility");
     }
   });
+
+  it("guards dual-target mode behind 2+ eligible justices", () => {
+    const courtVue = fs.readFileSync(path.join(courtRootPath, "Court.vue"), "utf8");
+    expect(courtVue).toContain("eligibleMultiTargetJustices.length < 2");
+    expect(courtVue).toContain("eligibleJusticeIds.size < 2");
+  });
+
+  it("uses strict abstention bounds around threshold", () => {
+    const courtVue = fs.readFileSync(path.join(courtRootPath, "Court.vue"), "utf8");
+    expect(courtVue).toContain("return l > -t && l < t;");
+  });
 });

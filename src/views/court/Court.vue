@@ -564,6 +564,20 @@
 
   // ─── Tactic Selection ────────────────────────────────────────
 
+  function clearMultiTargetMode(): void {
+    game.multiTargetMode = false;
+    game.multiTargetSelections = [];
+    game.multiTargetTacticId = null;
+  }
+
+  function getEligibleMultiTargetJustices(tactic: Tactic | null): Justice[] {
+    if (!tactic) return [];
+    if (tactic.effectType === "swap-clerks") {
+      return game.bench.filter((justice) => !(justice.id in game.nappingJustices) && !game.recusedJustices.includes(justice.id));
+    }
+    return [];
+  }
+
   function selectTactic(tacticId: number): void {
     if (game.currentTurn !== "player" || ui.opponentThinking) return;
 
@@ -581,9 +595,7 @@
 
     // Deselect multi-target mode if player clicks the active card again
     if (game.multiTargetMode && game.multiTargetTacticId === tacticId) {
-      game.multiTargetMode = false;
-      game.multiTargetSelections = [];
-      game.multiTargetTacticId = null;
+      clearMultiTargetMode();
       return;
     }
 
@@ -595,7 +607,6 @@
       tactic.effectType === "request-amicus" ||
       tactic.effectType === "susceptibility" ||
       tactic.effectType === "discard-all" ||
-      tactic.effectType === "emergency-motion" ||
       tactic.effectType === "recite-dissent" ||
       tactic.effectType === "insult-chief" ||
       tactic.effectType === "presidential-call" ||
@@ -620,6 +631,8 @@
     } else if (tactic.effectType === "swap-clerks") {
       // Enter multi-target mode: player must click 2 justices
       if (game.multiTargetMode) return; // already in multi-target mode for another card
+      const eligibleMultiTargetJustices = getEligibleMultiTargetJustices(tactic);
+      if (eligibleMultiTargetJustices.length < 2) return;
       game.selectedTacticId = null;
       game.multiTargetTacticId = tactic.id;
       game.multiTargetMode = true;
@@ -716,16 +729,26 @@
     }
     if (ui.phase !== "playing" || ui.opponentThinking) return;
 
-    // Multi-target mode (swap-clerks, hire-pi): collect 2 justice ids then fire
+    // Multi-target mode (swap-clerks): collect 2 justice ids then fire
     if (game.multiTargetMode && game.currentTurn === "player") {
+      const tactic = [...game.playbook, ...game.claimedCards].find((t) => t.id === game.multiTargetTacticId) ?? null;
+      const eligibleJusticeIds = new Set(getEligibleMultiTargetJustices(tactic).map((targetJustice) => targetJustice.id));
+      if (!tactic || eligibleJusticeIds.size < 2) {
+        clearMultiTargetMode();
+        return;
+      }
+      if (!eligibleJusticeIds.has(justice.id)) {
+        openDetail();
+        return;
+      }
+      game.multiTargetSelections = game.multiTargetSelections.filter((selectedJusticeId) => eligibleJusticeIds.has(selectedJusticeId));
       const idx = game.multiTargetSelections.indexOf(justice.id);
       if (idx !== -1) {
         game.multiTargetSelections.splice(idx, 1);
       } else {
         game.multiTargetSelections.push(justice.id);
         if (game.multiTargetSelections.length === 2) {
-          const tactic = [...game.playbook, ...game.claimedCards].find((t) => t.id === game.multiTargetTacticId);
-          if (tactic) applyTactic(tactic, null, "player");
+          applyTactic(tactic, null, "player");
         }
       }
       return;
@@ -848,7 +871,7 @@
     game.currentTurn = "opponent";
     ui.opponentThinking = true;
 
-    // Simulate opponent browsing the Docket for 4-6 seconds
+    // Simulate opponent browsing the Playbook for 4-6 seconds
     const thinkTime = 4000 + Math.random() * 2000;
     const browseInterval = 650;
     let elapsed = 0;
@@ -882,7 +905,6 @@
       tactic.effectType === "request-amicus" ||
       tactic.effectType === "susceptibility" ||
       tactic.effectType === "discard-all" ||
-      tactic.effectType === "emergency-motion" ||
       tactic.effectType === "recite-dissent" ||
       tactic.effectType === "insult-chief" ||
       tactic.effectType === "presidential-call" ||
@@ -913,11 +935,12 @@
 
     // Dual-target cards: opponent picks 2 random justices
     if (tactic.effectType === "swap-clerks") {
-      const shuffled = shuffle([...game.bench]);
-      if (shuffled.length < 2) {
+      const eligibleMultiTargetJustices = getEligibleMultiTargetJustices(tactic);
+      if (eligibleMultiTargetJustices.length < 2) {
         endOpponentTurn();
         return;
       }
+      const shuffled = shuffle([...eligibleMultiTargetJustices]);
       game.multiTargetMode = true;
       game.multiTargetTacticId = tactic.id;
       game.multiTargetSelections = [shuffled[0].id, shuffled[1].id];
@@ -988,13 +1011,11 @@
   }
 
   function endOpponentTurn(): void {
-    // Wake up any justices whose nap ends this round and give them a well-rested bonus
+    // Wake up any justices whose nap ends this round
     for (const [idStr, napRound] of Object.entries(game.nappingJustices)) {
       if (napRound <= game.round) {
         const id = Number(idStr);
         delete game.nappingJustices[id];
-        const old = game.leanings[id] ?? 0;
-        game.leanings[id] = Math.min(100, old + 15);
       }
     }
     // Wake up yoga justices and apply their well-being buffs
@@ -1075,8 +1096,8 @@
     const wkAvg = (k: (typeof weaknessKeys)[number]) => bench.reduce((s, j) => s + j.weaknesses[k], 0) / bench.length;
     const greatestWeakness = weaknessKeys.reduce((a, b) => (wkAvg(a) >= wkAvg(b) ? a : b));
     const t = gameSettings.abstentionThreshold;
-    const votingFor = bench.filter((j) => (game.leanings[j.id] ?? 0) > t).length;
-    const votingAgainst = bench.filter((j) => (game.leanings[j.id] ?? 0) < -t).length;
+    const votingFor = bench.filter((j) => (game.leanings[j.id] ?? 0) >= t).length;
+    const votingAgainst = bench.filter((j) => (game.leanings[j.id] ?? 0) <= -t).length;
     const abstaining = bench.length - votingFor - votingAgainst;
     return { maleCount, femaleCount, partyCounts, bestStat, worstStat, greatestWeakness, votingFor, votingAgainst, abstaining };
   });
@@ -1084,8 +1105,8 @@
   const verdict = computed(() => {
     if (!game.bench.length) return null;
     const t = gameSettings.abstentionThreshold;
-    const forCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) > t).length;
-    const againstCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) < -t).length;
+    const forCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) >= t).length;
+    const againstCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) <= -t).length;
     const abstainCount = game.bench.length - forCount - againstCount;
     return { forCount, againstCount, abstainCount, won: forCount > againstCount, tied: forCount === againstCount };
   });
@@ -1278,7 +1299,6 @@
         "sway-all": "🌊 All justices",
         "request-amicus": "📚 All justices",
         "recite-dissent": "📖 No target",
-        "emergency-motion": "♻️ Discard pile",
         "catch-phone": "📱 Single target",
         "plant-story": "🌱 Single target",
         susceptibility: "😴 All justices",
@@ -1294,7 +1314,6 @@
         "swap-clerks": "🔄 Two justices",
         "encourage-nap": "💤 Single target",
         "justice-cocktails": "🍸 Single target",
-        "hire-pi": "🔍 Two justices",
         "saint-patricks": "☘️ All justices",
         "invite-church": "⛪ Single target",
         "suggest-retirement": "🏖️ Single target",
@@ -1322,11 +1341,11 @@
   const verdictSections = computed(() => {
     if (!verdict.value || !game.bench.length) return [];
     const t = gameSettings.abstentionThreshold;
-    const forJustices = game.bench.filter((j) => (game.leanings[j.id] ?? 0) > t);
-    const againstJustices = game.bench.filter((j) => (game.leanings[j.id] ?? 0) < -t);
+    const forJustices = game.bench.filter((j) => (game.leanings[j.id] ?? 0) >= t);
+    const againstJustices = game.bench.filter((j) => (game.leanings[j.id] ?? 0) <= -t);
     const abstainJustices = game.bench.filter((j) => {
       const l = game.leanings[j.id] ?? 0;
-      return l >= -t && l <= t;
+      return l > -t && l < t;
     });
     const sections = [
       { label: "Votes For", justices: forJustices, type: "for" as const },
@@ -1380,7 +1399,7 @@
   function verdictJusticeBarStyle(justice: Justice): Record<string, string> {
     const leaning = game.leanings[justice.id] ?? 0;
     const pct = Math.abs(leaning);
-    const color = leaning > gameSettings.abstentionThreshold ? "#2a7a3a" : leaning < -gameSettings.abstentionThreshold ? "#8b2020" : "#5a4a3a";
+    const color = leaning >= gameSettings.abstentionThreshold ? "#2a7a3a" : leaning <= -gameSettings.abstentionThreshold ? "#8b2020" : "#5a4a3a";
     return { width: `${pct}%`, backgroundColor: color };
   }
 
@@ -1411,8 +1430,8 @@
   function voteLabel(leaning: number): string {
     const t = gameSettings.abstentionThreshold;
     if (leaning >= 60) return "Strongly For";
-    if (leaning > t) return "Leaning For";
-    if (leaning >= -t) return "Undecided";
+    if (leaning >= t) return "Leaning For";
+    if (leaning > -t) return "Undecided";
     if (leaning > -60) return "Leaning Against";
     return "Strongly Against";
   }
