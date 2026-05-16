@@ -233,7 +233,7 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
       } else {
         game.statMods[targetJustice.id] = {
           ...(game.statMods[targetJustice.id] ?? {}),
-          succeptibility: (game.statMods[targetJustice.id]?.succeptibility ?? 0) - 3,
+          susceptibility: (game.statMods[targetJustice.id]?.susceptibility ?? 0) - 3,
         };
 
         const dir = actor === "player" ? 1 : -1;
@@ -367,7 +367,7 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
         charisma: (game.statMods[targetJustice.id]?.charisma ?? 0) + 3,
         empathy: (game.statMods[targetJustice.id]?.empathy ?? 0) + 3,
         logic: (game.statMods[targetJustice.id]?.logic ?? 0) - 3,
-        succeptibility: (game.statMods[targetJustice.id]?.succeptibility ?? 0) + 3,
+        susceptibility: (game.statMods[targetJustice.id]?.susceptibility ?? 0) + 3,
       };
       // Drinks also prime them for the next attack
       game.susceptibilityMods[targetJustice.id] = (game.susceptibilityMods[targetJustice.id] ?? 0) + 4;
@@ -652,7 +652,7 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
             power = Math.round((tactic.basePower * (5 - sv) * 2) / 5);
           }
           // Susceptibility provides a ±25% modifier for heart/head tactics
-          const suc = getEffectiveStat(justice, "succeptibility", game);
+          const suc = getEffectiveStat(justice, "susceptibility", game);
           const sucMult = 1 + ((suc - 5) / 10) * 0.5;
           power = Math.round(power * sucMult);
         } else {
@@ -673,7 +673,7 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
 
       const sucMod = game.susceptibilityMods[justice.id] ?? 0;
       if (sucMod > 0 && tactic.effectType !== "susceptibility") {
-        power += Math.round((sucMod * getEffectiveStat(justice, "succeptibility", game)) / 10);
+        power += Math.round((sucMod * getEffectiveStat(justice, "susceptibility", game)) / 10);
         game.susceptibilityMods[justice.id] = 0;
       }
 

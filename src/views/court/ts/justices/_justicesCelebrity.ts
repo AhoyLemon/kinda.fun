@@ -18,7 +18,7 @@ export const celebrityJustices: Justice[] = [
       charisma: 4,
       empathy: 1,
 
-      succeptibility: 2,
+      susceptibility: 2,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 4, bribery: 2, blackmail: 8, threats: 1 },
@@ -62,7 +62,7 @@ export const celebrityJustices: Justice[] = [
       charisma: 9,
       empathy: 5,
 
-      succeptibility: 2,
+      susceptibility: 2,
       partyLoyalty: 5,
     },
     weaknesses: { flattery: 3, bribery: 2, blackmail: 4, threats: 1 },
@@ -98,7 +98,7 @@ export const celebrityJustices: Justice[] = [
       charisma: 10,
       empathy: 6,
 
-      succeptibility: 7,
+      susceptibility: 7,
       partyLoyalty: 4,
     },
     weaknesses: { flattery: 9, bribery: 6, blackmail: 5, threats: 3 },
@@ -134,7 +134,7 @@ export const celebrityJustices: Justice[] = [
       charisma: 7,
       empathy: 6,
 
-      succeptibility: 7,
+      susceptibility: 7,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 8, bribery: 5, blackmail: 6, threats: 4 },
@@ -156,7 +156,7 @@ export const celebrityJustices: Justice[] = [
       charisma: 10,
       empathy: 2,
 
-      succeptibility: 3,
+      susceptibility: 3,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 4, bribery: 7, blackmail: 6, threats: 3 },
@@ -178,7 +178,7 @@ export const celebrityJustices: Justice[] = [
       charisma: 10,
       empathy: 7,
 
-      succeptibility: 8,
+      susceptibility: 8,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 8, bribery: 7, blackmail: 6, threats: 4 },
@@ -205,7 +205,7 @@ export const celebrityJustices: Justice[] = [
     nominatedBy: PRES_SNOOP_DOGG,
     religion: "Protestant",
     ethnicity: "White",
-    stats: { logic: 6, charisma: 10, empathy: 9, succeptibility: 10, partyLoyalty: -2 },
+    stats: { logic: 6, charisma: 10, empathy: 9, susceptibility: 10, partyLoyalty: -2 },
     weaknesses: { flattery: 10, bribery: 10, blackmail: 3, threats: 2 },
     stances: [
       {
@@ -230,7 +230,7 @@ export const celebrityJustices: Justice[] = [
     nominatedBy: PRES_VINCE_MCMAHON,
     religion: "Protestant",
     ethnicity: "White",
-    stats: { logic: 4, charisma: 10, empathy: 7, succeptibility: 5, partyLoyalty: 9 },
+    stats: { logic: 4, charisma: 10, empathy: 7, susceptibility: 5, partyLoyalty: 9 },
     weaknesses: { flattery: 3, bribery: 4, blackmail: 7, threats: 1 },
     stances: [
       {

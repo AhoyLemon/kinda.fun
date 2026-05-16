@@ -21,5 +21,11 @@ module.exports = {
         "vue/multi-word-component-names": "off",
       },
     },
+    {
+      files: ["scripts/**/*.js", "functions/**/*.js", "tests/**/*.js", "vite.config.js"],
+      env: {
+        node: true,
+      },
+    },
   ],
 };

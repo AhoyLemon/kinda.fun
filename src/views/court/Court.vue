@@ -1005,7 +1005,7 @@
         game.statMods[id] = {
           ...(game.statMods[id] ?? {}),
           empathy: (game.statMods[id]?.empathy ?? 0) + 3,
-          succeptibility: (game.statMods[id]?.succeptibility ?? 0) + 3,
+          susceptibility: (game.statMods[id]?.susceptibility ?? 0) + 3,
         };
       }
     }
@@ -1067,7 +1067,7 @@
             : raw;
       partyCounts[label] = (partyCounts[label] ?? 0) + 1;
     });
-    const statKeys = ["logic", "charisma", "empathy", "succeptibility", "partyLoyalty"] as const;
+    const statKeys = ["logic", "charisma", "empathy", "susceptibility", "partyLoyalty"] as const;
     const statAvg = (k: (typeof statKeys)[number]) => bench.reduce((s, j) => s + j.stats[k], 0) / bench.length;
     const bestStat = statKeys.reduce((a, b) => (statAvg(a) >= statAvg(b) ? a : b));
     const worstStat = statKeys.reduce((a, b) => (statAvg(a) <= statAvg(b) ? a : b));
@@ -1437,8 +1437,8 @@
     else if (justice.weaknesses.blackmail <= 2) hints.push("🩻 Difficult to blackmail");
     if (justice.weaknesses.threats >= 7) hints.push("😰 Unnerved by pressure");
     else if (justice.weaknesses.threats <= 2) hints.push("🦁 Nearly impossible to threaten");
-    if (justice.stats.succeptibility >= 7) hints.push("🌀 Easily swayed");
-    else if (justice.stats.succeptibility <= 3) hints.push("🪨 Hard to budge");
+    if (justice.stats.susceptibility >= 7) hints.push("🌀 Easily swayed");
+    else if (justice.stats.susceptibility <= 3) hints.push("🪨 Hard to budge");
     if (justice.stats.empathy >= 8) hints.push("❤️ Responds to emotional appeals");
     else if (justice.stats.empathy <= 2) hints.push("🧊 Cold to emotional arguments");
     if (justice.stats.logic >= 8) hints.push("📚 Won over by sound reasoning");

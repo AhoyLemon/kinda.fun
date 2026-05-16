@@ -46,8 +46,8 @@
       .jd-susceptibility
         span.jd-suc-label Susceptibility
         .jd-suc-bar
-          .jd-suc-fill(:style="{ width: `${(ui.detailJustice.stats.succeptibility / 10) * 100}%` }")
-        span.jd-suc-value {{ ui.detailJustice.stats.succeptibility < 4 ? 'Resistant' : ui.detailJustice.stats.succeptibility < 7 ? 'Moderate' : 'Easily swayed' }}
+          .jd-suc-fill(:style="{ width: `${(ui.detailJustice.stats.susceptibility / 10) * 100}%` }")
+        span.jd-suc-value {{ ui.detailJustice.stats.susceptibility < 4 ? 'Resistant' : ui.detailJustice.stats.susceptibility < 7 ? 'Moderate' : 'Easily swayed' }}
 
       //- Stances
       .jd-stances(v-if="ui.detailJustice.stances && ui.detailJustice.stances.length")
