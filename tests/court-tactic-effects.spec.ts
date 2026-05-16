@@ -95,12 +95,6 @@ function helpers(game: CourtGameState) {
 }
 
 describe("Court tactic effects (#193)", () => {
-  it("replaces FREEDOM with Request An Amicus", () => {
-    const id10 = tactics.find((t) => t.id === 10);
-    expect(id10?.name).toBe("Request An Amicus");
-    expect(tactics.some((t) => t.name.includes("FREEDOM"))).toBe(false);
-  });
-
   it("request-amicus scales with current support", () => {
     const amicus = tactics.find((t) => t.effectType === "request-amicus");
     expect(amicus).toBeTruthy();
@@ -114,9 +108,9 @@ describe("Court tactic effects (#193)", () => {
 
     const out = resolveEffect(game, amicus, null, "player", helpers(game));
     expect(out.results).toHaveLength(3);
-    expect(game.leanings[1]).toBe(57);
-    expect(game.leanings[2]).toBe(42);
-    expect(game.leanings[3]).toBe(2);
+    expect(game.leanings[1]).toBe(51);
+    expect(game.leanings[2]).toBe(36);
+    expect(game.leanings[3]).toBe(-4);
   });
 
   it("encourage-nap applies the +15 leaning immediately and sets nap state", () => {

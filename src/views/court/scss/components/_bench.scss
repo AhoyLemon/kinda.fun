@@ -3,7 +3,7 @@
 // ─── Bench Grid ──────────────────────────────────────────────
 .bench-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
   gap: 10px;
   width: 100%;
 
@@ -135,12 +135,10 @@
   }
 
   &.bench-grid--playing {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    align-items: start;
     .justice-card {
       padding-top: 7px;
-      min-height: 136px;
-
       &.has-image {
         display: flex;
         flex-direction: column;
@@ -334,8 +332,7 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
 
       .justice-card {
-        min-height: 132px;
-
+        padding-top: 0;
         .pic-and-name {
           grid-template-columns: 40px 1fr;
           gap: 7px;

@@ -191,7 +191,7 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
     consumeTactic(game, tactic, helpers);
     const dir = actor === "opponent" ? -1 : 1;
     const alliesCount = game.bench.filter((j) => (game.leanings[j.id] ?? 0) * dir > gameSettings.abstentionThreshold).length;
-    const momentumPower = Math.min(30, 8 + alliesCount * 2);
+    const momentumPower = Math.min(19, 4 + alliesCount);
 
     let targets = game.bench.filter((j) => !(j.id in game.nappingJustices) && !(j.id in game.yogaJustices));
 

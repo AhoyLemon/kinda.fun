@@ -1023,3 +1023,31 @@
 .trc-name {
   color: rgba(255, 255, 255, 0.75);
 }
+
+@media (max-width: 450px) {
+  main.court-playing {
+    .bench-overview-bar {
+      display: none;
+    }
+    .playing-topbar {
+      order: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    .court-playbook {
+      order: 2;
+    }
+    .court-playbook {
+      order: 3;
+      .tc__flavor {
+        display: none;
+      }
+      .tc__description {
+        padding-bottom: 0;
+      }
+    }
+    .bench-grid--playing {
+      order: 4;
+    }
+  }
+}

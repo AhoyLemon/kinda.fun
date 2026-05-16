@@ -57,7 +57,7 @@ interface Settings {
 }
 
 export const uiSettings: UISettings = {
-  toastDuration: 4000, // ms. Set to 0 to keep toasts visible until manually dismissed (click to close).
+  toastDuration: 6200, // ms. Set to 0 to keep toasts visible until manually dismissed (click to close).
 };
 
 export const gameSettings: GameSettings = {
