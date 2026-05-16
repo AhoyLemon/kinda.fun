@@ -24,12 +24,12 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: "1.3.14"
 
       - name: Install dependencies
         run: |
           echo "📦 Installing dependencies..."
-          # Match previous CI behavior by skipping lifecycle scripts during install.
+          # Skip lifecycle scripts in CI installs.
           bun install --ignore-scripts
           echo "✅ Main dependencies installed"
           echo "📦 Installing functions dependencies separately..."
