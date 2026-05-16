@@ -36,7 +36,7 @@ jobs:
           cd functions && bun install --ignore-scripts || echo "⚠️ Functions install failed (this might be expected)"
           cd ..
           echo "📋 Verifying key dependencies..."
-          bun pm ls vite vue @vitejs/plugin-vue > /dev/null
+          bun pm ls vite vue @vitejs/plugin-vue
 
       - name: Build project
         run: |
@@ -73,6 +73,7 @@ jobs:
       - name: Deploy to Firebase
         run: |
           SERVICE_ACCOUNT_PATH="$RUNNER_TEMP/firebase-service-account.json"
+          trap 'rm -f "$SERVICE_ACCOUNT_PATH"' EXIT
           printf '%s' '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KINDA_FUN }}' > "$SERVICE_ACCOUNT_PATH"
           chmod 600 "$SERVICE_ACCOUNT_PATH"
           export GOOGLE_APPLICATION_CREDENTIALS="$SERVICE_ACCOUNT_PATH"
