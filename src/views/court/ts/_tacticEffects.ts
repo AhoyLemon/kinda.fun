@@ -246,21 +246,6 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
       }
     }
 
-    // ── Emergency-motion ───────────────────────────────────────
-  } else if (tactic.effectType === "emergency-motion") {
-    consumeTactic(game, tactic, helpers);
-    const recovered = [...game.discardPile].reverse().find((c) => c.id !== tactic.id);
-    if (recovered) {
-      const idx = game.discardPile.findIndex((c) => c.id === recovered.id);
-      if (idx !== -1) game.discardPile.splice(idx, 1);
-      game.playbook.push(recovered);
-      reportTarget = recovered.name;
-      overrideFeedback = `${recovered.name} has been restored to your playbook.`;
-    } else {
-      reportTarget = "Discard pile";
-      overrideFeedback = "No prior tactics were available to recover.";
-    }
-
     // ── Recite-dissent ─────────────────────────────────────────
   } else if (tactic.effectType === "recite-dissent") {
     consumeTactic(game, tactic, helpers);
@@ -351,7 +336,11 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
   } else if (tactic.effectType === "encourage-nap") {
     consumeTactic(game, tactic, helpers);
     if (targetJustice) {
-      // Frozen for this round and next; wakes up at end of round+1 with a bonus
+      const old = game.leanings[targetJustice.id] ?? 0;
+      const next = Math.min(100, old + 15);
+      game.leanings[targetJustice.id] = next;
+      results.push({ justiceName: targetJustice.name, change: next - old, newLeaning: next });
+      // Frozen for this round and next; wake-up no longer applies extra leaning
       game.nappingJustices[targetJustice.id] = game.round + 1;
       reportTarget = targetJustice.name;
       overrideFeedback = `${targetJustice.name} is taking a nap.`;

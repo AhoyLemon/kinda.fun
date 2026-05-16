@@ -123,18 +123,26 @@ describe("Court tactic effects (#193)", () => {
     expect(game.leanings[3]).toBe(2);
   });
 
-  it("emergency-motion recovers a previously played card", () => {
-    const emergency = tactics.find((t) => t.effectType === "emergency-motion");
-    const church = tactics.find((t) => t.effectType === "invite-church");
-    expect(emergency).toBeTruthy();
-    expect(church).toBeTruthy();
-    if (!emergency || !church) return;
+  it("removes File An Emergency Motion from the tactics list", () => {
+    expect(tactics.some((t) => t.name === "File An Emergency Motion")).toBe(false);
+  });
 
-    const game = makeGame([makeJustice(1, "A", "Democrat")], emergency);
-    game.discardPile.push(church);
+  it("encourage-nap applies the +15 leaning immediately and sets nap state", () => {
+    const encourageNap = tactics.find((t) => t.effectType === "encourage-nap");
+    expect(encourageNap).toBeTruthy();
+    if (!encourageNap) return;
 
-    resolveEffect(game, emergency, null, "player", helpers(game));
-    expect(game.playbook.some((t) => t.id === church.id)).toBe(true);
+    const target = makeJustice(1, "Target", "Democrat");
+    const game = makeGame([target], encourageNap);
+
+    const out = resolveEffect(game, encourageNap, target, "player", helpers(game));
+    expect(game.leanings[target.id]).toBe(15);
+    expect(game.nappingJustices[target.id]).toBe(2);
+    expect(out.results).toEqual([{ justiceName: "Target", change: 15, newLeaning: 15 }]);
+  });
+
+  it("uses Playbook terminology in tactic text", () => {
+    expect(tactics.some((t) => t.description.includes("Docket") || (t.feedback ?? "").includes("Docket"))).toBe(false);
   });
 
   it("plant-story is single-target with stronger loyalty pressure", () => {

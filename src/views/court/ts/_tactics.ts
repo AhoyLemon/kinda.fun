@@ -94,8 +94,7 @@ export const tactics: Tactic[] = [
   {
     id: 10,
     name: "Request An Amicus",
-    description:
-      "Sways all justices slightly. The more justices already leaning your way, the stronger this becomes for everyone.",
+    description: "Sways all justices slightly. The more justices already leaning your way, the stronger this becomes for everyone.",
     flavorText: "You found some friends with opinions. Relevant ones.",
     cardType: "attack",
     effectType: "request-amicus",
@@ -135,18 +134,18 @@ export const tactics: Tactic[] = [
   {
     id: 13,
     name: "Purge the Record",
-    description: "Discard all 5 cards in the Docket and draw 5 fresh ones. If opposing counsel was quietly counting on any of those cards, that's a shame.",
+    description: "Discard all 5 cards in the Playbook and draw 5 fresh ones. If opposing counsel was quietly counting on any of those cards, that's a shame.",
     flavorText: "Motion to strike everything. The whole thing. Yes, the precedent too. Especially the precedent.",
     cardType: "utility",
     effectType: "discard-all",
     basePower: 0,
-    feedback: "The Docket has been cleared.",
+    feedback: "The Playbook has been cleared.",
   },
   {
     id: 14,
     name: "I Call Dibs",
     description:
-      "Select 2 cards from the Docket to claim exclusively. Opposing counsel can no longer play them. You must still play them yourself. Only usable while you have no active Dibs.",
+      "Select 2 cards from the Playbook to claim exclusively. Opposing counsel can no longer play them. You must still play them yourself. Only usable while you have no active Dibs.",
     flavorText: "Objection, Your Honor. Those cards were mine spiritually before my client could lose.",
     cardType: "defense",
     effectType: "claim-two",
@@ -189,8 +188,7 @@ export const tactics: Tactic[] = [
   {
     id: 18,
     name: "Recuse Yourself!",
-    description:
-      "Force a targeted justice to recuse — their leaning resets to neutral. While recused, incoming sway against them is cut roughly in half.",
+    description: "Force a targeted justice to recuse — their leaning resets to neutral. While recused, incoming sway against them is cut roughly in half.",
     flavorText: "There are no conflicts of interest here. There are only interests.",
     cardType: "utility",
     effectType: "recuse",
@@ -319,8 +317,7 @@ export const tactics: Tactic[] = [
   {
     id: 30,
     name: "Plant A Story",
-    description:
-      "Target one justice. Their party loyalty spikes for the rest of the trial and they immediately react to the sudden media pressure.",
+    description: "Target one justice. Their party loyalty spikes for the rest of the trial and they immediately react to the sudden media pressure.",
     flavorText: "The headline writes itself: 'Justices Under Fire From Own Party.' Nobody reads it. Everyone sees it.",
     cardType: "utility",
     effectType: "plant-story",
@@ -366,16 +363,6 @@ export const tactics: Tactic[] = [
     flavorText: "They weren't taking notes. They were texting.",
     cardType: "utility",
     effectType: "catch-phone",
-    basePower: 0,
-  },
-  {
-    id: 35,
-    name: "File An Emergency Motion",
-    description:
-      "No target. Recover one previously played tactic from your discard pile and add it back into your playbook immediately.",
-    flavorText: "You found a procedural loophole. There's always a loophole.",
-    cardType: "utility",
-    effectType: "emergency-motion",
     basePower: 0,
   },
   {
