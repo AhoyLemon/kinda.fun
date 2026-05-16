@@ -22,20 +22,21 @@ jobs:
           node-version: "22"
 
       - name: Setup Bun
-        run: |
-          curl -fsSL https://bun.sh/install | bash
-          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Install dependencies
         run: |
           echo "📦 Installing dependencies..."
+          # Match previous CI behavior by skipping lifecycle scripts during install.
           bun install --ignore-scripts
           echo "✅ Main dependencies installed"
           echo "📦 Installing functions dependencies separately..."
           cd functions && bun install --ignore-scripts || echo "⚠️ Functions install failed (this might be expected)"
           cd ..
           echo "📋 Verifying key dependencies..."
-          bun pm ls vite vue @vitejs/plugin-vue
+          bun pm ls vite vue @vitejs/plugin-vue > /dev/null
 
       - name: Build project
         run: |
@@ -73,6 +74,7 @@ jobs:
         run: |
           SERVICE_ACCOUNT_PATH="$RUNNER_TEMP/firebase-service-account.json"
           printf '%s' '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KINDA_FUN }}' > "$SERVICE_ACCOUNT_PATH"
+          chmod 600 "$SERVICE_ACCOUNT_PATH"
           export GOOGLE_APPLICATION_CREDENTIALS="$SERVICE_ACCOUNT_PATH"
           bunx firebase-tools@latest deploy --only hosting --project kinda-fun --non-interactive
         env:
