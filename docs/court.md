@@ -10,8 +10,8 @@ This file serves as a stable reference for decisions made during development. Se
 | --------------- | -------------------------------------------------------------------------------------- |
 | **The Docket**  | The shared community pool of 5 tactic cards that both players draw from                |
 | **Tactic card** | A playable card (replaces the older term "argument card")                              |
-| **Round**       | One player turn + one opponent turn (3 rounds per trial)                               |
-| **Trial**       | A full game session on one case; ends after 3 rounds with a verdict                    |
+| **Round**       | One player turn + one opponent turn (5 rounds per trial)                               |
+| **Trial**       | A full game session on one case; ends after 5 rounds with a verdict                    |
 | **Leaning**     | A justice's current vote stance, -100 to +100 from the **player's** perspective        |
 | **Claiming**    | Player action to reserve 2 Docket cards for their exclusive use (via "I Call Dibs")    |
 | **Shield**      | Temporary protection for a justice; consumed when the opponent would sway that justice |
@@ -49,8 +49,8 @@ Each justice's initial lean is derived from whether their nominating president's
 **Leaning scale is ±100.**
 Internally, justice leanings run from -100 to +100. The `gameSettings.abstentionThreshold` (default 20) defines the "dead zone" — justices with leaning `> -20 && <= 20` show as **Undecided** and abstain from the final vote count. The topbar tally shows results in `FOR-AGAINST` or `FOR-AGAINST-ABSTAIN` format.
 
-**`gameSettings` is a plain const (not reactive).**
-Currently contains `numberOfRounds: 3` and `abstentionThreshold: 20`. Referenced directly from the template since Vue 3 `<script setup>` exposes all declared values.
+**`gameSettings` comes from `_settings.ts` (and is not reactive).**
+`Court.vue` imports this from `src/views/court/ts/_settings.ts`; current values are `numberOfRounds: 5` and `abstentionThreshold: 10`.
 
 **The Docket is shared.**
 Rather than each player having a private hand, both draw from the same 5-card pool. This creates meaningful tension — playing a card removes it from the opponent's options, and claiming cards locks them away.
