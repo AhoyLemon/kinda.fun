@@ -24,7 +24,7 @@ export const currentJustices: Justice[] = [
       charisma: 7,
       empathy: 5,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 6, bribery: 3, blackmail: 4, threats: 3 },
@@ -78,7 +78,7 @@ export const currentJustices: Justice[] = [
       charisma: 3,
       empathy: 1,
 
-      succeptibility: 3,
+      susceptibility: 3,
       partyLoyalty: 10,
     },
     weaknesses: { flattery: 4, bribery: 9, blackmail: 7, threats: 2 },
@@ -127,7 +127,7 @@ export const currentJustices: Justice[] = [
       charisma: 4,
       empathy: 2,
 
-      succeptibility: 3,
+      susceptibility: 3,
       partyLoyalty: 10,
     },
     weaknesses: { flattery: 7, bribery: 5, blackmail: 4, threats: 2 },
@@ -181,7 +181,7 @@ export const currentJustices: Justice[] = [
       charisma: 8,
       empathy: 10,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 3, threats: 4 },
@@ -235,7 +235,7 @@ export const currentJustices: Justice[] = [
       charisma: 7,
       empathy: 5,
 
-      succeptibility: 3,
+      susceptibility: 3,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 4, bribery: 2, blackmail: 3, threats: 3 },
@@ -284,7 +284,7 @@ export const currentJustices: Justice[] = [
       charisma: 5,
       empathy: 4,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 5, bribery: 4, blackmail: 4, threats: 3 },
@@ -333,7 +333,7 @@ export const currentJustices: Justice[] = [
       charisma: 5,
       empathy: 4,
 
-      succeptibility: 5,
+      susceptibility: 5,
       partyLoyalty: 9,
     },
     weaknesses: { flattery: 6, bribery: 6, blackmail: 8, threats: 4 },
@@ -382,7 +382,7 @@ export const currentJustices: Justice[] = [
       charisma: 6,
       empathy: 5,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: 9,
     },
     weaknesses: { flattery: 5, bribery: 3, blackmail: 4, threats: 3 },
@@ -431,7 +431,7 @@ export const currentJustices: Justice[] = [
       charisma: 8,
       empathy: 10,
 
-      succeptibility: 3,
+      susceptibility: 3,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 4, bribery: 2, blackmail: 2, threats: 4 },

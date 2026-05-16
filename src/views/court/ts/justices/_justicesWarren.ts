@@ -18,7 +18,7 @@ export const warrenJustices: Justice[] = [
       charisma: 8,
       empathy: 8,
 
-      succeptibility: 3,
+      susceptibility: 3,
       partyLoyalty: 5,
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 4, threats: 2 },
@@ -62,7 +62,7 @@ export const warrenJustices: Justice[] = [
       charisma: 6,
       empathy: 5,
 
-      succeptibility: 2,
+      susceptibility: 2,
       partyLoyalty: 5,
     },
     weaknesses: { flattery: 4, bribery: 1, blackmail: 2, threats: 2 },
@@ -101,7 +101,7 @@ export const warrenJustices: Justice[] = [
       charisma: 8,
       empathy: 8,
 
-      succeptibility: 3,
+      susceptibility: 3,
       partyLoyalty: 5,
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 2, threats: 3 },
@@ -145,7 +145,7 @@ export const warrenJustices: Justice[] = [
       charisma: 6,
       empathy: 6,
 
-      succeptibility: 6,
+      susceptibility: 6,
       partyLoyalty: 4,
     },
     weaknesses: { flattery: 5, bribery: 3, blackmail: 3, threats: 3 },
@@ -184,7 +184,7 @@ export const warrenJustices: Justice[] = [
       charisma: 8,
       empathy: 6,
 
-      succeptibility: 5,
+      susceptibility: 5,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 7, bribery: 8, blackmail: 9, threats: 4 },
@@ -223,7 +223,7 @@ export const warrenJustices: Justice[] = [
       charisma: 6,
       empathy: 9,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: -2,
     },
     weaknesses: { flattery: 3, bribery: 2, blackmail: 3, threats: 2 },

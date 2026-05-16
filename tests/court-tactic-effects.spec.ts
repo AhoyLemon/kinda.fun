@@ -20,7 +20,7 @@ function makeJustice(id: number, name: string, party: Party): Justice {
       logic: 5,
       charisma: 5,
       empathy: 5,
-      succeptibility: 5,
+      susceptibility: 5,
       partyLoyalty: 5,
     },
     weaknesses: {
