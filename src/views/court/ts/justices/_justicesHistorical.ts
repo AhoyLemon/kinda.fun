@@ -32,7 +32,6 @@ export const historicalJustices: Justice[] = [
       logic: 7,
       charisma: 9,
       empathy: 10,
-
       susceptibility: 2,
       partyLoyalty: 6,
     },
@@ -76,7 +75,6 @@ export const historicalJustices: Justice[] = [
       logic: 10,
       charisma: 9,
       empathy: 9,
-
       susceptibility: 2,
       partyLoyalty: 6,
     },
@@ -98,11 +96,6 @@ export const historicalJustices: Justice[] = [
         note: "Wrote the principal dissent in Shelby County v. Holder (2013), warning that gutting the Voting Rights Act opened the door to voter suppression.",
       },
       {
-        topic: "CourtAuthority",
-        position: "For",
-        note: "Resisted calls to retire despite declining health, believing the Court's composition too consequential to risk under a hostile administration.",
-      },
-      {
         topic: "GayRights",
         position: "For",
         note: "Voted with the majority in United States v. Windsor (2013) and Obergefell v. Hodges (2015), extending equal protection to same-sex couples nationwide.",
@@ -114,7 +107,7 @@ export const historicalJustices: Justice[] = [
     name: "William Rehnquist",
     image: "rehnquist.webp",
     description:
-      "Chief Justice who added gold stripes to his robe to stand out. Conservative stalwart who presided over Clinton's impeachment trial with full ceremonial stripes. The robes were the most interesting thing about him.",
+      "Chief Justice who remade the Court in his image: fiercely conservative, fiercely efficient, and fiercely uninterested in your feelings. Architect of the 'Rehnquist Revolution' that reined in federal power and revived states' rights. Presided over Clinton's impeachment trial in gold-striped robes inspired by Gilbert & Sullivan. More influential than flashy, and far more consequential than his sense of humor.",
     justiceType: "historical",
     gender: "M",
     birthYear: 1924,
@@ -125,7 +118,6 @@ export const historicalJustices: Justice[] = [
       logic: 8,
       charisma: 6,
       empathy: 4,
-
       susceptibility: 4,
       partyLoyalty: 9,
     },
@@ -163,7 +155,7 @@ export const historicalJustices: Justice[] = [
     name: "Antonin Scalia",
     image: "scalia.webp",
     description:
-      "Originalist extraordinaire who believed the Constitution meant exactly what men with slave plantations intended in 1789. Was best friends with RBG despite being her polar opposite. Had opinions. Loudly.",
+      "Originalist extraordinaire who believed the Constitution meant exactly what men with slave plantations intended in 1789. Famously best friends with RBG despite being her polar opposite. Had opinions. Loudly. Opera, wit, and dissents sharper than a gavel drop.",
     justiceType: "historical",
     gender: "M",
     birthYear: 1936,
@@ -201,8 +193,8 @@ export const historicalJustices: Justice[] = [
         note: "Dissented in Planned Parenthood v. Casey (1992), arguing Roe had no constitutional basis and should simply be overturned.",
       },
       {
-        topic: "CampaignFinance",
-        position: "For",
+        topic: "FairElections",
+        position: "Against",
         note: "Joined Citizens United (2010) and viewed campaign spending restrictions as unconstitutional censorship of political speech.",
       },
     ],
@@ -223,7 +215,6 @@ export const historicalJustices: Justice[] = [
       logic: 8,
       charisma: 7,
       empathy: 7,
-
       susceptibility: 6,
       partyLoyalty: 5,
     },
@@ -272,7 +263,6 @@ export const historicalJustices: Justice[] = [
       logic: 9,
       charisma: 7,
       empathy: 8,
-
       susceptibility: 3,
       partyLoyalty: 2,
     },
@@ -284,8 +274,8 @@ export const historicalJustices: Justice[] = [
         note: "Authored the principal dissent in Heller (2008), arguing the Second Amendment protects only a militia right, not individual ownership.",
       },
       {
-        topic: "CampaignFinance",
-        position: "Against",
+        topic: "FairElections",
+        position: "For",
         note: "Authored the Citizens United dissent (2010), arguing corporations have no First Amendment right to spend unlimited money in elections.",
       },
       {
@@ -460,8 +450,8 @@ export const historicalJustices: Justice[] = [
         note: "Grounded gay rights in the 14th Amendment's liberty interest, following Griswold's logic to its most expansive conclusion.",
       },
       {
-        topic: "CampaignFinance",
-        position: "For",
+        topic: "FairElections",
+        position: "Against",
         note: "Authored Citizens United v. FEC (2010), holding that corporate independent expenditures in elections are protected speech, opening the door to unlimited dark money.",
       },
       {
@@ -653,7 +643,6 @@ export const historicalJustices: Justice[] = [
       logic: 7,
       charisma: 6,
       empathy: 1,
-
       susceptibility: 4,
       partyLoyalty: 10,
     },
@@ -692,7 +681,6 @@ export const historicalJustices: Justice[] = [
       logic: 6,
       charisma: 5,
       empathy: 2,
-
       susceptibility: 6,
       partyLoyalty: 8,
     },
