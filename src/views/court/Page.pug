@@ -33,7 +33,4 @@ html(lang="en")
   body
     #app
       main.page-content
-    if mode == "development"
-      script(type="module" src="/src/entries/court.js")
-    else
-      script(src="/court.js")
+    script(type="module" src="/src/entries/court.js")
