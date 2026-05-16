@@ -15,22 +15,29 @@ main.court-title {
     grid-column: 2;
     text-align: center;
 
-    .title-headline {
-      font-family: $serif;
-      font-size: clamp(3rem, 10.5vw, 10rem);
-      font-weight: 475;
-      color: $court-gold;
-      margin: unset;
-      line-height: 1.02;
+    figure {
+      padding: 20px;
+      img {
+        max-width: 600px;
+      }
     }
 
-    .title-sub {
-      font-size: 3.5vw;
-      color: rgba(255, 255, 255, 0.5);
-      margin: 0.3rem 0 0;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-    }
+    // .title-headline {
+    //   font-family: $serif;
+    //   font-size: clamp(3rem, 10.5vw, 10rem);
+    //   font-weight: 475;
+    //   color: $court-gold;
+    //   margin: unset;
+    //   line-height: 1.02;
+    // }
+
+    // .title-sub {
+    //   font-size: 3.5vw;
+    //   color: rgba(255, 255, 255, 0.5);
+    //   margin: 0.3rem 0 0;
+    //   letter-spacing: 0.25em;
+    //   text-transform: uppercase;
+    // }
   }
 
   .title-mode-buttons {
@@ -108,17 +115,21 @@ main.court-title {
   main.court-title {
     grid-template-columns: 1fr;
     gap: 1.5rem;
-    padding-top: 2rem;
+    // padding-top: 2rem;
+    padding-top: 0;
     justify-items: center;
     text-align: center;
 
     .title-hero {
       order: 1;
       grid-column: 1;
-
-      .title-sub {
-        font-size: clamp(0.95rem, 2.7vw, 1.45rem);
+      width: 100%;
+      img {
+        width: 100%;
       }
+      // .title-sub {
+      //   font-size: clamp(0.95rem, 2.7vw, 1.45rem);
+      // }
     }
 
     .title-mode-buttons {

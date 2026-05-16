@@ -1,11 +1,11 @@
 include ../../shared/pug/_variables.pug
 include ../../shared/pug/_mixins.pug
 - const name = "Supreme Court: The Card Game"
-- const desc = "A satirical card game about justices and rulings"
+- const desc = "If justice isn't fair, at least it should be fun."
 - const keywords = "card game, supreme court, justices, satirical"
 - const gameUrl = baseUrl + "/court"
 - const ogImage = baseUrl + "/img/og-court.png"
-- const datePublished = "2026-04-02"
+- const datePublished = "2026-05-16"
 - const viewportContent = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 
 doctype html
@@ -31,6 +31,14 @@ html(lang="en")
     meta(property="og:email" content=email)
 
   body
-    #app
+    #app 
+      +tempPageContent(name, desc)
+        ul
+          li Choose your court
+          li Choose your case
+          li Play tactics to win the case
       main.page-content
     script(type="module" src="/src/entries/court.js")
+
+    // Schema.org
+    include pug/_schema.pug
