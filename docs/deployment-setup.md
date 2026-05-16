@@ -9,11 +9,16 @@ If you see a blank page at `http://localhost:5173/home.html` with `auth/invalid-
 ### Quick start
 
 1. Install dependencies:
-  - `npm install`
+
+- `bun install`
+
 2. Start the client:
-  - `npm run dev:client`
+
+- `bun run dev:client`
+
 3. Open:
-  - `http://localhost:5173/home.html`
+
+- `http://localhost:5173/home.html`
 
 ### Optional: override Firebase config with env vars
 
@@ -102,5 +107,7 @@ Symptoms:
 Fixes:
 
 1. Ensure `firebaseConfig.js` exists locally (gitignored) or define `VITE_FIREBASE_*` in `.env.local`.
-2. Stop and restart Vite (`npm run dev:client`).
+2. Stop and restart Vite (`bun run dev:client`).
 3. If auth still fails, verify the API key/project pair belongs to the same Firebase project.
+
+_Alternative with npm: `npm install` and `npm run dev:client`._

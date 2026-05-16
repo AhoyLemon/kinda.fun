@@ -27,6 +27,10 @@
       launched: "2021-02-16",
       dayCount: null,
     },
+    court: {
+      launched: "2026-06-01",
+      dayCount: null,
+    },
     sisyphus: {
       launched: "2021-09-21",
       dayCount: null,
@@ -57,6 +61,7 @@
     general: {},
     guillotine: {},
     cameo: {},
+    court: {},
     invalid: {},
     wrongest: {},
     sisyphus: {},
@@ -76,6 +81,7 @@
     meetingLoaded: false,
     megachurchLoaded: false,
     loadingFullData: false,
+    selectedJusticeId: null,
   });
 
   const app = initializeApp(firebaseConfig);
@@ -96,6 +102,7 @@
 
   /**
    * Loads Firestore stats for a game, normalizing timestamp fields and subcollections.
+   * Supports nested subcollections for hierarchical data (e.g., justices > cases).
    * @param {string} game - The game name (e.g. "cameo", "sisyphus", ...)
    * @param {object} options - {
    *   mainDocTimestamps: [fieldName, ...],
@@ -104,7 +111,14 @@
    *       process: (data) => data, // optional per-item processor
    *       timestampFields: [fieldName, ...], // optional per-item timestamp fields
    *       limitTo: number, // optional limit for query
-   *       sortBy: string // optional sort field (for limiting)
+   *       sortBy: string, // optional sort field (for limiting)
+   *       nestedSubcollections: { // optional nested subcollections
+   *         [nestedName]: {
+   *           timestampFields: [fieldName, ...],
+   *           limitTo: number,
+   *           sortBy: string
+   *         }
+   *       }
    *     }
    *   }
    * }
@@ -139,18 +153,59 @@
         }
 
         const snap = await getDocs(queryRef);
-        const results = snap.docs.map((doc) => {
-          let data = doc.data();
-          // Convert per-item timestamps
-          if (subOpts.timestampFields) {
-            subOpts.timestampFields.forEach((field) => {
-              if (data[field]) data[field] = convertTimestamp(data[field]);
-            });
-          }
-          // Custom processor
-          if (subOpts.process) data = subOpts.process(data);
-          return data;
-        });
+        const results = await Promise.all(
+          snap.docs.map(async (doc) => {
+            let data = doc.data();
+            // Add the document ID as a reference (typically the name)
+            if (!data.id) data.id = doc.id;
+
+            // Convert per-item timestamps
+            if (subOpts.timestampFields) {
+              subOpts.timestampFields.forEach((field) => {
+                if (data[field]) data[field] = convertTimestamp(data[field]);
+              });
+            }
+            // Custom processor
+            if (subOpts.process) data = subOpts.process(data);
+
+            // Load nested subcollections if specified
+            if (subOpts.nestedSubcollections) {
+              for (const [nestedSub, nestedOpts] of Object.entries(subOpts.nestedSubcollections)) {
+                let nestedCollectionRef = collection(firestoreDb, `stats/${game}/${sub}/${doc.id}/${nestedSub}`);
+                let nestedQueryRef = nestedCollectionRef;
+
+                // Apply sorting and limiting to nested query
+                if (nestedOpts.sortBy && nestedOpts.limitTo) {
+                  nestedQueryRef = query(nestedCollectionRef, orderBy(nestedOpts.sortBy, "desc"), limit(nestedOpts.limitTo));
+                } else if (nestedOpts.sortBy) {
+                  nestedQueryRef = query(nestedCollectionRef, orderBy(nestedOpts.sortBy, "desc"));
+                } else if (nestedOpts.limitTo) {
+                  nestedQueryRef = query(nestedCollectionRef, limit(nestedOpts.limitTo));
+                }
+
+                const nestedSnap = await getDocs(nestedQueryRef);
+                const nestedResults = nestedSnap.docs.map((nestedDoc) => {
+                  let nestedData = nestedDoc.data();
+                  if (!nestedData.id) nestedData.id = nestedDoc.id;
+
+                  // Convert nested timestamps
+                  if (nestedOpts.timestampFields) {
+                    nestedOpts.timestampFields.forEach((field) => {
+                      if (nestedData[field]) nestedData[field] = convertTimestamp(nestedData[field]);
+                    });
+                  }
+                  // Custom nested processor if provided
+                  if (nestedOpts.process) nestedData = nestedOpts.process(nestedData);
+                  return nestedData;
+                });
+
+                data[nestedSub] = nestedResults;
+              }
+            }
+
+            return data;
+          }),
+        );
 
         stats[game][sub] = results;
         // Track if this is a limited query
@@ -183,6 +238,15 @@
           stats.general.cameoGamesStarted = cameoData.gamesStarted || 0;
           stats.general.cameoLastPlayed = cameoData.lastGameStarted ? convertTimestamp(cameoData.lastGameStarted) : null;
         }
+
+        // Court
+        const courtSnap = await getDoc(doc(firestoreDb, "stats", "court"));
+        if (courtSnap.exists()) {
+          const courtData = courtSnap.data();
+          stats.general.courtGamesStarted = courtData.gamesStarted || 0;
+          stats.general.courtLastPlayed = courtData.lastGameStarted ? convertTimestamp(courtData.lastGameStarted) : null;
+        }
+
         // Guillotine
         const guillotineSnap = await getDoc(doc(firestoreDb, "stats", "guillotine"));
         if (guillotineSnap.exists()) {
@@ -262,7 +326,7 @@
       }
     }
 
-    if (game == "cameo") {
+    if (game === "cameo") {
       try {
         await loadFirestoreStats("cameo", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -289,7 +353,52 @@
         errorOccurred = true;
         console.error("Error loading cameo stats from Firestore:", e);
       }
-    } else if (game == "sisyphus") {
+    } else if (game === "court") {
+      try {
+        await loadFirestoreStats("court", {
+          mainDocTimestamps: [
+            "lastGameStarted",
+            "lastGameFinished",
+            "lastQuickplayStarted",
+            "lastQuickplayFinished",
+            "lastCampaignStarted",
+            "lastCampaignFinished",
+          ],
+          subcollections: {
+            cases: {
+              timestampFields: ["lastPlayedAt"],
+              sortBy: "timesPlayed",
+            },
+            justices: {
+              timestampFields: ["lastAdjudicatedAt"],
+              sortBy: "timesAdjudicated",
+              nestedSubcollections: {
+                cases: {
+                  timestampFields: ["lastVotedAt"],
+                },
+              },
+            },
+            stances: {
+              timestampFields: ["lastAdjudicatedAt"],
+            },
+            tactics: {
+              timestampFields: ["lastPlayedAt"],
+              sortBy: "timesPlayed",
+            },
+          },
+        });
+        dates.court.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.court.launched), "days").days);
+        ui.courtLoaded = true;
+
+        ui.viewing = "court";
+      } catch (e) {
+        stats.court.cases = [];
+        stats.court.justices = [];
+        stats.court.stances = [];
+        stats.court.tactics = [];
+        console.error("Error loading court stats from Firestore:", e);
+      }
+    } else if (game === "sisyphus") {
       try {
         await loadFirestoreStats("sisyphus", {
           mainDocTimestamps: ["firstClick", "lastGameStarted"],
@@ -329,7 +438,7 @@
         errorOccurred = true;
         console.error("Error loading sisyphus stats from Firestore:", e);
       }
-    } else if (game == "guillotine") {
+    } else if (game === "guillotine") {
       try {
         await loadFirestoreStats("guillotine", {
           mainDocTimestamps: ["lastGameStarted", "gameLastFinished"],
@@ -349,7 +458,7 @@
         errorOccurred = true;
         console.error("Error loading guillotine stats from Firestore:", e);
       }
-    } else if (game == "pretend") {
+    } else if (game === "pretend") {
       try {
         await loadFirestoreStats("pretend", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -374,7 +483,7 @@
         errorOccurred = true;
         console.error("Error loading pretend stats from Firestore:", e);
       }
-    } else if (game == "meeting") {
+    } else if (game === "meeting") {
       try {
         await loadFirestoreStats("meeting", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -399,7 +508,7 @@
         errorOccurred = true;
         console.error("Error loading meeting stats from Firestore:", e);
       }
-    } else if (game == "invalid") {
+    } else if (game === "invalid") {
       try {
         await loadFirestoreStats("invalid", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -441,7 +550,7 @@
         errorOccurred = true;
         console.error("Error loading invalid stats from Firestore:", e);
       }
-    } else if (game == "megachurch") {
+    } else if (game === "megachurch") {
       try {
         await loadFirestoreStats("megachurch", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -471,7 +580,7 @@
         errorOccurred = true;
         console.error("Error loading megachurch stats from Firestore:", e);
       }
-    } else if (game == "wrongest") {
+    } else if (game === "wrongest") {
       try {
         await loadFirestoreStats("wrongest", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -662,6 +771,11 @@
     return statement.replace(/\{([^}]+)\}/g, "<strong>$1</strong>");
   };
 
+  const humanizeStanceName = (name) => {
+    if (typeof name !== "string") return name;
+    return name.replace(/([A-Z])/g, " $1").trim();
+  };
+
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Computed
@@ -735,6 +849,82 @@
       mostBirthdays,
       gameCountByValuations,
     };
+  });
+
+  const computedCourt = computed(() => {
+    const cases = stats.court.cases || [];
+    const justices = stats.court.justices || [];
+    const stances = stats.court.stances || [];
+    const tactics = stats.court.tactics || [];
+
+    // 1. mostPopularCase: case with highest timesPlayed
+    let mostPopularCase = null;
+    let maxTimesPlayed = -Infinity;
+    cases.forEach((c) => {
+      const count = typeof c.timesPlayed === "number" ? c.timesPlayed : 0;
+      if (count > maxTimesPlayed) {
+        maxTimesPlayed = count;
+        mostPopularCase = c;
+      }
+    });
+
+    // 2. mostActiveJustice: justice with highest timesAdjudicated
+    let mostActiveJustice = null;
+    let maxTimesAdjudicated = -Infinity;
+    justices.forEach((j) => {
+      const count = typeof j.timesAdjudicated === "number" ? j.timesAdjudicated : 0;
+      if (count > maxTimesAdjudicated) {
+        maxTimesAdjudicated = count;
+        mostActiveJustice = j;
+      }
+    });
+
+    // 3. mostCommonStance: stance with highest timesAdjudicated
+    let mostCommonStance = null;
+    let maxStanceCount = -Infinity;
+    stances.forEach((s) => {
+      const count = typeof s.timesAdjudicated === "number" ? s.timesAdjudicated : 0;
+      if (count > maxStanceCount) {
+        maxStanceCount = count;
+        mostCommonStance = s;
+      }
+    });
+
+    // 4. mostUsedTactic: tactic with highest timesPlayed
+    let mostUsedTactic = null;
+    let maxTacticCount = -Infinity;
+    tactics.forEach((t) => {
+      const count = typeof t.timesPlayed === "number" ? t.timesPlayed : 0;
+      if (count > maxTacticCount) {
+        maxTacticCount = count;
+        mostUsedTactic = t;
+      }
+    });
+
+    let bestNetTactic = null;
+    let maxNetLean = -Infinity;
+    tactics.forEach((t) => {
+      const lean = typeof t.averageNetShiftPerPlay === "number" ? t.averageNetShiftPerPlay : 0;
+      if (lean > maxNetLean) {
+        maxNetLean = lean;
+        bestNetTactic = t;
+      }
+    });
+
+    return {
+      mostPopularCase,
+      mostActiveJustice,
+      mostCommonStance,
+      mostUsedTactic,
+      bestNetTactic,
+    };
+  });
+
+  const selectedJusticeCases = computed(() => {
+    if (!ui.selectedJusticeId || !stats.court.justices) return [];
+    const justice = stats.court.justices.find((j) => j.id === ui.selectedJusticeId);
+    if (!justice || !justice.cases) return [];
+    return justice.cases;
   });
 
   const computedPretend = computed(() => {

@@ -1,5 +1,10 @@
 import { billionsOfDollars, addCommas, dollars, formatDate, formatStatement } from "./_functions";
 
+const humanizeStanceName = (name) => {
+  if (typeof name !== "string") return name;
+  return name.replace(/([A-Z])/g, " $1").trim();
+};
+
 export const columns = {
   // GENERAL
   generalPlayers: [
@@ -160,5 +165,39 @@ export const columns = {
     { label: "Words", field: "card", tdClass: "font-bold", formatFn: formatStatement },
     { label: "Score", field: "totalScore", type: "number", formatFn: addCommas },
     { label: "x", field: "timesPlayed", type: "number", formatFn: addCommas },
+  ],
+
+  // SUPREME COURT
+  courtCases: [
+    { label: "Case", field: "name", tdClass: "font-bold" },
+    { label: "Tried", field: "timesPlayed", type: "number", formatFn: addCommas },
+    { label: "Wins", field: "timesWon", type: "number", formatFn: addCommas },
+    { label: "Last", field: "lastPlayedAt", type: "date", formatFn: formatDate },
+  ],
+  courtJustices: [
+    { label: "Justice", field: "name", tdClass: "font-bold" },
+    { label: "cases", field: "timesAdjudicated", type: "number", formatFn: addCommas },
+    { label: "noms", field: "timesNominated", type: "number", formatFn: addCommas },
+    { label: "🃏", field: "timesAttacked", type: "number", formatFn: addCommas },
+    { label: "last case", field: "lastAdjudicatedAt", type: "date", formatFn: formatDate },
+  ],
+  courtJusticeCases: [
+    { label: "Case", field: "name", tdClass: "font-bold" },
+    { label: "Prosecution Votes", field: "prosecutionVotes", type: "number", formatFn: addCommas },
+    { label: "Defense Votes", field: "defenseVotes", type: "number", formatFn: addCommas },
+    { label: "Last Voted", field: "lastVotedAt", type: "date", formatFn: formatDate },
+  ],
+  courtStances: [
+    { label: "Stance", field: "name", tdClass: "font-bold", formatFn: humanizeStanceName },
+    { label: "⬆️", field: "casesFor", type: "number", formatFn: addCommas },
+    { label: "⬇️", field: "casesAgainst", type: "number", formatFn: addCommas },
+    { label: "", field: "casesTied", type: "number", formatFn: addCommas },
+    { label: "last", field: "lastAdjudicatedAt", type: "date", formatFn: formatDate },
+  ],
+  courtTactics: [
+    { label: "Tactic", field: "name", tdClass: "font-bold" },
+    { label: "Used", field: "timesPlayed", type: "number", formatFn: addCommas },
+    { label: "Avg Net Lean", field: "averageNetShiftPerPlay", type: "decimal" },
+    { label: "last", field: "lastPlayedAt", type: "date", formatFn: formatDate },
   ],
 };

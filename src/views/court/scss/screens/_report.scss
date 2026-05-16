@@ -1,0 +1,17 @@
+@use '../abstracts/variables' as *;
+
+// ─── Toast: opponent variant ─────────────────────────────────
+.toast--opponent {
+  border-color: #ef9f5a;
+
+  .toast-header {
+    background: rgba(239, 159, 90, 0.15);
+    color: #ef9f5a;
+  }
+}
+
+.toast-actor {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  font-style: italic;
+}

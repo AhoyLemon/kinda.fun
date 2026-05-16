@@ -1,0 +1,55 @@
+@use '../abstracts/variables' as *;
+
+// ─── Base Layout ─────────────────────────────────────────────
+.court-game {
+  width: 100%;
+  min-height: 100vh;
+  background: $court-bg;
+  color: $court-card;
+  font-family: $sans-serif;
+  padding: 1.5rem 1rem 3rem;
+}
+
+// ─── Header ──────────────────────────────────────────────────
+.court-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid $court-gold;
+
+  h1 {
+    font-family: $serif;
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-weight: $bold;
+    color: $court-gold;
+    margin: 0;
+    letter-spacing: 0.03em;
+  }
+}
+
+// ─── Main Container ──────────────────────────────────────────
+.court-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.section-label {
+  font-family: $serif;
+  font-size: 1.3rem;
+  color: $court-gold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 1rem 0;
+}
+
+// ─── Loading ─────────────────────────────────────────────────
+.court-loading {
+  text-align: center;
+  padding: 4rem;
+  color: $court-gold;
+  font-family: $serif;
+  font-style: italic;
+}

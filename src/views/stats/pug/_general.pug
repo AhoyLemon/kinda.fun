@@ -15,6 +15,15 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
       .summary
         figure
+          img(src="/svg/games/supremecourt.svg" @click="getData('court')")
+        .last-played(v-if="stats.general && stats.general.courtLastPlayed")
+          .time-ago(v-text="formatTime(stats.general.courtLastPlayed,'fromNow')")
+          .calendar(v-text="formatTime(stats.general.courtLastPlayed,'calendar')")
+        .button-holder
+          button(@click="getData('court')") Details
+
+      .summary
+        figure
           img(src="/svg/games/nomorebillionaires.svg" @click="getData('guillotine')")
         .last-played(v-if="stats.general && stats.general.guillotineLastPlayed")
           .time-ago(v-text="formatTime(stats.general.guillotineLastPlayed,'fromNow')")

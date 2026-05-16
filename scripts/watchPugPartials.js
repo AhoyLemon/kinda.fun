@@ -14,17 +14,23 @@ function getAllPugPartials() {
   for (const dirent of subdirs) {
     const pugDir = path.join(viewsDir, dirent.name, "pug");
     if (fs.existsSync(pugDir) && fs.statSync(pugDir).isDirectory()) {
-      const files = fs
-        .readdirSync(pugDir)
-        .filter((f) => f.endsWith(".pug"))
-        .map((f) => ({
-          file: path.join(pugDir, f),
-          main: path.join(viewsDir, dirent.name, `${capitalize(dirent.name)}.pug`),
-        }));
-      result.push(...files);
+      const main = path.join(viewsDir, dirent.name, `${capitalize(dirent.name)}.pug`);
+      collectPugFiles(pugDir, main, result);
     }
   }
   return result;
+}
+
+function collectPugFiles(dir, main, result) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectPugFiles(fullPath, main, result);
+    } else if (entry.name.endsWith(".pug")) {
+      result.push({ file: fullPath, main });
+    }
+  }
 }
 
 function capitalize(str) {

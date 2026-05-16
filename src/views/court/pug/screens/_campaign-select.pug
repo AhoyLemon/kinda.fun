@@ -1,0 +1,29 @@
+//- ── CAMPAIGN SELECT PHASE ──────────────────────────────────
+main.court-campaign-select(v-if="ui.phase === 'campaignSelect'")
+  .cs-header
+    button.btn.btn--back(@click="ui.phase = 'title'") ← Back
+    h2.section-label Choose Your Campaign
+    p.cs-intro Five trials. One objective. Shape the court.
+
+  .cs-grid
+    .cs-card(
+      v-for="setup in campaignSetups"
+      :key="setup.id"
+      :class="{ 'cs-card--recommended': !hasPlayedCurrentCourt() && setup.id === 1 }"
+      @click="startCampaign(setup.id)"
+    )
+      .cs-card-icon {{ setup.icon }}
+      .cs-card-body
+        .cs-card-header-row
+          h3.cs-card-title {{ setup.name }}
+          span.cs-card-year {{ setup.startYear }}
+          span.cs-card-badge.cs-badge--recommended(v-if="!hasPlayedCurrentCourt() && setup.id === 1") Recommended
+        p.cs-card-desc {{ setup.description }}
+        .cs-card-meta
+          span.cs-meta-item(v-if="setup.startPresident")
+            | 🇺🇸 {{ setup.startPresident.name }}
+          span.cs-meta-item(v-if="setup.caseIds")
+            | ⚖️ {{ setup.caseIds.length }} set cases
+          span.cs-meta-item(v-else-if="!setup.caseIds")
+            | 🎲 Random cases
+        button.btn.btn--start.cs-card-btn Start →

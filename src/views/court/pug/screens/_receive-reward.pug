@@ -1,0 +1,24 @@
+//- ── RECEIVE REWARD PHASE ───────────────────────────────────
+main.court-receive-reward(v-if="ui.phase === 'receiveReward' && campaign.data?.pendingReward")
+  .rr-header
+    h2.section-label 🏆 Victory Bonus
+    p.rr-intro You won the trial! This reward card has been added to your hand.
+
+  .rr-card
+    .rr-card-icon {{ campaign.data.pendingReward.icon }}
+    h3.rr-card-name {{ campaign.data.pendingReward.name }}
+    p.rr-card-desc {{ campaign.data.pendingReward.description }}
+    .rr-card-deploy
+      span.rr-deploy-label When:
+      span.rr-deploy-phase(
+        :class="`deploy-${campaign.data.pendingReward.deployPhase}`"
+      )
+        template(v-if="campaign.data.pendingReward.deployPhase === 'trial'") ⚡ During a trial
+        template(v-else-if="campaign.data.pendingReward.deployPhase === 'recess'") 🌙 During recess
+        template(v-else) 🔄 Either phase
+
+  .rr-hand-count(v-if="campaign.data.rewardHand.length")
+    | You hold {{ campaign.data.rewardHand.length }} reward {{ campaign.data.rewardHand.length === 1 ? 'card' : 'cards' }} in hand.
+
+  .rr-actions
+    button.btn.btn--start(@click="collectReward()") 🎲 Prepare For Recess →

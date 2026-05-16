@@ -1,0 +1,37 @@
+//- ── RECESS PHASE ───────────────────────────────────────────
+main.court-recess(v-if="ui.phase === 'recess' && campaign.data")
+  .recess-header
+    h2.section-label ⏸ Court Recess
+    .recess-meta
+      span.recess-year 📅 {{ campaign.data.year }}
+      span.recess-president(v-if="campaign.data.president") 🇺🇸 {{ campaign.data.president.name }}
+      span.recess-progress {{ campaignProgress }}
+
+  //- Event log
+  .recess-log(v-if="campaign.data.recessLog.length")
+    h3.recess-log-title During recess…
+    .recess-event(
+      v-for="(event, i) in campaign.data.recessLog"
+      :key="i"
+    )
+      span.recess-event-date {{ event.date }}
+      span.recess-event-text {{ event.text }}
+
+  .recess-log-empty(v-else)
+    p Nothing of note happened during recess.
+
+  //- Current bench after recess
+  .recess-bench
+    h3.recess-bench-title Current Bench
+    .recess-bench-grid
+      .recess-justice(
+        v-for="justice in game.bench"
+        :key="justice.id"
+        :class="{ 'is-chief': justice.id === game.chiefJusticeId }"
+      )
+        span.rj-chief-badge(v-if="justice.id === game.chiefJusticeId") ⚖
+        span.rj-name {{ justice.name }}
+        span.rj-appt(v-if="justice.nominatedBy")  · Appt. {{ justice.nominatedBy.name }}
+
+  .recess-actions
+    button.btn.btn--start(@click="proceedFromRecess()") Next Trial →

@@ -1,0 +1,82 @@
+//- ── JUSTICE DETAIL MODAL ───────────────────────────────────
+.justice-detail-overlay(v-if="ui.detailJustice" @click.self="ui.detailJustice = null")
+  .justice-detail(:class="'justice-type-' + ui.detailJustice.justiceType")
+    .jd-header
+      span.jd-type {{ justiceTypeLabel(ui.detailJustice.justiceType) }}
+      button.jd-close(@click="ui.detailJustice = null") ✕
+    
+    .jd-content
+      .jd-quick-info
+        .jd-image-wrap
+          img.jd-image(
+            v-if="justiceImageUrl(ui.detailJustice)"
+            :src="justiceImageUrl(ui.detailJustice)"
+            :alt="ui.detailJustice.name"
+          )
+          .jd-image-placeholder(v-else) ⚖️
+        .jd-name-and-meta
+          h3.jd-name {{ ui.detailJustice.name }}
+          .jd-demographics
+            span.jd-meta-sep
+              | {{ game.religionOverrides[ui.detailJustice.id] ?? ui.detailJustice.religion }}
+              template(v-if="game.religionOverrides[ui.detailJustice.id] === 'Catholic'")  ☘️
+              template(v-else-if="game.religionOverrides[ui.detailJustice.id] === 'Atheist'")  (for now)
+            span.jd-meta-sep {{ ui.detailJustice.ethnicity }}
+            span.jd-meta-sep born {{ ui.detailJustice.birthYear }}
+          p.jd-meta(v-if="ui.detailJustice.nominatedBy")
+            | Appointed by&nbsp;
+            button.jd-president-link(@click="ui.detailPresident = ui.detailJustice.nominatedBy") {{ ui.detailJustice.nominatedBy.name }}
+      
+      .chief-indicator(v-if="ui.detailJustice.id === game.chiefJusticeId") ⚖ Chief Justice
+
+      p.jd-bio {{ ui.detailJustice.description }}
+
+      //- Heart vs Head slider
+      .jd-hvh
+        .jd-hvh-label
+          span.jd-hvh-left 📖 Head
+          span.jd-hvh-right Heart 💗
+        .jd-hvh-track
+          .jd-hvh-thumb(:style="{ left: `${((ui.detailJustice.stats.empathy - ui.detailJustice.stats.logic + 9) / 18) * 100}%` }")
+        .jd-hvh-caption(
+          v-tippy="`Logic: ${ui.detailJustice.stats.logic} / Empathy: ${ui.detailJustice.stats.empathy} — ${ui.detailJustice.stats.empathy > ui.detailJustice.stats.logic + 2 ? 'This justice leans on lived experience and human considerations over strict legal theory.' : ui.detailJustice.stats.logic > ui.detailJustice.stats.empathy + 2 ? 'This justice prioritizes analytical frameworks and constitutional text over emotional considerations.' : 'This justice weighs both legal reasoning and human considerations roughly equally.'}`"
+        ) {{ ui.detailJustice.stats.empathy - ui.detailJustice.stats.logic > 2 ? 'Rules from the heart' : ui.detailJustice.stats.empathy - ui.detailJustice.stats.logic < -2 ? 'Rules by the book' : 'Balanced' }}
+
+      //- Susceptibility
+      .jd-susceptibility
+        span.jd-suc-label Susceptibility
+        .jd-suc-bar
+          .jd-suc-fill(:style="{ width: `${(ui.detailJustice.stats.succeptibility / 10) * 100}%` }")
+        span.jd-suc-value {{ ui.detailJustice.stats.succeptibility < 4 ? 'Resistant' : ui.detailJustice.stats.succeptibility < 7 ? 'Moderate' : 'Easily swayed' }}
+
+      //- Stances
+      .jd-stances(v-if="ui.detailJustice.stances && ui.detailJustice.stances.length")
+        h4.jd-stances-title Known Positions
+        .jd-stance-list
+          .jd-stance(
+            v-for="stance in ui.detailJustice.stances"
+            :key="stance.topic"
+            :class="{ 'stance--for': stance.position === 'For', 'stance--against': stance.position === 'Against', 'stance--neutral': stance.position !== 'For' && stance.position !== 'Against', 'stance--noted': !!stance.note }"
+            v-tippy="stance.note || ''"
+          )
+            span.jd-stance-icon {{ stance.position === 'For' ? '▲' : stance.position === 'Against' ? '▼' : '—' }}
+            span.jd-stance-topic {{ stance.topic.replace(/([A-Z])/g, ' $1').trim() }}
+
+      .jd-hints
+        h4.jd-hints-title Qualities
+        .jd-hint-tags
+          span.hint-tag(v-for="hint in justiceHints(ui.detailJustice)" :key="hint") {{ hint }}
+      .jd-vote-section(v-if="ui.phase === 'playing'")
+        p.jd-vote-label Current stance:
+        .vote-label(:class="{ positive: (game.leanings[ui.detailJustice.id] ?? 0) > 0, negative: (game.leanings[ui.detailJustice.id] ?? 0) < 0 }")
+          | {{ voteLabel(game.leanings[ui.detailJustice.id] ?? 0) }}
+      .jd-history(v-if="justiceVoteHistory(ui.detailJustice).length")
+        h4.jd-history-title Case History
+        .jd-history-list
+          .jd-history-item(
+            v-for="(record, idx) in justiceVoteHistory(ui.detailJustice)"
+            :key="idx"
+            :class="record.votedFor ? 'voted-for' : 'voted-against'"
+          )
+            span.jdh-case {{ record.caseName }}
+            span.jdh-vote {{ record.votedFor ? '✅ Voted for you' : '❌ Voted against you' }}

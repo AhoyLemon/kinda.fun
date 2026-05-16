@@ -1,0 +1,31 @@
+// ─── Base ────────────────────────────────────────────────────
+@use "@/shared/scss/globals/reset";
+
+// ─── Components ──────────────────────────────────────────────
+@use "./scss/components/tippy";
+@use "./scss/components/buttons";
+@use "./scss/components/bench";
+@use "./scss/components/layout";
+@use "./scss/components/campaign-banner";
+@use "./scss/components/cheats";
+
+// ─── Screens ─────────────────────────────────────────────────
+@use "./scss/screens/court-select";
+@use "./scss/screens/playing";
+@use "./scss/screens/report";
+@use "./scss/screens/verdict";
+@use "./scss/screens/setup";
+@use "./scss/screens/title";
+@use "./scss/screens/campaign-select";
+@use "./scss/screens/objective-draw";
+@use "./scss/screens/receive-reward-and-activate-bonus";
+@use "./scss/screens/recess";
+@use "./scss/screens/game-over";
+
+// ─── Modals ──────────────────────────────────────────────────
+@use "./scss/modals/court-record";
+@use "./scss/modals/justice-detail";
+@use "./scss/modals/president-detail";
+
+// ─── Shame ───────────────────────────────────────────────────
+@use "./scss/todo/shame";
