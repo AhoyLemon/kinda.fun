@@ -18,7 +18,7 @@ export const lochnerJustices: Justice[] = [
       charisma: 6,
       empathy: 2,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 6, bribery: 4, blackmail: 4, threats: 3 },
@@ -61,7 +61,7 @@ export const lochnerJustices: Justice[] = [
       charisma: 5,
       empathy: 2,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 6, bribery: 5, blackmail: 4, threats: 3 },
@@ -100,7 +100,7 @@ export const lochnerJustices: Justice[] = [
       charisma: 6,
       empathy: 4,
 
-      succeptibility: 5,
+      susceptibility: 5,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 5, bribery: 4, blackmail: 5, threats: 3 },
@@ -139,7 +139,7 @@ export const lochnerJustices: Justice[] = [
       charisma: 5,
       empathy: 1,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 6, bribery: 5, blackmail: 4, threats: 3 },
@@ -178,7 +178,7 @@ export const lochnerJustices: Justice[] = [
       charisma: 5,
       empathy: 5,
 
-      succeptibility: 7,
+      susceptibility: 7,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 7, bribery: 5, blackmail: 6, threats: 5 },
@@ -217,7 +217,7 @@ export const lochnerJustices: Justice[] = [
       charisma: 5,
       empathy: 6,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 4, bribery: 3, blackmail: 3, threats: 3 },

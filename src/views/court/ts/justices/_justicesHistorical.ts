@@ -33,7 +33,7 @@ export const historicalJustices: Justice[] = [
       charisma: 9,
       empathy: 10,
 
-      succeptibility: 2,
+      susceptibility: 2,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 3, bribery: 1, blackmail: 2, threats: 3 },
@@ -77,7 +77,7 @@ export const historicalJustices: Justice[] = [
       charisma: 9,
       empathy: 9,
 
-      succeptibility: 2,
+      susceptibility: 2,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 3, bribery: 1, blackmail: 2, threats: 2 },
@@ -126,7 +126,7 @@ export const historicalJustices: Justice[] = [
       charisma: 6,
       empathy: 4,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: 9,
     },
     weaknesses: { flattery: 5, bribery: 4, blackmail: 5, threats: 3 },
@@ -175,7 +175,7 @@ export const historicalJustices: Justice[] = [
       charisma: 9,
       empathy: 3,
 
-      succeptibility: 3,
+      susceptibility: 3,
       partyLoyalty: 9,
     },
     weaknesses: { flattery: 8, bribery: 3, blackmail: 4, threats: 2 },
@@ -224,7 +224,7 @@ export const historicalJustices: Justice[] = [
       charisma: 7,
       empathy: 7,
 
-      succeptibility: 6,
+      susceptibility: 6,
       partyLoyalty: 5,
     },
     weaknesses: { flattery: 6, bribery: 3, blackmail: 3, threats: 3 },
@@ -273,7 +273,7 @@ export const historicalJustices: Justice[] = [
       charisma: 7,
       empathy: 8,
 
-      succeptibility: 3,
+      susceptibility: 3,
       partyLoyalty: 2,
     },
     weaknesses: { flattery: 4, bribery: 2, blackmail: 2, threats: 3 },
@@ -317,7 +317,7 @@ export const historicalJustices: Justice[] = [
       charisma: 6,
       empathy: 5,
 
-      succeptibility: 5,
+      susceptibility: 5,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 5, bribery: 4, blackmail: 4, threats: 4 },
@@ -361,7 +361,7 @@ export const historicalJustices: Justice[] = [
       charisma: 7,
       empathy: 6,
 
-      succeptibility: 5,
+      susceptibility: 5,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 6, bribery: 4, blackmail: 7, threats: 4 },
@@ -406,7 +406,7 @@ export const historicalJustices: Justice[] = [
       charisma: 8,
       empathy: 5,
 
-      succeptibility: 3,
+      susceptibility: 3,
       partyLoyalty: 4,
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 3, threats: 2 },
@@ -444,7 +444,7 @@ export const historicalJustices: Justice[] = [
       logic: 8,
       charisma: 7,
       empathy: 7,
-      succeptibility: 6,
+      susceptibility: 6,
       partyLoyalty: 4,
     },
     weaknesses: { flattery: 7, bribery: 3, blackmail: 3, threats: 3 },
@@ -488,7 +488,7 @@ export const historicalJustices: Justice[] = [
       charisma: 7,
       empathy: 6,
 
-      succeptibility: 2,
+      susceptibility: 2,
       partyLoyalty: 6,
     },
     weaknesses: { flattery: 4, bribery: 1, blackmail: 2, threats: 2 },
@@ -527,7 +527,7 @@ export const historicalJustices: Justice[] = [
       charisma: 8,
       empathy: 5,
 
-      succeptibility: 2,
+      susceptibility: 2,
       partyLoyalty: 7,
     },
     weaknesses: { flattery: 5, bribery: 2, blackmail: 3, threats: 1 },
@@ -566,7 +566,7 @@ export const historicalJustices: Justice[] = [
       charisma: 7,
       empathy: 9,
 
-      succeptibility: 2,
+      susceptibility: 2,
       partyLoyalty: 3,
     },
     weaknesses: { flattery: 4, bribery: 1, blackmail: 2, threats: 3 },
@@ -610,7 +610,7 @@ export const historicalJustices: Justice[] = [
       charisma: 9,
       empathy: 9,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: 2,
     },
     weaknesses: { flattery: 6, bribery: 2, blackmail: 3, threats: 3 },
@@ -654,7 +654,7 @@ export const historicalJustices: Justice[] = [
       charisma: 6,
       empathy: 1,
 
-      succeptibility: 4,
+      susceptibility: 4,
       partyLoyalty: 10,
     },
     weaknesses: { flattery: 7, bribery: 5, blackmail: 5, threats: 3 },
@@ -693,7 +693,7 @@ export const historicalJustices: Justice[] = [
       charisma: 5,
       empathy: 2,
 
-      succeptibility: 6,
+      susceptibility: 6,
       partyLoyalty: 8,
     },
     weaknesses: { flattery: 6, bribery: 5, blackmail: 4, threats: 4 },

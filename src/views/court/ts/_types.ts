@@ -52,7 +52,7 @@ export interface Justice {
     logic: number;
     charisma: number;
     empathy: number;
-    succeptibility: number;
+    susceptibility: number;
     partyLoyalty: number;
   };
   weaknesses: {
