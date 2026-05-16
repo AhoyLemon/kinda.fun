@@ -24,7 +24,6 @@ function runWatcher(w) {
   const proc = spawn(nodemonCmd, ["--quiet", "-w", w.file, "-x", "node", "scripts/npm-run/buildPages.js", w.build], {
     stdio: "inherit",
     shell: process.platform === "win32",
-    shell: process.platform === "win32",
     env: { ...process.env, DEV_WATCH: "1" },
   });
   proc.on("close", (code) => {

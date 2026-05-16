@@ -6,7 +6,7 @@ section.court.stats(v-if="ui.viewing == 'court'")
     .stats-boxes
 
 
-      .box.date(v-if="stats.cameo && stats.court.lastGameStarted")
+      .box.date(v-if="stats.court && stats.court.lastGameStarted")
         .caption Last Game
         .time-ago(v-text="formatTime(stats.court.lastGameStarted,'fromNow')")
         .calendar(v-text="formatTime(stats.court.lastGameStarted,'calendar')")
@@ -31,7 +31,7 @@ section.court.stats(v-if="ui.viewing == 'court'")
         .caption Cases Won
         .number(v-text="addCommas(stats.court.totalCasesWon)")
         .sub-number
-          strong(v-text="calculateAverage(stats.court.totalCasesWon, stats.court.totalCasesWon + stats.court.totalCasesLost + stats.court.totalCasesTied)")
+          strong(v-text="percentOf(stats.court.totalCasesWon + stats.court.totalCasesLost + stats.court.totalCasesTied, stats.court.totalCasesWon) + '%'")
           |  win rate
 
       .box.big-name(span="2" v-if="computedCourt?.mostPopularCase")

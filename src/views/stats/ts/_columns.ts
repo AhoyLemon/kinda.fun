@@ -179,7 +179,7 @@ export const columns = {
     { label: "cases", field: "timesAdjudicated", type: "number", formatFn: addCommas },
     { label: "noms", field: "timesNominated", type: "number", formatFn: addCommas },
     { label: "🃏", field: "timesAttacked", type: "number", formatFn: addCommas },
-    { last: "last case", field: "lastAdjudicatedAt", type: "date", formatFn: formatDate },
+    { label: "last case", field: "lastAdjudicatedAt", type: "date", formatFn: formatDate },
   ],
   courtJusticeCases: [
     { label: "Case", field: "name", tdClass: "font-bold" },
