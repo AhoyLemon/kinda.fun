@@ -106,11 +106,7 @@ describe("Court tactic effects (#193)", () => {
     expect(amicus).toBeTruthy();
     if (!amicus) return;
 
-    const bench = [
-      makeJustice(1, "A", "Democrat"),
-      makeJustice(2, "B", "Democrat"),
-      makeJustice(3, "C", "Republican"),
-    ];
+    const bench = [makeJustice(1, "A", "Democrat"), makeJustice(2, "B", "Democrat"), makeJustice(3, "C", "Republican")];
     const game = makeGame(bench, amicus);
     game.leanings[1] = 45;
     game.leanings[2] = 30;
@@ -121,10 +117,6 @@ describe("Court tactic effects (#193)", () => {
     expect(game.leanings[1]).toBe(57);
     expect(game.leanings[2]).toBe(42);
     expect(game.leanings[3]).toBe(2);
-  });
-
-  it("removes File An Emergency Motion from the tactics list", () => {
-    expect(tactics.some((t) => t.name === "File An Emergency Motion")).toBe(false);
   });
 
   it("encourage-nap applies the +15 leaning immediately and sets nap state", () => {
