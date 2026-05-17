@@ -16,7 +16,7 @@ You can do that by:
 - chasing easy wins by defending awful outcomes
 - doing both, depending on how bad you need this round
 
-No judgment. Some judgment.
+No judgment. Okay, some judgment.
 
 ## The Only Numbers You Really Need
 
@@ -36,9 +36,9 @@ If a justice is close to neutral, they may abstain. Abstentions can swing close 
 
 Highest **For** count wins.
 
-## Docket Rule (Important)
+## The Playbook
 
-You and your opponent pull from the same Docket.
+You and your opponent pull from the same Playbook.
 
 If you use a good card now, they cannot use that exact card this turn.
 
