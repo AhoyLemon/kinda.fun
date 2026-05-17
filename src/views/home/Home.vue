@@ -32,7 +32,7 @@
       url: `${baseURL}/court`,
       buttonText: "",
       isMultiplayer: false,
-      tags: ["game", "single player", "lies", "celebrity", "trivia"],
+      tags: ["game", "single player", "lies", "celebrities", "trivia"],
     },
 
     megachurch: {
