@@ -24,6 +24,51 @@ export interface TacticHelpers {
   removeFromPlaybook: (t: Tactic) => void;
 }
 
+// ─── Magnitude Helpers ───────────────────────────────────────────────────────
+
+/**
+ * Returns a qualitative descriptor for the magnitude of a leaning change.
+ * Used for toast feedback instead of showing raw numbers.
+ */
+function getMagnitudeDescriptor(absChange: number): string {
+  if (absChange >= 40) return "Devastating effect";
+  if (absChange >= 25) return "Strong sway";
+  if (absChange >= 15) return "Moderate impact";
+  if (absChange >= 5) return "Slight nudge";
+  return "Barely moved";
+}
+
+/**
+ * Generates feedback text for a single-target sway with magnitude context.
+ */
+function getSingleTargetFeedback(justiceName: string, change: number, tactic: Tactic): string {
+  const absChange = Math.abs(change);
+  const magnitude = getMagnitudeDescriptor(absChange);
+
+  if (absChange < 5) {
+    return `${justiceName} is unmoved.`;
+  }
+
+  // Add stat/weakness context if applicable
+  let context = "";
+  if (tactic.statBasis === "empathy") {
+    if (absChange >= 40) context = " Their empathy made them deeply receptive.";
+    else if (absChange >= 25) context = " Their empathetic nature showed.";
+  } else if (tactic.statBasis === "logic") {
+    if (absChange >= 40) context = " The logical appeal resonated strongly.";
+    else if (absChange >= 25) context = " Logic carried the day.";
+  } else if (tactic.weaknessBasis === "bribery") {
+    if (absChange >= 40) context = " They appreciated the generous arrangement.";
+    else if (absChange < 15 && change < 0) context = " They were offended by the attempt.";
+  } else if (tactic.weaknessBasis === "blackmail") {
+    if (absChange >= 40) context = " The leverage was effective.";
+  } else if (tactic.weaknessBasis === "threats") {
+    if (absChange >= 40) context = " The threat struck home.";
+  }
+
+  return `${magnitude}: ${justiceName}.${context}`;
+}
+
 // ─── Party Utilities (also used in Court.vue for getInitialLeaning) ─────────
 
 export const leftParties: Party[] = ["Democrat", "Democratic-Republican"];
@@ -217,7 +262,15 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
     });
 
     reportTarget = "All justices";
-    overrideFeedback = `Your amicus pile created momentum. ${alliesCount} justice${alliesCount === 1 ? "" : "s"} were already with you.`;
+    if (alliesCount === 0) {
+      overrideFeedback = "Your amicus pile created momentum. The bench is yours to win.";
+    } else if (alliesCount === 1) {
+      overrideFeedback = "Your amicus pile created momentum. One justice was already with you.";
+    } else if (alliesCount >= 5) {
+      overrideFeedback = "Your amicus pile created momentum. Most justices are already on your side.";
+    } else {
+      overrideFeedback = "Your amicus pile created momentum. Several justices are already with you.";
+    }
 
     // ── Catch-phone ────────────────────────────────────────────
   } else if (tactic.effectType === "catch-phone") {
@@ -262,10 +315,18 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
     });
 
     reportTarget = proTargets.length > 0 ? "Your current supporters" : "No current supporters";
-    overrideFeedback =
-      proTargets.length > 0
-        ? `The dissent energized your side. ${againstCount} opposing vote${againstCount === 1 ? "" : "s"} amplified the effect.`
-        : "No justice was currently on your side to rally.";
+
+    if (proTargets.length === 0) {
+      overrideFeedback = "No justice was currently on your side to rally.";
+    } else if (againstCount === 0) {
+      overrideFeedback = "The dissent energized your side. No opposition to fuel it, though.";
+    } else if (againstCount >= 5) {
+      overrideFeedback = "The dissent energized your side. Strong opposition amplified the effect.";
+    } else if (againstCount >= 3) {
+      overrideFeedback = "The dissent energized your side. Several opposing votes amplified the effect.";
+    } else {
+      overrideFeedback = "The dissent energized your side. A few opposing votes amplified the effect.";
+    }
 
     // ── Betray-friend ────────────────────────────────────────────
   } else if (tactic.effectType === "betray-friend") {
@@ -307,29 +368,15 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
     game.multiTargetTacticId = null;
 
     if (jA && jB) {
-      if (Math.random() < 0.7) {
-        // Success: swap their leanings
-        const lA = game.leanings[jA.id] ?? 0;
-        const lB = game.leanings[jB.id] ?? 0;
-        game.leanings[jA.id] = lB;
-        game.leanings[jB.id] = lA;
-        results.push({ justiceName: jA.name, change: lB - lA, newLeaning: lB });
-        results.push({ justiceName: jB.name, change: lA - lB, newLeaning: lA });
-        reportTarget = `${jA.name} & ${jB.name}`;
-        overrideFeedback = `The clerks came through — ${jA.name} and ${jB.name} swapped positions completely.`;
-      } else {
-        // Tattled — both get -20
-        const dA = game.leanings[jA.id] ?? 0;
-        const nA = Math.max(-100, dA - 20);
-        game.leanings[jA.id] = nA;
-        results.push({ justiceName: jA.name, change: nA - dA, newLeaning: nA });
-        const dB = game.leanings[jB.id] ?? 0;
-        const nB = Math.max(-100, dB - 20);
-        game.leanings[jB.id] = nB;
-        results.push({ justiceName: jB.name, change: nB - dB, newLeaning: nB });
-        reportTarget = `${jA.name} & ${jB.name} (tattled!)`;
-        overrideFeedback = "The clerks told on you.";
-      }
+      // Swap their leanings (always succeeds)
+      const lA = game.leanings[jA.id] ?? 0;
+      const lB = game.leanings[jB.id] ?? 0;
+      game.leanings[jA.id] = lB;
+      game.leanings[jB.id] = lA;
+      results.push({ justiceName: jA.name, change: lB - lA, newLeaning: lB });
+      results.push({ justiceName: jB.name, change: lA - lB, newLeaning: lA });
+      reportTarget = `${jA.name} & ${jB.name}`;
+      overrideFeedback = `The clerks came through — ${jA.name} and ${jB.name} swapped positions completely.`;
     }
 
     // ── Encourage-nap ────────────────────────────────────────────
@@ -376,10 +423,31 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
     // ── Saint-patricks ───────────────────────────────────────────
   } else if (tactic.effectType === "saint-patricks") {
     consumeTactic(game, tactic, helpers);
+    const dir = actor === "player" ? 1 : -1;
     game.bench.forEach((j) => {
+      const wasCatholic = (game.religionOverrides[j.id] ?? j.religion) === "Catholic";
       game.religionOverrides[j.id] = "Catholic";
+
+      if (wasCatholic) {
+        // Already Catholic - boost empathy and sway positively
+        game.statMods[j.id] = {
+          ...(game.statMods[j.id] ?? {}),
+          empathy: (game.statMods[j.id]?.empathy ?? 0) + 4,
+        };
+        const old = game.leanings[j.id] ?? 0;
+        const next = Math.max(-100, Math.min(100, old + 15 * dir));
+        game.leanings[j.id] = next;
+        results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+      } else {
+        // Not Catholic - convert them but slight negative effect
+        const old = game.leanings[j.id] ?? 0;
+        const next = Math.max(-100, Math.min(100, old - 5 * dir));
+        game.leanings[j.id] = next;
+        results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+      }
     });
     reportTarget = "All justices";
+    overrideFeedback = "Catholic justices are delighted. Others are... adjusting.";
 
     // ── Invite-church ────────────────────────────────────────────
   } else if (tactic.effectType === "invite-church") {
@@ -590,6 +658,190 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
             : `${targetJustice.name} read the whole thread and has only grown more confident. They're fine.`;
     }
 
+    // ── Fog-machine ──────────────────────────────────────────────
+  } else if (tactic.effectType === "fog-machine") {
+    consumeTactic(game, tactic, helpers);
+    const dir = actor === "player" ? 1 : -1;
+    game.bench.forEach((j) => {
+      const leaning = game.leanings[j.id] ?? 0;
+      const absLeaning = Math.abs(leaning);
+      let power = tactic.basePower;
+
+      if (absLeaning <= 10) {
+        // Neutral justices - strong effect
+        power = 8;
+      } else if (absLeaning >= 40) {
+        // Strongly decided - annoyed by disruption
+        power = -2;
+      } else {
+        // Mid-range - normal effect that scales with neutrality
+        power = Math.round(2 + (10 - absLeaning) * 0.15);
+      }
+
+      const effectivePower = Math.round(power * gameSettings.targetAllMultiplier);
+      const finalPower =
+        actor === "opponent"
+          ? Math.round(effectivePower * difficultySettings.opponentPowerMult)
+          : Math.round(effectivePower * difficultySettings.playerPowerMult);
+
+      const old = game.leanings[j.id] ?? 0;
+      const next = Math.max(-100, Math.min(100, old + finalPower * dir));
+      game.leanings[j.id] = next;
+      results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+    });
+    reportTarget = "All justices";
+
+    // Generate smarter feedback for fog machine
+    const neutralCount = game.bench.filter((j) => Math.abs(game.leanings[j.id] ?? 0) <= 10).length;
+    const decidedCount = game.bench.filter((j) => Math.abs(game.leanings[j.id] ?? 0) >= 40).length;
+
+    if (neutralCount >= 5) {
+      overrideFeedback = "The fog machine perks up many undecided justices. A few strongly decided justices are annoyed.";
+    } else if (neutralCount >= 3) {
+      overrideFeedback = "The fog machine perks up several undecided justices. The strongly decided are less amused.";
+    } else if (decidedCount >= 5) {
+      overrideFeedback = "The fog machine mostly annoys the strongly decided justices. Few are swayed.";
+    } else {
+      overrideFeedback = "The fog machine has mixed results across the bench.";
+    }
+
+    // ── Whisper-campaign ─────────────────────────────────────────
+  } else if (tactic.effectType === "whisper-campaign") {
+    consumeTactic(game, tactic, helpers);
+    if (targetJustice) {
+      // Initialize whisper campaign tracking if it doesn't exist
+      if (!game.whisperCampaigns) {
+        (game as any).whisperCampaigns = {};
+      }
+      // Store the target and actor for this whisper campaign
+      (game as any).whisperCampaigns[targetJustice.id] = { actor, power: tactic.basePower };
+
+      // Apply immediate effect for this round
+      const dir = actor === "player" ? 1 : -1;
+      const effectivePower = Math.round(tactic.basePower * gameSettings.targetSingleMultiplier);
+      const finalPower =
+        actor === "opponent"
+          ? Math.round(effectivePower * difficultySettings.opponentPowerMult)
+          : Math.round(effectivePower * difficultySettings.playerPowerMult);
+
+      const old = game.leanings[targetJustice.id] ?? 0;
+      const next = Math.max(-100, Math.min(100, old + finalPower * dir));
+      game.leanings[targetJustice.id] = next;
+      results.push({ justiceName: targetJustice.name, change: next - old, newLeaning: next });
+      reportTarget = targetJustice.name;
+
+      const roundsRemaining = gameSettings.numberOfRounds - game.round + 1;
+      if (roundsRemaining >= 4) {
+        overrideFeedback = `Whispers begin. ${targetJustice.name} will be influenced every remaining round.`;
+      } else if (roundsRemaining === 3) {
+        overrideFeedback = `Whispers begin. ${targetJustice.name} will be influenced for the rest of the trial.`;
+      } else if (roundsRemaining === 2) {
+        overrideFeedback = `Late whispers. ${targetJustice.name} will be influenced next round as well.`;
+      } else {
+        overrideFeedback = `Final whisper. ${targetJustice.name} hears it just this once.`;
+      }
+    }
+
+    // ── Alien-abduction ──────────────────────────────────────────
+  } else if (tactic.effectType === "alien-abduction") {
+    consumeTactic(game, tactic, helpers);
+    const dir = actor === "player" ? 1 : -1;
+    game.bench.forEach((j) => {
+      const susceptibility = getEffectiveStat(j, "susceptibility", game);
+      let power = 0;
+
+      if (susceptibility >= 7) {
+        // High susceptibility - they believe it
+        power = tactic.basePower;
+      } else if (susceptibility <= 4) {
+        // Low susceptibility - offended
+        power = -3;
+      }
+      // Mid-range (5-6) - no effect
+
+      if (power !== 0) {
+        const effectivePower = Math.round(power * gameSettings.targetAllMultiplier);
+        const finalPower =
+          actor === "opponent"
+            ? Math.round(effectivePower * difficultySettings.opponentPowerMult)
+            : Math.round(effectivePower * difficultySettings.playerPowerMult);
+
+        const old = game.leanings[j.id] ?? 0;
+        const next = Math.max(-100, Math.min(100, old + finalPower * dir));
+        game.leanings[j.id] = next;
+        results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+      }
+    });
+    reportTarget = "All justices";
+
+    // Generate smarter feedback for alien abduction
+    const believers = game.bench.filter((j) => getEffectiveStat(j, "susceptibility", game) >= 7).length;
+    const skeptics = game.bench.filter((j) => getEffectiveStat(j, "susceptibility", game) <= 4).length;
+
+    if (believers >= 5) {
+      overrideFeedback = "Most justices are convinced by the absurd story. A few skeptics are offended.";
+    } else if (believers >= 3) {
+      overrideFeedback = "Several gullible justices believe it. Skeptical justices are offended by the absurdity.";
+    } else if (skeptics >= 5) {
+      overrideFeedback = "Most justices are offended by the ridiculous argument. Few believe it.";
+    } else {
+      overrideFeedback = "The absurd story polarizes the bench — some believe, some are offended.";
+    }
+
+    // ── Mess-calendar ────────────────────────────────────────────
+  } else if (tactic.effectType === "mess-calendar") {
+    consumeTactic(game, tactic, helpers);
+    // Mark that the next round should be skipped
+    if (!game.skipNextRound) {
+      (game as any).skipNextRound = true;
+    }
+    reportTarget = "Calendar";
+    overrideFeedback = "The calendar has been... adjusted. Both sides skip the next round.";
+
+    // ── International-law ────────────────────────────────────────
+  } else if (tactic.effectType === "international-law") {
+    consumeTactic(game, tactic, helpers);
+    const dir = actor === "player" ? 1 : -1;
+    game.bench.forEach((j) => {
+      const partyLoyalty = getEffectiveStat(j, "partyLoyalty", game);
+      let power = 0;
+
+      if (partyLoyalty >= 7) {
+        // High party loyalty - offended
+        power = -tactic.basePower;
+      } else if (partyLoyalty <= 4) {
+        // Low party loyalty (independents) - intrigued
+        power = tactic.basePower;
+      }
+      // Mid-range (5-6) - no effect
+
+      if (power !== 0) {
+        const effectivePower = Math.round(power * gameSettings.targetAllMultiplier);
+        const finalPower =
+          actor === "opponent"
+            ? Math.round(effectivePower * difficultySettings.opponentPowerMult)
+            : Math.round(effectivePower * difficultySettings.playerPowerMult);
+
+        const old = game.leanings[j.id] ?? 0;
+        const next = Math.max(-100, Math.min(100, old + finalPower * dir));
+        game.leanings[j.id] = next;
+        results.push({ justiceName: j.name, change: next - old, newLeaning: next });
+      }
+    });
+    reportTarget = "All justices";
+
+    // Generate smarter feedback for international law
+    const partisans = game.bench.filter((j) => getEffectiveStat(j, "partyLoyalty", game) >= 7).length;
+    const independents = game.bench.filter((j) => getEffectiveStat(j, "partyLoyalty", game) <= 4).length;
+
+    if (partisans >= 6) {
+      overrideFeedback = "Most justices are partisan and offended. A few independents appreciate the global perspective.";
+    } else if (independents >= 3) {
+      overrideFeedback = "Independents appreciate the citation. Partisans see it as foreign meddling.";
+    } else {
+      overrideFeedback = "The European citation polarizes the bench along party lines.";
+    }
+
     // ── Standard sway / susceptibility / shield ──────────────────
   } else {
     consumeTactic(game, tactic, helpers);
@@ -689,9 +941,11 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
         // Standard sway
         const dir = actor === "opponent" ? -1 : 1;
         const old = game.leanings[justice.id] ?? 0;
-        let effectivePower = tactic.effectType === "sway-all" ? Math.round(power * gameSettings.swayAllMultiplier) : power * 10;
-        // Apply difficulty opponent multiplier
+        let effectivePower =
+          tactic.effectType === "sway-all" ? Math.round(power * gameSettings.targetAllMultiplier) : Math.round(power * gameSettings.targetSingleMultiplier);
+        // Apply difficulty multipliers
         if (actor === "opponent") effectivePower = Math.round(effectivePower * difficultySettings.opponentPowerMult);
+        if (actor === "player") effectivePower = Math.round(effectivePower * difficultySettings.playerPowerMult);
         const next = Math.max(-100, Math.min(100, old + effectivePower * dir));
         game.leanings[justice.id] = next;
         const change = next - old;
@@ -742,6 +996,47 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
         }
       }
     });
+
+    // Generate qualitative feedback for standard sway if not already set
+    if (!overrideFeedback && (tactic.effectType === "sway-one" || tactic.effectType === "sway-all")) {
+      const primaryResults = results.filter((r) => !r.isKnockon);
+      if (primaryResults.length === 1 && tactic.effectType === "sway-one") {
+        // Single target - use detailed feedback
+        const result = primaryResults[0];
+        overrideFeedback = getSingleTargetFeedback(result.justiceName, result.change, tactic);
+      } else if (primaryResults.length > 0) {
+        // Multi-target - use aggregate feedback without numbers
+        const avgChange = primaryResults.reduce((sum, r) => sum + Math.abs(r.change), 0) / primaryResults.length;
+        const magnitude = getMagnitudeDescriptor(avgChange);
+
+        const swayedPositive = primaryResults.filter((r) => r.change > 15).length;
+        const swayedNegative = primaryResults.filter((r) => r.change < -15).length;
+        const barelyMoved = primaryResults.filter((r) => Math.abs(r.change) <= 15).length;
+
+        if (swayedPositive >= 6) {
+          overrideFeedback = `${magnitude} — most justices are swayed in your favor.`;
+        } else if (swayedPositive >= 4) {
+          overrideFeedback = `${magnitude} — several justices move toward you.`;
+        } else if (swayedNegative >= 4) {
+          overrideFeedback = `${magnitude} — the bench moves against you.`;
+        } else if (barelyMoved >= 6) {
+          overrideFeedback = "The bench is largely unmoved by this argument.";
+        } else {
+          overrideFeedback = `${magnitude} — mixed results across the bench.`;
+        }
+      }
+
+      // Add knockon context if applicable
+      const knockons = results.filter((r) => r.isKnockon);
+      if (knockons.length > 0) {
+        const knockonJustice = knockons[0].justiceName;
+        if (knockons.length === 1) {
+          overrideFeedback += ` ${knockonJustice} followed suit.`;
+        } else {
+          overrideFeedback += ` Several justices followed suit.`;
+        }
+      }
+    }
   }
 
   return { results, reportTarget, overrideFeedback, pendingRedraws };

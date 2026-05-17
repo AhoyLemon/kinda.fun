@@ -11,7 +11,7 @@ export const tactics: Tactic[] = [
     flavorText: "Citing cases no one in the room has read since law school, loudly.",
     cardType: "attack",
     effectType: "sway-all",
-    basePower: 3,
+    basePower: 4,
     statBasis: "logic",
     statRelation: "polarizes-high",
   },
@@ -23,7 +23,7 @@ export const tactics: Tactic[] = [
     flavorText: "Think of the children. The puppies. The small businesses owned by puppies.",
     cardType: "attack",
     effectType: "sway-one",
-    basePower: 6,
+    basePower: 7,
     statBasis: "empathy",
     statRelation: "amplifies",
   },
@@ -35,7 +35,7 @@ export const tactics: Tactic[] = [
     flavorText: "It's not a bribe. It's a Boca Raton vacation property. There's a difference.",
     cardType: "attack",
     effectType: "sway-one",
-    basePower: 7,
+    basePower: 8,
     weaknessBasis: "bribery",
   },
   {
@@ -45,7 +45,7 @@ export const tactics: Tactic[] = [
     flavorText: "Interesting Venmo history you have there, Justice. Very interesting indeed.",
     cardType: "attack",
     effectType: "sway-one",
-    basePower: 7,
+    basePower: 8,
     weaknessBasis: "blackmail",
   },
   {
@@ -55,7 +55,7 @@ export const tactics: Tactic[] = [
     flavorText: "It would be a shame if your name appeared in a very loud campaign ad.",
     cardType: "attack",
     effectType: "sway-one",
-    basePower: 6,
+    basePower: 7,
     weaknessBasis: "threats",
   },
 
@@ -66,7 +66,7 @@ export const tactics: Tactic[] = [
     flavorText: "Your intellect is matched only by your magnificent legal writings. Truly. Every single one.",
     cardType: "attack",
     effectType: "sway-one",
-    basePower: 7,
+    basePower: 8,
     weaknessBasis: "flattery",
   },
   {
@@ -76,7 +76,7 @@ export const tactics: Tactic[] = [
     flavorText: "I call to the stand: a beloved actor who has no legal expertise but is extremely likeable.",
     cardType: "attack",
     effectType: "sway-all",
-    basePower: 5,
+    basePower: 6,
     statBasis: "charisma",
     statRelation: "resists",
   },
@@ -87,7 +87,7 @@ export const tactics: Tactic[] = [
     flavorText: "The Framers clearly intended this. (They did not intend this.)",
     cardType: "attack",
     effectType: "sway-all",
-    basePower: 3,
+    basePower: 4,
     statBasis: "partyLoyalty",
     statRelation: "amplifies",
   },
@@ -114,20 +114,6 @@ export const tactics: Tactic[] = [
   },
 
   // ─── UTILITY ──────────────────────────────────────────────────────
-
-  // Removing this one as it's currently broken
-  // {
-  //   id: 12,
-  //   name: "Be Extremely Boring",
-  //   description:
-  //     "Raises susceptibility on all justices. Their glazed-over eyes and caffeine-deprived attention spans will make your very next attack hit significantly harder.",
-  //   flavorText:
-  //     "The Administrative Procedures Act of 1946, as amended in 1962, continuing through the relevant subsections, which are many — you're still here, right?",
-  //   cardType: "utility",
-  //   effectType: "susceptibility",
-  //   basePower: 4,
-  //   feedback: "Every justice is now profoundly susceptible to whatever comes next.",
-  // },
 
   // ─── DOCKET MANIPULATION ──────────────────────────────────────────
 
@@ -172,7 +158,7 @@ export const tactics: Tactic[] = [
     flavorText: "Some say a judge's reputation speaks louder than their rulings. In this case, both are embarrassing.",
     cardType: "attack",
     effectType: "insult-chief",
-    basePower: 4,
+    basePower: 5,
   },
   {
     id: 17,
@@ -213,9 +199,8 @@ export const tactics: Tactic[] = [
   {
     id: 20,
     name: "Swap Clerks",
-    description:
-      "Select two justices. High chance their leanings swap entirely. Nonzero chance the clerks tell on you and both justices warm to you less. You'll be told which happened.",
-    flavorText: "Law clerks are overworked, underpaid, and know exactly where everything is. This cuts both ways.",
+    description: "Select two justices. Their leanings swap entirely. The clerks are very good at their jobs.",
+    flavorText: "Law clerks are overworked, underpaid, and know exactly where everything is.",
     cardType: "utility",
     effectType: "swap-clerks",
     basePower: 0,
@@ -244,12 +229,12 @@ export const tactics: Tactic[] = [
   {
     id: 24,
     name: "Celebrate St. Patrick's Day",
-    description: "All justices become Catholic for the rest of the trial. On its own, this does very little. Paired with 'Invite To Church,' it does a lot.",
+    description:
+      "All Catholic justices gain +4 empathy for the trial and immediately lean toward you. All non-Catholic justices become Catholic for the trial (with slight negative leaning toward you).",
     flavorText: "The shamrocks were unprompted. The Guinness was not.",
     cardType: "utility",
     effectType: "saint-patricks",
     basePower: 0,
-    feedback: "All justices are now Catholic.",
   },
   {
     id: 25,
@@ -335,16 +320,16 @@ export const tactics: Tactic[] = [
     basePower: 0,
     feedback: "All justices are temporarily irreligious. Their logic has improved accordingly.",
   },
-  {
-    id: 32,
-    name: "Suggest Yoga",
-    description:
-      "Politely suggest a justice step away for some mindfulness. They skip the next round. When they return, their empathy and susceptibility are permanently raised for the rest of the trial.",
-    flavorText: "'Have you considered a quick flow before deliberations?' They have not. They will now.",
-    cardType: "utility",
-    effectType: "suggest-yoga",
-    basePower: 0,
-  },
+  // {
+  //   id: 32,
+  //   name: "Suggest Yoga",
+  //   description:
+  //     "Politely suggest a justice step away for some mindfulness. They skip the next round. When they return, their empathy and susceptibility are permanently raised for the rest of the trial.",
+  //   flavorText: "'Have you considered a quick flow before deliberations?' They have not. They will now.",
+  //   cardType: "utility",
+  //   effectType: "suggest-yoga",
+  //   basePower: 0,
+  // },
   {
     id: 33,
     name: "Yaaas! Drag Them!",
@@ -355,16 +340,16 @@ export const tactics: Tactic[] = [
     effectType: "drag-them",
     basePower: 0,
   },
-  {
-    id: 34,
-    name: "Catch A Justice On Their Phone",
-    description:
-      "Target one justice. Their attention drifts and they become less susceptible for the rest of the trial. They also lean slightly away from your argument in the moment.",
-    flavorText: "They weren't taking notes. They were texting.",
-    cardType: "utility",
-    effectType: "catch-phone",
-    basePower: 0,
-  },
+  // {
+  //   id: 34,
+  //   name: "Catch A Justice On Their Phone",
+  //   description:
+  //     "Target one justice. Their attention drifts and they become less susceptible for the rest of the trial. They also lean slightly away from your argument in the moment.",
+  //   flavorText: "They weren't taking notes. They were texting.",
+  //   cardType: "utility",
+  //   effectType: "catch-phone",
+  //   basePower: 0,
+  // },
   {
     id: 36,
     name: "Recite The Dissent",
@@ -374,5 +359,61 @@ export const tactics: Tactic[] = [
     cardType: "attack",
     effectType: "recite-dissent",
     basePower: 0,
+  },
+
+  // ─── PHASE 2 NEW CARDS ────────────────────────────────────────────────────
+
+  {
+    id: 37,
+    name: "Turn On The Fog Machine",
+    description:
+      "Sways all justices based on how decided they are. Neutral justices (within ±10 leaning) are swayed more strongly. Strongly decided justices (beyond ±40) are annoyed by the disruption and lean slightly away.",
+    flavorText:
+      "The attorney turns on a literal fog machine in the courtroom, as well as some gel lights, introducing 'razzle dazzle' and perking up any justice who was bored. Strongly leaning justices are annoyed by the disruption.",
+    cardType: "attack",
+    effectType: "fog-machine",
+    basePower: 2,
+  },
+  {
+    id: 38,
+    name: "Whisper Campaign",
+    description:
+      "Target one justice. They shift toward you by a small amount at the start of every remaining round (including this one). Most effective when played Round 1 (affects all 5 rounds); minimal impact when played Round 5.",
+    flavorText: "Rumors and quiet influence take time to percolate through the legal community. Early whispers pay compound dividends.",
+    cardType: "attack",
+    effectType: "whisper-campaign",
+    basePower: 2,
+  },
+  {
+    id: 39,
+    name: "Tell A Story Of Alien Abduction",
+    description:
+      "All justices with Susceptibility 7+ are swayed toward you (they'll believe anything). Justices with Susceptibility 4 or below are offended by the absurdity and lean away.",
+    flavorText: "You argue something dubious, frankly stupid, and only susceptible justices fall for it.",
+    cardType: "attack",
+    effectType: "alien-abduction",
+    basePower: 6,
+  },
+  {
+    id: 40,
+    name: "Mess With The Calendar",
+    description:
+      "You AND your opponent both skip the next round entirely. The trial advances to the next round without arguments from either side. Closing tactic when you're ahead and want the trial to end without more sways.",
+    flavorText: "You edit the Microsoft Calendar to delete one of the trial days. Court does not take place that day.",
+    cardType: "utility",
+    effectType: "mess-calendar",
+    basePower: 0,
+    feedback: "The calendar has been... adjusted. Both sides skip the next round.",
+  },
+  {
+    id: 41,
+    name: "Cite International Law",
+    description:
+      "High-party-loyalty justices (7+) are offended and lean away; low-party-loyalty independents (4 or below) are intrigued and lean toward you. Mid-loyalty justices unaffected.",
+    flavorText:
+      "'The European Court of Human Rights says...' — triggers partisan knee-jerk reactions. Independents appreciate the global perspective; partisans see it as foreign meddling.",
+    cardType: "attack",
+    effectType: "international-law",
+    basePower: 5,
   },
 ];
