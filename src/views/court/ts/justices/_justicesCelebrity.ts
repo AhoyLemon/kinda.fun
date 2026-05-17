@@ -68,10 +68,6 @@ export const celebrityJustices: Justice[] = [
     weaknesses: { flattery: 3, bribery: 2, blackmail: 4, threats: 1 },
     stances: [
       {
-        topic: "JudicialActivism",
-        position: "For",
-      },
-      {
         topic: "CourtAuthority",
         position: "For",
       },

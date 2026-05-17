@@ -73,11 +73,6 @@ export const warrenJustices: Justice[] = [
         note: "Consistent champion of federalism and state autonomy; frequently dissented from Warren Court expansions of federal power over state criminal procedure.",
       },
       {
-        topic: "JudicialActivism",
-        position: "Against",
-        note: "Believed the Court's role was to interpret law, not drive social policy — and wrote lengthy, principled dissents when the majority overstepped.",
-      },
-      {
         topic: "Privacy",
         position: "For",
         note: "Authored the famous Poe v. Ullman dissent (1961), articulating a vision of substantive privacy rights grounded in tradition and lived experience — a foundation Griswold relied on.",

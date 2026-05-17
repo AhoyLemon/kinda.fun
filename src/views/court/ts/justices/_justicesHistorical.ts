@@ -411,11 +411,6 @@ export const historicalJustices: Justice[] = [
         position: "For",
         note: "Dissented in Lochner v. New York (1905), arguing states have broad police power and courts shouldn't impose economic preferences through the Constitution.",
       },
-      {
-        topic: "JudicialActivism",
-        position: "Against",
-        note: "Famous advocate for judicial restraint — believed courts should defer to democratic majorities except in cases of direct constitutional violation.",
-      },
     ],
   },
   {

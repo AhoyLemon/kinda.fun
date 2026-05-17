@@ -1,11 +1,5 @@
 import { Justice } from "../_types";
-import {
-  PRES_GHW_BUSH,
-  PRES_GW_BUSH,
-  PRES_OBAMA,
-  PRES_TRUMP,
-  PRES_BIDEN,
-} from "../_presidents";
+import { PRES_GHW_BUSH, PRES_GW_BUSH, PRES_OBAMA, PRES_TRUMP, PRES_BIDEN } from "../_presidents";
 export const currentJustices: Justice[] = [
   {
     id: 1,
@@ -103,11 +97,6 @@ export const currentJustices: Justice[] = [
         position: "Against",
         note: "Spent decades calling for Chevron deference to be abolished outright — a position the Court finally adopted in Loper Bright Enterprises v. Raimondo (2024).",
       },
-      {
-        topic: "JudicialActivism",
-        position: "For",
-        note: "More willing than any peer to overturn precedent wholesale, regularly writing solo concurrences urging reconsideration of substantive due process doctrine entirely.",
-      },
     ],
   },
   {
@@ -153,8 +142,8 @@ export const currentJustices: Justice[] = [
         note: "In Kansas v. Glover (2020), held that police may constitutionally stop a vehicle based solely on the owner's prior suspended license.",
       },
       {
-        topic: "CampaignFinance",
-        position: "For",
+        topic: "FairElections",
+        position: "Against",
         note: "Authored McCutcheon v. FEC (2014), striking aggregate campaign contribution limits as a First Amendment violation.",
       },
       {
@@ -261,8 +250,8 @@ export const currentJustices: Justice[] = [
         note: "Authored the Brnovich v. DNC dissent (2021), arguing the majority's reading of the VRA drains the statute of its core purpose.",
       },
       {
-        topic: "CampaignFinance",
-        position: "Against",
+        topic: "FairElections",
+        position: "For",
         note: "Dissented in Citizens United v. FEC (2010), warning the ruling would 'undermine democracy' by flooding elections with corporate money.",
       },
     ],

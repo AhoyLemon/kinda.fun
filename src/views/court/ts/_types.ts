@@ -2,7 +2,6 @@ export type StanceType =
   | "AccusedRights" // Rights of the criminally accused (Miranda, due process, fair trial)
   | "AgencyDeference" // Whether courts should defer to federal agency interpretations (Chevron doctrine)
   | "AnimalRights" // Legal protections for animals
-  | "CampaignFinance" // Money in politics; limits on political donations and spending
   | "ChristianHegemony" // Preferential treatment of Christianity in public life and law
   | "CivilLiberties" // Broad individual freedoms from government interference
   | "CourtAuthority" // The Supreme Court's institutional legitimacy and scope of power
@@ -17,7 +16,6 @@ export type StanceType =
   | "GayRights" // Legal equality and protections for LGBTQ+ individuals
   | "Guns" // Second Amendment rights and gun regulations
   | "Immigration" // Rights of immigrants and scope of immigration enforcement
-  | "JudicialActivism" // Willingness to overturn precedent or reshape law from the bench
   | "NativeSovereignty" // Tribal treaty rights, reservation jurisdiction, and indigenous self-governance
   | "Privacy" // Fourth Amendment, digital privacy, and the constitutional right to personal autonomy
   | "PropertyRights" // Protection of private property from government taking or regulation

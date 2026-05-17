@@ -103,7 +103,7 @@ export const casesHistorical: Case[] = [
       stances: {
         CorporatePower: "For",
         FreeSpeech: "For",
-        CampaignFinance: "For",
+        FairElections: "Against",
         RichPeople: "For",
       },
     },
@@ -114,7 +114,6 @@ export const casesHistorical: Case[] = [
       favoredBy: "Democrat",
       stances: {
         CorporatePower: "Against",
-        CampaignFinance: "Against",
         FairElections: "For",
       },
     },
@@ -772,6 +771,156 @@ export const casesHistorical: Case[] = [
         WorkersRights: "For",
         EconomicRegulation: "For",
         SocialOrder: "For",
+      },
+    },
+    historicalWinner: "Prosecution",
+  },
+  {
+    id: 28,
+    name: "Gonzales v. Raich",
+    year: 2005,
+    caseType: "historical",
+    primaryQuestion: "Can the federal government prohibit marijuana use that is legal under state law?",
+    prosecution: {
+      name: "Alberto Gonzales (U.S. Attorney General)",
+      argument:
+        "The federal Controlled Substances Act bans marijuana. Federal law trumps state law under the Supremacy Clause. Allowing state exceptions would undermine national drug policy.",
+      favoredBy: "Republican",
+      stances: {
+        Drugs: "Against",
+        FederalPower: "For",
+        StatesRights: "Against",
+      },
+    },
+    defendant: {
+      name: "Angel Raich & Diane Monson",
+      argument:
+        "California law allows medical marijuana. The federal government has no authority to regulate non-commercial, intrastate cultivation and use. This is a state health matter.",
+      favoredBy: "Democrat",
+      stances: {
+        Drugs: "For",
+        FederalPower: "Against",
+        StatesRights: "For",
+      },
+    },
+    historicalWinner: "Prosecution",
+  },
+  {
+    id: 29,
+    name: "Worcester v. Georgia",
+    year: 1832,
+    caseType: "historical",
+    primaryQuestion: "Do states have authority over Native American lands within their borders?",
+    prosecution: {
+      name: "State of Georgia",
+      argument:
+        "Georgia law applies to all people within its borders, including non-Native Americans living on Cherokee land. The state has the right to regulate activities within its territory.",
+      favoredBy: "Republican",
+      stances: {
+        NativeSovereignty: "Against",
+        StatesRights: "For",
+        FederalPower: "Against",
+      },
+    },
+    defendant: {
+      name: "Samuel Worcester",
+      argument:
+        "The Cherokee Nation is a distinct, sovereign community. Only the federal government, not states, can deal with Native nations. Georgia's law is unconstitutional.",
+      favoredBy: "Democrat",
+      stances: {
+        NativeSovereignty: "For",
+        StatesRights: "Against",
+        FederalPower: "For",
+      },
+    },
+    historicalWinner: "Defendant",
+  },
+  {
+    id: 30,
+    name: "United States v. Darby Lumber Co.",
+    year: 1941,
+    caseType: "historical",
+    primaryQuestion: "Can Congress regulate labor standards, like minimum wage and child labor, for goods shipped in interstate commerce?",
+    prosecution: {
+      name: "United States",
+      argument:
+        "The Fair Labor Standards Act is a valid exercise of Congress’s power under the Commerce Clause. Goods produced under substandard labor conditions affect interstate commerce, and Congress can regulate them to protect workers and the national economy.",
+      favoredBy: "Democrat",
+      stances: {
+        WorkersRights: "For",
+        EconomicRegulation: "For",
+        FederalPower: "For",
+      },
+    },
+    defendant: {
+      name: "Darby Lumber Company",
+      argument:
+        "Labor conditions in our Georgia mill are a local matter. The federal government cannot dictate wages and hours for purely local manufacturing. The Tenth Amendment reserves this power to the states.",
+      favoredBy: "Republican",
+      stances: {
+        WorkersRights: "Against",
+        EconomicRegulation: "Against",
+        StatesRights: "For",
+      },
+    },
+    historicalWinner: "Prosecution",
+  },
+  {
+    id: 31,
+    name: "Massachusetts v. EPA",
+    year: 2007,
+    caseType: "historical",
+    primaryQuestion: "Does the EPA have the authority to regulate greenhouse gases under the Clean Air Act?",
+    prosecution: {
+      name: "Commonwealth of Massachusetts et al.",
+      argument:
+        "The EPA is required by law to regulate air pollutants that endanger public health. Greenhouse gases are pollutants, and the EPA cannot ignore its duty to address climate change.",
+      favoredBy: "Democrat",
+      stances: {
+        EnvironmentalProtection: "For",
+        FederalPower: "For",
+        ExecutivePower: "Against",
+      },
+    },
+    defendant: {
+      name: "Environmental Protection Agency (Bush Administration)",
+      argument:
+        "The Clean Air Act does not require the EPA to regulate greenhouse gases. The agency has discretion to decide whether and how to address climate change, and courts should not interfere with agency expertise.",
+      favoredBy: "Republican",
+      stances: {
+        EnvironmentalProtection: "Against",
+        FederalPower: "Against",
+        ExecutivePower: "For",
+      },
+    },
+    historicalWinner: "Prosecution",
+  },
+  {
+    id: 32,
+    name: "Chevron U.S.A., Inc. v. Natural Resources Defense Council, Inc.",
+    year: 1984,
+    caseType: "historical",
+    primaryQuestion: "Should courts defer to the EPA’s interpretation of the Clean Air Act when the law is ambiguous?",
+    prosecution: {
+      name: "Chevron U.S.A., Inc.",
+      argument:
+        "The EPA’s interpretation of the Clean Air Act is reasonable and consistent with the agency’s expertise. Courts should defer to agency decisions when the law is ambiguous.",
+      favoredBy: "Republican",
+      stances: {
+        EnvironmentalProtection: "For",
+        AgencyDeference: "For",
+        EconomicRegulation: "Against",
+      },
+    },
+    defendant: {
+      name: "Natural Resources Defense Council (NRDC)",
+      argument:
+        "The EPA’s interpretation weakens environmental protections and allows more pollution. Courts must ensure agencies do not undermine the intent of Congress.",
+      favoredBy: "Democrat",
+      stances: {
+        EnvironmentalProtection: "Against",
+        AgencyDeference: "Against",
+        EconomicRegulation: "For",
       },
     },
     historicalWinner: "Prosecution",
