@@ -55,9 +55,16 @@ function runTests(choice) {
 
   console.log("\n" + chalk.blue.bold(`→ Running: ${selected.label}`) + "\n");
 
+  // Set environment variable for minimal output mode
+  const env = { ...process.env };
+  if (choice === "2") {
+    env.VITEST_MINIMAL_OUTPUT = "true";
+  }
+
   const proc = spawn("vitest", selected.args, {
     stdio: "inherit",
     shell: process.platform === "win32",
+    env,
   });
 
   proc.on("close", (code) => {

@@ -22,6 +22,9 @@ import { cases as allCases, casesHistorical, casesFictional } from "../src/views
 import Table from "cli-table3";
 import colors from "colors";
 
+// Check if we should suppress verbose output (mode 2: Pass/Fail)
+const isMinimalOutput = process.env.VITEST_MINIMAL_OUTPUT === "true";
+
 const casesArray = [...allCases, ...casesHistorical, ...casesFictional];
 
 // Dynamically collect all unique stance topics from justices, presidents, and cases
@@ -108,101 +111,104 @@ const unused = sorted.filter((t) => counts[t].total === 0);
 
 // ─── CLI-TABLE3 + COLORS OUTPUT ─────────────────────────────────────────────
 
-console.log("\n" + colors.cyan.bold("================================================================"));
-console.log(colors.cyan.bold("  STANCE USAGE REPORT -- Court Card Game  "));
-console.log(colors.cyan.bold("================================================================\n"));
+// Only show report in non-minimal mode (suppress in mode 2: Pass/Fail)
+if (!isMinimalOutput) {
+  console.log("\n" + colors.cyan.bold("================================================================"));
+  console.log(colors.cyan.bold("  STANCE USAGE REPORT -- Court Card Game  "));
+  console.log(colors.cyan.bold("================================================================\n"));
 
-console.log(colors.white("Total stances tracked: ") + colors.yellow(String(ALL_STANCE_TOPICS.length)));
-console.log(
-  colors.white("Total justice stances: ") +
-    colors.yellow(
-      String(
-        allJustices.reduce(function (n, j) {
-          return n + (j.stances ? j.stances.length : 0);
-        }, 0),
+  console.log(colors.white("Total stances tracked: ") + colors.yellow(String(ALL_STANCE_TOPICS.length)));
+  console.log(
+    colors.white("Total justice stances: ") +
+      colors.yellow(
+        String(
+          allJustices.reduce(function (n, j) {
+            return n + (j.stances ? j.stances.length : 0);
+          }, 0),
+        ),
       ),
-    ),
-);
-console.log(
-  colors.white("Total president stances: ") +
-    colors.yellow(
-      String(
-        presidents.reduce(function (n, p) {
-          return n + (p.stances ? p.stances.length : 0);
-        }, 0),
+  );
+  console.log(
+    colors.white("Total president stances: ") +
+      colors.yellow(
+        String(
+          presidents.reduce(function (n, p) {
+            return n + (p.stances ? p.stances.length : 0);
+          }, 0),
+        ),
       ),
-    ),
-);
-const caseStanceCount = casesArray.reduce(function (n, c) {
-  return n + Object.keys(c.prosecution.stances || {}).length + Object.keys(c.defendant.stances || {}).length;
-}, 0);
-console.log(colors.white("Total case stances: ") + colors.yellow(String(caseStanceCount)) + "\n");
+  );
+  const caseStanceCount = casesArray.reduce(function (n, c) {
+    return n + Object.keys(c.prosecution.stances || {}).length + Object.keys(c.defendant.stances || {}).length;
+  }, 0);
+  console.log(colors.white("Total case stances: ") + colors.yellow(String(caseStanceCount)) + "\n");
 
-// Top 5 Table
-const topTable = new Table({
-  head: [
-    colors.green.bold("#"),
-    colors.green.bold("Stance Type"),
-    colors.green.bold("Total"),
-    colors.green.bold("Justices"),
-    colors.green.bold("Presidents"),
-    colors.green.bold("Cases"),
-  ],
-  colWidths: [4, 26, 8, 10, 12, 8],
-});
-top5.forEach((t, i) => {
-  const { justices, presidents: pres, cases: cs, total } = counts[t];
-  topTable.push([
-    colors.green((i + 1).toString()),
-    colors.bold(t),
-    colors.yellow(total.toString()),
-    colors.cyan(justices.toString()),
-    colors.magenta(pres.toString()),
-    colors.blue(cs.toString()),
-  ]);
-});
-console.log(colors.green.bold("🔝 Top 5 Most Used Stances:"));
-console.log(topTable.toString());
-
-// Bottom 5 Table
-const bottomTable = new Table({
-  head: [
-    colors.red.bold("#"),
-    colors.red.bold("Stance Type"),
-    colors.red.bold("Total"),
-    colors.red.bold("Justices"),
-    colors.red.bold("Presidents"),
-    colors.red.bold("Cases"),
-  ],
-  colWidths: [4, 26, 8, 10, 12, 8],
-});
-bottom5.forEach((t, i) => {
-  const { justices, presidents: pres, cases: cs, total } = counts[t];
-  bottomTable.push([
-    colors.red((i + 1).toString()),
-    colors.bold(t),
-    colors.yellow(total.toString()),
-    colors.cyan(justices.toString()),
-    colors.magenta(pres.toString()),
-    colors.blue(cs.toString()),
-  ]);
-});
-console.log("\n" + colors.red.bold("🔻 Bottom 5 Least Used Stances:"));
-console.log(bottomTable.toString());
-
-// Unused stances
-if (unused.length > 0) {
-  console.log("\n" + colors.bgYellow.black("UNUSED STANCES (" + unused.length + ") — these may be candidates for removal or need more coverage:"));
-  const unusedTable = new Table({
-    head: [colors.yellow.bold("Unused Stance Type")],
-    colWidths: [32],
+  // Top 5 Table
+  const topTable = new Table({
+    head: [
+      colors.green.bold("#"),
+      colors.green.bold("Stance Type"),
+      colors.green.bold("Total"),
+      colors.green.bold("Justices"),
+      colors.green.bold("Presidents"),
+      colors.green.bold("Cases"),
+    ],
+    colWidths: [4, 26, 8, 10, 12, 8],
   });
-  unused.forEach((t) => unusedTable.push([colors.yellow(t)]));
-  console.log(unusedTable.toString());
-} else {
-  console.log("\n" + colors.green.bold("✅ All stance types are used at least once."));
+  top5.forEach((t, i) => {
+    const { justices, presidents: pres, cases: cs, total } = counts[t];
+    topTable.push([
+      colors.green((i + 1).toString()),
+      colors.bold(t),
+      colors.yellow(total.toString()),
+      colors.cyan(justices.toString()),
+      colors.magenta(pres.toString()),
+      colors.blue(cs.toString()),
+    ]);
+  });
+  console.log(colors.green.bold("🔝 Top 5 Most Used Stances:"));
+  console.log(topTable.toString());
+
+  // Bottom 5 Table
+  const bottomTable = new Table({
+    head: [
+      colors.red.bold("#"),
+      colors.red.bold("Stance Type"),
+      colors.red.bold("Total"),
+      colors.red.bold("Justices"),
+      colors.red.bold("Presidents"),
+      colors.red.bold("Cases"),
+    ],
+    colWidths: [4, 26, 8, 10, 12, 8],
+  });
+  bottom5.forEach((t, i) => {
+    const { justices, presidents: pres, cases: cs, total } = counts[t];
+    bottomTable.push([
+      colors.red((i + 1).toString()),
+      colors.bold(t),
+      colors.yellow(total.toString()),
+      colors.cyan(justices.toString()),
+      colors.magenta(pres.toString()),
+      colors.blue(cs.toString()),
+    ]);
+  });
+  console.log("\n" + colors.red.bold("🔻 Bottom 5 Least Used Stances:"));
+  console.log(bottomTable.toString());
+
+  // Unused stances
+  if (unused.length > 0) {
+    console.log("\n" + colors.bgYellow.black("UNUSED STANCES (" + unused.length + ") — these may be candidates for removal or need more coverage:"));
+    const unusedTable = new Table({
+      head: [colors.yellow.bold("Unused Stance Type")],
+      colWidths: [32],
+    });
+    unused.forEach((t) => unusedTable.push([colors.yellow(t)]));
+    console.log(unusedTable.toString());
+  } else {
+    console.log("\n" + colors.green.bold("✅ All stance types are used at least once."));
+  }
+  console.log("\n" + colors.cyan.bold("════════════════════════════════════════════════════════════════\n"));
 }
-console.log("\n" + colors.cyan.bold("════════════════════════════════════════════════════════════════\n"));
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 

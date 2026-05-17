@@ -11,6 +11,9 @@ import { gameSettings } from "../ts/variables/_gameSettings.js";
 import { my } from "../ts/variables/_my.js";
 import { simulateStreetPreaching } from "./simulators/street-preaching-simulator.js";
 
+// Check if we should suppress verbose output (mode 2: Pass/Fail)
+const isMinimalOutput = process.env.VITEST_MINIMAL_OUTPUT === "true";
+
 // VARIABLES FOR OUR TESTS
 const maxSpicePerDay = 3;
 const totalVanCost = gameSettings.van.cost + gameSettings.van.fixedGasPrice;
@@ -58,12 +61,15 @@ function calculateSpiceMultiplier(consumed, required) {
 
 describe("Street Preaching Income Balance Test", () => {
   test("Paired comparison: Spice vs No Spice using same sermon topics - 10 simulation runs", () => {
-    console.log("\\n=== STREET PREACHING INCOME BALANCE TEST ===");
-    console.log(`Van cost: $${totalVanCost} (includes ${gameSettings.van.fixedGasPrice} for gas)`);
-    console.log(`Spice price per unit: $${gameSettings.spice.pricePerUnit}`);
-    console.log(`Starting location: ${places[0].name} (${places[0].totalPopulation.toLocaleString()} population)`);
-    console.log("🔬 PAIRED COMPARISON: Each run tests both WITH and WITHOUT spice using identical sermon topics");
-    console.log("");
+    // Only show detailed output in non-minimal mode (suppress in mode 2: Pass/Fail)
+    if (!isMinimalOutput) {
+      console.log("\\n=== STREET PREACHING INCOME BALANCE TEST ===");
+      console.log(`Van cost: $${totalVanCost} (includes ${gameSettings.van.fixedGasPrice} for gas)`);
+      console.log(`Spice price per unit: $${gameSettings.spice.pricePerUnit}`);
+      console.log(`Starting location: ${places[0].name} (${places[0].totalPopulation.toLocaleString()} population)`);
+      console.log("🔬 PAIRED COMPARISON: Each run tests both WITH and WITHOUT spice using identical sermon topics");
+      console.log("");
+    }
 
     const startingPlace = places[0]; // Use starting location
     const results = [];
@@ -186,51 +192,55 @@ describe("Street Preaching Income Balance Test", () => {
     const expectedMinDays = 4;
     const expectedMaxDays = 9;
 
-    console.log("");
-    console.log("=== EXPECTED CRITERIA ===");
-    console.log(`• Target range: ${expectedMinDays}-${expectedMaxDays} days until van`);
-    console.log(`• Too Easy: Average < ${expectedMinDays} days`);
-    console.log(`• Too Hard: Average > ${expectedMaxDays} days`);
-    console.log(`• Success rate should be: ≥80% of runs`);
+    if (!isMinimalOutput) {
+      console.log("");
+      console.log("=== EXPECTED CRITERIA ===");
+      console.log(`• Target range: ${expectedMinDays}-${expectedMaxDays} days until van`);
+      console.log(`• Too Easy: Average < ${expectedMinDays} days`);
+      console.log(`• Too Hard: Average > ${expectedMaxDays} days`);
+      console.log(`• Success rate should be: ≥80% of runs`);
 
-    console.log("");
-    console.log("=== SIMULATION RESULTS TABLE ===");
+      console.log("");
+      console.log("=== SIMULATION RESULTS TABLE ===");
+    }
 
     // Create a nice table with colors
-    const table = new Table({
-      head: ["Run", "Spice", "Total $", "Daily", "Van Day", "Result"],
-      colWidths: [5, 12, 16, 16, 10, 12],
-    });
+    if (!isMinimalOutput) {
+      const table = new Table({
+        head: ["Run", "Spice", "Total $", "Daily", "Van Day", "Result"],
+        colWidths: [5, 12, 16, 16, 10, 12],
+      });
 
-    results.forEach((result) => {
-      let resultStr;
-      let resultColor;
+      results.forEach((result) => {
+        let resultStr;
+        let resultColor;
 
-      if (!result.success) {
-        resultStr = "FAILED";
-        resultColor = colors.yellow(resultStr);
-      } else {
-        const days = result.daysUntilVanAffordable;
-
-        if (days < expectedMinDays) {
-          resultStr = "TOO EASY";
-          resultColor = colors.green(resultStr);
-        } else if (days > expectedMaxDays) {
-          resultStr = "TOO HARD";
-          resultColor = colors.red(resultStr);
+        if (!result.success) {
+          resultStr = "FAILED";
+          resultColor = colors.yellow(resultStr);
         } else {
-          resultStr = "GOOD";
-          resultColor = colors.white(resultStr);
+          const days = result.daysUntilVanAffordable;
+
+          if (days < expectedMinDays) {
+            resultStr = "TOO EASY";
+            resultColor = colors.green(resultStr);
+          } else if (days > expectedMaxDays) {
+            resultStr = "TOO HARD";
+            resultColor = colors.red(resultStr);
+          } else {
+            resultStr = "GOOD";
+            resultColor = colors.white(resultStr);
+          }
         }
-      }
 
-      const dailyRange = `$${result.minDailyEarnings.toFixed(0)}-${result.maxDailyEarnings.toFixed(0)}`;
-      const daysStr = result.success ? result.daysUntilVanAffordable.toString() : "FAILED";
+        const dailyRange = `$${result.minDailyEarnings.toFixed(0)}-${result.maxDailyEarnings.toFixed(0)}`;
+        const daysStr = result.success ? result.daysUntilVanAffordable.toString() : "FAILED";
 
-      table.push([result.run, result.totalSpiceTaken, "$" + result.totalMoneyEarned.toFixed(0), dailyRange, daysStr, resultColor]);
-    });
+        table.push([result.run, result.totalSpiceTaken, "$" + result.totalMoneyEarned.toFixed(0), dailyRange, daysStr, resultColor]);
+      });
 
-    console.log(table.toString());
+      console.log(table.toString());
+    }
 
     // Separate results by scenario for analysis
     const spiceResults = results.filter((r) => r.scenario === "WITH");
@@ -263,27 +273,29 @@ describe("Street Preaching Income Balance Test", () => {
     const avgSpiceMoney = spiceResults.reduce((sum, r) => sum + r.totalMoneyEarned, 0) / spiceResults.length;
     const avgNoSpiceMoney = noSpiceResults.reduce((sum, r) => sum + r.totalMoneyEarned, 0) / noSpiceResults.length;
 
-    console.log("");
-    console.log("=== SUMMARY STATISTICS ===");
-    console.log(`🟢 Within Target Range:       ${withinTarget}/20 (${Math.round(withinTarget * 5)}%)`);
-    console.log(`🟡 Outside Target Range:      ${offTarget}/20 (${Math.round(offTarget * 5)}%)`);
-    console.log(`📊 Average Days Until Van:    ${avgAllDays.toFixed(1)} days (combined)`);
-    console.log(`⏰ Fastest Run:               ${minAllDays} days`);
-    console.log(`🐌 Slowest Run:               ${maxAllDays} days`);
-    console.log(`💊 Average Spice Consumed:    ${avgSpice.toFixed(1)} units (spice runs only)`);
-    console.log(`💰 Average Total Money Earned: $${avgTotalMoney.toFixed(0)} (combined)`);
-    console.log("");
-    console.log("=== SPICE COMPARISON ===");
-    console.log(`📈 Average Days (With Spice):    ${avgSpiceDays.toFixed(1)} days`);
-    console.log(`📉 Average Days (No Spice):      ${avgNoSpiceDays.toFixed(1)} days`);
-    console.log(
-      `⚖️  Time Difference:             ${(avgSpiceDays - avgNoSpiceDays).toFixed(1)} days ${avgSpiceDays > avgNoSpiceDays ? "(slower with spice)" : avgSpiceDays < avgNoSpiceDays ? "(faster with spice)" : "(no difference)"}`,
-    );
-    console.log(`💰 Average Money (With Spice):   $${avgSpiceMoney.toFixed(0)}`);
-    console.log(`💰 Average Money (No Spice):     $${avgNoSpiceMoney.toFixed(0)}`);
-    console.log(
-      `💸 Money Difference:             $${(avgSpiceMoney - avgNoSpiceMoney).toFixed(0)} ${avgSpiceMoney > avgNoSpiceMoney ? "(more with spice)" : "(less with spice)"}`,
-    );
+    if (!isMinimalOutput) {
+      console.log("");
+      console.log("=== SUMMARY STATISTICS ===");
+      console.log(`🟢 Within Target Range:       ${withinTarget}/20 (${Math.round(withinTarget * 5)}%)`);
+      console.log(`🟡 Outside Target Range:      ${offTarget}/20 (${Math.round(offTarget * 5)}%)`);
+      console.log(`📊 Average Days Until Van:    ${avgAllDays.toFixed(1)} days (combined)`);
+      console.log(`⏰ Fastest Run:               ${minAllDays} days`);
+      console.log(`🐌 Slowest Run:               ${maxAllDays} days`);
+      console.log(`💊 Average Spice Consumed:    ${avgSpice.toFixed(1)} units (spice runs only)`);
+      console.log(`💰 Average Total Money Earned: $${avgTotalMoney.toFixed(0)} (combined)`);
+      console.log("");
+      console.log("=== SPICE COMPARISON ===");
+      console.log(`📈 Average Days (With Spice):    ${avgSpiceDays.toFixed(1)} days`);
+      console.log(`📉 Average Days (No Spice):      ${avgNoSpiceDays.toFixed(1)} days`);
+      console.log(
+        `⚖️  Time Difference:             ${(avgSpiceDays - avgNoSpiceDays).toFixed(1)} days ${avgSpiceDays > avgNoSpiceDays ? "(slower with spice)" : avgSpiceDays < avgNoSpiceDays ? "(faster with spice)" : "(no difference)"}`,
+      );
+      console.log(`💰 Average Money (With Spice):   $${avgSpiceMoney.toFixed(0)}`);
+      console.log(`💰 Average Money (No Spice):     $${avgNoSpiceMoney.toFixed(0)}`);
+      console.log(
+        `💸 Money Difference:             $${(avgSpiceMoney - avgNoSpiceMoney).toFixed(0)} ${avgSpiceMoney > avgNoSpiceMoney ? "(more with spice)" : "(less with spice)"}`,
+      );
+    }
 
     // Determine overall balance assessment
     const isTooEasy = avgAllDays < expectedMinDays;
@@ -293,38 +305,42 @@ describe("Street Preaching Income Balance Test", () => {
     // Only fail the test if there are critical issues, but provide detailed feedback
     const passedBasicCriteria = hasGoodSuccessRate && !isTooEasy && !isTooHard;
 
-    console.log("");
-    if (!passedBasicCriteria) {
-      console.log("❌ TEST FAILED: Critical balance issues detected");
-      console.log("RECOMMENDED ACTIONS:");
-      if (isTooEasy) {
-        console.log("• TOO EASY: Average < 5 days - reduce donation amounts, crowd sizes, or like chances");
-      }
-      if (isTooHard) {
-        console.log("• TOO HARD: Average > 10 days - increase donation amounts, crowd sizes, or reduce spice costs");
-      }
-      if (!hasGoodSuccessRate) {
-        console.log("• Low success rate suggests fundamental balance problems");
-      }
-    } else {
-      if (isTooEasy) {
-        console.log("⚠️  TEST PASSED: Balance slightly too easy but acceptable");
-      } else if (isTooHard) {
-        console.log("⚠️  TEST PASSED: Balance slightly too hard but acceptable");
+    if (!isMinimalOutput) {
+      console.log("");
+      if (!passedBasicCriteria) {
+        console.log("❌ TEST FAILED: Critical balance issues detected");
+        console.log("RECOMMENDED ACTIONS:");
+        if (isTooEasy) {
+          console.log("• TOO EASY: Average < 5 days - reduce donation amounts, crowd sizes, or like chances");
+        }
+        if (isTooHard) {
+          console.log("• TOO HARD: Average > 10 days - increase donation amounts, crowd sizes, or reduce spice costs");
+        }
+        if (!hasGoodSuccessRate) {
+          console.log("• Low success rate suggests fundamental balance problems");
+        }
       } else {
-        console.log("✅ TEST PASSED: Balance is good");
+        if (isTooEasy) {
+          console.log("⚠️  TEST PASSED: Balance slightly too easy but acceptable");
+        } else if (isTooHard) {
+          console.log("⚠️  TEST PASSED: Balance slightly too hard but acceptable");
+        } else {
+          console.log("✅ TEST PASSED: Balance is good");
+        }
       }
     }
 
     // Spice impact conclusion
-    console.log("");
-    console.log("=== SPICE IMPACT CONCLUSION ===");
-    if (avgSpiceDays < avgNoSpiceDays - 0.5) {
-      console.log("✅ Spice provides a meaningful advantage - reduces time to van");
-    } else if (avgSpiceDays > avgNoSpiceDays + 0.5) {
-      console.log("⚠️  Spice is counterproductive - increases time to van (cost vs benefit issue)");
-    } else {
-      console.log("🤔 Spice has neutral time impact - may need rebalancing for clearer benefit/cost tradeoff");
+    if (!isMinimalOutput) {
+      console.log("");
+      console.log("=== SPICE IMPACT CONCLUSION ===");
+      if (avgSpiceDays < avgNoSpiceDays - 0.5) {
+        console.log("✅ Spice provides a meaningful advantage - reduces time to van");
+      } else if (avgSpiceDays > avgNoSpiceDays + 0.5) {
+        console.log("⚠️  Spice is counterproductive - increases time to van (cost vs benefit issue)");
+      } else {
+        console.log("🤔 Spice has neutral time impact - may need rebalancing for clearer benefit/cost tradeoff");
+      }
     }
 
     // Simple assertion based on simplified criteria
