@@ -559,15 +559,6 @@ These tests should validate that the power scaling changes work as intended and 
    - Knockon Effect Indicators (#5)
    - No Crashes with New Cards (#7)
 
-3. **Medium Priority:**
-   - Individual new card tests (#4, #6, #8)
-   - Toast context tests (#12, #13)
-   - Existing tactics functionality (#14)
-
-4. **Nice to Have:**
-   - Campaign mode persistence (#17, #18)
-   - Performance monitoring (#19)
-
 ---
 
 ### Test Frameworks & Tools
@@ -585,5 +576,5 @@ These tests should validate that the power scaling changes work as intended and 
 
 **File locations:**
 
-- New tests: `tests/court-balance.spec.ts`, `tests/court-new-cards.spec.ts`, `tests/court-toast-feedback.spec.ts`
+- New tests: `tests/court-balance.spec.ts`, `tests/court-toast-feedback.spec.ts`
 - Extend existing: `tests/court-tactic-effects.spec.ts`, `tests/court-regressions.spec.ts`
