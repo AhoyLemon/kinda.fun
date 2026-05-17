@@ -32,7 +32,16 @@ const options = [
     key: "4",
     label: "Court",
     description: "Run Supreme Court: The Card Game tests",
-    args: ["--run", "tests/court-stances.spec.ts"],
+    args: [
+      "--run",
+      "tests/court-balance.spec.ts",
+      "tests/court-campaign-stats.spec.ts",
+      "tests/court-regressions.spec.ts",
+      "tests/court-stances.spec.ts",
+      "tests/court-stats-helpers.spec.ts",
+      "tests/court-tactic-effects.spec.ts",
+      "tests/court-toast-feedback.spec.ts",
+    ],
   },
 ];
 
