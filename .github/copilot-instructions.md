@@ -15,22 +15,22 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 
 ### Build and Development Commands
 
-- **Development Server**: `npm run dev:client` -- starts Vite dev server on http://localhost:5173. Takes ~2 seconds. Games load but show Firebase auth errors (expected without config).
-- **Production Build**: `npm run build -- --mode production` -- builds all games and static pages in prodution mode (to be deployed to Firebase). Takes ~10 seconds.Set timeout to 60+ seconds.
-- **Development Build**: `npm run build -- --mode development` -- builds all games and static pages in development mode (for local testing and development). Takes ~10 seconds. Set timeout to 60+ seconds.
-- **Preview Build**: `npm run preview` -- serves built application on http://localhost:4173. Takes ~2 seconds.
+- **Development Server**: `bun run dev:client` -- starts Vite dev server on http://localhost:5173.
+- **Production Build**: `bun run build -- --mode production` -- builds all games and static pages in prodution mode (to be deployed to Firebase).
+- **Development Build**: `bun run build -- --mode development` -- builds all games and static pages in development mode (for local testing and development).
+- **Preview Build**: `bun run preview` -- serves built application on http://localhost:4173. Takes ~2 seconds.
 
 ### Testing and Quality
 
-- **Unit Tests**: `npm run test:unit` -- runs Vitest tests. Takes ~1.5 seconds. Currently has 1 passing test.
-- **Linting**: `npm run lint` -- runs ESLint with auto-fix. Currently shows 458+ errors (mostly Node.js globals in scripts). Takes ~3 seconds.
-- **Code Formatting**: `npm run format` -- formats all source files with Prettier. Takes ~4 seconds. ALWAYS run before committing.
+- **Unit Tests**: `bun run test:unit` -- runs Vitest test suite. Use this to validate changes.
+- **Linting**: `bun run lint` -- runs ESLint with auto-fix.
+- **Code Formatting**: `bun run format` -- formats all source files with Prettier. Run before committing.
 
 ### Data Generation Commands
 
-- **Billionaire Data**: `npm run guillotine:js` -- generates billionaire data from CSV. Takes ~2 seconds. Creates 2,781 entries.
-- **Arrest Warrants**: `npm run guillotine:arrests` -- creates daily arrest warrant data.
-- **Page Building**: `npm run build:pages` -- builds static HTML pages from templates.
+- **Billionaire Data**: `bun run guillotine:js` -- generates billionaire data from CSV. Takes ~2 seconds. Creates 2,781 entries.
+- **Arrest Warrants**: `bun run guillotine:arrests` -- creates daily arrest warrant data.
+- **Page Building**: `bun run build:pages` -- builds static HTML pages from templates.
 
 ## Code Organization
 
@@ -60,21 +60,21 @@ When implementing features, Copilot should:
    - Run `npx tsc --noEmit` to verify TypeScript compilation is clean
 
 2. **Build Validation**:
-   - Run `npm run build -- --mode production` and verify it completes without errors
+   - Run `bun run build -- --mode production` and verify it completes without errors
    - Check that `dist/` folder contains all game HTML files (cameo.html, guillotine.html, invalid.html, etc.)
 
 ### Pre-Commit Requirements
 
 **ALWAYS run before committing changes:**
 
-- `npm run tsc` -- verifies TypeScript compilation is clean
-- `npm run format` -- formats code consistently (but CHECK for SCSS function formatting issues)
-- `npm run build -- --mode production` -- ensures production build works (NEVER CANCEL - takes ~10 seconds)
+- `bun run tsc` -- verifies TypeScript compilation is clean
+- `bun run format` -- formats code consistently (but CHECK for SCSS function formatting issues)
+- `bun run build -- --mode production` -- ensures production build works (NEVER CANCEL - takes ~10 seconds)
 
 **CRITICAL: Prettier Formatting Warning**
 
 - Prettier may incorrectly format SCSS functions like `lighten($color, $amount)` into multi-line named parameter syntax
-- ALWAYS test `npm run build` after formatting to catch SCSS syntax errors
+- ALWAYS test `bun run build` after formatting to catch SCSS syntax errors
 - Fix any SCSS function calls that Prettier breaks by converting them back to simple syntax
 
 **CI will fail if:**
@@ -129,6 +129,7 @@ When implementing features, Copilot should:
 - **All development and deployment**: Node.js 22+ is required
 - **Vite 6 Compatibility**: Updated from Node.js 20 due to Vite 6 minimum requirements
 - **Functions**: Also use Node.js 22+ (no version conflicts)
+- **bun**: Prefer `bun` over `npm` for running commands, but either is possible.
 
 ### Build Performance
 
@@ -138,9 +139,7 @@ When implementing features, Copilot should:
 
 ### Linting Status
 
-- **Current state**: 458+ linting errors exist (mostly Node.js globals in utility scripts)
 - **Focus**: Don't introduce NEW linting errors in Vue components or main source files
-- **Scripts folder**: Linting errors in scripts/ are expected and don't break functionality
 
 ## Firebase Deployment
 
@@ -172,7 +171,7 @@ When implementing features, Copilot should:
 
 ### Game-Specific Issues
 
-- **Data missing**: Run appropriate data generation scripts (`npm run guillotine:js`, etc.)
+- **Data missing**: Run appropriate data generation scripts (`bun run guillotine:js`, etc.)
 - **Styles broken**: Check SCSS compilation in individual game folders
 - **Firebase errors**: Expected in development, provide config for production testing
 

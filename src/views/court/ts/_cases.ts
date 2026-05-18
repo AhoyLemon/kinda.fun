@@ -883,7 +883,7 @@ export const casesHistorical: Case[] = [
       },
     },
     defendant: {
-      name: "Environmental Protection Agency (Bush Administration)",
+      name: "Environmental Protection Agency",
       argument:
         "The Clean Air Act does not require the EPA to regulate greenhouse gases. The agency has discretion to decide whether and how to address climate change, and courts should not interfere with agency expertise.",
       favoredBy: "Republican",
