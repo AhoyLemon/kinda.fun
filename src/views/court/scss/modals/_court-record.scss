@@ -1,6 +1,6 @@
-@use '../abstracts/variables' as *;
+@use "../abstracts/variables" as *;
 
-// ─── Player / Opponent color tokens ──────────────────────────
+// ─── Player / Opponent color tokens (for modal display) ─────
 $cr-player-bg: #e5f0f3;
 $cr-player-fg: #131313;
 $cr-player-positive: #044707;
@@ -9,17 +9,6 @@ $cr-opponent-bg: #1f1c1c;
 $cr-opponent-fg: #f0e8d8;
 $cr-opponent-positive: #88e48c;
 $cr-opponent-negative: #e96262;
-
-:root {
-  --cr-player-bg: #{$cr-player-bg};
-  --cr-player-fg: #{$cr-player-fg};
-  --cr-player-positive: #{$cr-player-positive};
-  --cr-player-negative: #{$cr-player-negative};
-  --cr-opponent-bg: #{$cr-opponent-bg};
-  --cr-opponent-fg: #{$cr-opponent-fg};
-  --cr-opponent-positive: #{$cr-opponent-positive};
-  --cr-opponent-negative: #{$cr-opponent-negative};
-}
 
 // ─── Court Report modal ──────────────────────────────────────
 .court-report-overlay {
