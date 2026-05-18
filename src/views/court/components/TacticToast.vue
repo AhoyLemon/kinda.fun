@@ -24,6 +24,12 @@
     .Vue-Toastification__icon {
       display: none;
     }
+
+    // Override default toast font (needs !important to override library default)
+    .Vue-Toastification__toast {
+      font-family: "Poppins", sans-serif !important;
+    }
+
     .court-toast--player {
       background: $cr-player-bg;
       color: $cr-player-fg;
