@@ -56,7 +56,7 @@ function generateWarrants(totalBillionaires: number): Record<string, number[]> {
 
   let pool: number[] = [];
   for (let i = 0; i < repetitions; i++) {
-    for (let j = 1; j <= totalBillionaires; j++) {
+    for (let j = 0; j < totalBillionaires; j++) {
       pool.push(j);
     }
   }
