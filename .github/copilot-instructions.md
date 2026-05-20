@@ -13,6 +13,13 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
   - `npm install` -- installs all dependencies including Firebase functions. Takes ~45 seconds. NEVER CANCEL.
   - Functions and main project now both use Node.js 22+.
 
+### Dependency Update Policy
+
+- **Dependabot is intentionally disabled for this repository.**
+- Reason: for this single-maintainer project, Dependabot generated high-volume PR noise and repeated non-essential update churn, including breakage and review overhead that outweighed value.
+- Do not reintroduce `.github/dependabot.yml` unless the maintainer explicitly asks for it.
+- Handle dependency updates manually and only when needed (especially for confirmed security or compatibility needs).
+
 ### Build and Development Commands
 
 - **Development Server**: `bun run dev:client` -- starts Vite dev server on http://localhost:5173.
