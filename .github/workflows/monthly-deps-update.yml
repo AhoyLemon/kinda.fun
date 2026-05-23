@@ -1,0 +1,153 @@
+name: Monthly Dependency Update
+
+on:
+  schedule:
+    # Runs at 3:47 AM UTC on the 7th of each month
+    - cron: "47 3 7 * *"
+  workflow_dispatch:
+
+jobs:
+  update-deps:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.14"
+
+      - name: Set month label
+        id: month
+        run: echo "value=$(date +'%Y-%m')" >> "$GITHUB_OUTPUT"
+
+      - name: Update dependencies
+        run: bun update
+
+      - name: Install dependencies
+        run: bun install --ignore-scripts
+
+      - name: Check if bun.lock changed
+        id: lockfile
+        run: |
+          if git diff --quiet bun.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "✅ bun.lock unchanged — no dependency updates. Skipping PR creation."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build project
+        if: steps.lockfile.outputs.changed == 'true'
+        id: build
+        continue-on-error: true
+        run: bun run build -- --mode production
+        env:
+          NODE_ENV: production
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+
+      - name: Run unit tests
+        if: steps.lockfile.outputs.changed == 'true'
+        id: unit_tests
+        continue-on-error: true
+        run: bun run test:run
+
+      - name: Install Playwright Chromium
+        if: steps.lockfile.outputs.changed == 'true'
+        run: bunx playwright install --with-deps chromium
+
+      - name: Run Playwright smoke tests
+        if: steps.lockfile.outputs.changed == 'true'
+        id: smoke_tests
+        continue-on-error: true
+        run: bunx playwright test
+        env:
+          CI: "true"
+
+      - name: Collect changed packages
+        if: steps.lockfile.outputs.changed == 'true'
+        id: changed_packages
+        run: |
+          MAX_PACKAGES_DISPLAY=40
+          DIFF=$(git diff bun.lock | grep '^[+-]' | grep -v '^[+-][+-][+-]' | grep -oP '"[^"]+@[^"]+"' | sort -u | head -"$MAX_PACKAGES_DISPLAY" || true)
+          if [ -z "$DIFF" ]; then
+            DIFF="(unable to parse changed packages)"
+          fi
+          echo "packages<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$DIFF" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Determine PR draft status and summary
+        if: steps.lockfile.outputs.changed == 'true'
+        id: pr_meta
+        run: |
+          BUILD="${{ steps.build.outcome }}"
+          UNIT="${{ steps.unit_tests.outcome }}"
+          SMOKE="${{ steps.smoke_tests.outcome }}"
+          if [ "$BUILD" = "success" ] && [ "$UNIT" = "success" ] && [ "$SMOKE" = "success" ]; then
+            echo "draft=false" >> "$GITHUB_OUTPUT"
+            echo "summary=✅ Build, unit tests, and smoke tests all passed." >> "$GITHUB_OUTPUT"
+          else
+            echo "draft=true" >> "$GITHUB_OUTPUT"
+            SUMMARY="⚠️ One or more checks failed:"
+            [ "$BUILD" != "success" ] && SUMMARY="$SUMMARY\n- ❌ Build: $BUILD"
+            [ "$UNIT" != "success" ] && SUMMARY="$SUMMARY\n- ❌ Unit tests: $UNIT"
+            [ "$SMOKE" != "success" ] && SUMMARY="$SUMMARY\n- ❌ Smoke tests: $SMOKE"
+            printf "summary=%b\n" "$SUMMARY" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch latest Bun version
+        if: steps.lockfile.outputs.changed == 'true'
+        id: bun_latest
+        run: |
+          LATEST=$(curl -fsSL https://api.github.com/repos/oven-sh/bun/releases/latest \
+            | grep '"tag_name"' \
+            | sed 's/.*"tag_name": "bun-v\([^"]*\)".*/\1/' || echo "unknown")
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+
+      - name: Create Pull Request
+        if: steps.lockfile.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(deps): monthly bun update — ${{ steps.month.outputs.value }}"
+          branch: chore/monthly-deps-${{ steps.month.outputs.value }}
+          delete-branch: true
+          draft: ${{ steps.pr_meta.outputs.draft }}
+          title: "chore(deps): monthly bun update — ${{ steps.month.outputs.value }}"
+          body: |
+            ## Monthly dependency update
+
+            **Month:** ${{ steps.month.outputs.value }}
+
+            ### Changed packages
+            ```
+            ${{ steps.changed_packages.outputs.packages }}
+            ```
+
+            ### Validation results
+            ${{ steps.pr_meta.outputs.summary }}
+
+            | Check | Status |
+            |-------|--------|
+            | Build | ${{ steps.build.outcome }} |
+            | Unit tests | ${{ steps.unit_tests.outcome }} |
+            | Smoke tests | ${{ steps.smoke_tests.outcome }} |
+
+            ### Bun version note
+            Pinned: `1.3.14` — Latest: `${{ steps.bun_latest.outputs.latest }}`
+            *(Bun is intentionally not auto-updated — bump manually when ready)*
