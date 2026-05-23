@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
   pull-requests: write
 
 jobs:
@@ -55,32 +56,21 @@ jobs:
         id: changed_packages
         run: |
           python3 - <<'PYEOF'
-          import subprocess, re, os
+          import json, os, subprocess
 
-          diff = subprocess.check_output(['git', 'diff', 'bun.lock'], text=True)
-          removed, added = {}, {}
-
-          for line in diff.split('\n'):
-              is_rm  = line.startswith('-') and not line.startswith('---')
-              is_add = line.startswith('+') and not line.startswith('+++')
-              if not (is_rm or is_add):
-                  continue
-              for entry in re.findall(r'"([^@"]+@[^"]+)"', line):
-                  at = entry.rfind('@')
-                  if at <= 0:
-                      continue
-                  name, ver = entry[:at], entry[at + 1:]
-                  if is_rm:
-                      removed.setdefault(name, ver)
-                  else:
-                      added.setdefault(name, ver)
+          previous = json.loads(subprocess.check_output(['git', 'show', 'HEAD:package.json'], text=True))
+          with open('package.json', 'r', encoding='utf-8') as handle:
+              current = json.load(handle)
 
           rows = []
-          for name in sorted(set(list(removed) + list(added))):
-              old = removed.get(name, '—')
-              new = added.get(name, '—')
-              if old != new:
-                  rows.append((name, old, new))
+          for section in ('dependencies', 'devDependencies'):
+              before = previous.get(section, {})
+              after = current.get(section, {})
+              for name in sorted(set(before) | set(after)):
+                  old = before.get(name, '—')
+                  new = after.get(name, '—')
+                  if old != new:
+                      rows.append((name, old, new))
 
           MAX = 40
           out = []
@@ -199,43 +189,310 @@ jobs:
             | sed 's/.*"tag_name": "bun-v\([^"]*\)".*/\1/' || echo "unknown")
           echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
 
-      - name: Create Pull Request
+      - name: Render PR body and failure comment
         if: steps.lockfile.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(deps): monthly bun update — ${{ steps.month.outputs.value }}"
-          branch: chore/monthly-deps-${{ steps.month.outputs.value }}
-          delete-branch: true
-          draft: ${{ steps.pr_meta.outputs.draft }}
-          title: "chore(deps): monthly bun update — ${{ steps.month.outputs.value }}"
-          body: |
-            ## Monthly dependency update — ${{ steps.month.outputs.value }}
+        env:
+          MONTH: ${{ steps.month.outputs.value }}
+          DRAFT: ${{ steps.pr_meta.outputs.draft }}
+          CHANGED_PACKAGES: ${{ steps.changed_packages.outputs.table }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          UNIT_OUTCOME: ${{ steps.unit_tests.outcome }}
+          SMOKE_OUTCOME: ${{ steps.smoke_tests.outcome }}
+          BUILD_SECTION: ${{ steps.failures.outputs.build_section }}
+          UNIT_SECTION: ${{ steps.failures.outputs.unit_section }}
+          SMOKE_SECTION: ${{ steps.failures.outputs.smoke_section }}
+          BUN_LATEST: ${{ steps.bun_latest.outputs.latest }}
+        run: |
+          python3 - <<'PYEOF'
+          import os
+          from pathlib import Path
 
-            ### Updated packages
+          month = os.environ['MONTH']
+          run_url = f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+          draft = os.environ['DRAFT'] == 'true'
 
-            ${{ steps.changed_packages.outputs.table }}
+          def result(outcome):
+              return '✅ passed' if outcome == 'success' else '❌ failed'
 
-            ---
+          sections = [
+              os.environ['BUILD_SECTION'].strip(),
+              os.environ['UNIT_SECTION'].strip(),
+              os.environ['SMOKE_SECTION'].strip(),
+          ]
+          failure_sections = '\n\n'.join(section for section in sections if section)
 
-            ### Validation
+          body_lines = [
+              f"## Monthly dependency update — {month}",
+              "",
+              "### Updated packages",
+              "",
+              os.environ['CHANGED_PACKAGES'].strip(),
+              "",
+              "---",
+              "",
+              "### Validation",
+              "",
+              "| Check | Result |",
+              "|-------|--------|",
+              f"| 🏗️ Build | {result(os.environ['BUILD_OUTCOME'])} |",
+              f"| 🧪 Unit tests | {result(os.environ['UNIT_OUTCOME'])} |",
+              f"| 🌐 Smoke tests | {result(os.environ['SMOKE_OUTCOME'])} |",
+          ]
 
-            | Check | Result |
-            |-------|--------|
-            | 🏗️ Build | ${{ steps.build.outcome == 'success' && '✅ passed' || '❌ failed' }} |
-            | 🧪 Unit tests | ${{ steps.unit_tests.outcome == 'success' && '✅ passed' || '❌ failed' }} |
-            | 🌐 Smoke tests | ${{ steps.smoke_tests.outcome == 'success' && '✅ passed' || '❌ failed' }} |
+          if draft:
+              body_lines.extend([
+                  "",
+                  f"> ⚠️ **This PR is a draft because one or more checks failed.** See the failure details below and the [full workflow run]({run_url}) for complete logs.",
+              ])
+              if failure_sections:
+                  body_lines.extend(["", failure_sections])
 
-            ${{ steps.pr_meta.outputs.draft == 'true' && format('> ⚠️ **This PR is a draft because one or more checks failed.** See the failure details below and the [full workflow run]({0}/{1}/actions/runs/{2}) for complete logs.', github.server_url, github.repository, github.run_id) || '' }}
+          body_lines.extend([
+              "",
+              "---",
+              "",
+              "### Bun version note",
+              f"Pinned: `1.3.14` — Latest: `{os.environ['BUN_LATEST']}`",
+              "*(Bun is intentionally not auto-updated — bump manually when ready)*",
+          ])
 
-            ${{ steps.failures.outputs.build_section }}
+          body = '\n'.join(body_lines).strip() + '\n'
+          Path('/tmp/monthly-deps-pr-body.md').write_text(body, encoding='utf-8')
 
-            ${{ steps.failures.outputs.unit_section }}
+          comment = ''
+          if draft:
+              comment_lines = [
+                  "<!-- monthly-deps-failure-summary -->",
+                  f"## Monthly dependency update validation failed — {month}",
+                  "",
+                  f"[View the full workflow run]({run_url})",
+                  "",
+                  "### Validation",
+                  "",
+                  "| Check | Result |",
+                  "|-------|--------|",
+                  f"| 🏗️ Build | {result(os.environ['BUILD_OUTCOME'])} |",
+                  f"| 🧪 Unit tests | {result(os.environ['UNIT_OUTCOME'])} |",
+                  f"| 🌐 Smoke tests | {result(os.environ['SMOKE_OUTCOME'])} |",
+              ]
+              if failure_sections:
+                  comment_lines.extend(["", failure_sections])
+              comment = '\n'.join(comment_lines).strip() + '\n'
 
-            ${{ steps.failures.outputs.smoke_section }}
+          Path('/tmp/monthly-deps-failure-comment.md').write_text(comment, encoding='utf-8')
 
-            ---
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+              handle.write('body_path=/tmp/monthly-deps-pr-body.md\n')
+              handle.write('comment_path=/tmp/monthly-deps-failure-comment.md\n')
+          PYEOF
 
-            ### Bun version note
-            Pinned: `1.3.14` — Latest: `${{ steps.bun_latest.outputs.latest }}`
-            *(Bun is intentionally not auto-updated — bump manually when ready)*
+      - name: Sync dependency branch via GitHub API
+        if: steps.lockfile.outputs.changed == 'true'
+        id: branch_sync
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH_NAME: chore/monthly-deps-${{ steps.month.outputs.value }}
+        run: |
+          python3 - <<'PYEOF'
+          import base64
+          import json
+          import os
+          import urllib.error
+          import urllib.request
+
+          token = os.environ['GH_TOKEN']
+          repo = os.environ['GITHUB_REPOSITORY']
+          branch = os.environ['BRANCH_NAME']
+          base_branch = os.environ['GITHUB_REF_NAME']
+          commit_message = f"chore(deps): monthly bun update — {os.environ['MONTH']}"
+
+          def api(method, path, payload=None):
+              request = urllib.request.Request(
+                  f"https://api.github.com/{path}",
+                  data=None if payload is None else json.dumps(payload).encode('utf-8'),
+                  headers={
+                      'Authorization': f'Bearer {token}',
+                      'Accept': 'application/vnd.github+json',
+                      'Content-Type': 'application/json',
+                      'X-GitHub-Api-Version': '2022-11-28',
+                  },
+                  method=method,
+              )
+              with urllib.request.urlopen(request) as response:
+                  if response.length == 0:
+                      return None
+                  return json.load(response)
+
+          def create_blob(path):
+              with open(path, 'rb') as handle:
+                  encoded = base64.b64encode(handle.read()).decode('ascii')
+              blob = api('POST', f'repos/{repo}/git/blobs', {
+                  'content': encoded,
+                  'encoding': 'base64',
+              })
+              return blob['sha']
+
+          base_ref = api('GET', f'repos/{repo}/git/ref/heads/{base_branch}')
+          base_sha = base_ref['object']['sha']
+          base_commit = api('GET', f'repos/{repo}/git/commits/{base_sha}')
+          base_tree = base_commit['tree']['sha']
+
+          tree = api('POST', f'repos/{repo}/git/trees', {
+              'base_tree': base_tree,
+              'tree': [
+                  {
+                      'path': 'package.json',
+                      'mode': '100644',
+                      'type': 'blob',
+                      'sha': create_blob('package.json'),
+                  },
+                  {
+                      'path': 'bun.lock',
+                      'mode': '100644',
+                      'type': 'blob',
+                      'sha': create_blob('bun.lock'),
+                  },
+              ],
+          })
+
+          commit = api('POST', f'repos/{repo}/git/commits', {
+              'message': commit_message,
+              'tree': tree['sha'],
+              'parents': [base_sha],
+          })
+
+          try:
+              api('PATCH', f'repos/{repo}/git/refs/heads/{branch}', {
+                  'sha': commit['sha'],
+                  'force': True,
+              })
+          except urllib.error.HTTPError as error:
+              if error.code != 404:
+                  raise
+              api('POST', f'repos/{repo}/git/refs', {
+                  'ref': f'refs/heads/{branch}',
+                  'sha': commit['sha'],
+              })
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+              handle.write(f'branch={branch}\n')
+              handle.write(f'commit_sha={commit["sha"]}\n')
+          PYEOF
+
+      - name: Create or update dependency PR
+        if: steps.lockfile.outputs.changed == 'true'
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH_NAME: ${{ steps.branch_sync.outputs.branch }}
+          BODY_PATH: ${{ steps.pr_content.outputs.body_path }}
+          TARGET_DRAFT: ${{ steps.pr_meta.outputs.draft }}
+        run: |
+          set -euo pipefail
+
+          BASE_BRANCH="${GITHUB_REF_NAME}"
+          TITLE="chore(deps): monthly bun update — ${{ steps.month.outputs.value }}"
+          PR_NUMBER="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH_NAME" --base "$BASE_BRANCH" --state open --json number --jq '.[0].number // ""')"
+
+          if [ -z "$PR_NUMBER" ]; then
+            if [ "$TARGET_DRAFT" = "true" ]; then
+              gh pr create \
+                --repo "$GITHUB_REPOSITORY" \
+                --base "$BASE_BRANCH" \
+                --head "$BRANCH_NAME" \
+                --title "$TITLE" \
+                --body-file "$BODY_PATH" \
+                --draft
+            else
+              gh pr create \
+                --repo "$GITHUB_REPOSITORY" \
+                --base "$BASE_BRANCH" \
+                --head "$BRANCH_NAME" \
+                --title "$TITLE" \
+                --body-file "$BODY_PATH"
+            fi
+            PR_NUMBER="$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH_NAME" --base "$BASE_BRANCH" --state open --json number --jq '.[0].number // ""')"
+          else
+            gh pr edit "$PR_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$TITLE" \
+              --body-file "$BODY_PATH"
+          fi
+
+          CURRENT_DRAFT="$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json isDraft --jq '.isDraft')"
+          if [ "$TARGET_DRAFT" = "true" ] && [ "$CURRENT_DRAFT" != "true" ]; then
+            gh pr ready "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --undo
+          elif [ "$TARGET_DRAFT" != "true" ] && [ "$CURRENT_DRAFT" = "true" ]; then
+            gh pr ready "$PR_NUMBER" --repo "$GITHUB_REPOSITORY"
+          fi
+
+          PR_URL="$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json url --jq '.url')"
+
+          {
+            echo "number=$PR_NUMBER"
+            echo "url=$PR_URL"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upsert failure summary comment
+        if: steps.lockfile.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          COMMENT_PATH: ${{ steps.pr_content.outputs.comment_path }}
+          TARGET_DRAFT: ${{ steps.pr_meta.outputs.draft }}
+        run: |
+          python3 - <<'PYEOF'
+          import json
+          import os
+          import urllib.error
+          import urllib.request
+
+          token = os.environ['GH_TOKEN']
+          repo = os.environ['GITHUB_REPOSITORY']
+          pr_number = os.environ['PR_NUMBER']
+          target_draft = os.environ['TARGET_DRAFT'] == 'true'
+          marker = '<!-- monthly-deps-failure-summary -->'
+
+          def api(method, path, payload=None):
+              request = urllib.request.Request(
+                  f"https://api.github.com/{path}",
+                  data=None if payload is None else json.dumps(payload).encode('utf-8'),
+                  headers={
+                      'Authorization': f'Bearer {token}',
+                      'Accept': 'application/vnd.github+json',
+                      'Content-Type': 'application/json',
+                      'X-GitHub-Api-Version': '2022-11-28',
+                  },
+                  method=method,
+              )
+              with urllib.request.urlopen(request) as response:
+                  if response.length == 0:
+                      return None
+                  return json.load(response)
+
+          comments = api('GET', f'repos/{repo}/issues/{pr_number}/comments?per_page=100') or []
+          existing = next((comment for comment in comments if marker in comment.get('body', '')), None)
+
+          if target_draft:
+              with open(os.environ['COMMENT_PATH'], 'r', encoding='utf-8') as handle:
+                  body = handle.read().strip()
+              if not body:
+                  raise SystemExit('Failure summary comment body is empty for a draft PR.')
+              payload = {'body': body}
+              if existing:
+                  api('PATCH', f'repos/{repo}/issues/comments/{existing["id"]}', payload)
+              else:
+                  api('POST', f'repos/{repo}/issues/{pr_number}/comments', payload)
+          elif existing:
+              request = urllib.request.Request(
+                  f'https://api.github.com/repos/{repo}/issues/comments/{existing["id"]}',
+                  headers={
+                      'Authorization': f'Bearer {token}',
+                      'Accept': 'application/vnd.github+json',
+                      'X-GitHub-Api-Version': '2022-11-28',
+                  },
+                  method='DELETE',
+              )
+              with urllib.request.urlopen(request):
+                  pass
+          PYEOF
