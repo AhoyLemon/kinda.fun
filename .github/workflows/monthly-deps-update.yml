@@ -46,11 +46,67 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Collect changed packages
+        if: steps.lockfile.outputs.changed == 'true'
+        id: changed_packages
+        run: |
+          python3 - <<'PYEOF'
+          import subprocess, re, os
+
+          diff = subprocess.check_output(['git', 'diff', 'bun.lock'], text=True)
+          removed, added = {}, {}
+
+          for line in diff.split('\n'):
+              is_rm  = line.startswith('-') and not line.startswith('---')
+              is_add = line.startswith('+') and not line.startswith('+++')
+              if not (is_rm or is_add):
+                  continue
+              for entry in re.findall(r'"([^@"]+@[^"]+)"', line):
+                  at = entry.rfind('@')
+                  if at <= 0:
+                      continue
+                  name, ver = entry[:at], entry[at + 1:]
+                  if is_rm:
+                      removed.setdefault(name, ver)
+                  else:
+                      added.setdefault(name, ver)
+
+          rows = []
+          for name in sorted(set(list(removed) + list(added))):
+              old = removed.get(name, '—')
+              new = added.get(name, '—')
+              if old != new:
+                  rows.append((name, old, new))
+
+          MAX = 40
+          out = []
+          if rows:
+              out.append('| Package | Before | After |')
+              out.append('|---------|--------|-------|')
+              for name, old, new in rows[:MAX]:
+                  out.append(f'| `{name}` | `{old}` | `{new}` |')
+              if len(rows) > MAX:
+                  out.append(f'')
+                  out.append(f'*(…and {len(rows) - MAX} more — see the full diff)*')
+              out.append('')
+              out.append(f'**{len(rows)} package(s) updated**')
+          else:
+              out.append('*(no version changes detected in bun.lock diff)*')
+
+          table = '\n'.join(out)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write('table<<EOF\n')
+              f.write(table + '\n')
+              f.write('EOF\n')
+          PYEOF
+
       - name: Build project
         if: steps.lockfile.outputs.changed == 'true'
         id: build
         continue-on-error: true
-        run: bun run build -- --mode production
+        run: |
+          set -o pipefail
+          bun run build -- --mode production 2>&1 | tee /tmp/build.log
         env:
           NODE_ENV: production
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
@@ -64,7 +120,9 @@ jobs:
         if: steps.lockfile.outputs.changed == 'true'
         id: unit_tests
         continue-on-error: true
-        run: bun run test:run
+        run: |
+          set -o pipefail
+          bun run test:run 2>&1 | tee /tmp/unit-tests.log
 
       - name: Install Playwright Chromium
         if: steps.lockfile.outputs.changed == 'true'
@@ -74,24 +132,48 @@ jobs:
         if: steps.lockfile.outputs.changed == 'true'
         id: smoke_tests
         continue-on-error: true
-        run: bunx playwright test
+        run: |
+          set -o pipefail
+          bunx playwright test 2>&1 | tee /tmp/smoke-tests.log
         env:
           CI: "true"
 
-      - name: Collect changed packages
+      - name: Collect failure details
         if: steps.lockfile.outputs.changed == 'true'
-        id: changed_packages
+        id: failures
         run: |
-          MAX_PACKAGES_DISPLAY=40
-          DIFF=$(git diff bun.lock | grep '^[+-]' | grep -v '^[+-][+-][+-]' | grep -oP '"[^"]+@[^"]+"' | sort -u | head -"$MAX_PACKAGES_DISPLAY" || true)
-          if [ -z "$DIFF" ]; then
-            DIFF="(unable to parse changed packages)"
-          fi
-          echo "packages<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$DIFF" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
+          {
+            echo "build_section<<FAILSECTIONEOF"
+            if [ "${{ steps.build.outcome }}" != "success" ] && [ -f /tmp/build.log ]; then
+              echo "#### 🏗️ Build errors"
+              echo '```'
+              grep -iE '\berror\b' /tmp/build.log | grep -vE '^\s*$' | head -20 || true
+              echo '```'
+            fi
+            echo "FAILSECTIONEOF"
 
-      - name: Determine PR draft status and summary
+            echo "unit_section<<FAILSECTIONEOF"
+            if [ "${{ steps.unit_tests.outcome }}" != "success" ] && [ -f /tmp/unit-tests.log ]; then
+              echo "#### 🧪 Failing unit tests"
+              echo '```'
+              grep -E '(^ FAIL |✗|×| FAILED )' /tmp/unit-tests.log \
+                | grep -vE '^\s*$' | head -20 || true
+              echo '```'
+            fi
+            echo "FAILSECTIONEOF"
+
+            echo "smoke_section<<FAILSECTIONEOF"
+            if [ "${{ steps.smoke_tests.outcome }}" != "success" ] && [ -f /tmp/smoke-tests.log ]; then
+              echo "#### 🌐 Failing smoke tests"
+              echo '```'
+              grep -E '^\s+[0-9]+\)' /tmp/smoke-tests.log \
+                | grep -vE '^\s*$' | head -20 || true
+              echo '```'
+            fi
+            echo "FAILSECTIONEOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Determine PR draft status
         if: steps.lockfile.outputs.changed == 'true'
         id: pr_meta
         run: |
@@ -100,14 +182,8 @@ jobs:
           SMOKE="${{ steps.smoke_tests.outcome }}"
           if [ "$BUILD" = "success" ] && [ "$UNIT" = "success" ] && [ "$SMOKE" = "success" ]; then
             echo "draft=false" >> "$GITHUB_OUTPUT"
-            echo "summary=✅ Build, unit tests, and smoke tests all passed." >> "$GITHUB_OUTPUT"
           else
             echo "draft=true" >> "$GITHUB_OUTPUT"
-            SUMMARY="⚠️ One or more checks failed:"
-            [ "$BUILD" != "success" ] && SUMMARY="$SUMMARY\n- ❌ Build: $BUILD"
-            [ "$UNIT" != "success" ] && SUMMARY="$SUMMARY\n- ❌ Unit tests: $UNIT"
-            [ "$SMOKE" != "success" ] && SUMMARY="$SUMMARY\n- ❌ Smoke tests: $SMOKE"
-            printf "summary=%b\n" "$SUMMARY" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Fetch latest Bun version
@@ -130,24 +206,33 @@ jobs:
           draft: ${{ steps.pr_meta.outputs.draft }}
           title: "chore(deps): monthly bun update — ${{ steps.month.outputs.value }}"
           body: |
-            ## Monthly dependency update
+            ## Monthly dependency update — ${{ steps.month.outputs.value }}
 
-            **Month:** ${{ steps.month.outputs.value }}
+            ### Updated packages
 
-            ### Changed packages
-            ```
-            ${{ steps.changed_packages.outputs.packages }}
-            ```
+            ${{ steps.changed_packages.outputs.table }}
 
-            ### Validation results
-            ${{ steps.pr_meta.outputs.summary }}
+            ---
 
-            | Check | Status |
+            ### Validation
+
+            | Check | Result |
             |-------|--------|
-            | Build | ${{ steps.build.outcome }} |
-            | Unit tests | ${{ steps.unit_tests.outcome }} |
-            | Smoke tests | ${{ steps.smoke_tests.outcome }} |
+            | 🏗️ Build | ${{ steps.build.outcome == 'success' && '✅ passed' || '❌ failed' }} |
+            | 🧪 Unit tests | ${{ steps.unit_tests.outcome == 'success' && '✅ passed' || '❌ failed' }} |
+            | 🌐 Smoke tests | ${{ steps.smoke_tests.outcome == 'success' && '✅ passed' || '❌ failed' }} |
+
+            ${{ steps.pr_meta.outputs.draft == 'true' && format('> ⚠️ **This PR is a draft because one or more checks failed.** See the failure details below and the [full workflow run]({0}/{1}/actions/runs/{2}) for complete logs.', github.server_url, github.repository, github.run_id) || '' }}
+
+            ${{ steps.failures.outputs.build_section }}
+
+            ${{ steps.failures.outputs.unit_section }}
+
+            ${{ steps.failures.outputs.smoke_section }}
+
+            ---
 
             ### Bun version note
             Pinned: `1.3.14` — Latest: `${{ steps.bun_latest.outputs.latest }}`
             *(Bun is intentionally not auto-updated — bump manually when ready)*
+
