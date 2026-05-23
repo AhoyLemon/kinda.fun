@@ -191,6 +191,7 @@ jobs:
 
       - name: Render PR body and failure comment
         if: steps.lockfile.outputs.changed == 'true'
+        id: pr_content
         env:
           MONTH: ${{ steps.month.outputs.value }}
           DRAFT: ${{ steps.pr_meta.outputs.draft }}
@@ -291,6 +292,7 @@ jobs:
         id: branch_sync
         env:
           GH_TOKEN: ${{ github.token }}
+          MONTH: ${{ steps.month.outputs.value }}
           BRANCH_NAME: chore/monthly-deps-${{ steps.month.outputs.value }}
         run: |
           python3 - <<'PYEOF'
