@@ -16,6 +16,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
     "guillotine:scrape": "bun run scripts/scrapers/forbesBillionaires.ts",
+    "guillotine:school": "bun run scripts/scrapers/schoolData.ts",
     "guillotine:csv": "bun run scripts/npm-run/guillotine_updateCurrentList.ts",
     "guillotine:ts": "bun run scripts/npm-run/guillotine_generateTs.ts",
     "guillotine:arrests": "bun run scripts/npm-run/guillotine_createArrests.ts",
