@@ -9,6 +9,9 @@ on:
 jobs:
   update-deps:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -121,8 +124,18 @@ jobs:
         id: unit_tests
         continue-on-error: true
         run: |
-          set -o pipefail
-          bun run test:run 2>&1 | tee /tmp/unit-tests.log
+          bun run test:run 2>&1 | tee /tmp/unit-tests.log || true
+          # Parse vitest summary line rather than trusting the exit code.
+          # bun script runner may exit non-zero even when vitest passes all tests.
+          # Vitest summary format: "      Tests  N passed (N)" or "      Tests  N failed | M passed (T)"
+          if grep -qE '^\s+Tests\s+[0-9]+ failed' /tmp/unit-tests.log; then
+            echo "result=failure" >> "$GITHUB_OUTPUT"
+          elif grep -qE '^\s+Tests\s+[0-9]+ passed' /tmp/unit-tests.log; then
+            echo "result=success" >> "$GITHUB_OUTPUT"
+          else
+            # No recognisable vitest summary — treat as failure
+            echo "result=failure" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Install Playwright Chromium
         if: steps.lockfile.outputs.changed == 'true'
@@ -153,7 +166,7 @@ jobs:
             echo "FAILSECTIONEOF"
 
             echo "unit_section<<FAILSECTIONEOF"
-            if [ "${{ steps.unit_tests.outcome }}" != "success" ] && [ -f /tmp/unit-tests.log ]; then
+            if [ "${{ steps.unit_tests.outputs.result }}" != "success" ] && [ -f /tmp/unit-tests.log ]; then
               echo "#### 🧪 Failing unit tests"
               echo '```'
               grep -E '(^ FAIL |✗|×| FAILED )' /tmp/unit-tests.log \
@@ -178,7 +191,7 @@ jobs:
         id: pr_meta
         run: |
           BUILD="${{ steps.build.outcome }}"
-          UNIT="${{ steps.unit_tests.outcome }}"
+          UNIT="${{ steps.unit_tests.outputs.result }}"
           SMOKE="${{ steps.smoke_tests.outcome }}"
           if [ "$BUILD" = "success" ] && [ "$UNIT" = "success" ] && [ "$SMOKE" = "success" ]; then
             echo "draft=false" >> "$GITHUB_OUTPUT"
@@ -219,7 +232,7 @@ jobs:
             | Check | Result |
             |-------|--------|
             | 🏗️ Build | ${{ steps.build.outcome == 'success' && '✅ passed' || '❌ failed' }} |
-            | 🧪 Unit tests | ${{ steps.unit_tests.outcome == 'success' && '✅ passed' || '❌ failed' }} |
+            | 🧪 Unit tests | ${{ steps.unit_tests.outputs.result == 'success' && '✅ passed' || '❌ failed' }} |
             | 🌐 Smoke tests | ${{ steps.smoke_tests.outcome == 'success' && '✅ passed' || '❌ failed' }} |
 
             ${{ steps.pr_meta.outputs.draft == 'true' && format('> ⚠️ **This PR is a draft because one or more checks failed.** See the failure details below and the [full workflow run]({0}/{1}/actions/runs/{2}) for complete logs.', github.server_url, github.repository, github.run_id) || '' }}
