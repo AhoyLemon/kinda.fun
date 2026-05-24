@@ -59,6 +59,72 @@ function currentJusticeSounds(): Howl {
   return _currentJusticeSounds;
 }
 
+let _historicalJusticeSounds: Howl | null = null;
+function historicalJusticeSounds(): Howl {
+  if (!_historicalJusticeSounds) {
+    _historicalJusticeSounds = new Howl({
+      src: ["/audio/court/justicesHistorical.mp3"],
+      volume: 0.9,
+      sprite: {
+        ginsberg: [185, 1332],
+        ginsbergHappy: [1517, 1243],
+        ginsbergSad: [2760, 1508],
+        rehnquist: [4528, 2319],
+        rehnquistHappy: [6587, 2169],
+        rehnquistSad: [8757, 1966],
+        scalia: [10723, 2099],
+        scaliaSad: [12787, 1481],
+        scaliaHappy: [14286, 1746],
+      },
+    });
+  }
+  return _historicalJusticeSounds;
+}
+
+let _celebrityJusticeSounds: Howl | null = null;
+function celebrityJusticeSounds(): Howl {
+  if (!_celebrityJusticeSounds) {
+    _celebrityJusticeSounds = new Howl({
+      src: ["/audio/court/celebrityJustices.mp3"],
+      volume: 0.9,
+      sprite: {
+        mka: [151, 1950],
+        mkaHappy: [2101, 2078],
+        mkaSad: [4180, 2043],
+        thiel: [6223, 1533],
+        thielHappy: [7755, 1672],
+        thielSad: [9427, 2090],
+        undertaker: [11517, 2113],
+        undertakerHappy: [13630, 1997],
+        undertakerSad: [15650, 2856],
+      },
+    });
+  }
+  return _celebrityJusticeSounds;
+}
+
+let _fictionalJusticeSounds: Howl | null = null;
+function fictionalJusticeSounds(): Howl {
+  if (!_fictionalJusticeSounds) {
+    _fictionalJusticeSounds = new Howl({
+      src: ["/audio/court/fictionalJustices.mp3"],
+      volume: 0.9,
+      sprite: {
+        mindtaker: [397, 2242],
+        mindtakerHappy: [2639, 2216],
+        mindtakerSad: [4855, 2165],
+        doom: [7160, 1486],
+        doomSad: [8646, 1960],
+        doomHappy: [10606, 1723],
+        lo: [12482, 1950],
+        loSad: [14432, 1839],
+        loHappy: [16271, 1850],
+      },
+    });
+  }
+  return _fictionalJusticeSounds;
+}
+
 // Registry — add new justices or variant clips here.
 const justiceVoiceRegistry: Record<string, JusticeVoiceEntry> = {
   "John Roberts": {
@@ -96,6 +162,48 @@ const justiceVoiceRegistry: Record<string, JusticeVoiceEntry> = {
   "Ketanji Brown Jackson": {
     howl: currentJusticeSounds,
     clips: { neutral: ["ketanji"], sad: ["ketanjiSad"], happy: ["ketanjiHappy"] },
+  },
+
+  // Historical Justices
+  "Ruth Bader Ginsburg": {
+    howl: historicalJusticeSounds,
+    clips: { neutral: ["ginsberg"], sad: ["ginsbergSad"], happy: ["ginsbergHappy"] },
+  },
+  "William Rehnquist": {
+    howl: historicalJusticeSounds,
+    clips: { neutral: ["rehnquist"], sad: ["rehnquistSad"], happy: ["rehnquistHappy"] },
+  },
+  "Antonin Scalia": {
+    howl: historicalJusticeSounds,
+    clips: { neutral: ["scalia"], sad: ["scaliaSad"], happy: ["scaliaHappy"] },
+  },
+
+  // Celebrity Justices
+  "Mary-Kate & Ashley Olsen": {
+    howl: celebrityJusticeSounds,
+    clips: { neutral: ["mka"], sad: ["mkaSad"], happy: ["mkaHappy"] },
+  },
+  "Peter Thiel": {
+    howl: celebrityJusticeSounds,
+    clips: { neutral: ["thiel"], sad: ["thielSad"], happy: ["thielHappy"] },
+  },
+  "The Undertaker": {
+    howl: celebrityJusticeSounds,
+    clips: { neutral: ["undertaker"], sad: ["undertakerSad"], happy: ["undertakerHappy"] },
+  },
+
+  // Fictional Justices
+  "Mentok The Mind Taker": {
+    howl: fictionalJusticeSounds,
+    clips: { neutral: ["mindtaker"], sad: ["mindtakerSad"], happy: ["mindtakerHappy"] },
+  },
+  "Judge Doom": {
+    howl: fictionalJusticeSounds,
+    clips: { neutral: ["doom"], sad: ["doomSad"], happy: ["doomHappy"] },
+  },
+  "A DVD Boxed Set of Law & Order: SVU": {
+    howl: fictionalJusticeSounds,
+    clips: { neutral: ["lo"], sad: ["loSad"], happy: ["loHappy"] },
   },
 };
 
@@ -156,4 +264,3 @@ export function playJusticeVoice(justice: Justice, sentiment: Mood): void {
 export function playKavanaughBeer(): void {
   kavanaughLikesBeer().play(pickRandom([...kavanaughBeerSprites]));
 }
-

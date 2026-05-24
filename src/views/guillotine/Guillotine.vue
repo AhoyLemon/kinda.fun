@@ -7,9 +7,9 @@
   import { parseIndustryIcon, parseName } from "./js/parseFunctions.js";
 
   // Data
-  import { allBillionaires } from "./js/data/_billionaires.js";
-  import { allWarrants } from "./js/data/_warrants.js";
-  import { schoolData } from "./js/data/_school-data.js";
+  import { allBillionaires } from "./js/data/_billionaires.ts";
+  import { allWarrants } from "./js/data/_warrants.ts";
+  import { schoolData } from "./js/data/_school-data.ts";
 
   // Sounds
   import { Howl, Howler } from "howler";

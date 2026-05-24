@@ -247,7 +247,12 @@ export type TacticEffectType =
   | "plant-story" // target one justice: raise partyLoyalty and trigger immediate partisan pressure
   | "lemon-test" // all justices become Atheist + logic +2 for the trial
   | "suggest-yoga" // freeze one justice for a round; they return with empathy+susceptibility buffs
-  | "drag-them"; // lower one justice's charisma; sway them based on their threats weakness
+  | "drag-them" // lower one justice's charisma; sway them based on their threats weakness
+  | "fog-machine" // sway all justices based on how decided they are (neutrals swayed more, strongly decided annoyed)
+  | "whisper-campaign" // target one justice; they are swayed every remaining round
+  | "alien-abduction" // sway all justices based on susceptibility (high believe it, low offended)
+  | "mess-calendar" // both player and opponent skip the next round
+  | "international-law"; // sway all justices polarized by party loyalty (partisans offended, independents intrigued)
 
 export interface Tactic {
   id: number;
@@ -312,4 +317,8 @@ export interface CourtGameState {
   reframeStanceChoices: StanceType[]; // up to 3 stance topics presented to the player
   reframeStanceTacticId: number | null; // id of the reframe-debate tactic currently staged
   reframeStanceSelection: StanceType | null; // the stance the player chose; read by the effect resolver
+  // ── Whisper Campaign tracking ────────────────────────────────
+  whisperCampaigns?: Record<number, { actor: TurnActor; power: number }>; // justiceId → ongoing whisper campaign
+  // ── Mess With The Calendar ───────────────────────────────────
+  skipNextRound?: boolean; // true when Mess With The Calendar has been played
 }

@@ -29,3 +29,7 @@
 
 // ─── Shame ───────────────────────────────────────────────────
 @use "./scss/todo/shame";
+
+// ─── Libraries (@import must come AFTER all @use) ────────────
+@import "@/shared/scss/libraries/tippy";
+@import "@/shared/scss/libraries/vue_toastification";

@@ -613,7 +613,11 @@
       tactic.effectType === "saint-patricks" ||
       tactic.effectType === "lemon-test" ||
       tactic.effectType === "gift-boxes" ||
-      tactic.effectType === "keep-crown"
+      tactic.effectType === "keep-crown" ||
+      tactic.effectType === "fog-machine" ||
+      tactic.effectType === "alien-abduction" ||
+      tactic.effectType === "mess-calendar" ||
+      tactic.effectType === "international-law"
     ) {
       applyTactic(tactic, null, "player");
     } else if (tactic.effectType === "claim-two") {
@@ -647,7 +651,7 @@
       game.reframeStanceTacticId = tactic.id;
       game.reframeStanceMode = true;
     } else {
-      // sway-one, shield, encourage-nap, suggest-yoga, justice-cocktails, invite-church, recuse, make-chief, suggest-retirement, drag-them, catch-phone, plant-story: select then click a justice
+      // sway-one, shield, encourage-nap, suggest-yoga, justice-cocktails, invite-church, recuse, make-chief, suggest-retirement, drag-them, catch-phone, plant-story, whisper-campaign: select then click a justice
       game.selectedTacticId = game.selectedTacticId === tacticId ? null : tacticId;
     }
   }
@@ -867,6 +871,21 @@
       return; // stay on player's turn
     }
 
+    // Mess With The Calendar: skip opponent's turn and the entire next round
+    if (game.skipNextRound) {
+      delete game.skipNextRound;
+      game.round += 2; // Skip opponent's current turn + entire next round
+      game.currentTurn = "player";
+
+      if (game.round > gameSettings.numberOfRounds) {
+        void trackTrialVerdictStats({ isQuickplay: !ui.isCampaignMode });
+        setTimeout(() => {
+          ui.phase = "verdict";
+        }, 1500);
+      }
+      return;
+    }
+
     // Shields are consumed on contact (in resolveEffect), not cleared wholesale here
     game.currentTurn = "opponent";
     ui.opponentThinking = true;
@@ -909,7 +928,12 @@
       tactic.effectType === "insult-chief" ||
       tactic.effectType === "presidential-call" ||
       tactic.effectType === "saint-patricks" ||
-      tactic.effectType === "lemon-test"
+      tactic.effectType === "lemon-test" ||
+      tactic.effectType === "fog-machine" ||
+      tactic.effectType === "alien-abduction" ||
+      tactic.effectType === "mess-calendar" ||
+      tactic.effectType === "international-law" ||
+      tactic.effectType === "gift-boxes"
     ) {
       applyTactic(tactic, null, "opponent");
       return;
@@ -921,7 +945,8 @@
       tactic.effectType === "suggest-yoga" ||
       tactic.effectType === "justice-cocktails" ||
       tactic.effectType === "catch-phone" ||
-      tactic.effectType === "plant-story"
+      tactic.effectType === "plant-story" ||
+      tactic.effectType === "whisper-campaign"
     ) {
       const unblocked = game.bench.filter((j) => !(j.id in game.nappingJustices) && !(j.id in game.yogaJustices) && !game.playerShields.includes(j.id));
       const target = unblocked.sort((a, b) => (game.leanings[b.id] ?? 0) - (game.leanings[a.id] ?? 0))[0];
@@ -1033,6 +1058,27 @@
     // Shields are consumed on contact (in resolveEffect), not cleared here
     ui.opponentThinking = false;
     game.currentTurn = "player";
+
+    // Mess With The Calendar: if opponent played it, skip player's turn and the entire next round
+    if (game.skipNextRound) {
+      delete game.skipNextRound;
+      game.round += 2; // Skip player's current turn + entire next round
+      game.currentTurn = "opponent";
+
+      if (game.round > gameSettings.numberOfRounds) {
+        void trackTrialVerdictStats({ isQuickplay: !ui.isCampaignMode });
+        setTimeout(() => {
+          ui.phase = "verdict";
+        }, 1500);
+        return;
+      }
+
+      // Continue to opponent's turn in the new round
+      ui.opponentThinking = true;
+      setTimeout(() => playOpponentTurn(), 1000);
+      return;
+    }
+
     if (game.round >= gameSettings.numberOfRounds) {
       void trackTrialVerdictStats({ isQuickplay: !ui.isCampaignMode });
       setTimeout(() => {
@@ -1320,7 +1366,11 @@
         "keep-crown": "👑 Chief Justice",
         "gift-boxes": "🎁 All justices",
         "drag-them": "🎯 Single target",
-        "suggest-yoga": "🧘 Single target",
+        "whisper-campaign": "🎯 Single target",
+        "fog-machine": "🪩 All justices",
+        "alien-abduction": "👽 All justices",
+        "mess-calendar": "📅 Skip a day",
+        "international-law": "🌍 All justices",
       }[effectType] ?? effectType
     );
   }

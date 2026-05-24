@@ -10,28 +10,44 @@
 </script>
 
 <style lang="scss">
+  // Toast color tokens (Sass variables, not CSS custom properties)
+  $cr-player-bg: #e5f0f3;
+  $cr-player-fg: #131313;
+  $cr-player-positive: #044707;
+  $cr-player-negative: #5f0606;
+  $cr-opponent-bg: #1f1c1c;
+  $cr-opponent-fg: #f0e8d8;
+  $cr-opponent-positive: #88e48c;
+  $cr-opponent-negative: #e96262;
+
   .Vue-Toastification__container {
     .Vue-Toastification__icon {
       display: none;
     }
+
+    // Override default toast font (needs !important to override library default)
+    .Vue-Toastification__toast {
+      font-family: "Poppins", sans-serif !important;
+    }
+
     .court-toast--player {
-      background: var(--cr-player-bg);
-      color: var(--cr-player-fg);
+      background: $cr-player-bg;
+      color: $cr-player-fg;
       .positive .tt-change {
-        color: var(--cr-player-positive);
+        color: $cr-player-positive;
       }
       .negative .tt-change {
-        color: var(--cr-player-negative);
+        color: $cr-player-negative;
       }
     }
     .court-toast--opponent {
-      background: var(--cr-opponent-bg);
-      color: var(--cr-opponent-fg);
+      background: $cr-opponent-bg;
+      color: $cr-opponent-fg;
       .positive .tt-change {
-        color: var(--cr-opponent-positive);
+        color: $cr-opponent-positive;
       }
       .negative .tt-change {
-        color: var(--cr-opponent-negative);
+        color: $cr-opponent-negative;
       }
     }
 

@@ -36,6 +36,16 @@ Generated during the Game Over Screen on **Comparatively Famous**, these were pr
 - [Cheapskate](https://thefpl.us/meet/cheapskate)
 - [Bunnybread](https://voicefromhale.com/)
 
+## Justice Voices
+
+The voices for Supreme Court justices are...
+
+| Actor                                                   | Justice(s)                      |
+| ------------------------------------------------------- | ------------------------------- |
+| [Lemon](https://ahoylemon.xyz/)                         | Most of them                    |
+| [Boots Raingear](https://thefpl.us/meet/boots-raingear) | Ginsburg, Mentok The Mind Taker |
+| [Todd Gardner](https://www.toddhgardner.com/)           | Rehnquist, Scalia               |
+
 ## Useful Resources
 
 ### [Unsplash](https://unsplash.com/)
