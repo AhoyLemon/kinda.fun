@@ -11,8 +11,8 @@ const collectionsToClone = [
   //
   ////////////////////////////////////
   // COMPARATIVELY FAMOUS
-  "stats/cameo/celebs",
-  "stats/cameo/specialGames",
+  // "stats/cameo/celebs",
+  // "stats/cameo/specialGames",
   //
   ////////////////////////////////////
   // NO MORE BILLIONAIRES
@@ -55,6 +55,12 @@ const collectionsToClone = [
   // "/stats/megachurch/religions",
   // "/stats/megachurch/sermonTopics",
   // "/stats/megachurch/upgrades",
+  ////////////////////////////////////
+  // SUPREME COURT: THE CARD GAME
+  // "stats/court/cases",
+  // "stats/court/justices",
+  // "stats/court/stances",
+  // "stats/court/tactics",
 ];
 
 // Individual documents to clone (fields only, no subcollections)
@@ -65,13 +71,14 @@ const documentsToClone = [
   //
   ////////////////////////////////////
   // GAMES
-  "stats/cameo",
+  // "stats/cameo",
   // "stats/guillotine",
   // "stats/invalid",
   // "stats/meeting",
   // "stats/pretend",
   // "stats/sisyphus",
   // "stats/megachurch",
+  // "stats/court",
 ];
 
 // =============================================================

@@ -4,8 +4,6 @@ section.court.stats(v-if="ui.viewing == 'court'")
 
   .court-split
     .stats-boxes
-
-
       .box.date(v-if="stats.court && stats.court.lastGameStarted")
         .caption Last Game
         .time-ago(v-text="formatTime(stats.court.lastGameStarted,'fromNow')")
@@ -97,10 +95,10 @@ section.court.stats(v-if="ui.viewing == 'court'")
                       )
         .table-under
           .justice-selector
-            label See rulings from 
-            select(v-model="ui.selectedJusticeId")
+            label(for="SelectJustice") See rulings from 
+            select#SelectJustice(v-model="ui.selectedJusticeId")
               option(:value="null") ALL JUSTICES
-              option(v-for="justice in stats.court.justices" 
+              option(v-for="justice in stats.court.justices.sort((a, b) => a.name.localeCompare(b.name))" 
                     :key="justice.id"
                     :value="justice.id")
                 | {{justice.name}}
@@ -114,7 +112,7 @@ section.court.stats(v-if="ui.viewing == 'court'")
                         theme="black-rhino"
                         styleClass="vgt-table condensed"
                         :line-numbers="true"
-                        :sort-options="{ enabled: true, initialSortBy: {field: 'prosecutionVotes', type: 'desc'} }"
+                        :sort-options="{ enabled: true, initialSortBy: {field: 'timesAdjudicated', type: 'desc'} }"
                         :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"
                         :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
                       )

@@ -1,9 +1,11 @@
 //- ── TITLE PHASE ────────────────────────────────────────────
 main.court-title(v-if="ui.phase === 'title'")
+  .video-holder.video-bg
+    video(title="Supreme Court: The Card Game - Trailer" autoplay loop muted playsinline)
+      source(src="/video/court/court-barricade.smaller.mp4" type="video/mp4")
+      source(src="/video/court/court-barricade.webm" type="video/webm")
+      source(src="/video/court/court-barricade.mov" type="video/quicktime")
   .title-hero
-    //- //.title-icon ⚖️
-    //- h2.title-headline Supreme Court
-    //- p.title-sub The Card Game
     figure
       img(src="/svg/games/supremecourt.svg" alt="Supreme Court: The Card Game" class="title-image")
 
