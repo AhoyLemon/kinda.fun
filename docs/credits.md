@@ -18,7 +18,7 @@ Provided a bunch of lies for The Wrongest Words
 
 ## Happy Birthday Voices
 
-Generated during the Game Over Screen on **Comparatively Famous**, these were provided by...
+Generated during the Game Over Screen on [**Comparatively Famous**](https://kinda.fun/cameo), these were provided by...
 
 - [Lemon](https://ahoylemon.xyz/)
 - Simone
@@ -38,7 +38,7 @@ Generated during the Game Over Screen on **Comparatively Famous**, these were pr
 
 ## Justice Voices
 
-The voices for Supreme Court justices are...
+The voices for [**Supreme Court**](https://kinda.fun/court) justices are...
 
 | Actor                                                   | Justice(s)                      |
 | ------------------------------------------------------- | ------------------------------- |
