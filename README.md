@@ -2,7 +2,7 @@
 
 [![Last Deploy](https://img.shields.io/github/last-commit/AhoyLemon/kinda.fun/main?label=Last%20Deploy&style=for-the-badge&color=green)](https://github.com/AhoyLemon/kinda.fun/actions)
 [![Live Site](https://img.shields.io/badge/Live%20Site-kinda.fun-blue?style=for-the-badge)](https://kinda.fun)
-[![Game Count](https://img.shields.io/badge/games-8-E5E828?style=for-the-badge)](https://github.com/AhoyLemon/kinda.fun/tree/main/src/views)
+[![Game Count](https://img.shields.io/badge/games-9-E5E828?style=for-the-badge)](https://github.com/AhoyLemon/kinda.fun/tree/main/src/views)
 
 **Made with**
 
@@ -28,7 +28,15 @@
 [![Docs](https://img.shields.io/badge/Docs-Available-4FC08D?style=for-the-badge&logo=readthedocs&logoColor=white)](docs/)
 [![These games are by Lemon](https://img.shields.io/badge/These%20games%20are%20by-Lemon-E5E828?style=for-the-badge&logo=lemonsqueezy&logoColor=white)](https://ahoylemon.xyz)
 
-There's currently eight games in this repo...
+There's currently nine games in this repo...
+
+## Supreme Court: The Card Game
+
+[![Supreme Court: The Card Game](https://kinda.fun/img/og-court.png)](https://kinda.fun/court)
+
+A single-player card game where you try historical Supreme Court cases against the bench of your choice, using the justices' real-world ideological stances and weaknesses to your advantage.
+
+- **[Game Documentation](docs/court.md)** - Gameplay mechanics, justice stances, and case rules
 
 ## MegaChurch Tycoon
 
