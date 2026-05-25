@@ -1,10 +1,11 @@
 //- ── TITLE PHASE ────────────────────────────────────────────
 main.court-title(v-if="ui.phase === 'title'")
   .video-holder.video-bg
-    video(title="Supreme Court: The Card Game - Trailer" autoplay loop muted playsinline)
-      source(src="/video/court/court-barricade.smaller.mp4" type="video/mp4")
-      source(src="/video/court/court-barricade.webm" type="video/webm")
-      source(src="/video/court/court-barricade.mov" type="video/quicktime")
+    //- Only load these if the viewport is wider than 600px
+    video(title="Supreme Court behind barricade" autoplay loop muted playsinline aria-hidden="true")
+      source(src="/video/court/court-barricade.smaller.mp4" type="video/mp4" media="(min-width: 801px)")
+      source(src="/video/court/court-barricade.webm" type="video/webm" media="(min-width: 801px)")
+      source(src="/video/court/court-barricade.mov" type="video/quicktime" media="(min-width: 801px)")
   .title-hero
     figure
       img(src="/svg/games/supremecourt.svg" alt="Supreme Court: The Card Game" class="title-image")
