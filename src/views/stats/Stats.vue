@@ -28,7 +28,7 @@
       dayCount: null,
     },
     court: {
-      launched: "2026-06-01",
+      launched: "2026-05-25",
       dayCount: null,
     },
     sisyphus: {
