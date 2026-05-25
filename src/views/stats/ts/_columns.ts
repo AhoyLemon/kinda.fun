@@ -183,8 +183,8 @@ export const columns = {
   ],
   courtJusticeCases: [
     { label: "Case", field: "name", tdClass: "font-bold" },
-    { label: "Prosecution Votes", field: "prosecutionVotes", type: "number", formatFn: addCommas },
-    { label: "Defense Votes", field: "defenseVotes", type: "number", formatFn: addCommas },
+    { label: "x", field: "timesAdjudicated", type: "number", formatFn: addCommas },
+    { label: "Verdicts", field: "verdicts", html: true, sortable: false },
     { label: "Last Voted", field: "lastVotedAt", type: "date", formatFn: formatDate },
   ],
   courtStances: [

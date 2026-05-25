@@ -21,29 +21,12 @@ main.court-title {
         max-width: 600px;
       }
     }
-
-    // .title-headline {
-    //   font-family: $serif;
-    //   font-size: clamp(3rem, 10.5vw, 10rem);
-    //   font-weight: 475;
-    //   color: $court-gold;
-    //   margin: unset;
-    //   line-height: 1.02;
-    // }
-
-    // .title-sub {
-    //   font-size: 3.5vw;
-    //   color: rgba(255, 255, 255, 0.5);
-    //   margin: 0.3rem 0 0;
-    //   letter-spacing: 0.25em;
-    //   text-transform: uppercase;
-    // }
   }
 
   .title-mode-buttons {
     order: 1;
     grid-column: 1;
-    min-height: calc(100dvh - 120px);
+    min-height: calc(100dvh - 140px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -108,6 +91,26 @@ main.court-title {
         }
       }
     }
+  }
+
+  .video-bg {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.12;
+      mix-blend-mode: hard-light;
+    }
+  }
+  .title-hero,
+  .title-mode-buttons {
+    position: relative;
   }
 }
 

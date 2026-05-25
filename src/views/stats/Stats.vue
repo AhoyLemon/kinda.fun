@@ -924,7 +924,19 @@
     if (!ui.selectedJusticeId || !stats.court.justices) return [];
     const justice = stats.court.justices.find((j) => j.id === ui.selectedJusticeId);
     if (!justice || !justice.cases) return [];
-    return justice.cases;
+    return justice.cases.map((courtCase) => {
+      const prosecutionVotes = typeof courtCase.prosecutionVotes === "number" ? courtCase.prosecutionVotes : 0;
+      const defenseVotes = typeof courtCase.defenseVotes === "number" ? courtCase.defenseVotes : 0;
+      const abstainVotes = typeof courtCase.abstainVotes === "number" ? courtCase.abstainVotes : 0;
+      const prosecutionSideName = courtCase.prosecutionSideName || "Prosecution";
+      const defenseSideName = courtCase.defenseSideName || "Defense";
+
+      return {
+        ...courtCase,
+        timesAdjudicated: abstainVotes + defenseVotes + prosecutionVotes,
+        verdicts: `<div class="justice-verdicts"><dl><dt class="side-name side-prosecution">${prosecutionSideName}</dt><dd>${prosecutionVotes}</dd></dl><dl><dt class="side-name side-defense">${defenseSideName}</dt><dd>${defenseVotes}</dd></dl></div>`,
+      };
+    });
   });
 
   const computedPretend = computed(() => {
