@@ -27,7 +27,7 @@
       slogan: "If justice isn't fair, at least it should be fun!",
       description: `
         <p>In this single-player card game, you take on the role of a lawyer trying to win cases before the Supreme Court. You can choose to be ideologically consistent, or just play to win.</p>
-        <p>Manipulate the justices with flattery, bribery, blackmail, or political hedgemony, just like in real life!</p>
+        <p>Manipulate the justices with flattery, bribery, blackmail, or political hegemony, just like in real life!</p>
       `,
       url: `${baseURL}/court`,
       buttonText: "",
