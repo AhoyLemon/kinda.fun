@@ -3,6 +3,7 @@
   import { useFirestore } from "vuefire";
   import { useToast, POSITION } from "vue-toastification";
   import TacticToast from "./components/TacticToast.vue";
+  import LemonToast from "./components/LemonToast.vue";
   import {
     currentJustices,
     historicalJustices,
@@ -40,6 +41,7 @@
   const courtStats = createCourtStatsHelpers(db);
   const trialAttackedJustices = new Set<string>();
   let campaignEndLogged = false;
+  let byLemonJinglePlayed = false;
 
   type Side = "prosecution" | "defendant";
   type TurnActor = "player" | "opponent";
@@ -1058,6 +1060,26 @@
     // Shields are consumed on contact (in resolveEffect), not cleared here
     ui.opponentThinking = false;
     game.currentTurn = "player";
+
+    const midRound = Math.ceil(gameSettings.numberOfRounds / 2);
+    if (game.round === midRound) {
+      if (!byLemonJinglePlayed) {
+        byLemonJinglePlayed = true;
+        const byLemonJingle = new Audio("/audio/bylemon.mp3");
+        byLemonJingle.volume = 0.6;
+        void byLemonJingle.play();
+      }
+      toast(
+        { component: LemonToast },
+        {
+          toastClassName: "site-by-lemon",
+          icon: false,
+          timeout: 6000,
+          showCloseButtonOnHover: false,
+          closeButtonClassName: "close-toast",
+        },
+      );
+    }
 
     // Mess With The Calendar: if opponent played it, skip player's turn and the entire next round
     if (game.skipNextRound) {
