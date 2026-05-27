@@ -42,6 +42,7 @@
   const trialAttackedJustices = new Set<string>();
   let campaignEndLogged = false;
   let byLemonJinglePlayed = false;
+  let byLemonToastShown = false;
 
   type Side = "prosecution" | "defendant";
   type TurnActor = "player" | "opponent";
@@ -477,6 +478,7 @@
     game.claimedSelections = [];
     game.currentTurn = "player";
     game.round = 1;
+    byLemonToastShown = false;
     game.leanings = {};
     game.susceptibilityMods = {};
     game.playerShields = [];
@@ -553,6 +555,7 @@
     game.selectedTacticId = null;
     game.currentTurn = "player";
     game.round = 1;
+    byLemonToastShown = false;
     game.playerShields = [];
     game.opponentShields = [];
     game.nappingJustices = {};
@@ -864,6 +867,30 @@
     }
   }
 
+  // ─── Lemon Moment ────────────────────────────────────────────
+
+  function triggerLemonMomentIfDue(): void {
+    const midRound = Math.ceil(gameSettings.numberOfRounds / 2);
+    if (game.round < midRound || byLemonToastShown) return;
+    byLemonToastShown = true;
+    if (!byLemonJinglePlayed) {
+      byLemonJinglePlayed = true;
+      const jingle = new Audio("/audio/bylemon.mp3");
+      jingle.volume = 0.6;
+      void jingle.play();
+    }
+    toast(
+      { component: LemonToast },
+      {
+        toastClassName: "site-by-lemon",
+        icon: false,
+        timeout: 6000,
+        showCloseButtonOnHover: false,
+        closeButtonClassName: "close-toast",
+      },
+    );
+  }
+
   // ─── Turn Management ─────────────────────────────────────────
 
   function endPlayerTurn(): void {
@@ -878,6 +905,7 @@
       delete game.skipNextRound;
       game.round += 2; // Skip opponent's current turn + entire next round
       game.currentTurn = "player";
+      triggerLemonMomentIfDue();
 
       if (game.round > gameSettings.numberOfRounds) {
         void trackTrialVerdictStats({ isQuickplay: !ui.isCampaignMode });
@@ -1061,25 +1089,7 @@
     ui.opponentThinking = false;
     game.currentTurn = "player";
 
-    const midRound = Math.ceil(gameSettings.numberOfRounds / 2);
-    if (game.round === midRound) {
-      if (!byLemonJinglePlayed) {
-        byLemonJinglePlayed = true;
-        const byLemonJingle = new Audio("/audio/bylemon.mp3");
-        byLemonJingle.volume = 0.6;
-        void byLemonJingle.play();
-      }
-      toast(
-        { component: LemonToast },
-        {
-          toastClassName: "site-by-lemon",
-          icon: false,
-          timeout: 6000,
-          showCloseButtonOnHover: false,
-          closeButtonClassName: "close-toast",
-        },
-      );
-    }
+    triggerLemonMomentIfDue();
 
     // Mess With The Calendar: if opponent played it, skip player's turn and the entire next round
     if (game.skipNextRound) {
