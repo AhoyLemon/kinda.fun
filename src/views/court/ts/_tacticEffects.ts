@@ -398,25 +398,26 @@ export function resolveEffect(game: CourtGameState, tactic: Tactic, targetJustic
     consumeTactic(game, tactic, helpers);
     if (targetJustice) {
       const isKavanaugh = targetJustice.name === "Brett Kavanaugh";
+      const statBoost = isKavanaugh ? 6 : 3;
       game.statMods[targetJustice.id] = {
         ...(game.statMods[targetJustice.id] ?? {}),
-        charisma: (game.statMods[targetJustice.id]?.charisma ?? 0) + 3,
-        empathy: (game.statMods[targetJustice.id]?.empathy ?? 0) + 3,
-        logic: (game.statMods[targetJustice.id]?.logic ?? 0) - 3,
-        susceptibility: (game.statMods[targetJustice.id]?.susceptibility ?? 0) + 3,
+        charisma: (game.statMods[targetJustice.id]?.charisma ?? 0) + statBoost,
+        empathy: (game.statMods[targetJustice.id]?.empathy ?? 0) + statBoost,
+        logic: (game.statMods[targetJustice.id]?.logic ?? 0) - statBoost,
+        susceptibility: (game.statMods[targetJustice.id]?.susceptibility ?? 0) + statBoost,
       };
-      // Drinks also prime them for the next attack
-      game.susceptibilityMods[targetJustice.id] = (game.susceptibilityMods[targetJustice.id] ?? 0) + 4;
+      // Drinks also prime them for the next attack — Kavanaugh is exceptionally primed
+      game.susceptibilityMods[targetJustice.id] = (game.susceptibilityMods[targetJustice.id] ?? 0) + (isKavanaugh ? 10 : 4);
       // Immediate leaning nudge — the drinks are working right now
       const oldLeaning = game.leanings[targetJustice.id] ?? 0;
       const baseNudge = actor === "player" ? 15 : -15;
-      const nudge = isKavanaugh ? baseNudge * 2 : baseNudge;
+      const nudge = isKavanaugh ? baseNudge * 9 : baseNudge;
       const newLeaning = Math.max(-100, Math.min(100, oldLeaning + nudge));
       game.leanings[targetJustice.id] = newLeaning;
       results.push({ justiceName: targetJustice.name, change: newLeaning - oldLeaning, newLeaning });
       reportTarget = targetJustice.name;
       overrideFeedback = isKavanaugh
-        ? `"I LIKE BEER!" — Justice Kavanaugh is absolutely delighted and making some extremely questionable choices.`
+        ? `It's super effective! "I LIKE BEER!" Justice Kavanaugh has had several and is now completely unhinged.`
         : `${targetJustice.name} is having a great time and making some interesting choices.`;
     }
 

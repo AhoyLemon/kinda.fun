@@ -3,6 +3,7 @@
   import { useFirestore } from "vuefire";
   import { useToast, POSITION } from "vue-toastification";
   import TacticToast from "./components/TacticToast.vue";
+  import LemonToast from "./components/LemonToast.vue";
   import {
     currentJustices,
     historicalJustices,
@@ -40,6 +41,8 @@
   const courtStats = createCourtStatsHelpers(db);
   const trialAttackedJustices = new Set<string>();
   let campaignEndLogged = false;
+  let byLemonJinglePlayed = false;
+  let byLemonToastShown = false;
 
   type Side = "prosecution" | "defendant";
   type TurnActor = "player" | "opponent";
@@ -475,6 +478,7 @@
     game.claimedSelections = [];
     game.currentTurn = "player";
     game.round = 1;
+    byLemonToastShown = false;
     game.leanings = {};
     game.susceptibilityMods = {};
     game.playerShields = [];
@@ -551,6 +555,7 @@
     game.selectedTacticId = null;
     game.currentTurn = "player";
     game.round = 1;
+    byLemonToastShown = false;
     game.playerShields = [];
     game.opponentShields = [];
     game.nappingJustices = {};
@@ -862,6 +867,30 @@
     }
   }
 
+  // ─── Lemon Moment ────────────────────────────────────────────
+
+  function triggerLemonMomentIfDue(): void {
+    const midRound = Math.ceil(gameSettings.numberOfRounds / 2);
+    if (game.round < midRound || byLemonToastShown) return;
+    byLemonToastShown = true;
+    if (!byLemonJinglePlayed) {
+      byLemonJinglePlayed = true;
+      const jingle = new Audio("/audio/bylemon.mp3");
+      jingle.volume = 0.6;
+      void jingle.play();
+    }
+    toast(
+      { component: LemonToast },
+      {
+        toastClassName: "site-by-lemon",
+        icon: false,
+        timeout: 6000,
+        showCloseButtonOnHover: false,
+        closeButtonClassName: "close-toast",
+      },
+    );
+  }
+
   // ─── Turn Management ─────────────────────────────────────────
 
   function endPlayerTurn(): void {
@@ -876,6 +905,7 @@
       delete game.skipNextRound;
       game.round += 2; // Skip opponent's current turn + entire next round
       game.currentTurn = "player";
+      triggerLemonMomentIfDue();
 
       if (game.round > gameSettings.numberOfRounds) {
         void trackTrialVerdictStats({ isQuickplay: !ui.isCampaignMode });
@@ -1058,6 +1088,8 @@
     // Shields are consumed on contact (in resolveEffect), not cleared here
     ui.opponentThinking = false;
     game.currentTurn = "player";
+
+    triggerLemonMomentIfDue();
 
     // Mess With The Calendar: if opponent played it, skip player's turn and the entire next round
     if (game.skipNextRound) {
