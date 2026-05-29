@@ -376,9 +376,9 @@
       const playerIDs = game.players.map((p: any) => p.playerID);
 
       for (const eventCard of toDistribute) {
-        // Prefer players who don't already hold an event card
-        let eligible = playerIDs.filter((id: string) => !allHands[id].some((c: any) => c.isEventCard));
-        if (eligible.length === 0) eligible = [...playerIDs];
+        // Only give event cards to players who don't already have one
+        const eligible = playerIDs.filter((id: string) => !allHands[id].some((c: any) => c.isEventCard));
+        if (eligible.length === 0) break;
 
         const targetID = randomFrom(eligible);
         const hand = allHands[targetID];
