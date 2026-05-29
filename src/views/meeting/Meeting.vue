@@ -523,7 +523,7 @@
           component: MyToast,
           props: {
             title: "Too Late!",
-            message: `”${match.phrase ?? yourGuess}” has already been stolen.`,
+            message: `“${match.phrase ?? yourGuess}” has already been stolen.`,
           },
         },
         {

@@ -1,12 +1,5 @@
 import { game, you } from "./_variables";
 
-import { POSITION } from "vue-toastification";
-import "vue-toastification/dist/index.css";
-import MyToast from "../vue/MyToast.vue";
-import { useToast } from "vue-toastification";
-
-const toast = useToast();
-
 interface Socket {
   id: string;
   on(event: string, handler: (...args: unknown[]) => void): void;
