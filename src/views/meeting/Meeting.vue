@@ -288,6 +288,8 @@
     const roomRef = doc(db, `rooms/${game.roomCode}`);
     await updateDoc(roomRef, { isDealingInProgress: true });
 
+    let dealSucceeded = false;
+    try {
     // --- Update player stats before dealing cards ---
     const now = serverTimestamp();
     for (const player of gamePlayers.value) {
@@ -430,6 +432,16 @@
       gamesStarted: increment(1),
       lastGameStarted: serverTimestamp(),
     });
+    dealSucceeded = true;
+    } catch (error) {
+      console.error("Failed to start game:", error);
+      alert("Something went wrong starting the game. Please try again.");
+    } finally {
+      if (!dealSucceeded) {
+        isDealing.value = false;
+        updateDoc(roomRef, { isDealingInProgress: false }).catch(() => {});
+      }
+    }
   };
 
   const playThisCard = (card) => {
@@ -866,7 +878,7 @@
   const canSaveProfile = computed(() => {
     const nameValid = you.nameInput.trim().length > 0;
     if (!amISignedIn.value) return nameValid;
-    return nameValid && you.nameInput !== you.name;
+    return nameValid && (you.nameInput !== you.name || you.jobTitleInput !== you.jobTitle);
   });
 
   onMounted(() => {
