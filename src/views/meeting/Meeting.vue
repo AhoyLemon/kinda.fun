@@ -201,7 +201,7 @@
     game.roomCode = newRoomCode;
   }
 
-  import { gameName, timeToScore, badGuessPenalty, cardsPerPlayer, game, you, ui } from "./ts/_variables";
+  import { gameName, timeToScore, badGuessPenalty, cardsPerPlayer, game, you, ui, settings } from "./ts/_variables";
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
 
@@ -232,6 +232,9 @@
   };
 
   const savePlayerInfo = async () => {
+    if (isRoomFull.value && !amISignedIn.value) {
+      return;
+    }
     you.name = you.nameInput;
     localStorage.save;
     you.jobTitle = you.jobTitleInput;
@@ -785,6 +788,10 @@
 
     // Clone and sort the players array by score in descending order
     return [...gamePlayers.value].sort((a, b) => b.score - a.score);
+  });
+
+  const isRoomFull = computed(() => {
+    return game.players.length >= settings.maxPlayers;
   });
 
   onMounted(() => {
