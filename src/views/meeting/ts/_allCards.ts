@@ -9,10 +9,6 @@ interface Card {
   stringMatch?: string;
 }
 
-function normalize(str: string) {
-  return str.replace(/[^a-z0-9]/gi, "").toLowerCase();
-}
-
 // Remove redundant stringMatch in allCards
 export const allCards: Card[] = [
   // 5 Points
