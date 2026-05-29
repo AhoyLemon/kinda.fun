@@ -232,11 +232,13 @@
   };
 
   const savePlayerInfo = async () => {
-    if (isRoomFull.value && !amISignedIn.value) {
-      return;
+    if (!amISignedIn.value) {
+      const currentPlayersSnap = await getDocs(collection(db, "rooms", game.roomCode, "players"));
+      if (currentPlayersSnap.size >= settings.maxPlayers) {
+        return;
+      }
     }
     you.name = you.nameInput;
-    localStorage.save;
     you.jobTitle = you.jobTitleInput;
 
     localStorage.setItem("kindaFunPlayerName", you.name);

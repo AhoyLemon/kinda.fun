@@ -47,7 +47,7 @@
 
   .room-capacity(v-if="!game.isGameStarted")
     span(v-if="isRoomFull") The game is full. Let's play!
-    span(v-else) {{settings.maxPlayers - game.players.length}} more {{settings.maxPlayers - game.players.length === 1 ? 'person' : 'people'}} can play
+    span(v-else) {{Math.max(0, settings.maxPlayers - game.players.length)}} more {{settings.maxPlayers - game.players.length === 1 ? 'person' : 'people'}} can play
 
   .end-meeting(v-if="game.isGameStarted && amITheHost")
     label Meeting Over?
