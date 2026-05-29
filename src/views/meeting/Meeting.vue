@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { onMounted, reactive, ref, computed, watchEffect, watch } from "vue";
   import { allCards } from "./ts/_allCards";
+  import { eventCards } from "./ts/_eventCards";
   import { randomNumber, randomFrom, shuffle, preceisePercentOf } from "@/shared/js/_functions.js";
 
   // Toasts
@@ -201,7 +202,7 @@
     game.roomCode = newRoomCode;
   }
 
-  import { gameName, timeToScore, badGuessPenalty, cardsPerPlayer, game, you, ui, settings } from "./ts/_variables";
+  import { gameName, timeToScore, badGuessPenalty, game, you, ui, settings } from "./ts/_variables";
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
 
@@ -329,29 +330,81 @@
       }
     }
 
-    game.deck = shuffle([...allCards]);
+    // Split allCards into tier pools, each shuffled independently
+    const easyPool = shuffle(allCards.filter((c) => c.points === 5));
+    const mediumPool = shuffle(allCards.filter((c) => c.points === 10));
+    const hardPool = shuffle(allCards.filter((c) => c.points === 15));
+    const expertPool = shuffle(allCards.filter((c) => c.points === 30));
 
-    const totalPlayers = game.players.length;
-    const totalCardsNeeded = totalPlayers * cardsPerPlayer;
-    if (game.deck.length < totalCardsNeeded) {
-      console.error("Not enough cards to deal");
-      alert("Not enough cards to deal");
-      return;
+    // Draw from a pool, falling back to adjacent tiers if exhausted (warns once per exhausted pool)
+    const exhaustedPools = new Set<any[]>();
+    const drawFrom = (...pools: any[][]): any | null => {
+      for (const pool of pools) {
+        if (pool.length > 0) {
+          if (pool !== pools[0] && !exhaustedPools.has(pools[0])) {
+            exhaustedPools.add(pools[0]);
+            console.warn("Tier pool exhausted, falling back to adjacent tier");
+          }
+          return pool.shift();
+        }
+      }
+      return null;
+    };
+
+    // Build all hands in memory before writing to Firestore
+    const allHands: Record<string, any[]> = {};
+    for (const player of game.players) {
+      const hand = [
+        drawFrom(easyPool, mediumPool, hardPool, expertPool),
+        drawFrom(easyPool, mediumPool, hardPool, expertPool),
+        drawFrom(mediumPool, easyPool, hardPool, expertPool),
+        drawFrom(hardPool, mediumPool, expertPool, easyPool),
+        drawFrom(expertPool, hardPool, mediumPool, easyPool),
+      ].filter(Boolean);
+      if (hand.length < 5) {
+        console.error("Not enough cards to deal full hands");
+        alert("Not enough cards to deal — game cannot start.");
+        return;
+      }
+      allHands[player.playerID] = hand;
     }
 
-    // Deal cards to each player's hand
-    for (const player of game.players) {
-      let playerHand = [];
-      for (let i = 0; i < cardsPerPlayer; i++) {
-        let newCard = game.deck.shift(); // Remove the first card from the deck
-        newCard.status = "unplayed";
-        playerHand.push(newCard);
+    // Distribute event cards if an event is active
+    if (settings.isEventActive) {
+      const shuffledEventCards = shuffle([...eventCards]);
+      const toDistribute = shuffledEventCards.slice(0, settings.eventCardsPerGame);
+      const playerIDs = game.players.map((p: any) => p.playerID);
+
+      for (const eventCard of toDistribute) {
+        // Only give event cards to players who don't already have one
+        const eligible = playerIDs.filter((id: string) => !allHands[id].some((c: any) => c.isEventCard));
+        if (eligible.length === 0) break;
+
+        const targetID = randomFrom(eligible);
+        const hand = allHands[targetID];
+
+        // Swap out a card at the matching tier; fall back to closest tier
+        let swapIndex = hand.findIndex((c: any) => c.points === eventCard.points && !c.isEventCard);
+        if (swapIndex === -1) {
+          let minDiff = Infinity;
+          hand.forEach((c: any, i: number) => {
+            if (!c.isEventCard) {
+              const diff = Math.abs(c.points - eventCard.points);
+              if (diff < minDiff) { minDiff = diff; swapIndex = i; }
+            }
+          });
+        }
+        if (swapIndex !== -1) hand[swapIndex] = { ...eventCard };
       }
-      // Create a collection called hand for this player, and add the documents defined in playerHand.
+    }
+
+    // Write all hands to Firestore
+    for (const player of game.players) {
+      const hand = allHands[player.playerID];
       const handCollectionRef = collection(db, `rooms/${game.roomCode}/players/${player.playerID}/hand`);
-      for (const card of playerHand) {
+      for (const card of hand) {
         const cardDocRef = doc(handCollectionRef);
-        await setDoc(cardDocRef, card);
+        await setDoc(cardDocRef, { ...card, status: "unplayed" });
       }
     }
 
