@@ -71,12 +71,13 @@
     }
   }
   .room-capacity {
-    padding: 20px;
+    padding: 10px 20px 18px;
     font-family: $sans-serif;
-    font-size: 0.75rem;
-    color: rgba($yellow, 0.85);
+    font-size: 1rem;
+    color: $yellow;
     font-weight: 725;
     text-align: center;
+    border-top: 1px solid rgba($yellow, 0.2);
   }
 
   &.for-host {

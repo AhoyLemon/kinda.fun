@@ -12,6 +12,7 @@ export const game = reactive({
   roomData: null as null,
   isGameStarted: false,
   isGameOver: false,
+  isDealingInProgress: false,
   roomCreatorID: "",
   deck: [] as any[],
   players: [] as any,

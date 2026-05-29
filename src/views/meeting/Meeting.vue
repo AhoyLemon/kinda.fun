@@ -182,10 +182,17 @@
       (docSnapshot) => {
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
-          // console.log("Game status update:", data);
+          const prevDealing = game.isDealingInProgress;
           game.isGameStarted = data.isGameStarted ?? false;
           game.roomCreatorID = data.roomCreatorID ?? "";
           game.isGameOver = data.isGameOver ?? false;
+          game.isDealingInProgress = data.isDealingInProgress ?? false;
+
+          if (game.isDealingInProgress && !prevDealing && !amITheHost.value) {
+            const hostPlayer = gamePlayers.value.find((p) => p.playerID === game.roomCreatorID);
+            const hostName = hostPlayer?.name ?? "The host";
+            toast(`${hostName} is starting the game. Dealing cards now...`, { timeout: 6000 });
+          }
         } else {
           console.error("Game document does not exist.");
           game.isFailedToGetRoomData = true;
@@ -205,6 +212,7 @@
   import { gameName, timeToScore, badGuessPenalty, game, you, ui, settings } from "./ts/_variables";
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
+  const isDealing = ref(false);
 
   const generateUniqueID = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -276,6 +284,12 @@
   };
 
   const shuffleUpAndDeal = async () => {
+    isDealing.value = true;
+    const roomRef = doc(db, `rooms/${game.roomCode}`);
+    await updateDoc(roomRef, { isDealingInProgress: true });
+
+    let dealSucceeded = false;
+    try {
     // --- Update player stats before dealing cards ---
     const now = serverTimestamp();
     for (const player of gamePlayers.value) {
@@ -363,6 +377,8 @@
       ].filter(Boolean);
       if (hand.length < 5) {
         console.error("Not enough cards to deal full hands");
+        isDealing.value = false;
+        await updateDoc(roomRef, { isDealingInProgress: false });
         alert("Not enough cards to deal — game cannot start.");
         return;
       }
@@ -408,14 +424,24 @@
       }
     }
 
-    const roomRef = doc(db, `rooms/${game.roomCode}`);
     await updateDoc(roomRef, {
       isGameStarted: true,
+      isDealingInProgress: false,
     });
     await updateDoc(statsRef, {
       gamesStarted: increment(1),
       lastGameStarted: serverTimestamp(),
     });
+    dealSucceeded = true;
+    } catch (error) {
+      console.error("Failed to start game:", error);
+      alert("Something went wrong starting the game. Please try again.");
+    } finally {
+      if (!dealSucceeded) {
+        isDealing.value = false;
+        updateDoc(roomRef, { isDealingInProgress: false }).catch(() => {});
+      }
+    }
   };
 
   const playThisCard = (card) => {
@@ -847,6 +873,12 @@
 
   const isRoomFull = computed(() => {
     return game.players.length >= settings.maxPlayers;
+  });
+
+  const canSaveProfile = computed(() => {
+    const nameValid = you.nameInput.trim().length > 0;
+    if (!amISignedIn.value) return nameValid;
+    return nameValid && (you.nameInput !== you.name || you.jobTitleInput !== you.jobTitle);
   });
 
   onMounted(() => {
