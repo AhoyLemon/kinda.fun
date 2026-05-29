@@ -76,6 +76,15 @@
       &:focus {
         background: $yellow;
       }
+      &:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+        &:hover,
+        &:focus {
+          background: $white;
+          color: $black;
+        }
+      }
     }
   }
   .share-callout {
@@ -134,6 +143,7 @@
       color: $yellow;
       font-weight: 800;
       line-height: 90%;
+      transition: filter 0.3s ease;
     }
     .how-to-share {
       font-family: $sans-serif;
@@ -141,6 +151,60 @@
       font-size: 0.75rem;
       max-width: 160px;
       padding-top: 0.5em;
+    }
+    &.is-full {
+      .display {
+        filter: blur(0.18em);
+        user-select: none;
+      }
+      .how-to-share {
+        font-weight: 700;
+      }
+    }
+  }
+
+  .dealing-in-progress {
+    text-align: center;
+    padding: 0.5em 0;
+
+    .dealing-dots {
+      color: $yellow;
+      font-family: $monospace;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 0.3em;
+      line-height: 1;
+
+      span {
+        display: inline-block;
+        animation: dealDotBounce 1s ease-in-out infinite;
+        &:nth-child(2) {
+          animation-delay: 0.15s;
+        }
+        &:nth-child(3) {
+          animation-delay: 0.3s;
+        }
+      }
+    }
+
+    .dealing-message {
+      margin-top: 0.6em;
+      font-family: $sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $white;
+    }
+  }
+
+  @keyframes dealDotBounce {
+    0%,
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(-8px);
+      opacity: 0.25;
     }
   }
 
