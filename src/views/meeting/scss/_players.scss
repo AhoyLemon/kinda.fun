@@ -1,9 +1,6 @@
 .card-players {
   background: #040404;
   overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   ul.players {
     display: grid;
     gap: 20px;
@@ -69,14 +66,6 @@
         background-color: $blue;
       }
     }
-  }
-  .room-capacity {
-    padding: 20px;
-    font-family: $sans-serif;
-    font-size: 0.75rem;
-    color: rgba($yellow, 0.85);
-    font-weight: 725;
-    text-align: center;
   }
 
   &.for-host {

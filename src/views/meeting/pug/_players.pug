@@ -45,10 +45,6 @@
             li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
         .player-score(v-if="game.isGameStarted") {{player.score}}
 
-  .room-capacity(v-if="!game.isGameStarted")
-    span(v-if="isRoomFull") The game is full. Let's play!
-    span(v-else) {{settings.maxPlayers - game.players.length}} more {{settings.maxPlayers - game.players.length === 1 ? 'person' : 'people'}} can play
-
   .end-meeting(v-if="game.isGameStarted && amITheHost")
     label Meeting Over?
     button(@click="endTheGame()") End the game.
