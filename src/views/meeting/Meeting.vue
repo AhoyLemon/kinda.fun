@@ -1,6 +1,6 @@
-<script setup>
+<script setup lang="ts">
   import { onMounted, reactive, ref, computed, watchEffect, watch } from "vue";
-  import { allCards } from "./js/_allCards.ts";
+  import { allCards } from "./ts/_allCards";
   import { randomNumber, randomFrom, shuffle, preceisePercentOf } from "@/shared/js/_functions.js";
 
   // Toasts
@@ -72,14 +72,14 @@
               player.hand = handSnapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
-              }));
+              })) as any[];
 
               // Subscribe to the player's hand collection for real-time updates
               onSnapshot(handRef, (snapshot) => {
                 const newHand = snapshot.docs.map((doc) => ({
                   id: doc.id,
                   ...doc.data(),
-                }));
+                })) as any[];
 
                 newHand.forEach((newCard) => {
                   const oldCard = player.hand.find((card) => card.id === newCard.id);
@@ -201,8 +201,7 @@
     game.roomCode = newRoomCode;
   }
 
-  import { gameName, timeToScore, badGuessPenalty, cardsPerPlayer, game, you, ui } from "./js/_variables";
-  import { playerID } from "../invalid/js/_variables.js";
+  import { gameName, timeToScore, badGuessPenalty, cardsPerPlayer, game, you, ui } from "./ts/_variables";
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
 
@@ -250,8 +249,8 @@
       querySnapshot.forEach(async (docSnapshot) => {
         const playerRef = doc(db, "rooms", game.roomCode, "players", docSnapshot.id);
         await updateDoc(playerRef, {
-          name: newPlayer.name,
-          jobTitle: newPlayer.jobTitle,
+          name: you.name,
+          jobTitle: you.jobTitle,
         });
         playerFound = true;
       });
@@ -470,9 +469,9 @@
     let isAlreadyPlayed = false;
     let isAlreadyStolen = false;
     let isSuccess = false;
-    let cardHolder = {};
+    let cardHolder: any = {};
 
-    let match = {};
+    let match: any = {};
 
     // Loop through every player in gamePlayers
     outerLoop: for (const player of gamePlayers.value) {
@@ -524,7 +523,7 @@
           component: MyToast,
           props: {
             title: "Too Late!",
-            message: `“${actualPhrase ?? yourGuess}” has already been stolen.`,
+            message: `“${match.phrase ?? yourGuess}” has already been stolen.`,
           },
         },
         {
@@ -758,22 +757,17 @@
     if (!timer.value || timer.value < 3) {
       return "";
     }
-    if (timer.value) {
-      const splitSeconds = (timer.value / 1000).toFixed(2).split(".");
-      const s = splitSeconds[0].padStart(2, 0);
-      const ms = splitSeconds[1];
-      return `<span class="s">${s}</span><sup class="ms">${ms}</sup>`;
-    }
+    const splitSeconds = (timer.value / 1000).toFixed(2).split(".");
+    const s = splitSeconds[0].padStart(2, "0");
+    const ms = splitSeconds[1];
+    return `<span class="s">${s}</span><sup class="ms">${ms}</sup>`;
   });
 
   const timerProgressPercent = computed(() => {
     if (!timer.value || timer.value < 3) {
       return "";
     }
-    if (timer.value) {
-      const pct = 100 - Number(preceisePercentOf(timeToScore, timer.value));
-      return pct;
-    }
+    return 100 - Number(preceisePercentOf(timeToScore, timer.value));
   });
 
   const computedPlayerHand = computed(() => {
