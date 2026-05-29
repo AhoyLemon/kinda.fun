@@ -1,9 +1,4 @@
-interface Card {
-  phrase: string;
-  points: number;
-  alternates?: string[];
-  stringMatch?: string;
-}
+import type { Card } from "./_allCards";
 
 export interface EventCard extends Card {
   isEventCard: true;

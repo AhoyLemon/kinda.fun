@@ -336,15 +336,18 @@
     const hardPool = shuffle(allCards.filter((c) => c.points === 15));
     const expertPool = shuffle(allCards.filter((c) => c.points === 30));
 
-    // Draw from a pool, falling back to adjacent tiers if exhausted
+    // Draw from a pool, falling back to adjacent tiers if exhausted (warns once per exhausted pool)
+    const exhaustedPools = new Set<any[]>();
     const drawFrom = (...pools: any[][]): any | null => {
       for (const pool of pools) {
         if (pool.length > 0) {
-          if (pool !== pools[0]) console.warn("Tier pool exhausted, falling back to adjacent tier");
+          if (pool !== pools[0] && !exhaustedPools.has(pools[0])) {
+            exhaustedPools.add(pools[0]);
+            console.warn("Tier pool exhausted, falling back to adjacent tier");
+          }
           return pool.shift();
         }
       }
-      console.warn("All tier pools exhausted");
       return null;
     };
 
@@ -358,6 +361,11 @@
         drawFrom(hardPool, mediumPool, expertPool, easyPool),
         drawFrom(expertPool, hardPool, mediumPool, easyPool),
       ].filter(Boolean);
+      if (hand.length < 5) {
+        console.error("Not enough cards to deal full hands");
+        alert("Not enough cards to deal — game cannot start.");
+        return;
+      }
       allHands[player.playerID] = hand;
     }
 

@@ -30,7 +30,7 @@ The global tone failure mode across all tiers: phrases that read as pre-packaged
 
 ## Expert card craft
 
-Expert cards need specificity and a phrase wrapper — not just a flat noun or name drop. "Mick Fleetwood" beats "Fleetwood Mac" (more obscure). "She's a competitive knitter." beats "competitive knitting" (committed to the bit). "Seventeen ugly-assed pelicans" beats "seventeen pelicans" (the modifier is the joke). Even absurdist content benefits from craft.
+Expert cards need specificity and a phrase wrapper — not just a flat noun or name drop. "Mick Fleetwood" beats "Fleetwood Mac" (more obscure). "She's a competitive knitter." beats "competitive knitting" (committed to the bit). "Seven ugly-assed pelicans" beats "seven pelicans" (the modifier is the joke). Even absurdist content benefits from craft.
 
 ## Phrase format
 

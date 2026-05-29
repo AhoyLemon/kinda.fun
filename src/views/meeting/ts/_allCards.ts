@@ -1,4 +1,4 @@
-interface Card {
+export interface Card {
   /** The phrase the player must say out loud in the meeting. */
   phrase: string;
   /** The point value for this card (higher = harder to say). */
