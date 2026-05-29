@@ -201,6 +201,7 @@ export const allCards: Card[] = [
   { phrase: `I'm not saying it's aliens, but...`, points: 15, stringMatch: "aliens" },
   { phrase: `AND I HAVE THE RECEIPTS!`, points: 15, stringMatch: "receipts" },
   { phrase: `I've already accepted a competing offer.`, points: 15, stringMatch: "competing offer" },
+  { phrase: `The ROI is immeasurable.`, points: 15, stringMatch: "roi" },
 
   /////////////
   //
