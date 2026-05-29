@@ -40,5 +40,5 @@ export const settings = reactive({
   minPlayers: 2,
   maxPlayers: 9,
   isEventActive: true,
-  eventCardsPerGame: 3,
+  eventCardsPerGame: 9,
 });
