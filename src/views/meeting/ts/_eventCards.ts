@@ -26,7 +26,6 @@ export const eventCards: EventCard[] = [
   { phrase: `I dunno, I guess I represented the company well.`, points: 15, isEventCard: true, stringMatch: "represented the company" },
   { phrase: `I met Rich Campbell.`, points: 15, isEventCard: true, stringMatch: "rich campbell", alternates: ["campbell"] },
   { phrase: `I sent connection requests to all the speakers.`, points: 15, isEventCard: true, stringMatch: "connection requests" },
-  { phrase: `The speaker said "I see you googling that."`, points: 15, isEventCard: true, stringMatch: "googling that" },
   { phrase: `but obviously Lemon's talk was the best`, points: 30, isEventCard: true, stringMatch: "lemon's talk", alternates: ["lemons talk", "lemon talk"] },
   { phrase: `Systembolaget`, points: 30, isEventCard: true, alternates: ["system bolaget"] },
   { phrase: `Is The Little Mermaid Swedish?`, points: 30, isEventCard: true, stringMatch: "little mermaid" },
