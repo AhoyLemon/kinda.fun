@@ -1,5 +1,7 @@
 import { reactive } from "vue";
 import { randomNumber } from "@/shared/js/_functions";
+import type { MyPlayerState, RoundState, UIState, GameState } from "./_types";
+import type { Challenge } from "./_challenges";
 
 export const gameTitle = "Invalid!";
 export const siteURL = "https://kinda.fun";
@@ -43,12 +45,12 @@ const defaultSettings = {
   },
 };
 
-export const my = reactive({
+export const my = reactive<MyPlayerState>({
   employeeNumber: randomNumber(10000, 99999),
   playerID: "",
   name: "",
   color: "#ff0000",
-  playerIndex: -1, // This is assigned in updatePlayer()
+  playerIndex: -1,
   role: null,
   rulebux: defaultSettings.settings.default.rulebux,
   passwordAttempts: 0,
@@ -57,12 +59,12 @@ export const my = reactive({
   isRoomHost: false,
 });
 
-export const round = reactive({
+export const round = reactive<RoundState>({
   phase: "create or join",
   number: 0,
   sysAdminIndex: -1,
   possibleChallenges: [],
-  challenge: {},
+  challenge: {} as Challenge,
   rules: [],
   shibboleth: "",
   bugs: [],
@@ -95,7 +97,7 @@ export const round = reactive({
   },
 });
 
-export const ui = reactive({
+export const ui = reactive<UIState>({
   nameInput: "",
   roomCodeInput: "",
   appliedForJob: false,
@@ -126,7 +128,7 @@ export const ui = reactive({
   musicHushed: false,
 });
 
-export const game = reactive({
+export const game = reactive<GameState>({
   currentlyInGame: false,
   isGameStarted: false,
   isFailedToGetRoomData: false,
@@ -151,7 +153,7 @@ export const settings = { ...defaultSettings.settings };
 // I'm pretty sure this object doesn't do anything.
 export const roundDefaults = {
   possibleChallenges: [],
-  challenge: {},
+  challenge: {} as Challenge,
   rules: [],
   shibboleth: "",
   bugs: [],
@@ -161,22 +163,22 @@ export const roundDefaults = {
   averageSize: 0,
   averageVowels: 0,
   elapsedTime: 0,
-  adminTimer: undefined,
-  roundTimer: undefined,
-  hurryTimer: undefined,
+  adminTimer: undefined as ReturnType<typeof setInterval> | undefined,
+  roundTimer: undefined as ReturnType<typeof setInterval> | undefined,
+  hurryTimer: undefined as ReturnType<typeof setInterval> | undefined,
   hurryTime: defaultSettings.settings.timer.hurryTime,
   adminTimeLeft: defaultSettings.settings.timer.adminTimeLeft,
   finalTimeLeft: defaultSettings.settings.timer.finalTimeLeft,
   crash: {
     active: false,
     word: "",
-    player: [],
+    player: [] as unknown[],
   },
 };
 
-export function resetRoundVariables() {
+export function resetRoundVariables(): void {
   round.possibleChallenges = [];
-  round.challenge = {};
+  round.challenge = {} as Challenge;
   round.rules = [];
   round.shibboleth = "";
   round.bugs = [];
@@ -197,22 +199,22 @@ export function resetRoundVariables() {
   round.crash.player = [];
 }
 
-export function resetUI() {
+export function resetUI(): void {
   ui.appliedForJob = false;
   ui.enterCode.focus = false;
   ui.challengeID = null;
   ui.roundOver = false;
   ui.addBug = "";
   ui.addBugErrors = [];
-  ui.passwordAttempt = null;
+  ui.passwordAttempt = "";
   ui.passwordAttemptErrors = [];
   ui.passwordInputError = false;
   ui.passwordSucceeded = false;
   ui.currentRule.editing = false;
-  ui.currentRule.name = null;
+  ui.currentRule.name = "";
   ui.currentRule.cost = 0;
-  ui.currentRule.inputValue = null;
-  ui.currentRule.inputValueTwo = null;
+  ui.currentRule.inputValue = "";
+  ui.currentRule.inputValueTwo = "";
   ui.enterFinalPasswords = false;
   ui.passwordSuccessMessage = null;
 }
