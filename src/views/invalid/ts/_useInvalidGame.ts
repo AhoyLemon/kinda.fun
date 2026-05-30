@@ -18,6 +18,8 @@ import {
   query,
   where,
   onSnapshot,
+  type DocumentData,
+  type Unsubscribe,
 } from "firebase/firestore";
 import { randomFrom, sendEvent } from "@/shared/js/_functions";
 import { my, round, ui, game, settings, defaults, gameTitle, flyingPigLines } from "./_variables";
@@ -50,27 +52,32 @@ import {
   killThePig,
   startFlyingPigTimer,
 } from "./_useInvalidHelpers";
-import type { AttemptRecord, CrackRecord } from "./_types";
+import type { AttemptRecord, CrackRecord, Player } from "./_types";
 import type { Challenge } from "./_challenges";
 
 export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   const db = useFirestore();
   const toast = useToast();
+  let unsubscribeRoomPlayers: Unsubscribe | undefined;
+  let unsubscribeGameStatus: Unsubscribe | undefined;
 
   /////////////////////////////////////////////////////////
   // FIREBASE SUBSCRIPTIONS
 
-  async function subscribeToRoom(roomCode: string): Promise<void> {
+  async function subscribeToRoom(roomCode: string): Promise<Unsubscribe> {
+    unsubscribeRoomPlayers?.();
     const playersRef = collection(doc(collection(db, "rooms"), roomCode), "players");
-    onSnapshot(playersRef, (snapshot) => {
-      game.players = snapshot.docs.map((d) => ({ id: d.id, ...d.data() })) as typeof game.players;
+    unsubscribeRoomPlayers = onSnapshot(playersRef, (snapshot) => {
+      game.players = snapshot.docs.map((d) => ({ id: d.id, ...d.data() })) as Player[];
     });
+    return unsubscribeRoomPlayers;
   }
 
-  async function subscribeToGameStatus(roomCode: string): Promise<void> {
+  async function subscribeToGameStatus(roomCode: string): Promise<Unsubscribe> {
+    unsubscribeGameStatus?.();
     const gameRef = doc(collection(db, "rooms"), roomCode);
 
-    onSnapshot(
+    unsubscribeGameStatus = onSnapshot(
       gameRef,
       async (docSnapshot) => {
         if (!docSnapshot.exists()) {
@@ -169,12 +176,13 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
         console.error("Error subscribing to game status:", error);
       },
     );
+    return unsubscribeGameStatus;
   }
 
   /////////////////////////////////////////////////////////
   // PHASE HANDLING
 
-  function handleGamePhaseChange(newPhase: string, data: Record<string, unknown>): void {
+  function handleGamePhaseChange(newPhase: string, data: DocumentData): void {
     const previousPhase = round.phase;
     const templatePhase = convertPhaseToTemplate(newPhase);
     round.phase = templatePhase;
@@ -210,6 +218,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
         ui.passwordAttemptErrors = [];
         ui.challengeID = null;
         ui.shibboleth = "";
+        round.sysAdminCrashAwarded = false;
 
         if (previousPhase !== "choose rules") {
           game.players.forEach(async (player) => {
@@ -399,13 +408,8 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   };
 
   const connectToRoom = async (roomCode: string): Promise<void> => {
-    const { useDocument, useCollection } = await import("vuefire");
     game.roomCode = roomCode.toUpperCase();
-    const roomRef = doc(db, "rooms", game.roomCode);
-    game.roomData = useDocument(roomRef);
-    const playersCollectionRef = collection(db, `rooms/${game.roomCode}/players`);
-    game.players = useCollection(playersCollectionRef) as unknown as typeof game.players;
-    await checkForExistingPlayer(roomCode);
+    await checkForExistingPlayer(game.roomCode);
   };
 
   const savePlayerInfo = async (): Promise<void> => {
@@ -426,7 +430,8 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
     let isHost = false;
 
     const allPlayersSnapshot = await getDocs(playersCollection);
-    if (allPlayersSnapshot.empty) {
+    const existingPlayerIsHost = querySnapshot.docs.some((d) => d.data().isHost);
+    if (existingPlayerIsHost || allPlayersSnapshot.empty) {
       isHost = true;
     } else {
       const hostExists = allPlayersSnapshot.docs.some((d) => d.data().isHost);
@@ -434,12 +439,14 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
     }
 
     if (!querySnapshot.empty) {
-      querySnapshot.forEach(async (docSnapshot) => {
+      playerFound = true;
+      for (const docSnapshot of querySnapshot.docs) {
         const playerRef = doc(db, "rooms", game.roomCode, "players", docSnapshot.id);
         await updateDoc(playerRef, { name: my.name, isHost });
-        playerFound = true;
-      });
+      }
     }
+
+    my.isRoomHost = isHost;
 
     if (!playerFound) {
       const newPlayer = {

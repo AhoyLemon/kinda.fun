@@ -14,17 +14,9 @@ export function useInvalidComputeds() {
   });
 
   const computedSysAdminName = computed(() => {
-    console.log("computedSysAdminName debug:", {
-      playersCount: game.players?.length || 0,
-      sysAdminIndex: round.sysAdminIndex,
-      players: game.players?.map((p) => ({ name: p.name, role: p.role, playerID: p.playerID })) || [],
-    });
-
     if (game.players && game.players.length > 0 && round.sysAdminIndex > -1) {
       const adminPlayer = game.players[round.sysAdminIndex];
-      console.log("adminPlayer at index", round.sysAdminIndex, ":", adminPlayer);
       if (adminPlayer && adminPlayer.name) {
-        console.log("Returning admin name:", adminPlayer.name);
         return adminPlayer.name;
       }
     }
@@ -32,14 +24,11 @@ export function useInvalidComputeds() {
     // Fallback: find any player with SysAdmin role
     if (game.players && game.players.length > 0) {
       const adminPlayer = game.players.find((player) => player.role === "SysAdmin");
-      console.log("Fallback admin player:", adminPlayer);
       if (adminPlayer && adminPlayer.name) {
-        console.log("Returning fallback admin name:", adminPlayer.name);
         return adminPlayer.name;
       }
     }
 
-    console.log("No admin found, returning default");
     return "System Administrator";
   });
 

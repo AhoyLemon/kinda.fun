@@ -38,6 +38,10 @@ export function generateUniqueID(): string {
 type CountVowelsFn = (word: string) => number;
 /* eslint-enable no-unused-vars */
 
+function escapeForCharacterClass(value: string): string {
+  return value.replace(/[-\\\]^]/g, "\\$&");
+}
+
 export function tryToFailThis(
   attempt: string,
   rules: Rule[],
@@ -80,7 +84,8 @@ export function tryToFailThis(
     }
     if (r.type === "Ban A Combo") {
       if (r.inputValue === r.inputValueTwo) {
-        const letterPattern = new RegExp("[^" + r.inputValue + "]", "g");
+        const allowedCharacter = escapeForCharacterClass(String(r.inputValue ?? ""));
+        const letterPattern = new RegExp(`[^${allowedCharacter}]`, "g");
         if (attempt.replace(letterPattern, "").length > 1) {
           attemptFailed = true;
           attemptFailedReasons.push("Password can only contain one " + r.inputValue);

@@ -23,8 +23,15 @@
   } from "./ts/_useInvalidHelpers";
   import { useInvalidComputeds } from "./ts/_useInvalidComputeds";
   import { useInvalidGame } from "./ts/_useInvalidGame";
-  import type { Rule } from "./ts/_types";
+  import type { CurrentRule, Rule } from "./ts/_types";
   import type { Challenge } from "./ts/_challenges";
+
+  type RuleOption = {
+    name: string;
+    cost: number;
+    naughty?: boolean;
+    unique?: boolean;
+  };
 
   // Are you in devMode?
   const devMode = import.meta.env.DEV;
@@ -91,11 +98,15 @@
 
   watch(
     () => game.roomCode,
-    async (newRoomCode) => {
+    async (newRoomCode, _oldRoomCode, onCleanup) => {
       if (newRoomCode) {
         try {
-          await subscribeToRoom(newRoomCode);
-          await subscribeToGameStatus(newRoomCode);
+          const unsubscribeRoom = await subscribeToRoom(newRoomCode);
+          const unsubscribeGameStatus = await subscribeToGameStatus(newRoomCode);
+          onCleanup(() => {
+            unsubscribeRoom();
+            unsubscribeGameStatus();
+          });
         } catch (error) {
           console.error("Error subscribing to room:", error);
         }
@@ -132,13 +143,13 @@
   /////////////////////////////////////////////////////////
   // SYSADMIN — RULE SELECTION (kept here: uses MyToast)
 
-  const chooseRule = async (rule: Rule & { cost?: number; naughty?: boolean; unique?: boolean }) => {
+  const chooseRule = async (rule: RuleOption) => {
     if (rule.name === "DROWSSAP") {
       await payForRule(rule.name, 3);
       round.rules.push({ type: "DROWSSAP", message: "Your password must be entered backwards. PASSWORD = DROWSSAP" });
       await updateRoomState({ currentRules: round.rules });
     } else if (rule.name === "Flying Pig") {
-      await payForRule(rule.name, rule.cost!);
+      await payForRule(rule.name, rule.cost);
       round.flyingPig.active = true;
       round.rules.push({ type: "Flying Pig", message: "Look at the flying pig." });
       await updateRoomState({ currentRules: round.rules, currentShibboleth: round.shibboleth, flyingPigActive: true });
@@ -147,7 +158,7 @@
       let answerHTML = "";
       for (let i = 0; i < 5; i++) answerHTML += "<li>" + shuffledAnswers[i] + "</li>";
       showMyToast(`5 Random ${(round.challenge as Challenge).name}`, `<ul>${answerHTML}</ul>`, "info", 50000, POSITION.TOP_RIGHT);
-      await payForRule(rule.name, rule.cost!);
+      await payForRule(rule.name, rule.cost);
       round.rules.push({ type: "Peek At Answers", message: my.name + " peeked at the answers", inputValue: "", inputValueTwo: "" });
       await updateRoomState({ currentRules: round.rules, currentShibboleth: round.shibboleth });
     } else if (rule.name === "Set A Maximum" || rule.name === "Set A Minimum" || rule.name === "Limit Vowels") {
@@ -166,18 +177,18 @@
         .replace("[SIZE]", String(r.inputValue))
         .replace("[SIZE+1]", String(Number(r.inputValue) + 1))
         .replace("[SIZE-1]", String(Number(r.inputValue) - 1));
-      await payForRule(rule.name, rule.cost!);
+      await payForRule(rule.name, rule.cost);
       round.rules.push(r);
       findPossibleRightAnswers(countVowels);
       await updateRoomState({ currentRules: round.rules, currentShibboleth: round.shibboleth });
     } else {
       ui.currentRule.name = rule.name;
-      ui.currentRule.cost = rule.cost!;
+      ui.currentRule.cost = rule.cost;
       ui.currentRule.editing = true;
     }
   };
 
-  const saveRule = async (rule: Rule & { cost?: number }) => {
+  const saveRule = async (rule: CurrentRule) => {
     const r: Rule = { type: "", message: "", inputValue: "", inputValueTwo: null };
     if (rule.name === "Ban A Letter") {
       r.type = rule.name;
@@ -235,7 +246,7 @@
       if (r.inputValue === r.inputValueTwo) {
         r.message = "You may only use the letter " + r.inputValue + " once";
       } else {
-        r.message = "Your password cannot contain both " + r.inputValue + " and " + r.inputValueTwo + " (simultanously)";
+        r.message = "Your password cannot contain both " + r.inputValue + " and " + r.inputValueTwo + " (simultaneously)";
       }
     }
 
@@ -243,7 +254,7 @@
     findPossibleRightAnswers(countVowels);
 
     if (round.possibleAnswerCount >= game.players.length) {
-      await payForRule(rule.name, rule.cost ?? 0);
+      await payForRule(rule.name, rule.cost);
       await updateRoomState({ currentRules: round.rules, currentShibboleth: round.shibboleth });
     } else {
       showMyToast("Error", "Sorry, this rule would make the game impossible. Rule undone.", "error");

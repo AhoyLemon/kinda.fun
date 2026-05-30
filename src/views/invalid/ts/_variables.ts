@@ -172,7 +172,7 @@ export const roundDefaults = {
   crash: {
     active: false,
     word: "",
-    player: [] as unknown[],
+    player: {},
   },
 };
 
@@ -196,7 +196,7 @@ export function resetRoundVariables(): void {
   round.finalTimeLeft = defaultSettings.settings.timer.finalTimeLeft;
   round.crash.active = false;
   round.crash.word = "";
-  round.crash.player = [];
+  round.crash.player = {};
 }
 
 export function resetUI(): void {

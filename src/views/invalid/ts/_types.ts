@@ -69,10 +69,10 @@ export interface LetterCount {
 
 export interface CurrentRule {
   editing: boolean;
-  name: string | null;
+  name: string;
   cost: number;
-  inputValue: string | null;
-  inputValueTwo: string | null;
+  inputValue: string;
+  inputValueTwo: string;
 }
 
 export interface FlyingPigState {
@@ -142,7 +142,7 @@ export interface UIState {
   shibboleth: string;
   addBug: string;
   addBugErrors: string[];
-  passwordAttempt: string | null;
+  passwordAttempt: string;
   passwordAttemptErrors: string[];
   passwordInputError: boolean;
   passwordSucceeded: boolean;
