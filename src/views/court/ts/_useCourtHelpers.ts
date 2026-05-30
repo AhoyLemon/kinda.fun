@@ -1,4 +1,4 @@
-import type { Justice, CourtGameState, President, Tactic } from "./_types";
+import type { Justice, CourtGameState, President, Tactic, StanceOpinion } from "./_types";
 import { gameSettings } from "./_settings";
 
 interface CaseHistoryEntry {
@@ -52,10 +52,10 @@ export function justiceTypeLabel(type: Justice["justiceType"]): string {
 }
 
 export function sideStanceTags(
-  stances?: Partial<Record<string, string>>,
-): { label: string; position: string }[] {
+  stances?: Partial<Record<string, StanceOpinion>>,
+): { label: string; position: StanceOpinion }[] {
   if (!stances) return [];
-  return (Object.entries(stances) as [string, string][])
+  return (Object.entries(stances) as [string, StanceOpinion][])
     .filter(([, pos]) => pos !== "Neutral")
     .map(([topic, position]) => ({ label: topic.replace(/([A-Z])/g, " $1").trim(), position }))
     .sort((a, b) => a.label.localeCompare(b.label));
