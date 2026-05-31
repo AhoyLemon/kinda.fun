@@ -282,15 +282,13 @@ export function parseSource(name, source) {
     case "François Pinault":
       return "Saint Laurent, Alexander McQueen, Gucci";
     case "Klaus-Michael Kühne":
-      return "Kuehne + Nagel, Hapag-Lloyd, ";
+      return "Kuehne + Nagel, Hapag-Lloyd";
     case "Ma Huateng":
       return "Tencent";
     case "Giovanni Ferrero":
       return "Ferrero, Nutella, Kinder, Tic Tac";
     case "Li Ka-shing":
       return "Cheung Kong Plastics";
-    case "Stephen Schwarzman":
-      return "Blackstone Group";
     case "Lee Shau Kee":
       return "Henderson Land Development";
     case "Len Blavatnik":
@@ -303,9 +301,6 @@ export function parseSource(name, source) {
       return "Midea Group";
     case "William Lei Ding":
       return "NetEase";
-    case "Susanne Klatten":
-    case "Stefan Quandt":
-      return "BMW";
     case "Cyrus Poonawalla":
       return "Serum Institute of India";
     case "Wang Wei":
@@ -318,8 +313,6 @@ export function parseSource(name, source) {
     case "Jean-Michel Besnier":
     case "Marie Besnier Beauvalot":
       return "Lactalis";
-    case "Leonard Lauder":
-      return "Estée Lauder";
     case "Guillaume Pousaz":
       return "Checkout.com";
     case "Jack Ma":
@@ -329,10 +322,6 @@ export function parseSource(name, source) {
       return "Quicken Loans";
     case "Masayoshi Son":
       return "SoftBank";
-    case "Abigail Johnson":
-      return "Fidelity Investments";
-    case "Jensen Huang":
-      return "Nvidia";
     case "Huang Shilin":
       return "Contemporary Amperex Technology";
     case "Thomas Peterffy":
@@ -343,8 +332,6 @@ export function parseSource(name, source) {
       return "Anaconda Nickel";
     case "Pavel Durov":
       return "Telegram";
-    case "Scott Farquhar":
-      return "Atlassian";
     case "Kanye West":
       return "Adidas, Skims";
     case "Fritz Draexlmaier":
@@ -353,15 +340,8 @@ export function parseSource(name, source) {
       return "La Martiniquaise";
     case "Peter Woo":
       return "Wheelock & Co.";
-    case "James Ratcliffe":
-      return "Ineos Group";
-    case "Mike Cannon-Brookes":
-    case "Scott Farquhar":
-      return "Atlassian";
     case "Robert Pera":
       return "Ubiquiti";
-    case "Donald Newhouse":
-      return "Condé Nast";
     case "Aliko Dangote":
       return "Dangote Cement";
     case "Alexey Mordashov":
@@ -372,9 +352,6 @@ export function parseSource(name, source) {
       return "Charles Schwab";
     case "Stefano Pessina":
       return "Walgreens Boots";
-    case "Marcel Hermann Telles":
-    case "Jorge Paulo Lemann":
-      return "Anheuser-Busch InBev";
     case "David Geffen":
       return "Geffen Records, DreamWorks";
     case "Brian Armstrong":
@@ -400,14 +377,10 @@ export function parseSource(name, source) {
       return "Dyson";
     case "Kim Beom-su":
       return "Kakao";
-    case "Johann Rupert":
-      return "Compagnie Financiere Richemont";
     case "Hui Ka Yan":
       return "Evergrande Group";
     case "Charlie Ergen":
       return "Dish Network";
-    case "Nicky Oppenheimer":
-      return "DeBeers";
     case "Ernest Garcia, II.":
       return "Carvana";
     case "Tamara Gustavson":
@@ -457,12 +430,6 @@ export function parseSource(name, source) {
       return "América Móvil";
     case "German Larrea Mota Velasco":
       return "Grupo México";
-    case "Miriam Adelson":
-      return "Las Vegas Sands";
-    case "Tadashi Yanai":
-      return "Uniqlo, Theory, Helmut Lang";
-    case "Rupert Murdoch":
-      return "Fox News, Wall Street Journal, Times of London";
     case "John Menard, Jr.":
       return "Menards";
     case "Hank & Doug Meijer":
@@ -471,9 +438,6 @@ export function parseSource(name, source) {
       return "Great Wall Motor";
     case "Li Zhenguo":
       return "LONGi Green Energy";
-    case "Andreas Struengmann":
-    case "Thomas Struengmann ":
-      return "";
     case "Dan Kurzius":
       return " MailChimp";
     case "Nari Genomal":
@@ -545,8 +509,6 @@ export function parseSource(name, source) {
       return "Suntory";
     case "James France":
       return "Nascar";
-    case "Sam Bankman-Fried":
-      return "(this list is from 2022 so this was his net worth before he was arrested)";
     case "Phil Ruffin":
       return "Treasure Island, Circus Circus, Trump International";
     case "Park Kwan-ho":
@@ -576,10 +538,6 @@ export function parseSource(name, source) {
       return "LuLu Group International";
     case "Giuseppe Crippa":
       return "Technoprobe";
-    case "Melanie Perkins":
-      return "Canva";
-    case "Klaus-Michael Kühne":
-      return "Kühne + Nagel Shipping";
     case "Gopikishan Damani":
       return "Avenue Supermart";
     case "Romesh T. Wadhwani":
@@ -604,8 +562,6 @@ export function parseSource(name, source) {
       return "Sun Pharma";
     case "James Ratcliffe":
       return "INEOS";
-    case "Melanie Perkins":
-      return "Canva";
     case "Drew Houston":
       return "Dropbox";
     case "John Collison":
@@ -614,10 +570,6 @@ export function parseSource(name, source) {
       return "Stripe";
     case "Palmer Luckey":
       return "Oculus";
-    case "Cliff Obrecht":
-      return "Canva";
-    case "Tim Sweeney":
-      return "Epic Games";
     case "Gabe Newell":
       return "Valve";
     case "David Baszucki":
@@ -626,8 +578,6 @@ export function parseSource(name, source) {
       return "Minecraft";
     case "Giorgio Armani":
       return "Armani";
-    case "Miuccia Prada":
-      return "Prada";
     case "Andrew Cherng":
       return "Panda Express";
     case "Peggy Cherng":
@@ -635,29 +585,19 @@ export function parseSource(name, source) {
     case "Wang Chuanfu":
       return "BYD";
     case "Mike Cannon-Brookes":
-      return "Atlassian";
     case "Scott Farquhar":
       return "Atlassian";
     case "Jensen Huang":
       return "NVIDIA";
-    case "Marc Benioff":
-      return "Salesforce";
-    case "Stewart Butterfield":
-      return "Slack";
     case "Lisa Su":
       return "AMD";
-    case "Jack Ma":
-      return "Alibaba";
     case "Tony Xu":
       return "DoorDash";
     case "Ben Silbermann":
+    case "Victor Pinchuk":
       return "Pinterest";
     case "Vikram Lal":
       return "Royal Enfield motorbikes";
-    case "Ben Silbermann":
-      return "Pinterest";
-    case "Victor Pinchuk":
-      return "Pinterest";
     case "Robert Rowling":
       return "Omni Hotels";
     case "Karen Pritzker":
@@ -783,10 +723,6 @@ export function parseSource(name, source) {
     case "Johann Rupert":
     case "Anton Rupert":
       return "Richemont";
-    case "Theo Albrecht":
-    case "Karl Albrecht":
-    case "Berthold Albrecht":
-      return "Aldi";
     case "Miriam Adelson":
     case "Shelley Adelson":
       return "Las Vegas Sands";
@@ -885,8 +821,6 @@ export function parseIndustryIcon(industry) {
     case "Automotive":
       return "automotive";
     case "Finance & Investments":
-    case "Venture Capital":
-      return "finance-investment";
     case "Food & Beverage":
       return "hamburger";
     case "Real Estate":
