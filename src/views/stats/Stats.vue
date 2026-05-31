@@ -56,7 +56,7 @@
     megachurchLoaded: boolean;
     loadingFullData: boolean;
     selectedJusticeId: string | number | null;
-    courtLoaded?: boolean;
+    courtLoaded: boolean;
   };
 
   const dates = reactive<DatesState>({
@@ -678,7 +678,9 @@
 
   const formatTime = (stamp: TimestampInput | null | undefined, format?: RelativeTimeFormat): string | null => {
     if (!stamp) return null;
-    const dt = DateTime.fromJSDate(new Date(stamp));
+    const stampDate = new Date(stamp);
+    if (Number.isNaN(stampDate.getTime())) return null;
+    const dt = DateTime.fromJSDate(stampDate);
     if (format == "fromNow") {
       return dt.toRelative();
     } else if (format == "calendar") {
