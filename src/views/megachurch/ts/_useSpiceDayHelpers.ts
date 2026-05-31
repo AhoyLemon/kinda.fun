@@ -1,6 +1,7 @@
 import { gameSettings } from "./variables/_gameSettings";
 import { spiceSniffs } from "./variables/_sounds";
 import type { My, UI } from "./_types";
+import LemonToast from "../components/LemonToast.vue";
 
 /* eslint-disable no-unused-vars */
 interface ToastApi {
@@ -284,7 +285,25 @@ export function useSpiceDayHelpers(
         }
 
         // Play the appropriate sound
-        spiceSniffs.play(sniffType);
+        if (my.daysPlayed === 7) {
+          // Special lemon toast and jingle on day 7
+          const jingle = new Audio("/audio/bylemon.mp3");
+          jingle.volume = 0.6;
+          jingle.play();
+          toast(
+            { component: LemonToast },
+            {
+              toastClassName: "site-by-lemon",
+              icon: false,
+              timeout: 0,
+              showCloseButtonOnHover: false,
+              closeButtonClassName: "close-toast",
+            },
+          );
+        } else {
+          // otherwise, drugs sound
+          spiceSniffs.play(sniffType);
+        }
       }
 
       // Clear delivery queue
