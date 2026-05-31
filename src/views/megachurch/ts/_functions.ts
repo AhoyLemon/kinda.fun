@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { themes } from "./_sermons";
 import { religions } from "./_religions";
 import { places } from "./_places";
