@@ -64,7 +64,7 @@ export function useMegachurchHelpers({
   }
 
   function chooseReligion(religionId: number) {
-    const religion = religions.find((r: any) => r.id === religionId);
+    const religion = religions.find((r) => r.id === religionId);
     if (religion) {
       my.religion = religion;
     } else {
@@ -74,7 +74,7 @@ export function useMegachurchHelpers({
   }
 
   function choosePlace(placeId: number) {
-    const place = places.find((p: any) => p.id === placeId);
+    const place = places.find((p) => p.id === placeId);
     if (place) {
       my.place = { ...place };
       advanceToNextDay();
@@ -88,7 +88,7 @@ export function useMegachurchHelpers({
     if (!id) {
       return { name: "Unknown" };
     }
-    const religion = (religions as any[]).find((r) => r.id === id);
+    const religion = religions.find((r) => r.id === id);
     if (!religion) {
       return { name: "Unknown" };
     }
@@ -96,7 +96,7 @@ export function useMegachurchHelpers({
   }
 
   function getPlace(id: number): Place | {} {
-    const place = (places as any[]).find((p) => p.id === id);
+    const place = places.find((p) => p.id === id);
     if (!id) {
       return {};
     } else {
@@ -130,8 +130,8 @@ export function useMegachurchHelpers({
       return;
     }
 
-    const churchLocation = places.find((p: any) => p.id === ui.churchLocationIndex);
-    const churchReligion = religions.find((r: any) => r.id === ui.churchReligionIndex);
+    const churchLocation = places.find((p) => p.id === ui.churchLocationIndex);
+    const churchReligion = religions.find((r) => r.id === ui.churchReligionIndex);
 
     if (churchLocation && churchReligion) {
       my.church.isFounded = true;
