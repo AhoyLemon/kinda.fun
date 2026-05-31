@@ -6,7 +6,7 @@ import {
   parseName,
   parseSource,
   parseIndustry,
-} from "../../src/views/guillotine/ts/parseFunctions.ts";
+} from "../../src/views/guillotine/ts/parseFunctions";
 
 const DEFAULT_INPUT = "./src/views/guillotine/csv/current-list.csv";
 const OUTPUT_PATH = "./src/views/guillotine/ts/data/_billionaires.ts";

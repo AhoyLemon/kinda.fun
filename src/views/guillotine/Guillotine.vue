@@ -4,18 +4,18 @@
   import { DateTime } from "luxon";
 
   import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
-  import { parseIndustryIcon, parseName } from "./ts/parseFunctions.ts";
+  import { parseIndustryIcon, parseName } from "./ts/parseFunctions";
 
   // Data
-  import { allBillionaires } from "./ts/data/_billionaires.ts";
-  import type { Billionaire } from "./ts/data/_billionaires.ts";
-  import { allWarrants } from "./ts/data/_warrants.ts";
-  import { schoolData } from "./ts/data/_school-data.ts";
-  import type { SchoolData } from "./ts/data/_school-data.ts";
+  import { allBillionaires } from "./ts/data/_billionaires";
+  import type { Billionaire } from "./ts/data/_billionaires";
+  import { allWarrants } from "./ts/data/_warrants";
+  import { schoolData } from "./ts/data/_school-data";
+  import type { SchoolData } from "./ts/data/_school-data";
 
   // Sounds
   import { Howl, Howler } from "howler";
-  import { dropSound, lastWords, cheeringSounds } from "./ts/partials/_sounds.ts";
+  import { dropSound, lastWords, cheeringSounds } from "./ts/partials/_sounds";
 
   // Firebase & VueFire Stuff
   import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
@@ -288,7 +288,7 @@
     };
 
     const addMoreDollars = setInterval(() => {
-      const dollarIncrease = parseFloat(randomNumber(1, 100000000) / 1000000000);
+      const dollarIncrease = randomNumber(1, 100000000) / 1000000000;
       ui.wealthDisplay += dollarIncrease;
 
       if (ui.wealthDisplay >= player.wealthCreated.today) {
@@ -534,7 +534,7 @@
     return new Intl.NumberFormat("en-US").format(number);
   };
 
-  const formatDate = (dateString: string | number): string => {
+  const formatDate = (dateString: string | number | Date): string => {
     const allMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     const date = new Date(dateString);

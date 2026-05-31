@@ -303,7 +303,8 @@ export function parseSource(name, source) {
       return "Midea Group";
     case "William Lei Ding":
       return "NetEase";
-    case "Susanne Klatten" || "Stefan Quandt":
+    case "Susanne Klatten":
+    case "Stefan Quandt":
       return "BMW";
     case "Cyrus Poonawalla":
       return "Serum Institute of India";
@@ -313,13 +314,16 @@ export function parseSource(name, source) {
       return "FTX Exchange";
     case "Li Shufu":
       return "Geely Automobile Holdings";
-    case "Emmanuel Besnier" || "Jean-Michel Besnier" || "Marie Besnier Beauvalot":
+    case "Emmanuel Besnier":
+    case "Jean-Michel Besnier":
+    case "Marie Besnier Beauvalot":
       return "Lactalis";
     case "Leonard Lauder":
       return "Estée Lauder";
     case "Guillaume Pousaz":
       return "Checkout.com";
-    case "Jack Ma" || "Joseph Tsai":
+    case "Jack Ma":
+    case "Joseph Tsai":
       return "Alibaba";
     case "Dan Gilbert":
       return "Quicken Loans";
@@ -351,7 +355,8 @@ export function parseSource(name, source) {
       return "Wheelock & Co.";
     case "James Ratcliffe":
       return "Ineos Group";
-    case "Mike Cannon-Brookes" || "Scott Farquhar":
+    case "Mike Cannon-Brookes":
+    case "Scott Farquhar":
       return "Atlassian";
     case "Robert Pera":
       return "Ubiquiti";
@@ -367,7 +372,8 @@ export function parseSource(name, source) {
       return "Charles Schwab";
     case "Stefano Pessina":
       return "Walgreens Boots";
-    case "Marcel Hermann Telles" || "Jorge Paulo Lemann":
+    case "Marcel Hermann Telles":
+    case "Jorge Paulo Lemann":
       return "Anheuser-Busch InBev";
     case "David Geffen":
       return "Geffen Records, DreamWorks";
@@ -383,9 +389,12 @@ export function parseSource(name, source) {
       return "Wipro";
     case "Tom & Judy Love":
       return "Love's Travel Stops";
-    case "Finn Rausing" || "Jorn Rausing" || "Kirsten Rausing":
+    case "Finn Rausing":
+    case "Jorn Rausing":
+    case "Kirsten Rausing":
       return "TetraLaval Packaging";
-    case "John Collision" || "Patrick Collision":
+    case "John Collision":
+    case "Patrick Collision":
       return "Stripe";
     case "James Dyson":
       return "Dyson";
@@ -407,7 +416,8 @@ export function parseSource(name, source) {
       return "White Claw, Mike's Hard Lemonade";
     case "Marc Benioff":
       return "Salesforce";
-    case "Dmitri Bukhman" || "Igor Bukhman":
+    case "Dmitri Bukhman":
+    case "Igor Bukhman":
       return "Playrix";
     case "Francis Choi ":
       return "Early Light International";
@@ -417,7 +427,12 @@ export function parseSource(name, source) {
       return "Fiji Water, POM Wonderful";
     case "Michael Rubin":
       return "Fanatics";
-    case "Jacqueline Mars" || "John Mars" || "Marijke Mars" || "Pamela Mars" || "Valerie Mars" || "Victoria Mars":
+    case "Jacqueline Mars":
+    case "John Mars":
+    case "Marijke Mars":
+    case "Pamela Mars":
+    case "Valerie Mars":
+    case "Victoria Mars":
       return "Mars Candy & Pet Food";
     case "Tsai Eng-meng":
       return "Want Want China";
@@ -433,7 +448,8 @@ export function parseSource(name, source) {
       return "Baidu";
     case "Ralph Lauren":
       return "Ralph Lauren";
-    case "Cliff Obrecht" || "Melanie Perkins":
+    case "Cliff Obrecht":
+    case "Melanie Perkins":
       return "Canva";
     case "Bernard Arnault":
       return "Louis Vuitton Moët & Chandon";
@@ -455,7 +471,8 @@ export function parseSource(name, source) {
       return "Great Wall Motor";
     case "Li Zhenguo":
       return "LONGi Green Energy";
-    case "Andreas Struengmann" || "Thomas Struengmann ":
+    case "Andreas Struengmann":
+    case "Thomas Struengmann ":
       return "";
     case "Dan Kurzius":
       return " MailChimp";
@@ -467,7 +484,8 @@ export function parseSource(name, source) {
       return "Monde Nissin";
     case "Tony Ressler":
       return "private equity, Atlanta Hawks";
-    case "Mat Ishbia" || "Justin Ishbia":
+    case "Mat Ishbia":
+    case "Justin Ishbia":
       return "mortgages, Phoenix Suns";
     case "Austin Russell":
       return "autonomous car sensors";
@@ -535,7 +553,8 @@ export function parseSource(name, source) {
       return "WeMade Entertainment";
     case "Devin Finzer":
       return "OpenSea";
-    case "Bob Muglia" || "Benoit Dageville":
+    case "Bob Muglia":
+    case "Benoit Dageville":
       return "Snowflake";
     case "John Malone":
       return "AT&T Broadband";
@@ -547,7 +566,9 @@ export function parseSource(name, source) {
       return "Vivendi";
     case "Junjin Wang":
       return "Juneyao Airlines";
-    case "German Khan" || "Mikhail Fridman" || "Alexei Kuzmichev":
+    case "German Khan":
+    case "Mikhail Fridman":
+    case "Alexei Kuzmichev":
       return "Alfa Group";
     case "Mikhail Lomtadze":
       return "Baring Vostock";
@@ -563,7 +584,9 @@ export function parseSource(name, source) {
       return "Avenue Supermart";
     case "Romesh T. Wadhwani":
       return "SymphonyAI";
-    case "Miuccia Prada" || "Alberto Prada" || "Marina Prada":
+    case "Miuccia Prada":
+    case "Alberto Prada":
+    case "Marina Prada":
       return "Prada";
     case "Jed McCaleb":
       return "Mt. Gox, Ripple";
@@ -637,100 +660,154 @@ export function parseSource(name, source) {
       return "Pinterest";
     case "Robert Rowling":
       return "Omni Hotels";
-    case "Karen Pritzker" ||
-      "Thomas Pritzker" ||
-      "Jean (Gigi) Pritzker" ||
-      "Anthony Pritzker" ||
-      "Penny Pritzker" ||
-      "J.B. Pritzker" ||
-      "Daniel Pritzker" ||
-      "John Pritzker" ||
-      "Jennifer Pritzker" ||
-      "Linda Pritzker" ||
-      "Matthew Pritzker" ||
-      "Nicholas Pritzker" ||
-      "Liesel Pritzker Simmons":
+    case "Karen Pritzker":
+    case "Thomas Pritzker":
+    case "Jean (Gigi) Pritzker":
+    case "Anthony Pritzker":
+    case "Penny Pritzker":
+    case "J.B. Pritzker":
+    case "Daniel Pritzker":
+    case "John Pritzker":
+    case "Jennifer Pritzker":
+    case "Linda Pritzker":
+    case "Matthew Pritzker":
+    case "Nicholas Pritzker":
+    case "Liesel Pritzker Simmons":
       return "Hyatt Hotels";
-    case "Jim Walton" ||
-      "Alice Walton" ||
-      "Rob Walton" ||
-      "S. Robson Walton" ||
-      "Lukas Walton" ||
-      "Christy Walton" ||
-      "Ann Walton Kroenke" ||
-      "Nancy Walton Laurie":
+    case "Jim Walton":
+    case "Alice Walton":
+    case "Rob Walton":
+    case "S. Robson Walton":
+    case "Lukas Walton":
+    case "Christy Walton":
+    case "Ann Walton Kroenke":
+    case "Nancy Walton Laurie":
       return "Walmart";
-    case "Charles Koch" || "Julia Koch" || "Chase Koch" || "Elizabeth Koch":
+    case "Charles Koch":
+    case "Julia Koch":
+    case "Chase Koch":
+    case "Elizabeth Koch":
       return "Koch Industries";
-    case "Francoise Bettencourt Meyers" || "Jean-Victor Meyers" || "Nicolas Meyers":
+    case "Francoise Bettencourt Meyers":
+    case "Jean-Victor Meyers":
+    case "Nicolas Meyers":
       return "L'Oréal";
-    case "Johanna Quandt" || "Susanne Klatten" || "Stefan Quandt":
+    case "Johanna Quandt":
+    case "Susanne Klatten":
+    case "Stefan Quandt":
       return "BMW";
-    case "Edward Johnson IV" || "Elizabeth Johnson" || "Edward C. Johnson III" || "Abigail Johnson":
+    case "Edward Johnson IV":
+    case "Elizabeth Johnson":
+    case "Edward C. Johnson III":
+    case "Abigail Johnson":
       return "Fidelity Investments";
-    case "William Lauder" || "Ronald Lauder" || "Aerin Lauder" || "Leonard Lauder":
+    case "William Lauder":
+    case "Ronald Lauder":
+    case "Aerin Lauder":
+    case "Leonard Lauder":
       return "Estée Lauder";
-    case "William Randolph Hearst III" || "George Hearst" || "John Hearst":
+    case "William Randolph Hearst III":
+    case "George Hearst":
+    case "John Hearst":
       return "Hearst Magazines";
-    case "Nicky Oppenheimer" || "Jonathan Oppenheimer":
+    case "Nicky Oppenheimer":
+    case "Jonathan Oppenheimer":
       return "DeBeers";
-    case "Axel Dumas" || "Pierre-Alexis Dumas":
+    case "Axel Dumas":
+    case "Pierre-Alexis Dumas":
       return "Hermès";
-    case "Alain Wertheimer" || "Gerard Wertheimer":
+    case "Alain Wertheimer":
+    case "Gerard Wertheimer":
       return "Chanel";
-    case "Joseph Safra" || "Jacob Safra" || "Esther Safra":
+    case "Joseph Safra":
+    case "Jacob Safra":
+    case "Esther Safra":
       return "Safra Banking";
-    case "Martijn Brenninkmeijer" || "Clemens Brenninkmeijer":
+    case "Martijn Brenninkmeijer":
+    case "Clemens Brenninkmeijer":
       return "C&A";
-    case "David Thomson" || "Peter Thomson":
+    case "David Thomson":
+    case "Peter Thomson":
       return "Thomson Reuters";
-    case "Theo Albrecht" || "Berthold Albrecht" || "Karl Albrecht":
+    case "Theo Albrecht":
+    case "Berthold Albrecht":
+    case "Karl Albrecht":
       return "Aldi";
-    case "André Hoffmann" || "Maja Oeri":
+    case "André Hoffmann":
+    case "Maja Oeri":
       return "Roche Pharmaceuticals";
-    case "Richard Sackler" || "Jonathan Sackler" || "Mortimer Sackler":
+    case "Richard Sackler":
+    case "Jonathan Sackler":
+    case "Mortimer Sackler":
       return "Purdue Pharma";
-    case "Carlos Alberto Sicupira" || "Jorge Paulo Lemann" || "Marcel Hermann Telles":
+    case "Carlos Alberto Sicupira":
+    case "Jorge Paulo Lemann":
+    case "Marcel Hermann Telles":
       return "Anheuser-Busch InBev";
-    case "Nadja Swarovski" || "Markus Langes-Swarovski":
+    case "Nadja Swarovski":
+    case "Markus Langes-Swarovski":
       return "Swarovski";
-    case "John Elkann" || "Ginevra Elkann" || "Lapo Elkann":
+    case "John Elkann":
+    case "Ginevra Elkann":
+    case "Lapo Elkann":
       return "Fiat";
-    case "Piero Ferrari" || "Enzo Ferrari":
+    case "Piero Ferrari":
+    case "Enzo Ferrari":
       return "Ferrari";
-    case "Carrie Perrodo" || "Francois Perrodo":
+    case "Carrie Perrodo":
+    case "Francois Perrodo":
       return "Perenco Oil & Gas";
-    case "Gerard Mulliez" || "Olivier Mulliez":
+    case "Gerard Mulliez":
+    case "Olivier Mulliez":
       return "Auchan";
-    case "Jay Y. Lee" || "Lee Kun-hee":
+    case "Jay Y. Lee":
+    case "Lee Kun-hee":
       return "Samsung";
-    case "Raymond Kwok" || "Thomas Kwok" || "Walter Kwok":
+    case "Raymond Kwok":
+    case "Thomas Kwok":
+    case "Walter Kwok":
       return "Sun Hung Kai Properties";
-    case "Kumar Birla" || "Yash Birla":
+    case "Kumar Birla":
+    case "Yash Birla":
       return "Aditya Birla Group";
-    case "Mohammed bin Salman" || "Alwaleed bin Talal":
+    case "Mohammed bin Salman":
+    case "Alwaleed bin Talal":
       return "Saudi Royal Family";
-    case "Stefan Persson" || "Karl-Johan Persson":
+    case "Stefan Persson":
+    case "Karl-Johan Persson":
       return "H&M";
-    case "Rupert Murdoch" || "Lachlan Murdoch" || "James Murdoch":
+    case "Rupert Murdoch":
+    case "Lachlan Murdoch":
+    case "James Murdoch":
       return "Fox News";
-    case "Johann Rupert" || "Anton Rupert":
+    case "Johann Rupert":
+    case "Anton Rupert":
       return "Richemont";
-    case "Theo Albrecht" || "Karl Albrecht" || "Berthold Albrecht":
+    case "Theo Albrecht":
+    case "Karl Albrecht":
+    case "Berthold Albrecht":
       return "Aldi";
-    case "Miriam Adelson" || "Shelley Adelson":
+    case "Miriam Adelson":
+    case "Shelley Adelson":
       return "Las Vegas Sands";
-    case "Andreas Struengmann" || "Thomas Struengmann":
+    case "Andreas Struengmann":
+    case "Thomas Struengmann":
       return "Hexal";
-    case "Donald Newhouse" || "Steven Newhouse":
+    case "Donald Newhouse":
+    case "Steven Newhouse":
       return "Condé Nast";
-    case "Tim Cook" || "Laurene Powell Jobs" || "Art Levinson":
+    case "Tim Cook":
+    case "Laurene Powell Jobs":
+    case "Art Levinson":
       return "Apple";
-    case "David Duffield" || "Aneel Bhusri":
+    case "David Duffield":
+    case "Aneel Bhusri":
       return "Workday";
-    case "Giancarlo Devasini" || "JL van der Velde":
+    case "Giancarlo Devasini":
+    case "JL van der Velde":
       return "Bitfinex";
-    case "Vlad Tenev" || "Baiju Bhatt":
+    case "Vlad Tenev":
+    case "Baiju Bhatt":
       return "Robinhood";
     case "James Packer":
       return "Crown Resorts";
@@ -740,17 +817,25 @@ export function parseSource(name, source) {
       return "Eurofarma";
     case "Nguyen Thi Phuong Thao":
       return "VietJet Air";
-    case "Laurent Dassault" || "Thierry Dassault" || "Marie-Hélène Habert-Dassault" || "Helena Dassault" || "Remi Dassault":
+    case "Laurent Dassault":
+    case "Thierry Dassault":
+    case "Marie-Hélène Habert-Dassault":
+    case "Helena Dassault":
+    case "Remi Dassault":
       return "Dassault aerospace & software";
-    case "Benjamin Otto" || "Maren Otto" || "Katharina Otto-Bernstein" || "Michael Otto" || "Alexander Otto":
+    case "Benjamin Otto":
+    case "Maren Otto":
+    case "Katharina Otto-Bernstein":
+    case "Michael Otto":
+    case "Alexander Otto":
       return "Otto Group, Crate & Barrel";
-    case "Leonardo Del Vecchio" ||
-      "Clemente Del Vecchio" ||
-      "Claudio Del Vecchio" ||
-      "Leonardo Maria Del Vecchio" ||
-      "Luca Del Vecchio" ||
-      "Marisa Del Vecchio" ||
-      "Paola Del Vecchio":
+    case "Leonardo Del Vecchio":
+    case "Clemente Del Vecchio":
+    case "Claudio Del Vecchio":
+    case "Leonardo Maria Del Vecchio":
+    case "Luca Del Vecchio":
+    case "Marisa Del Vecchio":
+    case "Paola Del Vecchio":
       return "Luxottica";
     case "Lei Jun":
       return "Xiaomi";
@@ -799,7 +884,8 @@ export function parseIndustryIcon(industry) {
   switch (industry) {
     case "Automotive":
       return "automotive";
-    case "Finance & Investments" || "Venture Capital":
+    case "Finance & Investments":
+    case "Venture Capital":
       return "finance-investment";
     case "Food & Beverage":
       return "hamburger";

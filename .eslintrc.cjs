@@ -22,7 +22,7 @@ module.exports = {
       },
     },
     {
-      files: ["scripts/**/*.js", "functions/**/*.js", "tests/**/*.js", "vite.config.js"],
+      files: ["scripts/**/*.js", "scripts/**/*.ts", "functions/**/*.js", "tests/**/*.js", "vite.config.js"],
       env: {
         node: true,
       },
