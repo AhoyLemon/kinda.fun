@@ -1,11 +1,23 @@
 import { billionsOfDollars, addCommas, dollars, formatDate, formatStatement } from "./_functions";
 
-const humanizeStanceName = (name) => {
+/* eslint-disable no-unused-vars -- base eslint rule incorrectly flags TS interface method parameter names */
+type ColumnConfig = {
+  label: string;
+  field: string;
+  tdClass?: string;
+  type?: "number" | "decimal" | "date";
+  formatFn?: (value: unknown) => unknown;
+  html?: boolean;
+  sortable?: boolean;
+};
+/* eslint-enable no-unused-vars */
+
+const humanizeStanceName = (name: unknown): unknown => {
   if (typeof name !== "string") return name;
   return name.replace(/([A-Z])/g, " $1").trim();
 };
 
-export const columns = {
+export const columns: Record<string, ColumnConfig[]> = {
   // GENERAL
   generalPlayers: [
     { label: "Name", field: "name", tdClass: "font-bold" },
@@ -53,7 +65,7 @@ export const columns = {
   // PRETEND WORLD
   pretendGuesses: [
     { label: "Celebrity", field: "name", tdClass: "font-bold" },
-    { label: "Correct %", field: "correctPercent", type: "number", formatFn: (val) => (val !== undefined && val !== null ? val + "%" : "0%") },
+    { label: "Correct %", field: "correctPercent", type: "number", formatFn: (val: unknown) => (val !== undefined && val !== null ? String(val) + "%" : "0%") },
     { label: "Exact", field: "correctGuessCount", type: "number" },
     { label: "Close", field: "closeGuessCount", type: "number" },
     { label: "Bad", field: "badGuessCount", type: "number" },
@@ -61,7 +73,7 @@ export const columns = {
 
   // THIS MEETING HAS POINTS
   meetingCards: [
-    { label: "Phrase", field: "phrase", tdClass: "font-bold", formatFn: (val) => (val ? `“${val}”` : "") },
+    { label: "Phrase", field: "phrase", tdClass: "font-bold", formatFn: (val: unknown) => (val ? `“${String(val)}”` : "") },
     { label: "Played", field: "timesPlayed", type: "number" },
     { label: "Scored", field: "timesScored", type: "number" },
     { label: "Stolen", field: "timesStolen", type: "number" },

@@ -1,11 +1,11 @@
 // Adds commas to a number
-export const addCommas = (n) => {
+export const addCommas = (n: number | string | null | undefined): string => {
   if (n === undefined || n === null) return "0";
   return n.toLocaleString();
 };
 import { timeZoneOffset } from "./_variables";
 import { DateTime } from "luxon";
-export const formatDate = (d) => {
+export const formatDate = (d: Date | string | number | null | undefined): string | DateTime => {
   if (d) {
     return DateTime.fromJSDate(new Date(d)).minus({ minutes: timeZoneOffset }).toFormat("MMM d @ h:mm a");
   } else {
@@ -13,7 +13,7 @@ export const formatDate = (d) => {
   }
 };
 
-export const billionsOfDollars = (amount, isTruncationRequested) => {
+export const billionsOfDollars = (amount: number, isTruncationRequested?: boolean): string => {
   const dollars = Number(amount * 1000000000);
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -36,7 +36,7 @@ export const billionsOfDollars = (amount, isTruncationRequested) => {
   }
 };
 
-export const dollars = (amount) => {
+export const dollars = (amount: number): string => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -50,7 +50,7 @@ export const dollars = (amount) => {
   }
 };
 
-export const exceededBudgetOutput = (v) => {
+export const exceededBudgetOutput = (v: string): string => {
   if (v == "YES" || v == "NO") {
     return v;
   } else {
@@ -58,6 +58,6 @@ export const exceededBudgetOutput = (v) => {
   }
 };
 
-export const formatStatement = (statement) => {
+export const formatStatement = (statement: string): string => {
   return statement.replace("{", "").replace("}", "");
 };
