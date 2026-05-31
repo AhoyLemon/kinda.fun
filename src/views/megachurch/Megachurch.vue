@@ -170,11 +170,9 @@
     sterlingNoteRef,
     computedTopicsYesterday,
     logGameplayToFirebase,
-    FollowerToast,
     ListenerToast,
     DonationToast,
     MerchToast,
-    CelebrityFriendToast,
   });
 
   // ================= FIREBASE LOGGING =================

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { places } from "./_places";
 import {
   EternalLegacyShopItem,
@@ -64,6 +63,7 @@ export function getAvailablePlaces(
   hasVan: boolean,
   currentPlaceId: number,
 ): any[] {
+  void currentPlaceId;
   if (hasVan) {
     // Filter out Starting Location (id: 0) and current location when player has a van
     return places.filter((place) => place.id !== 0);
@@ -202,19 +202,14 @@ export function computeTemporarySermonScores(
 
   // Build top 3 most liked religions (excluding mixed messages)
   const mostLiked = Object.entries(religionScores)
-    .filter(
-      ([_, v]) => v.likeScore > 0 && !(v.likeScore > 0 && v.dislikeScore > 0),
-    ) // Exclude mixed messages
+    .filter(([, v]) => v.likeScore > 0 && !(v.likeScore > 0 && v.dislikeScore > 0)) // Exclude mixed messages
     .map(([id, v]) => ({ name: v.name, id: Number(id), weight: v.likeScore }))
     .sort((a, b) => b.weight - a.weight)
     .slice(0, 3);
 
   // Build top 3 most disliked religions (excluding mixed messages)
   const mostDisliked = Object.entries(religionScores)
-    .filter(
-      ([_, v]) =>
-        v.dislikeScore > 0 && !(v.likeScore > 0 && v.dislikeScore > 0),
-    ) // Exclude mixed messages
+    .filter(([, v]) => v.dislikeScore > 0 && !(v.likeScore > 0 && v.dislikeScore > 0)) // Exclude mixed messages
     .map(([id, v]) => ({
       name: v.name,
       id: Number(id),

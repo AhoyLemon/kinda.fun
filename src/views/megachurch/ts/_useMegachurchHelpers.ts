@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
-import { h } from "vue";
+import { h, type Component, type ComputedRef, type Ref } from "vue";
 import { POSITION } from "vue-toastification";
-import { Howl, Howler } from "howler";
 
 import { religions } from "./_religions";
 import { places } from "./_places";
@@ -9,18 +7,11 @@ import { themes } from "./_sermons";
 
 import {
   randomNumber,
-  randomFrom,
-  shuffle,
-  addCommas,
-  findInArray,
-  removeFromArray,
-  percentOf,
-  sendEvent,
   dollars,
 } from "../../../shared/ts/_functions";
 import { gameSettings } from "./variables/_gameSettings";
 import { soundWhoopsYoureDead, soundInPrison, soundDonationStreet, spiceSniffs } from "./variables/_sounds";
-import type { Theme, Place, Religion } from "./_types";
+import type { Theme, Place, Religion, My, UI } from "./_types";
 
 import {
   buildSermonDefinition,
@@ -34,6 +25,28 @@ import {
   processChurchMerchSales,
 } from "./_functions";
 
+/* eslint-disable no-unused-vars */
+interface ToastApi {
+  (content: any, options?: Record<string, any>): void;
+  success(content: any, options?: Record<string, any>): void;
+  warning(content: any, options?: Record<string, any>): void;
+  error(content: any, options?: Record<string, any>): void;
+  info(content: any, options?: Record<string, any>): void;
+}
+
+interface MegachurchHelpersArgs {
+  my: My;
+  ui: UI;
+  toast: ToastApi;
+  sterlingNoteRef: Ref<{ showNote: () => void } | null>;
+  computedTopicsYesterday: ComputedRef<number[]>;
+  logGameplayToFirebase: (eventType: string, data?: Record<string, any>) => void | Promise<void>;
+  ListenerToast: Component;
+  DonationToast: Component;
+  MerchToast: Component;
+}
+/* eslint-enable no-unused-vars */
+
 export function useMegachurchHelpers({
   my,
   ui,
@@ -41,12 +54,10 @@ export function useMegachurchHelpers({
   sterlingNoteRef,
   computedTopicsYesterday,
   logGameplayToFirebase,
-  FollowerToast,
   ListenerToast,
   DonationToast,
   MerchToast,
-  CelebrityFriendToast,
-}: any) {
+}: MegachurchHelpersArgs) {
   function startNewGame() {
     localStorage.setItem("kindaFunPlayerName", my.name);
     ui.view = "sermon";
@@ -205,7 +216,7 @@ export function useMegachurchHelpers({
   }
 
   function generateDailyThemes() {
-    my.dailyThemes = generateDailyThemesSelection(my.dailyThemes);
+    my.dailyThemes = generateDailyThemesSelection();
   }
 
   function showThemeDescription(id: number): string {
@@ -214,7 +225,7 @@ export function useMegachurchHelpers({
   }
 
   function defineSermon() {
-    my.sermonToday = buildSermonDefinition(ui.selectedTopics, my.sermonToday);
+    my.sermonToday = buildSermonDefinition(ui.selectedTopics);
     ui.view = "sermon-confirm";
   }
 
@@ -286,15 +297,9 @@ export function useMegachurchHelpers({
 
     // Stagger the reaction toasts
     let currentDelay = 0;
-    let toastCount = 0;
-    let toastArray = [];
-
-    toastData.forEach((data, i) => {
+    toastData.forEach((data) => {
       setTimeout(() => {
-        let toastType: "success" | "warning" | "info" = "info";
-
         if (data.type === "like") {
-          toastType = "success";
           toast.success(
             h(ListenerToast, {
               reaction: "liked",
@@ -310,7 +315,6 @@ export function useMegachurchHelpers({
             },
           );
         } else if (data.type === "dislike") {
-          toastType = "warning";
           toast.warning(
             h(ListenerToast, {
               reaction: "disliked",
@@ -326,7 +330,6 @@ export function useMegachurchHelpers({
             },
           );
         } else if (data.type === "mixed") {
-          toastType = "info";
           toast.info(
             h(ListenerToast, {
               reaction: "mixed",
@@ -340,8 +343,6 @@ export function useMegachurchHelpers({
           );
         }
 
-        toastCount++;
-        toastArray.push({ type: toastType, count: data.count, cause: data.cause });
       }, currentDelay);
 
       currentDelay += randomNumber(ui.timing.toastDelayMin, ui.timing.toastDelayMax);
@@ -421,7 +422,7 @@ export function useMegachurchHelpers({
 
     // Calculate randomized but overlapping delays
     let currentDelay = 0;
-    allReactions.forEach((item, i) => {
+    allReactions.forEach((item) => {
       // Random delay between 1100-3800ms, but ensure overlap
       const randomDelay = randomNumber(ui.timing.toastDelayMin, ui.timing.toastDelayMax);
       item.delay = currentDelay;
@@ -633,13 +634,11 @@ export function useMegachurchHelpers({
     my.church.buzz = Math.max(0, my.church.buzz + buzzChange);
 
     // Calculate total donations from people who liked the sermon
-    let totalLikes = 0;
     let totalDonations = 0;
     let totalDonors = 0;
     let totalAttendance = 0;
 
     todaysCongregation.forEach((group) => {
-      totalLikes += group.likes;
       totalAttendance += group.count;
 
       // Calculate donations from this group
@@ -686,7 +685,7 @@ export function useMegachurchHelpers({
     let currentDelay = 0;
     const reactionGroups = todaysCongregation.filter((group) => group.likes > 0 || group.dislikes > 0);
 
-    reactionGroups.forEach((group, i) => {
+    reactionGroups.forEach((group) => {
       setTimeout(() => {
         const religion = religions.find((r: any) => r.id === group.id);
 
@@ -748,7 +747,7 @@ export function useMegachurchHelpers({
 
       // Process celebrity daily costs with total available funds (current money + today's earnings)
       const totalAvailableFunds = my.money + grossChurchRevenue;
-      const { costsOwed, terminatedFriendships } = processCelebrityDailyCosts(totalAvailableFunds);
+      const { costsOwed } = processCelebrityDailyCosts(totalAvailableFunds);
 
       // Calculate net church revenue AFTER celebrity costs
       const totalCelebrityCosts = costsOwed.reduce((sum, cost) => sum + cost.amount, 0);
@@ -940,7 +939,6 @@ export function useMegachurchHelpers({
   function applyPendingAddiction() {
     // Apply addiction progression that was calculated yesterday
     if (my.spice.pendingAddictionIncrease > 0) {
-      const oldRequirement = my.spice.requiredAmount;
       const pendingAddictionIncreaseInteger = Math.floor(my.spice.pendingAddictionIncrease);
 
       if (pendingAddictionIncreaseInteger > 0) {

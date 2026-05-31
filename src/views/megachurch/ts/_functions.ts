@@ -1,43 +1,11 @@
-/* eslint-disable no-unused-vars */
 import { themes } from "./_sermons";
 import { religions } from "./_religions";
-import { places } from "./_places";
 import { gameSettings } from "./variables/_gameSettings";
-import {
-  randomNumber,
-  randomFrom,
-  shuffle,
-  addCommas,
-  findInArray,
-  removeFromArray,
-  percentOf,
-  sendEvent,
-  dollars,
-} from "../../../shared/ts/_functions";
+import { shuffle } from "../../../shared/ts/_functions";
 
-import {
-  calculateCrowdSize,
-  generateCrowd,
-  buildSermonData,
-  processCrowdReactions,
-  calculateDonations,
-  simulateStreetPreachingCore,
-  type Person,
-  type StreetPreachingResult,
-} from "./_gameLogic";
+import { simulateStreetPreachingCore } from "./_gameLogic";
 
-import type {
-  Theme,
-  Place,
-  WeightedTag,
-  WeightedReligion,
-  MixedTag,
-  MixedReligion,
-  Sermon,
-  Religion,
-  UI,
-  My,
-} from "./_types";
+import type { Place } from "./_types";
 
 /**
  * Creates a comprehensive sermon definition from selected topics
@@ -46,7 +14,6 @@ import type {
  */
 export function buildSermonDefinition(
   selectedTopics: number[],
-  sermonToday: any,
 ): any {
   const selectedThemes = selectedTopics
     .filter((id): id is number => typeof id === "number")
@@ -118,29 +85,29 @@ export function buildSermonDefinition(
 
   // Build liked/disliked arrays sorted by weight
   const likedTagsArr = Object.entries(tagWeights)
-    .filter(([_, v]) => v.liked > 0)
+    .filter(([, v]) => v.liked > 0)
     .map(([tag, v]) => ({ tag, weight: v.liked }))
     .sort((a, b) => b.weight - a.weight);
   const dislikedTagsArr = Object.entries(tagWeights)
-    .filter(([_, v]) => v.disliked > 0)
+    .filter(([, v]) => v.disliked > 0)
     .map(([tag, v]) => ({ tag, weight: v.disliked }))
     .sort((a, b) => b.weight - a.weight);
 
   const likedReligionsArr = Object.entries(religionWeights)
-    .filter(([_, v]) => v.liked > 0)
+    .filter(([, v]) => v.liked > 0)
     .map(([id, v]) => ({ name: v.name, id: Number(id), weight: v.liked }))
     .sort((a, b) => b.weight - a.weight);
   const dislikedReligionsArr = Object.entries(religionWeights)
-    .filter(([_, v]) => v.disliked > 0)
+    .filter(([, v]) => v.disliked > 0)
     .map(([id, v]) => ({ name: v.name, id: Number(id), weight: v.disliked }))
     .sort((a, b) => b.weight - a.weight);
 
   // Mixed messages: tags and religions that appear in both liked and disliked
   const mixedTagsArr = Object.entries(tagWeights)
-    .filter(([_, v]) => v.liked > 0 && v.disliked > 0)
+    .filter(([, v]) => v.liked > 0 && v.disliked > 0)
     .map(([tag, v]) => ({ tag, liked: v.liked, disliked: v.disliked }));
   const mixedReligionsArr = Object.entries(religionWeights)
-    .filter(([_, v]) => v.liked > 0 && v.disliked > 0)
+    .filter(([, v]) => v.liked > 0 && v.disliked > 0)
     .map(([id, v]) => ({
       name: v.name,
       id: Number(id),
@@ -194,9 +161,6 @@ export function processStreetPreachingEffect(
   const fullThemes = (sermonToday.topics || [])
     .map((topic: any) => themes.find((t) => t.id === topic.id))
     .filter(Boolean);
-
-  // Build sermon data from full theme objects (same as game logic)
-  const sermonData = buildSermonData(fullThemes);
 
   // Use shared logic to simulate street preaching
   const result = simulateStreetPreachingCore(
@@ -280,7 +244,7 @@ export function processStreetPreachingEffect(
   // Create toasts - one per religion with their strongest reaction
   const toastCandidates = [];
 
-  religionReactions.forEach((info, religionId) => {
+  religionReactions.forEach((info) => {
     const likeCount = info.reactions.like;
     const dislikeCount = info.reactions.dislike;
 
@@ -559,7 +523,7 @@ export function sendTextMessagesWithTyping(
  * Generates daily themes for the player to choose from
  * This creates a randomized selection of themes available for the day
  */
-export function generateDailyThemesSelection(currentDailyThemes: any[]): any[] {
+export function generateDailyThemesSelection(): any[] {
   // Generate a random selection of themes for today
   const shuffledThemes = shuffle([...themes]);
   const selectedThemes = shuffledThemes.slice(0, gameSettings.themesPerDay);

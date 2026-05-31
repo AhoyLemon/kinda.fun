@@ -53,6 +53,7 @@ export interface ChatMessages {
     };
   };
 }
+/* eslint-enable no-unused-vars */
 
 export const chatMessages: ChatMessages = {
   plug: {
