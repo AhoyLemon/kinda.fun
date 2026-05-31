@@ -6,6 +6,19 @@ declare const Vue: any;
 declare const forbesList: any[];
 declare const hljs: { highlightElement: (el: Element) => void };
 const HIGHLIGHT_DELAY = 600;
+type ParsedBillionaire = {
+  rank: number;
+  name: string | null;
+  netWorth: number;
+  country: string | null;
+  flag: string;
+  source: string;
+  industry: string | null;
+  // Set for manually appended records that don't come from the raw Forbes export.
+  manualAdd?: boolean;
+  // Optional canonical URL used when source attribution needs manual override.
+  specialSource?: string;
+};
 
 new Vue({
   el: "#app",
@@ -31,26 +44,14 @@ new Vue({
 
     parseAsshole(o) {
       const self = this;
-      const output: {
-        rank: number;
-        name: string | null;
-        netWorth: number;
-        country: string | null;
-        flag: string;
-        source: string;
-        industry: string | null;
-        // Set for manually appended records that don't come from the raw Forbes export.
-        manualAdd?: boolean;
-        // Optional canonical URL used when source attribution needs manual override.
-        specialSource?: string;
-      } = {
+      const output: ParsedBillionaire = {
         rank: parseInt(o.rank),
-        name: o.name.trim() ?? null,
+        name: o.name?.trim() ?? null,
         netWorth: Number(self.parseBillions(o.netWorth)),
-        country: o.country.trim() ?? null,
+        country: o.country?.trim() ?? null,
         flag: self.parseFlag(o.country),
         source: this.parseSource(o.name, o.source),
-        industry: o.industry.trim() ?? null,
+        industry: o.industry?.trim() ?? null,
       };
 
       if (o.manualAdd) {
