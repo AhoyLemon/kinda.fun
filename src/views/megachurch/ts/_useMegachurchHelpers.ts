@@ -2007,6 +2007,13 @@ export function useMegachurchHelpers({
   }
 
   function toggleDebugMode() {
+    gameSettings.isDebug = !gameSettings.isDebug;
+    if (gameSettings.isDebug) {
+      console.log("Debug mode enabled");
+    } else {
+      console.log("Debug mode disabled");
+    }
+  }
 
   return {
     startNewGame,
