@@ -1,5 +1,5 @@
 // Adds commas to a number
-export const addCommas = (n: number | string | null | undefined): string => {
+export const addCommas = (n: number | null | undefined): string => {
   if (n === undefined || n === null) return "0";
   return n.toLocaleString();
 };
@@ -51,7 +51,7 @@ export const dollars = (amount: number): string => {
 };
 
 export const exceededBudgetOutput = (v: string): string => {
-  if (v == "YES" || v == "NO") {
+  if (v === "YES" || v === "NO") {
     return v;
   } else {
     return "-";
