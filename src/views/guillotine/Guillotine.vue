@@ -4,18 +4,18 @@
   import { DateTime } from "luxon";
 
   import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
-  import { parseIndustryIcon, parseName } from "./js/parseFunctions.js";
+  import { parseIndustryIcon, parseName } from "./ts/parseFunctions.ts";
 
   // Data
-  import { allBillionaires } from "./js/data/_billionaires.ts";
-  import type { Billionaire } from "./js/data/_billionaires.ts";
-  import { allWarrants } from "./js/data/_warrants.ts";
-  import { schoolData } from "./js/data/_school-data.ts";
-  import type { SchoolData } from "./js/data/_school-data.ts";
+  import { allBillionaires } from "./ts/data/_billionaires.ts";
+  import type { Billionaire } from "./ts/data/_billionaires.ts";
+  import { allWarrants } from "./ts/data/_warrants.ts";
+  import { schoolData } from "./ts/data/_school-data.ts";
+  import type { SchoolData } from "./ts/data/_school-data.ts";
 
   // Sounds
   import { Howl, Howler } from "howler";
-  import { dropSound, lastWords, cheeringSounds } from "./js/partials/_sounds.js";
+  import { dropSound, lastWords, cheeringSounds } from "./ts/partials/_sounds.ts";
 
   // Firebase & VueFire Stuff
   import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";

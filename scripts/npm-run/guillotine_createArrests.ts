@@ -2,8 +2,8 @@ import fs from "fs";
 import chalk from "chalk";
 import Table from "cli-table3";
 
-const BILLIONAIRES_PATH = "./src/views/guillotine/js/data/_billionaires.ts";
-const OUTPUT_PATH = "./src/views/guillotine/js/data/_warrants.ts";
+const BILLIONAIRES_PATH = "./src/views/guillotine/ts/data/_billionaires.ts";
+const OUTPUT_PATH = "./src/views/guillotine/ts/data/_warrants.ts";
 const BILLIONAIRES_PER_DAY = 20;
 
 function getBillionaireCount(): number {

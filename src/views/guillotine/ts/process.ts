@@ -1,6 +1,6 @@
 //@prepros-prepend globals/_functions.js
 //@prepros-append partials/_variables.js
-//@prepros-prepend data/_forbes-export.js
+//@prepros-prepend data/_forbes-export.ts
 
 var app = new Vue({
   el: "#app",
