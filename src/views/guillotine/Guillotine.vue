@@ -58,6 +58,7 @@
   type GameStatus = "loading" | "titleScreen" | "playing" | "gameOver";
   const db = useFirestore();
   const statsRef = doc(db, `stats/guillotine`);
+  const BILLION = 1_000_000_000;
 
   const gameStatus = ref<GameStatus>("loading");
 
@@ -288,7 +289,7 @@
     };
 
     const addMoreDollars = setInterval(() => {
-      const dollarIncrease = randomNumber(1, 100000000) / 1000000000;
+      const dollarIncrease = randomNumber(1, 100000000) / BILLION;
       ui.wealthDisplay += dollarIncrease;
 
       if (ui.wealthDisplay >= player.wealthCreated.today) {

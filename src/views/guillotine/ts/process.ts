@@ -38,8 +38,8 @@ new Vue({
         flag: string;
         source: string;
         industry: string | null;
-        manualAdd?: unknown;
-        specialSource?: unknown;
+        manualAdd?: boolean;
+        specialSource?: string;
       } = {
         rank: parseInt(o.rank),
         name: o.name.trim() ?? null,
