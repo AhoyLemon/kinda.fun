@@ -169,6 +169,9 @@ $admin-panel-color: #101010;
         background: transparent;
         color: $white;
         padding: 20px 10px 4px 8px;
+        option {
+          background-color: white;
+        }
       }
       label {
         @include position(absolute, 2px, null, null, 10px);
