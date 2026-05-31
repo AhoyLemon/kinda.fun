@@ -558,7 +558,7 @@
   const computedRemainingRedistributions = computed<number>(() => {
     let output = 99; // Default value. If you got this, something went wrong.
     if (redistributions && redistributions.today && gameRules && gameRules.choicesPerDay) {
-      output = parseInt(String(gameRules.choicesPerDay - redistributions.today));
+      output = Math.max(0, gameRules.choicesPerDay - redistributions.today);
     } else if (gameRules && gameRules.choicesPerDay) {
       output = gameRules.choicesPerDay;
     }
@@ -667,13 +667,17 @@
     const theDay = Number(DateTime.now().toFormat("D"));
     let daySuffix: string;
     switch (theDay) {
-      case 1 || 21 || 31:
+      case 1:
+      case 21:
+      case 31:
         daySuffix = "st";
         break;
-      case 2 || 22:
+      case 2:
+      case 22:
         daySuffix = "nd";
         break;
-      case 3 || 23:
+      case 3:
+      case 23:
         daySuffix = "rd";
         break;
       default:
