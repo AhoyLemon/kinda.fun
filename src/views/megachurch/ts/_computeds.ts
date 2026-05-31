@@ -63,11 +63,9 @@ export function getAvailablePlaces(
   hasVan: boolean,
   currentPlaceId: number,
 ): any[] {
-  // Kept for call-site compatibility with the Megachurch view API.
-  void currentPlaceId;
   if (hasVan) {
     // Filter out Starting Location (id: 0) and current location when player has a van
-    return places.filter((place) => place.id !== 0);
+    return places.filter((place) => place.id !== 0 && place.id !== currentPlaceId);
   }
   return places;
 }
