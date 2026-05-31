@@ -24,6 +24,8 @@
     | "invalid"
     | "megachurch"
     | "wrongest";
+  const validGames: readonly LoadedGame[] = ["general", "cameo", "court", "sisyphus", "guillotine", "pretend", "meeting", "invalid", "megachurch", "wrongest"];
+  const isLoadedGame = (value: string): value is LoadedGame => validGames.includes(value as LoadedGame);
   type RelativeTimeFormat = "fromNow" | "calendar" | string;
   type TimestampInput = Date | number | string;
 
@@ -709,11 +711,17 @@
   const getGameDataFromURL = (): void => {
     const loadedURL = new URL(window.location.href);
     const game = loadedURL.searchParams.get("game");
-    if (game) getData(game as LoadedGame);
+    if (game && isLoadedGame(game)) {
+      getData(game);
+    } else {
+      getData("general");
+    }
   };
 
   const calculateSpend = (rowObj: StatsRecord): string => {
-    return addCommas(parseInt(String(rowObj.icount ?? 0), 10) * parseInt(String(rowObj.price ?? 0), 10));
+    const icount = Number.parseInt(String(rowObj.icount ?? 0), 10);
+    const price = Number.parseInt(String(rowObj.price ?? 0), 10);
+    return addCommas((Number.isNaN(icount) ? 0 : icount) * (Number.isNaN(price) ? 0 : price));
   };
 
   const pretendCorrectPct = (rowObj: StatsRecord): string => {
