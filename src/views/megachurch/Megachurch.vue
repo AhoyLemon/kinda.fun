@@ -25,6 +25,7 @@
   import LegacyStatus from "./components/EternalLegacy/LegacyStatus.vue";
   import FriendshipEnded from "./components/EternalLegacy/FriendshipEnded.vue";
   import UnfriendConfirmation from "./components/EternalLegacy/UnfriendConfirmation.vue";
+  import { addCommas, dollars } from "../../shared/ts/_functions";
   import { useToast } from "vue-toastification";
   import {
     computeTopicsYesterday,
