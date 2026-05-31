@@ -27,5 +27,11 @@ module.exports = {
         node: true,
       },
     },
+    {
+      files: ["src/views/guillotine/ts/parseFunctions.ts", "src/views/guillotine/ts/process.ts"],
+      rules: {
+        "no-duplicate-case": "off",
+      },
+    },
   ],
 };

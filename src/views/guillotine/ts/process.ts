@@ -4,7 +4,7 @@
 
 declare const Vue: any;
 declare const forbesList: any[];
-declare const hljs: { highlightElement: (el: Element) => void };
+declare const hljs: any;
 const HIGHLIGHT_DELAY = 600;
 type ParsedBillionaire = {
   rank: number;
