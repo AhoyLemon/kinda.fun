@@ -710,7 +710,7 @@
   const calculateAverage = (count: number | string | null | undefined, iterations: number | string | null | undefined): string => {
     const countNumber = Number(count ?? 0);
     const iterationsNumber = Number(iterations ?? 0);
-    if (!Number.isFinite(countNumber) || !Number.isFinite(iterationsNumber) || !countNumber || !iterationsNumber) {
+    if (!Number.isFinite(countNumber) || !Number.isFinite(iterationsNumber) || countNumber === 0 || iterationsNumber === 0) {
       return "0";
     }
     const n = (countNumber / iterationsNumber).toFixed(2);
