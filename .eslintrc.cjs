@@ -22,9 +22,15 @@ module.exports = {
       },
     },
     {
-      files: ["scripts/**/*.js", "functions/**/*.js", "tests/**/*.js", "vite.config.js"],
+      files: ["scripts/**/*.js", "scripts/**/*.ts", "functions/**/*.js", "tests/**/*.js", "vite.config.js"],
       env: {
         node: true,
+      },
+    },
+    {
+      files: ["src/views/guillotine/ts/parseFunctions.ts", "src/views/guillotine/ts/process.ts"],
+      rules: {
+        "no-duplicate-case": "off",
       },
     },
   ],

@@ -3,7 +3,7 @@ import path from "path";
 import chalk from "chalk";
 import Table from "cli-table3";
 
-const OUTPUT_PATH = "./src/views/guillotine/js/data/_school-data.ts";
+const OUTPUT_PATH = "./src/views/guillotine/ts/data/_school-data.ts";
 
 const STATE_CODES: Record<string, string> = {
   "District of Columbia": "DC",

@@ -1,4 +1,4 @@
-import { Howl, Howler } from "howler";
+import { Howl } from "howler";
 export const dropSound = new Howl({
   src: ["/audio/guillotine/drop01.mp3"],
   volume: 1,
