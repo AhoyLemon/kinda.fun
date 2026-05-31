@@ -136,7 +136,8 @@
   // Functions
 
   // Helper to load Firestore stats for a game
-  type FirestoreTimestampLike = { seconds: number; nanoseconds: number } | Date | string | number | null | undefined;
+  type FirestoreTimestampObject = { seconds: number; nanoseconds: number };
+  type FirestoreTimestampLike = FirestoreTimestampObject | Date | string | number | null | undefined;
   type LoadSubcollectionOptions = {
     process?: (data: StatsRecord) => StatsRecord;
     timestampFields?: string[];
@@ -149,8 +150,14 @@
     subcollections?: Record<string, LoadSubcollectionOptions>;
   };
 
+  const isFirestoreTimestampObject = (value: unknown): value is FirestoreTimestampObject => {
+    if (!value || typeof value !== "object") return false;
+    const ts = value as { seconds?: unknown; nanoseconds?: unknown };
+    return typeof ts.seconds === "number" && typeof ts.nanoseconds === "number";
+  };
+
   function convertTimestamp(ts: FirestoreTimestampLike): Date | string | number | null | undefined {
-    if (ts && typeof ts === "object" && typeof ts.seconds === "number") {
+    if (isFirestoreTimestampObject(ts)) {
       return new Date(ts.seconds * 1000 + Math.floor(ts.nanoseconds / 1e6));
     }
     return ts;
@@ -188,7 +195,7 @@
       // Convert timestamps
       if (options.mainDocTimestamps) {
         options.mainDocTimestamps.forEach((field: string) => {
-          if (mainData[field]) mainData[field] = convertTimestamp(mainData[field]);
+          if (mainData[field]) mainData[field] = convertTimestamp(mainData[field] as FirestoreTimestampLike);
         });
       }
       Object.assign(stats[game], mainData);
@@ -197,16 +204,16 @@
     if (options.subcollections) {
       for (const [sub, subOpts] of Object.entries(options.subcollections)) {
         let collectionRef = collection(firestoreDb, `stats/${game}/${sub}`);
-        let queryRef = collectionRef;
+        const queryRef =
+          subOpts.sortBy && subOpts.limitTo
+            ? query(collectionRef, orderBy(subOpts.sortBy, "desc"), limit(subOpts.limitTo))
+            : subOpts.sortBy
+              ? query(collectionRef, orderBy(subOpts.sortBy, "desc"))
+              : subOpts.limitTo
+                ? query(collectionRef, limit(subOpts.limitTo))
+                : collectionRef;
 
         // Apply sorting and limiting if specified
-        if (subOpts.sortBy && subOpts.limitTo) {
-          queryRef = query(collectionRef, orderBy(subOpts.sortBy, "desc"), limit(subOpts.limitTo));
-        } else if (subOpts.sortBy) {
-          queryRef = query(collectionRef, orderBy(subOpts.sortBy, "desc"));
-        } else if (subOpts.limitTo) {
-          queryRef = query(collectionRef, limit(subOpts.limitTo));
-        }
 
         const snap = await getDocs(queryRef);
         const results = await Promise.all(
@@ -218,7 +225,7 @@
             // Convert per-item timestamps
             if (subOpts.timestampFields) {
               subOpts.timestampFields.forEach((field: string) => {
-                if (data[field]) data[field] = convertTimestamp(data[field]);
+                if (data[field]) data[field] = convertTimestamp(data[field] as FirestoreTimestampLike);
               });
             }
             // Custom processor
@@ -228,16 +235,16 @@
             if (subOpts.nestedSubcollections) {
               for (const [nestedSub, nestedOpts] of Object.entries(subOpts.nestedSubcollections)) {
                 let nestedCollectionRef = collection(firestoreDb, `stats/${game}/${sub}/${doc.id}/${nestedSub}`);
-                let nestedQueryRef = nestedCollectionRef;
+                const nestedQueryRef =
+                  nestedOpts.sortBy && nestedOpts.limitTo
+                    ? query(nestedCollectionRef, orderBy(nestedOpts.sortBy, "desc"), limit(nestedOpts.limitTo))
+                    : nestedOpts.sortBy
+                      ? query(nestedCollectionRef, orderBy(nestedOpts.sortBy, "desc"))
+                      : nestedOpts.limitTo
+                        ? query(nestedCollectionRef, limit(nestedOpts.limitTo))
+                        : nestedCollectionRef;
 
                 // Apply sorting and limiting to nested query
-                if (nestedOpts.sortBy && nestedOpts.limitTo) {
-                  nestedQueryRef = query(nestedCollectionRef, orderBy(nestedOpts.sortBy, "desc"), limit(nestedOpts.limitTo));
-                } else if (nestedOpts.sortBy) {
-                  nestedQueryRef = query(nestedCollectionRef, orderBy(nestedOpts.sortBy, "desc"));
-                } else if (nestedOpts.limitTo) {
-                  nestedQueryRef = query(nestedCollectionRef, limit(nestedOpts.limitTo));
-                }
 
                 const nestedSnap = await getDocs(nestedQueryRef);
                 const nestedResults = nestedSnap.docs.map((nestedDoc) => {
@@ -247,7 +254,7 @@
                   // Convert nested timestamps
                   if (nestedOpts.timestampFields) {
                     nestedOpts.timestampFields.forEach((field: string) => {
-                      if (nestedData[field]) nestedData[field] = convertTimestamp(nestedData[field]);
+                      if (nestedData[field]) nestedData[field] = convertTimestamp(nestedData[field] as FirestoreTimestampLike);
                     });
                   }
                   // Custom nested processor if provided
@@ -701,10 +708,12 @@
   };
 
   const calculateAverage = (count: number | string | null | undefined, iterations: number | string | null | undefined): string => {
-    if (!count || !iterations) {
+    const countNumber = Number(count ?? 0);
+    const iterationsNumber = Number(iterations ?? 0);
+    if (!Number.isFinite(countNumber) || !Number.isFinite(iterationsNumber) || !countNumber || !iterationsNumber) {
       return "0";
     }
-    const n = (count / iterations).toFixed(2);
+    const n = (countNumber / iterationsNumber).toFixed(2);
     return addCommas(n);
   };
 
@@ -783,7 +792,7 @@
         const timestampFields = getTimestampFieldsForSubcollection(game, subcollection);
         if (timestampFields) {
           timestampFields.forEach((field: string) => {
-            if (data[field]) data[field] = convertTimestamp(data[field]);
+            if (data[field]) data[field] = convertTimestamp(data[field] as FirestoreTimestampLike);
           });
         }
 
