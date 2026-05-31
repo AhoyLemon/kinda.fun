@@ -5,6 +5,7 @@
 declare const Vue: any;
 declare const forbesList: any[];
 declare const hljs: { highlightElement: (el: Element) => void };
+const HIGHLIGHT_DELAY = 600;
 
 new Vue({
   el: "#app",
@@ -38,7 +39,9 @@ new Vue({
         flag: string;
         source: string;
         industry: string | null;
+        // Set for manually appended records that don't come from the raw Forbes export.
         manualAdd?: boolean;
+        // Optional canonical URL used when source attribution needs manual override.
         specialSource?: string;
       } = {
         rank: parseInt(o.rank),
@@ -841,6 +844,6 @@ new Vue({
         // then highlight each
         hljs.highlightElement(el);
       });
-    }, 600);
+    }, HIGHLIGHT_DELAY);
   },
 });
