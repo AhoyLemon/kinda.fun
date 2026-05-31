@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export interface ChatMessages {
   plug: {
     casual: {
@@ -52,6 +53,7 @@ export interface ChatMessages {
     };
   };
 }
+/* eslint-enable no-unused-vars */
 
 export const chatMessages: ChatMessages = {
   plug: {
