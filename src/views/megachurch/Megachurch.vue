@@ -111,7 +111,7 @@
     closeSterlingInterface,
     showWorshopZone,
     closeWorshopZone,
-    handleWorkshopPurchase,
+    handleWorshopPurchase,
     onBannerAccepted,
     openWorshopZoneForSeraph,
     dismissSeraphNag,
@@ -352,7 +352,7 @@
           });
           break;
 
-        case "workshopPurchase":
+        case "worshopPurchase":
           if (data.type === "merch") {
             const merchRef = doc(db, `stats/megachurch/merch/${data.name}`);
             const merchSnap = await getDoc(merchRef);

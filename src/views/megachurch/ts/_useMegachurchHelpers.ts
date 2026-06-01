@@ -7,11 +7,14 @@ import { themes } from "./_sermons";
 
 import {
   randomNumber,
+  randomFrom,
   dollars,
 } from "../../../shared/ts/_functions";
 import { gameSettings } from "./variables/_gameSettings";
 import { soundWhoopsYoureDead, soundInPrison, soundDonationStreet, spiceSniffs } from "./variables/_sounds";
 import type { Theme, Place, Religion, My, UI } from "./_types";
+
+import { artifactNames } from "./variables/_eternalLegacy";
 
 import {
   buildSermonDefinition,
@@ -884,7 +887,7 @@ export function useMegachurchHelpers({
       }, 2000);
     }
 
-    // Show Workshop Zone banner after first day of preaching with a founded church
+    // Show Worshop Zone banner after first day of preaching with a founded church
     // Only show once on the first night after founding a church
     if (my.church.isFounded && my.church.days === 1 && !ui.worshopZone.hasSeenBanner) {
       setTimeout(() => {
@@ -1027,9 +1030,9 @@ export function useMegachurchHelpers({
     ui.churchInventory.isOpen = false; // Auto-close ChurchInventory when WorshopZone closes
   }
 
-  function handleWorkshopPurchase(purchaseData: any) {
-    // Log workshop purchases to Firebase
-    logGameplayToFirebase("workshopPurchase", purchaseData);
+  function handleWorshopPurchase(purchaseData: any) {
+    // Log Worshop Zone purchases to Firebase
+    logGameplayToFirebase("worshopPurchase", purchaseData);
   }
 
   function onBannerAccepted() {
@@ -1040,7 +1043,7 @@ export function useMegachurchHelpers({
   }
 
   function openWorshopZoneForSeraph() {
-    // Mark nag as shown and open Workshop Zone to Upgrades tab
+    // Mark nag as shown and open Worshop Zone to Upgrades tab
     ui.seraphAINag.hasShown = true;
     ui.worshopZone.defaultTab = "upgrades";
     ui.worshopZone.isOpen = true;
@@ -1071,6 +1074,15 @@ export function useMegachurchHelpers({
   }
 
   function handleEternalLegacyPurchase({ item, category }) {
+    // Religious Artifacts is a repeatable deed — has its own dedicated function
+    if (item.id === "religious-artifacts") {
+      const result = purchaseReligiousArtifacts();
+      if (result) {
+        toast.warning(`🏺 ${result.artifactName} acquired. +${result.mammon} mammon. Probably fake. 🔥 +${gameSettings.eternalLegacy.darkDeedConfig.religiousArtifacts.heat} heat.`);
+      }
+      return;
+    }
+
     if (my.money < item.cost) {
       toast.error("Insufficient funds for this divine acquisition.");
       return;
@@ -1085,6 +1097,11 @@ export function useMegachurchHelpers({
       // Check if celebrity has been friended before (prevents re-friending)
       if (my.eternalLegacy.friendedCelebrityIds.includes(item.id)) {
         toast.warning("You have already established a friendship with this celebrity in the past.");
+        return;
+      }
+    } else if (category === "darkDeeds") {
+      if (my.eternalLegacy.darkDeeds.some((d) => d.id === item.id)) {
+        toast.warning("You've already committed this deed.");
         return;
       }
     } else {
@@ -1117,30 +1134,29 @@ export function useMegachurchHelpers({
 
       // Apply specific mechanics based on item ID
       switch (item.id) {
-        case "shredder":
-          // Slows heat gain - could be implemented as a modifier
-          break;
-
-        case "sterling-cut":
-          // Increase Sterling's cut permanently
-          my.eternalLegacy.sterlingCutModifier += item.cutIncreasase; // Increase Sterling's cut.
+        case "sterling-bribe":
+          my.eternalLegacy.sterlingCutModifier += item.cutIncreasase;
           gameSettings.eternalLegacy.heat.dailyBaseIncrease -= 3;
           toast.success(`${item.name}: Sterling handles the authorities. His cut of your income increases permanently.`);
           break;
 
-        case "tax-attorney":
-          // Reduce Sterling payments but increase heat and scandal
-          toast.success(`${item.name}: Legal protection secured. Sterling's leverage reduced, but congregation scandalized.`);
+        case "kill-sterling":
+          my.eternalLegacy.sterlingAlive = false;
+          toast.error(`${item.name}: Sterling has been... permanently removed. The investigation accelerates.`);
           break;
 
-        case "consultation-tony":
-          // Eliminate Sterling but massive heat increase
-          my.eternalLegacy.sterlingAlive = false;
-          toast.error(`${item.name}: Sterling has been... permanently removed. Heat increased by ${item.heat}`);
+        case "tax-haven":
+          toast.warning(`${item.name}: The IRS is going to love this. +${gameSettings.eternalLegacy.darkDeedConfig.taxHaven.dailyMoney}/day income, +${gameSettings.eternalLegacy.darkDeedConfig.taxHaven.dailyHeat} heat/day.`);
+          break;
+
+        case "tariff-evasion":
+          toast.success(`${item.name}: Your guy knows a guy. All Worshop Zone merchandise is now 25% cheaper — but expect heat every day you shop.`);
           break;
       }
 
-      toast.warning(`🔥 Heat increased by ${item.heat}! Current: ${my.eternalLegacy.heat}/${gameSettings.eternalLegacy.heat.max}`);
+      if (item.heat > 0) {
+        toast.warning(`🔥 Heat increased by ${item.heat}! Current: ${my.eternalLegacy.heat}/${gameSettings.eternalLegacy.heat.max}`);
+      }
     } else if (category === "celebrities") {
       // Handle celebrity friendship acquisition
       const celebrity = { ...item }; // Make a copy to avoid reference issues
@@ -1498,10 +1514,24 @@ export function useMegachurchHelpers({
     // Update heat if Eternal Legacy is active
     if (my.eternalLegacy.isActive) {
       updateHeat(gameSettings.eternalLegacy.heat.dailyBaseIncrease);
-      if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
-        return; // Endgame triggered
+      if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) return;
+
+      // Tax Haven: daily heat and income
+      const taxHavenDeed = my.eternalLegacy.darkDeeds.find(d => d.id === "tax-haven");
+      if (taxHavenDeed) {
+        updateHeat(gameSettings.eternalLegacy.darkDeedConfig.taxHaven.dailyHeat);
+        if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) return;
+        my.money += gameSettings.eternalLegacy.darkDeedConfig.taxHaven.dailyMoney;
+      }
+
+      // Tariff Evasion: heat on days the player shopped
+      const tariffEvasionDeed = my.eternalLegacy.darkDeeds.find(d => d.id === "tariff-evasion");
+      if (tariffEvasionDeed && my.eternalLegacy.worshopPurchasedToday) {
+        updateHeat(gameSettings.eternalLegacy.darkDeedConfig.tariffEvasion.shoppingDayHeat);
+        if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) return;
       }
     }
+    my.eternalLegacy.worshopPurchasedToday = false;
 
     // Calculate pending addiction BEFORE resetting spice consumption
     resetDailySpice();
@@ -1648,6 +1678,39 @@ export function useMegachurchHelpers({
     if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
       triggerEndGame("prison");
     }
+  }
+
+  function purchaseReligiousArtifacts() {
+    const config = gameSettings.eternalLegacy.darkDeedConfig.religiousArtifacts;
+    if (my.money < config.cost) {
+      toast.error("You can't afford this. Even the terrorist artifact network expects payment.");
+      return null;
+    }
+
+    my.money -= config.cost;
+
+    const roll = randomNumber(0, 100);
+    const tier = config.tiers.find(t => roll < t.threshold) ?? config.tiers[config.tiers.length - 1];
+    const artifactName = randomFrom(artifactNames);
+
+    my.eternalLegacy.totalMammon += tier.mammon;
+    updateHeat(config.heat);
+
+    const existingDeed = my.eternalLegacy.darkDeeds.find(d => d.id === "religious-artifacts");
+    if (existingDeed) {
+      existingDeed.purchases = existingDeed.purchases ?? [];
+      existingDeed.purchases.push({ day: my.daysPlayed, mammon: tier.mammon, artifactName });
+    } else {
+      const deedDef = gameSettings.eternalLegacy.shop.darkDeeds.find(d => d.id === "religious-artifacts")!;
+      my.eternalLegacy.darkDeeds.push({
+        ...deedDef,
+        dayPurchased: my.daysPlayed,
+        purchases: [{ day: my.daysPlayed, mammon: tier.mammon, artifactName }],
+      });
+    }
+
+    logGameplayToFirebase("eternalLegacyPurchase", { name: artifactName, collection: "darkDeeds" });
+    return { artifactName, mammon: tier.mammon };
   }
 
   // === Church Inventory Functions ===
@@ -2048,7 +2111,7 @@ export function useMegachurchHelpers({
     closeSterlingInterface,
     showWorshopZone,
     closeWorshopZone,
-    handleWorkshopPurchase,
+    handleWorshopPurchase,
     onBannerAccepted,
     openWorshopZoneForSeraph,
     dismissSeraphNag,
@@ -2077,6 +2140,7 @@ export function useMegachurchHelpers({
     onVoicemailCompleted,
     openEternalLegacyFromVoicemail,
     updateHeat,
+    purchaseReligiousArtifacts,
     openChurchInventory,
     closeChurchInventory,
     openLegacyStatus,

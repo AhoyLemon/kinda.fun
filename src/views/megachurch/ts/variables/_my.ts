@@ -189,6 +189,7 @@ export const my = reactive<My>({
     sterlingCutModifier: 0,
     sterlingAlive: true,
     friendedCelebrityIds: [], // Track celebrity IDs that have been friended before
+    worshopPurchasedToday: false,
   },
   gameOverCause: null,
 });
