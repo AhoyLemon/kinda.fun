@@ -325,7 +325,7 @@ export function useEternalLegacy({
       });
     }
 
-    logGameplayToFirebase("eternalLegacyPurchase", { name: artifactName, collection: "darkDeeds" });
+    logGameplayToFirebase("eternalLegacyPurchase", { name: "Smuggle Religious Artifacts", collection: "darkDeeds" });
     return { artifactName, mammon: tier.mammon };
   }
 
