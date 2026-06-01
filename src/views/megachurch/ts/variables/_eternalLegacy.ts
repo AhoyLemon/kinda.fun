@@ -9,6 +9,12 @@ export interface EternalLegacyShopItem {
   dayPurchased?: number; // Day the deed was purchased
 }
 
+export interface ArtifactPurchase {
+  day: number;
+  mammon: number;
+  artifactName: string;
+}
+
 export interface EternalLegacyDarkDeed {
   id: string;
   name: string;
@@ -17,6 +23,9 @@ export interface EternalLegacyDarkDeed {
   cutIncreasase?: number; // Permanent increase to Sterling's cut
   effect: string;
   dayPurchased?: number; // Day the deed was purchased
+  dailyHeat?: number;
+  dailyMoney?: number;
+  purchases?: ArtifactPurchase[];
 }
 
 export interface EternalLegacyBibleVerse {
@@ -113,10 +122,57 @@ export const eternalLegacyDarkDeeds: EternalLegacyDarkDeed[] = [
     id: "kill-sterling",
     name: "Kill Sterling",
     cost: 1500,
-    heat: 15,
+    heat: 25,
     effect:
       "Pay someone inside the prison to arrange for an accident to happen to Sterling Silver. He will no longer take a cut of your income or bribe authorities, which will hasten their investigation on you.",
   },
+  {
+    id: "tax-haven",
+    name: "Become A Tax Haven",
+    cost: 2500,
+    heat: 0,
+    dailyHeat: 3,
+    dailyMoney: 500,
+    effect:
+      "Extend your church's tax-exempt status to other companies looking to avoid paying taxes. You will file their daily profits as yours, for a fee. The feds will notice — eventually.",
+  },
+  {
+    id: "tariff-evasion",
+    name: "Establish China Import Network",
+    cost: 0,
+    heat: 0,
+    effect:
+      "You know a guy who knows a guy. From now on, all Worshop Zone merchandise arrives via a certain import channel that doesn't ask too many questions — and saves you 25% on every order. On any day you place an order, expect some extra federal attention by morning.",
+  },
+  {
+    id: "religious-artifacts",
+    name: "Smuggle Religious Artifacts",
+    cost: 3500,
+    heat: 10,
+    purchases: [],
+    effect:
+      "Purchase religious artifacts through very suspicious means. The artifacts will probably be fake — but how convincing are they? You can trust the terrorist artifact network, can't you?",
+  },
+];
+
+export const artifactNames: string[] = [
+  "Splinter of the True Cross",
+  "Fragment of the Holy Grail (Unverified)",
+  "Shroud of Turin Swatch (Unsigned)",
+  "Lost Ark Interior Hinge",
+  "Goliath's Molar",
+  "Burning Bush Ash (Sealed, Do Not Open)",
+  "Lot's Wife's Elbow (Pillar of Salt)",
+  "Staff of Moses (Handle End)",
+  "David's Sling (Pre-Giant Encounter)",
+  "Solomon's Temple Cornerstone Chip",
+  "Crown of Thorns Twig",
+  "Manna (Best Before 1200 BCE)",
+  "Elijah's Chariot Wheel Spoke",
+  "Noah's Ark Plank (One of Many)",
+  "Tower of Babel Brick",
+  "Jonah's Whale Tooth",
+  "Original Ten Commandments Fragment (Stone)",
 ];
 
 export const eternalLegacyBibleVerses: EternalLegacyBibleVerse[] = [
