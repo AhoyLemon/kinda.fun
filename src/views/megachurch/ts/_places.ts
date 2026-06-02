@@ -1,4 +1,4 @@
-import { Tags, ReligionNames, Place, PlaceNames } from "./_types";
+import type { Place } from "./_types";
 
 export const places: Place[] = [
   {

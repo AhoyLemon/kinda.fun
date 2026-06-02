@@ -1,29 +1,68 @@
-<script setup>
+<script setup lang="ts">
   import { ref, reactive, onMounted, computed } from "vue";
   import $ from "jquery";
   import { DateTime } from "luxon";
 
   import { randomNumber, randomFrom, shuffle, addCommas, findInArray, removeFromArray, percentOf, sendEvent, dollars } from "@/shared/js/_functions.js";
-  import { parseIndustryIcon, parseName } from "./js/parseFunctions.js";
+  import { parseIndustryIcon, parseName } from "./ts/parseFunctions";
 
   // Data
-  import { allBillionaires } from "./js/data/_billionaires.ts";
-  import { allWarrants } from "./js/data/_warrants.ts";
-  import { schoolData } from "./js/data/_school-data.ts";
+  import { allBillionaires } from "./ts/data/_billionaires";
+  import type { Billionaire } from "./ts/data/_billionaires";
+  import { allWarrants } from "./ts/data/_warrants";
+  import { schoolData } from "./ts/data/_school-data";
+  import type { SchoolData } from "./ts/data/_school-data";
 
   // Sounds
   import { Howl, Howler } from "howler";
-  import { dropSound, lastWords, cheeringSounds } from "./js/partials/_sounds.js";
+  import { dropSound, lastWords, cheeringSounds } from "./ts/partials/_sounds";
 
   // Firebase & VueFire Stuff
   import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
-  import { useFirestore, useCollection, useDocument } from "vuefire";
+  import { useFirestore } from "vuefire";
+  interface Trophy {
+    name: string;
+    netWorth: number;
+  }
+
+  interface ShareScreenState {
+    display: boolean;
+    playDate: number | null;
+    wealthCreatedToday: number | null;
+    playerName: string;
+    amISharing: boolean;
+    isHashInvalid: boolean;
+  }
+
+  interface SchoolsFunded {
+    currentState: string;
+    today: number;
+    allTime: number;
+  }
+
+  interface WealthToday {
+    fullWallets: number;
+    stillAvailable: number;
+    stillAvailablePct: number | null;
+    claimed: number;
+    claimedPct: number | null;
+    total: number;
+  }
+
+  interface MostValuableToday {
+    richestAlive: Billionaire | null;
+    richestDead: Billionaire | null;
+    richestTotal: Billionaire | null;
+  }
+
+  type GameStatus = "loading" | "titleScreen" | "playing" | "gameOver";
   const db = useFirestore();
   const statsRef = doc(db, `stats/guillotine`);
+  const BILLION = 1_000_000_000;
 
-  const gameStatus = ref("loading");
+  const gameStatus = ref<GameStatus>("loading");
 
-  const data = {
+  const data: { allBillionaires: Billionaire[]; stateSchools: SchoolData[] } = {
     allBillionaires: allBillionaires, // <-- Might not be necessary.
     stateSchools: schoolData,
   };
@@ -33,16 +72,22 @@
     choicesPerDay: 5,
   };
 
-  const redistributions = reactive({
+  const redistributions = reactive<{ today: number; allTime: number }>({
     today: 0,
     allTime: 0,
   });
 
-  const comparativeData = reactive({
-    currentSchool: {},
+  const comparativeData = reactive<{ currentSchool: SchoolData }>({
+    currentSchool: schoolData[0],
   });
 
-  const ui = reactive({
+  const ui = reactive<{
+    wealthDisplay: number;
+    currentState: string | null;
+    currentlyBusy: boolean;
+    sortBy: string;
+    shareScreen: ShareScreenState;
+  }>({
     wealthDisplay: 0,
     currentState: null,
     currentlyBusy: false,
@@ -51,13 +96,24 @@
       display: false,
       playDate: null,
       wealthCreatedToday: null,
-      playerName: null,
+      playerName: "",
       amISharing: false,
       isHashInvalid: false,
     },
   });
 
-  const todaysGame = reactive({
+  const todaysGame = reactive<{
+    currentBillionaires: Billionaire[];
+    formerBillionaires: Billionaire[];
+    gameRules: {
+      optionsPerDay: number;
+      choicesPerDay: number;
+      cheats: {
+        active: boolean;
+        unlimitedPlay: boolean;
+      };
+    };
+  }>({
     currentBillionaires: [],
     formerBillionaires: [],
     gameRules: {
@@ -70,7 +126,19 @@
     },
   });
 
-  const player = reactive({
+  const player = reactive<{
+    redistributions: { today: number; allTime: number };
+    wealthCreated: { today: number; allTime: number };
+    history: {
+      firstPlay: number | null;
+      lastPlay: number | null;
+      lastGameResults: {
+        wealthCreated: number | null;
+        trophies: Trophy[];
+      };
+      trophies: Trophy[];
+    };
+  }>({
     redistributions: {
       today: 0,
       allTime: 0,
@@ -90,7 +158,7 @@
     },
   });
 
-  const loadInitialGameState = () => {
+  const loadInitialGameState = (): void => {
     comparativeData.currentSchool = randomFrom(schoolData);
     ui.currentState = comparativeData.currentSchool.state;
     const mmdd = DateTime.now().toFormat("LLdd");
@@ -133,7 +201,7 @@
     gameStatus.value = "titleScreen";
   };
 
-  const startGame = async () => {
+  const startGame = async (): Promise<void> => {
     gameStatus.value = "playing";
     await updateDoc(statsRef, {
       gamesStarted: increment(1),
@@ -142,7 +210,7 @@
     sendEvent("NO MORE BILLIONAIRES", "Game Started", "Fresh Game");
   };
 
-  const getDailyRank = (person) => {
+  const getDailyRank = (person: Billionaire): number => {
     // Get all billionaires for today (both current and executed)
     const allTodaysBillionaires = [...todaysGame.currentBillionaires, ...todaysGame.formerBillionaires];
 
@@ -155,20 +223,21 @@
     return dailyRank;
   };
 
-  const playCheeringSound = (person) => {
+  const playCheeringSound = (person: Billionaire): void => {
     // Get the daily comparative rank within today's list of 20
     const dailyRank = getDailyRank(person);
 
     // Check if the executed billionaire is in the top 5 for today
     if (dailyRank <= 5) {
       const cheerKey = `rank${dailyRank}`;
-      if (cheeringSounds[cheerKey]) {
-        cheeringSounds[cheerKey].play();
+      const cheer = cheeringSounds[cheerKey as keyof typeof cheeringSounds];
+      if (cheer) {
+        cheer.play();
       }
     }
   };
 
-  const dropBlade = (person) => {
+  const dropBlade = (person: Billionaire): void => {
     ui.currentlyBusy = true;
     const newList = todaysGame.currentBillionaires.filter((value) => value.name != person.name);
     setTimeout(() => {
@@ -188,8 +257,8 @@
           // Play cheering sound after last words for top 5 billionaires
           setTimeout(() => {
             playCheeringSound(person);
-          }, "1000");
-        }, "320");
+          }, 1000);
+        }, 320);
         setTimeout(() => {
           $("#G_Head").attr("href", "img/guillotine/heads/empty.png");
           $("#TheG").removeClass("dropped").addClass("raised");
@@ -197,14 +266,14 @@
           setTimeout(() => {
             $("#TheG").removeClass("raised");
             ui.currentlyBusy = false;
-          }, "1000");
-        }, "1000");
-      }, "220");
+          }, 1000);
+        }, 1000);
+      }, 220);
     }, 450);
     todaysGame.currentBillionaires = newList;
   };
 
-  const decapitateBillionaire = (person) => {
+  const decapitateBillionaire = (person: Billionaire): void => {
     const additionalWealth = person.netWorth;
     todaysGame.formerBillionaires.unshift(person);
     redistributions.today++;
@@ -220,7 +289,7 @@
     };
 
     const addMoreDollars = setInterval(() => {
-      const dollarIncrease = parseFloat(randomNumber(1, 100000000) / 1000000000);
+      const dollarIncrease = randomNumber(1, 100000000) / BILLION;
       ui.wealthDisplay += dollarIncrease;
 
       if (ui.wealthDisplay >= player.wealthCreated.today) {
@@ -237,7 +306,7 @@
     sendEvent("NO MORE BILLIONAIRES", "Head Removed", parseName(person.name));
   };
 
-  const doEndGameActions = () => {
+  const doEndGameActions = (): void => {
     ui.sortBy = "highestWealth";
 
     player.history.lastGameResults.trophies = [];
@@ -267,7 +336,7 @@
     $("html, body").animate({ scrollTop: "+=325px" }, 800);
   };
 
-  const saveGameOverData = async (wealthCreated, trophies) => {
+  const saveGameOverData = async (wealthCreated: number, trophies: Trophy[]): Promise<void> => {
     if (!wealthCreated || !trophies) {
       return;
     }
@@ -332,8 +401,8 @@
   //   // 4. set lastRemoved to serverTimeStamp
   // };
 
-  const saveToLocalStorage = () => {
-    localStorage.setItem("totalRedistributions", redistributions.allTime);
+  const saveToLocalStorage = (): void => {
+    localStorage.setItem("totalRedistributions", String(redistributions.allTime));
     localStorage.setItem("totalWealthCreated", player.wealthCreated.allTime.toFixed(3));
     const rightNow = new Date();
     if (!localStorage.getItem("firstPlay")) {
@@ -347,13 +416,13 @@
     }
 
     if (player.history.lastGameResults && player.history.lastGameResults.wealthCreated && player.history.lastGameResults.trophies) {
-      localStorage.setItem("lastGameWealthCreated", player.history.lastGameResults.wealthCreated);
+      localStorage.setItem("lastGameWealthCreated", String(player.history.lastGameResults.wealthCreated));
       const lastGameTrophies = JSON.stringify(player.history.lastGameResults.trophies);
       localStorage.setItem("lastGameTrophies", lastGameTrophies);
     }
   };
 
-  const changeState = () => {
+  const changeState = (): void => {
     const newSchoolData = data.stateSchools.find(({ state }) => state === ui.currentState);
     if (newSchoolData) {
       comparativeData.currentSchool = newSchoolData;
@@ -362,11 +431,11 @@
     }
   };
 
-  const generateCheapHash = (bigValue, smallValue) => {
+  const generateCheapHash = (bigValue: number, smallValue: number): number => {
     return Math.floor((bigValue / smallValue) * 1.153);
   };
 
-  const shareMyScores = () => {
+  const shareMyScores = (): boolean => {
     const p = {
       playDate: player.history.lastPlay ? player.history.lastPlay : Date.now(),
       wealthCreatedToday: Number(player.history.lastGameResults.wealthCreated.toFixed(3)),
@@ -377,11 +446,11 @@
     ui.shareScreen.wealthCreatedToday = p.wealthCreatedToday;
     ui.shareScreen.amISharing = true;
 
-    let newURL = new URL(location.protocol + "//" + location.host + location.pathname);
-    newURL.searchParams.set("playDate", p.playDate);
-    newURL.searchParams.set("wealthCreatedToday", p.wealthCreatedToday);
+    const newURL = new URL(location.protocol + "//" + location.host + location.pathname);
+    newURL.searchParams.set("playDate", String(p.playDate));
+    newURL.searchParams.set("wealthCreatedToday", String(p.wealthCreatedToday));
     const cheapHash = generateCheapHash(p.playDate, p.wealthCreatedToday);
-    newURL.searchParams.set("hash", cheapHash);
+    newURL.searchParams.set("hash", String(cheapHash));
     sendEvent("NO MORE BILLIONAIRES", "Score Shared", p.wealthCreatedToday);
     logTheScoreSharing();
     window.history.replaceState(null, "", newURL);
@@ -389,7 +458,7 @@
 
     // Focus on the player name input.
     setTimeout(() => {
-      const inputEl = document.querySelector("input.player-name");
+      const inputEl = document.querySelector<HTMLInputElement>("input.player-name");
       if (inputEl) {
         inputEl.focus();
       }
@@ -397,26 +466,26 @@
     return false;
   };
 
-  const logTheScoreSharing = async () => {
+  const logTheScoreSharing = async (): Promise<void> => {
     await updateDoc(statsRef, {
       scoresShared: increment(1),
       lastGameStarted: serverTimestamp(),
     });
   };
 
-  const playFromShare = () => {
+  const playFromShare = (): void => {
     ui.shareScreen.display = false;
   };
 
-  const enterYourName = () => {
+  const enterYourName = (): void => {
     if (ui.shareScreen.playerName.length > 2) {
-      let newURL = new URL(location.protocol + "//" + location.host + location.pathname);
+      const newURL = new URL(location.protocol + "//" + location.host + location.pathname);
       newURL.searchParams.set("playerName", ui.shareScreen.playerName);
-      newURL.searchParams.set("wealthCreatedToday", ui.shareScreen.wealthCreatedToday);
-      newURL.searchParams.set("playDate", ui.shareScreen.playDate);
+      newURL.searchParams.set("wealthCreatedToday", String(ui.shareScreen.wealthCreatedToday));
+      newURL.searchParams.set("playDate", String(ui.shareScreen.playDate));
 
       const cheapHash = generateCheapHash(ui.shareScreen.playDate, ui.shareScreen.wealthCreatedToday);
-      newURL.searchParams.set("hash", cheapHash);
+      newURL.searchParams.set("hash", String(cheapHash));
 
       sendEvent("NO MORE BILLIONAIRES", "Score Shared", ui.shareScreen.playerName);
 
@@ -424,18 +493,18 @@
     }
   };
 
-  const padNumber = (number, padAmount) => {
+  const padNumber = (number: number | string, padAmount?: number): string => {
     if (!padAmount) {
       padAmount = 2;
     }
     return String(number).padStart(padAmount, "0");
   };
 
-  const convertToBillion = (number) => {
+  const convertToBillion = (number: number): number => {
     return Number(number * 1000000000);
   };
 
-  const formatDollars = (amount, shouldIConvertToBillion, simpleOutput, trimCents) => {
+  const formatDollars = (amount: number, shouldIConvertToBillion?: boolean, simpleOutput?: boolean, trimCents?: boolean): string => {
     if (!amount) {
       amount = 0;
     }
@@ -450,8 +519,8 @@
     }
 
     if (!simpleOutput) {
-      let dollars = new Intl.NumberFormat("en-US").format(amount);
-      let output = `<sup class="dollar-sign">$</sup>${dollars}<sup class="cents">00</sup>`;
+      const dollars = new Intl.NumberFormat("en-US").format(amount);
+      const output = `<sup class="dollar-sign">$</sup>${dollars}<sup class="cents">00</sup>`;
       return output;
     } else {
       return new Intl.NumberFormat("en-US", {
@@ -462,11 +531,11 @@
     }
   };
 
-  const formatNumber = (number) => {
+  const formatNumber = (number: number): string => {
     return new Intl.NumberFormat("en-US").format(number);
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | number | Date): string => {
     const allMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     const date = new Date(dateString);
@@ -477,7 +546,7 @@
     return `${month} ${day}, ${year}`;
   };
 
-  const sortThoseBillionaires = (arr, sortBy) => {
+  const sortThoseBillionaires = (arr: Billionaire[], sortBy: string): Billionaire[] => {
     if (ui.sortBy == "highestWealth") {
       return arr.slice().sort((a, b) => (a.netWorth < b.netWorth ? 1 : -1));
     } else {
@@ -487,18 +556,18 @@
 
   //////// COMPUTEDS
 
-  const computedRemainingRedistributions = computed(() => {
+  const computedRemainingRedistributions = computed<number>(() => {
     let output = 99; // Default value. If you got this, something went wrong.
     if (redistributions && redistributions.today && gameRules && gameRules.choicesPerDay) {
-      output = parseInt(gameRules.choicesPerDay - redistributions.today);
+      output = Math.max(0, gameRules.choicesPerDay - redistributions.today);
     } else if (gameRules && gameRules.choicesPerDay) {
       output = gameRules.choicesPerDay;
     }
     return output;
   });
 
-  const computedSchoolsFunded = computed(() => {
-    let schoolsFunded = {
+  const computedSchoolsFunded = computed<SchoolsFunded>(() => {
+    const schoolsFunded: SchoolsFunded = {
       currentState: "",
       today: 0,
       allTime: 0,
@@ -520,7 +589,7 @@
     return schoolsFunded;
   });
 
-  const computedWealthToday = computed(() => {
+  const computedWealthToday = computed<WealthToday>(() => {
     let stillAvailable = 0;
     let stillAvailablePct = null;
     let claimed = 0;
@@ -552,12 +621,12 @@
     };
   });
 
-  const computedMostValuableToday = computed(() => {
+  const computedMostValuableToday = computed<MostValuableToday>(() => {
     let maxNetWorthAlive = 0;
-    let richestAlive = {};
+    let richestAlive: Billionaire | null = null;
     let maxNetWorthDead = 0;
-    let richestDead = {};
-    let richestTotal = {};
+    let richestDead: Billionaire | null = null;
+    let richestTotal: Billionaire | null = null;
 
     if (todaysGame.currentBillionaires && todaysGame.currentBillionaires.length > 0) {
       maxNetWorthAlive = Math.max(...todaysGame.currentBillionaires.map(({ netWorth }) => netWorth));
@@ -584,28 +653,32 @@
     };
   });
 
-  const computedMostValuableAllTime = computed(() => {
-    let richestPerson = {};
+  const computedMostValuableAllTime = computed<Trophy | null>(() => {
+    let richestPerson: Trophy | null = null;
     let maxNetWorth = 0;
-    if (player.history.trophies) {
+    if (player.history.trophies && player.history.trophies.length > 0) {
       maxNetWorth = Math.max(...player.history.trophies.map(({ netWorth }) => netWorth));
-      richestPerson = player.history.trophies.find(({ netWorth }) => netWorth === maxNetWorth);
+      richestPerson = player.history.trophies.find(({ netWorth }) => netWorth === maxNetWorth) ?? null;
     }
-    return (richestPerson = richestPerson);
+    return richestPerson;
   });
 
-  const computedToday = computed(() => {
+  const computedToday = computed<string>(() => {
     // const theDay = Number(moment().format("D"));
     const theDay = Number(DateTime.now().toFormat("D"));
-    let daySuffix;
+    let daySuffix: string;
     switch (theDay) {
-      case 1 || 21 || 31:
+      case 1:
+      case 21:
+      case 31:
         daySuffix = "st";
         break;
-      case 2 || 22:
+      case 2:
+      case 22:
         daySuffix = "nd";
         break;
-      case 3 || 23:
+      case 3:
+      case 23:
         daySuffix = "rd";
         break;
       default:
@@ -616,7 +689,7 @@
     return `${DateTime.now().toFormat("cccc, LLLL d")}<sup>${daySuffix}</sup>`;
   });
 
-  const computedDidYouAlreadyPlayToday = computed(() => {
+  const computedDidYouAlreadyPlayToday = computed<boolean>(() => {
     const today = new Date();
     if (gameStatus.value == "gameOver") {
       return true;
@@ -629,7 +702,7 @@
     }
   });
 
-  const loadShareDataFromURL = () => {
+  const loadShareDataFromURL = (): void => {
     const urlParams = new URLSearchParams(window.location.search);
 
     const playerName = urlParams.get("playerName");
@@ -642,20 +715,20 @@
       if (playDate && wealthCreatedToday && hash) {
         const expectedHash = generateCheapHash(Number(playDate), Number(wealthCreatedToday));
         if (Number(hash) !== expectedHash) {
-          ui.shareScreen.playerName = playerName;
+          ui.shareScreen.playerName = playerName ?? "";
           ui.shareScreen.isHashInvalid = true;
           ui.shareScreen.display = true;
           return;
         }
       } else if (playDate || wealthCreatedToday) {
-        ui.shareScreen.playerName = playerName;
+        ui.shareScreen.playerName = playerName ?? "";
         ui.shareScreen.isHashInvalid = true;
         ui.shareScreen.display = true;
         return;
       }
 
       // Load the values into the UI
-      ui.shareScreen.playerName = playerName;
+      ui.shareScreen.playerName = playerName ?? "";
       ui.shareScreen.wealthCreatedToday = wealthCreatedToday ? Number(wealthCreatedToday) : null;
       ui.shareScreen.playDate = playDate ? Number(playDate) : null;
       ui.shareScreen.isHashInvalid = false;
@@ -670,7 +743,7 @@
     loadShareDataFromURL();
   });
 
-  const executeAllBillionaires = async () => {
+  const executeAllBillionaires = async (): Promise<void> => {
     const { doc, runTransaction, getDoc, serverTimestamp } = await import("firebase/firestore");
     const db = useFirestore();
     for (const billionaire of allBillionaires) {

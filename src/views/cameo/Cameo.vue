@@ -96,21 +96,7 @@
 
   const gimmick = reactive({
     selectorVisible: false,
-    rounds: [
-      gimmickRounds.saul,
-      gimmickRounds.sopranos,
-      gimmickRounds.dogs,
-      gimmickRounds.daddies,
-      gimmickRounds.startrek,
-      gimmickRounds.topchef,
-      gimmickRounds.wrestlers,
-      gimmickRounds.porn,
-      gimmickRounds.standups,
-      gimmickRounds.georges,
-      gimmickRounds.metalheads,
-      gimmickRounds.richards,
-      gimmickRounds.trumpworld,
-    ],
+    rounds: Object.values(gimmickRounds),
     selected: {},
     selectedIndex: "",
     isSelected: false,
@@ -124,6 +110,15 @@
 
   const startSinglePlayerGame = async () => {
     game.mode = "singleplayer";
+
+    if (gimmick.isSelected && gimmick.selected) {
+      const key = Object.keys(gimmickRounds)[gimmick.selectedIndex];
+      if (key) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("game", key);
+        history.replaceState({}, "", url);
+      }
+    }
 
     generateGameCelebrities();
 
@@ -870,9 +865,12 @@
   onMounted(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("game")) {
-      const gameName = urlParams.get("game");
+      const gameParam = urlParams.get("game");
       gimmick.selectorVisible = true;
-      const i = gimmick.rounds.findIndex((r) => r.name === gameName);
+      let i = Object.keys(gimmickRounds).indexOf(gameParam);
+      if (i === -1) {
+        i = gimmick.rounds.findIndex((r) => r.name === gameParam);
+      }
       if (i !== -1) {
         gimmick.selectedIndex = i;
         gimmick.selected = gimmick.rounds[i];

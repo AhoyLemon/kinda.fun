@@ -1,7 +1,6 @@
 import { reactive } from "vue";
 import { places } from "../_places";
-import { My } from "../_types";
-import { EternalLegacyCelebrity } from "./_eternalLegacy";
+import type { My } from "../_types";
 
 export const my = reactive<My>({
   name: "",

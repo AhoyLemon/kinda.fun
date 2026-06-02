@@ -1,6 +1,7 @@
+import { Howl } from "howler";
+
 const audioSrc = "audio/";
 
-import { Howl } from "howler";
 /////////////////////////////////
 // Lobby Sounds
 export const musicLobby = new Howl({

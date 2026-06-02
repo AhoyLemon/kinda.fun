@@ -1,6 +1,5 @@
 // Allowed values
-import { Tags, ReligionNames } from "./_types";
-import { religions } from "./_religions";
+import type { Tags, ReligionNames } from "./_types";
 
 export interface Theme {
   id: number; // UID this theme

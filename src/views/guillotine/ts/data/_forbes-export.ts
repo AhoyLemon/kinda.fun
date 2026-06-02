@@ -1,4 +1,4 @@
-const forbesList = [
+export const forbesList = [
   {
     key: "0",
     rank: "1",

@@ -270,7 +270,7 @@ export function calculateDonations(
   let totalDonations = 0;
   const likers = crowd.filter((p) => p.reaction === "like");
 
-  for (const liker of likers) {
+  for (let i = 0; i < likers.length; i++) {
     if (Math.random() * 100 < settings.donation.chance) {
       const donation = randomNumber(
         settings.donation.min,

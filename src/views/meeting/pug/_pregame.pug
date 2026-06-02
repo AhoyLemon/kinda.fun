@@ -1,9 +1,11 @@
 .pregame-lobby(v-if="!game.isGameStarted")
 
-  .room-code(v-if="game.roomCode")
+  .room-code(v-if="game.roomCode" :class="{ 'is-full': isRoomFull }")
     .label your room code
     .display {{game.roomCode}}
-    .how-to-share(v-if="game.players.length > 0") Share this URL to invite your friends to play.
+    template(v-if="game.players.length > 0")
+      .how-to-share(v-if="isRoomFull") This game is full
+      .how-to-share(v-else) Share this URL to invite your friends to play.
   
   template(v-if="game.roomData")
     .panel
@@ -21,7 +23,7 @@
           label(for="YourJobTitle") Make Up A Job Title
           input#YourJobTitle(type="text" v-model="you.jobTitleInput" placeholder="ex: Cat Herder" autocomplete="on" data-1p-ignore)
         .button-holder
-          button(type="submit")
+          button(type="submit" :disabled="!canSaveProfile")
             span(v-if="amISignedIn") Change Profile
             span(v-else) Sign In
 
@@ -30,7 +32,13 @@
           span(v-tippy="{ content: settings.minPlayers + ' or more players required', delay: [100,450]}")
             button.start-game(disabled) Start Game
         template(v-if="game.players.length >= settings.minPlayers")
-          .start-game-wrapper
+          .dealing-in-progress(v-if="isDealing")
+            .dealing-dots
+              span .
+              span .
+              span .
+            .dealing-message Dealing out your cards for the meeting
+          .start-game-wrapper(v-else)
             label When all players are ready...
             button.start-game(@click="shuffleUpAndDeal()") Start The Game
 
