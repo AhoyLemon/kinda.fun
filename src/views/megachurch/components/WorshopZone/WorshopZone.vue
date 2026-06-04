@@ -54,14 +54,6 @@
         <!-- Merch Tab -->
         <div v-if="activeTab === 'merch'" class="tab-content">
           <h2>Hallway Merchandise</h2>
-          <div class="shipping-notice">
-            <img src="/img/megachurch/worshop/truck.gif" />
-            <p>
-              <strong>NEXT DAY SHIPPING!!!!</strong> All the merchandise {{ shopName }} will arrive at your church the next moring! Shipping is FREE except for
-              the cost of shipping, which is {{ dollars(shippingCost) }}.
-            </p>
-          </div>
-
           <div class="product-grid">
             <!-- Holy Water Bottles -->
             <div class="product-card">
@@ -522,7 +514,6 @@
   import { religions } from "../../ts/_religions";
   import { dollars } from "../../../../shared/ts/_functions";
 
-  const shippingCost = 15; // Fixed shipping cost for all merch
   const shopName = "Da Worshop Zone";
 
   type MerchTypes = "holyWater" | "prayerCandles" | "weightLossTea" | "beachTowel" | "exorcismKit";
@@ -603,7 +594,7 @@
     const hasTariffEvasion = my.eternalLegacy.darkDeeds.some(d => d.id === "tariff-evasion");
     const discount = hasTariffEvasion ? gameSettings.eternalLegacy.darkDeedConfig.tariffEvasion.discount : 0;
     const itemCost = quantity * costPerItem * (1 - discount);
-    return itemCost + shippingCost;
+    return itemCost;
   }
 
   function buyMerch(merchType: MerchTypes) {
