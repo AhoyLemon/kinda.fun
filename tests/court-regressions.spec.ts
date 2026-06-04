@@ -131,8 +131,8 @@ describe("Court regressions", () => {
   });
 
   it("uses strict abstention bounds around threshold", () => {
-    const courtVue = fs.readFileSync(path.join(courtRootPath, "Court.vue"), "utf8");
-    expect(courtVue).toContain("return l > -t && l < t;");
+    const courtComputeds = fs.readFileSync(path.join(courtRootPath, "ts/_useCourtComputeds.ts"), "utf8");
+    expect(courtComputeds).toContain("return l > -t && l < t;");
   });
 });
 

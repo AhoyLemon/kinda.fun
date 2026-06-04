@@ -2,6 +2,7 @@
   import { onMounted, reactive, ref, computed, watchEffect, watch } from "vue";
   import { allCards } from "./ts/_allCards";
   import { eventCards } from "./ts/_eventCards";
+  import { performSteal } from "./ts/_performSteal";
   import { randomNumber, randomFrom, shuffle, preceisePercentOf } from "@/shared/js/_functions.js";
 
   // Toasts
@@ -244,6 +245,10 @@
     if (!amISignedIn.value) {
       const currentPlayersSnap = await getDocs(collection(db, "rooms", game.roomCode, "players"));
       if (currentPlayersSnap.size >= settings.maxPlayers) {
+        toast("This room is full — no more players can join.", {
+          position: POSITION.BOTTOM_CENTER,
+          timeout: 8000,
+        });
         return;
       }
     }
@@ -546,8 +551,9 @@
     logCardScore(card);
   };
 
-  const performGuess = () => {
-    const yourGuess = you.guess.toLowerCase().replace(/"/g, "");
+  const performGuess = async () => {
+    const yourGuess = you.guess.toLowerCase().replace(/”/g, “”);
+    you.guess = “”; // clear before await to prevent double-submit while transaction is in-flight
 
     let isThatPhraseYours = false;
     let isAlreadyPlayed = false;
@@ -570,9 +576,9 @@
 
           if (player.playerID === you.playerID) {
             isThatPhraseYours = true;
-          } else if (card.status === "played") {
+          } else if (card.status === “played”) {
             isAlreadyPlayed = true;
-          } else if (card.status === "stolen") {
+          } else if (card.status === “stolen”) {
             isAlreadyStolen = true;
           } else {
             isSuccess = true;
@@ -583,20 +589,20 @@
     }
 
     if (isSuccess === true) {
-      rewardGoodGuess(match, cardHolder);
+      await rewardGoodGuess(match, cardHolder);
     } else if (isAlreadyPlayed) {
       toast(
         {
           component: MyToast,
           props: {
-            title: "Too Late!",
+            title: “Too Late!”,
             // points: match.points,
-            message: `“<strong>${match.phrase}</strong>” has already been scored.`,
+            message: `”<strong>${match.phrase}</strong>” has already been scored.`,
           },
         },
         {
           position: POSITION.BOTTOM_LEFT,
-          toastClassName: "yellow",
+          toastClassName: “yellow”,
           timeout: 8000,
           icon: false,
         },
@@ -606,23 +612,22 @@
         {
           component: MyToast,
           props: {
-            title: "Too Late!",
-            message: `“${match.phrase ?? yourGuess}” has already been stolen.`,
+            title: “Too Late!”,
+            message: `”${match.phrase ?? yourGuess}” has already been stolen.`,
           },
         },
         {
           position: POSITION.BOTTOM_LEFT,
-          toastClassName: "yellow",
+          toastClassName: “yellow”,
           timeout: 8000,
           icon: false,
         },
       );
     } else if (isThatPhraseYours) {
-      severelyPenalizeTerribleGuess(match, you.guess);
+      severelyPenalizeTerribleGuess(match, yourGuess);
     } else {
-      penalizeBadGuess(you.guess);
+      penalizeBadGuess(yourGuess);
     }
-    you.guess = "";
   };
 
   const penalizeBadGuess = async (yourGuess) => {
@@ -708,37 +713,60 @@
     await addDoc(activitiesRef, newActivity);
   };
 
-  const rewardGoodGuess = (match, cardHolder) => {
-    toast(
-      {
-        component: MyToast,
-        props: {
-          title: "Got 'em!",
-          points: match.points,
-          message: `<strong>${cardHolder.name}</strong> had “<strong>${match.phrase}</strong>.”`,
+  const rewardGoodGuess = async (match, cardHolder) => {
+    const result = await performSteal(db, game.roomCode, match, cardHolder, you);
+
+    if (result === “success”) {
+      toast(
+        {
+          component: MyToast,
+          props: {
+            title: “Got 'em!”,
+            points: match.points,
+            message: `<strong>${cardHolder.name}</strong> had “<strong>${match.phrase}</strong>.”`,
+          },
         },
-      },
-      {
-        position: POSITION.BOTTOM_LEFT,
-        toastClassName: "green",
-        timeout: 8000,
-        icon: false,
-      },
-    );
-
-    //console.log(`rooms/${game.roomCode}/players/${you.playerID}`);
-    const playerRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}`);
-    updateDoc(playerRef, {
-      score: increment(match.points),
-    });
-
-    const cardRef = doc(db, `rooms/${game.roomCode}/players/${cardHolder.playerID}/hand/${match.id}`);
-    updateDoc(cardRef, {
-      status: "stolen",
-      stolenBy: you.name,
-    });
-
-    logCardTheft(match);
+        {
+          position: POSITION.BOTTOM_LEFT,
+          toastClassName: “green”,
+          timeout: 8000,
+          icon: false,
+        },
+      );
+      logCardTheft(match);
+    } else if (result === “played”) {
+      toast(
+        {
+          component: MyToast,
+          props: {
+            title: “Too Late!”,
+            message: `”<strong>${match.phrase}</strong>” has already been scored.`,
+          },
+        },
+        {
+          position: POSITION.BOTTOM_LEFT,
+          toastClassName: “yellow”,
+          timeout: 8000,
+          icon: false,
+        },
+      );
+    } else if (result === “stolen”) {
+      toast(
+        {
+          component: MyToast,
+          props: {
+            title: “Too Late!”,
+            message: `”${match.phrase}” has already been stolen.`,
+          },
+        },
+        {
+          position: POSITION.BOTTOM_LEFT,
+          toastClassName: “yellow”,
+          timeout: 8000,
+          icon: false,
+        },
+      );
+    }
   };
 
   const createRoom = async () => {
