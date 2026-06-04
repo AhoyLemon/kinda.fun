@@ -2,6 +2,8 @@ import { gameSettings } from "./variables/_gameSettings";
 import { religions } from "./_religions";
 import { soundWhoopsYoureDead, soundInPrison } from "./variables/_sounds";
 import type { My, UI } from "./_types";
+import { randomNumber, randomFrom } from "../../../shared/ts/_functions";
+import { artifactNames } from "./variables/_eternalLegacy";
 
 /* eslint-disable no-unused-vars */
 interface ToastApi {
@@ -48,6 +50,14 @@ export function useEternalLegacy({
   }
 
   function handleEternalLegacyPurchase({ item, category }) {
+    if (item.id === "religious-artifacts") {
+      const result = purchaseReligiousArtifacts();
+      if (result) {
+        toast.warning(`🏺 ${result.artifactName} acquired. +${result.mammon} mammon. Probably fake. 🔥 +${gameSettings.eternalLegacy.darkDeedConfig.religiousArtifacts.heat} heat.`);
+      }
+      return;
+    }
+
     if (my.money < item.cost) {
       toast.error("Insufficient funds for this divine acquisition.");
       return;
@@ -64,6 +74,11 @@ export function useEternalLegacy({
         toast.warning(
           "You have already established a friendship with this celebrity in the past.",
         );
+        return;
+      }
+    } else if (category === "darkDeeds") {
+      if (my.eternalLegacy.darkDeeds.some((d) => d.id === item.id)) {
+        toast.warning("You already own this item.");
         return;
       }
     } else {
@@ -101,11 +116,7 @@ export function useEternalLegacy({
 
       // Apply specific mechanics based on item ID
       switch (item.id) {
-        case "shredder":
-          // Slows heat gain - could be implemented as a modifier
-          break;
-
-        case "sterling-cut":
+        case "sterling-bribe":
           // Increase Sterling's cut permanently
           my.eternalLegacy.sterlingCutModifier += item.cutIncreasase; // Increase Sterling's cut.
           gameSettings.eternalLegacy.heat.dailyBaseIncrease -= 3;
@@ -114,25 +125,28 @@ export function useEternalLegacy({
           );
           break;
 
-        case "tax-attorney":
-          // Reduce Sterling payments but increase heat and scandal
-          toast.success(
-            `${item.name}: Legal protection secured. Sterling's leverage reduced, but congregation scandalized.`,
-          );
-          break;
-
-        case "consultation-tony":
+        case "kill-sterling":
           // Eliminate Sterling but massive heat increase
           my.eternalLegacy.sterlingAlive = false;
           toast.error(
             `${item.name}: Sterling has been... permanently removed. Heat increased by ${item.heat}`,
           );
           break;
+
+        case "tax-haven":
+          toast.warning(`${item.name}: The IRS is going to love this. +${gameSettings.eternalLegacy.darkDeedConfig.taxHaven.dailyMoney}/day income, +${gameSettings.eternalLegacy.darkDeedConfig.taxHaven.dailyHeat} heat/day.`);
+          break;
+
+        case "tariff-evasion":
+          toast.success(`${item.name}: Your guy knows a guy. All Worshop Zone merchandise is now 25% cheaper — but expect heat every day you shop.`);
+          break;
       }
 
-      toast.warning(
-        `🔥 Heat increased by ${item.heat}! Current: ${my.eternalLegacy.heat}/${gameSettings.eternalLegacy.heat.max}`,
-      );
+      if (item.heat > 0) {
+        toast.warning(
+          `🔥 Heat increased by ${item.heat}! Current: ${my.eternalLegacy.heat}/${gameSettings.eternalLegacy.heat.max}`,
+        );
+      }
     } else if (category === "celebrities") {
       // Handle celebrity friendship acquisition
       const celebrity = { ...item }; // Make a copy to avoid reference issues
@@ -280,6 +294,39 @@ export function useEternalLegacy({
     if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
       triggerEndGame("prison");
     }
+  }
+
+  function purchaseReligiousArtifacts() {
+    const config = gameSettings.eternalLegacy.darkDeedConfig.religiousArtifacts;
+    if (my.money < config.cost) {
+      toast.error("You can't afford this. Even the terrorist artifact network expects payment.");
+      return null;
+    }
+
+    my.money -= config.cost;
+
+    const roll = randomNumber(0, 100);
+    const tier = config.tiers.find(t => roll < t.threshold) ?? config.tiers[config.tiers.length - 1];
+    const artifactName = randomFrom(artifactNames);
+
+    my.eternalLegacy.totalMammon += tier.mammon;
+    updateHeat(config.heat);
+
+    const existingDeed = my.eternalLegacy.darkDeeds.find(d => d.id === "religious-artifacts");
+    if (existingDeed) {
+      existingDeed.purchases = existingDeed.purchases ?? [];
+      existingDeed.purchases.push({ day: my.daysPlayed, mammon: tier.mammon, artifactName });
+    } else {
+      const deedDef = gameSettings.eternalLegacy.shop.darkDeeds.find(d => d.id === "religious-artifacts")!;
+      my.eternalLegacy.darkDeeds.push({
+        ...deedDef,
+        dayPurchased: my.daysPlayed,
+        purchases: [{ day: my.daysPlayed, mammon: tier.mammon, artifactName }],
+      });
+    }
+
+    logGameplayToFirebase("eternalLegacyPurchase", { name: "Smuggle Religious Artifacts", collection: "darkDeeds" });
+    return { artifactName, mammon: tier.mammon };
   }
 
   // === Church Inventory Functions ===
@@ -559,6 +606,7 @@ export function useEternalLegacy({
     showEternalLegacyShop,
     closeEternalLegacyShop,
     handleEternalLegacyPurchase,
+    purchaseReligiousArtifacts,
     checkEternalLegacyTrigger,
     triggerEternalLegacy,
     playEternalLegacyVoicemail,

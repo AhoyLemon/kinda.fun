@@ -3,6 +3,7 @@ import {
   EternalLegacyDarkDeed,
   EternalLegacyBibleVerse,
   EternalLegacyCelebrity,
+  ArtifactPurchase,
 } from "./variables/_eternalLegacy";
 
 // ================= GENERAL TYPES =================
@@ -429,6 +430,21 @@ export interface GameSettings {
       celebrities: EternalLegacyCelebrity[];
     };
     bibleVerses: EternalLegacyBibleVerse[];
+    darkDeedConfig: {
+      taxHaven: {
+        dailyHeat: number;
+        dailyMoney: number;
+      };
+      religiousArtifacts: {
+        heat: number;
+        cost: number;
+        tiers: { threshold: number; mammon: number }[];
+      };
+      tariffEvasion: {
+        discount: number;
+        shoppingDayHeat: number;
+      };
+    };
   };
 }
 
@@ -544,6 +560,7 @@ export interface My {
     sterlingCutModifier: number; // Additional percentage points added to Sterling's cut
     sterlingAlive: boolean;
     friendedCelebrityIds: string[]; // IDs of celebrities that have been friended before (prevents re-friending)
+    worshopPurchasedToday: boolean; // True if any Worshop Zone purchase was made today; used by Tariff Evasion heat check
   };
   gameOverCause: null | "drug overdose" | "prison"; // If endgame is triggered (not null), what caused game over
 }

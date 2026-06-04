@@ -177,9 +177,9 @@ export function useSpiceDayHelpers(
     ui.churchInventory.isOpen = false; // Auto-close ChurchInventory when WorshopZone closes
   }
 
-  function handleWorkshopPurchase(purchaseData: any) {
-    // Log workshop purchases to Firebase
-    logGameplayToFirebase("workshopPurchase", purchaseData);
+  function handleWorshopPurchase(purchaseData: any) {
+    // Log worshop purchases to Firebase
+    logGameplayToFirebase("worshopPurchase", purchaseData);
   }
 
   function onBannerAccepted() {
@@ -408,7 +408,23 @@ export function useSpiceDayHelpers(
       if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) {
         return; // Endgame triggered
       }
+
+      // Tax Haven: daily heat and income
+      const taxHavenDeed = my.eternalLegacy.darkDeeds.find(d => d.id === "tax-haven");
+      if (taxHavenDeed) {
+        callbacks.updateHeat(gameSettings.eternalLegacy.darkDeedConfig.taxHaven.dailyHeat);
+        if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) return;
+        my.money += gameSettings.eternalLegacy.darkDeedConfig.taxHaven.dailyMoney;
+      }
+
+      // Tariff Evasion: heat on days the player shopped
+      const tariffEvasionDeed = my.eternalLegacy.darkDeeds.find(d => d.id === "tariff-evasion");
+      if (tariffEvasionDeed && my.eternalLegacy.worshopPurchasedToday) {
+        callbacks.updateHeat(gameSettings.eternalLegacy.darkDeedConfig.tariffEvasion.shoppingDayHeat);
+        if (my.eternalLegacy.heat >= gameSettings.eternalLegacy.heat.max) return;
+      }
     }
+    my.eternalLegacy.worshopPurchasedToday = false;
 
     // Calculate pending addiction BEFORE resetting spice consumption
     resetDailySpice();
@@ -510,7 +526,7 @@ export function useSpiceDayHelpers(
     closePlugInterface,
     showWorshopZone,
     closeWorshopZone,
-    handleWorkshopPurchase,
+    handleWorshopPurchase,
     onBannerAccepted,
     openWorshopZoneForSeraph,
     dismissSeraphNag,

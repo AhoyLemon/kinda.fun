@@ -1,6 +1,6 @@
 <template>
-  <div class="workshop-zone-overlay" @click="closeWorkshop">
-    <div class="workshop-zone" @click.stop>
+  <div class="worshop-zone-overlay" @click="closeWorshop">
+    <div class="worshop-zone" @click.stop>
       <!-- IE6 Browser Chrome -->
       <div class="browser-chrome">
         <div class="title-bar">
@@ -8,7 +8,7 @@
           <div class="window-controls">
             <button class="minimize-btn">_</button>
             <button class="maximize-btn">□</button>
-            <button class="close-btn" @click="closeWorkshop">×</button>
+            <button class="close-btn" @click="closeWorshop">×</button>
           </div>
         </div>
 
@@ -577,7 +577,7 @@
     return my.church.location.religions.map((locReligion) => religions.find((r) => r.id === locReligion.id)).filter(Boolean);
   });
 
-  function closeWorkshop() {
+  function closeWorshop() {
     emit("close");
   }
 
@@ -600,7 +600,9 @@
   function getMerchCost(merchType: MerchTypes) {
     const quantity = merchQuantities.value[merchType];
     const costPerItem = gameSettings.church.merch[merchType].cost;
-    const itemCost = quantity * costPerItem;
+    const hasTariffEvasion = my.eternalLegacy.darkDeeds.some(d => d.id === "tariff-evasion");
+    const discount = hasTariffEvasion ? gameSettings.eternalLegacy.darkDeedConfig.tariffEvasion.discount : 0;
+    const itemCost = quantity * costPerItem * (1 - discount);
     return itemCost + shippingCost;
   }
 
@@ -610,6 +612,7 @@
 
     if (my.money >= cost) {
       my.money -= cost;
+      my.eternalLegacy.worshopPurchasedToday = true;
 
       let merchName = "";
       if (merchType === "holyWater") {

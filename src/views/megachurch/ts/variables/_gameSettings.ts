@@ -176,6 +176,25 @@ export const gameSettings = reactive<GameSettings>({
       dailyBaseIncrease: 9, // Base daily heat increase
       earningsMultiplier: 0.01, // Heat increase per dollar earned
     },
+    darkDeedConfig: {
+      taxHaven: {
+        dailyHeat: 3,
+        dailyMoney: 500,
+      },
+      religiousArtifacts: {
+        heat: 10,
+        cost: 3500,
+        tiers: [
+          { threshold: 60, mammon: 125 },
+          { threshold: 90, mammon: 175 },
+          { threshold: 100, mammon: 250 },
+        ],
+      },
+      tariffEvasion: {
+        discount: 0.25,
+        shoppingDayHeat: 5,
+      },
+    },
     shop: {
       mammonItems: eternalLegacyShopItems,
       darkDeeds: eternalLegacyDarkDeeds,
