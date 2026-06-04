@@ -121,7 +121,7 @@ export const eternalLegacyDarkDeeds: EternalLegacyDarkDeed[] = [
   {
     id: "kill-sterling",
     name: "Kill Sterling",
-    cost: 1500,
+    cost: 1800,
     heat: 25,
     effect:
       "Pay someone inside the prison to arrange for an accident to happen to Sterling Silver. He will no longer take a cut of your income or bribe authorities, which will hasten their investigation on you.",
@@ -129,10 +129,10 @@ export const eternalLegacyDarkDeeds: EternalLegacyDarkDeed[] = [
   {
     id: "tax-haven",
     name: "Become A Tax Haven",
-    cost: 2500,
+    cost: 1500,
     heat: 0,
     dailyHeat: 3,
-    dailyMoney: 500,
+    dailyMoney: 750,
     effect:
       "Extend your church's tax-exempt status to other companies looking to avoid paying taxes. You will file their daily profits as yours, for a fee. The feds will notice — eventually.",
   },
