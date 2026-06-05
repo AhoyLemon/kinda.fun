@@ -766,22 +766,8 @@
           icon: false,
         },
       );
-    } else if (result === "not_found") {
-      toast(
-        {
-          component: MyToast,
-          props: {
-            title: "Card Not Found",
-            message: `”${match.phrase}” could not be found.`,
-          },
-        },
-        {
-          position: POSITION.BOTTOM_LEFT,
-          toastClassName: "red",
-          timeout: 8000,
-          icon: false,
-        },
-      );
+    } else if (result === “not_found”) {
+      console.error(`performSteal: card “${match.phrase}” (id: ${match.id}) was not found in Firestore — this should not be possible.`);
     }
   };
 
