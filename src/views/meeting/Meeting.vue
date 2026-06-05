@@ -766,7 +766,7 @@
           icon: false,
         },
       );
-    } else if (result === “not_found”) {
+    } else if (result === "not_found") {
       console.error(`performSteal: card “${match.phrase}” (id: ${match.id}) was not found in Firestore — this should not be possible.`);
     }
   };
