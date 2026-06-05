@@ -552,8 +552,8 @@
   };
 
   const performGuess = async () => {
-    const yourGuess = you.guess.toLowerCase().replace(/”/g, “”);
-    you.guess = “”; // clear before await to prevent double-submit while transaction is in-flight
+    const yourGuess = you.guess.toLowerCase().replace(/”/g, "");
+    you.guess = ""; // clear before await to prevent double-submit while transaction is in-flight
 
     let isThatPhraseYours = false;
     let isAlreadyPlayed = false;
@@ -576,9 +576,9 @@
 
           if (player.playerID === you.playerID) {
             isThatPhraseYours = true;
-          } else if (card.status === “played”) {
+          } else if (card.status === "played") {
             isAlreadyPlayed = true;
-          } else if (card.status === “stolen”) {
+          } else if (card.status === "stolen") {
             isAlreadyStolen = true;
           } else {
             isSuccess = true;
@@ -595,14 +595,14 @@
         {
           component: MyToast,
           props: {
-            title: “Too Late!”,
+            title: "Too Late!",
             // points: match.points,
             message: `”<strong>${match.phrase}</strong>” has already been scored.`,
           },
         },
         {
           position: POSITION.BOTTOM_LEFT,
-          toastClassName: “yellow”,
+          toastClassName: "yellow",
           timeout: 8000,
           icon: false,
         },
@@ -612,13 +612,13 @@
         {
           component: MyToast,
           props: {
-            title: “Too Late!”,
+            title: "Too Late!",
             message: `”${match.phrase ?? yourGuess}” has already been stolen.`,
           },
         },
         {
           position: POSITION.BOTTOM_LEFT,
-          toastClassName: “yellow”,
+          toastClassName: "yellow",
           timeout: 8000,
           icon: false,
         },
@@ -638,7 +638,7 @@
         props: {
           title: "Nope!",
           points: yourLoss,
-          message: `Nobody had “<strong>${you.guess}</strong>”.`,
+          message: `Nobody had “<strong>${yourGuess}</strong>”.`,
         },
       },
       {
@@ -716,52 +716,68 @@
   const rewardGoodGuess = async (match, cardHolder) => {
     const result = await performSteal(db, game.roomCode, match, cardHolder, you);
 
-    if (result === “success”) {
+    if (result === "success") {
       toast(
         {
           component: MyToast,
           props: {
-            title: “Got 'em!”,
+            title: "Got 'em!",
             points: match.points,
             message: `<strong>${cardHolder.name}</strong> had “<strong>${match.phrase}</strong>.”`,
           },
         },
         {
           position: POSITION.BOTTOM_LEFT,
-          toastClassName: “green”,
+          toastClassName: "green",
           timeout: 8000,
           icon: false,
         },
       );
       logCardTheft(match);
-    } else if (result === “played”) {
+    } else if (result === "played") {
       toast(
         {
           component: MyToast,
           props: {
-            title: “Too Late!”,
+            title: "Too Late!",
             message: `”<strong>${match.phrase}</strong>” has already been scored.`,
           },
         },
         {
           position: POSITION.BOTTOM_LEFT,
-          toastClassName: “yellow”,
+          toastClassName: "yellow",
           timeout: 8000,
           icon: false,
         },
       );
-    } else if (result === “stolen”) {
+    } else if (result === "stolen") {
       toast(
         {
           component: MyToast,
           props: {
-            title: “Too Late!”,
+            title: "Too Late!",
             message: `”${match.phrase}” has already been stolen.`,
           },
         },
         {
           position: POSITION.BOTTOM_LEFT,
-          toastClassName: “yellow”,
+          toastClassName: "yellow",
+          timeout: 8000,
+          icon: false,
+        },
+      );
+    } else if (result === "not_found") {
+      toast(
+        {
+          component: MyToast,
+          props: {
+            title: "Card Not Found",
+            message: `”${match.phrase}” could not be found.`,
+          },
+        },
+        {
+          position: POSITION.BOTTOM_LEFT,
+          toastClassName: "red",
           timeout: 8000,
           icon: false,
         },
