@@ -8,6 +8,7 @@
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
   import MyToast from "./vue/MyToast.vue";
+  import LemonToast from "./vue/LemonToast.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -121,10 +122,17 @@
                         }
                       }
                     } else if (newCard.status === "played") {
+                      if (!byLemonToastShown.value && !lemonToastCardTimer) {
+                        lemonToastCardPlayCount++;
+                        if (lemonToastCardPlayCount >= settings.byLemon.cardPlayThreshold) {
+                          if (lemonToastGameTimer) clearTimeout(lemonToastGameTimer);
+                          lemonToastCardTimer = setTimeout(showLemonToast, settings.byLemon.cardPlayDelayMs);
+                        }
+                      }
                       if (cardHolderPlayerID !== you.playerID) {
                         // Check if the card ID has already triggered a toast
                         if (!toastedCardIds.has(newCard.id)) {
-                          toast(`“${player.name}” just played a card for ${newCard.points} points.`, {
+                          toast(`”${player.name}” just played a card for ${newCard.points} points.`, {
                             timeout: 6000,
                           });
                           // Add the card ID to the set
@@ -210,10 +218,46 @@
     game.roomCode = newRoomCode;
   }
 
-  import { gameName, timeToScore, badGuessPenalty, game, you, ui, settings } from "./ts/_variables";
+  import { gameName, game, you, ui, settings } from "./ts/_variables";
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
   const isDealing = ref(false);
+
+  // By Lemon toast
+  const byLemonToastShown = ref(false);
+  let lemonToastGameTimer: ReturnType<typeof setTimeout> | null = null;
+  let lemonToastCardTimer: ReturnType<typeof setTimeout> | null = null;
+  let lemonToastCardPlayCount = 0;
+
+  const showLemonToast = () => {
+    if (byLemonToastShown.value) return;
+    if (you.isCurrentlyPlayingACard) {
+      setTimeout(showLemonToast, 15000);
+      return;
+    }
+    byLemonToastShown.value = true;
+    if (lemonToastGameTimer) clearTimeout(lemonToastGameTimer);
+    if (lemonToastCardTimer) clearTimeout(lemonToastCardTimer);
+    toast(
+      { component: LemonToast, props: { title: "", message: "" } },
+      {
+        toastClassName: "site-by-lemon",
+        icon: false,
+        timeout: false,
+        showCloseButtonOnHover: false,
+        closeButtonClassName: "close-toast",
+      },
+    );
+  };
+
+  watch(
+    () => game.isGameStarted,
+    (isStarted) => {
+      if (isStarted && !byLemonToastShown.value && !lemonToastGameTimer) {
+        lemonToastGameTimer = setTimeout(showLemonToast, settings.byLemon.gameTimerMs);
+      }
+    },
+  );
 
   const generateUniqueID = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -295,149 +339,152 @@
 
     let dealSucceeded = false;
     try {
-    // --- Update player stats before dealing cards ---
-    const now = serverTimestamp();
-    for (const player of gamePlayers.value) {
-      // /stats/meeting/players/${player.name}
-      const meetingPlayerRef = doc(db, `stats/meeting/players/${player.name}`);
-      const meetingPlayerSnap = await getDoc(meetingPlayerRef);
-      if (meetingPlayerSnap.exists()) {
-        await updateDoc(meetingPlayerRef, {
-          timesPlayed: increment(1),
-          lastPlayed: now,
-        });
-      } else {
-        await setDoc(meetingPlayerRef, {
-          name: player.name,
-          timesPlayed: 1,
-          lastPlayed: now,
-        });
-      }
-      // /stats/meeting/jobTitles/${player.jobTitle}
-      if (player.jobTitle) {
-        const meetingJobRef = doc(db, `stats/meeting/jobTitles/${player.jobTitle}`);
-        const meetingJobSnap = await getDoc(meetingJobRef);
-        if (meetingJobSnap.exists()) {
-          await updateDoc(meetingJobRef, {
+      // --- Update player stats before dealing cards ---
+      const now = serverTimestamp();
+      for (const player of gamePlayers.value) {
+        // /stats/meeting/players/${player.name}
+        const meetingPlayerRef = doc(db, `stats/meeting/players/${player.name}`);
+        const meetingPlayerSnap = await getDoc(meetingPlayerRef);
+        if (meetingPlayerSnap.exists()) {
+          await updateDoc(meetingPlayerRef, {
             timesPlayed: increment(1),
             lastPlayed: now,
           });
         } else {
-          await setDoc(meetingJobRef, {
-            jobTitle: player.jobTitle,
+          await setDoc(meetingPlayerRef, {
+            name: player.name,
             timesPlayed: 1,
             lastPlayed: now,
           });
         }
-      }
-      // /stats/general/players/${player.name}
-      const generalPlayerRef = doc(db, `stats/general/players/${player.name}`);
-      const generalPlayerSnap = await getDoc(generalPlayerRef);
-      if (generalPlayerSnap.exists()) {
-        await updateDoc(generalPlayerRef, {
-          gamesPlayed: increment(1),
-          mostRecentGame: "meeting",
-          lastPlayed: now,
-        });
-      } else {
-        await setDoc(generalPlayerRef, {
-          name: player.name,
-          gamesPlayed: 1,
-          mostRecentGame: "meeting",
-          lastPlayed: now,
-        });
-      }
-    }
-
-    // Split allCards into tier pools, each shuffled independently
-    const easyPool = shuffle(allCards.filter((c) => c.points === 5));
-    const mediumPool = shuffle(allCards.filter((c) => c.points === 10));
-    const hardPool = shuffle(allCards.filter((c) => c.points === 15));
-    const expertPool = shuffle(allCards.filter((c) => c.points === 30));
-
-    // Draw from a pool, falling back to adjacent tiers if exhausted (warns once per exhausted pool)
-    const exhaustedPools = new Set<any[]>();
-    const drawFrom = (...pools: any[][]): any | null => {
-      for (const pool of pools) {
-        if (pool.length > 0) {
-          if (pool !== pools[0] && !exhaustedPools.has(pools[0])) {
-            exhaustedPools.add(pools[0]);
-            console.warn("Tier pool exhausted, falling back to adjacent tier");
+        // /stats/meeting/jobTitles/${player.jobTitle}
+        if (player.jobTitle) {
+          const meetingJobRef = doc(db, `stats/meeting/jobTitles/${player.jobTitle}`);
+          const meetingJobSnap = await getDoc(meetingJobRef);
+          if (meetingJobSnap.exists()) {
+            await updateDoc(meetingJobRef, {
+              timesPlayed: increment(1),
+              lastPlayed: now,
+            });
+          } else {
+            await setDoc(meetingJobRef, {
+              jobTitle: player.jobTitle,
+              timesPlayed: 1,
+              lastPlayed: now,
+            });
           }
-          return pool.shift();
         }
-      }
-      return null;
-    };
-
-    // Build all hands in memory before writing to Firestore
-    const allHands: Record<string, any[]> = {};
-    for (const player of game.players) {
-      const hand = [
-        drawFrom(easyPool, mediumPool, hardPool, expertPool),
-        drawFrom(easyPool, mediumPool, hardPool, expertPool),
-        drawFrom(mediumPool, easyPool, hardPool, expertPool),
-        drawFrom(hardPool, mediumPool, expertPool, easyPool),
-        drawFrom(expertPool, hardPool, mediumPool, easyPool),
-      ].filter(Boolean);
-      if (hand.length < 5) {
-        console.error("Not enough cards to deal full hands");
-        isDealing.value = false;
-        await updateDoc(roomRef, { isDealingInProgress: false });
-        alert("Not enough cards to deal — game cannot start.");
-        return;
-      }
-      allHands[player.playerID] = hand;
-    }
-
-    // Distribute event cards if an event is active
-    if (settings.isEventActive) {
-      const shuffledEventCards = shuffle([...eventCards]);
-      const toDistribute = shuffledEventCards.slice(0, settings.eventCardsPerGame);
-      const playerIDs = game.players.map((p: any) => p.playerID);
-
-      for (const eventCard of toDistribute) {
-        // Only give event cards to players who don't already have one
-        const eligible = playerIDs.filter((id: string) => !allHands[id].some((c: any) => c.isEventCard));
-        if (eligible.length === 0) break;
-
-        const targetID = randomFrom(eligible);
-        const hand = allHands[targetID];
-
-        // Swap out a card at the matching tier; fall back to closest tier
-        let swapIndex = hand.findIndex((c: any) => c.points === eventCard.points && !c.isEventCard);
-        if (swapIndex === -1) {
-          let minDiff = Infinity;
-          hand.forEach((c: any, i: number) => {
-            if (!c.isEventCard) {
-              const diff = Math.abs(c.points - eventCard.points);
-              if (diff < minDiff) { minDiff = diff; swapIndex = i; }
-            }
+        // /stats/general/players/${player.name}
+        const generalPlayerRef = doc(db, `stats/general/players/${player.name}`);
+        const generalPlayerSnap = await getDoc(generalPlayerRef);
+        if (generalPlayerSnap.exists()) {
+          await updateDoc(generalPlayerRef, {
+            gamesPlayed: increment(1),
+            mostRecentGame: "meeting",
+            lastPlayed: now,
+          });
+        } else {
+          await setDoc(generalPlayerRef, {
+            name: player.name,
+            gamesPlayed: 1,
+            mostRecentGame: "meeting",
+            lastPlayed: now,
           });
         }
-        if (swapIndex !== -1) hand[swapIndex] = { ...eventCard };
       }
-    }
 
-    // Write all hands to Firestore
-    for (const player of game.players) {
-      const hand = allHands[player.playerID];
-      const handCollectionRef = collection(db, `rooms/${game.roomCode}/players/${player.playerID}/hand`);
-      for (const card of hand) {
-        const cardDocRef = doc(handCollectionRef);
-        await setDoc(cardDocRef, { ...card, status: "unplayed" });
+      // Split allCards into tier pools, each shuffled independently
+      const easyPool = shuffle(allCards.filter((c) => c.points === 5));
+      const mediumPool = shuffle(allCards.filter((c) => c.points === 10));
+      const hardPool = shuffle(allCards.filter((c) => c.points === 15));
+      const expertPool = shuffle(allCards.filter((c) => c.points === 30));
+
+      // Draw from a pool, falling back to adjacent tiers if exhausted (warns once per exhausted pool)
+      const exhaustedPools = new Set<any[]>();
+      const drawFrom = (...pools: any[][]): any | null => {
+        for (const pool of pools) {
+          if (pool.length > 0) {
+            if (pool !== pools[0] && !exhaustedPools.has(pools[0])) {
+              exhaustedPools.add(pools[0]);
+              console.warn("Tier pool exhausted, falling back to adjacent tier");
+            }
+            return pool.shift();
+          }
+        }
+        return null;
+      };
+
+      // Build all hands in memory before writing to Firestore
+      const allHands: Record<string, any[]> = {};
+      for (const player of game.players) {
+        const hand = [
+          drawFrom(easyPool, mediumPool, hardPool, expertPool),
+          drawFrom(easyPool, mediumPool, hardPool, expertPool),
+          drawFrom(mediumPool, easyPool, hardPool, expertPool),
+          drawFrom(hardPool, mediumPool, expertPool, easyPool),
+          drawFrom(expertPool, hardPool, mediumPool, easyPool),
+        ].filter(Boolean);
+        if (hand.length < 5) {
+          console.error("Not enough cards to deal full hands");
+          isDealing.value = false;
+          await updateDoc(roomRef, { isDealingInProgress: false });
+          alert("Not enough cards to deal — game cannot start.");
+          return;
+        }
+        allHands[player.playerID] = hand;
       }
-    }
 
-    await updateDoc(roomRef, {
-      isGameStarted: true,
-      isDealingInProgress: false,
-    });
-    await updateDoc(statsRef, {
-      gamesStarted: increment(1),
-      lastGameStarted: serverTimestamp(),
-    });
-    dealSucceeded = true;
+      // Distribute event cards if an event is active
+      if (settings.isEventActive) {
+        const shuffledEventCards = shuffle([...eventCards]);
+        const toDistribute = shuffledEventCards.slice(0, settings.eventCardsPerGame);
+        const playerIDs = game.players.map((p: any) => p.playerID);
+
+        for (const eventCard of toDistribute) {
+          // Only give event cards to players who don't already have one
+          const eligible = playerIDs.filter((id: string) => !allHands[id].some((c: any) => c.isEventCard));
+          if (eligible.length === 0) break;
+
+          const targetID = randomFrom(eligible);
+          const hand = allHands[targetID];
+
+          // Swap out a card at the matching tier; fall back to closest tier
+          let swapIndex = hand.findIndex((c: any) => c.points === eventCard.points && !c.isEventCard);
+          if (swapIndex === -1) {
+            let minDiff = Infinity;
+            hand.forEach((c: any, i: number) => {
+              if (!c.isEventCard) {
+                const diff = Math.abs(c.points - eventCard.points);
+                if (diff < minDiff) {
+                  minDiff = diff;
+                  swapIndex = i;
+                }
+              }
+            });
+          }
+          if (swapIndex !== -1) hand[swapIndex] = { ...eventCard };
+        }
+      }
+
+      // Write all hands to Firestore
+      for (const player of game.players) {
+        const hand = allHands[player.playerID];
+        const handCollectionRef = collection(db, `rooms/${game.roomCode}/players/${player.playerID}/hand`);
+        for (const card of hand) {
+          const cardDocRef = doc(handCollectionRef);
+          await setDoc(cardDocRef, { ...card, status: "unplayed" });
+        }
+      }
+
+      await updateDoc(roomRef, {
+        isGameStarted: true,
+        isDealingInProgress: false,
+      });
+      await updateDoc(statsRef, {
+        gamesStarted: increment(1),
+        lastGameStarted: serverTimestamp(),
+      });
+      dealSucceeded = true;
     } catch (error) {
       console.error("Failed to start game:", error);
       alert("Something went wrong starting the game. Please try again.");
@@ -459,7 +506,7 @@
     updateDoc(cardRef, {
       status: "playing",
     });
-    timer.value = timeToScore;
+    timer.value = settings.timeToScore;
     interval = setInterval(() => {
       timer.value -= 10; // Decrease timer by 10 milliseconds
 
@@ -631,7 +678,7 @@
   };
 
   const penalizeBadGuess = async (yourGuess) => {
-    const yourLoss = 0 - badGuessPenalty;
+    const yourLoss = 0 - settings.badGuessPenalty;
     toast(
       {
         component: MyToast,
@@ -881,7 +928,7 @@
     if (!timer.value || timer.value < 3) {
       return "";
     }
-    return 100 - Number(preceisePercentOf(timeToScore, timer.value));
+    return 100 - Number(preceisePercentOf(settings.timeToScore, timer.value));
   });
 
   const computedPlayerHand = computed(() => {
