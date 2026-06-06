@@ -116,7 +116,7 @@
                           you.currentCard = {};
                           you.isCurrentlyPlayingACard = false;
                         } else {
-                          toast(`“${newCard.stolenBy}” just stole a ${newCard.points} card from ${player.name}`, {
+                          toast(`${newCard.stolenBy} just stole a ${newCard.points} card from ${player.name}`, {
                             timeout: 6000,
                           });
                         }
@@ -132,7 +132,7 @@
                       if (cardHolderPlayerID !== you.playerID) {
                         // Check if the card ID has already triggered a toast
                         if (!toastedCardIds.has(newCard.id)) {
-                          toast(`”${player.name}” just played a card for ${newCard.points} points.`, {
+                          toast(`${player.name} just played a card for ${newCard.points} points.`, {
                             timeout: 6000,
                           });
                           // Add the card ID to the set
@@ -227,12 +227,14 @@
   const byLemonToastShown = ref(false);
   let lemonToastGameTimer: ReturnType<typeof setTimeout> | null = null;
   let lemonToastCardTimer: ReturnType<typeof setTimeout> | null = null;
+  let lemonToastRetryTimer: ReturnType<typeof setTimeout> | null = null;
   let lemonToastCardPlayCount = 0;
 
   const showLemonToast = () => {
     if (byLemonToastShown.value) return;
     if (you.isCurrentlyPlayingACard) {
-      setTimeout(showLemonToast, 15000);
+      if (lemonToastRetryTimer) clearTimeout(lemonToastRetryTimer);
+      lemonToastRetryTimer = setTimeout(showLemonToast, 15000);
       return;
     }
     byLemonToastShown.value = true;

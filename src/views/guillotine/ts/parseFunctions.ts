@@ -821,6 +821,7 @@ export function parseIndustryIcon(industry) {
     case "Automotive":
       return "automotive";
     case "Finance & Investments":
+      return "finance-investment";
     case "Food & Beverage":
       return "hamburger";
     case "Real Estate":

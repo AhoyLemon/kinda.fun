@@ -129,7 +129,7 @@ export function useEternalLegacy({
           // Eliminate Sterling but massive heat increase
           my.eternalLegacy.sterlingAlive = false;
           toast.error(
-            `${item.name}: Sterling has been had a terrible accident in the shower! What a shame. Heat increased by ${item.heat}`,
+            `${item.name}: Sterling has had a terrible accident in the shower! What a shame. Heat increased by ${item.heat}`,
           );
           break;
 

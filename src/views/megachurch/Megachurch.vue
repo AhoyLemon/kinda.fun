@@ -27,7 +27,6 @@
   import UnfriendConfirmation from "./components/EternalLegacy/UnfriendConfirmation.vue";
   import { addCommas, dollars } from "../../shared/ts/_functions";
   import { useToast } from "vue-toastification";
-  import LemonToast from "./components/LemonToast.vue";
   import {
     computeTopicsYesterday,
     sortAudienceReactions,
