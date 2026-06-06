@@ -1,0 +1,39 @@
+.Vue-Toastification__container {
+  .site-by-lemon {
+    background: #e4e72c;
+    border-radius: 0;
+    border: none;
+    margin-left: 20px;
+    margin-right: 20px;
+    a {
+      color: #313131;
+      text-decoration: none;
+      &:hover {
+        span {
+          text-decoration: underline;
+        }
+      }
+    }
+    .container {
+      font-size: 1.1rem;
+      text-decoration: none;
+      color: #212121;
+      display: block;
+      font-weight: 400;
+      line-height: 55px;
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 10px;
+    }
+  }
+
+  .close-toast {
+    margin-left: 20px;
+    color: #212121;
+    opacity: 0.5;
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
+  }
+}

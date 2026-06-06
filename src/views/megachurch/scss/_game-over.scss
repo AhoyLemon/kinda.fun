@@ -68,4 +68,79 @@
       }
     }
   }
+
+  .game-by-lemon {
+    text-align: right;
+    padding-bottom: ($gap * 4);
+    padding-top: ($gap * 4);
+    padding-right: $gap;
+    margin-left: 340px;
+    // background-color: red;
+    h3 {
+      // font-size: 6.5vw;
+      // font-size: 42px;
+      // font-size: 100px;
+      font-size: clamp(36px, 6.5dvw, 105px);
+      transform: translate(-12dvw, 60%);
+    }
+    img {
+      width: 22vw;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+      &:hover span {
+        color: #c85c0d;
+      }
+    }
+    svg {
+      * {
+        fill: currentColor;
+      }
+    }
+    .issue-prompt {
+      padding-top: ($gap * 8);
+      text-align: center;
+      p {
+        font-size: 20px;
+      }
+      a {
+        color: #c85c0d;
+        font-weight: bold;
+        &:hover,
+        &:focus {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  .final-links {
+    background-color: $lemonBlack;
+    padding: 1.5em 2em;
+    text-align: center;
+    color: $white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2em;
+
+    align-items: end;
+    a,
+    button {
+      color: $lemonOrange;
+      font-size: 1.45rem;
+      text-decoration: none;
+      font-weight: bold;
+      background-color: transparent;
+      border: none;
+      display: inline-flex;
+      padding: 0;
+      cursor: pointer;
+      &:hover,
+      &:focus {
+        text-decoration: underline;
+      }
+    }
+  }
 }

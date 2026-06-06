@@ -190,4 +190,6 @@ export interface UIState {
   disableButtons: boolean;
   /** Whether the game is currently starting (show loading indicator) */
   isStartingGame: boolean;
+  /** Whether the "about this game" sidebar is open */
+  sidebarVisible: boolean;
 }

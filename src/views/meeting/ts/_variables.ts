@@ -1,9 +1,6 @@
 import { reactive } from "vue";
 
 export const gameName = "Let's Ruin This Meeting!";
-export const timeToScore = 10000; // Time in milliseconds that players have to score points after playing a card
-export const badGuessPenalty = 4; // Number of points deducted from a player for a bad guess (i.e., when they guess a card that isn't theirs)
-export const cardsPerPlayer = 5; // Number of cards each player starts with
 
 export const game = reactive({
   roomCode: "",
@@ -42,4 +39,12 @@ export const settings = reactive({
   maxPlayers: 6,
   isEventActive: false,
   eventCardsPerGame: 9,
+  timeToScore: 10000,
+  badGuessPenalty: 4,
+  cardsPerPlayer: 5,
+  byLemon: {
+    gameTimerMs: 5 * 60 * 1000,
+    cardPlayThreshold: 5,
+    cardPlayDelayMs: 30 * 1000,
+  },
 });
