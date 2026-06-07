@@ -12,10 +12,14 @@ export type Card = string;
  * Represents a deck of cards with metadata
  */
 export interface Deck {
+  /** Unique identifier for the deck, ex: "science-facts" */
+  id: string;
   /** The display name of the deck */
   name: string;
   /** A description explaining the theme and content of this deck */
   description: string;
+  /** Whether this deck contains adult-themed content that should be filtered in family-friendly setups */
+  isNaughty: boolean;
   /** Array of card statements (only present for regular decks, not the "EVERYTHING!" meta-deck) */
   cards?: Card[];
 }
@@ -26,6 +30,8 @@ export interface Deck {
 export interface GameSettings {
   /** Time limit in seconds for each player's presentation */
   timeToPresent: number;
+  /** Maximum number of players allowed in a room */
+  maxPlayers: number;
 }
 
 /**
@@ -100,10 +106,10 @@ export interface GameState {
   maxRounds: number;
   /** All available decks */
   allDecks: Deck[];
-  /** The deck chosen for this game */
-  chosenDeck: Partial<Deck>;
+  /** Array of selected deck IDs for this game */
+  selectedDeckIds: string[];
   /** The current game deck with remaining cards */
-  gameDeck: { cards: Card[] };
+  gameDeck: Card[];
   /** Array of players in the game */
   players: Player[];
   /** Cards that have been played (legacy, may not be used) */
@@ -174,9 +180,13 @@ export interface RoundState {
 export interface UIState {
   /** Whether the instruction video is being watched */
   watchingVideo: boolean;
+  /** Whether the instruction video is currently closing */
+  isClosingVideo: boolean;
   /** Whether the player has entered their name */
   nameEntered: boolean;
-  /** Name of the selected deck */
+  /** Whether the deck selection screen is visible */
+  showingDeckSelection: boolean;
+  /** Name of the selected deck (legacy - deprecated) */
   deckName: string;
   /** Index of the card the player voted up (deprecated - using my.upVote instead) */
   upVoteIndex: number;
@@ -190,6 +200,16 @@ export interface UIState {
   disableButtons: boolean;
   /** Whether the game is currently starting (show loading indicator) */
   isStartingGame: boolean;
+  /** Whether the player name is currently being saved */
+  isSavingName: boolean;
+  /** Whether the deck selection screen is currently opening */
+  isOpeningDeckSelection: boolean;
+  /** Whether the host deck selection is currently being saved */
+  isSavingDeckSelection: boolean;
   /** Whether the "about this game" sidebar is open */
   sidebarVisible: boolean;
+  /** Whether a room is currently being created (show loading indicator on title screen) */
+  isCreatingRoom: boolean;
+  /** Whether the lobby data is still loading from Firestore (prevent "nobody here" flash) */
+  isLoadingLobby: boolean;
 }

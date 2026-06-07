@@ -7,6 +7,7 @@ import type { GameSettings } from "./_types";
  */
 export const settings: GameSettings = {
   timeToPresent: 30,
+  maxPlayers: 10,
 };
 
 const audioSrc = "/audio/";

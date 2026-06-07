@@ -44,8 +44,8 @@
     gameOver: false,
     maxRounds: 0,
     allDecks: allDecks,
-    chosenDeck: {},
-    gameDeck: { cards: [] },
+    selectedDeckIds: [],
+    gameDeck: [],
     players: [],
     cardsPlayed: [],
     statementHistory: [],
@@ -80,7 +80,9 @@
   });
   const ui = reactive<UIState>({
     watchingVideo: false,
+    isClosingVideo: false,
     nameEntered: false,
+    showingDeckSelection: false,
     deckName: "",
     upVoteIndex: -1,
     downVoteIndex: -1,
@@ -88,7 +90,12 @@
     roomCodeInput: "",
     disableButtons: false,
     isStartingGame: false,
+    isSavingName: false,
+    isOpeningDeckSelection: false,
+    isSavingDeckSelection: false,
     sidebarVisible: false,
+    isCreatingRoom: false,
+    isLoadingLobby: false,
   });
 
   /////////////////////////////////////////////////////////
@@ -116,7 +123,9 @@
   };
 
   const createRoom = async () => {
+    ui.isCreatingRoom = true;
     game.isFailedToGetRoomData = false;
+    try {
     const roomCode = generateRoomCode();
     const roomRef = doc(db, "rooms", roomCode);
 
@@ -146,8 +155,8 @@
       phase: "lobby",
       currentRound: 0,
       maxRounds: 0,
-      chosenDeckName: "",
-      gameDeck: { cards: [] },
+      selectedDeckIds: [],
+      gameDeck: [],
       cardsPresented: [],
       votesSubmitted: 0,
       activePlayerIndex: -1,
@@ -168,10 +177,14 @@
     const newUrl = `${protocol}//${host}/wrongest?room=${game.roomCode}`;
     window.history.pushState({}, "", newUrl);
 
-    joinRoom();
+    await joinRoom();
+    } finally {
+      ui.isCreatingRoom = false;
+    }
   };
 
   const joinRoom = async () => {
+    ui.isLoadingLobby = true;
     const roomRef = doc(db, "rooms", game.roomCode);
 
     // Fetch room data
@@ -186,7 +199,6 @@
     // Subscribe to game state
     await subscribeToGameState(game.roomCode);
 
-    my.isRoomHost = false;
     game.inRoom = true;
   };
 
@@ -206,6 +218,7 @@
     onSnapshot(
       gameRef,
       (docSnapshot) => {
+        ui.isLoadingLobby = false;
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
           game.gameStarted = data.isGameStarted ?? false;
@@ -218,6 +231,7 @@
         }
       },
       (error) => {
+        ui.isLoadingLobby = false;
         console.error("Error subscribing to game status:", error);
       },
     );
@@ -258,8 +272,9 @@
         round.phase = data.phase || "lobby";
         round.number = data.currentRound || 0;
         game.maxRounds = data.maxRounds || 0;
-        game.chosenDeck.name = data.chosenDeckName || "";
-        game.gameDeck = data.gameDeck || { cards: [] };
+        game.selectedDeckIds = data.selectedDeckIds || [];
+        const rawDeck = data.gameDeck;
+        game.gameDeck = Array.isArray(rawDeck) ? rawDeck : (rawDeck?.cards || []);
         round.cardsPresented = data.cardsPresented || [];
         round.votesSubmitted = data.votesSubmitted || 0;
         round.activePlayerIndex = data.activePlayerIndex ?? -1;
@@ -301,14 +316,23 @@
     }
   };
 
+  const closeInstructionVideo = () => {
+    if (ui.isClosingVideo) {
+      return;
+    }
+
+    ui.isClosingVideo = true;
+    window.setTimeout(() => {
+      ui.watchingVideo = false;
+      ui.isClosingVideo = false;
+    }, 150);
+  };
+
   ////////////////////////////////////////
   // Pregame
-  const updateMyInfo = async () => {
-    // Normalize the name input - handle emojis properly
-    let normalizedName = my.nameInput.trim();
+  const normalizePlayerName = (name: string) => {
+    let normalizedName = name.trim();
 
-    // Only convert to uppercase if the string doesn't contain emojis
-    // This prevents emoji corruption from toUpperCase()
     const hasEmoji = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u.test(
       normalizedName,
     );
@@ -317,52 +341,72 @@
       normalizedName = normalizedName.toUpperCase();
     }
 
-    my.name = normalizedName;
-    localStorage.setItem("kindaFunPlayerName", my.name);
+    return normalizedName;
+  };
 
-    const playersCollection = collection(db, "rooms", game.roomCode, "players");
-    const playerQuery = query(playersCollection, where("playerID", "==", my.playerID));
-    const querySnapshot = await getDocs(playerQuery);
+  const updateMyInfo = async () => {
+    const normalizedName = normalizePlayerName(my.nameInput);
 
-    let playerFound = false;
+    if (!computedCanSubmitName.value || ui.isSavingName) {
+      return;
+    }
 
-    if (!querySnapshot.empty) {
-      // Update the existing player document
-      querySnapshot.forEach(async (docSnapshot) => {
-        const playerRef = doc(db, "rooms", game.roomCode, "players", docSnapshot.id);
-        await updateDoc(playerRef, {
+    ui.isSavingName = true;
+
+    try {
+      my.name = normalizedName;
+      localStorage.setItem("kindaFunPlayerName", my.name);
+
+      const playersCollection = collection(db, "rooms", game.roomCode, "players");
+      const playerQuery = query(playersCollection, where("playerID", "==", my.playerID));
+      const querySnapshot = await getDocs(playerQuery);
+
+      let playerFound = false;
+
+      if (!querySnapshot.empty) {
+        // Update the existing player document
+        for (const docSnapshot of querySnapshot.docs) {
+          const playerRef = doc(db, "rooms", game.roomCode, "players", docSnapshot.id);
+          await updateDoc(playerRef, {
+            name: my.name,
+            isConnected: true,
+            lastSeen: serverTimestamp(),
+          });
+          playerFound = true;
+        }
+      }
+      localStorage.setItem("kindaFunPlayerName", normalizedName);
+
+      if (!playerFound) {
+        // Get current player count to assign playerIndex
+        const playersSnapshot = await getDocs(playersCollection);
+        if (playersSnapshot.size >= settings.maxPlayers) {
+          alert(`Sorry, this room is full (max ${settings.maxPlayers} players).`);
+          return;
+        }
+        const playerIndex = playersSnapshot.size;
+
+        const newPlayer = {
           name: my.name,
+          playerID: my.playerID,
+          score: 0,
+          card: "",
+          playerIndex: playerIndex,
           isConnected: true,
           lastSeen: serverTimestamp(),
-        });
-        playerFound = true;
-      });
+        };
+
+        // Create a new player document
+        const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
+        await setDoc(playerRef, newPlayer);
+
+        my.playerIndex = playerIndex;
+      }
+
+      ui.nameEntered = true;
+    } finally {
+      ui.isSavingName = false;
     }
-    localStorage.setItem("kindaFunPlayerName", normalizedName);
-
-    if (!playerFound) {
-      // Get current player count to assign playerIndex
-      const playersSnapshot = await getDocs(playersCollection);
-      const playerIndex = playersSnapshot.size;
-
-      const newPlayer = {
-        name: my.name,
-        playerID: my.playerID,
-        score: 0,
-        card: "",
-        playerIndex: playerIndex,
-        isConnected: true,
-        lastSeen: serverTimestamp(),
-      };
-
-      // Create a new player document
-      const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
-      await setDoc(playerRef, newPlayer);
-
-      my.playerIndex = playerIndex;
-    }
-
-    ui.nameEntered = true;
   };
 
   const sendPlayerUpdate = async () => {
@@ -376,70 +420,102 @@
     }
   };
 
-  const changeDeck = async () => {
-    if (ui.deckName == "EVERYTHING!") {
-      let cardStack = [];
-      game.allDecks.forEach(function (deck) {
-        if (deck.cards && Array.isArray(deck.cards)) {
-          cardStack = cardStack.concat(deck.cards);
-        }
-      });
-      game.chosenDeck = {
-        name: "EVERYTHING!",
-        description: "I don't wanna choose! Just shuffle in all the cards and let's see what happens...",
-        cards: cardStack,
-      };
+  const toggleDeck = (deckId: string) => {
+    const index = game.selectedDeckIds.indexOf(deckId);
+    if (index > -1) {
+      // Deck is selected, remove it
+      game.selectedDeckIds.splice(index, 1);
     } else {
-      const chosenDeck = game.allDecks.find((deck) => deck.name === ui.deckName);
-      if (chosenDeck) {
-        game.chosenDeck = chosenDeck;
-      } else {
-        console.error("Deck not found:", ui.deckName);
-        game.chosenDeck = {};
-      }
+      // Deck is not selected, add it
+      game.selectedDeckIds.push(deckId);
+    }
+  };
+
+  const saveDeckSelection = async () => {
+    if (ui.isSavingDeckSelection) {
+      return;
     }
 
-    // Persist chosen deck to Firestore immediately
-    if (game.roomCode && game.chosenDeck.name) {
+    if (!computedHasEnoughCards.value) {
+      alert("You don't have enough cards selected. Please choose more decks.");
+      return;
+    }
+
+    // Persist selected deck IDs to Firestore
+    if (game.roomCode && game.selectedDeckIds.length > 0) {
+      ui.isSavingDeckSelection = true;
       try {
         const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
         await updateDoc(gameStateRef, {
-          chosenDeckName: game.chosenDeck.name,
+          selectedDeckIds: game.selectedDeckIds,
         });
+
+        // Close deck selection UI
+        ui.showingDeckSelection = false;
+
+        sendEvent("The Wrongest Words", "Decks Selected", game.selectedDeckIds.length.toString());
       } catch (error) {
-        console.error("Error saving chosen deck:", error);
+        console.error("Error saving deck selection:", error);
+        alert("Failed to save deck selection: " + error.message);
+      } finally {
+        ui.isSavingDeckSelection = false;
       }
     }
   };
 
+  const openDeckSelection = () => {
+    if (ui.isOpeningDeckSelection) {
+      return;
+    }
+
+    ui.isOpeningDeckSelection = true;
+    window.setTimeout(() => {
+      ui.showingDeckSelection = true;
+      ui.isOpeningDeckSelection = false;
+      sendEvent("The Wrongest Words", "Opened Deck Selection", game.roomCode);
+    }, 150);
+  };
+
   const startTheGame = async () => {
+    if (ui.isStartingGame) {
+      return;
+    }
+
     ui.disableButtons = true; // Disable buttons to prevent multiple clicks
     ui.isStartingGame = true; // Show loading state
     try {
-      // Validate that a deck has been chosen
-      if (!game.chosenDeck || !game.chosenDeck.name || !game.chosenDeck.cards) {
-        alert("Please select a deck before starting the game.");
+      // Validate that decks have been selected
+      if (!game.selectedDeckIds || game.selectedDeckIds.length === 0) {
+        alert("Please select at least one deck before starting the game.");
         return;
       }
 
-      // Validate deck has cards
-      if (!Array.isArray(game.chosenDeck.cards) || game.chosenDeck.cards.length === 0) {
-        alert("The selected deck has no cards. Please choose a different deck.");
-        console.error("Invalid deck:", game.chosenDeck);
+      // Validate enough cards are selected
+      if (!computedHasEnoughCards.value) {
+        alert(`You need at least ${computedMinimumCards.value} cards. Currently you have ${computedTotalSelectedCards.value} cards. Please select more decks.`);
         return;
       }
 
-      let d = shuffle(game.chosenDeck.cards);
-      game.gameDeck.cards = d;
+      // Combine all selected decks into one card pool
+      let combinedCards: string[] = [];
+      computedSelectedDecks.value.forEach((deck) => {
+        if (deck.cards && Array.isArray(deck.cards)) {
+          combinedCards = combinedCards.concat(deck.cards);
+        }
+      });
+
+      // Validate combined deck has cards
+      if (combinedCards.length === 0) {
+        alert("The selected decks have no cards. Please choose different decks.");
+        console.error("No cards in selected decks:", game.selectedDeckIds);
+        return;
+      }
+
+      // Shuffle and set the game deck
+      game.gameDeck = shuffle(combinedCards);
       await dealOutCards();
 
-      if (game.players.length == 3 || game.players.length == 4) {
-        game.maxRounds = 4;
-      } else if (game.players.length == 5 || game.players.length == 6) {
-        game.maxRounds = 3;
-      } else if (game.players.length > 6) {
-        game.maxRounds = 2;
-      }
+      game.maxRounds = computedMaxRounds.value;
 
       // Update player stats in /stats/general/players and /stats/wrongest/players
       for (const player of game.players) {
@@ -456,24 +532,25 @@
       // Update game size stats in /stats/wrongest/gameSizes
       await updateGameSizeStats(db, "wrongest", game.players.length, "gamesStarted");
 
-      // Update deck usage stats in /stats/wrongest/decks/{deckName}
-      console.log(`game.chosenDeck.name is ${game.chosenDeck.name}`);
-      if (game.chosenDeck?.name) {
-        const deckRef = doc(db, "stats", "wrongest", "decks", game.chosenDeck.name);
-        const deckDoc = await getDoc(deckRef);
-        if (deckDoc.exists()) {
-          // Deck document exists, increment timesPlayed
-          await updateDoc(deckRef, {
-            timesPlayed: increment(1),
-            lastPlayed: serverTimestamp(),
-          });
-        } else {
-          // Deck document doesn't exist, create it
-          await setDoc(deckRef, {
-            name: game.chosenDeck.name,
-            timesPlayed: 1,
-            lastPlayed: serverTimestamp(),
-          });
+      // Update deck usage stats for each selected deck
+      for (const deck of computedSelectedDecks.value) {
+        if (deck.name) {
+          const deckRef = doc(db, "stats", "wrongest", "decks", deck.name);
+          const deckDoc = await getDoc(deckRef);
+          if (deckDoc.exists()) {
+            // Deck document exists, increment timesPlayed
+            await updateDoc(deckRef, {
+              timesPlayed: increment(1),
+              lastPlayed: serverTimestamp(),
+            });
+          } else {
+            // Deck document doesn't exist, create it
+            await setDoc(deckRef, {
+              name: deck.name,
+              timesPlayed: 1,
+              lastPlayed: serverTimestamp(),
+            });
+          }
         }
       }
 
@@ -489,10 +566,8 @@
         phase: "presenting",
         currentRound: 1,
         maxRounds: game.maxRounds,
-        chosenDeckName: game.chosenDeck.name,
-        gameDeck: {
-          cards: game.gameDeck.cards || [],
-        },
+        selectedDeckIds: game.selectedDeckIds,
+        gameDeck: game.gameDeck || [],
         activePlayerIndex: -1,
         playerPresenting: false,
         playersVoted: [], // Initialize empty array for tracking votes
@@ -512,13 +587,12 @@
   // In Game
   const dealOutCards = async () => {
     try {
-      if (game.gameDeck.cards.length <= computedPlayerCount.value) {
+      if (game.gameDeck.length <= computedPlayerCount.value) {
         ////////////////////////////////////////////////////////////
         // You've run out of cards.
         // EMERGENCY BACKUP SCENARIO.
         let newDeck = randomFrom(allDecks);
-        let d = shuffle(newDeck.cards);
-        game.gameDeck.cards = d;
+        game.gameDeck = shuffle(newDeck.cards || []);
 
         alert("You've run out of cards. As such, I've chosen a new deck and shuffled that for you.");
       }
@@ -526,8 +600,8 @@
       // Deal cards to each player in Firestore
       for (let index = 0; index < game.players.length; index++) {
         const player = game.players[index];
-        const card = game.gameDeck.cards[0];
-        game.gameDeck.cards.shift();
+        const card = game.gameDeck[0];
+        game.gameDeck.shift();
 
         // Use the document ID (player.id) which matches the playerID
         const playerRef = doc(db, "rooms", game.roomCode, "players", player.id);
@@ -539,9 +613,7 @@
       // Update game deck in game state
       const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
       await updateDoc(gameStateRef, {
-        gameDeck: {
-          cards: game.gameDeck.cards || [],
-        },
+        gameDeck: game.gameDeck || [],
       });
     } catch (error) {
       console.error("Error dealing cards:", error);
@@ -553,9 +625,7 @@
     // This is now handled by Firestore updates
     const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
     await updateDoc(gameStateRef, {
-      gameDeck: {
-        cards: game.gameDeck.cards || [],
-      },
+      gameDeck: game.gameDeck || [],
     });
   };
 
@@ -899,12 +969,69 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Computeds
+  const isRoomFull = computed(() => game.players.length >= settings.maxPlayers);
+
   const computedPlayerCount = computed(() => {
     if (game.players && game.players.length >= 0) {
       return game.players.length;
     } else {
       return 0;
     }
+  });
+
+  const computedMinimumPlayerCount = computed(() => {
+    // Use actual player count, but minimum of 3 for card calculations
+    return Math.max(computedPlayerCount.value, 3);
+  });
+
+  const computedMaxRounds = computed(() => {
+    const playerCount = computedPlayerCount.value;
+    if (playerCount == 3 || playerCount == 4) {
+      return 4;
+    } else if (playerCount == 5 || playerCount == 6) {
+      return 3;
+    } else if (playerCount > 6) {
+      return 2;
+    }
+    // Default for fewer than 3 players (shouldn't happen in real game)
+    return 4;
+  });
+
+  const computedMinimumCards = computed(() => {
+    return computedMaxRounds.value * computedMinimumPlayerCount.value;
+  });
+
+  const computedSelectedDecks = computed(() => {
+    return game.allDecks.filter((deck) => game.selectedDeckIds.includes(deck.id));
+  });
+
+  const computedTotalSelectedCards = computed(() => {
+    return computedSelectedDecks.value.reduce((total, deck) => {
+      return total + (deck.cards?.length || 0);
+    }, 0);
+  });
+
+  const computedHasEnoughCards = computed(() => {
+    return computedTotalSelectedCards.value >= computedMinimumCards.value;
+  });
+
+  const computedCanSubmitName = computed(() => {
+    const normalizedName = normalizePlayerName(my.nameInput);
+
+    if (normalizedName.length < 1) {
+      return false;
+    }
+
+    if (!ui.nameEntered) {
+      return true;
+    }
+
+    return normalizedName !== my.name;
+  });
+
+  const computedHostName = computed(() => {
+    const host = game.players.find((player) => player.playerID === game.roomCreatorID);
+    return host ? host.name : "the host";
   });
 
   const computedAmIPresenting = computed(() => {
