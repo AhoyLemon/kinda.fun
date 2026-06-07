@@ -41,7 +41,7 @@ function makeSetup() {
 
 describe("Wrongest regressions", () => {
   it("keeps Wrongest.vue under the soft line threshold", () => {
-    const wrongestVuePath = path.resolve("src/views/wrongest/Wrongest.vue");
+    const wrongestVuePath = path.resolve(__dirname, "../src/views/wrongest/Wrongest.vue");
     const lineCount = fs.readFileSync(wrongestVuePath, "utf8").trimEnd().split("\n").length;
 
     expect(lineCount).toBeLessThan(900);

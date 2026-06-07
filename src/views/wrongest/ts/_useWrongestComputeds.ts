@@ -90,8 +90,8 @@ export function useWrongestComputeds({ game, my, round, ui, normalizePlayerName 
   const computedAreAllVotesCast = computed(() => round.votesSubmitted >= computedPlayerCount.value);
 
   const computedDashOffset = computed(() => {
-    const remainingPercent = percentOf(round.presentationTimeLeft, settings.timeToPresent);
-    const dashOffset = 251 - percentOf(remainingPercent, 251);
+    const remainingPercent = Math.min(Math.max(percentOf(settings.timeToPresent, round.presentationTimeLeft), 0), 100);
+    const dashOffset = 251 - (remainingPercent / 100) * 251;
     return `${dashOffset.toFixed(2)}px`;
   });
 
