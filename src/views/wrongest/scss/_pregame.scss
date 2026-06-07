@@ -302,6 +302,82 @@
     .display {
       font-weight: 700;
       font-size: 325%;
+      transition: filter 0.3s ease;
+    }
+    .how-to-share {
+      font-size: 0.85rem;
+      opacity: 0.75;
+    }
+    &.is-full {
+      .display {
+        filter: blur(0.18em);
+        user-select: none;
+      }
+      .how-to-share {
+        opacity: 1;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .room-capacity {
+    text-align: center;
+    padding: 8px 20px 14px;
+    font-size: 1rem;
+    color: $yellow;
+    border-top: 1px solid rgba($yellow, 0.2);
+  }
+
+  .room-full-notice {
+    text-align: center;
+    padding: 2rem 1rem;
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 0.5em;
+      &:last-child { margin-bottom: 0; }
+    }
+  }
+
+  .loading-lobby {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    .loading-dots {
+      font-size: 2.5rem;
+      letter-spacing: 0.1em;
+      span {
+        display: inline-block;
+        animation: lobbyDotBounce 1s ease-in-out infinite;
+        &:nth-child(2) { animation-delay: 0.15s; }
+        &:nth-child(3) { animation-delay: 0.3s; }
+      }
+    }
+    .loading-message {
+      margin-top: 0.75rem;
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+  }
+
+  .dealing-in-progress {
+    text-align: center;
+    padding: 0.5rem 0;
+    .dealing-dots {
+      font-size: 2.5rem;
+      letter-spacing: 0.1em;
+      span {
+        display: inline-block;
+        animation: lobbyDotBounce 1s ease-in-out infinite;
+        &:nth-child(2) { animation-delay: 0.15s; }
+        &:nth-child(3) { animation-delay: 0.3s; }
+      }
+    }
+    .dealing-message {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      opacity: 0.7;
     }
   }
 

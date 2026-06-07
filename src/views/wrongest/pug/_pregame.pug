@@ -1,9 +1,18 @@
 .pregame(v-if="game.inRoom && !game.gameStarted && !ui.showingDeckSelection")
 
-  .room-code
+  .room-code(:class="{ 'is-full': isRoomFull }")
     .label Your room code
     .display {{game.roomCode}}
-    .how-to-share(v-if="my.isRoomHost || game.players.length > 0") Share this URL to invite your friends to play.
+    .how-to-share(v-if="isRoomFull") This game is full
+    .how-to-share(v-else-if="my.isRoomHost || game.players.length > 0") Share this URL to invite your friends to play.
+
+  .room-capacity(v-if="!ui.isLoadingLobby && game.players.length > 0")
+    template(v-if="game.players.length < 3")
+      | {{game.players.length}} / 3 players in the lobby. Need {{3 - game.players.length}} more.
+    template(v-else-if="!isRoomFull")
+      | {{game.players.length}} in lobby. There is room for {{settings.maxPlayers - game.players.length}} more.
+    template(v-else)
+      | The game is full. {{computedHostName}} should start the game.
 
   .video-holder(v-if="ui.watchingVideo")
     .inside
@@ -11,6 +20,13 @@
         iframe#ytplayer(type="text/html" src="https://www.youtube-nocookie.com/embed/2jE6ifrz9bU?autoplay=1&controls=0&fs=0&modestbranding=1&playsinline=1&color=white" frameborder="0" allowfullscreen)
         figcaption
           button(@click="ui.watchingVideo = false") Okay, close this video.
+
+  .loading-lobby(v-else-if="ui.isLoadingLobby")
+    .loading-dots
+      span .
+      span .
+      span .
+    .loading-message Loading game lobby...
 
   .nobody-here(v-else-if="!my.isRoomHost && game.players.length < 1")
     .inside
@@ -20,35 +36,39 @@
 
   .sign-in(v-else-if="(my.isRoomHost || game.players.length > 0) && !game.gameStarted")
 
-    .inside
+    .room-full-notice(v-if="isRoomFull && !ui.nameEntered")
+      p This room is full.
+      p Maximum {{settings.maxPlayers}} players allowed.
+
+    .inside(v-else)
       form.pregame-form(@submit.prevent="updateMyInfo()")
         fieldset
           input(v-model="my.nameInput" type="text" maxlength="34" required)
           label Your Name
 
         .button-holder
-          button(type="submit") 
+          button(type="submit")
             span(v-if="!ui.nameEntered") Save Name
             span(v-if="ui.nameEntered") Change Name
-      
+
       .deck-selector-ui(v-if="my.isRoomHost && ui.nameEntered")
-        button.choose-decks-button(type="button" @click="openDeckSelection()" v-if="game.selectedDeckIds.length === 0") 
+        button.choose-decks-button(type="button" @click="openDeckSelection()" v-if="game.selectedDeckIds.length === 0")
           span(v-if="game.selectedDeckIds.length === 0") Choose Decks
           span(v-else) Change Decks
-        
+
         .selected-decks-info(v-if="game.selectedDeckIds.length > 0")
           h3 Selected Decks ({{computedTotalSelectedCards}} cards)
           ul.selected-decks-list
             li(v-for="deck in computedSelectedDecks" :key="deck.id")
               span.deck-name {{deck.name}}
               span.deck-cards ({{deck.cards ? deck.cards.length : 0}} cards)
-          
+
           .card-status.not-enough(v-if="!computedHasEnoughCards")
             p(v-if="!computedHasEnoughCards")
-              strong ⚠ 
+              strong ⚠
               | You need {{computedMinimumCards - computedTotalSelectedCards}} more cards for {{computedMinimumPlayerCount}} players.
 
-          button.choose-decks-button(type="button" @click="openDeckSelection()") 
+          button.choose-decks-button(type="button" @click="openDeckSelection()")
             span(v-if="game.selectedDeckIds.length === 0") Choose Decks
             span(v-else) Change Decks
 
@@ -61,24 +81,29 @@
 
 
       .start-button(v-if="my.isRoomHost && ui.nameEntered && game.selectedDeckIds.length > 0")
-        button(type="button" @click="startTheGame()" :disabled="game.players.length < 3 || !computedHasEnoughCards || ui.isStartingGame === true") 
-          span(v-if="!ui.isStartingGame") Start The Game
-          span(v-else) Starting...
-          
-        .not-enough-players(v-if="game.players.length < 3") You need at least 3 people to play 
-          strong The Wrongest Words
-          | .
-        .not-enough-cards(v-else-if="!computedHasEnoughCards") You need to select more decks. 
-          strong {{computedMinimumCards - computedTotalSelectedCards}} more cards 
-          | required.
-      
+        .dealing-in-progress(v-if="ui.isStartingGame")
+          .dealing-dots
+            span .
+            span .
+            span .
+          .dealing-message Starting the game...
+        template(v-else)
+          button(type="button" @click="startTheGame()" :disabled="game.players.length < 3 || !computedHasEnoughCards")
+            | Start The Game
+          .not-enough-players(v-if="game.players.length < 3") You need at least 3 people to play
+            strong The Wrongest Words
+            | .
+          .not-enough-cards(v-else-if="!computedHasEnoughCards") You need to select more decks.
+            strong {{computedMinimumCards - computedTotalSelectedCards}} more cards
+            | required.
+
       .start-button(v-else-if="!my.isRoomHost && ui.nameEntered && game.selectedDeckIds.length > 0")
         p(v-if="game.players.length < 3") You need at least #[strong 3 people] to play.
         p(v-else-if="game.selectedDeckIds.length > 0") {{computedHostName}} needs to select some decks to play with.
         p Waiting for {{computedHostName}} to start the game...
 
       //.issues-prompt(v-if="ui.nameEntered")
-        p Want to suggest your own lies for this game?  
+        p Want to suggest your own lies for this game?
           a(href="https://github.com/AhoyLemon/kinda.fun/issues/new/choose" taget="_blank") Open a new GitHub issue.
 
 
@@ -92,7 +117,7 @@
 
   .instructions-banner
     .banner-inside
-      strong Need instructions? 
+      strong Need instructions?
       a(@click="watchVideo()") Click here.
       br
       | I promise I'll try to make it quick.

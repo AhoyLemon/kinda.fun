@@ -18,7 +18,13 @@
             button.close-video(@click="ui.watchingVideo = false") Okay, close this video. 
 
   .create
-    button(@click="createRoom()") Create a New Room
+    .creating-room(v-if="ui.isCreatingRoom")
+      .creating-dots
+        span .
+        span .
+        span .
+      .creating-message Creating your room...
+    button(v-else @click="createRoom()") Create a New Room
   
   .or
     span or

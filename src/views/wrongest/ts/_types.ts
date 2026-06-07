@@ -30,6 +30,8 @@ export interface Deck {
 export interface GameSettings {
   /** Time limit in seconds for each player's presentation */
   timeToPresent: number;
+  /** Maximum number of players allowed in a room */
+  maxPlayers: number;
 }
 
 /**
@@ -198,4 +200,8 @@ export interface UIState {
   isStartingGame: boolean;
   /** Whether the "about this game" sidebar is open */
   sidebarVisible: boolean;
+  /** Whether a room is currently being created (show loading indicator on title screen) */
+  isCreatingRoom: boolean;
+  /** Whether the lobby data is still loading from Firestore (prevent "nobody here" flash) */
+  isLoadingLobby: boolean;
 }

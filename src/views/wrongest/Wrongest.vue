@@ -90,6 +90,8 @@
     disableButtons: false,
     isStartingGame: false,
     sidebarVisible: false,
+    isCreatingRoom: false,
+    isLoadingLobby: false,
   });
 
   /////////////////////////////////////////////////////////
@@ -117,7 +119,9 @@
   };
 
   const createRoom = async () => {
+    ui.isCreatingRoom = true;
     game.isFailedToGetRoomData = false;
+    try {
     const roomCode = generateRoomCode();
     const roomRef = doc(db, "rooms", roomCode);
 
@@ -170,9 +174,13 @@
     window.history.pushState({}, "", newUrl);
 
     joinRoom();
+    } finally {
+      ui.isCreatingRoom = false;
+    }
   };
 
   const joinRoom = async () => {
+    ui.isLoadingLobby = true;
     const roomRef = doc(db, "rooms", game.roomCode);
 
     // Fetch room data
@@ -207,6 +215,7 @@
     onSnapshot(
       gameRef,
       (docSnapshot) => {
+        ui.isLoadingLobby = false;
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
           game.gameStarted = data.isGameStarted ?? false;
@@ -344,6 +353,10 @@
     if (!playerFound) {
       // Get current player count to assign playerIndex
       const playersSnapshot = await getDocs(playersCollection);
+      if (playersSnapshot.size >= settings.maxPlayers) {
+        alert(`Sorry, this room is full (max ${settings.maxPlayers} players).`);
+        return;
+      }
       const playerIndex = playersSnapshot.size;
 
       const newPlayer = {
@@ -914,6 +927,8 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Computeds
+  const isRoomFull = computed(() => game.players.length >= settings.maxPlayers);
+
   const computedPlayerCount = computed(() => {
     if (game.players && game.players.length >= 0) {
       return game.players.length;
