@@ -1,14 +1,17 @@
 <script setup lang="ts">
   /////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////
   // IMPORTS
-  import { reactive, computed, onMounted, getCurrentInstance } from "vue"; // Import reactive from Vue 3
-  import { randomNumber, randomFrom, shuffle, percentOf, addCommas, findInArray, removeFromArray, sendEvent, dollars } from "../../shared/ts/_functions";
-  import { allDecks } from "./ts/_decks";
-  import type { GameState, MyState, RoundState, UIState, Player, PresentedCard } from "./ts/_types";
-
-  import { Howl, Howler } from "howler";
+  import { reactive, onMounted } from "vue";
+  import { randomFrom, shuffle, sendEvent } from "../../shared/ts/_functions";
   import { settings, soundBeginTalking, soundPresentationOver } from "./ts/_variables";
+  import { useWrongestComputeds } from "./ts/_useWrongestComputeds";
+  import { useWrongestHelpers } from "./ts/_useWrongestHelpers";
+  import {
+    createWrongestGameState,
+    createWrongestMyState,
+    createWrongestRoundState,
+    createWrongestUiState,
+  } from "./ts/_useWrongestState";
 
   //////// Firebase & VueFire
   import {
@@ -26,7 +29,7 @@
     where,
     onSnapshot,
   } from "firebase/firestore";
-  import { useFirestore, useCollection, useDocument } from "vuefire";
+  import { useFirestore, useDocument } from "vuefire";
   import { updateGeneralPlayerStats, updateGamePlayerStats, updateGameSizeStats } from "../../shared/ts/_firebaseStats";
 
   // Initialize Firestore
@@ -36,72 +39,50 @@
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Variables
-  const game = reactive<GameState>({
-    roomCode: "",
-    gameName: "wrongest",
-    inRoom: false,
-    gameStarted: false,
-    gameOver: false,
-    maxRounds: 0,
-    allDecks: allDecks,
-    selectedDeckIds: [],
-    gameDeck: [],
-    players: [],
-    cardsPlayed: [],
-    statementHistory: [],
-    voteHistory: [],
-    roomData: null,
-    roomCreatorID: "",
-    isFailedToGetRoomData: false,
-  });
+  const game = reactive(createWrongestGameState());
+  const my = reactive(createWrongestMyState());
+  const round = reactive(createWrongestRoundState());
+  const ui = reactive(createWrongestUiState());
 
-  const my = reactive<MyState>({
-    isRoomHost: false,
-    name: "",
-    nameInput: "",
-    playerID: "",
-    card: "",
-    playerIndex: -1,
+  const { watchVideo, closeInstructionVideo, normalizePlayerName, startPresentationTimer, resetPresentationTimer, cardText, changeFavicon } =
+    useWrongestHelpers({
+      game,
+      my,
+      round,
+      ui,
+      onPresentationFinished: () => presentationFinished(),
+      sendEvent,
+    });
 
-    upVote: "",
-    downVote: "",
-  });
-  const round = reactive<RoundState>({
-    phase: "",
-    number: 0,
-    dealerIndex: -1,
-    activePlayerIndex: -1,
-    playerPresenting: false,
-    presentationTimer: undefined,
-    presentationTimeLeft: settings.timeToPresent,
-    cardsPresented: [],
-    votesSubmitted: 0,
-    playersVoted: [], // Track which players have voted this round
-  });
-  const ui = reactive<UIState>({
-    watchingVideo: false,
-    isClosingVideo: false,
-    nameEntered: false,
-    showingDeckSelection: false,
-    deckName: "",
-    upVoteIndex: -1,
-    downVoteIndex: -1,
-    iVoted: false,
-    roomCodeInput: "",
-    disableButtons: false,
-    isStartingGame: false,
-    isSavingName: false,
-    isOpeningDeckSelection: false,
-    isSavingDeckSelection: false,
-    sidebarVisible: false,
-    isCreatingRoom: false,
-    isLoadingLobby: false,
+  const {
+    isRoomFull,
+    computedPlayerCount,
+    computedMinimumPlayerCount,
+    computedMaxRounds,
+    computedMinimumCards,
+    computedSelectedDecks,
+    computedTotalSelectedCards,
+    computedHasEnoughCards,
+    computedCanSubmitName,
+    computedHostName,
+    computedAmIPresenting,
+    computedCanIAdvanceTheGame,
+    computedAreAllVotesCast,
+    computedDashOffset,
+    computedPlayersByScore,
+    computedStatementsByScore,
+    computedVoteStatusMessage,
+  } = useWrongestComputeds({
+    game,
+    my,
+    round,
+    ui,
+    normalizePlayerName,
   });
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Functions
-
   // Generate unique player ID
   const generateUniqueID = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -307,43 +288,8 @@
     });
   }
 
-  const watchVideo = () => {
-    ui.watchingVideo = true;
-    if (game.inRoom) {
-      sendEvent("The Wrongest Words", "Instruction Video", "Pregame Screen");
-    } else {
-      sendEvent("The Wrongest Words", "Instruction Video", "Title Screen");
-    }
-  };
-
-  const closeInstructionVideo = () => {
-    if (ui.isClosingVideo) {
-      return;
-    }
-
-    ui.isClosingVideo = true;
-    window.setTimeout(() => {
-      ui.watchingVideo = false;
-      ui.isClosingVideo = false;
-    }, 150);
-  };
-
   ////////////////////////////////////////
   // Pregame
-  const normalizePlayerName = (name: string) => {
-    let normalizedName = name.trim();
-
-    const hasEmoji = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u.test(
-      normalizedName,
-    );
-
-    if (!hasEmoji) {
-      normalizedName = normalizedName.toUpperCase();
-    }
-
-    return normalizedName;
-  };
-
   const updateMyInfo = async () => {
     const normalizedName = normalizePlayerName(my.nameInput);
 
@@ -591,7 +537,7 @@
         ////////////////////////////////////////////////////////////
         // You've run out of cards.
         // EMERGENCY BACKUP SCENARIO.
-        let newDeck = randomFrom(allDecks);
+        let newDeck = randomFrom(game.allDecks);
         game.gameDeck = shuffle(newDeck.cards || []);
 
         alert("You've run out of cards. As such, I've chosen a new deck and shuffled that for you.");
@@ -890,298 +836,6 @@
       alert("Failed to end game: " + error.message);
     }
   };
-
-  ////////////////////////////////////////
-  // Timers
-  const startPresentationTimer = () => {
-    function amIPresenting() {
-      if (round.playerPresenting == true && round.activePlayerIndex == my.playerIndex) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    round.presentationTimeLeft = settings.timeToPresent;
-    round.presentationTimer = setInterval(() => {
-      round.presentationTimeLeft -= 0.05;
-      if (round.presentationTimeLeft <= 0) {
-        if (amIPresenting()) {
-          presentationFinished();
-        }
-      }
-    }, 50);
-  };
-
-  const resetPresentationTimer = () => {
-    clearInterval(round.presentationTimer);
-    round.presentationTimer = undefined;
-    round.presentationTimeLeft = settings.timeToPresent;
-  };
-
-  const cardText = (txt) => {
-    function amIPresenting() {
-      if (round.playerPresenting == true && round.activePlayerIndex == my.playerIndex) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    if (game.gameStarted && amIPresenting()) {
-      let t = txt.replace("{", '<span class="secret-text">').replace("}", "</span>");
-      return t;
-    } else if (round.phase == "presenting" && round.activePlayerIndex < my.playerIndex) {
-      return txt.replace(/\{.*?\}/, "...");
-    } else {
-      return txt.replace("{", "").replace("}", "");
-    }
-  };
-
-  function resetRoundVariables() {
-    round.phase = "presenting";
-    round.activePlayerIndex = -1;
-    round.dealerIndex = 0;
-    round.playerPresenting = false;
-    round.presentationTimer = undefined;
-    round.presentationTimeLeft = settings.timeToPresent;
-    round.cardsPresented = [];
-    round.votesSubmitted = 0;
-  }
-
-  function resetUIVariables() {
-    my.upVote = "";
-    my.downVote = "";
-    // Note: ui.iVoted is now managed by Firestore playersVoted array
-  }
-
-  function changeFavicon(src) {
-    var link = document.createElement("link"),
-      oldLink = document.getElementById("dynamic-favicon");
-    link.id = "dynamic-favicon";
-    link.rel = "shortcut icon";
-    link.href = src;
-    if (oldLink) {
-      document.head.removeChild(oldLink);
-    }
-    document.head.appendChild(link);
-  }
-
-  /////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////
-  // Computeds
-  const isRoomFull = computed(() => game.players.length >= settings.maxPlayers);
-
-  const computedPlayerCount = computed(() => {
-    if (game.players && game.players.length >= 0) {
-      return game.players.length;
-    } else {
-      return 0;
-    }
-  });
-
-  const computedMinimumPlayerCount = computed(() => {
-    // Use actual player count, but minimum of 3 for card calculations
-    return Math.max(computedPlayerCount.value, 3);
-  });
-
-  const computedMaxRounds = computed(() => {
-    const playerCount = computedPlayerCount.value;
-    if (playerCount == 3 || playerCount == 4) {
-      return 4;
-    } else if (playerCount == 5 || playerCount == 6) {
-      return 3;
-    } else if (playerCount > 6) {
-      return 2;
-    }
-    // Default for fewer than 3 players (shouldn't happen in real game)
-    return 4;
-  });
-
-  const computedMinimumCards = computed(() => {
-    return computedMaxRounds.value * computedMinimumPlayerCount.value;
-  });
-
-  const computedSelectedDecks = computed(() => {
-    return game.allDecks.filter((deck) => game.selectedDeckIds.includes(deck.id));
-  });
-
-  const computedTotalSelectedCards = computed(() => {
-    return computedSelectedDecks.value.reduce((total, deck) => {
-      return total + (deck.cards?.length || 0);
-    }, 0);
-  });
-
-  const computedHasEnoughCards = computed(() => {
-    return computedTotalSelectedCards.value >= computedMinimumCards.value;
-  });
-
-  const computedCanSubmitName = computed(() => {
-    const normalizedName = normalizePlayerName(my.nameInput);
-
-    if (normalizedName.length < 1) {
-      return false;
-    }
-
-    if (!ui.nameEntered) {
-      return true;
-    }
-
-    return normalizedName !== my.name;
-  });
-
-  const computedHostName = computed(() => {
-    const host = game.players.find((player) => player.playerID === game.roomCreatorID);
-    return host ? host.name : "the host";
-  });
-
-  const computedAmIPresenting = computed(() => {
-    if (round.playerPresenting == true && round.activePlayerIndex == my.playerIndex) {
-      return true;
-    } else {
-      return false;
-    }
-  });
-
-  const computedCanIAdvanceTheGame = computed(() => {
-    if (round.phase == "presenting") {
-      if (round.activePlayerIndex + 1 == my.playerIndex && !round.playerPresenting) {
-        // I'm next to play, I see a button.
-        return true;
-      } else if (my.playerIndex == 0 && game.players.length == round.activePlayerIndex + 1 && !round.playerPresenting) {
-        // It's time to vote, and I'm the first player.
-        return true;
-      } else {
-        return false;
-      }
-    } else if (round.phase == "voting") {
-      if (my.playerIndex == 0 && round.votesSubmitted >= game.players.length) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    return false;
-  });
-
-  const computedAreAllVotesCast = computed(() => {
-    if (round.votesSubmitted >= computedPlayerCount.value) {
-      return true;
-    } else {
-      return false;
-    }
-  });
-
-  const computedStatementsToVoteOn = computed(() => {
-    return round.cardsPresented.map((card, index) => {
-      let cardClass = "";
-
-      if (ui.upVoteIndex === index) {
-        cardClass = "agree";
-      } else if (ui.downVoteIndex === index) {
-        cardClass = "disagree";
-      }
-
-      return {
-        ...card,
-        originalIndex: index,
-        class: cardClass,
-      };
-    });
-  });
-
-  const computedDashOffset = computed(() => {
-    let a = percentOf(round.presentationTimeLeft, settings.timeToPresent);
-    let d = 251 - percentOf(a, 251);
-    return d.toFixed(2) + "px";
-  });
-
-  const computedPlayersByScore = computed(() => {
-    const computedPlayers = [...game.players];
-
-    function compare(a, b) {
-      if (a.score < b.score) return 1;
-      if (a.score > b.score) return -1;
-      return 0;
-    }
-
-    return computedPlayers.sort(compare);
-  });
-
-  const computedStatementsByScore = computed(() => {
-    const computedStatements = [...game.statementHistory];
-
-    function compare(a, b) {
-      if (a.score < b.score) return 1;
-      if (a.score > b.score) return -1;
-      return 0;
-    }
-
-    let sortedListAll = computedStatements.sort(compare);
-    let leastWrongList = sortedListAll.filter((statement) => statement.score >= sortedListAll[0].score);
-    let wrongestList = sortedListAll.filter((statement) => statement.score <= sortedListAll[sortedListAll.length - 1].score);
-
-    return {
-      wrongest: wrongestList,
-      wrongestCount: wrongestList.length,
-      leastWrong: leastWrongList,
-      leastWrongCount: leastWrongList.length,
-      all: sortedListAll,
-      allCount: sortedListAll.length,
-    };
-  });
-
-  // Computed property to get players who haven't voted yet
-  const computedPlayersWhoHaventVoted = computed(() => {
-    // Get playersVoted array from game state subscription
-    const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
-
-    // Filter players who are not in the playersVoted array
-    return game.players.filter((player) => {
-      // Check against the stored playersVoted data in round
-      // We'll need to track this in the gameState subscription
-      return !round.playersVoted?.includes(player.playerID);
-    });
-  });
-
-  // Computed property for vote status message
-  const computedVoteStatusMessage = computed(() => {
-    const votedCount = round.votesSubmitted || 0;
-    const totalPlayers = game.players.length;
-
-    if (votedCount === 0) {
-      return "";
-    }
-
-    if (ui.iVoted) {
-      // After I've voted, show who hasn't voted yet
-      const playersWhoHaventVoted = game.players.filter((player) => {
-        return !round.playersVoted?.includes(player.playerID);
-      });
-
-      if (playersWhoHaventVoted.length === 0) {
-        return `All ${totalPlayers} players have voted.`;
-      } else if (playersWhoHaventVoted.length === 1) {
-        return `${playersWhoHaventVoted[0].name} still needs to vote.`;
-      } else if (playersWhoHaventVoted.length === 2) {
-        return `${playersWhoHaventVoted[0].name} and ${playersWhoHaventVoted[1].name} still need to vote.`;
-      } else {
-        // More than 2 players haven't voted
-        const names = playersWhoHaventVoted
-          .slice(0, -1)
-          .map((p) => p.name)
-          .join(", ");
-        const lastName = playersWhoHaventVoted[playersWhoHaventVoted.length - 1].name;
-        return `${names}, and ${lastName} still need to vote.`;
-      }
-    } else {
-      // Before I've voted, show generic count
-      if (votedCount === 1) {
-        return "One player has voted.";
-      } else {
-        return `${votedCount} players have voted.`;
-      }
-    }
-  });
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
