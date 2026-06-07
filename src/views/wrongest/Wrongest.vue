@@ -155,8 +155,8 @@
       phase: "lobby",
       currentRound: 0,
       maxRounds: 0,
-      chosenDeckName: "",
-      gameDeck: { cards: [] },
+      selectedDeckIds: [],
+      gameDeck: [],
       cardsPresented: [],
       votesSubmitted: 0,
       activePlayerIndex: -1,
@@ -273,7 +273,8 @@
         round.number = data.currentRound || 0;
         game.maxRounds = data.maxRounds || 0;
         game.selectedDeckIds = data.selectedDeckIds || [];
-        game.gameDeck = data.gameDeck || [];
+        const rawDeck = data.gameDeck;
+        game.gameDeck = Array.isArray(rawDeck) ? rawDeck : (rawDeck?.cards || []);
         round.cardsPresented = data.cardsPresented || [];
         round.votesSubmitted = data.votesSubmitted || 0;
         round.activePlayerIndex = data.activePlayerIndex ?? -1;
@@ -514,14 +515,7 @@
       game.gameDeck = shuffle(combinedCards);
       await dealOutCards();
 
-      // Set maxRounds based on player count
-      if (game.players.length == 3 || game.players.length == 4) {
-        game.maxRounds = 4;
-      } else if (game.players.length == 5 || game.players.length == 6) {
-        game.maxRounds = 3;
-      } else if (game.players.length > 6) {
-        game.maxRounds = 2;
-      }
+      game.maxRounds = computedMaxRounds.value;
 
       // Update player stats in /stats/general/players and /stats/wrongest/players
       for (const player of game.players) {
