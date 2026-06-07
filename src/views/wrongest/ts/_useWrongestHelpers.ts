@@ -73,14 +73,14 @@ export function useWrongestHelpers({
 
   function cardText(txt: string): string {
     if (game.gameStarted && amIPresenting()) {
-      return txt.replace("{", '<span class="secret-text">').replace("}", "</span>");
+      return txt.replace(/\{/g, '<span class="secret-text">').replace(/\}/g, "</span>");
     }
 
     if (round.phase === "presenting" && round.activePlayerIndex < my.playerIndex) {
       return txt.replace(/\{.*?\}/, "...");
     }
 
-    return txt.replace("{", "").replace("}", "");
+    return txt.replace(/[{}]/g, "");
   }
 
   function changeFavicon(src: string): void {
