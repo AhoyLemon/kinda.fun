@@ -177,7 +177,7 @@
     const newUrl = `${protocol}//${host}/wrongest?room=${game.roomCode}`;
     window.history.pushState({}, "", newUrl);
 
-    joinRoom();
+    await joinRoom();
     } finally {
       ui.isCreatingRoom = false;
     }
@@ -199,7 +199,6 @@
     // Subscribe to game state
     await subscribeToGameState(game.roomCode);
 
-    my.isRoomHost = false;
     game.inRoom = true;
   };
 

@@ -244,7 +244,7 @@ export const allDecks: Deck[] = [
       // "Tennis balls are fuzzy {so they can stay warm during winter matches.}",
       // "The Olympics happen every 4 years because {athletes need that long to remember the rules.}",
       "Hockey players fight so much because {that's how they were taught to love.}",
-      "A Marathon is exactly that many kilometers because {in Greek mythology, 42.195 is the the luckiest number}",
+      "A Marathon is exactly that many kilometers because {in Greek mythology, 42.195 is the luckiest number}",
       // "Swimming caps are required because {chlorine makes hair sentient.}",
       `All NASCAR tracks require drivers to turn left because {of the left-wing politics of NASCAR in general}.`,
       "Boxing gloves were invented {to make punching fashionable.}",
