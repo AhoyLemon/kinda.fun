@@ -233,7 +233,7 @@ export const allDecks: Deck[] = [
     description: "Baseball. Volleyball. Surf Board. Cigarette. (Wiener Dog)",
     isNaughty: false,
     cards: [
-      `Baseball was originally played with {swords instead of} bats."`,
+      `Baseball was originally played with {swords instead of} bats.`,
       "A touchdown in football is worth 6 points because {that's how many fingers the inventor had.}",
       `Soccer originally had players kicking {each other, until they added a ball}.`,
       `Scoring a game of bowling is {technically impossible}.`,

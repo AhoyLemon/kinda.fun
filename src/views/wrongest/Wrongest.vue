@@ -232,6 +232,7 @@
         }
       },
       (error) => {
+        ui.isLoadingLobby = false;
         console.error("Error subscribing to game status:", error);
       },
     );
