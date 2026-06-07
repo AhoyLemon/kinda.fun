@@ -9,7 +9,7 @@ interface WrongestComputedsDeps {
   my: MyState;
   round: RoundState;
   ui: UIState;
-  normalizePlayerName: (name: string) => string;
+  normalizePlayerName: (...args: [string]) => string;
 }
 /* eslint-enable no-unused-vars */
 
@@ -99,6 +99,17 @@ export function useWrongestComputeds({ game, my, round, ui, normalizePlayerName 
 
   const computedStatementsByScore = computed(() => {
     const sortedStatements = [...game.statementHistory].sort(compareByScoreDescending);
+    if (sortedStatements.length === 0) {
+      return {
+        wrongest: [],
+        wrongestCount: 0,
+        leastWrong: [],
+        leastWrongCount: 0,
+        all: [],
+        allCount: 0,
+      };
+    }
+
     const highestScore = sortedStatements[0]?.score;
     const lowestScore = sortedStatements[sortedStatements.length - 1]?.score;
     const leastWrongList = sortedStatements.filter((statement) => statement.score >= highestScore);

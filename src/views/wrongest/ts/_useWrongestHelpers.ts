@@ -8,7 +8,7 @@ interface WrongestHelpersDeps {
   round: RoundState;
   ui: UIState;
   onPresentationFinished: () => void;
-  sendEvent: (category: string, action: string, label: string) => void;
+  sendEvent: (...args: [string, string, string]) => void;
 }
 /* eslint-enable no-unused-vars */
 
