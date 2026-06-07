@@ -7,7 +7,6 @@ import Table from "cli-table3";
 import chalk from "chalk";
 
 export default defineConfig(({ mode }) => {
-  console.log(mode);
   const env = loadEnv(mode, process.cwd(), "");
 
   // Check both .env file and process.env for compatibility with CI
@@ -95,6 +94,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           cameo: resolve(__dirname, "src/entries/cameo.js"),
+          court: resolve(__dirname, "src/entries/court.js"),
           guillotine: resolve(__dirname, "src/entries/guillotine.js"),
           invalid: resolve(__dirname, "src/entries/invalid.js"),
           meeting: resolve(__dirname, "src/entries/meeting.js"),
@@ -119,7 +119,7 @@ export default defineConfig(({ mode }) => {
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
           // Only rewrite for root-level slugs (e.g., /cameo, /guillotine, etc.)
-          const mpaPages = ["cameo", "guillotine", "invalid", "meeting", "megachurch", "pretend", "sisyphus", "stats", "wrongest", "home", "404"];
+          const mpaPages = ["cameo", "court", "guillotine", "invalid", "meeting", "megachurch", "pretend", "sisyphus", "stats", "wrongest", "home", "404"];
           const url = req.url.split("?")[0];
           console.log("Middleware hit for URL:", url);
 

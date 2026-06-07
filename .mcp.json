@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "env": {
+        "GITHUB_REPOSITORY": "AhoyLemon/kinda.fun"
+      }
+    }
+  }
+}

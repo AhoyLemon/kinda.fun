@@ -1,0 +1,26 @@
+//- ── TITLE PHASE ────────────────────────────────────────────
+main.court-title(v-if="ui.phase === 'title'")
+  .video-holder.video-bg
+    //- Only load these if the viewport is wider than 600px
+    video(title="SC:TCG background video" autoplay loop muted playsinline aria-hidden="true")
+      source(src="/video/court/court-barricade.compressed.webm" type="video/webm" media="(min-width: 801px)")
+      source(src="/video/court/court-barricade.compressed.mp4" type="video/mp4" media="(min-width: 801px)")
+  .title-hero
+    figure
+      img(src="/svg/games/supremecourt.svg" alt="Supreme Court: The Card Game" class="title-image")
+
+  .title-mode-buttons
+    .title-mode-section
+
+      button.title-button.quickplay(@click="markPlayedQuickplay(); ui.phase = 'courtSelect'")
+        .label Quick Play
+        .desc Assemble a court and argue a single case
+      p.title-hint(v-if="!hasPlayedQuickplay()") 
+        span.hint-text
+          span.emoji 👆
+          span.text New here? Start with Quick Play!
+
+    .title-mode-section
+      button.title-button.campaign(@click="ui.phase = 'campaignSelect'")
+        .label Start Campaign
+        .desc Guide a court through a docket of historic cases

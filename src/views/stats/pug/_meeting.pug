@@ -11,10 +11,10 @@ section.pretend.stats(v-if="ui.viewing == 'meeting'")
         .caption Last Game
         .time-ago(v-text="formatTime(stats.meeting.lastGameStarted,'fromNow')")
         .calendar(v-text="formatTime(stats.meeting.lastGameStarted,'calendar')")
-      .box.date(v-if="dates.pretend.launched")
-        .caption Game Launched
-        .time-ago(v-text="formatTime(dates.meeting.launched,'MMM D, YYYY')")
-        .calendar(v-text="formatTime(dates.meeting.launched,'fromNow')")
+      //- .box.date(v-if="dates.pretend.launched")
+      //-   .caption Game Launched
+      //-   .time-ago(v-text="formatTime(dates.meeting.launched,'MMM D, YYYY')")
+      //-   .calendar(v-text="formatTime(dates.meeting.launched,'fromNow')")
       .box.big-number(v-if="stats.meeting && stats.meeting.gamesStarted")
         .caption Games Started
         .number(v-text="addCommas(stats.meeting.gamesStarted)")

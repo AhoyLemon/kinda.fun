@@ -1,11 +1,14 @@
-<script setup>
+<script setup lang="ts">
   import { onMounted, reactive, ref, computed, watchEffect, watch } from "vue";
-  import { allCards } from "./js/_allCards.ts";
+  import { allCards } from "./ts/_allCards";
+  import { eventCards } from "./ts/_eventCards";
+  import { performSteal } from "./ts/_performSteal";
   import { randomNumber, randomFrom, shuffle, preceisePercentOf } from "@/shared/js/_functions.js";
 
   // Toasts
   import Toast, { POSITION } from "vue-toastification";
   import MyToast from "./vue/MyToast.vue";
+  import LemonToast from "./vue/LemonToast.vue";
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
@@ -72,14 +75,14 @@
               player.hand = handSnapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
-              }));
+              })) as any[];
 
               // Subscribe to the player's hand collection for real-time updates
               onSnapshot(handRef, (snapshot) => {
                 const newHand = snapshot.docs.map((doc) => ({
                   id: doc.id,
                   ...doc.data(),
-                }));
+                })) as any[];
 
                 newHand.forEach((newCard) => {
                   const oldCard = player.hand.find((card) => card.id === newCard.id);
@@ -113,16 +116,23 @@
                           you.currentCard = {};
                           you.isCurrentlyPlayingACard = false;
                         } else {
-                          toast(`“${newCard.stolenBy}” just stole a ${newCard.points} card from ${player.name}`, {
+                          toast(`${newCard.stolenBy} just stole a ${newCard.points} card from ${player.name}`, {
                             timeout: 6000,
                           });
                         }
                       }
                     } else if (newCard.status === "played") {
+                      if (!byLemonToastShown.value && !lemonToastCardTimer) {
+                        lemonToastCardPlayCount++;
+                        if (lemonToastCardPlayCount >= settings.byLemon.cardPlayThreshold) {
+                          if (lemonToastGameTimer) clearTimeout(lemonToastGameTimer);
+                          lemonToastCardTimer = setTimeout(showLemonToast, settings.byLemon.cardPlayDelayMs);
+                        }
+                      }
                       if (cardHolderPlayerID !== you.playerID) {
                         // Check if the card ID has already triggered a toast
                         if (!toastedCardIds.has(newCard.id)) {
-                          toast(`“${player.name}” just played a card for ${newCard.points} points.`, {
+                          toast(`${player.name} just played a card for ${newCard.points} points.`, {
                             timeout: 6000,
                           });
                           // Add the card ID to the set
@@ -181,10 +191,17 @@
       (docSnapshot) => {
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
-          // console.log("Game status update:", data);
+          const prevDealing = game.isDealingInProgress;
           game.isGameStarted = data.isGameStarted ?? false;
           game.roomCreatorID = data.roomCreatorID ?? "";
           game.isGameOver = data.isGameOver ?? false;
+          game.isDealingInProgress = data.isDealingInProgress ?? false;
+
+          if (game.isDealingInProgress && !prevDealing && !amITheHost.value) {
+            const hostPlayer = gamePlayers.value.find((p) => p.playerID === game.roomCreatorID);
+            const hostName = hostPlayer?.name ?? "The host";
+            toast(`${hostName} is starting the game. Dealing cards now...`, { timeout: 6000 });
+          }
         } else {
           console.error("Game document does not exist.");
           game.isFailedToGetRoomData = true;
@@ -201,10 +218,48 @@
     game.roomCode = newRoomCode;
   }
 
-  import { gameName, timeToScore, badGuessPenalty, cardsPerPlayer, game, you, ui } from "./js/_variables";
-  import { playerID } from "../invalid/js/_variables.js";
+  import { gameName, game, you, ui, settings } from "./ts/_variables";
   const timer = ref(0); // Reactive reference to store timer value
   let interval = null; // Store the interval ID
+  const isDealing = ref(false);
+
+  // By Lemon toast
+  const byLemonToastShown = ref(false);
+  let lemonToastGameTimer: ReturnType<typeof setTimeout> | null = null;
+  let lemonToastCardTimer: ReturnType<typeof setTimeout> | null = null;
+  let lemonToastRetryTimer: ReturnType<typeof setTimeout> | null = null;
+  let lemonToastCardPlayCount = 0;
+
+  const showLemonToast = () => {
+    if (byLemonToastShown.value) return;
+    if (you.isCurrentlyPlayingACard) {
+      if (lemonToastRetryTimer) clearTimeout(lemonToastRetryTimer);
+      lemonToastRetryTimer = setTimeout(showLemonToast, 15000);
+      return;
+    }
+    byLemonToastShown.value = true;
+    if (lemonToastGameTimer) clearTimeout(lemonToastGameTimer);
+    if (lemonToastCardTimer) clearTimeout(lemonToastCardTimer);
+    toast(
+      { component: LemonToast, props: { title: "", message: "" } },
+      {
+        toastClassName: "site-by-lemon",
+        icon: false,
+        timeout: false,
+        showCloseButtonOnHover: false,
+        closeButtonClassName: "close-toast",
+      },
+    );
+  };
+
+  watch(
+    () => game.isGameStarted,
+    (isStarted) => {
+      if (isStarted && !byLemonToastShown.value && !lemonToastGameTimer) {
+        lemonToastGameTimer = setTimeout(showLemonToast, settings.byLemon.gameTimerMs);
+      }
+    },
+  );
 
   const generateUniqueID = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -233,8 +288,17 @@
   };
 
   const savePlayerInfo = async () => {
+    if (!amISignedIn.value) {
+      const currentPlayersSnap = await getDocs(collection(db, "rooms", game.roomCode, "players"));
+      if (currentPlayersSnap.size >= settings.maxPlayers) {
+        toast("This room is full — no more players can join.", {
+          position: POSITION.BOTTOM_CENTER,
+          timeout: 8000,
+        });
+        return;
+      }
+    }
     you.name = you.nameInput;
-    localStorage.save;
     you.jobTitle = you.jobTitleInput;
 
     localStorage.setItem("kindaFunPlayerName", you.name);
@@ -250,8 +314,8 @@
       querySnapshot.forEach(async (docSnapshot) => {
         const playerRef = doc(db, "rooms", game.roomCode, "players", docSnapshot.id);
         await updateDoc(playerRef, {
-          name: newPlayer.name,
-          jobTitle: newPlayer.jobTitle,
+          name: you.name,
+          jobTitle: you.jobTitle,
         });
         playerFound = true;
       });
@@ -271,94 +335,167 @@
   };
 
   const shuffleUpAndDeal = async () => {
-    // --- Update player stats before dealing cards ---
-    const now = serverTimestamp();
-    for (const player of gamePlayers.value) {
-      // /stats/meeting/players/${player.name}
-      const meetingPlayerRef = doc(db, `stats/meeting/players/${player.name}`);
-      const meetingPlayerSnap = await getDoc(meetingPlayerRef);
-      if (meetingPlayerSnap.exists()) {
-        await updateDoc(meetingPlayerRef, {
-          timesPlayed: increment(1),
-          lastPlayed: now,
-        });
-      } else {
-        await setDoc(meetingPlayerRef, {
-          name: player.name,
-          timesPlayed: 1,
-          lastPlayed: now,
-        });
-      }
-      // /stats/meeting/jobTitles/${player.jobTitle}
-      if (player.jobTitle) {
-        const meetingJobRef = doc(db, `stats/meeting/jobTitles/${player.jobTitle}`);
-        const meetingJobSnap = await getDoc(meetingJobRef);
-        if (meetingJobSnap.exists()) {
-          await updateDoc(meetingJobRef, {
+    isDealing.value = true;
+    const roomRef = doc(db, `rooms/${game.roomCode}`);
+    await updateDoc(roomRef, { isDealingInProgress: true });
+
+    let dealSucceeded = false;
+    try {
+      // --- Update player stats before dealing cards ---
+      const now = serverTimestamp();
+      for (const player of gamePlayers.value) {
+        // /stats/meeting/players/${player.name}
+        const meetingPlayerRef = doc(db, `stats/meeting/players/${player.name}`);
+        const meetingPlayerSnap = await getDoc(meetingPlayerRef);
+        if (meetingPlayerSnap.exists()) {
+          await updateDoc(meetingPlayerRef, {
             timesPlayed: increment(1),
             lastPlayed: now,
           });
         } else {
-          await setDoc(meetingJobRef, {
-            jobTitle: player.jobTitle,
+          await setDoc(meetingPlayerRef, {
+            name: player.name,
             timesPlayed: 1,
             lastPlayed: now,
           });
         }
+        // /stats/meeting/jobTitles/${player.jobTitle}
+        if (player.jobTitle) {
+          const meetingJobRef = doc(db, `stats/meeting/jobTitles/${player.jobTitle}`);
+          const meetingJobSnap = await getDoc(meetingJobRef);
+          if (meetingJobSnap.exists()) {
+            await updateDoc(meetingJobRef, {
+              timesPlayed: increment(1),
+              lastPlayed: now,
+            });
+          } else {
+            await setDoc(meetingJobRef, {
+              jobTitle: player.jobTitle,
+              timesPlayed: 1,
+              lastPlayed: now,
+            });
+          }
+        }
+        // /stats/general/players/${player.name}
+        const generalPlayerRef = doc(db, `stats/general/players/${player.name}`);
+        const generalPlayerSnap = await getDoc(generalPlayerRef);
+        if (generalPlayerSnap.exists()) {
+          await updateDoc(generalPlayerRef, {
+            gamesPlayed: increment(1),
+            mostRecentGame: "meeting",
+            lastPlayed: now,
+          });
+        } else {
+          await setDoc(generalPlayerRef, {
+            name: player.name,
+            gamesPlayed: 1,
+            mostRecentGame: "meeting",
+            lastPlayed: now,
+          });
+        }
       }
-      // /stats/general/players/${player.name}
-      const generalPlayerRef = doc(db, `stats/general/players/${player.name}`);
-      const generalPlayerSnap = await getDoc(generalPlayerRef);
-      if (generalPlayerSnap.exists()) {
-        await updateDoc(generalPlayerRef, {
-          gamesPlayed: increment(1),
-          mostRecentGame: "meeting",
-          lastPlayed: now,
-        });
-      } else {
-        await setDoc(generalPlayerRef, {
-          name: player.name,
-          gamesPlayed: 1,
-          mostRecentGame: "meeting",
-          lastPlayed: now,
-        });
+
+      // Split allCards into tier pools, each shuffled independently
+      const easyPool = shuffle(allCards.filter((c) => c.points === 5));
+      const mediumPool = shuffle(allCards.filter((c) => c.points === 10));
+      const hardPool = shuffle(allCards.filter((c) => c.points === 15));
+      const expertPool = shuffle(allCards.filter((c) => c.points === 30));
+
+      // Draw from a pool, falling back to adjacent tiers if exhausted (warns once per exhausted pool)
+      const exhaustedPools = new Set<any[]>();
+      const drawFrom = (...pools: any[][]): any | null => {
+        for (const pool of pools) {
+          if (pool.length > 0) {
+            if (pool !== pools[0] && !exhaustedPools.has(pools[0])) {
+              exhaustedPools.add(pools[0]);
+              console.warn("Tier pool exhausted, falling back to adjacent tier");
+            }
+            return pool.shift();
+          }
+        }
+        return null;
+      };
+
+      // Build all hands in memory before writing to Firestore
+      const allHands: Record<string, any[]> = {};
+      for (const player of game.players) {
+        const hand = [
+          drawFrom(easyPool, mediumPool, hardPool, expertPool),
+          drawFrom(easyPool, mediumPool, hardPool, expertPool),
+          drawFrom(mediumPool, easyPool, hardPool, expertPool),
+          drawFrom(hardPool, mediumPool, expertPool, easyPool),
+          drawFrom(expertPool, hardPool, mediumPool, easyPool),
+        ].filter(Boolean);
+        if (hand.length < 5) {
+          console.error("Not enough cards to deal full hands");
+          isDealing.value = false;
+          await updateDoc(roomRef, { isDealingInProgress: false });
+          alert("Not enough cards to deal — game cannot start.");
+          return;
+        }
+        allHands[player.playerID] = hand;
+      }
+
+      // Distribute event cards if an event is active
+      if (settings.isEventActive) {
+        const shuffledEventCards = shuffle([...eventCards]);
+        const toDistribute = shuffledEventCards.slice(0, settings.eventCardsPerGame);
+        const playerIDs = game.players.map((p: any) => p.playerID);
+
+        for (const eventCard of toDistribute) {
+          // Only give event cards to players who don't already have one
+          const eligible = playerIDs.filter((id: string) => !allHands[id].some((c: any) => c.isEventCard));
+          if (eligible.length === 0) break;
+
+          const targetID = randomFrom(eligible);
+          const hand = allHands[targetID];
+
+          // Swap out a card at the matching tier; fall back to closest tier
+          let swapIndex = hand.findIndex((c: any) => c.points === eventCard.points && !c.isEventCard);
+          if (swapIndex === -1) {
+            let minDiff = Infinity;
+            hand.forEach((c: any, i: number) => {
+              if (!c.isEventCard) {
+                const diff = Math.abs(c.points - eventCard.points);
+                if (diff < minDiff) {
+                  minDiff = diff;
+                  swapIndex = i;
+                }
+              }
+            });
+          }
+          if (swapIndex !== -1) hand[swapIndex] = { ...eventCard };
+        }
+      }
+
+      // Write all hands to Firestore
+      for (const player of game.players) {
+        const hand = allHands[player.playerID];
+        const handCollectionRef = collection(db, `rooms/${game.roomCode}/players/${player.playerID}/hand`);
+        for (const card of hand) {
+          const cardDocRef = doc(handCollectionRef);
+          await setDoc(cardDocRef, { ...card, status: "unplayed" });
+        }
+      }
+
+      await updateDoc(roomRef, {
+        isGameStarted: true,
+        isDealingInProgress: false,
+      });
+      await updateDoc(statsRef, {
+        gamesStarted: increment(1),
+        lastGameStarted: serverTimestamp(),
+      });
+      dealSucceeded = true;
+    } catch (error) {
+      console.error("Failed to start game:", error);
+      alert("Something went wrong starting the game. Please try again.");
+    } finally {
+      if (!dealSucceeded) {
+        isDealing.value = false;
+        updateDoc(roomRef, { isDealingInProgress: false }).catch(() => {});
       }
     }
-
-    game.deck = shuffle([...allCards]);
-
-    const totalPlayers = game.players.length;
-    const totalCardsNeeded = totalPlayers * cardsPerPlayer;
-    if (game.deck.length < totalCardsNeeded) {
-      console.error("Not enough cards to deal");
-      alert("Not enough cards to deal");
-      return;
-    }
-
-    // Deal cards to each player's hand
-    for (const player of game.players) {
-      let playerHand = [];
-      for (let i = 0; i < cardsPerPlayer; i++) {
-        let newCard = game.deck.shift(); // Remove the first card from the deck
-        newCard.status = "unplayed";
-        playerHand.push(newCard);
-      }
-      // Create a collection called hand for this player, and add the documents defined in playerHand.
-      const handCollectionRef = collection(db, `rooms/${game.roomCode}/players/${player.playerID}/hand`);
-      for (const card of playerHand) {
-        const cardDocRef = doc(handCollectionRef);
-        await setDoc(cardDocRef, card);
-      }
-    }
-
-    const roomRef = doc(db, `rooms/${game.roomCode}`);
-    await updateDoc(roomRef, {
-      isGameStarted: true,
-    });
-    await updateDoc(statsRef, {
-      gamesStarted: increment(1),
-      lastGameStarted: serverTimestamp(),
-    });
   };
 
   const playThisCard = (card) => {
@@ -371,7 +508,7 @@
     updateDoc(cardRef, {
       status: "playing",
     });
-    timer.value = timeToScore;
+    timer.value = settings.timeToScore;
     interval = setInterval(() => {
       timer.value -= 10; // Decrease timer by 10 milliseconds
 
@@ -463,16 +600,17 @@
     logCardScore(card);
   };
 
-  const performGuess = () => {
-    const yourGuess = you.guess.toLowerCase().replace(/"/g, "");
+  const performGuess = async () => {
+    const yourGuess = you.guess.toLowerCase().replace(/”/g, "");
+    you.guess = ""; // clear before await to prevent double-submit while transaction is in-flight
 
     let isThatPhraseYours = false;
     let isAlreadyPlayed = false;
     let isAlreadyStolen = false;
     let isSuccess = false;
-    let cardHolder = {};
+    let cardHolder: any = {};
 
-    let match = {};
+    let match: any = {};
 
     // Loop through every player in gamePlayers
     outerLoop: for (const player of gamePlayers.value) {
@@ -500,7 +638,7 @@
     }
 
     if (isSuccess === true) {
-      rewardGoodGuess(match, cardHolder);
+      await rewardGoodGuess(match, cardHolder);
     } else if (isAlreadyPlayed) {
       toast(
         {
@@ -508,7 +646,7 @@
           props: {
             title: "Too Late!",
             // points: match.points,
-            message: `“<strong>${match.phrase}</strong>” has already been scored.`,
+            message: `”<strong>${match.phrase}</strong>” has already been scored.`,
           },
         },
         {
@@ -524,7 +662,7 @@
           component: MyToast,
           props: {
             title: "Too Late!",
-            message: `“${actualPhrase ?? yourGuess}” has already been stolen.`,
+            message: `”${match.phrase ?? yourGuess}” has already been stolen.`,
           },
         },
         {
@@ -535,22 +673,21 @@
         },
       );
     } else if (isThatPhraseYours) {
-      severelyPenalizeTerribleGuess(match, you.guess);
+      severelyPenalizeTerribleGuess(match, yourGuess);
     } else {
-      penalizeBadGuess(you.guess);
+      penalizeBadGuess(yourGuess);
     }
-    you.guess = "";
   };
 
   const penalizeBadGuess = async (yourGuess) => {
-    const yourLoss = 0 - badGuessPenalty;
+    const yourLoss = 0 - settings.badGuessPenalty;
     toast(
       {
         component: MyToast,
         props: {
           title: "Nope!",
           points: yourLoss,
-          message: `Nobody had “<strong>${you.guess}</strong>”.`,
+          message: `Nobody had “<strong>${yourGuess}</strong>”.`,
         },
       },
       {
@@ -625,37 +762,62 @@
     await addDoc(activitiesRef, newActivity);
   };
 
-  const rewardGoodGuess = (match, cardHolder) => {
-    toast(
-      {
-        component: MyToast,
-        props: {
-          title: "Got 'em!",
-          points: match.points,
-          message: `<strong>${cardHolder.name}</strong> had “<strong>${match.phrase}</strong>.”`,
+  const rewardGoodGuess = async (match, cardHolder) => {
+    const result = await performSteal(db, game.roomCode, match, cardHolder, you);
+
+    if (result === "success") {
+      toast(
+        {
+          component: MyToast,
+          props: {
+            title: "Got 'em!",
+            points: match.points,
+            message: `<strong>${cardHolder.name}</strong> had “<strong>${match.phrase}</strong>.”`,
+          },
         },
-      },
-      {
-        position: POSITION.BOTTOM_LEFT,
-        toastClassName: "green",
-        timeout: 8000,
-        icon: false,
-      },
-    );
-
-    //console.log(`rooms/${game.roomCode}/players/${you.playerID}`);
-    const playerRef = doc(db, `rooms/${game.roomCode}/players/${you.playerID}`);
-    updateDoc(playerRef, {
-      score: increment(match.points),
-    });
-
-    const cardRef = doc(db, `rooms/${game.roomCode}/players/${cardHolder.playerID}/hand/${match.id}`);
-    updateDoc(cardRef, {
-      status: "stolen",
-      stolenBy: you.name,
-    });
-
-    logCardTheft(match);
+        {
+          position: POSITION.BOTTOM_LEFT,
+          toastClassName: "green",
+          timeout: 8000,
+          icon: false,
+        },
+      );
+      logCardTheft(match);
+    } else if (result === "played") {
+      toast(
+        {
+          component: MyToast,
+          props: {
+            title: "Too Late!",
+            message: `”<strong>${match.phrase}</strong>” has already been scored.`,
+          },
+        },
+        {
+          position: POSITION.BOTTOM_LEFT,
+          toastClassName: "yellow",
+          timeout: 8000,
+          icon: false,
+        },
+      );
+    } else if (result === "stolen") {
+      toast(
+        {
+          component: MyToast,
+          props: {
+            title: "Too Late!",
+            message: `”${match.phrase}” has already been stolen.`,
+          },
+        },
+        {
+          position: POSITION.BOTTOM_LEFT,
+          toastClassName: "yellow",
+          timeout: 8000,
+          icon: false,
+        },
+      );
+    } else if (result === "not_found") {
+      console.error(`performSteal: card “${match.phrase}” (id: ${match.id}) was not found in Firestore — this should not be possible.`);
+    }
   };
 
   const createRoom = async () => {
@@ -758,22 +920,17 @@
     if (!timer.value || timer.value < 3) {
       return "";
     }
-    if (timer.value) {
-      const splitSeconds = (timer.value / 1000).toFixed(2).split(".");
-      const s = splitSeconds[0].padStart(2, 0);
-      const ms = splitSeconds[1];
-      return `<span class="s">${s}</span><sup class="ms">${ms}</sup>`;
-    }
+    const splitSeconds = (timer.value / 1000).toFixed(2).split(".");
+    const s = splitSeconds[0].padStart(2, "0");
+    const ms = splitSeconds[1];
+    return `<span class="s">${s}</span><sup class="ms">${ms}</sup>`;
   });
 
   const timerProgressPercent = computed(() => {
     if (!timer.value || timer.value < 3) {
       return "";
     }
-    if (timer.value) {
-      const pct = 100 - Number(preceisePercentOf(timeToScore, timer.value));
-      return pct;
-    }
+    return 100 - Number(preceisePercentOf(settings.timeToScore, timer.value));
   });
 
   const computedPlayerHand = computed(() => {
@@ -791,6 +948,16 @@
 
     // Clone and sort the players array by score in descending order
     return [...gamePlayers.value].sort((a, b) => b.score - a.score);
+  });
+
+  const isRoomFull = computed(() => {
+    return game.players.length >= settings.maxPlayers;
+  });
+
+  const canSaveProfile = computed(() => {
+    const nameValid = you.nameInput.trim().length > 0;
+    if (!amISignedIn.value) return nameValid;
+    return nameValid && (you.nameInput !== you.name || you.jobTitleInput !== you.jobTitle);
   });
 
   onMounted(() => {

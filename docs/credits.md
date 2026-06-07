@@ -18,7 +18,7 @@ Provided a bunch of lies for The Wrongest Words
 
 ## Happy Birthday Voices
 
-Generated during the Game Over Screen on **Comparatively Famous**, these were provided by...
+Generated during the Game Over Screen on [**Comparatively Famous**](https://kinda.fun/cameo), these were provided by...
 
 - [Lemon](https://ahoylemon.xyz/)
 - Simone
@@ -35,6 +35,16 @@ Generated during the Game Over Screen on **Comparatively Famous**, these were pr
 - [Alexandra White](https://heyawhite.com/)
 - [Cheapskate](https://thefpl.us/meet/cheapskate)
 - [Bunnybread](https://voicefromhale.com/)
+
+## Justice Voices
+
+The voices for [**Supreme Court**](https://kinda.fun/court) justices are...
+
+| Actor                                                   | Justice(s)                      |
+| ------------------------------------------------------- | ------------------------------- |
+| [Lemon](https://ahoylemon.xyz/)                         | Most of them                    |
+| [Boots Raingear](https://thefpl.us/meet/boots-raingear) | Ginsburg, Mentok The Mind Taker |
+| [Todd Gardner](https://www.toddhgardner.com/)           | Rehnquist, Scalia               |
 
 ## Useful Resources
 

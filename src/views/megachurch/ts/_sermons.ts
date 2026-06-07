@@ -1,6 +1,5 @@
 // Allowed values
-import { Tags, ReligionNames } from "./_types";
-import { religions } from "./_religions";
+import type { Tags, ReligionNames } from "./_types";
 
 export interface Theme {
   id: number; // UID this theme
@@ -678,7 +677,7 @@ export const themes: Theme[] = [
     },
   },
   {
-    id: 36,
+    id: 31,
     title: "No Kings, No Masters, No Problem!",
     desc: "Why settle for one ruler when you can have none? In the Sovereign Guild, every soul is its own government, every living room a sovereign nation, and every traffic ticket a declaration of war. Bowing is strictly forbidden, paperwork is heresy, and the only law is whatever you just made up. True enlightenment means never paying taxes, never following orders, and never, ever admitting you were wrong.",
     likedBy: {

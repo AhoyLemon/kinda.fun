@@ -1,0 +1,19 @@
+@use '../abstracts/variables' as *;
+
+// ─── Shame ───────────────────────────────────────────────────
+// All !important rules live here so they're visible and auditable.
+
+.justice-card.is-chief {
+  border-color: $court-gold-light !important;
+  box-shadow: 0 0 0 2px rgba($court-gold-light, 0.25);
+}
+
+.justice-card.is-multi-selected {
+  border-color: #f39c12 !important;
+  box-shadow: 0 0 18px rgba(243, 156, 18, 0.65) !important;
+}
+
+.tactic-card.is-claiming-pick {
+  border-color: $court-gold !important;
+  box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.4);
+}

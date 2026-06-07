@@ -1,4 +1,4 @@
-import { Celeb, GimmickRound } from "./_types";
+import { GimmickRound } from "./_types";
 
 export const gimmickRounds: Record<string, GimmickRound> = {
   richards: {

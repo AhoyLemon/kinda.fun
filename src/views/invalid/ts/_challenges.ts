@@ -8,6 +8,7 @@ export interface Challenge {
   id: number; // Unique identifier for the challenge
   name: string; // Canonical name, used when selecting the challenge from a list, or displaying it in stats
   nameAsRule: string; // The password rule as it will be seen by the employees.
+  naughty?: boolean; // Optional. Marks challenges that should be excluded when naughty content is disabled.
   hint?: string; // Optional. This will be shown to employees to help them know what they should type (eg: Last Name)
   failedMessage: string; // What the employees will say if your password isn't on the list. [PASS] will be replaced with the entered password.
   possible: string[]; // ALLCAPS list of every possible answers, each is treated as unique.

@@ -1,23 +1,67 @@
-<script setup>
-  import { reactive, computed, onMounted, onBeforeMount } from "vue";
+<script setup lang="ts">
+  import { reactive, onMounted } from "vue";
   import { formatDate, dollars, billionsOfDollars } from "./ts/_functions";
   import { addCommas, percentOf } from "@/shared/js/_functions";
   import { columns } from "./ts/_columns";
   import { DateTime } from "luxon";
   import "vue-good-table-next/dist/vue-good-table-next.css";
   import { VueGoodTable } from "vue-good-table-next";
-  import { getDatabase, ref, get } from "firebase/database";
-  import { initializeApp } from "firebase/app";
-  import { firebaseConfig } from "../../../firebaseConfig.public";
   import { useFirestore } from "vuefire";
-  import { collection, getDocs } from "firebase/firestore";
-  import { challenges } from "../invalid/ts/_challenges";
+  import { useStatsComputeds, stripWrongestBraces, humanizeStanceName } from "./ts/_useStatsComputeds";
+  import type { StatsState, StatsUiState } from "./ts/_useStatsComputeds";
+
+  type StatsRecord = Record<string, unknown>;
+  type StatsCollection = StatsRecord[];
+  type StatsByGame = StatsState;
+  type LoadedGame =
+    | "general"
+    | "cameo"
+    | "court"
+    | "sisyphus"
+    | "guillotine"
+    | "pretend"
+    | "meeting"
+    | "invalid"
+    | "megachurch"
+    | "wrongest";
+  const validGames: readonly LoadedGame[] = ["general", "cameo", "court", "sisyphus", "guillotine", "pretend", "meeting", "invalid", "megachurch", "wrongest"];
+  const isLoadedGame = (value: string): value is LoadedGame => validGames.includes(value as LoadedGame);
+  type RelativeTimeFormat = "fromNow" | "calendar" | string;
+  type TimestampInput = Date | number | string;
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Variables
 
-  const dates = reactive({
+  type DateEntry = { launched: string; dayCount: number | null };
+  type DatesState = {
+    today: DateTime | null;
+    guillotine: DateEntry;
+    cameo: DateEntry;
+    court: DateEntry;
+    sisyphus: DateEntry;
+    pretend: DateEntry;
+    meeting: DateEntry;
+    invalid: DateEntry;
+    megachurch: DateEntry;
+    wrongest: DateEntry;
+  };
+  type UiState = StatsUiState & {
+    viewing: "loading" | LoadedGame;
+    cameoLoaded: boolean;
+    invalidLoaded: boolean;
+    wrongestLoaded: boolean;
+    sisyphusLoaded: boolean;
+    guillotineLoaded: boolean;
+    pretendLoaded: boolean;
+    meetingLoaded: boolean;
+    megachurchLoaded: boolean;
+    loadingFullData: boolean;
+    selectedJusticeId: string | number | null;
+    courtLoaded: boolean;
+  };
+
+  const dates = reactive<DatesState>({
     today: null,
     guillotine: {
       launched: "2022-05-16",
@@ -25,6 +69,10 @@
     },
     cameo: {
       launched: "2021-02-16",
+      dayCount: null,
+    },
+    court: {
+      launched: "2026-05-25",
       dayCount: null,
     },
     sisyphus: {
@@ -53,10 +101,11 @@
     },
   });
 
-  const stats = reactive({
+  const stats = reactive<StatsByGame>({
     general: {},
     guillotine: {},
     cameo: {},
+    court: {},
     invalid: {},
     wrongest: {},
     sisyphus: {},
@@ -65,21 +114,21 @@
     megachurch: {},
   });
 
-  const ui = reactive({
+  const ui = reactive<UiState>({
     viewing: "loading",
     cameoLoaded: false,
     invalidLoaded: false,
     wrongestLoaded: false,
     sisyphusLoaded: false,
     guillotineLoaded: false,
+    courtLoaded: false,
     pretendLoaded: false,
     meetingLoaded: false,
     megachurchLoaded: false,
     loadingFullData: false,
+    selectedJusticeId: null,
   });
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
   const firestoreDb = useFirestore();
 
   /////////////////////////////////////////////////////////
@@ -87,8 +136,28 @@
   // Functions
 
   // Helper to load Firestore stats for a game
-  function convertTimestamp(ts) {
-    if (ts && typeof ts === "object" && typeof ts.seconds === "number") {
+  type FirestoreTimestampObject = { seconds: number; nanoseconds: number };
+  type FirestoreTimestampLike = FirestoreTimestampObject | Date | string | number | null | undefined;
+  type LoadSubcollectionOptions = {
+    process?: (data: StatsRecord) => StatsRecord;
+    timestampFields?: string[];
+    limitTo?: number;
+    sortBy?: string;
+    nestedSubcollections?: Record<string, LoadSubcollectionOptions>;
+  };
+  type LoadStatsOptions = {
+    mainDocTimestamps?: string[];
+    subcollections?: Record<string, LoadSubcollectionOptions>;
+  };
+
+  const isFirestoreTimestampObject = (value: unknown): value is FirestoreTimestampObject => {
+    if (!value || typeof value !== "object") return false;
+    const ts = value as { seconds?: unknown; nanoseconds?: unknown };
+    return typeof ts.seconds === "number" && typeof ts.nanoseconds === "number";
+  };
+
+  function convertTimestamp(ts: FirestoreTimestampLike): Date | string | number | null | undefined {
+    if (isFirestoreTimestampObject(ts)) {
       return new Date(ts.seconds * 1000 + Math.floor(ts.nanoseconds / 1e6));
     }
     return ts;
@@ -96,6 +165,7 @@
 
   /**
    * Loads Firestore stats for a game, normalizing timestamp fields and subcollections.
+   * Supports nested subcollections for hierarchical data (e.g., justices > cases).
    * @param {string} game - The game name (e.g. "cameo", "sisyphus", ...)
    * @param {object} options - {
    *   mainDocTimestamps: [fieldName, ...],
@@ -104,21 +174,28 @@
    *       process: (data) => data, // optional per-item processor
    *       timestampFields: [fieldName, ...], // optional per-item timestamp fields
    *       limitTo: number, // optional limit for query
-   *       sortBy: string // optional sort field (for limiting)
+   *       sortBy: string, // optional sort field (for limiting)
+   *       nestedSubcollections: { // optional nested subcollections
+   *         [nestedName]: {
+   *           timestampFields: [fieldName, ...],
+   *           limitTo: number,
+   *           sortBy: string
+   *         }
+   *       }
    *     }
    *   }
    * }
    */
-  async function loadFirestoreStats(game, options) {
+  async function loadFirestoreStats(game: LoadedGame, options: LoadStatsOptions): Promise<void> {
     const { doc, getDoc, collection, getDocs, query, orderBy, limit } = await import("firebase/firestore");
     // Get the main doc
     const mainDocSnap = await getDoc(doc(firestoreDb, "stats", game));
     if (mainDocSnap.exists()) {
-      const mainData = mainDocSnap.data();
+      const mainData = mainDocSnap.data() as StatsRecord;
       // Convert timestamps
       if (options.mainDocTimestamps) {
-        options.mainDocTimestamps.forEach((field) => {
-          if (mainData[field]) mainData[field] = convertTimestamp(mainData[field]);
+        options.mainDocTimestamps.forEach((field: string) => {
+          if (mainData[field]) mainData[field] = convertTimestamp(mainData[field] as FirestoreTimestampLike);
         });
       }
       Object.assign(stats[game], mainData);
@@ -127,30 +204,71 @@
     if (options.subcollections) {
       for (const [sub, subOpts] of Object.entries(options.subcollections)) {
         let collectionRef = collection(firestoreDb, `stats/${game}/${sub}`);
-        let queryRef = collectionRef;
+        const queryRef =
+          subOpts.sortBy && subOpts.limitTo
+            ? query(collectionRef, orderBy(subOpts.sortBy, "desc"), limit(subOpts.limitTo))
+            : subOpts.sortBy
+              ? query(collectionRef, orderBy(subOpts.sortBy, "desc"))
+              : subOpts.limitTo
+                ? query(collectionRef, limit(subOpts.limitTo))
+                : collectionRef;
 
         // Apply sorting and limiting if specified
-        if (subOpts.sortBy && subOpts.limitTo) {
-          queryRef = query(collectionRef, orderBy(subOpts.sortBy, "desc"), limit(subOpts.limitTo));
-        } else if (subOpts.sortBy) {
-          queryRef = query(collectionRef, orderBy(subOpts.sortBy, "desc"));
-        } else if (subOpts.limitTo) {
-          queryRef = query(collectionRef, limit(subOpts.limitTo));
-        }
 
         const snap = await getDocs(queryRef);
-        const results = snap.docs.map((doc) => {
-          let data = doc.data();
-          // Convert per-item timestamps
-          if (subOpts.timestampFields) {
-            subOpts.timestampFields.forEach((field) => {
-              if (data[field]) data[field] = convertTimestamp(data[field]);
-            });
-          }
-          // Custom processor
-          if (subOpts.process) data = subOpts.process(data);
-          return data;
-        });
+        const results = await Promise.all(
+          snap.docs.map(async (doc) => {
+            let data = doc.data() as StatsRecord;
+            // Add the document ID as a reference (typically the name)
+            if (!data.id) data.id = doc.id;
+
+            // Convert per-item timestamps
+            if (subOpts.timestampFields) {
+              subOpts.timestampFields.forEach((field: string) => {
+                if (data[field]) data[field] = convertTimestamp(data[field] as FirestoreTimestampLike);
+              });
+            }
+            // Custom processor
+            if (subOpts.process) data = subOpts.process(data);
+
+            // Load nested subcollections if specified
+            if (subOpts.nestedSubcollections) {
+              for (const [nestedSub, nestedOpts] of Object.entries(subOpts.nestedSubcollections)) {
+                let nestedCollectionRef = collection(firestoreDb, `stats/${game}/${sub}/${doc.id}/${nestedSub}`);
+                const nestedQueryRef =
+                  nestedOpts.sortBy && nestedOpts.limitTo
+                    ? query(nestedCollectionRef, orderBy(nestedOpts.sortBy, "desc"), limit(nestedOpts.limitTo))
+                    : nestedOpts.sortBy
+                      ? query(nestedCollectionRef, orderBy(nestedOpts.sortBy, "desc"))
+                      : nestedOpts.limitTo
+                        ? query(nestedCollectionRef, limit(nestedOpts.limitTo))
+                        : nestedCollectionRef;
+
+                // Apply sorting and limiting to nested query
+
+                const nestedSnap = await getDocs(nestedQueryRef);
+                const nestedResults = nestedSnap.docs.map((nestedDoc) => {
+                  let nestedData = nestedDoc.data() as StatsRecord;
+                  if (!nestedData.id) nestedData.id = nestedDoc.id;
+
+                  // Convert nested timestamps
+                  if (nestedOpts.timestampFields) {
+                    nestedOpts.timestampFields.forEach((field: string) => {
+                      if (nestedData[field]) nestedData[field] = convertTimestamp(nestedData[field] as FirestoreTimestampLike);
+                    });
+                  }
+                  // Custom nested processor if provided
+                  if (nestedOpts.process) nestedData = nestedOpts.process(nestedData);
+                  return nestedData;
+                });
+
+                data[nestedSub] = nestedResults;
+              }
+            }
+
+            return data;
+          }),
+        );
 
         stats[game][sub] = results;
         // Track if this is a limited query
@@ -163,12 +281,7 @@
     }
   }
 
-  // Helper function to calculate days since launch
-  const calculateDaysSince = (launchedDate) => {
-    return Math.floor(dates.today.diff(DateTime.fromISO(launchedDate), "days").days);
-  };
-
-  const getData = async (game) => {
+  const getData = async (game: LoadedGame): Promise<void> => {
     ui.viewing = "loading";
 
     let errorOccurred = false;
@@ -188,6 +301,15 @@
           stats.general.cameoGamesStarted = cameoData.gamesStarted || 0;
           stats.general.cameoLastPlayed = cameoData.lastGameStarted ? convertTimestamp(cameoData.lastGameStarted) : null;
         }
+
+        // Court
+        const courtSnap = await getDoc(doc(firestoreDb, "stats", "court"));
+        if (courtSnap.exists()) {
+          const courtData = courtSnap.data();
+          stats.general.courtGamesStarted = courtData.gamesStarted || 0;
+          stats.general.courtLastPlayed = courtData.lastGameStarted ? convertTimestamp(courtData.lastGameStarted) : null;
+        }
+
         // Guillotine
         const guillotineSnap = await getDoc(doc(firestoreDb, "stats", "guillotine"));
         if (guillotineSnap.exists()) {
@@ -249,7 +371,7 @@
         });
 
         ui.viewing = "general";
-      } catch (e) {
+      } catch (e: unknown) {
         // fallback: clear fields
         stats.general.cameoGamesStarted = 0;
         stats.general.cameoLastPlayed = null;
@@ -267,7 +389,7 @@
       }
     }
 
-    if (game == "cameo") {
+    if (game === "cameo") {
       try {
         await loadFirestoreStats("cameo", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -285,16 +407,61 @@
             specialGames: {},
           },
         });
-        dates.cameo.dayCount = calculateDaysSince(dates.cameo.launched);
+        dates.cameo.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.cameo.launched), "days").days);
         ui.cameoLoaded = true;
         ui.viewing = "cameo";
-      } catch (e) {
+      } catch (e: unknown) {
         stats.cameo.celebs = [];
         stats.cameo.specialGames = [];
         errorOccurred = true;
         console.error("Error loading cameo stats from Firestore:", e);
       }
-    } else if (game == "sisyphus") {
+    } else if (game === "court") {
+      try {
+        await loadFirestoreStats("court", {
+          mainDocTimestamps: [
+            "lastGameStarted",
+            "lastGameFinished",
+            "lastQuickplayStarted",
+            "lastQuickplayFinished",
+            "lastCampaignStarted",
+            "lastCampaignFinished",
+          ],
+          subcollections: {
+            cases: {
+              timestampFields: ["lastPlayedAt"],
+              sortBy: "timesPlayed",
+            },
+            justices: {
+              timestampFields: ["lastAdjudicatedAt"],
+              sortBy: "timesAdjudicated",
+              nestedSubcollections: {
+                cases: {
+                  timestampFields: ["lastVotedAt"],
+                },
+              },
+            },
+            stances: {
+              timestampFields: ["lastAdjudicatedAt"],
+            },
+            tactics: {
+              timestampFields: ["lastPlayedAt"],
+              sortBy: "timesPlayed",
+            },
+          },
+        });
+        dates.court.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.court.launched), "days").days);
+        ui.courtLoaded = true;
+
+        ui.viewing = "court";
+      } catch (e: unknown) {
+        stats.court.cases = [];
+        stats.court.justices = [];
+        stats.court.stances = [];
+        stats.court.tactics = [];
+        console.error("Error loading court stats from Firestore:", e);
+      }
+    } else if (game === "sisyphus") {
       try {
         await loadFirestoreStats("sisyphus", {
           mainDocTimestamps: ["firstClick", "lastGameStarted"],
@@ -325,16 +492,16 @@
             },
           },
         });
-        dates.sisyphus.dayCount = calculateDaysSince(dates.sisyphus.launched);
+        dates.sisyphus.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.sisyphus.launched), "days").days);
         ui.sisyphusLoaded = true;
         ui.viewing = "sisyphus";
-      } catch (e) {
+      } catch (e: unknown) {
         stats.sisyphus.cheevos = [];
         stats.sisyphus.purchases = [];
         errorOccurred = true;
         console.error("Error loading sisyphus stats from Firestore:", e);
       }
-    } else if (game == "guillotine") {
+    } else if (game === "guillotine") {
       try {
         await loadFirestoreStats("guillotine", {
           mainDocTimestamps: ["lastGameStarted", "gameLastFinished"],
@@ -346,15 +513,15 @@
             },
           },
         });
-        dates.guillotine.dayCount = calculateDaysSince(dates.guillotine.launched);
+        dates.guillotine.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.guillotine.launched), "days").days);
         ui.guillotineLoaded = true;
         ui.viewing = "guillotine";
-      } catch (e) {
+      } catch (e: unknown) {
         stats.guillotine.heads = [];
         errorOccurred = true;
         console.error("Error loading guillotine stats from Firestore:", e);
       }
-    } else if (game == "pretend") {
+    } else if (game === "pretend") {
       try {
         await loadFirestoreStats("pretend", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -371,15 +538,15 @@
             },
           },
         });
-        dates.pretend.dayCount = calculateDaysSince(dates.pretend.launched);
+        dates.pretend.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.pretend.launched), "days").days);
         ui.pretendLoaded = true;
         ui.viewing = "pretend";
-      } catch (e) {
+      } catch (e: unknown) {
         stats.pretend.impersonators = [];
         errorOccurred = true;
         console.error("Error loading pretend stats from Firestore:", e);
       }
-    } else if (game == "meeting") {
+    } else if (game === "meeting") {
       try {
         await loadFirestoreStats("meeting", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -393,10 +560,10 @@
             },
           },
         });
-        dates.meeting.dayCount = calculateDaysSince(dates.meeting.launched);
+        dates.meeting.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.meeting.launched), "days").days);
         ui.meetingLoaded = true;
         ui.viewing = "meeting";
-      } catch (e) {
+      } catch (e: unknown) {
         if (!stats.meeting) stats.meeting = {};
         stats.meeting.cards = [];
         stats.meeting.players = [];
@@ -404,7 +571,7 @@
         errorOccurred = true;
         console.error("Error loading meeting stats from Firestore:", e);
       }
-    } else if (game == "invalid") {
+    } else if (game === "invalid") {
       try {
         await loadFirestoreStats("invalid", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -432,10 +599,10 @@
             },
           },
         });
-        dates.invalid.dayCount = calculateDaysSince(dates.invalid.launched);
+        dates.invalid.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.invalid.launched), "days").days);
         ui.invalidLoaded = true;
         ui.viewing = "invalid";
-      } catch (e) {
+      } catch (e: unknown) {
         if (!stats.invalid) stats.invalid = {};
         stats.invalid.bugs = [];
         stats.invalid.challenges = [];
@@ -446,7 +613,7 @@
         errorOccurred = true;
         console.error("Error loading invalid stats from Firestore:", e);
       }
-    } else if (game == "megachurch") {
+    } else if (game === "megachurch") {
       try {
         await loadFirestoreStats("megachurch", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -467,16 +634,16 @@
             upgrades: {},
           },
         });
-        dates.megachurch.dayCount = calculateDaysSince(dates.megachurch.launched);
+        dates.megachurch.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.megachurch.launched), "days").days);
         ui.megachurchLoaded = true;
         ui.viewing = "megachurch";
-      } catch (e) {
+      } catch (e: unknown) {
         if (!stats.megachurch) stats.megachurch = {};
         stats.megachurch.players = [];
         errorOccurred = true;
         console.error("Error loading megachurch stats from Firestore:", e);
       }
-    } else if (game == "wrongest") {
+    } else if (game === "wrongest") {
       try {
         await loadFirestoreStats("wrongest", {
           mainDocTimestamps: ["lastGameStarted", "lastGameFinished"],
@@ -495,10 +662,10 @@
             },
           },
         });
-        dates.wrongest.dayCount = calculateDaysSince(dates.wrongest.launched);
+        dates.wrongest.dayCount = Math.floor(dates.today.diff(DateTime.fromISO(dates.wrongest.launched), "days").days);
         ui.wrongestLoaded = true;
         ui.viewing = "wrongest";
-      } catch (e) {
+      } catch (e: unknown) {
         stats.wrongest.gameSizes = [];
         stats.wrongest.players = [];
         stats.wrongest.statements = [];
@@ -518,11 +685,14 @@
     }
   };
 
-  const formatTime = (stamp, format) => {
-    const dt = DateTime.fromJSDate(new Date(stamp));
-    if (format == "fromNow") {
+  const formatTime = (stamp: TimestampInput | null | undefined, format?: RelativeTimeFormat): string | null => {
+    if (!stamp) return null;
+    const stampDate = new Date(stamp);
+    if (Number.isNaN(stampDate.getTime())) return null;
+    const dt = DateTime.fromJSDate(stampDate);
+    if (format === "fromNow") {
       return dt.toRelative();
-    } else if (format == "calendar") {
+    } else if (format === "calendar") {
       const daysDiff = Math.abs(dt.diffNow("days").days);
       if (daysDiff < 7) {
         return dt.toLocaleString(DateTime.DATETIME_MED);
@@ -537,46 +707,57 @@
     }
   };
 
-  const calculateAverage = (count, iterations) => {
-    if (!count || !iterations) {
+  const calculateAverage = (count: number | string | null | undefined, iterations: number | string | null | undefined): string => {
+    const countNumber = Number(count ?? 0);
+    const iterationsNumber = Number(iterations ?? 0);
+    if (!Number.isFinite(countNumber) || !Number.isFinite(iterationsNumber) || countNumber === 0 || iterationsNumber === 0) {
       return "0";
     }
-    const n = (count / iterations).toFixed(2);
+    const n = (countNumber / iterationsNumber).toFixed(2);
     return addCommas(n);
   };
 
-  const getGameDataFromURL = () => {
+  const getGameDataFromURL = (): void => {
     const loadedURL = new URL(window.location.href);
     const game = loadedURL.searchParams.get("game");
-    getData(game);
+    if (game && isLoadedGame(game)) {
+      getData(game);
+    } else {
+      getData("general");
+    }
   };
 
-  const calculateSpend = (rowObj) => {
-    return addCommas(parseInt(rowObj.icount) * parseInt(rowObj.price));
+  const calculateSpend = (rowObj: StatsRecord): string => {
+    const icount = Number.parseInt(String(rowObj.icount ?? 0), 10);
+    const price = Number.parseInt(String(rowObj.price ?? 0), 10);
+    return addCommas((Number.isNaN(icount) ? 0 : icount) * (Number.isNaN(price) ? 0 : price));
   };
 
-  const pretendCorrectPct = (rowObj) => {
-    const total = rowObj.correctGuess + rowObj.closeGuess + rowObj.badGuess;
-    let correct = rowObj.correctGuess;
-    if (rowObj.closeGuess && rowObj.closeGuess > 0) {
-      correct += rowObj.closeGuess * 0.7;
+  const pretendCorrectPct = (rowObj: StatsRecord): string => {
+    const correctGuess = Number(rowObj.correctGuess ?? 0);
+    const closeGuess = Number(rowObj.closeGuess ?? 0);
+    const badGuess = Number(rowObj.badGuess ?? 0);
+    const total = correctGuess + closeGuess + badGuess;
+    let correct = correctGuess;
+    if (closeGuess > 0) {
+      correct += closeGuess * 0.7;
     }
     return percentOf(total, correct) + "%";
   };
 
-  const loadFullData = async (game, subcollection) => {
+  const loadFullData = async (game: LoadedGame, subcollection: string): Promise<void> => {
     ui.loadingFullData = true;
     try {
       const { collection, getDocs, query, orderBy } = await import("firebase/firestore");
 
       // Get the configuration for this specific subcollection from the current stats
-      const currentData = stats[game][subcollection];
+      const currentData = stats[game][subcollection] as StatsCollection | undefined;
       if (!currentData) {
         throw new Error(`No data found for ${game}.${subcollection}`);
       }
 
       // Get the sort field from the limited query metadata
-      const sortBy = stats[game][subcollection + "_sortBy"];
+      const sortBy = stats[game][subcollection + "_sortBy"] as string | undefined;
 
       // Set up the query - unlimited but still sorted
       let collectionRef = collection(firestoreDb, `stats/${game}/${subcollection}`);
@@ -585,7 +766,7 @@
       // Fetch all documents
       const snap = await getDocs(queryRef);
       const results = snap.docs.map((doc) => {
-        let data = doc.data();
+        const data = doc.data() as StatsRecord;
 
         // Apply the same processing that was used in the limited query
         // This ensures consistency between limited and unlimited data
@@ -610,8 +791,8 @@
         // Convert timestamp fields if they exist
         const timestampFields = getTimestampFieldsForSubcollection(game, subcollection);
         if (timestampFields) {
-          timestampFields.forEach((field) => {
-            if (data[field]) data[field] = convertTimestamp(data[field]);
+          timestampFields.forEach((field: string) => {
+            if (data[field]) data[field] = convertTimestamp(data[field] as FirestoreTimestampLike);
           });
         }
 
@@ -625,7 +806,7 @@
       delete stats[game][subcollection + "_isLimited"];
       delete stats[game][subcollection + "_limitTo"];
       delete stats[game][subcollection + "_sortBy"];
-    } catch (e) {
+    } catch (e: unknown) {
       console.error(`Error loading full ${subcollection} data:`, e);
     } finally {
       ui.loadingFullData = false;
@@ -633,7 +814,7 @@
   };
 
   // Helper function to get timestamp fields for a subcollection
-  const getTimestampFieldsForSubcollection = (game, subcollection) => {
+  const getTimestampFieldsForSubcollection = (game: string, subcollection: string): string[] | undefined => {
     const timestampMap = {
       general: {
         players: ["lastPlayed"],
@@ -662,349 +843,12 @@
     return timestampMap[game]?.[subcollection];
   };
 
-  const stripWrongestBraces = (statement) => {
-    if (typeof statement !== "string") return statement;
-    return statement.replace(/\{([^}]+)\}/g, "<strong>$1</strong>");
-  };
-
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   // Computed
 
-  const computedCameo = computed(() => {
-    // Defensive checks
-    const specialGames = stats.cameo.specialGames || [];
-    const celebs = stats.cameo.celebs || [];
-
-    // 1. mostPopularSpecialGame: object in specialGames with highest startedCount
-    let mostPopularSpecialGame = null;
-    let highestCount = -Infinity;
-    let specialGameCount = 0;
-    specialGames.forEach((game) => {
-      const count = typeof game.startedCount === "number" ? game.startedCount : 0;
-      specialGameCount += count;
-      if (count > highestCount) {
-        highestCount = count;
-        mostPopularSpecialGame = game;
-      }
-    });
-
-    // 2. averageMarketForces: average of all valid marketForces in celebs
-    const validMarketForces = celebs.map((celeb) => celeb.marketForces).filter((v) => typeof v === "number" && !isNaN(v));
-    const averageMarketForces = validMarketForces.length ? (validMarketForces.reduce((sum, v) => sum + v, 0) / validMarketForces.length).toFixed(2) : "0.00";
-
-    // 3. mostOvervalued: celeb with lowest marketForces
-    let mostOvervalued = null;
-    let minMarketForces = Infinity;
-    celebs.forEach((celeb) => {
-      if (typeof celeb.marketForces === "number" && !isNaN(celeb.marketForces) && celeb.marketForces < minMarketForces) {
-        minMarketForces = celeb.marketForces;
-        mostOvervalued = celeb;
-      }
-    });
-
-    // 4. mostUndervalued: celeb with highest marketForces
-    let mostUndervalued = null;
-    let maxMarketForces = -Infinity;
-    celebs.forEach((celeb) => {
-      if (typeof celeb.marketForces === "number" && !isNaN(celeb.marketForces) && celeb.marketForces > maxMarketForces) {
-        maxMarketForces = celeb.marketForces;
-        mostUndervalued = celeb;
-      }
-    });
-
-    // 5. mostBirthdays: celeb with highest birthdayWishCount
-    let mostBirthdays = null;
-    let maxBirthdayWishCount = -Infinity;
-    celebs.forEach((celeb) => {
-      const count = typeof celeb.birthdayWishCount === "number" ? celeb.birthdayWishCount : 0;
-      if (count > maxBirthdayWishCount) {
-        maxBirthdayWishCount = count;
-        mostBirthdays = celeb;
-      }
-    });
-
-    // 6. gameCountByValuations: sum all valuationCount in celebs, divide by 5
-    const totalValuationCount = celebs.reduce((sum, celeb) => {
-      const count = typeof celeb.valuationCount === "number" && !isNaN(celeb.valuationCount) ? celeb.valuationCount : 0;
-      return sum + count;
-    }, 0);
-    const gameCountByValuations = celebs.length > 0 && totalValuationCount ? Math.round(totalValuationCount / 5) : 0;
-
-    return {
-      mostPopularSpecialGame,
-      specialGameCount,
-      averageMarketForces,
-      mostOvervalued,
-      mostUndervalued,
-      mostBirthdays,
-      gameCountByValuations,
-    };
-  });
-
-  const computedPretend = computed(() => {
-    const impersonators = stats.pretend.impersonators || [];
-    if (!impersonators.length) {
-      return {
-        bestImpersonator: null,
-        worstImpersonator: null,
-        badGuessPercent: 0,
-        closeGuessPercent: 0,
-        exactGuessPercent: 0,
-      };
-    }
-
-    // Find best and worst impersonators by correctPercent
-    let bestImpersonator = null;
-    let worstImpersonator = null;
-    let maxPercent = -Infinity;
-    let minPercent = Infinity;
-
-    let totalBad = 0;
-    let totalClose = 0;
-    let totalCorrect = 0;
-
-    impersonators.forEach((imp) => {
-      const correct = typeof imp.correctGuessCount === "number" ? imp.correctGuessCount : 0;
-      const close = typeof imp.closeGuessCount === "number" ? imp.closeGuessCount : 0;
-      const bad = typeof imp.badGuessCount === "number" ? imp.badGuessCount : 0;
-      const percent = typeof imp.correctPercent === "number" ? imp.correctPercent : parseFloat(imp.correctPercent) || 0;
-      totalBad += bad;
-      totalClose += close;
-      totalCorrect += correct;
-      if (percent > maxPercent) {
-        maxPercent = percent;
-        bestImpersonator = imp;
-      }
-      if (percent > 0 && percent < minPercent) {
-        minPercent = percent;
-        worstImpersonator = imp;
-      }
-    });
-
-    const totalGuesses = totalBad + totalClose + totalCorrect;
-    const badGuessPercent = totalGuesses > 0 ? ((totalBad / totalGuesses) * 100).toFixed(1) : 0;
-    const closeGuessPercent = totalGuesses > 0 ? ((totalClose / totalGuesses) * 100).toFixed(1) : 0;
-    const exactGuessPercent = totalGuesses > 0 ? ((totalCorrect / totalGuesses) * 100).toFixed(1) : 0;
-
-    return {
-      bestImpersonator,
-      worstImpersonator,
-      badGuessPercent: Number(badGuessPercent),
-      closeGuessPercent: Number(closeGuessPercent),
-      exactGuessPercent: Number(exactGuessPercent),
-    };
-  });
-
-  const computedGuillotine = computed(() => {
-    const heads = stats.guillotine.heads || [];
-    if (!heads.length) {
-      return {
-        mostExecuted: null,
-        moneyLiberated: 0,
-        averageHeadValue: 0,
-      };
-    }
-    let mostExecuted = null;
-    let maxCount = -Infinity;
-    let moneyLiberated = 0;
-    let totalHeadCount = 0;
-    heads.forEach((head) => {
-      const count = typeof head.headCount === "number" ? head.headCount : 0;
-      const worth = typeof head.netWorth === "number" ? head.netWorth : 0;
-      if (count > maxCount) {
-        maxCount = count;
-        mostExecuted = head;
-      }
-      moneyLiberated += worth * count;
-      totalHeadCount += count;
-    });
-    const averageHeadValue = totalHeadCount > 0 ? +(moneyLiberated / totalHeadCount).toFixed(2) : 0;
-    return {
-      mostExecuted,
-      moneyLiberated: +moneyLiberated.toFixed(2),
-      averageHeadValue,
-      totalHeads: totalHeadCount,
-    };
-  });
-
-  const computedInvalid = computed(() => {
-    if (!stats.invalid.gameSizes || !stats.invalid.gameSizes.length) {
-      return {
-        mostCommonGameSize: null,
-        averageGameSize: null,
-        mostRecentSize: null,
-        mostCreatedPassword: null,
-        mostCrackedPassword: null,
-        mostUsedRule: null,
-      };
-    }
-
-    // 1. Most popular group size (highest gamesPlayed)
-    const mostPopularGroupSize = stats.invalid.gameSizes.reduce((max, size) => {
-      return (size.gamesPlayed || 0) > (max.gamesPlayed || 0) ? size : max;
-    }, stats.invalid.gameSizes[0]);
-
-    // 2. Average game size (weighted average of players per game)
-    let totalPlayers = 0;
-    let totalGames = 0;
-    stats.invalid.gameSizes.forEach((size) => {
-      const games = Number(size.gamesStarted) || 0;
-      const players = Number(size.players) || 0;
-      totalPlayers += games * players;
-      totalGames += games;
-    });
-    const averageGameSize = totalGames > 0 ? (totalPlayers / totalGames).toFixed(2) : null;
-
-    // 3. Most recent group size (latest lastGameStarted)
-    const mostRecentGroupSize = stats.invalid.gameSizes.reduce((latest, size) => {
-      if (!latest.lastGameStarted) return size;
-      if (!size.lastGameStarted) return latest;
-      return new Date(size.lastGameStarted) > new Date(latest.lastGameStarted) ? size : latest;
-    }, stats.invalid.gameSizes[0]);
-
-    // 4. Most dangerous bug (highest timesCreated + timesCrashed)
-    let mostDangerousBug = null;
-    if (stats.invalid.bugs && stats.invalid.bugs.length) {
-      mostDangerousBug = stats.invalid.bugs.reduce((max, bug) => {
-        const created = Number(bug.timesCreated) || 0;
-        const crashed = Number(bug.timesCrashed) || 0;
-        const maxCreated = Number(max.timesCreated) || 0;
-        const maxCrashed = Number(max.timesCrashed) || 0;
-        return created + crashed > maxCreated + maxCrashed ? bug : max;
-      }, stats.invalid.bugs[0]);
-    }
-
-    // 5. Most popular challenge (highest timesChosen)
-    let mostPopularChallenge = null;
-    if (stats.invalid.challenges && stats.invalid.challenges.length) {
-      mostPopularChallenge = stats.invalid.challenges.reduce((max, challenge) => {
-        const chosen = Number(challenge.timesChosen) || 0;
-        const maxChosen = Number(max.timesChosen) || 0;
-        return chosen > maxChosen ? challenge : max;
-      }, stats.invalid.challenges[0]);
-    }
-
-    // 6. Most created password (highest timesCreated)
-    let mostCreatedPassword = null;
-    if (stats.invalid.passwords && stats.invalid.passwords.length) {
-      mostCreatedPassword = stats.invalid.passwords.reduce((max, pwd) => {
-        const created = Number(pwd.timesCreated) || 0;
-        const maxCreated = Number(max.timesCreated) || 0;
-        return created > maxCreated ? pwd : max;
-      }, stats.invalid.passwords[0]);
-    }
-
-    // 7. Most cracked password (highest timesCracked)
-    let mostCrackedPassword = null;
-    if (stats.invalid.passwords && stats.invalid.passwords.length) {
-      mostCrackedPassword = stats.invalid.passwords.reduce((max, pwd) => {
-        const cracked = Number(pwd.timesCracked) || 0;
-        const maxCracked = Number(max.timesCracked) || 0;
-        return cracked > maxCracked ? pwd : max;
-      }, stats.invalid.passwords[0]);
-    }
-
-    // 8. Most used rule (highest count)
-    let mostUsedRule = null;
-    if (stats.invalid.rules && stats.invalid.rules.length) {
-      mostUsedRule = stats.invalid.rules.reduce((max, rule) => {
-        const count = Number(rule.count) || 0;
-        const maxCount = Number(max.count) || 0;
-        return count > maxCount ? rule : max;
-      }, stats.invalid.rules[0]);
-    }
-
-    return {
-      mostPopularGroupSize,
-      averageGameSize,
-      mostRecentGroupSize,
-      mostDangerousBug,
-      mostPopularChallenge,
-      mostCreatedPassword,
-      mostCrackedPassword,
-      mostUsedRule,
-    };
-  });
-
-  const computedSisyphus = computed(() => {
-    // Defensive checks
-    const purchases = stats.sisyphus.purchases || [];
-    const cheevos = stats.sisyphus.cheevos || [];
-
-    let totalPurchases = 0;
-    let pushesSpent = 0;
-    purchases.forEach((purchase) => {
-      const timesBought = typeof purchase.timesBought === "number" ? purchase.timesBought : 0;
-      const price = typeof purchase.price === "number" ? purchase.price : 0;
-      totalPurchases += timesBought;
-      pushesSpent += timesBought * price;
-    });
-
-    let cheevosEarned = 0;
-    let pointsEarned = 0;
-    cheevos.forEach((cheevo) => {
-      const earnedCount = typeof cheevo.earnedCount === "number" ? cheevo.earnedCount : 0;
-      const pointValue = typeof cheevo.pointValue === "number" ? cheevo.pointValue : 0;
-      cheevosEarned += earnedCount;
-      pointsEarned += earnedCount * pointValue;
-    });
-
-    return {
-      totalPurchases,
-      cheevosEarned,
-      pushesSpent,
-      pointsEarned,
-    };
-  });
-
-  const computedWrongest = computed(() => {
-    const players = stats.wrongest.players || [];
-    const statements = stats.wrongest.statements || [];
-    const gameSizes = stats.wrongest.gameSizes || [];
-
-    // 1. Most popular group size (highest gamesPlayed)
-    const mostPopularGroupSize =
-      gameSizes.length > 0
-        ? gameSizes.reduce((max, size) => {
-            return (size.gamesPlayed || 0) > (max.gamesPlayed || 0) ? size : max;
-          }, gameSizes[0])
-        : null;
-
-    // 2. Average game size (weighted average of players per game)
-    let totalPlayers = 0;
-    let totalGames = 0;
-    gameSizes.forEach((size) => {
-      const games = Number(size.gamesStarted) || 0;
-      const players = Number(size.players) || 0;
-      totalPlayers += games * players;
-      totalGames += games;
-    });
-    const averageGameSize = totalGames > 0 ? (totalPlayers / totalGames).toFixed(2) : null;
-
-    // 3. The Wrongest Words
-    const wrongestStatement =
-      statements.length > 0
-        ? statements.reduce((max, statement) => {
-            return (statement.totalScore || 0) < (max.totalScore || 0) ? statement : max;
-          }, statements[0])
-        : null;
-
-    // 4. The Least Wrong Words
-    const leastWrongStatement =
-      statements.length > 0
-        ? statements.reduce((min, statement) => {
-            return (statement.totalScore || 0) > (min.totalScore || 0) ? statement : min;
-          }, statements[0])
-        : null;
-
-    return {
-      mostPopularGroupSize,
-      averageGameSize,
-      wrongestStatement,
-      leastWrongStatement,
-    };
-  });
+  const { computedCameo, computedCourt, selectedJusticeCases, computedPretend, computedGuillotine, computedInvalid, computedSisyphus, computedWrongest } =
+    useStatsComputeds(stats, ui);
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////

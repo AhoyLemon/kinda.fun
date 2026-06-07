@@ -89,6 +89,7 @@
     roomCodeInput: "",
     disableButtons: false,
     isStartingGame: false,
+    sidebarVisible: false,
   });
 
   /////////////////////////////////////////////////////////

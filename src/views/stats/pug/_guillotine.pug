@@ -38,10 +38,14 @@ section.guillotine.stats(v-if="ui.viewing == 'guillotine'")
         .box.big-number(span="2" v-if="computedGuillotine && computedGuillotine.moneyLiberated")
           .caption Total Money Liberated
           .number(v-text="billionsOfDollars(computedGuillotine.moneyLiberated, true)")
+          .subtext(v-if="stats.guillotine.heads_isLimited")
+            | This number is an estimate. Load all heads to see the exact amount.
+
         .box.big-number( span="2" v-if="computedGuillotine && computedGuillotine.averageHeadValue")
           .caption Average Head Value
           .number(v-text="billionsOfDollars(computedGuillotine.averageHeadValue, true)")
-        
+          .subtext(v-if="stats.guillotine.heads_isLimited")
+            | This number only applies to the heads counted in the top 100.
 
     .good-table(v-if="ui.guillotineLoaded")
       h2 Heads Removed

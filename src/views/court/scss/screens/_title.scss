@@ -1,0 +1,181 @@
+@use "../abstracts/variables" as *;
+
+// ─── Title Screen ────────────────────────────────────────────
+main.court-title {
+  margin: 0 auto;
+  padding-top: 60px;
+  align-items: center;
+  gap: 2.5rem;
+  justify-content: center;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+
+  .title-hero {
+    order: 2;
+    grid-column: 2;
+    text-align: center;
+
+    figure {
+      padding: 20px;
+      img {
+        max-width: 600px;
+      }
+    }
+  }
+
+  .title-mode-buttons {
+    order: 1;
+    grid-column: 1;
+    min-height: calc(100dvh - 140px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3rem;
+    .title-mode-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .title-button {
+      padding: 1rem 1.4rem;
+      cursor: pointer;
+      border-radius: 0.75rem;
+      border: 2px solid rgba($court-gold, 0.4);
+      font-family: $sans-serif;
+      background-color: #080808;
+      transition:
+        scale 0.25s ease-out,
+        background-color 0.3s linear,
+        box-shadow 0.2s linear,
+        border-color 0.4s linear;
+
+      .label {
+        font-size: 215%;
+        color: $court-gold;
+        font-weight: 515;
+      }
+
+      .desc {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.55);
+      }
+
+      &:hover {
+        scale: 1.05;
+        background-color: #040412;
+        box-shadow: 0 0 3px black;
+        border-color: $court-gold;
+      }
+
+      &:active {
+        scale: 0.98;
+      }
+    }
+
+    .title-hint {
+      .hint-text {
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 0.25em 0.75em;
+        color: rgba(255, 255, 255, 0.85);
+        border-radius: 4px;
+        position: relative;
+        padding-left: 1.5em;
+        margin-left: 2em;
+        font-size: 0.85em;
+        .emoji {
+          position: absolute;
+          top: -8px;
+          left: -8px;
+          font-size: 150%;
+        }
+      }
+    }
+  }
+
+  .video-bg {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.12;
+      mix-blend-mode: hard-light;
+    }
+  }
+  .title-hero,
+  .title-mode-buttons {
+    position: relative;
+  }
+}
+
+@media (max-width: 1000px) {
+  main.court-title {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    // padding-top: 2rem;
+    padding-top: 0;
+    justify-items: center;
+    text-align: center;
+
+    .title-hero {
+      order: 1;
+      grid-column: 1;
+      width: 100%;
+      img {
+        width: 100%;
+      }
+      // .title-sub {
+      //   font-size: clamp(0.95rem, 2.7vw, 1.45rem);
+      // }
+    }
+
+    .title-mode-buttons {
+      order: 2;
+      grid-column: 1;
+      min-height: auto;
+      width: min(100%, 760px);
+      margin: 0 auto;
+      gap: 0.9rem;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: stretch;
+
+      .title-mode-section {
+        gap: 0.55rem;
+        flex: 1 1 290px;
+        max-width: 360px;
+      }
+
+      .title-button {
+        .label {
+          font-size: clamp(1.45rem, 4.3vw, 1.95rem);
+        }
+      }
+
+      .title-hint {
+        .hint-text {
+          margin-left: 0;
+          display: inline-block;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  main.court-title {
+    .title-mode-buttons {
+      .title-mode-section {
+        flex-basis: 100%;
+        max-width: 100%;
+      }
+    }
+  }
+}

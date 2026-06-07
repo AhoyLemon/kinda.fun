@@ -32,11 +32,6 @@ section {
       td {
         padding: 5px;
       }
-      // th.sorting-desc, th.sorting-asc { color:#dce4ac; }
-      // th.sorting:hover:after { border-bottom-color: currentColor; }
-      // th.sorting:after { right:unset; left:5px; }
-      // th.sorting-desc:after { border-top-color: currentColor;}
-      // th.sorting-asc:after { border-bottom-color: currentColor; }
       th {
         font-weight: 900;
         padding: 5px 20px 5px 10px;
@@ -77,10 +72,34 @@ section {
       td.font-bold {
         font-weight: 700;
         font-family: $sans-serif;
+        word-break: break-word;
       }
       td.vgt-right-align {
         font-family: $monospace;
         font-size: 0.875rem;
+      }
+      .justice-verdicts {
+        dl {
+          display: flex;
+          gap: 0.5em;
+          align-items: end;
+          font-size: 0.75em;
+          dt {
+            font-family: $sans-serif;
+          }
+          dd {
+            font-family: $monospace;
+            font-weight: 780;
+          }
+          .side-prosecution,
+          .side-prosecution ~ dd {
+            color: #223322;
+          }
+          .side-defense,
+          .side-defense ~ dd {
+            color: #332222;
+          }
+        }
       }
     }
   }
@@ -112,5 +131,12 @@ section {
       opacity: 0.5;
       cursor: not-allowed;
     }
+  }
+
+  select {
+    font-family: $sans-serif;
+    padding: 0.25em 0.5em;
+    font-weight: 650;
+    field-sizing: content;
   }
 }

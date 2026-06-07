@@ -1,6 +1,23 @@
 import { billionsOfDollars, addCommas, dollars, formatDate, formatStatement } from "./_functions";
 
-export const columns = {
+/* eslint-disable no-unused-vars -- base eslint rule incorrectly flags TS interface method parameter names */
+type ColumnConfig = {
+  label: string;
+  field: string;
+  tdClass?: string;
+  type?: "number" | "decimal" | "date";
+  formatFn?: (value: unknown) => unknown;
+  html?: boolean;
+  sortable?: boolean;
+};
+/* eslint-enable no-unused-vars */
+
+const humanizeStanceName = (name: unknown): unknown => {
+  if (typeof name !== "string") return name;
+  return name.replace(/([A-Z])/g, " $1").trim();
+};
+
+export const columns: Record<string, ColumnConfig[]> = {
   // GENERAL
   generalPlayers: [
     { label: "Name", field: "name", tdClass: "font-bold" },
@@ -48,7 +65,7 @@ export const columns = {
   // PRETEND WORLD
   pretendGuesses: [
     { label: "Celebrity", field: "name", tdClass: "font-bold" },
-    { label: "Correct %", field: "correctPercent", type: "number", formatFn: (val) => (val !== undefined && val !== null ? val + "%" : "0%") },
+    { label: "Correct %", field: "correctPercent", type: "number", formatFn: (val: unknown) => (val !== undefined && val !== null ? String(val) + "%" : "0%") },
     { label: "Exact", field: "correctGuessCount", type: "number" },
     { label: "Close", field: "closeGuessCount", type: "number" },
     { label: "Bad", field: "badGuessCount", type: "number" },
@@ -56,7 +73,7 @@ export const columns = {
 
   // THIS MEETING HAS POINTS
   meetingCards: [
-    { label: "Phrase", field: "phrase", tdClass: "font-bold", formatFn: (val) => (val ? `“${val}”` : "") },
+    { label: "Phrase", field: "phrase", tdClass: "font-bold", formatFn: (val: unknown) => (val ? `“${String(val)}”` : "") },
     { label: "Played", field: "timesPlayed", type: "number" },
     { label: "Scored", field: "timesScored", type: "number" },
     { label: "Stolen", field: "timesStolen", type: "number" },
@@ -160,5 +177,39 @@ export const columns = {
     { label: "Words", field: "card", formatFn: formatStatement, tdClass: "font-bold" },
     { label: "Score", field: "totalScore", type: "number", formatFn: addCommas },
     { label: "x", field: "timesPlayed", type: "number", formatFn: addCommas },
+  ],
+
+  // SUPREME COURT
+  courtCases: [
+    { label: "Case", field: "name", tdClass: "font-bold" },
+    { label: "Tried", field: "timesPlayed", type: "number", formatFn: addCommas },
+    { label: "Wins", field: "timesWon", type: "number", formatFn: addCommas },
+    { label: "Last", field: "lastPlayedAt", type: "date", formatFn: formatDate },
+  ],
+  courtJustices: [
+    { label: "Justice", field: "name", tdClass: "font-bold" },
+    { label: "cases", field: "timesAdjudicated", type: "number", formatFn: addCommas },
+    { label: "noms", field: "timesNominated", type: "number", formatFn: addCommas },
+    { label: "🃏", field: "timesAttacked", type: "number", formatFn: addCommas },
+    { label: "last case", field: "lastAdjudicatedAt", type: "date", formatFn: formatDate },
+  ],
+  courtJusticeCases: [
+    { label: "Case", field: "name", tdClass: "font-bold" },
+    { label: "x", field: "timesAdjudicated", type: "number", formatFn: addCommas },
+    { label: "Verdicts", field: "verdicts", html: true, sortable: false },
+    { label: "Last Voted", field: "lastVotedAt", type: "date", formatFn: formatDate },
+  ],
+  courtStances: [
+    { label: "Stance", field: "name", tdClass: "font-bold", formatFn: humanizeStanceName },
+    { label: "⬆️", field: "casesFor", type: "number", formatFn: addCommas },
+    { label: "⬇️", field: "casesAgainst", type: "number", formatFn: addCommas },
+    { label: "", field: "casesTied", type: "number", formatFn: addCommas },
+    { label: "last", field: "lastAdjudicatedAt", type: "date", formatFn: formatDate },
+  ],
+  courtTactics: [
+    { label: "Tactic", field: "name", tdClass: "font-bold" },
+    { label: "Used", field: "timesPlayed", type: "number", formatFn: addCommas },
+    { label: "Avg Net Lean", field: "averageNetShiftPerPlay", type: "decimal" },
+    { label: "last", field: "lastPlayedAt", type: "date", formatFn: formatDate },
   ],
 };

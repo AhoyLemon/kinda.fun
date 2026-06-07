@@ -1,6 +1,6 @@
 <template>
-  <div class="workshop-zone-overlay" @click="closeWorkshop">
-    <div class="workshop-zone" @click.stop>
+  <div class="worshop-zone-overlay" @click="closeWorshop">
+    <div class="worshop-zone" @click.stop>
       <!-- IE6 Browser Chrome -->
       <div class="browser-chrome">
         <div class="title-bar">
@@ -8,7 +8,7 @@
           <div class="window-controls">
             <button class="minimize-btn">_</button>
             <button class="maximize-btn">□</button>
-            <button class="close-btn" @click="closeWorkshop">×</button>
+            <button class="close-btn" @click="closeWorshop">×</button>
           </div>
         </div>
 
@@ -54,14 +54,6 @@
         <!-- Merch Tab -->
         <div v-if="activeTab === 'merch'" class="tab-content">
           <h2>Hallway Merchandise</h2>
-          <div class="shipping-notice">
-            <img src="/img/megachurch/worshop/truck.gif" />
-            <p>
-              <strong>NEXT DAY SHIPPING!!!!</strong> All the merchandise {{ shopName }} will arrive at your church the next moring! Shipping is FREE except for
-              the cost of shipping, which is {{ dollars(shippingCost) }}.
-            </p>
-          </div>
-
           <div class="product-grid">
             <!-- Holy Water Bottles -->
             <div class="product-card">
@@ -522,7 +514,6 @@
   import { religions } from "../../ts/_religions";
   import { dollars } from "../../../../shared/ts/_functions";
 
-  const shippingCost = 15; // Fixed shipping cost for all merch
   const shopName = "Da Worshop Zone";
 
   type MerchTypes = "holyWater" | "prayerCandles" | "weightLossTea" | "beachTowel" | "exorcismKit";
@@ -577,7 +568,7 @@
     return my.church.location.religions.map((locReligion) => religions.find((r) => r.id === locReligion.id)).filter(Boolean);
   });
 
-  function closeWorkshop() {
+  function closeWorshop() {
     emit("close");
   }
 
@@ -600,8 +591,10 @@
   function getMerchCost(merchType: MerchTypes) {
     const quantity = merchQuantities.value[merchType];
     const costPerItem = gameSettings.church.merch[merchType].cost;
-    const itemCost = quantity * costPerItem;
-    return itemCost + shippingCost;
+    const hasTariffEvasion = my.eternalLegacy.darkDeeds.some(d => d.id === "tariff-evasion");
+    const discount = hasTariffEvasion ? gameSettings.eternalLegacy.darkDeedConfig.tariffEvasion.discount : 0;
+    const itemCost = quantity * costPerItem * (1 - discount);
+    return itemCost;
   }
 
   function buyMerch(merchType: MerchTypes) {
@@ -610,6 +603,7 @@
 
     if (my.money >= cost) {
       my.money -= cost;
+      my.eternalLegacy.worshopPurchasedToday = true;
 
       let merchName = "";
       if (merchType === "holyWater") {

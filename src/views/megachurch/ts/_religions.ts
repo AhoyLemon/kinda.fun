@@ -1,4 +1,4 @@
-import { ReligionNames, Religion, Tags } from "./_types";
+import type { Religion } from "./_types";
 
 export const religions: Religion[] = [
   {

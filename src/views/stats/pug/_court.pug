@@ -1,0 +1,185 @@
+section.court.stats(v-if="ui.viewing == 'court'")
+  figure
+    img(src="/svg/games/supremecourt.svg")
+
+  .court-split
+    .stats-boxes
+      .box.date(v-if="stats.court && stats.court.lastGameStarted")
+        .caption Last Game
+        .time-ago(v-text="formatTime(stats.court.lastGameStarted,'fromNow')")
+        .calendar(v-text="formatTime(stats.court.lastGameStarted,'calendar')")
+
+      .box.big-number(v-if="stats.court && stats.court.gamesStarted > 0")
+        .caption Games Started
+        .number(v-text="addCommas(stats.court.gamesStarted)")
+        .sub-number
+          strong(v-text="calculateAverage(stats.court.gamesStarted, dates.court.dayCount)")
+          |  per day
+      
+      .box.big-number(v-if="stats.court && stats.court.gamesFinished > 0")
+        .caption Games Finished
+        .number(v-text="addCommas(stats.court.gamesFinished)")
+        .sub-number
+          strong(v-text="calculateAverage(stats.court.gamesFinished, dates.court.dayCount)")
+          |  per day (
+          strong(v-text="percentOf(stats.court.gamesStarted, stats.court.gamesFinished) + '%'")
+          | )
+
+      .box.big-number(v-if="stats.court && stats.court.totalCasesWon > 0")
+        .caption Cases Won
+        .number(v-text="addCommas(stats.court.totalCasesWon)")
+        .sub-number
+          strong(v-text="percentOf(stats.court.totalCasesWon + stats.court.totalCasesLost + stats.court.totalCasesTied, stats.court.totalCasesWon) + '%'")
+          |  win rate
+
+      .box.big-name(span="2" v-if="computedCourt?.mostPopularCase")
+        .caption Most Popular Case
+        .name {{computedCourt.mostPopularCase.name}}
+        .subtext played 
+          strong(v-text="computedCourt.mostPopularCase.timesPlayed")
+          |  times
+          |  &bull;  
+          strong(v-text="percentOf(computedCourt.mostPopularCase.timesPlayed, computedCourt.mostPopularCase.timesWon) + '%'")
+          |  win rate
+      
+      .box.big-name(span="2" v-if="computedCourt.mostActiveJustice")
+        .caption Judicial Activist
+        .name {{computedCourt.mostActiveJustice.name}}
+        .subtext participated in 
+          strong(v-text="computedCourt.mostActiveJustice.timesAdjudicated")
+          |  cases
+      
+      .box.big-name(span="2" v-if="computedCourt.mostCommonStance")
+        .caption Hot Button Issue
+        .name {{humanizeStanceName(computedCourt.mostCommonStance.name)}}
+        .subtext 
+          strong(v-text="computedCourt.mostCommonStance.casesFor + computedCourt.mostCommonStance.casesAgainst + computedCourt.mostCommonStance.casesTied")
+          |  rulings
+          |  &bull;  
+          strong(v-text="percentOf((computedCourt.mostCommonStance.casesFor + computedCourt.mostCommonStance.casesAgainst + computedCourt.mostCommonStance.casesTied), computedCourt.mostCommonStance.casesFor) + '%'")
+          |  in favor
+
+      .box.big-name(span="2" v-if="computedCourt.mostUsedTactic")
+        .caption Favorite Tactic
+        .name {{computedCourt.mostUsedTactic.name}}
+        .subtext played 
+          strong(v-text="computedCourt.mostUsedTactic.timesPlayed")
+          |  times
+          |  &bull; 
+          strong(v-text="percentOf(computedCourt.mostUsedTactic.timesPlayed, computedCourt.mostUsedTactic.playerPlays) + '%'")
+          |  used by players
+
+      .box.big-name(span="2" v-if="computedCourt.bestNetTactic")
+        .caption Best Tactic
+        .name {{computedCourt.bestNetTactic.name}}
+        .subtext played 
+          strong(v-text="computedCourt.bestNetTactic.timesPlayed")
+          |  times
+          |  &bull; 
+          strong(v-text="computedCourt.bestNetTactic.averageNetShiftPerPlay")
+          |  average sway
+
+    .early-tables
+      // ALL CASES (TABLE)
+      .good-table.court-table(v-if="stats.court.cases && !ui.selectedJusticeId")
+        h2 Popular Cases
+        vue-good-table( v-if="stats.court.cases && stats.court.cases.length"
+                        :rows="stats.court.cases"
+                        :columns="columns.courtCases"
+                        theme="black-rhino"
+                        styleClass="vgt-table condensed"
+                        :line-numbers="true"
+                        :sort-options="{ enabled: true, initialSortBy: {field: 'timesPlayed', type: 'desc'} }"
+                        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}" 
+                        :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
+                      )
+        .table-under
+          .justice-selector
+            label(for="SelectJustice") See rulings from 
+            select#SelectJustice(v-model="ui.selectedJusticeId")
+              option(:value="null") ALL JUSTICES
+              option(v-for="justice in stats.court.justices.sort((a, b) => a.name.localeCompare(b.name))" 
+                    :key="justice.id"
+                    :value="justice.id")
+                | {{justice.name}}
+      
+      // CASES BY JUSTICE (TABLE)
+      .good-table.court-table(v-if="ui.selectedJusticeId && selectedJusticeCases.length")
+        h2 {{stats.court.justices.find(j => j.id === ui.selectedJusticeId)?.name}}'s Rulings
+        vue-good-table( v-if="selectedJusticeCases.length"
+                        :rows="selectedJusticeCases"
+                        :columns="columns.courtJusticeCases"
+                        theme="black-rhino"
+                        styleClass="vgt-table condensed"
+                        :line-numbers="true"
+                        :sort-options="{ enabled: true, initialSortBy: {field: 'timesAdjudicated', type: 'desc'} }"
+                        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"
+                        :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
+                      )
+        .table-under
+          .justice-selector
+            label See rulings from 
+            select(v-model="ui.selectedJusticeId")
+              option(:value="null") ALL JUSTICES
+              option(v-for="justice in stats.court.justices" 
+                    :key="justice.id"
+                    :value="justice.id")
+                | {{justice.name}}
+      
+      // EMPTY STATE FOR CASES BY JUSTICE
+      div.no-justice-cases(v-else-if="ui.selectedJusticeId")
+        p This justice hasn't ruled on any recorded cases yet.
+        .table-under
+          .justice-selector
+            label See rulings from 
+            select(v-model="ui.selectedJusticeId")
+              option(:value="null") Choose a justice...
+              option(v-for="justice in stats.court.justices" 
+                    :key="justice.id"
+                    :value="justice.id")
+                | {{justice.name}}
+
+      // STANCES (TABLE)
+      .good-table.court-table(v-if="stats.court.stances")
+        h2 Controversial Stances
+        vue-good-table( v-if="stats.court.stances && stats.court.stances.length"
+                        :rows="stats.court.stances"
+                        :columns="columns.courtStances"
+                        theme="black-rhino"
+                        styleClass="vgt-table condensed"
+                        :line-numbers="true"
+                        :sort-options="{ enabled: true, initialSortBy: {field: 'casesFor', type: 'desc'} }"
+                        :pagination-options="{ enabled: true, perPage: 10, position: 'top', perPageDropdown: [10, 25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"
+                        :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
+                      )
+
+
+  .two-tables
+
+    // JUSTICES (TABLE)
+    .good-table.court-table(v-if="stats.court.justices")
+      h2 Our Favorite Justices
+      vue-good-table( v-if="stats.court.justices && stats.court.justices.length"
+                      :rows="stats.court.justices"
+                      :columns="columns.courtJustices"
+                      theme="black-rhino"
+                      styleClass="vgt-table condensed"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'timesAdjudicated', type: 'desc'} }"
+                      :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [10, 25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"
+                      :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
+                    )
+    
+    // TACTICS (TABLE)
+    .good-table.court-table(v-if="stats.court.tactics")
+      h2 Tactics
+      vue-good-table( v-if="stats.court.tactics && stats.court.tactics.length"
+                      :rows="stats.court.tactics"
+                      :columns="columns.courtTactics"
+                      theme="black-rhino"
+                      styleClass="vgt-table condensed"
+                      :line-numbers="true"
+                      :sort-options="{ enabled: true, initialSortBy: {field: 'timesPlayed', type: 'desc'} }"
+                      :pagination-options="{ enabled: true, perPage: 25, position: 'top', perPageDropdown: [10, 25, 50, 100], dropdownAllowAll: true, nextLabel: 'next',prevLabel: 'prev',}"
+                      :search-options="{ enabled: true, trigger: 'enter', skipDiacritics: true, placeholder: 'Search this table'}"
+                    )

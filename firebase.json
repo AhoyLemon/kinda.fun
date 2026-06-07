@@ -5,6 +5,14 @@
     "ignore": [],
     "rewrites": [
       {
+        "source": "/court",
+        "destination": "/court.html"
+      },
+      {
+        "source": "/court/",
+        "destination": "/court.html"
+      },
+      {
         "source": "/cameo",
         "destination": "/cameo.html"
       },

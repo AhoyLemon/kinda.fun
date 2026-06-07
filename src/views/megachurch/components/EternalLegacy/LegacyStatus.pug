@@ -71,8 +71,12 @@
           )
             .deed-icon 👹
             .deed-info
-              .deed-name(v-if="deed.id === 'kill-sterling' || deed.id === 'consultation-tony'") You killed Sterling
-              .deed-name(v-else-if="deed.id === 'sterling-bribe' || deed.id === 'sterling-cut'") You got Sterling to bribe the cops
+              .deed-name(v-if="deed.id === 'kill-sterling'") You killed Sterling
+              .deed-name(v-else-if="deed.id === 'sterling-bribe'") You got Sterling to bribe the cops
+              .deed-name(v-else-if="deed.id === 'tax-haven'") You became a tax haven
+              .deed-name(v-else-if="deed.id === 'tariff-evasion'") You established a China import network
+              .deed-name(v-else-if="deed.id === 'religious-artifacts'")
+                | You've acquired {{ deed.purchases?.length || 0 }} religious artifact(s)
               //.deed-effect {{ deed.effect }}
 
     // Empty State

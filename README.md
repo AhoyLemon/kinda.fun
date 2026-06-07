@@ -2,7 +2,7 @@
 
 [![Last Deploy](https://img.shields.io/github/last-commit/AhoyLemon/kinda.fun/main?label=Last%20Deploy&style=for-the-badge&color=green)](https://github.com/AhoyLemon/kinda.fun/actions)
 [![Live Site](https://img.shields.io/badge/Live%20Site-kinda.fun-blue?style=for-the-badge)](https://kinda.fun)
-[![Game Count](https://img.shields.io/badge/games-8-E5E828?style=for-the-badge)](https://github.com/AhoyLemon/kinda.fun/tree/main/src/views)
+[![Game Count](https://img.shields.io/badge/games-9-E5E828?style=for-the-badge)](https://github.com/AhoyLemon/kinda.fun/tree/main/src/views)
 
 **Made with**
 
@@ -13,8 +13,8 @@
 [![Pug](https://img.shields.io/badge/Pug-000?style=for-the-badge&labelColor=A86454&logo=pug&logoColor=white&color=222)](https://pugjs.org/)
 [![Firebase](https://img.shields.io/badge/Firebase-000?style=for-the-badge&labelColor=FFCA28&logo=firebase&logoColor=111&color=222)](https://firebase.google.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-000?style=for-the-badge&labelColor=339933&logo=node.js&logoColor=white&color=222)](https://nodejs.org/)
-[![Vitest](https://img.shields.io/badge/Vitest-000?style=for-the-badge&labelColor=6E9F18&logo=vitest&logoColor=white&color=222)](https://nodejs.org/)
-[![Prettier](https://img.shields.io/badge/Prettier-000?style=for-the-badge&labelColor=F7B93E&logo=prettier&logoColor=111&color=222)](https://nodejs.org/)
+[![Vitest](https://img.shields.io/badge/Vitest-000?style=for-the-badge&labelColor=6E9F18&logo=vitest&logoColor=white&color=222)](https://vitest.dev)
+[![Prettier](https://img.shields.io/badge/Prettier-000?style=for-the-badge&labelColor=F7B93E&logo=prettier&logoColor=111&color=222)](https://prettier.io)
 
 **Stats**
 
@@ -28,7 +28,15 @@
 [![Docs](https://img.shields.io/badge/Docs-Available-4FC08D?style=for-the-badge&logo=readthedocs&logoColor=white)](docs/)
 [![These games are by Lemon](https://img.shields.io/badge/These%20games%20are%20by-Lemon-E5E828?style=for-the-badge&logo=lemonsqueezy&logoColor=white)](https://ahoylemon.xyz)
 
-There's currently eight games in this repo...
+There's currently nine games in this repo...
+
+## Supreme Court: The Card Game
+
+[![Supreme Court: The Card Game](https://kinda.fun/img/og-court.png)](https://kinda.fun/court)
+
+A single-player card game where you try historical Supreme Court cases against the bench of your choice, using the justices' real-world ideological stances and weaknesses to your advantage.
+
+- **[Game Documentation](docs/court.md)** - Gameplay mechanics, justice stances, and case rules
 
 ## MegaChurch Tycoon
 
@@ -36,7 +44,7 @@ There's currently eight games in this repo...
 
 A single-player game where you start out with no money and a drug addiction, and must build a religious empire using cunning, strategy, and most importantly - lies.
 
-- **[Game Documentation](docs/invalid.md)** - Basics of how to play
+- **[Game Documentation](docs/megachurch.md)** - Basics of how to play
 - **[Preaching Documentation](docs/megachurch/preaching.md)** - Preaching mechanics, audience generation, and donation calculations
 - **[Developer Guide](docs/megachurch/DEVELOPER.md)** - MegaChurch development architecture, configuration, and content management
 
@@ -107,7 +115,6 @@ You're going to defend some very stupid ideas.
 
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Getting started with local development and contributing
 - **[NPM Commands](docs/npm-commands.md)** - Complete reference for all available npm scripts and what they do
-- **[Migration Guide](docs/migration-guide.md)** - Guide for migrating between different versions or setups
 - **[Deployment Setup](docs/deployment-setup.md)** - Instructions for setting up automated Firebase deployment via GitHub Actions
 
 ## Credits

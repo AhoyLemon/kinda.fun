@@ -140,6 +140,20 @@ section.famous {
     gap: 20px;
   }
 }
+
+section.court {
+  padding: ($gap * 2) $gap $gap 0;
+
+  .court-split {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $gap;
+    .stats-boxes {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
 section.sisyphus {
   padding: ($gap * 2) $gap $gap 0;
   .stats-boxes {

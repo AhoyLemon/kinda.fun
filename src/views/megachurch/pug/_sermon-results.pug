@@ -186,7 +186,7 @@ section.sermon-results(v-if="ui.view === 'sermon-results'")
         .van-tooltip(v-if="my.chats.sterling.daysWithVan < 1") Drive overnight. #[br] (The Plug will find you)
         button.van(@click="ui.view = 'place'") #[span 🚐] Get In The Van
       button.sterling(v-if="my.chats.sterling.hasContacted && my.eternalLegacy.sterlingAlive" @click="openSterlingInterface()") 📱 Sterling Silver
-      button.workshop-zone(v-if="my.church.isFounded" @click="showWorshopZone") 💻 Da Worshop Zone
+      button.worshop-zone(v-if="my.church.isFounded" @click="showWorshopZone") 💻 Da Worshop Zone
       button.eternal-legacy(v-if="my.eternalLegacy.isActive" @click="showEternalLegacyShop") 💻 Eternal Legacy
       button.submit(@click="handleNextDayClick()") Next Day.
 
