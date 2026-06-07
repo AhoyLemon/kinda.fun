@@ -254,45 +254,47 @@
     }
   }
 
-  .players {
-    .player {
-      display: block;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      color: $white;
-      box-shadow: -6px 6px 6px rgba(0, 0, 0, 0.15);
-      backdrop-filter: blur(4px);
-      position: relative;
-      .player-inside {
+  .players-section {
+    .players {
+      .player {
+        display: block;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        color: $white;
+        box-shadow: -6px 6px 6px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(4px);
         position: relative;
-      }
-      &:before {
-        @include position(absolute, 0, 0, 0, 0);
-        background: rgba(#650524, 0.66);
-        content: "";
-      }
-      &.is-me {
+        .player-inside {
+          position: relative;
+        }
         &:before {
-          background: rgba(#650524, 0.88);
+          @include position(absolute, 0, 0, 0, 0);
+          background: rgba(#650524, 0.66);
+          content: "";
+        }
+        &.is-me {
+          &:before {
+            background: rgba(#650524, 0.88);
+          }
         }
       }
-    }
-    .number {
-      font-style: italic;
-    }
-    .name {
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      word-break: break-word;
-      margin-top: 0.5em;
-      font-size: 130%;
-    }
-    .host {
-      @include position(absolute, 6px, 6px);
-      color: $white;
-      svg {
-        width: 26px;
-        height: 26px;
+      .number {
+        font-style: italic;
+      }
+      .name {
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        word-break: break-word;
+        margin-top: 0.5em;
+        font-size: 130%;
+      }
+      .host {
+        @include position(absolute, 6px, 6px);
+        color: $white;
+        svg {
+          width: 26px;
+          height: 26px;
+        }
       }
     }
   }
@@ -320,12 +322,23 @@
     }
   }
 
-  .room-capacity {
-    text-align: center;
-    padding: 8px 20px 14px;
-    font-size: 1rem;
-    color: $yellow;
-    border-top: 1px solid rgba($yellow, 0.2);
+  .players-section {
+    .room-capacity {
+      padding: 8px 12px 12px;
+      font-size: 0.9rem;
+      border-top: 1px solid rgba(white, 0.1);
+      border-bottom: 1px solid rgba(white, 0.1);
+      margin-bottom: 0.75rem;
+      transition: color 0.3s ease, border-color 0.3s ease;
+      &.is-error {
+        color: lighten($red, 15);
+        border-color: rgba($red, 0.35);
+      }
+      &.is-success {
+        color: lighten($green, 10);
+        border-color: rgba($green, 0.3);
+      }
+    }
   }
 
   .room-full-notice {
@@ -475,15 +488,17 @@
         padding: $padding;
       }
     }
-    .players {
-      padding-top: $gap;
-      display: flex;
-      overflow-y: auto;
-      .player {
-        max-width: 220px;
-        flex-shrink: 0;
-        margin-right: $padding;
-        color: $white;
+    .players-section {
+      .players {
+        padding-top: $gap;
+        display: flex;
+        overflow-y: auto;
+        .player {
+          max-width: 220px;
+          flex-shrink: 0;
+          margin-right: $padding;
+          color: $white;
+        }
       }
     }
   }
@@ -494,9 +509,11 @@
     display: grid;
     grid-template-columns: $scorebard-width 1fr $scorebard-width;
     gap: $gap;
-    .players {
-      max-height: calc(100% - 90px);
-      overflow: auto;
+    .players-section {
+      .players {
+        max-height: calc(100% - 90px);
+        overflow: auto;
+      }
     }
   }
 }

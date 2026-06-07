@@ -88,29 +88,6 @@
         color: orange;
       }
     }
-    .creating-room {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      padding: 10px;
-      .creating-dots {
-        font-size: 36px;
-        line-height: 95%;
-        color: #b39153;
-        letter-spacing: 0.05em;
-        span {
-          display: inline-block;
-          animation: lobbyDotBounce 1s ease-in-out infinite;
-          &:nth-child(2) { animation-delay: 0.15s; }
-          &:nth-child(3) { animation-delay: 0.3s; }
-        }
-      }
-      .creating-message {
-        font-size: 0.8rem;
-        color: rgba(#b39153, 0.75);
-        margin-top: 4px;
-      }
-    }
   }
   .or {
     font-size: 24px;
@@ -154,6 +131,30 @@
       }
     }
   }
+  .creating-room-overlay {
+    grid-column: span 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .creating-dots {
+      font-size: 36px;
+      color: #b39153;
+      letter-spacing: 0.05em;
+      span {
+        display: inline-block;
+        animation: lobbyDotBounce 1s ease-in-out infinite;
+        &:nth-child(2) { animation-delay: 0.15s; }
+        &:nth-child(3) { animation-delay: 0.3s; }
+      }
+    }
+    .creating-message {
+      font-size: 0.9rem;
+      color: rgba(#b39153, 0.75);
+      margin-top: 6px;
+    }
+  }
+
   button,
   input {
     font-family: inherit;

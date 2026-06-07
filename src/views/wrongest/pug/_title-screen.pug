@@ -17,23 +17,25 @@
           figcaption
             button.close-video(@click="ui.watchingVideo = false") Okay, close this video. 
 
-  .create
-    .creating-room(v-if="ui.isCreatingRoom")
-      .creating-dots
-        span .
-        span .
-        span .
-      .creating-message Creating your room...
-    button(v-else @click="createRoom()") Create a New Room
-  
-  .or
-    span or
+  .creating-room-overlay(v-if="ui.isCreatingRoom")
+    .creating-dots
+      span .
+      span .
+      span .
+    .creating-message Creating your room...
 
-  .join
-    form(@submit.prevent="joinRoomByInput()")
-      button(v-if="ui.roomCodeInput && ui.roomCodeInput.length > 3" type="submit") Join this room.
-      input#EnterRoomCode(type="text" minlength="5" maxlength="5" required v-model="ui.roomCodeInput"
-        @input="ui.roomCodeInput = $event.target.value.toUpperCase()"
-        placeholder="Enter A Room Code"
-      )
-      .enter-a-room-code
+  template(v-else)
+    .create
+      button(@click="createRoom()") Create a New Room
+
+    .or
+      span or
+
+    .join
+      form(@submit.prevent="joinRoomByInput()")
+        button(v-if="ui.roomCodeInput && ui.roomCodeInput.length > 3" type="submit") Join this room.
+        input#EnterRoomCode(type="text" minlength="5" maxlength="5" required v-model="ui.roomCodeInput"
+          @input="ui.roomCodeInput = $event.target.value.toUpperCase()"
+          placeholder="Enter A Room Code"
+        )
+        .enter-a-room-code
