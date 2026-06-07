@@ -180,6 +180,8 @@ export interface RoundState {
 export interface UIState {
   /** Whether the instruction video is being watched */
   watchingVideo: boolean;
+  /** Whether the instruction video is currently closing */
+  isClosingVideo: boolean;
   /** Whether the player has entered their name */
   nameEntered: boolean;
   /** Whether the deck selection screen is visible */
@@ -198,6 +200,12 @@ export interface UIState {
   disableButtons: boolean;
   /** Whether the game is currently starting (show loading indicator) */
   isStartingGame: boolean;
+  /** Whether the player name is currently being saved */
+  isSavingName: boolean;
+  /** Whether the deck selection screen is currently opening */
+  isOpeningDeckSelection: boolean;
+  /** Whether the host deck selection is currently being saved */
+  isSavingDeckSelection: boolean;
   /** Whether the "about this game" sidebar is open */
   sidebarVisible: boolean;
   /** Whether a room is currently being created (show loading indicator on title screen) */

@@ -3,6 +3,12 @@
   font-family: $font-family;
   padding: 2rem;
 
+  .room-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
   .deck-selection-main {
     display: flex;
     align-items: flex-start;
@@ -161,6 +167,11 @@
           opacity: 0;
           width: 0;
           height: 0;
+
+          &:disabled + label {
+            cursor: wait;
+            opacity: 0.65;
+          }
         }
 
         label {
@@ -226,14 +237,9 @@
           opacity: 0.5;
           cursor: not-allowed;
         }
-      }
 
-      &.cancel-button {
-        background-color: rgba(255, 255, 255, 0.1);
-
-        &:hover,
-        &:focus {
-          background-color: rgba(255, 255, 255, 0.2);
+        &.is-saving:disabled {
+          cursor: wait;
         }
       }
     }

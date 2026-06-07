@@ -21,6 +21,9 @@
     grid-template-columns: 1fr;
     gap: 10px;
     position: relative;
+    &.pregame-form {
+      gap: 0;
+    }
     fieldset {
       display: block;
       position: relative;
@@ -60,10 +63,21 @@
     }
     button {
       @include bigButton();
+      border-radius: 0 0 1em 1em;
       font-size: 1rem;
       &:hover,
       &:focus {
         background-color: darken($blue, 30);
+      }
+      &[disabled] {
+        background: rgba(white, 0.16);
+        color: rgba(white, 0.52);
+        cursor: not-allowed;
+        box-shadow: none;
+        text-shadow: none;
+      }
+      &.is-saving[disabled] {
+        cursor: wait;
       }
     }
     /*
@@ -77,13 +91,72 @@
     padding-top: 1em;
 
     .choose-decks-button {
-      @include bigButton();
+      appearance: none;
+      background: rgba($blue, 0.14);
+      border: 1px solid rgba(lighten($blue, 18), 0.72);
+      border-radius: 8px;
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
+      color: lighten($blue, 24);
+      cursor: pointer;
+      display: block;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      padding: 0.65em 1.1em;
+      text-align: center;
       width: 100%;
-      margin-bottom: 1rem;
+      transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease;
 
       &:hover,
       &:focus {
-        background-color: darken($blue, 10);
+        background-color: rgba($blue, 0.28);
+        border-color: lighten($blue, 24);
+        color: white;
+        outline: none;
+      }
+
+      &:disabled {
+        background: rgba(white, 0.12);
+        border-color: rgba(white, 0.16);
+        box-shadow: none;
+        color: rgba(white, 0.55);
+        cursor: wait;
+      }
+    }
+
+    .host-setup-card {
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba($blue, 0.28);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .host-setup-header {
+      margin-bottom: 1rem;
+
+      .host-setup-kicker {
+        color: lighten($blue, 24);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        margin-bottom: 0.4rem;
+        text-transform: uppercase;
+      }
+
+      h3 {
+        color: white;
+        font-size: 1.1rem;
+        line-height: 1.25;
+        margin-bottom: 0.45rem;
+      }
+
+      p {
+        color: rgba(white, 0.72);
+        font-size: 0.86rem;
+        line-height: 1.45;
       }
     }
 
@@ -323,13 +396,18 @@
   }
 
   .players-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     .room-capacity {
       padding: 8px 12px 12px;
       font-size: 0.9rem;
       border-top: 1px solid rgba(white, 0.1);
       border-bottom: 1px solid rgba(white, 0.1);
       margin-bottom: 0.75rem;
-      transition: color 0.3s ease, border-color 0.3s ease;
+      transition:
+        color 0.3s ease,
+        border-color 0.3s ease;
       &.is-error {
         color: lighten($red, 15);
         border-color: rgba($red, 0.35);
@@ -347,7 +425,9 @@
     p {
       font-size: 1.1rem;
       margin-bottom: 0.5em;
-      &:last-child { margin-bottom: 0; }
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 
@@ -363,8 +443,12 @@
       span {
         display: inline-block;
         animation: lobbyDotBounce 1s ease-in-out infinite;
-        &:nth-child(2) { animation-delay: 0.15s; }
-        &:nth-child(3) { animation-delay: 0.3s; }
+        &:nth-child(2) {
+          animation-delay: 0.15s;
+        }
+        &:nth-child(3) {
+          animation-delay: 0.3s;
+        }
       }
     }
     .loading-message {
@@ -383,8 +467,12 @@
       span {
         display: inline-block;
         animation: lobbyDotBounce 1s ease-in-out infinite;
-        &:nth-child(2) { animation-delay: 0.15s; }
-        &:nth-child(3) { animation-delay: 0.3s; }
+        &:nth-child(2) {
+          animation-delay: 0.15s;
+        }
+        &:nth-child(3) {
+          animation-delay: 0.3s;
+        }
       }
     }
     .dealing-message {

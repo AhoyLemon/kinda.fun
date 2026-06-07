@@ -80,6 +80,7 @@
   });
   const ui = reactive<UIState>({
     watchingVideo: false,
+    isClosingVideo: false,
     nameEntered: false,
     showingDeckSelection: false,
     deckName: "",
@@ -89,6 +90,9 @@
     roomCodeInput: "",
     disableButtons: false,
     isStartingGame: false,
+    isSavingName: false,
+    isOpeningDeckSelection: false,
+    isSavingDeckSelection: false,
     sidebarVisible: false,
     isCreatingRoom: false,
     isLoadingLobby: false,
@@ -311,14 +315,23 @@
     }
   };
 
+  const closeInstructionVideo = () => {
+    if (ui.isClosingVideo) {
+      return;
+    }
+
+    ui.isClosingVideo = true;
+    window.setTimeout(() => {
+      ui.watchingVideo = false;
+      ui.isClosingVideo = false;
+    }, 150);
+  };
+
   ////////////////////////////////////////
   // Pregame
-  const updateMyInfo = async () => {
-    // Normalize the name input - handle emojis properly
-    let normalizedName = my.nameInput.trim();
+  const normalizePlayerName = (name: string) => {
+    let normalizedName = name.trim();
 
-    // Only convert to uppercase if the string doesn't contain emojis
-    // This prevents emoji corruption from toUpperCase()
     const hasEmoji = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u.test(
       normalizedName,
     );
@@ -327,56 +340,72 @@
       normalizedName = normalizedName.toUpperCase();
     }
 
-    my.name = normalizedName;
-    localStorage.setItem("kindaFunPlayerName", my.name);
+    return normalizedName;
+  };
 
-    const playersCollection = collection(db, "rooms", game.roomCode, "players");
-    const playerQuery = query(playersCollection, where("playerID", "==", my.playerID));
-    const querySnapshot = await getDocs(playerQuery);
+  const updateMyInfo = async () => {
+    const normalizedName = normalizePlayerName(my.nameInput);
 
-    let playerFound = false;
+    if (!computedCanSubmitName.value || ui.isSavingName) {
+      return;
+    }
 
-    if (!querySnapshot.empty) {
-      // Update the existing player document
-      querySnapshot.forEach(async (docSnapshot) => {
-        const playerRef = doc(db, "rooms", game.roomCode, "players", docSnapshot.id);
-        await updateDoc(playerRef, {
+    ui.isSavingName = true;
+
+    try {
+      my.name = normalizedName;
+      localStorage.setItem("kindaFunPlayerName", my.name);
+
+      const playersCollection = collection(db, "rooms", game.roomCode, "players");
+      const playerQuery = query(playersCollection, where("playerID", "==", my.playerID));
+      const querySnapshot = await getDocs(playerQuery);
+
+      let playerFound = false;
+
+      if (!querySnapshot.empty) {
+        // Update the existing player document
+        for (const docSnapshot of querySnapshot.docs) {
+          const playerRef = doc(db, "rooms", game.roomCode, "players", docSnapshot.id);
+          await updateDoc(playerRef, {
+            name: my.name,
+            isConnected: true,
+            lastSeen: serverTimestamp(),
+          });
+          playerFound = true;
+        }
+      }
+      localStorage.setItem("kindaFunPlayerName", normalizedName);
+
+      if (!playerFound) {
+        // Get current player count to assign playerIndex
+        const playersSnapshot = await getDocs(playersCollection);
+        if (playersSnapshot.size >= settings.maxPlayers) {
+          alert(`Sorry, this room is full (max ${settings.maxPlayers} players).`);
+          return;
+        }
+        const playerIndex = playersSnapshot.size;
+
+        const newPlayer = {
           name: my.name,
+          playerID: my.playerID,
+          score: 0,
+          card: "",
+          playerIndex: playerIndex,
           isConnected: true,
           lastSeen: serverTimestamp(),
-        });
-        playerFound = true;
-      });
-    }
-    localStorage.setItem("kindaFunPlayerName", normalizedName);
+        };
 
-    if (!playerFound) {
-      // Get current player count to assign playerIndex
-      const playersSnapshot = await getDocs(playersCollection);
-      if (playersSnapshot.size >= settings.maxPlayers) {
-        alert(`Sorry, this room is full (max ${settings.maxPlayers} players).`);
-        return;
+        // Create a new player document
+        const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
+        await setDoc(playerRef, newPlayer);
+
+        my.playerIndex = playerIndex;
       }
-      const playerIndex = playersSnapshot.size;
 
-      const newPlayer = {
-        name: my.name,
-        playerID: my.playerID,
-        score: 0,
-        card: "",
-        playerIndex: playerIndex,
-        isConnected: true,
-        lastSeen: serverTimestamp(),
-      };
-
-      // Create a new player document
-      const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
-      await setDoc(playerRef, newPlayer);
-
-      my.playerIndex = playerIndex;
+      ui.nameEntered = true;
+    } finally {
+      ui.isSavingName = false;
     }
-
-    ui.nameEntered = true;
   };
 
   const sendPlayerUpdate = async () => {
@@ -402,6 +431,10 @@
   };
 
   const saveDeckSelection = async () => {
+    if (ui.isSavingDeckSelection) {
+      return;
+    }
+
     if (!computedHasEnoughCards.value) {
       alert("You don't have enough cards selected. Please choose more decks.");
       return;
@@ -409,6 +442,7 @@
 
     // Persist selected deck IDs to Firestore
     if (game.roomCode && game.selectedDeckIds.length > 0) {
+      ui.isSavingDeckSelection = true;
       try {
         const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
         await updateDoc(gameStateRef, {
@@ -422,16 +456,30 @@
       } catch (error) {
         console.error("Error saving deck selection:", error);
         alert("Failed to save deck selection: " + error.message);
+      } finally {
+        ui.isSavingDeckSelection = false;
       }
     }
   };
 
   const openDeckSelection = () => {
-    ui.showingDeckSelection = true;
-    sendEvent("The Wrongest Words", "Opened Deck Selection", game.roomCode);
+    if (ui.isOpeningDeckSelection) {
+      return;
+    }
+
+    ui.isOpeningDeckSelection = true;
+    window.setTimeout(() => {
+      ui.showingDeckSelection = true;
+      ui.isOpeningDeckSelection = false;
+      sendEvent("The Wrongest Words", "Opened Deck Selection", game.roomCode);
+    }, 150);
   };
 
   const startTheGame = async () => {
+    if (ui.isStartingGame) {
+      return;
+    }
+
     ui.disableButtons = true; // Disable buttons to prevent multiple clicks
     ui.isStartingGame = true; // Show loading state
     try {
@@ -971,6 +1019,20 @@
 
   const computedHasEnoughCards = computed(() => {
     return computedTotalSelectedCards.value >= computedMinimumCards.value;
+  });
+
+  const computedCanSubmitName = computed(() => {
+    const normalizedName = normalizePlayerName(my.nameInput);
+
+    if (normalizedName.length < 1) {
+      return false;
+    }
+
+    if (!ui.nameEntered) {
+      return true;
+    }
+
+    return normalizedName !== my.name;
   });
 
   const computedHostName = computed(() => {
