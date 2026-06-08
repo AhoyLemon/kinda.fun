@@ -343,9 +343,9 @@
     if (title && text) {
       sendEvent("cheevo", title, text);
     } else if (title && points) {
-      sendEvent("cheevo", title, points);
+      sendEvent("cheevo", title, undefined, points);
     } else if (text && points) {
-      sendEvent("cheevo", text, points);
+      sendEvent("cheevo", text, undefined, points);
     } else if (text) {
       sendEvent("cheevo", text);
     } else if (title) {
@@ -495,7 +495,7 @@
 
       purchaseSound.play();
 
-      sendEvent("item purchase", item.name, item.price);
+      sendEvent("item purchase", item.name, undefined, item.price);
       logPurchase(item);
 
       if (ui.inventory.length == 1) {
