@@ -1,9 +1,10 @@
-<script setup>
+<script setup lang="ts">
   import { reactive, computed, onMounted } from "vue";
   import { begin, sDefaults, rDefaults } from "./ts/_variables";
-  import { sendEvent, randomFrom, randomNumber, findKeyInArray, removeFromArrayByKey, percentOf, addCommas } from "@/shared/ts/_functions.js";
+  import { sendEvent, randomFrom, randomNumber, findKeyInArray, removeFromArrayByKey, percentOf, addCommas } from "@/shared/ts/_functions";
   import { keepPushingMessages, rockFellMessages, retreatMessages } from "./ts/_messages";
   import { storeItems } from "./ts/_store";
+  import type { StoreItem } from "./ts/_store";
 
   // Firebase & VueFire Stuff
   import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
@@ -23,7 +24,75 @@
   import { useToast } from "vue-toastification";
   const toast = useToast();
 
-  const ui = reactive({
+  type GamePhase = "begin" | "pushing" | "falling" | "retreat";
+  type VisibleDrawer = "store" | "inventory" | null;
+
+  interface Achievement {
+    title: string | null;
+    text: string | null;
+    points: number | null;
+  }
+
+  interface AchievementLog {
+    name: string | null;
+    points: number | null;
+  }
+
+  interface StoreDisplayItem extends StoreItem {
+    showDesc?: boolean;
+  }
+
+  interface SisyphusState {
+    bottom: number;
+    left: number;
+    width: number;
+    height: number;
+    retreating: boolean;
+    pushForce: number;
+    retreatSpeed: number;
+  }
+
+  interface RockState {
+    bottom: number;
+    left: number;
+    width: number;
+    height: number;
+    marginLeft: number;
+    peak: number;
+    rollbacks: number;
+    falling: boolean;
+  }
+
+  interface UiState {
+    gameName: string;
+    phase: GamePhase;
+    message: string;
+    score: number;
+    totalScore: number;
+    secondsPlayed: number;
+    totalClicks: number;
+    visibleDrawer: VisibleDrawer;
+    drawerOpenedCount: number;
+    outsideLinksClicked: string[];
+    isSidebarVisible: boolean;
+    s: SisyphusState;
+    r: RockState;
+    fg: {
+      transform: number;
+    };
+    bg: {
+      transform: number;
+    };
+    store: StoreDisplayItem[];
+    inventory: StoreDisplayItem[];
+    cheevos: Achievement[];
+    cheevoReminders: number;
+    isMusicPlaying: boolean;
+    uphillMusicTimer: ReturnType<typeof setTimeout> | undefined;
+    boughtDignity: boolean;
+  }
+
+  const ui = reactive<UiState>({
     gameName: "sisyphus",
     phase: "begin",
     message: "Click Sisyphus to push the rock uphill.",
@@ -35,8 +104,11 @@
     drawerOpenedCount: 0,
     outsideLinksClicked: [],
     isSidebarVisible: false,
-    s: sDefaults,
-    r: rDefaults,
+    s: { ...sDefaults },
+    r: {
+      ...rDefaults,
+      falling: false,
+    },
     fg: {
       transform: 0,
     },
@@ -56,17 +128,15 @@
     boughtDignity: false,
   });
 
-  const self = undefined;
-
   ///////////////////////////////
   // Functions
 
-  const sisyphusClick = () => {
+  const sisyphusClick = (): boolean | void => {
     let f = ui.s.pushForce;
     let r = ui.s.retreatSpeed;
-    let bT;
+    let bT = 0;
 
-    document.getElementById("Sisyphus").blur();
+    document.getElementById("Sisyphus")?.blur();
 
     // This handles the click IMMEDIATELY after you bought Dignity.
     if (ui.boughtDignity) {
@@ -95,7 +165,7 @@
       case 1:
         logFirstClick();
         break;
-      case 212:
+      case 212: {
         const byLemonJingle = new Audio("audio/bylemon.mp3");
         byLemonJingle.volume = 0.6;
         byLemonJingle.play();
@@ -112,6 +182,7 @@
           },
         );
         break;
+      }
 
       // These are all cheevos
       case 437:
@@ -250,7 +321,7 @@
     }
   };
 
-  const switchMessage = (m) => {
+  const switchMessage = (m: GamePhase): void => {
     ui.phase = m;
     if (m == "falling") {
       ui.message = randomFrom(rockFellMessages);
@@ -261,18 +332,12 @@
     }
   };
 
-  const getCheevo = (title, text, points) => {
+  const getCheevo = (title: string | null, text: string | null, points: number | null = null): void => {
     if (!title) {
       title = null;
     }
     if (!text) {
       text = null;
-    }
-    let t;
-    if (points) {
-      t = "<strong>" + points + "💀</strong> " + text;
-    } else {
-      t = text;
     }
 
     if (title && text) {
@@ -310,11 +375,11 @@
     ui.cheevos.push({ title: title, text: text, points: points });
 
     // give cheevos based on cheevos!
-    if (ui.cheevos == 2) {
+    if (ui.cheevos.length == 2) {
       setTimeout(function () {
         getCheevo("And Here Is A Third!", "You've had two achivements, so here is a third achievement for getting those.", 12);
       }, 1500);
-    } else if (ui.cheevos == 7) {
+    } else if (ui.cheevos.length == 7) {
       setTimeout(function () {
         getCheevo("You Cannot Have 7", "7 is considered a lucky number, so now you have 8 achievements.", 3);
       }, 1500);
@@ -324,8 +389,8 @@
     logCheevo({ name: title, points: points });
   };
 
-  const remindMeOfMyCheevos = () => {
-    ui.cheevos.forEach((cheevo, i) => {
+  const remindMeOfMyCheevos = (): void => {
+    ui.cheevos.forEach((cheevo: Achievement, i: number) => {
       setTimeout(() => {
         toast(
           {
@@ -348,11 +413,11 @@
     });
   };
 
-  const toggleSidebar = () => {
+  const toggleSidebar = (): void => {
     ui.isSidebarVisible = !ui.isSidebarVisible;
     if (ui.isSidebarVisible) {
       // award cheevo if you don't have it already.
-      const alreadyEarned = ui.cheevos.some((c) => c.title === "Drawer Opener");
+      const alreadyEarned = ui.cheevos.some((c: Achievement) => c.title === "Drawer Opener");
       if (!alreadyEarned) {
         getCheevo("Drawer Opener", "What does that question mark mean? Well now you know!", 8);
       }
@@ -389,7 +454,7 @@
     }
   };
 
-  const toggleDrawer = (d) => {
+  const toggleDrawer = (d: Exclude<VisibleDrawer, null>): void => {
     if (d == ui.visibleDrawer) {
       ui.visibleDrawer = null;
     } else {
@@ -397,12 +462,12 @@
     }
   };
 
-  const openOutsideLink = (linkTitle, linkUrl) => {
+  const openOutsideLink = (linkTitle: string, linkUrl: string): void => {
     setTimeout(() => {
       window.open(linkUrl, "_blank");
     }, 220);
     if (linkTitle == "Lemon") {
-      const alreadyEarned = ui.cheevos.some((c) => c.title === "Lemon Clicker");
+      const alreadyEarned = ui.cheevos.some((c: Achievement) => c.title === "Lemon Clicker");
       if (!alreadyEarned) {
         setTimeout(() => {
           getCheevo("Lemon Clicker", "Welcome back! How did you enjoy Lemon's website?", 18);
@@ -411,12 +476,15 @@
     }
   };
 
-  const buyItem = (i, item) => {
+  const buyItem = (_index: number, item: StoreDisplayItem): void => {
     if (ui.score >= item.price) {
       ui.score -= item.price;
 
-      let s = findKeyInArray(ui.store, "id", item.id);
-      let n = ui.store[s];
+      const s = findKeyInArray(ui.store, "id", item.id);
+      if (s === undefined) {
+        return;
+      }
+      const n = ui.store[s];
       n.showDesc = false;
 
       ui.inventory.push(n);
@@ -446,9 +514,9 @@
           getCheevo("How Refreshing!", "Mmmmm, that's some effervescent water!", 4);
           break;
 
-        case 7:
-          let currentScore = ui.computedGamerScore;
-          let negativeScore = 0 - currentScore;
+        case 7: {
+          const currentScore = computedGamerScore.value;
+          const negativeScore = 0 - currentScore;
           ui.cheevos = [];
           ui.score = 0;
           ui.inventory = [];
@@ -463,7 +531,7 @@
             },
           ];
           dignityGot.play();
-          ui.getCheevo(
+          getCheevo(
             "Dignity Restored!",
             "You've finally reclaimed your dignity. However, it was at the expense of any points that you've earned so far. So I guess, if you want those points back, you should probably keep pushing the boulder.",
             negativeScore,
@@ -471,11 +539,12 @@
           removeFromArrayByKey(ui.store, "id", 7);
           ui.boughtDignity = true;
           break;
+        }
       }
     }
   };
 
-  const buyItemEffect = (id) => {
+  const buyItemEffect = (id: number): void => {
     switch (id) {
       case 1:
         //---- Fresh Kicks
@@ -519,8 +588,9 @@
         ui.r.marginLeft = ui.r.marginLeft * 1.8;
         break;
       case 9:
-      //---- boner pills
-      // does nothing
+        //---- boner pills
+        // does nothing
+        break;
       case 10:
         //---- jock jams
         ui.s.pushForce = ui.s.pushForce * 1.05;
@@ -618,31 +688,30 @@
     }
   };
 
-  const toggleInventoryItemDescription = (item) => {
+  const toggleInventoryItemDescription = (item: StoreDisplayItem): void => {
     item.showDesc = !item.showDesc;
   };
 
   ////////////////////////////////
   // Firebase functions
-  const logFirstClick = async () => {
+  const logFirstClick = async (): Promise<void> => {
     await updateDoc(statsRef, {
       firstClick: increment(1),
       lastGameStarted: serverTimestamp(),
     });
   };
 
-  const logRollback = async () => {
+  const logRollback = async (): Promise<void> => {
     await updateDoc(statsRef, {
       rollbackCount: increment(1),
     });
   };
 
-  const logCheevo = async (cheevo) => {
+  const logCheevo = async (cheevo: AchievementLog): Promise<void> => {
     const cheevoName = cheevo.name;
     const cheevoRef = doc(db, `stats/sisyphus/cheevos/${cheevoName}`);
     await runTransaction(db, async (transaction) => {
       const cheevoDoc = await transaction.get(cheevoRef);
-      const now = new Date().toISOString();
       if (!cheevoDoc.exists()) {
         transaction.set(cheevoRef, {
           name: cheevoName,
@@ -659,7 +728,7 @@
     });
   };
 
-  const logPurchase = async (purchase) => {
+  const logPurchase = async (purchase: StoreDisplayItem): Promise<void> => {
     const purchaseName = purchase.name;
     const purchaseRef = doc(db, `stats/sisyphus/purchases/${purchaseName}`);
     await runTransaction(db, async (transaction) => {
@@ -682,26 +751,26 @@
 
   ///////////////////////////////
   // Computeds
-  const rockLeft = computed(() => {
+  const rockLeft = computed<string>(() => {
     return `calc(${ui.s.width}% + ${ui.r.left}%)`;
   });
-  const rockHeight = computed(() => {
+  const rockHeight = computed<string>(() => {
     return `${ui.r.height}%`;
   });
-  const rockWidth = computed(() => {
+  const rockWidth = computed<string>(() => {
     return `${ui.r.width}%`;
   });
-  const rockMarginLeft = computed(() => {
+  const rockMarginLeft = computed<string>(() => {
     return `${ui.r.marginLeft}%`;
   });
-  const foregroundTransform = computed(() => {
+  const foregroundTransform = computed<string>(() => {
     return `translateX(${ui.fg.transform}%)`;
   });
-  const backgroundTransform = computed(() => {
+  const backgroundTransform = computed<string>(() => {
     return `translateX(${ui.bg.transform}%)`;
   });
 
-  const computedGamerScore = computed(() => {
+  const computedGamerScore = computed<number>(() => {
     let gamerScore = 0;
     ui.cheevos.forEach(function (item) {
       if (item && item.points > 0) {
@@ -710,9 +779,9 @@
     });
     return gamerScore;
   });
-  const availableUpgrades = computed(() => {
-    let a = [];
-    ui.store.forEach(function (item, i) {
+  const availableUpgrades = computed<StoreDisplayItem[]>(() => {
+    const a: StoreDisplayItem[] = [];
+    ui.store.forEach(function (item) {
       if (ui.totalScore >= item.scoreToReveal) {
         a.push(item);
       }
@@ -720,7 +789,7 @@
     return a;
   });
 
-  onMounted(() => {
+  onMounted((): void => {
     // nothing!
   });
 </script>
