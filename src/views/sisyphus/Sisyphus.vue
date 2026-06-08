@@ -134,7 +134,7 @@
   const sisyphusClick = (): boolean | void => {
     let f = ui.s.pushForce;
     let r = ui.s.retreatSpeed;
-    let bT = 0;
+    let backgroundTransformDelta = 0;
 
     document.getElementById("Sisyphus")?.blur();
 
@@ -238,8 +238,8 @@
       }
 
       //background transform
-      bT = ui.s.pushForce * 0.75;
-      ui.bg.transform -= bT;
+      backgroundTransformDelta = ui.s.pushForce * 0.75;
+      ui.bg.transform -= backgroundTransformDelta;
 
       if (ui.r.left >= ui.r.peak) {
         // The rock just fell back downhill
@@ -302,8 +302,8 @@
       ui.s.left -= r;
 
       //forground transform
-      bT = ui.s.retreatSpeed * 0.75;
-      ui.bg.transform += bT;
+      backgroundTransformDelta = ui.s.retreatSpeed * 0.75;
+      ui.bg.transform += backgroundTransformDelta;
 
       if (ui.phase != "retreat") {
         switchMessage("retreat");
@@ -773,7 +773,7 @@
   const computedGamerScore = computed<number>(() => {
     let gamerScore = 0;
     ui.cheevos.forEach(function (item) {
-      if (item && item.points > 0) {
+      if (typeof item.points === "number" && item.points > 0) {
         gamerScore += item.points;
       }
     });
