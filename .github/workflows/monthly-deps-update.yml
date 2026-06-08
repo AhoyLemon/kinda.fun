@@ -364,13 +364,19 @@ jobs:
           })
 
           try:
+              api('GET', f'repos/{repo}/git/ref/heads/{branch}')
+              branch_exists = True
+          except urllib.error.HTTPError as error:
+              if error.code != 404:
+                  raise
+              branch_exists = False
+
+          if branch_exists:
               api('PATCH', f'repos/{repo}/git/refs/heads/{branch}', {
                   'sha': commit['sha'],
                   'force': True,
               })
-          except urllib.error.HTTPError as error:
-              if error.code != 404:
-                  raise
+          else:
               api('POST', f'repos/{repo}/git/refs', {
                   'ref': f'refs/heads/{branch}',
                   'sha': commit['sha'],
