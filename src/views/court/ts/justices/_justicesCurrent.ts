@@ -17,7 +17,6 @@ export const currentJustices: Justice[] = [
       logic: 8,
       charisma: 7,
       empathy: 5,
-
       susceptibility: 4,
       partyLoyalty: 6,
     },
@@ -71,7 +70,6 @@ export const currentJustices: Justice[] = [
       logic: 8,
       charisma: 3,
       empathy: 1,
-
       susceptibility: 3,
       partyLoyalty: 10,
     },
@@ -115,7 +113,6 @@ export const currentJustices: Justice[] = [
       logic: 7,
       charisma: 4,
       empathy: 2,
-
       susceptibility: 3,
       partyLoyalty: 10,
     },
@@ -169,7 +166,6 @@ export const currentJustices: Justice[] = [
       logic: 6,
       charisma: 8,
       empathy: 10,
-
       susceptibility: 4,
       partyLoyalty: 7,
     },
@@ -223,7 +219,6 @@ export const currentJustices: Justice[] = [
       logic: 9,
       charisma: 7,
       empathy: 5,
-
       susceptibility: 3,
       partyLoyalty: 7,
     },
@@ -320,7 +315,6 @@ export const currentJustices: Justice[] = [
       logic: 6,
       charisma: 5,
       empathy: 4,
-
       susceptibility: 5,
       partyLoyalty: 9,
     },
@@ -406,7 +400,7 @@ export const currentJustices: Justice[] = [
     name: "Ketanji Brown Jackson",
     image: "ketanji.webp",
     description:
-      "First Black woman on the Supreme Court. Knows what a biologist is. Sat through a Senate confirmation hearing where a senator asked her to define 'woman' and survived with her dignity intact.",
+      "First Black woman on the Supreme Court. Faced pointed questioning during Senate confirmation about her judicial philosophy and sentencing record — apparently being a former public defender is a character flaw now.",
     justiceType: "current",
     gender: "F",
     birthYear: 1970,

@@ -41,6 +41,7 @@ const options = [
       "tests/court-stats-helpers.spec.ts",
       "tests/court-tactic-effects.spec.ts",
       "tests/court-toast-feedback.spec.ts",
+      "tests/court-unique-ids.spec.ts",
     ],
   },
 ];

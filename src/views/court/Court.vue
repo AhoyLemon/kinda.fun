@@ -1,6 +1,5 @@
 <script setup lang="ts">
-  import { reactive, onMounted } from "vue";
-  import { useFirestore } from "vuefire";
+  import { reactive, computed, onMounted } from "vue";
   import { useToast, POSITION } from "vue-toastification";
   import TacticToast from "./components/TacticToast.vue";
   import LemonToast from "./components/LemonToast.vue";
@@ -21,25 +20,16 @@
   import { rewardCards } from "./ts/_rewards";
   import { useCampaignManager } from "./ts/_campaignManager";
   import { playJusticeVoice, playKavanaughBeer } from "./ts/_sounds";
-  import {
-    classifyJusticeVote,
-    computeTacticShiftMetrics,
-    createCourtStatsHelpers,
-    getAttackedJusticeNamesForPlay,
-    getOutcomeFromVerdict,
-    getTrackedStanceNamesForOutcome,
-    getWinningSide,
-    type CourtOutcome,
-  } from "./ts/_statsHelpers";
+  import { getAttackedJusticeNamesForPlay } from "./ts/_statsHelpers";
   import { useCourtComputeds } from "./ts/_useCourtComputeds";
   import { useCourtHelpers, getKeyStats, justiceTypeLabel, sideStanceTags, targetLabel, voteLabel, justiceImageUrl, presidentImageUrl, justiceHints } from "./ts/_useCourtHelpers";
   import { useCourtTurns } from "./ts/_useCourtTurns";
+  import { useCourtLectern, type InitiateResult } from "./ts/_useCourtLectern";
+  import { useCourtStats } from "./ts/_useCourtStats";
 
   // ── Game settings ──────────────────────────────────────────
 
   const toast = useToast();
-  const db = useFirestore();
-  const courtStats = createCourtStatsHelpers(db);
   const trialAttackedJustices = new Set<string>();
   let campaignEndLogged = false;
   let byLemonJinglePlayed = false;
@@ -118,6 +108,9 @@
     reframeStanceChoices: [] as StanceType[],
     reframeStanceTacticId: null as number | null,
     reframeStanceSelection: null as StanceType | null,
+    lecternMode: false,
+    lecternBoostPending: false,
+    lecternBlindTacticId: null as number | null,
   });
 
   const campaign = reactive<{ data: CampaignState | null }>({ data: null });
@@ -130,6 +123,7 @@
       targetName: string;
       results: { justiceName: string; change: number }[];
       round: number;
+      viaLectern?: boolean; // played blind via "Go To The Lectern Without Notes"
     }>,
   });
 
@@ -139,125 +133,6 @@
       votes: Record<number, boolean>;
     }>
   >([]);
-
-  // ─── Firestore Stats ───────────────────────────────────────
-
-  function getCurrentOutcome(): CourtOutcome | null {
-    if (!verdict.value) return null;
-    return getOutcomeFromVerdict(verdict.value);
-  }
-
-  async function trackQuickplayStarted(): Promise<void> {
-    await courtStats.writeCourtAggregateStats({
-      gamesStarted: 1,
-      quickplaysStarted: 1,
-      lastQuickplayStarted: "__SERVER_TIMESTAMP__",
-      lastGameStarted: "__SERVER_TIMESTAMP__",
-    });
-  }
-
-  async function trackTacticPlay(tactic: Tactic, actor: TurnActor, results: Array<{ change: number }>): Promise<void> {
-    const metrics = computeTacticShiftMetrics(results);
-    await courtStats.writeTacticStats({
-      tacticName: tactic.name,
-      actor,
-      metrics: { ...metrics, netShift: Math.abs(metrics.netShift) },
-    });
-  }
-
-  function buildVoteBuckets(): Record<string, "prosecution" | "defense" | "abstain"> {
-    if (!game.playerSide) return {};
-    const playerSide = game.playerSide;
-
-    return Object.fromEntries(
-      game.bench.map((justice) => {
-        const leaning = game.leanings[justice.id] ?? 0;
-        return [justice.name, classifyJusticeVote(leaning, playerSide)];
-      }),
-    );
-  }
-
-  async function trackTrialVerdictStats(options: { isQuickplay: boolean }): Promise<void> {
-    if (!game.currentCase || !game.playerSide) return;
-
-    const outcome = getCurrentOutcome();
-    if (!outcome) return;
-
-    const winningSide = getWinningSide(game.playerSide, outcome);
-    const aggregateOutcomeField = outcome === "won" ? "Won" : outcome === "lost" ? "Lost" : "Tied";
-    const benchJusticeNames = game.bench.map((justice) => justice.name);
-    const stanceNames = getTrackedStanceNamesForOutcome(game.currentCase, game.playerSide, outcome);
-    const voteByJusticeName = buildVoteBuckets();
-
-    const aggregateUpdates: Record<string, string | number> = {
-      totalCasesWon: outcome === "won" ? 1 : 0,
-      totalCasesLost: outcome === "lost" ? 1 : 0,
-      totalCasesTied: outcome === "tied" ? 1 : 0,
-    };
-
-    if (options.isQuickplay) {
-      aggregateUpdates.gamesFinished = 1;
-      aggregateUpdates.quickplaysFinished = 1;
-      aggregateUpdates[`quickplays${aggregateOutcomeField}`] = 1;
-      aggregateUpdates.lastQuickplayFinished = "__SERVER_TIMESTAMP__";
-      aggregateUpdates.lastGameFinished = "__SERVER_TIMESTAMP__";
-    }
-
-    await Promise.all([
-      courtStats.writeCourtAggregateStats(aggregateUpdates),
-      courtStats.writeCaseStats({
-        caseName: game.currentCase.name,
-        outcome,
-        winningSide,
-      }),
-      courtStats.writeJusticeStats({
-        benchJusticeNames,
-        attackedJusticeNames: [...trialAttackedJustices],
-      }),
-      courtStats.writeStanceStats({
-        stanceNames,
-        outcome,
-      }),
-      courtStats.writeCaseJusticeVoteStats({
-        caseName: game.currentCase.name,
-        voteByJusticeName,
-        prosecutionName: game.currentCase.prosecution.name,
-        defenseName: game.currentCase.defendant.name,
-      }),
-    ]);
-  }
-
-  async function trackCampaignStarted(campaignName: string): Promise<void> {
-    await Promise.all([
-      courtStats.writeCourtAggregateStats({
-        gamesStarted: 1,
-        campaignsStarted: 1,
-        lastCampaignStarted: "__SERVER_TIMESTAMP__",
-        lastGameStarted: "__SERVER_TIMESTAMP__",
-      }),
-      courtStats.writeCampaignStats({
-        campaignName,
-        event: "start",
-      }),
-    ]);
-  }
-
-  async function trackCampaignCompleted(campaignName: string, won: boolean): Promise<void> {
-    await Promise.all([
-      courtStats.writeCourtAggregateStats({
-        gamesFinished: 1,
-        campaignsFinished: 1,
-        campaignsWon: won ? 1 : 0,
-        campaignsLost: won ? 0 : 1,
-        lastCampaignFinished: "__SERVER_TIMESTAMP__",
-        lastGameFinished: "__SERVER_TIMESTAMP__",
-      }),
-      courtStats.writeCampaignStats({
-        campaignName,
-        event: won ? "win" : "loss",
-      }),
-    ]);
-  }
 
   // ─── Helpers ─────────────────────────────────────────────────
 
@@ -385,22 +260,8 @@
     );
   }
 
-  // ─── Turn Management (composable) ────────────────────────────
-  // applyTactic is a function declaration and is hoisted, so the closure below resolves correctly.
-
-  const { endPlayerTurn, endOpponentTurn, getEligibleMultiTargetJustices } = useCourtTurns(
-    game,
-    campaign,
-    ui,
-    {
-      trackTrialVerdictStats,
-      applyTactic: (t, j, a) => applyTactic(t, j, a),
-      shuffle,
-      triggerLemonMomentIfDue,
-    },
-  );
-
   // ─── Computed Values (composable) ────────────────────────────
+  // Created first so `verdict` is available to the stats composable below.
 
   const {
     allJustices,
@@ -426,9 +287,70 @@
     previewPresetChief,
   } = useCourtComputeds({ game, ui, courtReport });
 
+  // ─── Firestore Stats (composable) ────────────────────────────
+
+  const stats = useCourtStats({ game, verdict, trialAttackedJustices });
+
+  // ─── Turn Management (composable) ────────────────────────────
+  // applyTactic is a function declaration and is hoisted, so the closure below resolves correctly.
+
+  const { endPlayerTurn, endOpponentTurn, getEligibleMultiTargetJustices } = useCourtTurns(
+    game,
+    campaign,
+    ui,
+    {
+      trackTrialVerdictStats: stats.trackTrialVerdictStats,
+      applyTactic: (t, j, a) => applyTactic(t, j, a),
+      shuffle,
+      triggerLemonMomentIfDue,
+    },
+  );
+
+  // ─── Go To The Lectern Without Notes (composable) ────────────
+
+  const { enterLecternMode, chooseLecternCard, applyLecternBoost } = useCourtLectern(game, {
+    drawCard,
+    removeFromPlaybook,
+    shuffle,
+    endPlayerTurn,
+    initiateTactic: (tactic) => initiateTactic(tactic),
+    recordPlay: (play) => courtReport.plays.push(play),
+  });
+
   // ─── UI Helpers (composable) ─────────────────────────────────
 
   const { voteMeterStyle, verdictJusticeBarStyle, justiceVoteHistory } = useCourtHelpers(game, caseHistory);
+
+  // True whenever the hand should be shown face-down: while picking a blind card, and while a
+  // committed blind card still awaits its target (so the unchosen cards can't be deduced).
+  const lecternConcealed = computed(() => game.lecternMode || game.lecternBlindTacticId !== null);
+
+  // Justices that the currently-staged tactic cannot legally target. The bench dims these and
+  // makes them non-interactive so it's obvious where an argument can (and can't) land — rather
+  // than silently doing nothing when an invalid justice is clicked.
+  const untargetableJusticeIds = computed<Set<number>>(() => {
+    const blocked = new Set<number>();
+
+    if (game.selectedTacticId !== null) {
+      const tactic = [...game.playbook, ...game.claimedCards].find((t) => t.id === game.selectedTacticId);
+      if (tactic?.effectType === "shield") {
+        // Shield protects an ally — only justices already leaning your way are valid.
+        game.bench.forEach((j) => (game.leanings[j.id] ?? 0) <= 0 && blocked.add(j.id));
+      } else if (tactic?.effectType === "betray-friend") {
+        // Betray needs a Strongly For justice (≥ 60) to sacrifice.
+        game.bench.forEach((j) => (game.leanings[j.id] ?? 0) < 60 && blocked.add(j.id));
+      }
+      return blocked;
+    }
+
+    if (game.multiTargetMode) {
+      const tactic = [...game.playbook, ...game.claimedCards].find((t) => t.id === game.multiTargetTacticId) ?? null;
+      const eligible = new Set(getEligibleMultiTargetJustices(tactic).map((j) => j.id));
+      game.bench.forEach((j) => !eligible.has(j.id) && blocked.add(j.id));
+    }
+
+    return blocked;
+  });
 
   // ─── Game Management ─────────────────────────────────────────
 
@@ -530,6 +452,9 @@
     game.reframeStanceChoices = [];
     game.reframeStanceTacticId = null;
     game.reframeStanceSelection = null;
+    game.lecternMode = false;
+    game.lecternBoostPending = false;
+    game.lecternBlindTacticId = null;
     trialAttackedJustices.clear();
     courtReport.plays = [];
     ui.phase = "setup";
@@ -561,7 +486,7 @@
     trialAttackedJustices.clear();
     ui.phase = "playing";
     if (!ui.isCampaignMode) {
-      void trackQuickplayStarted();
+      void stats.trackQuickplayStarted();
     }
   }
 
@@ -606,7 +531,16 @@
   function selectTactic(tacticId: number): void {
     if (game.currentTurn !== "player" || ui.opponentThinking) return;
 
+    // While at the lectern, every click is a blind pick — route it through the lectern handler.
+    if (game.lecternMode) {
+      chooseLecternCard(tacticId);
+      return;
+    }
+
     if (game.claimingMode) {
+      // The Lectern card can't be claimed — it's a blind gamble, not a stashable tactic.
+      const clicked = game.playbook.find((t) => t.id === tacticId);
+      if (clicked?.effectType === "lectern-without-notes") return;
       const idx = game.claimedSelections.indexOf(tacticId);
       if (idx !== -1) {
         game.claimedSelections.splice(idx, 1);
@@ -617,6 +551,10 @@
       return;
     }
 
+    // A blind card is committed and awaiting its target — it's locked in. No deselecting,
+    // no swapping to another card. Committing blind is the whole risk; you can't wriggle out.
+    if (game.lecternBlindTacticId !== null) return;
+
     if (game.multiTargetMode && game.multiTargetTacticId === tacticId) {
       clearMultiTargetMode();
       return;
@@ -624,6 +562,15 @@
 
     const tactic = [...game.playbook, ...game.claimedCards].find((t) => t.id === tacticId);
     if (!tactic) return;
+
+    initiateTactic(tactic);
+  }
+
+  function initiateTactic(tactic: Tactic): InitiateResult {
+    if (tactic.effectType === "lectern-without-notes") {
+      enterLecternMode(tactic);
+      return "lectern";
+    }
 
     if (
       tactic.effectType === "sway-all" ||
@@ -643,35 +590,41 @@
       tactic.effectType === "international-law"
     ) {
       applyTactic(tactic, null, "player");
+      return "resolved";
     } else if (tactic.effectType === "claim-two") {
-      if (game.claimedCards.length > 0) return;
+      if (game.claimedCards.length > 0) return "blocked";
       game.playbook = game.playbook.filter((t) => t.id !== tactic.id);
       game.discardPile.push(tactic);
       game.claimingMode = true;
       game.claimedSelections = [];
+      return "targeting";
     } else if (tactic.effectType === "betray-friend") {
       const hasStrongAllyNow = game.bench.some((j) => (game.leanings[j.id] ?? 0) >= 60);
-      if (!hasStrongAllyNow) return;
-      game.selectedTacticId = game.selectedTacticId === tacticId ? null : tacticId;
+      if (!hasStrongAllyNow) return "blocked";
+      game.selectedTacticId = game.selectedTacticId === tactic.id ? null : tactic.id;
+      return "targeting";
     } else if (tactic.effectType === "swap-clerks") {
-      if (game.multiTargetMode) return;
+      if (game.multiTargetMode) return "targeting";
       const eligibleMultiTargetJustices = getEligibleMultiTargetJustices(tactic);
-      if (eligibleMultiTargetJustices.length < 2) return;
+      if (eligibleMultiTargetJustices.length < 2) return "blocked";
       game.selectedTacticId = null;
       game.multiTargetTacticId = tactic.id;
       game.multiTargetMode = true;
       game.multiTargetSelections = [];
+      return "targeting";
     } else if (tactic.effectType === "reframe-debate") {
-      if (game.reframeStanceMode) return;
+      if (game.reframeStanceMode) return "targeting";
       const allBenchStances = new Set<StanceType>();
       game.bench.forEach((j) => j.stances?.forEach((s) => allBenchStances.add(s.topic)));
-      if (allBenchStances.size === 0) return;
+      if (allBenchStances.size === 0) return "blocked";
       const shuffledStances = shuffle([...allBenchStances]);
       game.reframeStanceChoices = shuffledStances.slice(0, 3) as StanceType[];
       game.reframeStanceTacticId = tactic.id;
       game.reframeStanceMode = true;
+      return "targeting";
     } else {
-      game.selectedTacticId = game.selectedTacticId === tacticId ? null : tacticId;
+      game.selectedTacticId = game.selectedTacticId === tactic.id ? null : tactic.id;
+      return "targeting";
     }
   }
 
@@ -690,9 +643,13 @@
       targetName: claimed.map((t) => t.name).join(" & "),
       results: [],
       round: game.round,
+      viaLectern: game.lecternBlindTacticId !== null,
     });
     game.claimingMode = false;
     game.claimedSelections = [];
+    // Dibs moves no leanings, so a pending lectern boost has nothing to act on — clear it.
+    game.lecternBoostPending = false;
+    game.lecternBlindTacticId = null;
     endPlayerTurn();
   }
 
@@ -722,6 +679,8 @@
   }
 
   function cancelReframeStance(): void {
+    // A blindly-committed Reframe is locked in — you can't peek and back out.
+    if (game.lecternBlindTacticId !== null) return;
     game.reframeStanceMode = false;
     game.reframeStanceTacticId = null;
     game.reframeStanceChoices = [];
@@ -794,6 +753,15 @@
   function applyTactic(tactic: Tactic, targetJustice: Justice | null, actor: TurnActor): void {
     const outcome: EffectOutcome = resolveEffect(game, tactic, targetJustice, actor, { drawCard, removeFromPlaybook });
 
+    // "Without notes" payoff: amplify the swings of whatever blind card was committed to.
+    const lecternBoosted = game.lecternBoostPending;
+    if (lecternBoosted) {
+      applyLecternBoost(outcome);
+      game.lecternBoostPending = false;
+    }
+    // The blind card has now resolved (and revealed) — release the lock.
+    game.lecternBlindTacticId = null;
+
     const attackedJusticeNames = getAttackedJusticeNamesForPlay({
       effectType: tactic.effectType,
       targetJusticeName: targetJustice?.name,
@@ -826,9 +794,11 @@
       targetName: outcome.reportTarget,
       results: outcome.results.filter((r) => r.change !== 0),
       round: game.round,
+      viaLectern: lecternBoosted,
     });
 
-    const feedback = outcome.overrideFeedback ?? tactic.feedback ?? null;
+    const baseFeedback = outcome.overrideFeedback ?? tactic.feedback ?? null;
+    const feedback = lecternBoosted ? `🎤 Argued without notes — amplified! ${baseFeedback ?? ""}`.trim() : baseFeedback;
 
     toast(
       {
@@ -847,7 +817,7 @@
       },
     );
 
-    void trackTacticPlay(tactic, actor, outcome.results);
+    void stats.trackTacticPlay(tactic, actor, outcome.results);
 
     if (actor === "player") {
       endPlayerTurn();
@@ -898,14 +868,10 @@
     if (campaignEndLogged || !campaign.data?.isOver || campaign.data.won === null) return;
     campaignEndLogged = true;
 
-    void trackCampaignCompleted(campaign.data.setup.name, campaign.data.won);
+    void stats.trackCampaignCompleted(campaign.data.setup.name, campaign.data.won);
 
     if (campaign.data.activeObjective) {
-      void courtStats.writeObjectiveStats({
-        objectiveName: campaign.data.activeObjective.name,
-        succeeded: campaign.data.won,
-        failed: !campaign.data.won,
-      });
+      stats.trackObjectiveResult(campaign.data.activeObjective.name, campaign.data.won);
     }
   }
 
@@ -914,12 +880,12 @@
 
     if (!campaign.data) return;
     campaignEndLogged = false;
-    void trackCampaignStarted(campaign.data.setup.name);
+    void stats.trackCampaignStarted(campaign.data.setup.name);
   }
 
   function chooseObjective(objective: Parameters<typeof pickObjective>[0]): void {
     pickObjective(objective);
-    void courtStats.writeObjectiveStats({ objectiveName: objective.name, chosen: true });
+    stats.trackObjectiveChosen(objective.name);
   }
 
   function activateDoubleTap(): void {
@@ -928,10 +894,7 @@
     const afterActive = campaign.data?.doubleTapActive ?? false;
 
     if (!beforeActive && afterActive) {
-      void courtStats.writeRewardStats({
-        rewardName: rewardNameFromId("double-tap"),
-        activated: true,
-      });
+      stats.trackRewardActivated(rewardNameFromId("double-tap"));
     }
   }
 
@@ -941,10 +904,7 @@
     const afterActivatedCount = campaign.data?.activatedPreRecessCardIds.length ?? 0;
 
     if (afterActivatedCount > beforeActivatedCount) {
-      void courtStats.writeRewardStats({
-        rewardName: rewardNameFromId(rewardId),
-        activated: true,
-      });
+      stats.trackRewardActivated(rewardNameFromId(rewardId));
     }
   }
 
@@ -965,7 +925,7 @@
       if (beforeCount > 0) {
         beforeRewardCounts.set(reward.id, beforeCount - 1);
       } else {
-        void courtStats.writeRewardStats({ rewardName: reward.name, chosen: true });
+        stats.trackRewardChosen(reward.name);
       }
     });
 

@@ -65,7 +65,7 @@ export function useCourtTurns(
 
     const browseTimer = setInterval(() => {
       elapsed += browseInterval;
-      const available = game.playbook.filter((t) => t.effectType !== "claim-two");
+      const available = game.playbook.filter((t) => t.effectType !== "claim-two" && t.effectType !== "lectern-without-notes");
       if (available.length) {
         const pick = available[Math.floor(Math.random() * available.length)];
         ui.opponentHighlightedCardId = pick.id;
@@ -80,7 +80,11 @@ export function useCourtTurns(
 
   function playOpponentTurn(): void {
     const available = game.playbook.filter(
-      (t) => t.effectType !== "claim-two" && t.effectType !== "suggest-retirement" && t.effectType !== "keep-crown",
+      (t) =>
+        t.effectType !== "claim-two" &&
+        t.effectType !== "suggest-retirement" &&
+        t.effectType !== "keep-crown" &&
+        t.effectType !== "lectern-without-notes",
     );
     if (!available.length) {
       endOpponentTurn();

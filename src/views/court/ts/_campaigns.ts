@@ -1,5 +1,5 @@
 import type { CampaignSetup } from "./_types";
-import { PRES_TRUMP, PRES_NIXON, PRES_OBAMA, PRES_BIDEN, PRES_EISENHOWER, PRES_LBJ, PRES_SNOOP_DOGG, PRES_VERMIN_SUPREME } from "./_presidents";
+import { PRES_TRUMP, PRES_NIXON, PRES_OBAMA, PRES_SNOOP_DOGG, PRES_VERMIN_SUPREME } from "./_presidents";
 
 /**
  * Pre-defined campaign configurations.

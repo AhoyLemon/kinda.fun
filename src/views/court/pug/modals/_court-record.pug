@@ -20,7 +20,9 @@
             .round-col.round-col--player(:class="{ 'is-pending': !roundData.playerPlay }")
               .round-col__header You
               template(v-if="roundData.playerPlay")
-                .round-col__tactic {{ roundData.playerPlay.tacticName }}
+                .round-col__tactic
+                  | {{ roundData.playerPlay.tacticName }}
+                  span.lectern-badge(v-if="roundData.playerPlay.viaLectern" v-tippy="'Played blind via Go To The Lectern Without Notes — amplified power.'") 🎤 Without Notes
                 .round-col__target → {{ roundData.playerPlay.targetName }}
                 .round-col__results(v-if="roundData.playerPlay.results.length")
                   span.col-result(

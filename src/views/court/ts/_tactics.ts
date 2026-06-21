@@ -1,20 +1,9 @@
 import { Tactic } from "./_types";
 
 export const tactics: Tactic[] = [
-  // ─── ATTACKS ──────────────────────────────────────────────────────
+  // ─── ATTACK JUSTICE ──────────────────────────────────────────────────────
+  // cards in this section will focus on swaying a single justice to your side.
 
-  {
-    id: 1,
-    name: "Cite Precedents",
-    description:
-      "Sways all justices. High-logic justices are strongly persuaded; they respect a citation. Low-logic justices are actively offended you brought up authority and lean harder the other way.",
-    flavorText: "Citing cases no one in the room has read since law school, loudly.",
-    cardType: "attack",
-    effectType: "sway-all",
-    basePower: 4,
-    statBasis: "logic",
-    statRelation: "polarizes-high",
-  },
   {
     id: 2,
     name: "Emotional Appeal",
@@ -58,7 +47,6 @@ export const tactics: Tactic[] = [
     basePower: 7,
     weaknessBasis: "threats",
   },
-
   {
     id: 7,
     name: "Shameless Flattery",
@@ -68,6 +56,71 @@ export const tactics: Tactic[] = [
     effectType: "sway-one",
     basePower: 8,
     weaknessBasis: "flattery",
+  },
+  {
+    id: 19,
+    name: "Betray Your Friend",
+    description:
+      "Target a justice Strongly For you. They flip to Strongly Against. Opposing-party justices currently leaning against you may rally to your side as a result.",
+    flavorText: "I've always believed the strongest legal strategy is the one where you stab your biggest fan in the face.",
+    cardType: "attack",
+    effectType: "betray-friend",
+    basePower: 0,
+  },
+  {
+    id: 38,
+    name: "Whisper Campaign",
+    description:
+      "Target one justice. They shift toward you by a small amount at the start of every remaining round (including this one). Most effective when played Round 1 (affects all 5 rounds); minimal impact when played Round 5.",
+    flavorText: "Rumors and quiet influence take time to percolate through the legal community. Early whispers pay compound dividends.",
+    cardType: "attack",
+    effectType: "whisper-campaign",
+    basePower: 2,
+  },
+  {
+    id: 22,
+    name: "Order Drinks For A Justice",
+    description:
+      "Target a justice. Their charisma, empathy, and susceptibility rise for the rest of the trial while their logic drops. They also slide meaningfully toward you right now.",
+    flavorText: "The Heritage Foundation gala was an open bar. One justice in particular should not have had that fourth beer. You know who you are.",
+    cardType: "utility",
+    effectType: "justice-cocktails",
+    basePower: 0,
+  },
+  {
+    id: 30,
+    name: "Plant A Story",
+    description: "Target one justice. Their party loyalty spikes for the rest of the trial and they immediately react to the sudden media pressure.",
+    flavorText: "The headline writes itself: 'Justices Under Fire From Own Party.' Nobody reads it. Everyone sees it.",
+    cardType: "utility",
+    effectType: "plant-story",
+    basePower: 0,
+    feedback: "That justice suddenly feels their party breathing down their neck.",
+  },
+  {
+    id: 33,
+    name: "Yaaas! Drag Them!",
+    description:
+      "Publicly air a justice's worst qualities. Their charisma takes a permanent hit. If they're weak to threats, they'll also slide in your direction. If they're immune to threats, they won't appreciate it.",
+    flavorText: "The tweet had 80,000 likes. The justice saw it. The justice is... processing.",
+    cardType: "attack",
+    effectType: "drag-them",
+    basePower: 0,
+  },
+
+  // --- ATTACK BENCH -------------------------------------------------
+  // cards in this section will sway the entire bench one way or another.
+  {
+    id: 1,
+    name: "Cite Precedents",
+    description:
+      "Sways all justices. High-logic justices are strongly persuaded; they respect a citation. Low-logic justices are actively offended you brought up authority and lean harder the other way.",
+    flavorText: "Citing cases no one in the room has read since law school, loudly.",
+    cardType: "attack",
+    effectType: "sway-all",
+    basePower: 4,
+    statBasis: "logic",
+    statRelation: "polarizes-high",
   },
   {
     id: 8,
@@ -100,65 +153,36 @@ export const tactics: Tactic[] = [
     effectType: "request-amicus",
     basePower: 1,
   },
-
-  // ─── DEFENSE ──────────────────────────────────────────────────────
-
   {
-    id: 11,
-    name: "Redirect the Witness",
-    description: "Shields one allied justice from the next opposing effect. Must target a justice already on your side.",
-    flavorText: "I'd like to redirect the court's attention to something completely different. Over there. No, there.",
-    cardType: "defense",
-    effectType: "shield",
-    basePower: 0,
-  },
-
-  // ─── UTILITY ──────────────────────────────────────────────────────
-
-  // ─── DOCKET MANIPULATION ──────────────────────────────────────────
-
-  {
-    id: 13,
-    name: "Purge the Record",
-    description: "Discard all 5 cards in the Playbook and draw 5 fresh ones. If opposing counsel was quietly counting on any of those cards, that's a shame.",
-    flavorText: "Motion to strike everything. The whole thing. Yes, the precedent too. Especially the precedent.",
-    cardType: "utility",
-    effectType: "discard-all",
-    basePower: 0,
-    feedback: "The Playbook has been cleared.",
-  },
-  {
-    id: 14,
-    name: "I Call Dibs",
+    id: 29,
+    name: "Gift Boxes Of Ferrero Rocher",
     description:
-      "Select 2 cards from the Playbook to claim exclusively. Opposing counsel can no longer play them. You must still play them yourself. Only usable while you have no active Dibs.",
-    flavorText: "Objection, Your Honor. Those cards were mine spiritually before my client could lose.",
-    cardType: "defense",
-    effectType: "claim-two",
-    basePower: 0,
-  },
-
-  // ─── CHIEF JUSTICE INTERACTION ────────────────────────────────
-
-  {
-    id: 15,
-    name: "Elevate to Chief",
-    description:
-      "Appoint a justice as Chief. They warm to you immediately. The prior Chief and their partisan allies are displeased, and the new Chief loses their sway resistance.",
-    flavorText: "With all due respect to the current Chief, I'd like to propose a restructuring.",
-    cardType: "utility",
-    effectType: "make-chief",
-    basePower: 0,
-  },
-  {
-    id: 16,
-    name: "Bench Roast",
-    description:
-      "Deliver a scathing insult to the Chief Justice directly. They'll take it personally. Every justice with a different party affiliation will enjoy it immensely.",
-    flavorText: "Some say a judge's reputation speaks louder than their rulings. In this case, both are embarrassing.",
+      "Bribery-susceptible justices (6+) are swayed in your favor. Bribery-resistant justices (3 or lower) are deeply offended and lean against you. Others are unmoved by the gesture.",
+    flavorText: "A handwritten note read: 'These are just chocolates. Enjoy.' The envelope inside said something slightly different.",
     cardType: "attack",
-    effectType: "insult-chief",
-    basePower: 5,
+    effectType: "gift-boxes",
+    basePower: 0,
+  },
+  {
+    id: 37,
+    name: "Turn On The Fog Machine",
+    description:
+      "Sways all justices based on how decided they are. Neutral justices (within ±10 leaning) are swayed more strongly. Strongly decided justices (beyond ±40) are annoyed by the disruption and lean slightly away.",
+    flavorText:
+      "The attorney turns on a literal fog machine in the courtroom, as well as some gel lights, introducing 'razzle dazzle' and perking up any justice who was bored. Strongly leaning justices are annoyed by the disruption.",
+    cardType: "attack",
+    effectType: "fog-machine",
+    basePower: 2,
+  },
+  {
+    id: 39,
+    name: "Tell A Story Of Alien Abduction",
+    description:
+      "All justices with Susceptibility 7+ are swayed toward you (they'll believe anything). Justices with Susceptibility 4 or below are offended by the absurdity and lean away.",
+    flavorText: "You argue something dubious, frankly stupid, and only susceptible justices fall for it.",
+    cardType: "attack",
+    effectType: "alien-abduction",
+    basePower: 6,
   },
   {
     id: 17,
@@ -172,60 +196,16 @@ export const tactics: Tactic[] = [
     requiresTrumpNominee: true,
   },
   {
-    id: 18,
-    name: "Recuse Yourself!",
-    description: "Force a targeted justice to recuse — their leaning resets to neutral. While recused, incoming sway against them is cut roughly in half.",
-    flavorText: "There are no conflicts of interest here. There are only interests.",
-    cardType: "utility",
-    effectType: "recuse",
-    basePower: 0,
-  },
-
-  // ─── ADVANCED ATTACKS ─────────────────────────────────────────
-
-  {
-    id: 19,
-    name: "Betray Your Friend",
+    id: 41,
+    name: "Cite International Law",
     description:
-      "Target a justice Strongly For you. They flip to Strongly Against. Opposing-party justices currently leaning against you may rally to your side as a result.",
-    flavorText: "I've always believed the strongest legal strategy is the one where you stab your biggest fan in the face.",
+      "High-party-loyalty justices (7+) are offended and lean away; low-party-loyalty independents (4 or below) are intrigued and lean toward you. Mid-loyalty justices unaffected.",
+    flavorText:
+      "'The European Court of Human Rights says...' — triggers partisan knee-jerk reactions. Independents appreciate the global perspective; partisans see it as foreign meddling.",
     cardType: "attack",
-    effectType: "betray-friend",
-    basePower: 0,
+    effectType: "international-law",
+    basePower: 5,
   },
-
-  // ─── ADVANCED UTILITY ─────────────────────────────────────────
-
-  {
-    id: 20,
-    name: "Swap Clerks",
-    description: "Select two justices. Their leanings swap entirely. The clerks are very good at their jobs.",
-    flavorText: "Law clerks are overworked, underpaid, and know exactly where everything is.",
-    cardType: "utility",
-    effectType: "swap-clerks",
-    basePower: 0,
-  },
-  {
-    id: 21,
-    name: "Encourage A Nap",
-    description:
-      "Select a justice. They skip the next round entirely — no one can sway them. When they wake up, they return with a +15 leaning boost toward you.",
-    flavorText: "Oral arguments are dense, the room is warm, and this man ate a very large lunch. Sometimes you help.",
-    cardType: "utility",
-    effectType: "encourage-nap",
-    basePower: 0,
-  },
-  {
-    id: 22,
-    name: "Order Drinks For A Justice",
-    description:
-      "Target a justice. Their charisma, empathy, and susceptibility rise for the rest of the trial while their logic drops. They also slide meaningfully toward you right now.",
-    flavorText: "The Heritage Foundation gala was an open bar. One justice in particular should not have had that fourth beer. You know who you are.",
-    cardType: "utility",
-    effectType: "justice-cocktails",
-    basePower: 0,
-  },
-
   {
     id: 24,
     name: "Celebrate St. Patrick's Day",
@@ -246,8 +226,58 @@ export const tactics: Tactic[] = [
     effectType: "invite-church",
     basePower: 0,
   },
-  // ─── NEW CARDS ────────────────────────────────────────────────────────────
+  {
+    id: 36,
+    name: "Recite The Dissent",
+    description: "For each justice currently voting against you, all justices currently voting for you receive a small additional sway toward your side.",
+    flavorText: "You read the whole thing out loud. All 47 pages.",
+    cardType: "attack",
+    effectType: "recite-dissent",
+    basePower: 0,
+  },
 
+  // ─── DEFENSE ──────────────────────────────────────────────────────
+  // cards in this section are primarily interested in protecting one or more judges from future attacks.
+  {
+    id: 11,
+    name: "Redirect the Witness",
+    description: "Shields one allied justice from the next opposing effect. Must target a justice already on your side.",
+    flavorText: "I'd like to redirect the court's attention to something completely different. Over there. No, there.",
+    cardType: "defense",
+    effectType: "shield",
+    basePower: 0,
+  },
+  {
+    id: 21,
+    name: "Encourage A Nap",
+    description:
+      "Select a justice. They skip the next round entirely — no one can sway them. When they wake up, they return with a +15 leaning boost toward you.",
+    flavorText: "Oral arguments are dense, the room is warm, and this man ate a very large lunch. Sometimes you help.",
+    cardType: "utility",
+    effectType: "encourage-nap",
+    basePower: 0,
+  },
+  {
+    id: 18,
+    name: "Recuse Yourself!",
+    description: "Force a targeted justice to recuse — their leaning resets to neutral. While recused, incoming sway against them is cut roughly in half.",
+    flavorText: "There are no conflicts of interest here. There are only interests.",
+    cardType: "utility",
+    effectType: "recuse",
+    basePower: 0,
+  },
+
+  // ─── UTILITY ─────────────────────────────────────────
+  // cards in this section have a variety of effects. This is basically the "doesn't fit any category" section.
+  {
+    id: 20,
+    name: "Swap Clerks",
+    description: "Select two justices. Their leanings swap entirely. The clerks are very good at their jobs.",
+    flavorText: "Law clerks are overworked, underpaid, and know exactly where everything is.",
+    cardType: "utility",
+    effectType: "swap-clerks",
+    basePower: 0,
+  },
   {
     id: 28,
     name: "Reframe The Debate",
@@ -258,20 +288,88 @@ export const tactics: Tactic[] = [
     effectType: "reframe-debate",
     basePower: 0,
   },
-
   {
-    id: 29,
-    name: "Gift Boxes Of Ferrero Rocher",
+    id: 40,
+    name: "Mess With The Calendar",
     description:
-      "Bribery-susceptible justices (6+) are swayed in your favor. Bribery-resistant justices (3 or lower) are deeply offended and lean against you. Others are unmoved by the gesture.",
-    flavorText: "A handwritten note read: 'These are just chocolates. Enjoy.' The envelope inside said something slightly different.",
-    cardType: "attack",
-    effectType: "gift-boxes",
+      "You AND your opponent both skip the next round entirely. The trial advances to the next round without arguments from either side. Closing tactic when you're ahead and want the trial to end without more sways.",
+    flavorText: "You edit the Microsoft Calendar to delete one of the trial days. Court does not take place that day.",
+    cardType: "utility",
+    effectType: "mess-calendar",
+    basePower: 0,
+    feedback: "The calendar has been... adjusted. Both sides skip the next round.",
+  },
+  {
+    id: 31,
+    name: "Invoke The Lemon Test",
+    description:
+      "Cite Lemon v. Kurtzman, loudly. All justices become irreligious for the rest of the trial and gain a slight logic boost. Has no effect on justices already deeply uncomfortable with religion.",
+    flavorText: "The Establishment Clause enters the chat. The church-going bloc checks their watches.",
+    cardType: "utility",
+    effectType: "lemon-test",
+    basePower: 0,
+    feedback: "All justices are temporarily irreligious. Their logic has improved accordingly.",
+  },
+
+  // ─── PLAYBOOK MANIPULATION ──────────────────────────────────────────
+  // cards in this section do SOMETHING to the playbook specifically
+  {
+    id: 13,
+    name: "Purge the Record",
+    description: "Discard all 5 cards in the Playbook and draw 5 fresh ones. If opposing counsel was quietly counting on any of those cards, that's a shame.",
+    flavorText: "Motion to strike everything. The whole thing. Yes, the precedent too. Especially the precedent.",
+    cardType: "utility",
+    effectType: "discard-all",
+    basePower: 0,
+    feedback: "The Playbook has been cleared.",
+  },
+  {
+    id: 42,
+    name: "Go To The Lectern Without Notes",
+    description:
+      "Flip the entire Playbook face-down, draw a fresh card, and shuffle the lot. Pick one blind — you won't know what it is until you commit. Whatever you play comes out swinging far harder than it normally would.",
+    flavorText: "No notes. No outline. No plan. Just raw confidence and whatever falls out of your mouth. The justices can smell the adrenaline.",
+    cardType: "utility",
+    effectType: "lectern-without-notes",
+    basePower: 0,
+    feedback: "You stride to the lectern with nothing in your hands. Pick a card — any card.",
+  },
+  {
+    id: 14,
+    name: "I Call Dibs",
+    description:
+      "Select 2 cards from the Playbook to claim exclusively. Opposing counsel can no longer play them. You must still play them yourself. Only usable while you have no active Dibs.",
+    flavorText: "Objection, Your Honor. Those cards were mine spiritually before my client could lose.",
+    cardType: "defense",
+    effectType: "claim-two",
     basePower: 0,
   },
+
+  // ─── CHIEF JUSTICE INTERACTION ────────────────────────────────
+  // cards in this section are focused on whoever the chief custice is
+  {
+    id: 15,
+    name: "Elevate to Chief",
+    description:
+      "Appoint a justice as Chief. They warm to you immediately. The prior Chief and their partisan allies are displeased, and the new Chief loses their sway resistance.",
+    flavorText: "With all due respect to the current Chief, I'd like to propose a restructuring.",
+    cardType: "utility",
+    effectType: "make-chief",
+    basePower: 0,
+  },
+  {
+    id: 16,
+    name: "Bench Roast",
+    description:
+      "Deliver a scathing insult to the Chief Justice directly. They'll take it personally. Every justice with a different party affiliation will enjoy it immensely.",
+    flavorText: "Some say a judge's reputation speaks louder than their rulings. In this case, both are embarrassing.",
+    cardType: "attack",
+    effectType: "insult-chief",
+    basePower: 5,
+  },
+
   // ─── CAMPAIGN-ONLY TACTICS ────────────────────────────────────────────
   // These cards have campaignOnly: true and will NEVER appear in Quick Play decks.
-
   {
     id: 26,
     name: "Suggest Retirement",
@@ -295,125 +393,5 @@ export const tactics: Tactic[] = [
     basePower: 0,
     campaignOnly: true,
     feedback: "The new Chief Justice's appointment is now permanent.",
-  },
-
-  // ─── NEW TACTICS ───────────────────────────────────────────────────────────
-
-  {
-    id: 30,
-    name: "Plant A Story",
-    description: "Target one justice. Their party loyalty spikes for the rest of the trial and they immediately react to the sudden media pressure.",
-    flavorText: "The headline writes itself: 'Justices Under Fire From Own Party.' Nobody reads it. Everyone sees it.",
-    cardType: "utility",
-    effectType: "plant-story",
-    basePower: 0,
-    feedback: "That justice suddenly feels their party breathing down their neck.",
-  },
-  {
-    id: 31,
-    name: "Invoke The Lemon Test",
-    description:
-      "Cite Lemon v. Kurtzman, loudly. All justices become irreligious for the rest of the trial and gain a slight logic boost. Has no effect on justices already deeply uncomfortable with religion.",
-    flavorText: "The Establishment Clause enters the chat. The church-going bloc checks their watches.",
-    cardType: "utility",
-    effectType: "lemon-test",
-    basePower: 0,
-    feedback: "All justices are temporarily irreligious. Their logic has improved accordingly.",
-  },
-  // {
-  //   id: 32,
-  //   name: "Suggest Yoga",
-  //   description:
-  //     "Politely suggest a justice step away for some mindfulness. They skip the next round. When they return, their empathy and susceptibility are permanently raised for the rest of the trial.",
-  //   flavorText: "'Have you considered a quick flow before deliberations?' They have not. They will now.",
-  //   cardType: "utility",
-  //   effectType: "suggest-yoga",
-  //   basePower: 0,
-  // },
-  {
-    id: 33,
-    name: "Yaaas! Drag Them!",
-    description:
-      "Publicly air a justice's worst qualities. Their charisma takes a permanent hit. If they're weak to threats, they'll also slide in your direction. If they're immune to threats, they won't appreciate it.",
-    flavorText: "The tweet had 80,000 likes. The justice saw it. The justice is... processing.",
-    cardType: "attack",
-    effectType: "drag-them",
-    basePower: 0,
-  },
-  // {
-  //   id: 34,
-  //   name: "Catch A Justice On Their Phone",
-  //   description:
-  //     "Target one justice. Their attention drifts and they become less susceptible for the rest of the trial. They also lean slightly away from your argument in the moment.",
-  //   flavorText: "They weren't taking notes. They were texting.",
-  //   cardType: "utility",
-  //   effectType: "catch-phone",
-  //   basePower: 0,
-  // },
-  {
-    id: 36,
-    name: "Recite The Dissent",
-    description:
-      "No target. For each justice currently voting against you, all justices currently voting for you receive a small additional sway toward your side.",
-    flavorText: "You read the whole thing out loud. All 47 pages.",
-    cardType: "attack",
-    effectType: "recite-dissent",
-    basePower: 0,
-  },
-
-  // ─── PHASE 2 NEW CARDS ────────────────────────────────────────────────────
-
-  {
-    id: 37,
-    name: "Turn On The Fog Machine",
-    description:
-      "Sways all justices based on how decided they are. Neutral justices (within ±10 leaning) are swayed more strongly. Strongly decided justices (beyond ±40) are annoyed by the disruption and lean slightly away.",
-    flavorText:
-      "The attorney turns on a literal fog machine in the courtroom, as well as some gel lights, introducing 'razzle dazzle' and perking up any justice who was bored. Strongly leaning justices are annoyed by the disruption.",
-    cardType: "attack",
-    effectType: "fog-machine",
-    basePower: 2,
-  },
-  {
-    id: 38,
-    name: "Whisper Campaign",
-    description:
-      "Target one justice. They shift toward you by a small amount at the start of every remaining round (including this one). Most effective when played Round 1 (affects all 5 rounds); minimal impact when played Round 5.",
-    flavorText: "Rumors and quiet influence take time to percolate through the legal community. Early whispers pay compound dividends.",
-    cardType: "attack",
-    effectType: "whisper-campaign",
-    basePower: 2,
-  },
-  {
-    id: 39,
-    name: "Tell A Story Of Alien Abduction",
-    description:
-      "All justices with Susceptibility 7+ are swayed toward you (they'll believe anything). Justices with Susceptibility 4 or below are offended by the absurdity and lean away.",
-    flavorText: "You argue something dubious, frankly stupid, and only susceptible justices fall for it.",
-    cardType: "attack",
-    effectType: "alien-abduction",
-    basePower: 6,
-  },
-  {
-    id: 40,
-    name: "Mess With The Calendar",
-    description:
-      "You AND your opponent both skip the next round entirely. The trial advances to the next round without arguments from either side. Closing tactic when you're ahead and want the trial to end without more sways.",
-    flavorText: "You edit the Microsoft Calendar to delete one of the trial days. Court does not take place that day.",
-    cardType: "utility",
-    effectType: "mess-calendar",
-    basePower: 0,
-    feedback: "The calendar has been... adjusted. Both sides skip the next round.",
-  },
-  {
-    id: 41,
-    name: "Cite International Law",
-    description:
-      "High-party-loyalty justices (7+) are offended and lean away; low-party-loyalty independents (4 or below) are intrigued and lean toward you. Mid-loyalty justices unaffected.",
-    flavorText:
-      "'The European Court of Human Rights says...' — triggers partisan knee-jerk reactions. Independents appreciate the global perspective; partisans see it as foreign meddling.",
-    cardType: "attack",
-    effectType: "international-law",
-    basePower: 5,
   },
 ];

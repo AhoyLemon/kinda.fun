@@ -67,7 +67,8 @@ main.court-playing(v-if="ui.phase === 'playing'")
           'has-image': justiceImageUrl(justice), \
           'is-ally': (game.leanings[justice.id] ?? 0) > 0, \
           'is-enemy': (game.leanings[justice.id] ?? 0) < 0, \
-          'is-targetable': game.selectedTacticId !== null || game.multiTargetMode, \
+          'is-targetable': (game.selectedTacticId !== null || game.multiTargetMode) && !untargetableJusticeIds.has(justice.id), \
+          'is-untargetable': (game.selectedTacticId !== null || game.multiTargetMode) && untargetableJusticeIds.has(justice.id), \
           'is-shielded': game.playerShields.includes(justice.id), \
           'is-chief': justice.id === game.chiefJusticeId, \
           'is-napping': !!game.nappingJustices[justice.id], \
@@ -138,7 +139,10 @@ main.court-playing(v-if="ui.phase === 'playing'")
         .playbook-meta
           span.deck-count 🃏 {{ game.deck.length }} in deck
           span.claimed-count(v-if="game.claimedCards.length")  · {{ game.claimedCards.length }} claimed by you
-      p.claiming-hint(v-if="game.claimingMode")
+      p.hand-hint.lectern-hint(v-if="game.lecternMode") 🎤 You're at the lectern without notes — pick any card. You won't know what it is until you commit, but it will hit harder than usual.
+      p.hand-hint.lectern-hint(v-else-if="game.lecternBlindTacticId !== null && game.claimingMode") 🎤 Surprise — it was I Call Dibs! Pick {{ 2 - game.claimedSelections.length }} more card(s) to claim. Still face-down, still a mystery.
+      p.hand-hint.lectern-hint(v-else-if="game.lecternBlindTacticId !== null") 🎤 Locked in, sight unseen — now choose your target{{ game.multiTargetMode ? 's' : '' }}. You'll find out what you played when it lands.
+      p.claiming-hint(v-else-if="game.claimingMode")
         | Select {{ 2 - game.claimedSelections.length }} more card(s) to claim for your exclusive use.
       p.hand-hint(v-else-if="game.multiTargetMode") 👆 Select {{ 2 - game.multiTargetSelections.length }} more justice{{ (2 - game.multiTargetSelections.length) === 1 ? '' : 's' }} above
       p.hand-hint(v-else-if="game.selectedTacticId !== null") ↑ Click a justice above to target them
@@ -155,17 +159,22 @@ main.court-playing(v-if="ui.phase === 'playing'")
             { \
               'is-selected': game.selectedTacticId === tactic.id || game.multiTargetTacticId === tactic.id, \
               'is-claimed': true, \
-              'is-disabled': tactic.effectType === 'betray-friend' && !hasStrongAlly, \
+              'is-disabled': !lecternConcealed && tactic.effectType === 'betray-friend' && !hasStrongAlly, \
+              'is-face-down': lecternConcealed, \
             } \
           ]"
           @click="selectTactic(tactic.id)"
         )
-          .tc__type {{ tactic.cardType }} · claimed
-          .tc__name {{ tactic.name }}
-          .tc__flavor {{ tactic.flavorText }}
-          .tc__meta
-            span.tc__target {{ targetLabel(tactic.effectType) }}
-            span.tc__power(v-if="tactic.basePower > 0")  ⚡{{ tactic.basePower }}
+          template(v-if="lecternConcealed")
+            .tc__back ❔
+            .tc__back-label Mystery Tactic
+          template(v-else)
+            .tc__type {{ tactic.cardType }} · claimed
+            .tc__name {{ tactic.name }}
+            .tc__flavor {{ tactic.flavorText }}
+            .tc__meta
+              span.tc__target {{ targetLabel(tactic.effectType) }}
+              span.tc__power(v-if="tactic.basePower > 0")  ⚡{{ tactic.basePower }}
 
 
     //- Shared playbook cards
@@ -181,18 +190,23 @@ main.court-playing(v-if="ui.phase === 'playing'")
               'is-selected': game.selectedTacticId === tactic.id || game.multiTargetTacticId === tactic.id, \
               'is-claiming-pick': game.claimingMode && game.claimedSelections.includes(tactic.id), \
               'is-opponent-browsing': ui.opponentHighlightedCardId === tactic.id, \
-              'is-disabled': tactic.effectType === 'betray-friend' && !hasStrongAlly, \
+              'is-disabled': !lecternConcealed && ((tactic.effectType === 'betray-friend' && !hasStrongAlly) || (game.claimingMode && tactic.effectType === 'lectern-without-notes')), \
+              'is-face-down': lecternConcealed, \
             } \
           ]"
           @click="selectTactic(tactic.id)"
         )
-          .tc__type {{ tactic.cardType }}
-          .tc__name {{ tactic.name }}
-          .tc__description {{ tactic.description }}
-          .tc__flavor {{ tactic.flavorText }}
-          .tc__meta
-            span.tc__target {{ targetLabel(tactic.effectType) }}
-            span.tc__power(v-if="tactic.basePower > 0")  ⚡{{ tactic.basePower }}
+          template(v-if="lecternConcealed")
+            .tc__back ❔
+            .tc__back-label Mystery Tactic
+          template(v-else)
+            .tc__type {{ tactic.cardType }}
+            .tc__name {{ tactic.name }}
+            .tc__description {{ tactic.description }}
+            .tc__flavor {{ tactic.flavorText }}
+            .tc__meta
+              span.tc__target {{ targetLabel(tactic.effectType) }}
+              span.tc__power(v-if="tactic.basePower > 0")  ⚡{{ tactic.basePower }}
   //- ── OPPONENT THINKING OVERLAY ────────────────────────────────
   .opponent-thinking-overlay(v-if="ui.opponentThinking")
     .otl-message
@@ -222,4 +236,4 @@ main.court-playing(v-if="ui.phase === 'playing'")
           span.rs-stance-counts
             span.rs-for(v-if="info.forCount" v-tippy="`${info.forCount} justices are FOR this — they will warm to you`") ▲{{ info.forCount }}
             span.rs-against(v-if="info.againstCount" v-tippy="`${info.againstCount} justices are AGAINST this — they will lean away`") ▼{{ info.againstCount }}
-      button.btn.btn--text(@click="cancelReframeStance()") Cancel
+      button.btn.btn--text(v-if="game.lecternBlindTacticId === null" @click="cancelReframeStance()") Cancel

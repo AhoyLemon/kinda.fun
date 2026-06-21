@@ -96,6 +96,7 @@ export function targetLabel(effectType: Tactic["effectType"]): string {
       "international-law": "🌍 All justices",
       "reframe-debate": "📣 Choose a stance",
       "suggest-yoga": "🧘 Single target",
+      "lectern-without-notes": "🎤 Blind gamble",
     }[effectType] ?? effectType
   );
 }

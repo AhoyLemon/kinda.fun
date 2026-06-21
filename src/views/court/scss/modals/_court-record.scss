@@ -172,6 +172,20 @@ $cr-opponent-negative: #e96262;
     margin-bottom: 0.15rem;
   }
 
+  .lectern-badge {
+    display: inline-block;
+    margin-left: 0.4rem;
+    padding: 0.08rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    font-weight: $bold;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    color: #2a2208;
+    background: $court-gold;
+    vertical-align: middle;
+  }
+
   .round-col__target {
     font-size: 0.73rem;
     opacity: 0.6;
