@@ -269,12 +269,11 @@ export const currentJustices: Justice[] = [
     religion: "Protestant",
     ethnicity: "White",
     stats: {
-      logic: 7,
-      charisma: 5,
-      empathy: 4,
-
-      susceptibility: 4,
-      partyLoyalty: 8,
+      logic: 9,
+      charisma: 3,
+      empathy: 3,
+      susceptibility: 6,
+      partyLoyalty: 4,
     },
     weaknesses: { flattery: 5, bribery: 4, blackmail: 4, threats: 3 },
     stances: [
@@ -370,11 +369,10 @@ export const currentJustices: Justice[] = [
       logic: 7,
       charisma: 6,
       empathy: 5,
-
       susceptibility: 4,
       partyLoyalty: 9,
     },
-    weaknesses: { flattery: 5, bribery: 3, blackmail: 4, threats: 3 },
+    weaknesses: { flattery: 7, bribery: 3, blackmail: 4, threats: 3 },
     stances: [
       {
         topic: "ReligiousLiberty",
@@ -419,11 +417,10 @@ export const currentJustices: Justice[] = [
       logic: 8,
       charisma: 8,
       empathy: 10,
-
       susceptibility: 3,
       partyLoyalty: 7,
     },
-    weaknesses: { flattery: 4, bribery: 2, blackmail: 2, threats: 4 },
+    weaknesses: { flattery: 4, bribery: 3, blackmail: 3, threats: 4 },
     stances: [
       {
         topic: "RacialEquity",
