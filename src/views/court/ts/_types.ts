@@ -252,7 +252,8 @@ export type TacticEffectType =
   | "whisper-campaign" // target one justice; they are swayed every remaining round
   | "alien-abduction" // sway all justices based on susceptibility (high believe it, low offended)
   | "mess-calendar" // both player and opponent skip the next round
-  | "international-law"; // sway all justices polarized by party loyalty (partisans offended, independents intrigued)
+  | "international-law" // sway all justices polarized by party loyalty (partisans offended, independents intrigued)
+  | "lectern-without-notes"; // flip the playbook face-down, redraw + reshuffle, then play a blind card at amplified power
 
 export interface Tactic {
   id: number;
@@ -321,4 +322,8 @@ export interface CourtGameState {
   whisperCampaigns?: Record<number, { actor: TurnActor; power: number }>; // justiceId → ongoing whisper campaign
   // ── Mess With The Calendar ───────────────────────────────────
   skipNextRound?: boolean; // true when Mess With The Calendar has been played
+  // ── Go To The Lectern Without Notes ──────────────────────────
+  lecternMode: boolean; // true while the playbook is face-down and the player is picking a blind card
+  lecternBoostPending: boolean; // true once a blind card is chosen; the next resolved play is amplified
+  lecternBlindTacticId: number | null; // the committed blind card — stays face-down and locked while it awaits a target
 }
