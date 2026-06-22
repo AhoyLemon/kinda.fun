@@ -69,7 +69,19 @@ export function useCourtLectern(game: CourtGameState, deps: LecternDeps) {
 
     game.playbook = deps.shuffle([...game.playbook]);
     game.claimedCards = deps.shuffle([...game.claimedCards]);
+
+    // Clear any other in-progress selection so the blind pick starts from a clean slate.
+    // Without this, staging Swap Clerks (multi-target) or Reframe and THEN playing the
+    // Lectern card would leave the bench interpreting clicks for the old mode while the
+    // hand is face-down — a conflicting, soft-lockable UI state.
     game.selectedTacticId = null;
+    game.multiTargetMode = false;
+    game.multiTargetSelections = [];
+    game.multiTargetTacticId = null;
+    game.reframeStanceMode = false;
+    game.reframeStanceChoices = [];
+    game.reframeStanceTacticId = null;
+    game.reframeStanceSelection = null;
 
     // Nothing to pick from (deck fully exhausted) — don't soft-lock the turn.
     if (game.playbook.length === 0 && game.claimedCards.length === 0) {
