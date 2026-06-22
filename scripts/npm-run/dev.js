@@ -1,8 +1,8 @@
 // scripts/npm-run/dev.js
 // Runs Vite dev server, all page watchers, and the partials watcher in parallel.
 // During startup the noisy child output is hidden behind a progress bar that
-// advances on real build milestones; once Vite reports ready we clear the screen
-// and show only the clean Vite banner + homepage table.
+// advances on real build milestones; once Vite reports ready we stop the bar
+// and pass output through, showing the clean Vite banner + homepage table.
 import { spawn } from "child_process";
 import chalk from "chalk";
 import cliProgress from "cli-progress";
@@ -22,7 +22,7 @@ let pagesBuilt = 0; // real progress signal from the page watchers
 let viteReady = false; // becomes true the moment Vite prints its "ready" banner
 let watchersLive = false; // pass watcher output through only after the initial build settles
 let finished = false;
-const errorLines = []; // startup problems we swallowed but want to surface after the clear
+const errorLines = []; // startup problems we swallowed but want to surface once the bar stops
 
 function run(cmd, args, name, { detectReady = false, isWatcher = false } = {}) {
   const proc = spawn(cmd, args, {
@@ -46,7 +46,7 @@ function run(cmd, args, name, { detectReady = false, isWatcher = false } = {}) {
       if (hits) pagesBuilt = Math.min(PAGE_COUNT, pagesBuilt + hits.length);
     }
 
-    // The Vite banner is the signal to clear and reveal the clean output.
+    // The Vite banner is the signal to stop the bar and reveal the clean output.
     if (detectReady && !viteReady) {
       acc = (acc + clean).slice(-2000);
       if (VITE_READY.test(acc)) {
