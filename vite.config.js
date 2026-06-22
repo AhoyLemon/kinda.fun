@@ -16,15 +16,16 @@ export default defineConfig(({ mode }) => {
   // Build information table - will be updated with URL later
   const buildTable = new Table({
     style: {
-      border: ["grey"],
+      border: ["cyan"],
       compact: false,
     },
   });
 
-  const styledMode = mode === "development" ? chalk.green("DEV") : mode === "production" ? chalk.blue("PROD") : chalk.yellow(mode);
+  const modeLabel = mode === "development" ? "DEV" : mode === "production" ? "PROD" : mode;
+  const styledMode = chalk.yellow(modeLabel);
 
-  buildTable.push([chalk.magenta("This is"), chalk.yellow(`kinda fun.`)]);
-  buildTable.push([chalk.magenta("Mode"), `${styledMode}`]);
+  buildTable.push([chalk.white("This is"), chalk.yellow("kinda fun.")]);
+  buildTable.push([chalk.white("Mode"), `${styledMode}`]);
 
   return {
     plugins: [
@@ -60,7 +61,7 @@ export default defineConfig(({ mode }) => {
 
                 // Add homepage URL to the existing table with proper styling
                 const styledUrl = chalk.underline.cyan(homepageUrl);
-                buildTable.push([chalk.magenta("Homepage URL"), `${styledUrl}`]);
+                buildTable.push([chalk.white("Homepage URL"), `${styledUrl}`]);
 
                 // Display the complete table with URL (don't clear console)
                 console.log("\n" + buildTable.toString() + "\n");
