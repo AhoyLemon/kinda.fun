@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /stats
+Allow: /
+Sitemap: https://kinda.fun/sitemap.xml
