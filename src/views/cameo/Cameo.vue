@@ -33,8 +33,10 @@
   const statsRef = db ? doc(db, `stats/cameo`) : null;
 
   // Toasts (client-only plugin). Stub on the server so any accidental call is
-  // a no-op during prerender.
-  import { useToast } from "vue-toastification";
+  // a no-op during prerender. POSITION is used as a toast option throughout, so
+  // it must resolve in both environments — vue-toastification is in
+  // nuxt.config build.transpile so its named exports work under SSR.
+  import { useToast, POSITION } from "vue-toastification";
   const toast = import.meta.client ? useToast() : { success() {}, error() {}, info() {}, warning() {} };
 
   const gameName = "cameo";
