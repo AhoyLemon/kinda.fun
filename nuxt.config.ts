@@ -13,7 +13,7 @@ export default defineNuxtConfig({
       // "/not-found" renders the catch-all page; scripts/nuxt/finalize.mjs
       // copies it to the 404.html Firebase Hosting serves for unmatched routes
       // (rendering directly to "/404" collides with Nuxt's empty SPA fallback).
-      routes: ["/", "/not-found"],
+      routes: ["/", "/cameo", "/not-found"],
       failOnError: false,
     },
   },
@@ -63,6 +63,12 @@ export default defineNuxtConfig({
       useEmulator: process.env.NUXT_PUBLIC_USE_EMULATOR || "",
       emulatorHost: process.env.NUXT_PUBLIC_EMULATOR_HOST || "127.0.0.1",
     },
+  },
+
+  // vue-toastification ships CommonJS; transpile so SSR/prerender can resolve
+  // its named exports (e.g. useToast, POSITION) without ESM interop errors.
+  build: {
+    transpile: ["vue-toastification"],
   },
 
   typescript: {

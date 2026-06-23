@@ -1,97 +1,22 @@
 {
   "hosting": {
     "site": "kinda-fun",
-    "public": "dist",
-    "ignore": [],
-    "rewrites": [
-      {
-        "source": "/court",
-        "destination": "/court.html"
-      },
-      {
-        "source": "/court/",
-        "destination": "/court.html"
-      },
-      {
-        "source": "/cameo",
-        "destination": "/cameo.html"
-      },
-      {
-        "source": "/cameo/",
-        "destination": "/cameo.html"
-      },
-      {
-        "source": "/guillotine",
-        "destination": "/guillotine.html"
-      },
-      {
-        "source": "/guillotine/",
-        "destination": "/guillotine.html"
-      },
-      {
-        "source": "/invalid",
-        "destination": "/invalid.html"
-      },
-      {
-        "source": "/invalid/",
-        "destination": "/invalid.html"
-      },
-      {
-        "source": "/meeting",
-        "destination": "/meeting.html"
-      },
-      {
-        "source": "/meeting/",
-        "destination": "/meeting.html"
-      },
-      {
-        "source": "/megachurch",
-        "destination": "/megachurch.html"
-      },
-      {
-        "source": "/megachurch/",
-        "destination": "/megachurch.html"
-      },
-      {
-        "source": "/pretend",
-        "destination": "/pretend.html"
-      },
-      {
-        "source": "/pretend/",
-        "destination": "/pretend.html"
-      },
-      {
-        "source": "/sisyphus",
-        "destination": "/sisyphus.html"
-      },
-      {
-        "source": "/sisyphus/",
-        "destination": "/sisyphus.html"
-      },
-      {
-        "source": "/wrongest",
-        "destination": "/wrongest.html"
-      },
-      {
-        "source": "/wrongest/",
-        "destination": "/wrongest.html"
-      },
-      {
-        "source": "/stats",
-        "destination": "/stats.html"
-      },
-      {
-        "source": "/stats/",
-        "destination": "/stats.html"
-      },
-      {
-        "source": "/",
-        "destination": "/index.html"
-      },
-      {
-        "source": "**",
-        "destination": "/404.html"
-      }
+    "public": ".output/public",
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "redirects": [
+      { "source": "/index.html", "destination": "/", "type": 301 },
+      { "source": "/cameo.html", "destination": "/cameo", "type": 301 },
+      { "source": "/stats.html", "destination": "/stats", "type": 301 },
+      { "source": "/sisyphus.html", "destination": "/sisyphus", "type": 301 },
+      { "source": "/megachurch.html", "destination": "/megachurch", "type": 301 },
+      { "source": "/wrongest.html", "destination": "/wrongest", "type": 301 },
+      { "source": "/guillotine.html", "destination": "/guillotine", "type": 301 },
+      { "source": "/invalid.html", "destination": "/invalid", "type": 301 },
+      { "source": "/meeting.html", "destination": "/meeting", "type": 301 },
+      { "source": "/pretend.html", "destination": "/pretend", "type": 301 },
+      { "source": "/court.html", "destination": "/court", "type": 301 }
     ]
   },
   "functions": [
@@ -100,5 +25,15 @@
       "codebase": "default",
       "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "*.local"]
     }
-  ]
+  ],
+  "emulators": {
+    "auth": { "port": 9099 },
+    "firestore": { "port": 8080 },
+    "hosting": { "port": 5000 },
+    "ui": { "enabled": false },
+    "singleProjectMode": true
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  }
 }

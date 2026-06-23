@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Permissive rules for local emulator testing ONLY. Production rules are
+    // managed separately and are never loaded against the live project here.
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
