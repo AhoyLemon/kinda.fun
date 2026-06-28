@@ -18,7 +18,8 @@ export default defineNuxtConfig({
       // (rendering directly to "/404" collides with Nuxt's empty SPA fallback).
       // Phase B single-player games: court, guillotine, megachurch, sisyphus, pretend.
       // Phase B multiplayer games: invalid, meeting, wrongest.
-      routes: ["/", "/cameo", "/not-found", "/court", "/guillotine", "/megachurch", "/sisyphus", "/pretend", "/invalid", "/meeting", "/wrongest"],
+      // Phase B stats dashboard: prerenders a loading shell, hydrates with data.
+      routes: ["/", "/cameo", "/not-found", "/court", "/guillotine", "/megachurch", "/sisyphus", "/pretend", "/invalid", "/meeting", "/wrongest", "/stats"],
       failOnError: false,
     },
   },

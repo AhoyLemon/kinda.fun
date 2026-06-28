@@ -129,7 +129,11 @@
     selectedJusticeId: null,
   });
 
-  const firestoreDb = useFirestore();
+  // Firebase/VueFire is client-only (migration plan locked decision #3): there
+  // is no VueFire app during prerender/SSR. Guard the composable; every data
+  // loader below early-returns when it's null. All loaders run from onMounted /
+  // click handlers (client-only), so firestoreDb is non-null when they execute.
+  const firestoreDb = import.meta.client ? useFirestore() : null;
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
@@ -187,6 +191,7 @@
    * }
    */
   async function loadFirestoreStats(game: LoadedGame, options: LoadStatsOptions): Promise<void> {
+    if (!firestoreDb) return;
     const { doc, getDoc, collection, getDocs, query, orderBy, limit } = await import("firebase/firestore");
     // Get the main doc
     const mainDocSnap = await getDoc(doc(firestoreDb, "stats", game));
@@ -282,6 +287,7 @@
   }
 
   const getData = async (game: LoadedGame): Promise<void> => {
+    if (!firestoreDb) return;
     ui.viewing = "loading";
 
     let errorOccurred = false;
@@ -746,6 +752,7 @@
   };
 
   const loadFullData = async (game: LoadedGame, subcollection: string): Promise<void> => {
+    if (!firestoreDb) return;
     ui.loadingFullData = true;
     try {
       const { collection, getDocs, query, orderBy } = await import("firebase/firestore");

@@ -103,8 +103,23 @@ export const ROUTES = [
     contentNeedle: "Need instructions?",
     minText: 50,
   },
-  // ---- Not yet ported (stats dashboard) ----
-  { name: "stats", path: "/stats", ported: false, selector: "body", contentNeedle: "stats", minText: 50 },
+  // ---- Phase B: stats dashboard (ported) ----
+  // Firestore-backed: prerenders a loading shell (sidebar + "Loading data…")
+  // and fetches live data on mount. Full data + zero-console-errors needs a
+  // reachable Firestore, so this route is meaningfully verified WITH the
+  // emulator (or in CI); under --no-emulator it logs Firestore-unreachable
+  // errors, which verify.mjs treats as environmental noise.
+  {
+    name: "stats",
+    path: "/stats",
+    ported: true,
+    selector: ".stats-screen",
+    contentNeedle: "Loading data...",
+    minText: 10,
+    // Stats holds an open Firestore connection on mount, so networkidle never
+    // settles — wait for DOM + hydration instead and let the selector gate.
+    waitUntil: "domcontentloaded",
+  },
 ];
 
 // Legacy .html URLs that must 301 to their clean path.

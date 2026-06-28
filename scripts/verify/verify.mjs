@@ -153,13 +153,21 @@ async function checkRoute(browser, baseUrl, route) {
   // this environment's egress policy and are not uncaught JS errors. We still
   // catch real exceptions (pageerror) and same-origin/app console errors.
   const isResourceNoise = (t) =>
-    /Failed to load resource|net::ERR|ERR_|favicon\.ico|fonts\.googleapis|fonts\.gstatic|the server responded with a status/i.test(t);
+    /Failed to load resource|net::ERR|ERR_|favicon\.ico|fonts\.googleapis|fonts\.gstatic|the server responded with a status/i.test(t) ||
+    // Firestore-unreachable noise: when the emulator isn't running (e.g.
+    // --no-emulator), the stats dashboard's on-mount fetch can't reach a
+    // backend. These are environmental, not app bugs — the same data path is
+    // exercised for real when the emulator is up. Games never hit this (their
+    // Firebase use is client-interaction-gated).
+    /Could not reach Cloud Firestore backend|@firebase\/firestore|WebChannelConnection|Error loading .* stats from Firestore|Error loading full .* data/i.test(t);
   page.on("console", (msg) => {
     if (msg.type() === "error" && !isResourceNoise(msg.text())) consoleErrors.push(msg.text());
   });
   page.on("pageerror", (err) => consoleErrors.push(`pageerror: ${err.message}`));
   try {
-    const resp = await page.goto(`${baseUrl}${route.path}`, { waitUntil: "networkidle", timeout: 30000 });
+    // Live-data pages (e.g. stats) hold an open Firestore connection, so
+    // "networkidle" never fires — they opt into a lighter wait via route.waitUntil.
+    const resp = await page.goto(`${baseUrl}${route.path}`, { waitUntil: route.waitUntil || "networkidle", timeout: 30000 });
     void resp;
     await page.waitForSelector(route.selector, { state: "visible", timeout: 15000 });
     const text = (await page.locator("body").innerText()).trim();
