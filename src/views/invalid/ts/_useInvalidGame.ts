@@ -55,9 +55,13 @@ import {
 import type { AttemptRecord, CrackRecord, Player } from "./_types";
 import type { Challenge } from "./_challenges";
 
-export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
-  const db = useFirestore();
-  const toast = useToast();
+export function useInvalidGame(statsRef: ReturnType<typeof doc> | null) {
+  // Firebase/VueFire is client-only; guard so the landing screen prerenders.
+  const db = import.meta.client ? useFirestore() : null;
+  // Toast is client-only.
+  const toast = import.meta.client
+    ? useToast()
+    : Object.assign(() => {}, { success() {}, error() {}, info() {}, warning() {} });
   let unsubscribeRoomPlayers: Unsubscribe | undefined;
   let unsubscribeGameStatus: Unsubscribe | undefined;
 
@@ -65,6 +69,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   // FIREBASE SUBSCRIPTIONS
 
   async function subscribeToRoom(roomCode: string): Promise<Unsubscribe> {
+    if (!db) return () => {};
     unsubscribeRoomPlayers?.();
     const playersRef = collection(doc(collection(db, "rooms"), roomCode), "players");
     unsubscribeRoomPlayers = onSnapshot(playersRef, (snapshot) => {
@@ -74,6 +79,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   }
 
   async function subscribeToGameStatus(roomCode: string): Promise<Unsubscribe> {
+    if (!db) return () => {};
     unsubscribeGameStatus?.();
     const gameRef = doc(collection(db, "rooms"), roomCode);
 
@@ -278,6 +284,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   // FIRESTORE HELPERS
 
   async function updateRoomState(updates: Record<string, unknown>): Promise<void> {
+    if (!db) return;
     if (!game.roomCode) {
       console.error("updateRoomState: No room code available");
       return;
@@ -295,6 +302,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   // ROOM MANAGEMENT
 
   const createRoom = async (): Promise<void> => {
+    if (!db) return;
     game.isFailedToGetRoomData = false;
     function makeID(digits: number): string {
       let text = "";
@@ -370,6 +378,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   };
 
   const checkForExistingPlayer = async (roomCode: string): Promise<void> => {
+    if (!db) return;
     try {
       ui.reconnecting = true;
       const playersCollectionRef = collection(db, `rooms/${roomCode}/players`);
@@ -413,6 +422,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   };
 
   const savePlayerInfo = async (): Promise<void> => {
+    if (!db) return;
     let normalizedName = ui.nameInput.trim();
     const hasEmoji = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u.test(
       normalizedName,
@@ -466,6 +476,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   // GAME LIFECYCLE
 
   const startTheGame = async (): Promise<void> => {
+    if (!db) return;
     game.players.forEach((player, index) => {
       game.players[index].role = player.isHost ? "SysAdmin" : "employee";
     });
@@ -520,6 +531,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   };
 
   const payForRule = async (name: string, cost: number): Promise<void> => {
+    if (!db) return;
     my.rulebux -= cost;
     try {
       const ruleStatsRef = doc(db, `stats/invalid/rules/${name}`);
@@ -557,6 +569,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   };
 
   const chooseAChallenge = async (): Promise<void> => {
+    if (!db) return;
     const chosen = challenges.find((c) => c.id === ui.challengeID);
     if (chosen) round.challenge = chosen;
     findPossibleRightAnswers(countVowels);
@@ -666,6 +679,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   // PASSWORD SUBMISSION (employee)
 
   const tryThisPassword = async (attempt: string): Promise<void> => {
+    if (!db) return;
     attempt = attempt.toUpperCase();
     ui.passwordAttemptErrors = [];
 
@@ -767,6 +781,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   };
 
   const passwordSuccess = async (attempt: string): Promise<void> => {
+    if (!db) return;
     my.score += settings.points.forGoodPassword;
     if (game.allEmployeePasswords.length < 1 && game.players.length > 2) {
       my.score += settings.points.forFirstPassword;
@@ -826,6 +841,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   // CRACK & GAME-OVER HELPERS
 
   const updateCrackResults = async (crackSummary: CrackRecord): Promise<void> => {
+    if (!db) return;
     const attackerRef = doc(db, "rooms", game.roomCode, "players", game.players[crackSummary.attackerIndex].playerID);
     const victimRef = doc(db, "rooms", game.roomCode, "players", game.players[crackSummary.victimIndex].playerID);
 
@@ -845,6 +861,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc>) {
   };
 
   const setGameOver = async (): Promise<void> => {
+    if (!db) return;
     musicFinalRound.stop();
     soundFinalRoundOver.play();
     clearInterval(round.roundTimer);

@@ -17,7 +17,8 @@ export default defineNuxtConfig({
       // copies it to the 404.html Firebase Hosting serves for unmatched routes
       // (rendering directly to "/404" collides with Nuxt's empty SPA fallback).
       // Phase B single-player games: court, guillotine, megachurch, sisyphus, pretend.
-      routes: ["/", "/cameo", "/not-found", "/court", "/guillotine", "/megachurch", "/sisyphus", "/pretend"],
+      // Phase B multiplayer games: invalid, meeting, wrongest.
+      routes: ["/", "/cameo", "/not-found", "/court", "/guillotine", "/megachurch", "/sisyphus", "/pretend", "/invalid", "/meeting", "/wrongest"],
       failOnError: false,
     },
   },

@@ -5,12 +5,15 @@
   import { performSteal } from "./ts/_performSteal";
   import { randomNumber, randomFrom, shuffle, preceisePercentOf } from "@/shared/js/_functions.js";
 
-  // Toasts
+  // Toasts (client-only plugin). Stub on the server so any accidental call is
+  // a no-op during prerender. meeting calls toast(...) directly (callable) as
+  // well as toast.success/error/info, so use the callable stub. POSITION is
+  // used as a toast option, so it must resolve in both environments.
   import Toast, { POSITION } from "vue-toastification";
   import MyToast from "./vue/MyToast.vue";
   import LemonToast from "./vue/LemonToast.vue";
   import { useToast } from "vue-toastification";
-  const toast = useToast();
+  const toast = import.meta.client ? useToast() : Object.assign(() => {}, { success() {}, error() {}, info() {}, warning() {} });
 
   // Firebase & VueFire Stuff
   import {
@@ -31,10 +34,13 @@
   } from "firebase/firestore";
   import { useFirestore, useCollection, useDocument } from "vuefire";
 
-  // Initialize Firestore
-  const db = useFirestore();
+  // Initialize Firestore. Firebase is client-only (migration plan locked
+  // decision #3): during prerender/SSR these composables would have no VueFire
+  // app, so guard them. The landing screen renders with game.roomCode === "",
+  // so the room/connection composables below never fire on the server.
+  const db = import.meta.client ? useFirestore() : null;
   const gamePlayers = ref([]);
-  const statsRef = doc(db, `stats/meeting`);
+  const statsRef = db ? doc(db, `stats/meeting`) : null;
 
   watch(
     () => game.roomCode,
@@ -52,6 +58,7 @@
   );
 
   async function subscribeToRoom(roomCode) {
+    if (!db) return; // Firebase is client-only; no-op during prerender/SSR.
     const playersRef = collection(doc(collection(db, "rooms"), roomCode), "players");
 
     const { data: playersCollection } = useCollection(playersRef, {
@@ -183,6 +190,7 @@
   }
 
   async function subscribeToGameStatus(roomCode) {
+    if (!db) return; // Firebase is client-only; no-op during prerender/SSR.
     const gameRef = doc(collection(db, "rooms"), roomCode);
     console.log("Game document reference:", gameRef);
 

@@ -39,9 +39,13 @@
   /////////////////////////////////////////////////////////
   // FIREBASE & FIRESTORE
 
-  const db = useFirestore();
-  const statsRef = doc(db, `stats/invalid`);
-  const toast = useToast();
+  // Firebase/VueFire is client-only; guard so the landing screen prerenders.
+  const db = import.meta.client ? useFirestore() : null;
+  const statsRef = db ? doc(db, `stats/invalid`) : null;
+  // Toast is client-only. Callable stub because showMyToast calls toast(...) directly.
+  const toast = import.meta.client
+    ? useToast()
+    : Object.assign(() => {}, { success() {}, error() {}, info() {}, warning() {} });
 
   // showMyToast wraps toast calls that use the MyToast component.
   // Keeping the .vue component reference out of plain .ts composables.

@@ -78,11 +78,33 @@ export const ROUTES = [
     contentNeedle: "Who is this supposed to be?",
     minText: 50,
   },
-  // ---- Not yet ported (Phase B continued: multiplayer + stats) ----
+  // ---- Phase B: multiplayer games (ported) ----
+  {
+    name: "invalid",
+    path: "/invalid",
+    ported: true,
+    selector: ".create button",
+    contentNeedle: "Create a New Room",
+    minText: 50,
+  },
+  {
+    name: "meeting",
+    path: "/meeting",
+    ported: true,
+    selector: "main.title-screen",
+    contentNeedle: "turn that boring meeting into a stealthy battle",
+    minText: 50,
+  },
+  {
+    name: "wrongest",
+    path: "/wrongest",
+    ported: true,
+    selector: ".title-screen .help-holder",
+    contentNeedle: "Need instructions?",
+    minText: 50,
+  },
+  // ---- Not yet ported (stats dashboard) ----
   { name: "stats", path: "/stats", ported: false, selector: "body", contentNeedle: "stats", minText: 50 },
-  { name: "wrongest", path: "/wrongest", ported: false, selector: "body", contentNeedle: "Wrongest", minText: 50 },
-  { name: "invalid", path: "/invalid", ported: false, selector: "body", contentNeedle: "Invalid", minText: 50 },
-  { name: "meeting", path: "/meeting", ported: false, selector: "body", contentNeedle: "Meeting", minText: 50 },
 ];
 
 // Legacy .html URLs that must 301 to their clean path.
