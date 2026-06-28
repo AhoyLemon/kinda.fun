@@ -77,11 +77,10 @@ export default defineNuxtConfig({
     transpile: ["vue-toastification"],
   },
 
-  // Mirror vite.config.js: the legacy SCSS still relies on @import, global Sass
-  // built-ins, and legacy color functions. Silence those deprecation warnings
-  // so the Nuxt build is as quiet as the existing Vite build. The proper fix
-  // (migrate the SCSS to @use / @forward) is tracked in its own issue and
-  // should land before this migration merges.
+  // The legacy SCSS still relies on @import, global Sass built-ins, and legacy
+  // color functions. Silence those deprecation warnings here so the build stays
+  // quiet. The proper fix (migrate the SCSS to @use / @forward) is tracked in
+  // its own issue (#286) and should land before/with this migration.
   vite: {
     css: {
       preprocessorOptions: {
