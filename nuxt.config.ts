@@ -3,6 +3,9 @@ import { fileURLToPath } from "node:url";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityVersion: 4,
+  // Pin Nitro's compatibility date so builds are reproducible and the
+  // "using fallback date" warning goes away.
+  compatibilityDate: "2026-06-27",
   ssr: true,
 
   // Static generation -> .output/public, served by Firebase Hosting.
@@ -13,7 +16,8 @@ export default defineNuxtConfig({
       // "/not-found" renders the catch-all page; scripts/nuxt/finalize.mjs
       // copies it to the 404.html Firebase Hosting serves for unmatched routes
       // (rendering directly to "/404" collides with Nuxt's empty SPA fallback).
-      routes: ["/", "/cameo", "/not-found"],
+      // Phase B single-player games: court, guillotine, megachurch, sisyphus, pretend.
+      routes: ["/", "/cameo", "/not-found", "/court", "/guillotine", "/megachurch", "/sisyphus", "/pretend"],
       failOnError: false,
     },
   },

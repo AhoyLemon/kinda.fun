@@ -34,20 +34,61 @@ export const ROUTES = [
     contentNeedle: "is a site where people",
     minText: 80,
   },
-  // ---- Not yet ported (Phase B) ----
+  // ---- Phase B: single-player games (ported) ----
+  {
+    name: "court",
+    path: "/court",
+    ported: true,
+    selector: ".court-game",
+    contentNeedle: "Select Your Court",
+    minText: 50,
+  },
+  {
+    name: "guillotine",
+    path: "/guillotine",
+    ported: true,
+    selector: "main",
+    contentNeedle: "This game works much better on bigger screens",
+    minText: 50,
+  },
+  {
+    name: "megachurch",
+    path: "/megachurch",
+    ported: true,
+    selector: ".game-screen",
+    contentNeedle: "This game requires a larger screen",
+    minText: 50,
+  },
+  {
+    name: "sisyphus",
+    path: "/sisyphus",
+    ported: true,
+    selector: "main",
+    contentNeedle: "Click Sisyphus to push the rock uphill",
+    minText: 50,
+  },
+  {
+    name: "pretend",
+    path: "/pretend",
+    ported: true,
+    // pretend's figure/figcaption are position:fixed on desktop, so the root
+    // <main> collapses to 0px height (Playwright would call it "hidden").
+    // Target the fixed, full-height figcaption that actually has a visible box.
+    selector: ".qa-screen figcaption",
+    contentNeedle: "Who is this supposed to be?",
+    minText: 50,
+  },
+  // ---- Not yet ported (Phase B continued: multiplayer + stats) ----
   { name: "stats", path: "/stats", ported: false, selector: "body", contentNeedle: "stats", minText: 50 },
-  { name: "sisyphus", path: "/sisyphus", ported: false, selector: "body", contentNeedle: "Sisyphus", minText: 50 },
-  { name: "megachurch", path: "/megachurch", ported: false, selector: "body", contentNeedle: "Megachurch", minText: 50 },
   { name: "wrongest", path: "/wrongest", ported: false, selector: "body", contentNeedle: "Wrongest", minText: 50 },
-  { name: "guillotine", path: "/guillotine", ported: false, selector: "body", contentNeedle: "Billionaires", minText: 50 },
   { name: "invalid", path: "/invalid", ported: false, selector: "body", contentNeedle: "Invalid", minText: 50 },
   { name: "meeting", path: "/meeting", ported: false, selector: "body", contentNeedle: "Meeting", minText: 50 },
-  { name: "pretend", path: "/pretend", ported: false, selector: "body", contentNeedle: "Pretend", minText: 50 },
 ];
 
 // Legacy .html URLs that must 301 to their clean path.
 export const REDIRECTS = [
   { from: "/cameo.html", to: "/cameo" },
+  { from: "/court.html", to: "/court" },
   { from: "/stats.html", to: "/stats" },
   { from: "/sisyphus.html", to: "/sisyphus" },
   { from: "/megachurch.html", to: "/megachurch" },

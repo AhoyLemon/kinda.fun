@@ -56,8 +56,13 @@
   }
 
   type GameStatus = "loading" | "titleScreen" | "playing" | "gameOver";
-  const db = useFirestore();
-  const statsRef = doc(db, `stats/guillotine`);
+
+  // Firebase & VueFire are client-only (migration plan locked decision #3):
+  // during prerender/SSR there is no VueFire app, so guard the composable and
+  // derive the stats doc ref only when the client db exists. Firestore writes
+  // below all run from client event handlers, so statsRef is non-null there.
+  const db = import.meta.client ? useFirestore() : null;
+  const statsRef = db ? doc(db, `stats/guillotine`) : null;
   const BILLION = 1_000_000_000;
 
   const gameStatus = ref<GameStatus>("loading");
@@ -203,6 +208,7 @@
 
   const startGame = async (): Promise<void> => {
     gameStatus.value = "playing";
+    if (!db || !statsRef) return;
     await updateDoc(statsRef, {
       gamesStarted: increment(1),
       lastGameStarted: serverTimestamp(),
@@ -341,6 +347,8 @@
       return;
     }
 
+    if (!db || !statsRef) return;
+
     try {
       // Update the main stats document
       await runTransaction(db, async (transaction) => {
@@ -467,6 +475,7 @@
   };
 
   const logTheScoreSharing = async (): Promise<void> => {
+    if (!statsRef) return;
     await updateDoc(statsRef, {
       scoresShared: increment(1),
       lastGameStarted: serverTimestamp(),
@@ -745,7 +754,9 @@
 
   const executeAllBillionaires = async (): Promise<void> => {
     const { doc, runTransaction, getDoc, serverTimestamp } = await import("firebase/firestore");
-    const db = useFirestore();
+    // Client-only (see top-of-setup guard): VueFire has no app during prerender.
+    const db = import.meta.client ? useFirestore() : null;
+    if (!db) return;
     for (const billionaire of allBillionaires) {
       const trophyRef = doc(db, `stats/guillotine/heads/${billionaire.name}`);
       const trophyDoc = await getDoc(trophyRef);

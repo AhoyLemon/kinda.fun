@@ -1,4 +1,5 @@
 import type { Ref } from "vue";
+import type { Firestore } from "firebase/firestore";
 import { useFirestore } from "vuefire";
 import type { CourtGameState, Tactic, TurnActor } from "./_types";
 import {
@@ -31,7 +32,11 @@ interface StatsDeps {
  */
 export function useCourtStats(deps: StatsDeps) {
   const { game, verdict, trialAttackedJustices } = deps;
-  const courtStats = createCourtStatsHelpers(useFirestore());
+  // Firebase/VueFire is client-only: during prerender/SSR there is no VueFire
+  // app, so guard the composable. The helpers only touch `db` inside the
+  // fire-and-forget async track* writers (called from client event handlers),
+  // so a null db on the server is never dereferenced.
+  const courtStats = createCourtStatsHelpers(import.meta.client ? useFirestore() : (null as unknown as Firestore));
 
   function getCurrentOutcome(): CourtOutcome | null {
     if (!verdict.value) return null;

@@ -38,9 +38,13 @@
   } from "./ts/_computeds";
   import { useMegachurchHelpers } from "./ts/_useMegachurchHelpers";
 
-  const db = useFirestore();
-  const statsRef = doc(db, `stats/megachurch`);
-  const toast = useToast();
+  // Firebase/VueFire is client-only: during prerender/SSR these composables
+  // have no VueFire app, so guard them and let statsRef be null on the server.
+  const db = import.meta.client ? useFirestore() : null;
+  const statsRef = db ? doc(db, `stats/megachurch`) : null;
+  // Toasts are client-only too. Stub on the server so any accidental call during
+  // prerender is a harmless no-op.
+  const toast = import.meta.client ? useToast() : { success() {}, error() {}, info() {}, warning() {} };
   const sterlingNoteRef = ref<{ showNote: () => void } | null>(null);
 
   // ================= COMPUTEDS =================

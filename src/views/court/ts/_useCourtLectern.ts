@@ -44,7 +44,10 @@ interface LecternDeps {
  * wire it into selectTactic / initiateTactic / applyTactic.
  */
 export function useCourtLectern(game: CourtGameState, deps: LecternDeps) {
-  const toast = useToast();
+  // Toasts are client-only; stub a callable no-op on the server so the
+  // composable constructs cleanly during prerender. It's only ever invoked from
+  // client event handlers anyway.
+  const toast = import.meta.client ? useToast() : Object.assign(() => {}, { success() {}, error() {}, info() {}, warning() {} });
 
   function playerToast(tacticName: string, feedback: string | null): void {
     toast(

@@ -29,7 +29,11 @@
 
   // ── Game settings ──────────────────────────────────────────
 
-  const toast = useToast();
+  // Toasts (client-only plugin). Stub on the server so any accidental call is a
+  // no-op during prerender. POSITION is used as a toast option throughout, so it
+  // must resolve in both environments — vue-toastification is in nuxt.config
+  // build.transpile so its named exports work under SSR.
+  const toast = import.meta.client ? useToast() : Object.assign(() => {}, { success() {}, error() {}, info() {}, warning() {} });
   const trialAttackedJustices = new Set<string>();
   let campaignEndLogged = false;
   let byLemonJinglePlayed = false;
@@ -223,16 +227,25 @@
   }
 
   // ── localStorage: first-play tracking ────────────────────────
+  // hasPlayedQuickplay() is read directly from the title template's v-if, so it
+  // runs during prerender — guard localStorage so it doesn't throw on the
+  // server. On the server it returns false (the "New here?" hint is shown), and
+  // the client re-evaluates on hydration. The setters only fire from click
+  // handlers (client-only) but are guarded for symmetry.
   function hasPlayedQuickplay(): boolean {
+    if (!import.meta.client) return false;
     return localStorage.getItem("hasPlayedQuickplay") === "true";
   }
   function hasPlayedCurrentCourt(): boolean {
+    if (!import.meta.client) return false;
     return localStorage.getItem("hasPlayedCurrentCourt") === "true";
   }
   function markPlayedQuickplay(): void {
+    if (!import.meta.client) return;
     localStorage.setItem("hasPlayedQuickplay", "true");
   }
   function markPlayedCurrentCourt(): void {
+    if (!import.meta.client) return;
     localStorage.setItem("hasPlayedCurrentCourt", "true");
   }
 
