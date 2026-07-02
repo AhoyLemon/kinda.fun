@@ -25,7 +25,7 @@
 
 ### Prevent Vite from generating unnecessary index.js
 
-- [ ] Vite auto-generates a large 886kB `dist/index.js` file that has no reason to exist. Figure out why this happens and prevent it.
+- [x] Obsolete — this was a quirk of the legacy Vite multi-entry (`dist/index.js`) build. The project now uses Nuxt static generation (`.output/public`), so this no longer applies.
 
 ## Future Feature Ideas
 

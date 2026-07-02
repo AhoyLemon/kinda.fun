@@ -2,8 +2,16 @@
 
 ## NPM Commands
 
-**`npm run update-billionaires`**  
-Processes `csv/2024 Billionaire List.csv` and generates `js/data/_billionaires.js` with 2,775+ billionaires ranked by net worth.
+**`bun run guillotine:scrape`**  
+Scrapes the Forbes billionaires list into CSV.
 
-**`npm run generate-arrests`**  
-Creates `js/data/_warrants.js` with randomized daily arrest warrants (20 billionaires per day for the entire year).
+**`bun run guillotine:csv`**  
+Merges/reconciles the Forbes CSVs into the canonical `src/views/guillotine/csv/current-list.csv`.
+
+**`bun run guillotine:ts`**  
+Generates `src/views/guillotine/ts/data/_billionaires.ts` (the billionaires used in the game) from the CSV.
+
+**`bun run guillotine:arrests`**  
+Creates the randomized daily arrest warrants (20 billionaires per day for the entire year).
+
+See `scripts/scripts-help.md` for full details on each script.

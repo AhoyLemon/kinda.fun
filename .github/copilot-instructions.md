@@ -8,7 +8,7 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 
 ### Prerequisites and Setup
 
-- **Node.js Version**: Node.js 22+ is required for all development and deployment (updated due to Vite 6 compatibility requirements).
+- **Node.js Version**: Node.js 22+ is required for all development and deployment (Nuxt 4 and Firebase Functions).
 - **Environment Setup**:
   - `npm install` -- installs all dependencies including Firebase functions. Takes ~45 seconds. NEVER CANCEL.
   - Functions and main project now both use Node.js 22+.
@@ -26,7 +26,6 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 - **Production Build**: `bun run build` -- refreshes the sitemap, then `nuxi generate` → `.output/public` (deployed to Firebase Hosting).
 - **Preview**: `bun run preview` -- serves the generated output locally.
 - **Deploy**: `bun run deploy` -- build, then `firebase deploy --only hosting`.
-- **Preview Build**: `bun run preview` -- serves built application on http://localhost:4173. Takes ~2 seconds.
 
 ### Testing and Quality
 
@@ -37,7 +36,7 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 
 ### Data Generation Commands
 
-- **Billionaire Data**: `bun run guillotine:js` -- generates billionaire data from CSV. Takes ~2 seconds. Creates 2,781 entries.
+- **Billionaire Data**: `bun run guillotine:ts` -- generates billionaire data from CSV. Takes ~2 seconds. Creates 2,781 entries.
 - **Arrest Warrants**: `bun run guillotine:arrests` -- creates daily arrest warrant data.
 
 ## Code Organization
@@ -136,8 +135,7 @@ When implementing features, Copilot should:
 
 ### Node.js Version Requirements
 
-- **All development and deployment**: Node.js 22+ is required
-- **Vite 6 Compatibility**: Updated from Node.js 20 due to Vite 6 minimum requirements
+- **All development and deployment**: Node.js 22+ is required (Nuxt 4 and Firebase Functions)
 - **Functions**: Also use Node.js 22+ (no version conflicts)
 - **bun**: Prefer `bun` over `npm` for running commands, but either is possible.
 
@@ -211,7 +209,7 @@ When implementing features, Copilot should:
 
 ## Testing Guidelines
 
-**Testing Documentation**: See `docs/vitests.md` for complete testing guide
+**Testing Documentation**: See `tests/VITEST_IDEAS.md` for testing ideas
 
 ## Copilot Test Writing Guidance
 

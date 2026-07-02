@@ -181,13 +181,13 @@ describe("Sermon Mechanics", () => {
 
 ```bash
 # Run all MegaChurch tests
-npm run test:unit -- tests/megachurch*
+npm run test:run -- tests/megachurch*
 
 # Run with detailed output
-npm run test:unit -- --reporter=verbose
+npm run test:run -- --reporter=verbose
 
 # Watch mode for development
-npm run test:unit -- --watch tests/megachurch-sermons.test.js
+npm run test:watch -- tests/megachurch-sermons.test.js
 ```
 
 ### Test Guidelines
@@ -197,7 +197,7 @@ npm run test:unit -- --watch tests/megachurch-sermons.test.js
 - **Test edge cases** - high spice usage, mixed messages, extreme values
 - **Include performance tests** - ensure large audiences don't cause slowdowns
 
-See `docs/vitests.md` for complete testing documentation.
+See `tests/VITEST_IDEAS.md` for testing ideas.
 
 ## Troubleshooting
 
@@ -206,7 +206,7 @@ See `docs/vitests.md` for complete testing documentation.
 **Build Failures:**
 
 - Delete `node_modules/` and run `npm install`
-- Delete `.vite/` cache folder
+- Delete the `.nuxt/` cache folder
 
 **Game Not Working:**
 
@@ -228,13 +228,13 @@ See `docs/vitests.md` for complete testing documentation.
 ## Development Workflow
 
 1. **Make changes** to game files
-2. **Test locally** with `npm run dev:client`
+2. **Test locally** with `npm run dev`
 3. **Add tests** if you changed game logic
-4. **Run tests** with `npm run test:unit`
+4. **Run tests** with `npm run test:run`
 5. **Create PR** - deployment happens automatically on merge to `main`
 
 For project-wide guidelines, see:
 
 - `docs/deployment-setup.md` - Firebase and deployment configuration
 - `docs/npm-commands.md` - Complete command reference
-- `docs/vitests.md` - Testing best practices
+- `tests/VITEST_IDEAS.md` - Testing ideas
