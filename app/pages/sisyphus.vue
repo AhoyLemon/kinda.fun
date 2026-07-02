@@ -13,8 +13,12 @@
       { rel: "icon", type: "image/png", sizes: "16x16", href: "/img/sisyphus/favicon-16x16.png", key: "fav-16" },
       { rel: "mask-icon", href: "/img/sisyphus/safari-pinned-tab.svg", color: "#f9ca77", key: "fav-mask" },
       { rel: "shortcut icon", href: "/img/sisyphus/favicon.ico", key: "fav-shortcut" },
+      { rel: "manifest", href: "/img/sisyphus/site.webmanifest" },
     ],
     meta: [
+      // Match the legacy per-page viewport: disable zoom so rapid tapping in this
+      // clicker doesn't trigger mobile double-tap zoom. (Overrides the global viewport.)
+      { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" },
       { name: "description", content: "Click on Sisyphus to push the rock up the mountain (formerly futile.fun)" },
       { property: "og:title", content: "Sisyphus Clicker" },
       { property: "og:type", content: "website" },

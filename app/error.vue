@@ -1,8 +1,5 @@
 <script setup>
-  import { onMounted } from "vue";
-
-  // Nuxt passes the error object to error.vue. We don't need its fields for the
-  // 404 UI, but declaring the prop keeps Nuxt happy.
+  // Nuxt passes the error object to error.vue.
   defineProps({
     error: { type: Object, default: () => ({}) },
   });
@@ -19,8 +16,8 @@
       { property: "og:type", content: "website" },
       { property: "og:description", content: "Sorry, the page you're looking for doesn't exist. Check out our games instead!" },
       { property: "og:image", content: "https://kinda.fun/img/og-wide.png" },
-      { property: "og:image:width", content: "1280" },
-      { property: "og:image:height", content: "640" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
       { property: "og:email", content: "lemon@ahoylemon.xyz" },
     ],
   });
@@ -41,10 +38,6 @@
   const visitLemon = () => {
     if (import.meta.client) window.location.href = "https://ahoylemon.xyz";
   };
-
-  onMounted(() => {
-    console.log("404 - Page not found:", window.location.pathname);
-  });
 </script>
 
 <template lang="pug" src="@/views/404/NotFound.pug"></template>

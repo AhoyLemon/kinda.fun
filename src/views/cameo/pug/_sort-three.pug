@@ -15,7 +15,7 @@ main.sort-three(v-if="game.started && !game.finalRound && !game.over")
       template(#item="{element}")
         figure.cameo.list-group-item
           .image-holder
-            img(:src="'/img/cameos/'+element.slug+'.jpg'")
+            img(:src="'/img/cameos/'+element.slug+'.jpg'" :alt="element.name")
           figcaption
             .name {{ element.name }}
             .desc(v-if="element.desc") {{element.desc}}
@@ -33,7 +33,7 @@ main.sort-three(v-if="game.started && !game.finalRound && !game.over")
       template(#item="{element}")
         figure.cameo.list-group-item
           .image-holder
-            img(:src="'/img/cameos/'+element.slug+'.jpg'")
+            img(:src="'/img/cameos/'+element.slug+'.jpg'" :alt="element.name")
           figcaption
             .name {{ element.name }}
             .desc(v-if="element.desc") {{element.desc}}
@@ -45,7 +45,7 @@ main.sort-three(v-if="game.started && !game.finalRound && !game.over")
     .list-group.correct(v-if="computedGuessingPhase == 'answers' || computedGuessingPhase == 'newMail' || computedGuessingPhase == 'finished'")
       figure.cameo.off-table(v-for="(element, index) in round.correctSide" :rank="(index + 1)" :key="index" :id="'CorrectAnswer'+(index + 1)")
         .image-holder
-          img(:src="'/img/cameos/'+element.slug+'.jpg'")
+          img(:src="'/img/cameos/'+element.slug+'.jpg'" :alt="element.name")
         figcaption
           .name {{ element.name }}
           .rank 
@@ -80,7 +80,7 @@ main.sort-three(v-if="game.started && !game.finalRound && !game.over")
     .list-group.guessed.ranked(v-if="computedGuessingPhase == 'answers' || computedGuessingPhase == 'newMail' || computedGuessingPhase == 'finished'")
       figure.cameo(v-for="(element, index) in round.rightSide" :rank="(index + 1)" :key="index" v-bind:class="{ correct: round.rightSide[index] == round.correctSide[index], incorrect: round.rightSide[index] != round.correctSide[index] }")
         .image-holder
-          img(:src="'/img/cameos/'+element.slug+'.jpg'")
+          img(:src="'/img/cameos/'+element.slug+'.jpg'" :alt="element.name")
         figcaption
           .rank 
             sup #

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { reactive, computed, onMounted } from "vue";
+  import { reactive, ref, computed, onMounted } from "vue";
   import { useToast, POSITION } from "vue-toastification";
   import TacticToast from "./components/TacticToast.vue";
   import LemonToast from "./components/LemonToast.vue";
@@ -227,26 +227,28 @@
   }
 
   // ── localStorage: first-play tracking ────────────────────────
-  // hasPlayedQuickplay() is read directly from the title template's v-if, so it
-  // runs during prerender — guard localStorage so it doesn't throw on the
-  // server. On the server it returns false (the "New here?" hint is shown), and
-  // the client re-evaluates on hydration. The setters only fire from click
-  // handlers (client-only) but are guarded for symmetry.
+  // These are read from the court-select template's v-if, which prerenders. To
+  // avoid a hydration mismatch (server has no localStorage, a returning player's
+  // client does), back them with refs that stay false until onMounted reads
+  // localStorage on the client — so the server render and the client's first
+  // render agree, then the real values apply post-hydration.
+  const playedQuickplay = ref(false);
+  const playedCurrentCourt = ref(false);
   function hasPlayedQuickplay(): boolean {
-    if (!import.meta.client) return false;
-    return localStorage.getItem("hasPlayedQuickplay") === "true";
+    return playedQuickplay.value;
   }
   function hasPlayedCurrentCourt(): boolean {
-    if (!import.meta.client) return false;
-    return localStorage.getItem("hasPlayedCurrentCourt") === "true";
+    return playedCurrentCourt.value;
   }
   function markPlayedQuickplay(): void {
     if (!import.meta.client) return;
     localStorage.setItem("hasPlayedQuickplay", "true");
+    playedQuickplay.value = true;
   }
   function markPlayedCurrentCourt(): void {
     if (!import.meta.client) return;
     localStorage.setItem("hasPlayedCurrentCourt", "true");
+    playedCurrentCourt.value = true;
   }
 
   // ─── Lemon Moment ────────────────────────────────────────────
@@ -951,6 +953,9 @@
   }
 
   onMounted(() => {
+    // Read first-play flags on the client only, after hydration (see refs above).
+    playedQuickplay.value = localStorage.getItem("hasPlayedQuickplay") === "true";
+    playedCurrentCourt.value = localStorage.getItem("hasPlayedCurrentCourt") === "true";
     ui.phase = "title";
   });
 </script>

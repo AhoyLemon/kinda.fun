@@ -9,6 +9,9 @@
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700|Poppins:400,400i,700" },
     ],
     meta: [
+      // Match the legacy per-page viewport: disable zoom so double-tapping cards
+      // doesn't trigger mobile zoom mid-game. (Overrides the global viewport.)
+      { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" },
       { name: "description", content: "The single player game about meddling with the law. Because if justice isn't fair, at least it should be fun!" },
       { property: "og:title", content: "Supreme Court: The Card Game" },
       { property: "og:type", content: "website" },

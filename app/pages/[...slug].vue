@@ -1,6 +1,4 @@
 <script setup>
-  import { onMounted } from "vue";
-
   // Catch-all page: renders the 404 UI as real, prerenderable HTML. The build
   // copies the prerendered /not-found output to 404.html, which Firebase
   // Hosting serves (with a real 404 status) for unmatched routes. We do NOT set
@@ -27,10 +25,6 @@
   const visitLemon = () => {
     if (import.meta.client) window.location.href = "https://ahoylemon.xyz";
   };
-
-  onMounted(() => {
-    console.log("404 - Page not found:", window.location.pathname);
-  });
 </script>
 
 <template lang="pug" src="@/views/404/NotFound.pug"></template>

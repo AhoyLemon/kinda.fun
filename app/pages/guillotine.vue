@@ -7,6 +7,8 @@
     link: [
       { rel: "canonical", href: "https://kinda.fun/guillotine" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@300..700&display=swap" },
+      // $monospaced (counters, title/share screens, stats) uses JetBrains Mono.
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap" },
     ],
     meta: [
       { name: "description", content: "Generating wealth with a guillotine." },
