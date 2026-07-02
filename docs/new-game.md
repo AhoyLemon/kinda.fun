@@ -2,6 +2,8 @@
 
 This guide walks you through creating a new game from scratch on the Kinda Fun platform (Nuxt 4, static generation).
 
+> Coming from the old Vite/Pug build? See [`vite-to-nuxt-cheatsheet.md`](./vite-to-nuxt-cheatsheet.md) for a "I used to edit X, now what?" map (favicons/OG, plugins, env vars, SSR guards, etc.).
+
 ## Overview
 
 Each game's code lives under `src/views/<game>/` (a Vue 3 root component plus its
