@@ -222,7 +222,7 @@ See `tests/VITEST_IDEAS.md` for testing ideas.
 ## Deployment
 
 - **Automated:** Every push to `main` branch triggers deployment
-- **Manual:** Run `firebase deploy` if needed
+- **Manual:** Run `bun run deploy` (builds, then `firebase deploy --only hosting`). Do **not** run a bare `firebase deploy` — hosting is the only thing this repo deploys, and a full deploy would also try to publish Firestore rules/functions.
 - **Configuration:** See `docs/deployment-setup.md`
 
 ## Development Workflow

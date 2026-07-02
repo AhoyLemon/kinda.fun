@@ -10,6 +10,7 @@
 //   node scripts/verify/verify.mjs --no-emulator
 import { spawn } from "node:child_process";
 import { setTimeout as sleep } from "node:timers/promises";
+import { rmSync } from "node:fs";
 import { join } from "node:path";
 import process from "node:process";
 import pkg from "playwright";
@@ -65,7 +66,10 @@ async function waitForPort(url, label, timeoutMs = 90000) {
 async function startEmulator() {
   console.log("\n▶ Starting Firebase emulator suite (firestore, auth)…");
   const bin = join(ROOT, "node_modules", ".bin", "firebase");
-  const proc = spawn(bin, ["emulators:start", "--only", "firestore,auth", "--project", PROJECT], {
+  // Use the emulator-only config (firestore rules + emulator ports). The main
+  // firebase.json no longer carries a `firestore`/`emulators` section, so a bare
+  // `firebase deploy` can't publish the permissive rules to the live project.
+  const proc = spawn(bin, ["emulators:start", "--only", "firestore,auth", "--project", PROJECT, "--config", join(ROOT, "firebase.emulator.json")], {
     stdio: ["ignore", "pipe", "pipe"],
     env: { ...process.env },
   });
@@ -279,6 +283,17 @@ async function main() {
       } catch {
         /* already gone */
       }
+    }
+    // The site was generated with NUXT_PUBLIC_USE_EMULATOR=true (emulator host +
+    // demo project) baked into the prerendered pages. That output lives in the
+    // exact directory firebase.json deploys, so remove it — a stale
+    // emulator-wired build must never be deployable. `bun run deploy` rebuilds
+    // a clean production bundle, so this is purely a safety cleanup.
+    try {
+      rmSync(join(ROOT, ".output"), { recursive: true, force: true });
+      console.log("\n🧹 Removed .output (emulator-wired build). Run `bun run build` before deploying.");
+    } catch {
+      /* nothing to clean */
     }
   }
   process.exit(allGreen ? 0 : 1);

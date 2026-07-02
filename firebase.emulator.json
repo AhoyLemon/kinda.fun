@@ -1,0 +1,13 @@
+{
+  "_comment": "Emulator-only Firebase config used by the verify harness (scripts/verify/verify.mjs starts the suite with --config firebase.emulator.json). The permissive firestore.rules lives here — NOT in firebase.json — so `firebase deploy` can never publish allow-all rules to the live project. To run the emulator manually: firebase emulators:start --only firestore,auth --project demo-kinda-fun --config firebase.emulator.json",
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "emulators": {
+    "auth": { "port": 9099 },
+    "firestore": { "port": 8080 },
+    "hosting": { "port": 5000 },
+    "ui": { "enabled": false },
+    "singleProjectMode": true
+  }
+}
