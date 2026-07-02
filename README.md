@@ -46,8 +46,8 @@ A single-player card game where you try historical Supreme Court cases against t
 A single-player game where you start out with no money and a drug addiction, and must build a religious empire using cunning, strategy, and most importantly - lies.
 
 - **[Game Documentation](docs/megachurch.md)** - Basics of how to play
-- **[Preaching Documentation](docs/megachurch/preaching.md)** - Preaching mechanics, audience generation, and donation calculations
-- **[Developer Guide](docs/megachurch/DEVELOPER.md)** - MegaChurch development architecture, configuration, and content management
+- **[Preaching Documentation](docs/games/megachurch/preaching.md)** - Preaching mechanics, audience generation, and donation calculations
+- **[Developer Guide](docs/games/megachurch/DEVELOPER.md)** - MegaChurch development architecture, configuration, and content management
 
 ## Invalid
 

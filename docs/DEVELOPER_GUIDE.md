@@ -207,7 +207,7 @@ Each game has its own documentation in the `docs/` folder:
 
 ### Example: MegaChurch Tycoon
 
-- **Full Developer Guide:** [docs/megachurch/DEVELOPER.md](megachurch/DEVELOPER.md)
+- **Full Developer Guide:** [docs/games/megachurch/DEVELOPER.md](megachurch/DEVELOPER.md)
 - **Player Guide:** [docs/megachurch.md](megachurch.md)
 - **Configuration:** `src/views/megachurch/ts/variables/_gameSettings.ts`
 
