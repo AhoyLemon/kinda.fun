@@ -1,8 +1,8 @@
 .NotFoundPage
   .container
     .not-found-content
-      .error-number 404
-      .error-message Page Not Found
+      .error-number {{ statusCode }}
+      .error-message {{ heading }}
       
       .navigation-options
         button.btn.btn-primary(@click="goBack") ⬅️ Go Back

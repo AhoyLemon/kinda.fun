@@ -8,24 +8,8 @@
     title: "404 — Page Not Found | Kinda fun.",
     meta: [{ name: "robots", content: "noindex" }],
   });
-
-  const goHome = () => {
-    if (import.meta.client) window.location.href = `${window.location.protocol}//${window.location.host}`;
-  };
-
-  const goBack = () => {
-    if (!import.meta.client) return;
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      goHome();
-    }
-  };
-
-  const visitLemon = () => {
-    if (import.meta.client) window.location.href = "https://ahoylemon.xyz";
-  };
 </script>
 
-<template lang="pug" src="@/views/404/NotFound.pug"></template>
-<style lang="scss" src="@/views/404/NotFound.scss"></style>
+<template>
+  <NotFound />
+</template>

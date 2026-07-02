@@ -37,7 +37,10 @@
   // it must resolve in both environments — vue-toastification is in
   // nuxt.config build.transpile so its named exports work under SSR.
   import { useToast, POSITION } from "vue-toastification";
-  const toast = import.meta.client ? useToast() : { success() {}, error() {}, info() {}, warning() {} };
+  // Callable stub (not a plain object): ToastApi is itself callable (toast(...)),
+  // so a plain-object stub would throw during prerender if anything called it
+  // directly. Match the other games' shape.
+  const toast = import.meta.client ? useToast() : Object.assign(() => {}, { success() {}, error() {}, info() {}, warning() {} });
 
   const gameName = "cameo";
   let allCelebs = [...allValues];
