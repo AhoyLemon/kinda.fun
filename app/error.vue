@@ -7,8 +7,22 @@
     error: { type: Object, default: () => ({}) },
   });
 
+  // Head migrated from the legacy src/views/404/Page.pug. Fonts + site favicons
+  // come from nuxt.config's global head.
   useHead({
     title: "404 — Page Not Found | Kinda fun.",
+    meta: [
+      { name: "description", content: "Sorry, the page you're looking for doesn't exist. Check out our games instead!" },
+      { name: "theme-color", content: "#e5e828" },
+      { name: "msapplication-TileColor", content: "#e5e828" },
+      { property: "og:title", content: "404 - Page Not Found | Kinda fun." },
+      { property: "og:type", content: "website" },
+      { property: "og:description", content: "Sorry, the page you're looking for doesn't exist. Check out our games instead!" },
+      { property: "og:image", content: "https://kinda.fun/img/og-wide.png" },
+      { property: "og:image:width", content: "1280" },
+      { property: "og:image:height", content: "640" },
+      { property: "og:email", content: "lemon@ahoylemon.xyz" },
+    ],
   });
 
   const goHome = () => {

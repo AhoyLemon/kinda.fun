@@ -1,26 +1,24 @@
 <script setup>
-  // The stats dashboard carries its own template (Stats.pug) and styles
-  // (Stats.scss). It is Firestore-backed: the initial render is a loading shell
-  // (sidebar + "Loading data…") that prerenders as real HTML, and onMounted
-  // fetches the live data on the client. Firebase is client-guarded inside the
-  // component so the shell prerenders without a VueFire app.
+  // Firestore-backed dashboard: prerenders a loading shell and fetches live
+  // data on mount (Firebase client-guarded inside the component). Head migrated
+  // from src/views/stats/Page.pug (fonts, theme color, canonical, OpenGraph).
   import Stats from "@/views/stats/Stats.vue";
 
-  // Stats' SCSS expects "Fira Code", "Lora", and "Noto Sans". The global head
-  // only loads Inter/Lora for home + 404, so this page loads its own fonts —
-  // matching the per-page <head> model of the legacy pug build
-  // (src/views/stats/Page.pug).
   useHead({
     title: "Kinda Fun Stats | Let's see what people are playing.",
+    link: [
+      { rel: "canonical", href: "https://kinda.fun/stats" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" },
+    ],
     meta: [
       { name: "description", content: "Let's see what people are playing." },
+      { name: "theme-color", content: "#e5e828" },
+      { name: "msapplication-TileColor", content: "#e5e828" },
       { property: "og:title", content: "Kinda Fun Stats" },
-    ],
-    link: [
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap",
-      },
+      { property: "og:type", content: "website" },
+      { property: "og:description", content: "Let's see what people are playing." },
+      { property: "og:url", content: "https://kinda.fun/stats" },
+      { property: "og:email", content: "lemon@ahoylemon.xyz" },
     ],
   });
 </script>

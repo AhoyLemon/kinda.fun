@@ -1,24 +1,23 @@
 <script setup>
-  // The game component carries its own template (Guillotine.pug) and styles
-  // (Guillotine.scss). Firebase usage inside it is client-guarded so the
-  // title screen prerenders as real HTML.
+  // Root component + full per-page <head>, migrated from src/views/guillotine/Page.pug.
   import Guillotine from "@/views/guillotine/Guillotine.vue";
 
-  // Guillotine's SCSS expects "Red Hat Text". The global head only loads
-  // Inter/Lora for home + 404, so each game page loads its own fonts —
-  // matching the per-page <head> model of the legacy pug build
-  // (src/views/guillotine/Page.pug).
   useHead({
     title: "No More Billionaires | Generating wealth with a guillotine.",
+    link: [
+      { rel: "canonical", href: "https://kinda.fun/guillotine" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@300..700&display=swap" },
+    ],
     meta: [
       { name: "description", content: "Generating wealth with a guillotine." },
       { property: "og:title", content: "No More Billionaires" },
-    ],
-    link: [
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@300..700&display=swap",
-      },
+      { property: "og:type", content: "website" },
+      { property: "og:description", content: "Generating wealth with a guillotine." },
+      { property: "og:image", content: "https://kinda.fun/img/og-guillotine.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:url", content: "https://kinda.fun/guillotine" },
+      { property: "og:email", content: "lemon@ahoylemon.xyz" },
     ],
   });
 </script>

@@ -1,24 +1,23 @@
 <script setup>
-  // The game component carries its own template (Pretend.pug) and styles
-  // (Pretend.scss). Firebase usage inside it is client-guarded so the
-  // title screen prerenders as real HTML.
+  // Root component + full per-page <head>, migrated from src/views/pretend/Page.pug.
   import Pretend from "@/views/pretend/Pretend.vue";
 
-  // Pretend's SCSS expects "Limelight" and "Merriweather". The global head only
-  // loads Inter/Lora for home + 404, so each game page loads its own fonts —
-  // matching the per-page <head> model of the legacy pug build
-  // (src/views/pretend/Page.pug).
   useHead({
     title: "Pretend World | You are at a party of celebrity impersonators...",
+    link: [
+      { rel: "canonical", href: "https://kinda.fun/pretend" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css?family=Limelight|Merriweather:400,400i,900" },
+    ],
     meta: [
       { name: "description", content: "You are at a party of celebrity impersonators..." },
       { property: "og:title", content: "Pretend World" },
-    ],
-    link: [
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css?family=Limelight|Merriweather:400,400i,900",
-      },
+      { property: "og:type", content: "website" },
+      { property: "og:description", content: "You are at a party of celebrity impersonators..." },
+      { property: "og:image", content: "https://kinda.fun/img/og-pretend.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:url", content: "https://kinda.fun/pretend" },
+      { property: "og:email", content: "lemon@ahoylemon.xyz" },
     ],
   });
 </script>

@@ -38,10 +38,12 @@ export default defineNuxtConfig({
           rel: "stylesheet",
           href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap",
         },
-        { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
-        { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
-        { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
-        { rel: "mask-icon", href: "/safari-pinned-tab.svg", color: "#e5e828" },
+        // Site-wide default favicons. Keyed so game pages with their own branded
+        // favicons override (rather than duplicate) these via the same key.
+        { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png", key: "fav-apple" },
+        { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png", key: "fav-32" },
+        { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png", key: "fav-16" },
+        { rel: "mask-icon", href: "/safari-pinned-tab.svg", color: "#e5e828", key: "fav-mask" },
       ],
     },
   },

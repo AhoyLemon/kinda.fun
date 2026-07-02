@@ -1,13 +1,25 @@
 <script setup>
   import { ref, reactive, onMounted, computed } from "vue";
 
+  // Full per-page <head> migrated from the legacy src/views/home/Page.pug.
+  // Fonts (Inter/Lora) and the site-wide favicons live in nuxt.config's global
+  // head, so only the home-specific canonical / theme / OpenGraph go here.
   useHead({
     title: "Kinda fun. | Here's some games and stuff that Lemon made. All of it is kinda fun!",
+    link: [{ rel: "canonical", href: "https://kinda.fun" }],
     meta: [
       { name: "description", content: "Here's some games and stuff that Lemon made. All of it is kinda fun!" },
+      { name: "theme-color", content: "#e5e828" },
+      { name: "msapplication-TileColor", content: "#e5e828" },
+      { name: "msvalidate.01", content: "D3327FD7610C2D05D7D605EBCA288944" },
       { property: "og:title", content: "Kinda fun." },
       { property: "og:type", content: "website" },
       { property: "og:description", content: "Here's some games and stuff that Lemon made. All of it is kinda fun!" },
+      { property: "og:image", content: "https://kinda.fun/img/og-wide.png" },
+      { property: "og:image:width", content: "1280" },
+      { property: "og:image:height", content: "640" },
+      { property: "og:url", content: "https://kinda.fun" },
+      { property: "og:email", content: "lemon@ahoylemon.xyz" },
     ],
   });
 
