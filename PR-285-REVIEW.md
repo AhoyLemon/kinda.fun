@@ -35,7 +35,7 @@ The new `firestore.rules` contains `allow read, write: if true;` — the comment
 
 The sanctioned paths (`package.json` `deploy` script and the CI workflow) are both `--only hosting`, which is why this is a latent footgun rather than a live regression — but it's one muscle-memory command away from an open production database.
 
-**Fix:** move the emulator rules to a separate config the emulator loads explicitly (e.g. `firebase emulators:start --config firebase.emulator.json`), or remove the top-level `firestore` key from the deployed `firebase.json`. Also fix the megachurch doc's bare-deploy advice.
+**Fix (approach confirmed by Lemon):** move the emulator wiring to a separate config only the verify harness uses — a `firebase.emulator.json` holding the `firestore`/`emulators` sections, with `verify.mjs` starting the emulator via `--config firebase.emulator.json` — and remove the top-level `firestore` key from the main `firebase.json`. Deployment workflows (`bun run deploy`, CI) must not change. Also fix the megachurch doc's bare-deploy advice.
 
 ### 3. `bun run verify` leaves an emulator-wired build in the deploy directory
 
