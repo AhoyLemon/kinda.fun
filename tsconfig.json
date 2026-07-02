@@ -19,6 +19,18 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.js"],
-  "exclude": ["node_modules", "dist", "public"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/**/*.js",
+    "app/**/*.ts",
+    "app/**/*.vue",
+    "app/**/*.js",
+    "nuxt.config.ts",
+    ".nuxt/nuxt.d.ts",
+    ".nuxt/imports.d.ts",
+    ".nuxt/components.d.ts"
+  ],
+  "exclude": ["node_modules", "dist", "public", ".output"]
 }

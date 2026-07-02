@@ -25,7 +25,7 @@
     "guillotine:arrests": "bun run scripts/npm-run/guillotine_createArrests.ts",
     "firebase:hydrate": "node scripts/firebase/cloneFirestore.js",
     "firebase:check": "node scripts/firebase/testFirebaseConnections.js",
-    "postinstall": "cd functions && npm install",
+    "postinstall": "nuxi prepare && cd functions && npm install",
     "purge:rooms": "node scripts/firebase/invalid_purgeRooms.js"
   },
   "dependencies": {
