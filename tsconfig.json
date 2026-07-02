@@ -32,5 +32,8 @@
     ".nuxt/imports.d.ts",
     ".nuxt/components.d.ts"
   ],
-  "exclude": ["node_modules", "dist", "public", ".output"]
+  "exclude": ["node_modules", "dist", "public", ".output"],
+  "vueCompilerOptions": {
+    "plugins": ["@vue/language-plugin-pug"]
+  }
 }
