@@ -110,9 +110,9 @@ The same route list lives in the prerender array, `ROUTES`, the sitemap, and (as
 
 ### 10. ~25 copy-pasted `import.meta.client` guards in three divergent variants
 
-**Files:** 13 files across `src/views/**`; variants at `src/views/court/Court.vue:36` (callable stub), `src/views/cameo/Cameo.vue:40` (plain-object stub, NOT callable), `src/views/court/ts/_useCourtStats.ts:39` (`null as unknown as Firestore`)
+**Files:** 13 files across `src/views/**`; variants at `src/views/court/Court.vue:36` (callable stub), `src/views/cameo/Cameo.vue:40` (plain-object stub, NOT callable)
 
-Seven games use the callable toast stub (`Object.assign(() => {}, {...})` — needed because some call `toast(...)` directly), Cameo uses a plain object that would throw on a direct call, and court's stats helper casts null to `Firestore`, defeating null-checking. Plus 11 copies of `const db = import.meta.client ? useFirestore() : null`. The Cameo variant is a **latent prerender crash**: today all Cameo usage is `toast.success/error/info`, but the first direct `toast(...)` there (or in a new game copied from Cameo) throws during `nuxi generate` — and with `failOnError: false`, the broken page ships silently.
+Seven games use the callable toast stub (`Object.assign(() => {}, {...})` — needed because some call `toast(...)` directly), Cameo uses a plain object that would throw on a direct call. Plus 11 copies of `const db = import.meta.client ? useFirestore() : null`. *(A third variant, `null as unknown as Firestore` in `_useCourtStats.ts`, was fixed by commit `74a209e` while this review was running — it now takes `Firestore | null` with a `safeWrite` early-return, which is exactly the shape the shared composable should standardize on.)* The Cameo variant is a **latent prerender crash**: today all Cameo usage is `toast.success/error/info`, but the first direct `toast(...)` there (or in a new game copied from Cameo) throws during `nuxi generate` — and with `failOnError: false`, the broken page ships silently.
 
 **Fix:** shared composables in `src/shared/ts/` (e.g. `_useClientToast.ts` returning the callable stub, `_useClientFirestore.ts`) — kills ~19 copies and makes the stub shape a single decision.
 
