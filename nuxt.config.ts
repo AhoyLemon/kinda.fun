@@ -1,5 +1,8 @@
 import { fileURLToPath } from "node:url";
 import { defineNuxtConfig } from "nuxt/config";
+// Single route manifest (also drives the verify harness). Adding a route there
+// prerenders it here too.
+import { PRERENDER_ROUTES } from "./scripts/verify/routes.mjs";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -23,16 +26,16 @@ export default defineNuxtConfig({
   // Static generation -> .output/public, served by Firebase Hosting.
   nitro: {
     prerender: {
+      // Home's game links are behind interaction (not static <a href>), so
+      // crawling can't discover the routes — drive them from the manifest.
+      // "/not-found" renders the catch-all page (app/pages/[...slug].vue, which
+      // returns 200 so it prerenders); scripts/nuxt/finalize.mjs copies it to
+      // the 404.html Hosting serves for unmatched routes.
       crawlLinks: false,
-      // Routes are added here as each page is ported (vertical slice first).
-      // "/not-found" renders the catch-all page; scripts/nuxt/finalize.mjs
-      // copies it to the 404.html Firebase Hosting serves for unmatched routes
-      // (rendering directly to "/404" collides with Nuxt's empty SPA fallback).
-      // Phase B single-player games: court, guillotine, megachurch, sisyphus, pretend.
-      // Phase B multiplayer games: invalid, meeting, wrongest.
-      // Phase B stats dashboard: prerenders a loading shell, hydrates with data.
-      routes: ["/", "/cameo", "/not-found", "/court", "/guillotine", "/megachurch", "/sisyphus", "/pretend", "/invalid", "/meeting", "/wrongest", "/stats"],
-      failOnError: false,
+      routes: PRERENDER_ROUTES,
+      // Fail the build if any route errors during prerender, so a broken page
+      // can never ship silently as a 404.
+      failOnError: true,
     },
   },
 

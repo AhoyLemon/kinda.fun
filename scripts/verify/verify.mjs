@@ -144,7 +144,6 @@ async function checkRoute(browser, baseUrl, route) {
     const contentOk = html.includes(route.contentNeedle);
     record("route", `${label} HTTP ${expectStatus} + prerendered content`, statusOk && contentOk,
       statusOk && contentOk ? "" : `status=${res.status} contentNeedle=${contentOk}`);
-    if (!route.ported) return; // don't spend browser time on known-unported routes
   } catch (e) {
     record("route", `${label} HTTP`, false, e.message);
     return;
@@ -205,9 +204,7 @@ function summarize() {
   const passed = results.filter((r) => r.ok).length;
   console.log("\n" + "-".repeat(64));
   console.log(`TOTAL: ${passed}/${total} checks passed`);
-  const portedNames = new Set(ROUTES.filter((r) => r.ported).map((r) => r.name));
-  const sliceFails = results.filter((r) => !r.ok && r.group === "route" && [...portedNames].some((n) => r.name.startsWith(n)));
-  console.log(`SLICE (ported routes): ${sliceFails.length === 0 ? "GREEN ✅" : `RED ❌ (${sliceFails.length} failing)`}`);
+  console.log(`RESULT: ${passed === total ? "GREEN ✅" : `RED ❌ (${total - passed} failing)`}`);
   console.log("=".repeat(64));
   return passed === total;
 }
