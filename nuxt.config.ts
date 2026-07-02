@@ -11,6 +11,15 @@ export default defineNuxtConfig({
   compatibilityDate: "2026-06-27",
   ssr: true,
 
+  // Styled "server ready" banner for `bun run dev`. The `listen` hook only
+  // fires for the dev server, so this never runs during build/generate.
+  hooks: {
+    async listen(_server, listener) {
+      const { printDevBanner } = await import("./scripts/nuxt/devBanner.mjs");
+      printDevBanner(listener?.url);
+    },
+  },
+
   // Static generation -> .output/public, served by Firebase Hosting.
   nitro: {
     prerender: {
