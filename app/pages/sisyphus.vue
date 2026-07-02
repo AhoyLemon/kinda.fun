@@ -3,6 +3,51 @@
   // (fonts, branded favicons, canonical, OpenGraph).
   import Sisyphus from "@/views/sisyphus/Sisyphus.vue";
 
+  // JSON-LD (VideoGame) ported from src/views/sisyphus/pug/_schema.pug.
+  const lastUpdated = new Date().toISOString();
+
+  const jsonLd = {
+    "@context": "http://schema.org",
+    "@type": "VideoGame",
+    name: "Sisyphus Clicker",
+    description: "Click on Sisyphus to push the rock up the mountain (formerly futile.fun)",
+    keywords: "futile, futility, clicker, depressing, pointless, achievements, rock, the myth of sisyphus",
+    url: "https://kinda.fun/sisyphus",
+    image: "https://kinda.fun/img/og-sisyphus.png",
+    playMode: "SinglePlayer",
+    applicationCategory: "browser game",
+    gamePlatform: "web browser",
+    operatingSystem: "web browser",
+    genre: "clicker",
+    inLanguage: "English",
+    creator: {
+      "@type": "Person",
+      name: "Lemon",
+      url: "https://ahoylemon.xyz",
+      email: "lemon@ahoylemon.xyz",
+      sameAs: [
+        "https://github.com/AhoyLemon",
+        "https://bsky.app/profile/ahoylemon.xyz",
+        "https://mastodon.social/@ahoylemon",
+        "https://thefpl.us/meet/lemon",
+      ],
+    },
+    offers: {
+      "@type": "Offer",
+      description: "free",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    isAccessibleForFree: true,
+    screenshot: [
+      { "@type": "ImageObject", url: "https://kinda.fun/img/sisyphus/screenshots/ss1.png", width: 1083, height: 924 },
+      { "@type": "ImageObject", url: "https://kinda.fun/img/sisyphus/screenshots/ss2.png", width: 1083, height: 924 },
+      { "@type": "ImageObject", url: "https://kinda.fun/img/sisyphus/screenshots/ss3.png", width: 1083, height: 924 },
+    ],
+    datePublished: "2021-09-21",
+    dateModified: lastUpdated,
+  };
+
   useHead({
     title: "Sisyphus Clicker | Click on Sisyphus to push the rock up the mountain (formerly futile.fun)",
     link: [
@@ -28,6 +73,9 @@
       { property: "og:image:height", content: "630" },
       { property: "og:url", content: "https://kinda.fun/sisyphus" },
       { property: "og:email", content: "lemon@ahoylemon.xyz" },
+    ],
+    script: [
+      { type: "application/ld+json", innerHTML: JSON.stringify(jsonLd) },
     ],
   });
 </script>

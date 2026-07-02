@@ -4,6 +4,41 @@
   // Full per-page <head> migrated from the legacy src/views/home/Page.pug.
   // Fonts (Inter/Lora) and the site-wide favicons live in nuxt.config's global
   // head, so only the home-specific canonical / theme / OpenGraph go here.
+
+  // JSON-LD (WebSite) ported from src/views/home/pug/_schema.pug. dateModified
+  // preserves the legacy build-time semantics (was `lastUpdated`, an ISO date
+  // stamped at build; here it is stamped when the page is prerendered/rendered).
+  const jsonLd = {
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    name: "Kinda fun.",
+    description: "Here's some games and stuff that Lemon made. All of it is kinda fun!",
+    keywords: "browser games, free games, indie games, Lemon, kinda fun, web games, party games, comedy games",
+    url: "https://kinda.fun",
+    image: "https://kinda.fun/img/og-wide.png",
+    publisher: {
+      "@type": "Person",
+      name: "Lemon",
+      url: "https://ahoylemon.xyz",
+      email: "lemon@ahoylemon.xyz",
+      sameAs: [
+        "https://github.com/AhoyLemon",
+        "https://bsky.app/profile/ahoylemon.xyz",
+        "https://mastodon.social/@ahoylemon",
+        "https://thefpl.us/meet/lemon",
+      ],
+    },
+    hasPart: [
+      { "@type": "VideoGame", name: "Comparatively Famous", url: "https://kinda.fun/cameo" },
+      { "@type": "VideoGame", name: "No More Billionaires", url: "https://kinda.fun/guillotine" },
+      { "@type": "VideoGame", name: "Invalid", url: "https://kinda.fun/invalid" },
+      { "@type": "VideoGame", name: "This Meeting Has Points", url: "https://kinda.fun/meeting" },
+      { "@type": "VideoGame", name: "Pretend World", url: "https://kinda.fun/pretend" },
+      { "@type": "VideoGame", name: "Sisyphus Clicker", url: "https://kinda.fun/sisyphus" },
+    ],
+    dateModified: new Date().toISOString(),
+  };
+
   useHead({
     title: "Kinda fun. | Here's some games and stuff that Lemon made. All of it is kinda fun!",
     link: [{ rel: "canonical", href: "https://kinda.fun" }],
@@ -16,10 +51,13 @@
       { property: "og:type", content: "website" },
       { property: "og:description", content: "Here's some games and stuff that Lemon made. All of it is kinda fun!" },
       { property: "og:image", content: "https://kinda.fun/img/og-wide.png" },
-      { property: "og:image:width", content: "1280" },
-      { property: "og:image:height", content: "640" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
       { property: "og:url", content: "https://kinda.fun" },
       { property: "og:email", content: "lemon@ahoylemon.xyz" },
+    ],
+    script: [
+      { type: "application/ld+json", innerHTML: JSON.stringify(jsonLd) },
     ],
   });
 

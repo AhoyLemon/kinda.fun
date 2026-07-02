@@ -3,6 +3,54 @@
   // (fonts, branded favicons, theme color, canonical, OpenGraph).
   import Wrongest from "@/views/wrongest/Wrongest.vue";
 
+  // JSON-LD (VideoGame) ported from the inline schema the site actually served
+  // (src/views/wrongest/Page.pug), not the orphaned pug/_schema.pug partial.
+  const jsonLd = {
+    "@context": "http://schema.org",
+    "@type": "VideoGame",
+    name: "The Wrongest Words",
+    url: "https://kinda.fun/wrongest",
+    image: "https://kinda.fun/img/wrongest/og-wide.png",
+    playMode: "MultiPlayer",
+    applicationCategory: "browser game",
+    gamePlatform: "web browser",
+    operatingSystem: "web browser",
+    genre: "comedy",
+    description: "A party game where you will defend some very stupid ideas.",
+    inLanguage: "English",
+    numberOfPlayers: {
+      minValue: 3,
+      maxValue: 20,
+    },
+    aggregateRating: {
+      ratingValue: 4.33333,
+      ratingCount: 3,
+    },
+    creator: {
+      "@type": "Person",
+      name: "Lemon",
+      url: "https://ahoylemon.xyz",
+      email: "lemon@ahoylemon.xyz",
+      sameAs: [
+        "https://github.com/AhoyLemon",
+        "https://bsky.app/profile/ahoylemon.xyz",
+        "https://mastodon.social/@ahoylemon",
+        "https://thefpl.us/meet/lemon",
+      ],
+    },
+    offers: {
+      "@type": "Offer",
+      description: "free",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    screenshot: [
+      { "@type": "ImageObject", url: "https://kinda.fun/img/wrongest/screenshots/1.png", width: 980, height: 780 },
+      { "@type": "ImageObject", url: "https://kinda.fun/img/wrongest/screenshots/2.png", width: 980, height: 780 },
+      { "@type": "ImageObject", url: "https://kinda.fun/img/wrongest/screenshots/3.jpg", width: 980, height: 780 },
+    ],
+  };
+
   useHead({
     title: "The Wrongest Words | A party game where you will defend some very stupid ideas.",
     link: [
@@ -25,6 +73,9 @@
       { property: "og:image:height", content: "630" },
       { property: "og:url", content: "https://kinda.fun/wrongest" },
       { property: "og:email", content: "lemon@ahoylemon.xyz" },
+    ],
+    script: [
+      { type: "application/ld+json", innerHTML: JSON.stringify(jsonLd) },
     ],
   });
 </script>

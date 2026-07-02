@@ -4,6 +4,55 @@
   // client-guarded so the landing screen prerenders as real HTML.
   import Invalid from "@/views/invalid/Invalid.vue";
 
+  // JSON-LD (VideoGame) ported from src/views/invalid/pug/_schema.pug.
+  const lastUpdated = new Date().toISOString();
+
+  const jsonLd = {
+    "@context": "http://schema.org",
+    "@type": "VideoGame",
+    name: "Invalid",
+    description: "A trivia game of unnecessary suffering.",
+    keywords: "trivia game, party game, multiplayer, suffering, password, password guess, guessing, cracking, bugs",
+    genre: "comedy",
+    url: "https://kinda.fun/invalid",
+    image: "https://kinda.fun/img/og-invalid.png",
+    playMode: "MultiPlayer",
+    applicationCategory: "browser game",
+    gamePlatform: "web browser",
+    operatingSystem: "web browser",
+    inLanguage: "English",
+    numberOfPlayers: {
+      minValue: 2,
+      maxValue: 10,
+    },
+    creator: {
+      "@type": "Person",
+      name: "Lemon",
+      url: "https://ahoylemon.xyz",
+      email: "lemon@ahoylemon.xyz",
+      sameAs: [
+        "https://github.com/AhoyLemon",
+        "https://bsky.app/profile/ahoylemon.xyz",
+        "https://mastodon.social/@ahoylemon",
+        "https://thefpl.us/meet/lemon",
+      ],
+    },
+    isAccessibleForFree: true,
+    offers: {
+      "@type": "Offer",
+      description: "free",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    screenshot: [
+      { "@type": "ImageObject", url: "https://kinda.fun/img/invalid/screenshots/1.jpg", width: 1920, height: 1080 },
+      { "@type": "ImageObject", url: "https://kinda.fun/img/invalid/screenshots/2.jpg", width: 1920, height: 1080 },
+      { "@type": "ImageObject", url: "https://kinda.fun/img/invalid/screenshots/3.jpg", width: 1920, height: 1080 },
+    ],
+    datePublished: "2025-08-01",
+    dateModified: lastUpdated,
+  };
+
   useHead({
     title: "Invalid | A trivia game of unnecessary suffering.",
     link: [
@@ -24,6 +73,9 @@
       { property: "og:image:height", content: "630" },
       { property: "og:url", content: "https://kinda.fun/invalid" },
       { property: "og:email", content: "lemon@ahoylemon.xyz" },
+    ],
+    script: [
+      { type: "application/ld+json", innerHTML: JSON.stringify(jsonLd) },
     ],
   });
 </script>
