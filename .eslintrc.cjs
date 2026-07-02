@@ -38,6 +38,8 @@ module.exports = {
     useHeadSafe: "readonly",
     useSeoMeta: "readonly",
     useServerSeoMeta: "readonly",
+    // Local composable, auto-imported from app/composables/useGameHead.ts.
+    useGameHead: "readonly",
     useRoute: "readonly",
     useRouter: "readonly",
     useRuntimeConfig: "readonly",

@@ -3,8 +3,8 @@
 // setGameOver) stay in Invalid.vue where the component reference is available.
 
 import { nextTick } from "vue";
-import { useFirestore } from "vuefire";
-import { useToast } from "vue-toastification";
+import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
+import { useClientToast } from "@/shared/ts/_useClientToast";
 import {
   doc,
   getDoc,
@@ -57,11 +57,9 @@ import type { Challenge } from "./_challenges";
 
 export function useInvalidGame(statsRef: ReturnType<typeof doc> | null) {
   // Firebase/VueFire is client-only; guard so the landing screen prerenders.
-  const db = import.meta.client ? useFirestore() : null;
+  const db = useClientFirestore();
   // Toast is client-only.
-  const toast = import.meta.client
-    ? useToast()
-    : Object.assign(() => {}, { success() {}, error() {}, info() {}, warning() {} });
+  const toast = useClientToast();
   let unsubscribeRoomPlayers: Unsubscribe | undefined;
   let unsubscribeGameStatus: Unsubscribe | undefined;
 

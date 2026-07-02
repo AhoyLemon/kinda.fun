@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   // Root component + full per-page <head>, migrated from src/views/court/Page.pug.
   import Court from "@/views/court/Court.vue";
 
@@ -50,29 +50,17 @@
     dateModified: lastUpdated,
   };
 
-  useHead({
+  useGameHead({
     title: "Supreme Court: The Card Game | The single player game about meddling with the law. Because if justice isn't fair, at least it should be fun!",
-    link: [
-      { rel: "canonical", href: "https://kinda.fun/court" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700|Poppins:400,400i,700" },
-    ],
-    meta: [
-      // Match the legacy per-page viewport: disable zoom so double-tapping cards
-      // doesn't trigger mobile zoom mid-game. (Overrides the global viewport.)
-      { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" },
-      { name: "description", content: "The single player game about meddling with the law. Because if justice isn't fair, at least it should be fun!" },
-      { property: "og:title", content: "Supreme Court: The Card Game" },
-      { property: "og:type", content: "website" },
-      { property: "og:description", content: "The single player game about meddling with the law. Because if justice isn't fair, at least it should be fun!" },
-      { property: "og:image", content: "https://kinda.fun/img/og-court.png" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { property: "og:url", content: "https://kinda.fun/court" },
-      { property: "og:email", content: "lemon@ahoylemon.xyz" },
-    ],
-    script: [
-      { type: "application/ld+json", innerHTML: JSON.stringify(jsonLd) },
-    ],
+    ogTitle: "Supreme Court: The Card Game",
+    description: "The single player game about meddling with the law. Because if justice isn't fair, at least it should be fun!",
+    path: "/court",
+    ogImage: "https://kinda.fun/img/og-court.png",
+    // Match the legacy per-page viewport: disable zoom so double-tapping cards
+    // doesn't trigger mobile zoom mid-game.
+    noZoomViewport: true,
+    fonts: ["https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700|Poppins:400,400i,700"],
+    jsonLd,
   });
 </script>
 

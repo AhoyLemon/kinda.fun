@@ -1,11 +1,9 @@
-<script setup>
+<script setup lang="ts">
   // Runtime error boundary. Route-level 404s are handled by [...slug].vue, so
   // the realistic path here is a fatal client error (a plugin throwing, a fatal
   // hydration error) — default to 500 and reflect the real status/message
   // instead of always claiming "404 Not Found".
-  const props = defineProps({
-    error: { type: Object, default: () => ({}) },
-  });
+  const props = defineProps<{ error?: { statusCode?: number; statusMessage?: string } }>();
 
   const statusCode = Number(props.error?.statusCode) || 500;
   const isNotFound = statusCode === 404;

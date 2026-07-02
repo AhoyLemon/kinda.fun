@@ -6,7 +6,7 @@
   import { DateTime } from "luxon";
   import "vue-good-table-next/dist/vue-good-table-next.css";
   import { VueGoodTable } from "vue-good-table-next";
-  import { useFirestore } from "vuefire";
+  import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
   import { useStatsComputeds, stripWrongestBraces, humanizeStanceName } from "./ts/_useStatsComputeds";
   import type { StatsState, StatsUiState } from "./ts/_useStatsComputeds";
 
@@ -133,7 +133,7 @@
   // is no VueFire app during prerender/SSR. Guard the composable; every data
   // loader below early-returns when it's null. All loaders run from onMounted /
   // click handlers (client-only), so firestoreDb is non-null when they execute.
-  const firestoreDb = import.meta.client ? useFirestore() : null;
+  const firestoreDb = useClientFirestore();
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////

@@ -136,12 +136,12 @@ shell and fetches on mount.
 
 ## Routing, redirects, output
 
-- **Add a route:** create `app/pages/<name>.vue` **and** add `"/<name>"` to
-  `nitro.prerender.routes` in `nuxt.config.ts` (a page without a prerender entry
-  won't be in the static output).
+- **Add a route:** create `app/pages/<name>.vue` **and** add it to `ROUTES` in
+  `scripts/verify/_routes.mjs` — `nuxt.config.ts` imports `PRERENDER_ROUTES` from
+  there, so that single edit drives both the static output and the verify sweep.
 - **Legacy `.html` URLs:** `firebase.json` 301-redirects `/<game>.html` →
-  `/<game>`. Keep that list (and `scripts/verify/routes.mjs`) in sync when adding
-  routes.
+  `/<game>`. The verify harness derives its redirect checks from `firebase.json`,
+  so that's the only place to add them.
 - **Build output:** `.output/public/<game>/index.html` (was `dist/<game>.html`).
 - **404:** `app/pages/[...slug].vue` prerenders; `finalize.mjs` copies it to
   `.output/public/404.html`.
@@ -154,4 +154,5 @@ shell and fetches on mount.
   visible selector, **zero console errors**, and the `.html` → 301 redirects.
 - `bun run typecheck` / `bun run lint` / `bun run test:run`.
 
-If you add a route, add it to `scripts/verify/routes.mjs` so `verify` covers it.
+If you add a route, add it to `ROUTES` in `scripts/verify/_routes.mjs` (that also
+drives prerendering) so `verify` covers it.

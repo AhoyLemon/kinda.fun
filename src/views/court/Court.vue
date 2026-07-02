@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { reactive, ref, computed, onMounted } from "vue";
-  import { useToast, POSITION } from "vue-toastification";
+  import { POSITION } from "vue-toastification";
+  import { useClientToast } from "@/shared/ts/_useClientToast";
   import TacticToast from "./components/TacticToast.vue";
   import LemonToast from "./components/LemonToast.vue";
   import {
@@ -33,7 +34,7 @@
   // no-op during prerender. POSITION is used as a toast option throughout, so it
   // must resolve in both environments — vue-toastification is in nuxt.config
   // build.transpile so its named exports work under SSR.
-  const toast = import.meta.client ? useToast() : Object.assign(() => {}, { success() {}, error() {}, info() {}, warning() {} });
+  const toast = useClientToast();
   const trialAttackedJustices = new Set<string>();
   let campaignEndLogged = false;
   let byLemonJinglePlayed = false;

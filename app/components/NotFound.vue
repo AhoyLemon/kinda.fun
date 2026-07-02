@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   // Shared error/not-found UI, used by both the /not-found catch-all
   // (app/pages/[...slug].vue) and the runtime error boundary (app/error.vue).
   // Defaults render the classic 404; error.vue passes the real status/heading.

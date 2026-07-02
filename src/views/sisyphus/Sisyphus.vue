@@ -10,8 +10,9 @@
   // Firebase is client-only (migration plan locked decision #3): during
   // prerender/SSR these composables would have no VueFire app, so guard them.
   import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
-  import { useFirestore, useCollection, useDocument } from "vuefire";
-  const db = import.meta.client ? useFirestore() : null;
+  import { useCollection, useDocument } from "vuefire";
+  import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
+  const db = useClientFirestore();
   const statsRef = db ? doc(db, `stats/sisyphus`) : null;
 
   // Sounds
@@ -26,8 +27,8 @@
   // import "vue-toastification/dist/index.css";
   import MyToast from "./vue/MyToast.vue";
   import LemonToast from "./vue/LemonToast.vue";
-  import { useToast } from "vue-toastification";
-  const toast = import.meta.client ? useToast() : Object.assign(() => {}, { success() {}, error() {}, info() {}, warning() {} });
+  import { useClientToast } from "@/shared/ts/_useClientToast";
+  const toast = useClientToast();
 
   type GamePhase = "begin" | "pushing" | "falling" | "retreat";
   type VisibleDrawer = "store" | "inventory" | null;

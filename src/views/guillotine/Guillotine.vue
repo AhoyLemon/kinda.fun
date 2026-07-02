@@ -19,7 +19,7 @@
 
   // Firebase & VueFire Stuff
   import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
-  import { useFirestore } from "vuefire";
+  import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
   interface Trophy {
     name: string;
     netWorth: number;
@@ -61,7 +61,7 @@
   // during prerender/SSR there is no VueFire app, so guard the composable and
   // derive the stats doc ref only when the client db exists. Firestore writes
   // below all run from client event handlers, so statsRef is non-null there.
-  const db = import.meta.client ? useFirestore() : null;
+  const db = useClientFirestore();
   const statsRef = db ? doc(db, `stats/guillotine`) : null;
   const BILLION = 1_000_000_000;
 
@@ -755,7 +755,7 @@
   const executeAllBillionaires = async (): Promise<void> => {
     const { doc, runTransaction, getDoc, serverTimestamp } = await import("firebase/firestore");
     // Client-only (see top-of-setup guard): VueFire has no app during prerender.
-    const db = import.meta.client ? useFirestore() : null;
+    const db = useClientFirestore();
     if (!db) return;
     for (const billionaire of allBillionaires) {
       const trophyRef = doc(db, `stats/guillotine/heads/${billionaire.name}`);

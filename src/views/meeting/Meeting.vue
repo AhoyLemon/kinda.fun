@@ -12,8 +12,8 @@
   import Toast, { POSITION } from "vue-toastification";
   import MyToast from "./vue/MyToast.vue";
   import LemonToast from "./vue/LemonToast.vue";
-  import { useToast } from "vue-toastification";
-  const toast = import.meta.client ? useToast() : Object.assign(() => {}, { success() {}, error() {}, info() {}, warning() {} });
+  import { useClientToast } from "@/shared/ts/_useClientToast";
+  const toast = useClientToast();
 
   // Firebase & VueFire Stuff
   import {
@@ -32,13 +32,14 @@
     onSnapshot,
     Timestamp, // <-- add this import
   } from "firebase/firestore";
-  import { useFirestore, useCollection, useDocument } from "vuefire";
+  import { useCollection, useDocument } from "vuefire";
+  import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
 
   // Initialize Firestore. Firebase is client-only (migration plan locked
   // decision #3): during prerender/SSR these composables would have no VueFire
   // app, so guard them. The landing screen renders with game.roomCode === "",
   // so the room/connection composables below never fire on the server.
-  const db = import.meta.client ? useFirestore() : null;
+  const db = useClientFirestore();
   const gamePlayers = ref([]);
   const statsRef = db ? doc(db, `stats/meeting`) : null;
 

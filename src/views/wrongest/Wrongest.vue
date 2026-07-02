@@ -29,7 +29,8 @@
     where,
     onSnapshot,
   } from "firebase/firestore";
-  import { useFirestore, useDocument } from "vuefire";
+  import { useDocument } from "vuefire";
+  import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
   import { updateGeneralPlayerStats, updateGamePlayerStats, updateGameSizeStats } from "../../shared/ts/_firebaseStats";
 
   // Firebase & VueFire are client-only: during prerender/SSR there is no
@@ -37,7 +38,7 @@
   // when the client db exists. Every Firestore call below runs from a client
   // event handler or onMounted, so db/statsRef are non-null there. The initial
   // landing screen (create/join a room) renders without any live data.
-  const db = import.meta.client ? useFirestore() : null;
+  const db = useClientFirestore();
   const statsRef = db ? doc(db, `stats/wrongest`) : null;
 
   /////////////////////////////////////////////////////////

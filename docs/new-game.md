@@ -9,19 +9,22 @@ This guide walks you through creating a new game from scratch on the Kinda Fun p
 Each game's code lives under `src/views/<game>/` (a Vue 3 root component plus its
 Pug template, SCSS, and TS/JS). Nuxt exposes it as a route through a thin wrapper
 in `app/pages/<game>.vue`, which imports the root component and sets the page
-`<head>` via `useHead`. The site is statically generated with `nuxi generate`
-into `.output/public` and served by Firebase Hosting.
+`<head>` via the shared `useGameHead()` composable. The site is statically
+generated with `nuxi generate` into `.output/public` and served by Firebase
+Hosting.
 
 **What you'll create:**
 
 - **Game root component** (`src/views/<game>/<Game>.vue`) plus its Pug/SCSS/TS files
-- **Page wrapper** (`app/pages/<game>.vue`) — imports the root component and calls `useHead`
+- **Page wrapper** (`app/pages/<game>.vue`) — `<script setup lang="ts">`, imports the root component and calls `useGameHead`
 
 **What you'll edit:**
 
-- `nuxt.config.ts` — add the route to `nitro.prerender.routes`
-- `scripts/verify/routes.mjs` — add the route + its `.html` → clean-path redirect
-- `firebase.json` — add the matching `/<game>.html` → `/<game>` redirect
+- `scripts/verify/_routes.mjs` — add the route to `ROUTES` (this drives both
+  prerendering via `PRERENDER_ROUTES` and the verify sweep — no `nuxt.config.ts`
+  edit needed)
+- `firebase.json` — add the matching `/<game>.html` → `/<game>` redirect (the
+  verify harness derives its `REDIRECTS` from this file)
 
 > There is no more `Page.pug`, `src/entries/<game>.js`, `vite.config.js`
 > registration, or generated `<game>.html` in the repo — Nuxt handles bundling,
@@ -93,35 +96,41 @@ main.foo-game
 ### 3. Create the Page Wrapper (`app/pages/foo.vue`)
 
 This is the thin Nuxt route. It imports the root component via the `@` alias and
-sets the full per-page `<head>`. Use `app/pages/cameo.vue` and
-`app/pages/court.vue` as templates.
+sets the full per-page `<head>` through the shared `useGameHead()` composable
+(`app/composables/useGameHead.ts`), which builds the canonical / OpenGraph /
+`og:email` / JSON-LD boilerplate for you — you pass only what differs. Use
+`app/pages/cameo.vue` and `app/pages/court.vue` as templates. Always use
+`<script setup lang="ts">`.
 
 ```vue
-<script setup>
+<script setup lang="ts">
   import Foo from "@/views/foo/Foo.vue";
 
-  useHead({
+  // Structured data (VideoGame / WebSite) — serialized into an ld+json script.
+  const jsonLd = {
+    "@context": "http://schema.org",
+    "@type": "VideoGame",
+    name: "My Awesome Game",
+    url: "https://kinda.fun/foo",
+    image: "https://kinda.fun/img/og-foo.png",
+    // ...genre, description, creator, offers, screenshots as appropriate
+  };
+
+  useGameHead({
     title: "My Awesome Game | A short tagline",
-    link: [
-      { rel: "canonical", href: "https://kinda.fun/foo" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" },
-      // Branded favicons override the site defaults by reusing the same keys:
+    ogTitle: "My Awesome Game",
+    description: "Your game description",
+    path: "/foo", // builds canonical + og:url as https://kinda.fun/foo
+    ogImage: "https://kinda.fun/img/og-foo.png", // 1200×630 assumed; override with ogImageWidth/Height
+    themeColor: "#000000", // optional; adds theme-color + msapplication-TileColor
+    fonts: ["https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"],
+    // Branded favicons override the site defaults by reusing the same keys:
+    favicons: [
       { rel: "apple-touch-icon", sizes: "180x180", href: "/img/foo/apple-touch-icon.png", key: "fav-apple" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/img/foo/favicon-32x32.png", key: "fav-32" },
       { rel: "icon", type: "image/png", sizes: "16x16", href: "/img/foo/favicon-16x16.png", key: "fav-16" },
     ],
-    meta: [
-      { name: "description", content: "Your game description" },
-      { name: "theme-color", content: "#000000" },
-      { property: "og:title", content: "My Awesome Game" },
-      { property: "og:type", content: "website" },
-      { property: "og:description", content: "Your game description" },
-      { property: "og:image", content: "https://kinda.fun/img/og-foo.png" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { property: "og:url", content: "https://kinda.fun/foo" },
-      { property: "og:email", content: "lemon@ahoylemon.xyz" },
-    ],
+    jsonLd,
   });
 </script>
 
@@ -130,38 +139,35 @@ sets the full per-page `<head>`. Use `app/pages/cameo.vue` and
 </template>
 ```
 
+> `useGameHead` also accepts `noZoomViewport: true` (clicker / card games),
+> `extraMeta` (e.g. site verification), and works without `ogImage`/`jsonLd` for
+> plain pages like `/stats`.
+
 ### 4. Register the Route
 
-#### 4.1 Add to prerender routes in `nuxt.config.ts`
+#### 4.1 Add the route to the manifest (`scripts/verify/_routes.mjs`)
 
-```ts
-nitro: {
-  prerender: {
-    routes: ["/", "/cameo", "/court", /* ... */ "/foo"],
-  },
-},
+`_routes.mjs` is the **single source of truth** for routes. `nuxt.config.ts`
+imports `PRERENDER_ROUTES` from it, so adding a route to `ROUTES` there both
+prerenders it (`nuxi generate`) and adds it to the verify sweep — no separate
+`nuxt.config.ts` edit needed.
+
+```js
+// in ROUTES (scripts/verify/_routes.mjs)
+{ name: "foo", path: "/foo", selector: ".foo-game", contentNeedle: "My Awesome Game", minText: 50 },
 ```
 
-#### 4.2 Add redirects and the verify route
+The `selector` must be visible after hydration; the `contentNeedle` must be
+present in the raw prerendered HTML.
 
-Add the `.html` → clean-path redirect in **both** places:
+#### 4.2 Add the redirect (`firebase.json` only)
 
-**`firebase.json`** (`hosting.redirects`):
+Add the `.html` → clean-path redirect to `firebase.json` (`hosting.redirects`).
+The verify harness derives `REDIRECTS` by parsing `firebase.json`, so this is the
+**only** place to add it:
 
 ```json
 { "source": "/foo.html", "destination": "/foo", "type": 301 }
-```
-
-**`scripts/verify/routes.mjs`** — add the route to `ROUTES` (with a `selector`
-that must be visible after hydration and a `contentNeedle` present in the raw
-prerendered HTML) and add the redirect to `REDIRECTS`:
-
-```js
-// in ROUTES
-{ name: "foo", path: "/foo", ported: true, selector: ".foo-game", contentNeedle: "My Awesome Game", minText: 50 },
-
-// in REDIRECTS
-{ from: "/foo.html", to: "/foo" },
 ```
 
 ### 5. Optional: Organize Complex Games
@@ -215,17 +221,23 @@ npm run verify        # add --no-emulator to skip the Firestore round-trip
 
 ### Using Firebase Firestore
 
-Guard client-only Firebase access so the page still prerenders:
+Guard client-only Firebase access so the page still prerenders. Use the shared
+`useClientFirestore()` composable (`src/shared/ts/_useClientFirestore.ts`), which
+returns the Firestore instance on the client and `null` during prerender — then
+guard reads on the result:
 
 ```typescript
-import { useFirestore, useCollection } from "vuefire";
+import { useCollection } from "vuefire";
 import { collection } from "firebase/firestore";
+import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
 
-if (import.meta.client) {
-  const db = useFirestore();
-  const rooms = useCollection(collection(db, "games/foo/rooms"));
-}
+const db = useClientFirestore(); // Firestore | null
+const rooms = db ? useCollection(collection(db, "games/foo/rooms")) : null;
 ```
+
+For toasts, use `useClientToast()` (`src/shared/ts/_useClientToast.ts`) — it
+returns the real toast on the client and a callable no-op stub during prerender,
+so `toast(...)` and `toast.success(...)` are both safe to call unconditionally.
 
 ### Shared SCSS Variables
 
@@ -302,8 +314,8 @@ See [docs/sisyphus.md](sisyphus.md) or [docs/megachurch.md](megachurch.md) for e
 
 **Redirect not working:**
 
-- Ensure the `/foo.html` → `/foo` redirect exists in both `firebase.json` and
-  `scripts/verify/routes.mjs`.
+- Ensure the `/foo.html` → `/foo` redirect exists in `firebase.json` (the verify
+  harness derives its redirect list from there).
 
 **Hot reload not working:**
 
@@ -319,9 +331,9 @@ deploys to [https://kinda.fun](https://kinda.fun). To deploy manually, run
 **Pre-deployment checklist:**
 
 - ✅ Root component created under `src/views/foo/`
-- ✅ Page wrapper created at `app/pages/foo.vue`
-- ✅ Route added to `nitro.prerender.routes`
-- ✅ Redirect added to `firebase.json` and `scripts/verify/routes.mjs`
+- ✅ Page wrapper created at `app/pages/foo.vue` (`<script setup lang="ts">` + `useGameHead`)
+- ✅ Route added to `ROUTES` in `scripts/verify/_routes.mjs`
+- ✅ Redirect added to `firebase.json`
 - ✅ Game loads at `localhost:3000/foo`
 - ✅ `npm run build` and `npm run verify` succeed
 - ✅ Tests pass (`npm run test:run`)
@@ -340,15 +352,14 @@ src/views/foo/
 └── ts/             # TypeScript logic (optional)
 
 app/pages/
-└── foo.vue         # Route wrapper (imports root + useHead)
+└── foo.vue         # Route wrapper (imports root + useGameHead)
 ```
 
 **Files edited:**
 
 ```
-nuxt.config.ts               # Add "/foo" to nitro.prerender.routes
-scripts/verify/routes.mjs    # Add route to ROUTES + redirect to REDIRECTS
-firebase.json                # Add /foo.html → /foo redirect
+scripts/verify/_routes.mjs   # Add route to ROUTES (drives prerender + verify)
+firebase.json                # Add /foo.html → /foo redirect (verify derives REDIRECTS from it)
 ```
 
 **Commands:**

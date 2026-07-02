@@ -2,7 +2,7 @@ import { fileURLToPath } from "node:url";
 import { defineNuxtConfig } from "nuxt/config";
 // Single route manifest (also drives the verify harness). Adding a route there
 // prerenders it here too.
-import { PRERENDER_ROUTES } from "./scripts/verify/routes.mjs";
+import { PRERENDER_ROUTES } from "./scripts/verify/_routes.mjs";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -18,7 +18,7 @@ export default defineNuxtConfig({
   // fires for the dev server, so this never runs during build/generate.
   hooks: {
     async listen(_server, listener) {
-      const { printDevBanner } = await import("./scripts/nuxt/devBanner.mjs");
+      const { printDevBanner } = await import("./scripts/nuxt/_devBanner.mjs");
       printDevBanner(listener?.url);
     },
   },

@@ -1,5 +1,5 @@
 import type { Ref } from "vue";
-import { useFirestore } from "vuefire";
+import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
 import type { CourtGameState, Tactic, TurnActor } from "./_types";
 import {
   classifyJusticeVote,
@@ -35,7 +35,7 @@ export function useCourtStats(deps: StatsDeps) {
   // app, so pass null on the server. createCourtStatsHelpers accepts
   // Firestore | null and no-ops every write when db is null (see its safeWrite
   // guard), so nothing is dereferenced during prerender.
-  const courtStats = createCourtStatsHelpers(import.meta.client ? useFirestore() : null);
+  const courtStats = createCourtStatsHelpers(useClientFirestore());
 
   function getCurrentOutcome(): CourtOutcome | null {
     if (!verdict.value) return null;

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   // Catch-all page: renders the 404 UI as real, prerenderable HTML. The build
   // copies the prerendered /not-found output to 404.html, which Firebase
   // Hosting serves (with a real 404 status) for unmatched routes. We do NOT set

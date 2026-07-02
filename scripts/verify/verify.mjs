@@ -14,9 +14,9 @@ import { rmSync } from "node:fs";
 import { join } from "node:path";
 import process from "node:process";
 import pkg from "playwright";
-import { ROUTES, REDIRECTS } from "./routes.mjs";
-import { startStaticServer } from "./static-server.mjs";
-import { resolveChromium } from "./browser.mjs";
+import { ROUTES, REDIRECTS } from "./_routes.mjs";
+import { startStaticServer } from "./_static-server.mjs";
+import { resolveChromium } from "./_browser.mjs";
 
 const { chromium } = pkg;
 const ROOT = process.cwd();

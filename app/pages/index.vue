@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
   import { ref, reactive, onMounted, computed } from "vue";
 
   // Full per-page <head> migrated from the legacy src/views/home/Page.pug.
@@ -39,26 +39,18 @@
     dateModified: new Date().toISOString(),
   };
 
-  useHead({
+  // Home fonts (Inter/Lora) and the site-wide favicons live in nuxt.config's
+  // global head, so only the home-specific canonical / theme / OG / verification
+  // go here.
+  useGameHead({
     title: "Kinda fun. | Here's some games and stuff that Lemon made. All of it is kinda fun!",
-    link: [{ rel: "canonical", href: "https://kinda.fun" }],
-    meta: [
-      { name: "description", content: "Here's some games and stuff that Lemon made. All of it is kinda fun!" },
-      { name: "theme-color", content: "#e5e828" },
-      { name: "msapplication-TileColor", content: "#e5e828" },
-      { name: "msvalidate.01", content: "D3327FD7610C2D05D7D605EBCA288944" },
-      { property: "og:title", content: "Kinda fun." },
-      { property: "og:type", content: "website" },
-      { property: "og:description", content: "Here's some games and stuff that Lemon made. All of it is kinda fun!" },
-      { property: "og:image", content: "https://kinda.fun/img/og-wide.png" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { property: "og:url", content: "https://kinda.fun" },
-      { property: "og:email", content: "lemon@ahoylemon.xyz" },
-    ],
-    script: [
-      { type: "application/ld+json", innerHTML: JSON.stringify(jsonLd) },
-    ],
+    ogTitle: "Kinda fun.",
+    description: "Here's some games and stuff that Lemon made. All of it is kinda fun!",
+    path: "",
+    ogImage: "https://kinda.fun/img/og-wide.png",
+    themeColor: "#e5e828",
+    extraMeta: [{ name: "msvalidate.01", content: "D3327FD7610C2D05D7D605EBCA288944" }],
+    jsonLd,
   });
 
   // SSR-safe: relative base means internal links prerender as clean paths

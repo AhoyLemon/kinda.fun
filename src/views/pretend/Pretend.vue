@@ -23,8 +23,9 @@
   // Firebase is client-only (migration plan locked decision #3): during
   // prerender/SSR these composables would have no VueFire app, so guard them.
   import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
-  import { useFirestore, useCollection, useDocument } from "vuefire";
-  const db = import.meta.client ? useFirestore() : null;
+  import { useCollection, useDocument } from "vuefire";
+  import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
+  const db = useClientFirestore();
   const statsRef = db ? doc(db, `stats/pretend`) : null;
 
   ///////////////////////////////////
