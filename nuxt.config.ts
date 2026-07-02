@@ -47,12 +47,11 @@ export default defineNuxtConfig({
         { name: "viewport", content: "width=device-width, initial-scale=1.0" },
       ],
       link: [
+        // Preconnect helps every page that pulls Google fonts. The Inter/Lora
+        // stylesheet itself is only used by the home page, so it lives in
+        // index.vue's useGameHead (fonts) rather than loading site-wide.
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" },
-        {
-          rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap",
-        },
         // Site-wide default favicons. Keyed so game pages with their own branded
         // favicons override (rather than duplicate) these via the same key.
         { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png", key: "fav-apple" },

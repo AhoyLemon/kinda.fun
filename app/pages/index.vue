@@ -39,9 +39,9 @@
     dateModified: new Date().toISOString(),
   };
 
-  // Home fonts (Inter/Lora) and the site-wide favicons live in nuxt.config's
-  // global head, so only the home-specific canonical / theme / OG / verification
-  // go here.
+  // The site-wide favicons live in nuxt.config's global head. Inter/Lora are
+  // only used by this page (home's $serif/$sans-serif), so they load here rather
+  // than site-wide.
   useGameHead({
     title: "Kinda fun. | Here's some games and stuff that Lemon made. All of it is kinda fun!",
     ogTitle: "Kinda fun.",
@@ -49,6 +49,7 @@
     path: "",
     ogImage: "https://kinda.fun/img/og-wide.png",
     themeColor: "#e5e828",
+    fonts: ["https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"],
     extraMeta: [{ name: "msvalidate.01", content: "D3327FD7610C2D05D7D605EBCA288944" }],
     jsonLd,
   });
