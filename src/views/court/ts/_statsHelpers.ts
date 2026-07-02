@@ -148,8 +148,12 @@ export function getAttackedJusticeNamesForPlay(options: AttackedJusticeTrackingO
   return uniqueNames([targetJusticeName]);
 }
 
-export function createCourtStatsHelpers(db: Firestore, deps: StatsDeps = defaultDeps) {
+export function createCourtStatsHelpers(db: Firestore | null, deps: StatsDeps = defaultDeps) {
   async function safeWrite(writeLabel: string, callback: () => Promise<void>): Promise<void> {
+    // No VueFire app during prerender/SSR: `db` is null on the server. Every
+    // track*/write* helper funnels through here, so this single guard makes them
+    // all no-ops server-side (rather than passing a fake `db` that would throw).
+    if (!db) return;
     try {
       await callback();
     } catch (error) {

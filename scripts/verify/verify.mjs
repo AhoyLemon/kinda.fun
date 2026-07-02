@@ -243,7 +243,14 @@ async function main() {
     else record("build", "nuxt generate (skipped)", true, "--skip-generate");
 
     if (emulatorReady) await emulatorRoundTrip();
-    else if (!NO_EMULATOR) record("emulator", "firestore write/read round-trip", false, "emulator not running");
+    else if (!NO_EMULATOR) {
+      // No emulator running and none requested to spawn: skip the round-trip
+      // rather than failing. `bun run verify` still checks every route out of
+      // the box; the round-trip runs when an emulator is detected or when
+      // --spawn-emulator is passed (and --no-emulator silences this note).
+      console.log("\n○ Skipping Firestore write/read round-trip — no emulator detected.");
+      console.log("  Start it (or pass --spawn-emulator) to include this check; pass --no-emulator to silence.");
+    }
 
     const srv = await startStaticServer({ root: PUBLIC_DIR, redirects: REDIRECTS.map((r) => ({ from: r.from, to: r.to })) });
     staticServer = srv.server;
