@@ -111,7 +111,7 @@ describe("Court Toast Feedback - Magnitude Descriptors", () => {
     expect(outcome.overrideFeedback).toBeTruthy();
     if (outcome.overrideFeedback) {
       expect(outcome.overrideFeedback).not.toMatch(/\+\d+/);
-      expect(outcome.overrideFeedback).not.toMatch(/\-\d+/);
+      expect(outcome.overrideFeedback).not.toMatch(/-\d+/);
       expect(outcome.overrideFeedback).not.toMatch(/\d+ points/);
     }
   });

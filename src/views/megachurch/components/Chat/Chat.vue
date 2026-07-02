@@ -129,7 +129,7 @@
 
   const props = defineProps({
     isOpen: Boolean,
-    contactType: "plug" | "harold" | "sterling",
+    contactType: String,
     playerName: String,
     playerMoney: Number,
     playerHasVan: Boolean,
@@ -255,7 +255,7 @@
           return; // Invalid message type for plug
         }
         break;
-      case "harold":
+      case "harold": {
         const haroldSection = chatMessages.harold[messageType];
         if (haroldSection && "to" in haroldSection && "from" in haroldSection) {
           playerMessages = haroldSection.to;
@@ -264,6 +264,7 @@
           return; // Invalid message type for harold
         }
         break;
+      }
       case "sterling":
         if (messageType === "checkin") {
           playerMessages = chatMessages.sterling.checkin.to;

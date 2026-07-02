@@ -44,7 +44,10 @@
   const statsRef = db ? doc(db, `stats/megachurch`) : null;
   // Toasts are client-only too. Stub on the server so any accidental call during
   // prerender is a harmless no-op.
-  const toast = import.meta.client ? useToast() : { success() {}, error() {}, info() {}, warning() {} };
+  // Callable stub (not a plain object): ToastApi is itself callable (toast(...))
+  // and megachurch passes `toast` into strictly-typed helpers, so the server
+  // stub must match that signature.
+  const toast = import.meta.client ? useToast() : Object.assign(() => {}, { success() {}, error() {}, info() {}, warning() {} });
   const sterlingNoteRef = ref<{ showNote: () => void } | null>(null);
 
   // ================= COMPUTEDS =================

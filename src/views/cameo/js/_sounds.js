@@ -1,4 +1,4 @@
-import { Howl, Howler } from "howler";
+import { Howl } from "howler";
 const audioSrc = "/audio/";
 export const soundMiss = new Howl({
   src: [audioSrc + "attracted-2-130.mp3", audioSrc + "attracted-2-130.ogg"],

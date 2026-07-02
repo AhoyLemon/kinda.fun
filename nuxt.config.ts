@@ -1,8 +1,11 @@
 import { fileURLToPath } from "node:url";
+import { defineNuxtConfig } from "nuxt/config";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityVersion: 4,
+  // Nuxt 4 defaults to compatibility version 4, so no top-level
+  // `compatibilityVersion` key is needed (it isn't a valid top-level option —
+  // it lives under `future` — which is why it tripped the type-checker).
   // Pin Nitro's compatibility date so builds are reproducible and the
   // "using fallback date" warning goes away.
   compatibilityDate: "2026-06-27",

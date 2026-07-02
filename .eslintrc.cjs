@@ -3,6 +3,17 @@ require("@rushstack/eslint-patch/modern-module-resolution");
 
 module.exports = {
   root: true,
+  // Never lint build output or generated/vendored trees. (The `lint` script also
+  // passes --ignore-path .gitignore, but this keeps editor + any direct eslint
+  // run consistent regardless.)
+  ignorePatterns: ["dist/", ".output/", ".nuxt/", "node_modules/", "functions/lib/", "public/"],
+  // The app runs in the browser; without this, `no-undef` fires on window,
+  // document, console, etc. across src/ and app/ (node envs are set per-override
+  // for scripts/tests/config below).
+  env: {
+    browser: true,
+    es2021: true,
+  },
   parser: "vue-eslint-parser",
   extends: ["plugin:vue/vue3-essential", "eslint:recommended", "@vue/eslint-config-prettier/skip-formatting"],
   parserOptions: {
@@ -86,7 +97,30 @@ module.exports = {
       },
     },
     {
-      files: ["scripts/**/*.js", "scripts/**/*.ts", "functions/**/*.js", "tests/**/*.js", "nuxt.config.ts"],
+      // Standalone TypeScript files parse with the TS parser directly (the
+      // top-level parser is vue-eslint-parser, for .vue). The base
+      // `no-unused-vars` rule is inaccurate for TS — it flags type-signature
+      // parameter names (e.g. `shuffle: <T>(array: T[]) => T[]`) and type-only
+      // imports as "unused" — so disable it here, matching the .vue treatment.
+      // (Adopting @typescript-eslint/no-unused-vars later would restore accurate
+      // unused detection without the false positives.)
+      files: ["**/*.ts", "**/*.tsx"],
+      parser: "@typescript-eslint/parser",
+      rules: {
+        "no-unused-vars": "off",
+      },
+    },
+    {
+      files: [
+        "scripts/**/*.{js,ts,mjs}",
+        "functions/**/*.js",
+        "nuxt.config.ts",
+        "*.config.{js,ts,mjs,cjs}",
+        "tests/**/*.{js,ts}",
+        "**/tests/**/*.{js,ts}",
+        "**/*.spec.{js,ts}",
+        "**/*.test.{js,ts}",
+      ],
       env: {
         node: true,
       },

@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { reactive } from "vue";
 import { my } from "../src/views/megachurch/ts/variables/_my";
 import { eternalLegacyCelebrities } from "../src/views/megachurch/ts/variables/_eternalLegacy";
 
