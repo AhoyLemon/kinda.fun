@@ -100,7 +100,7 @@ jobs:
         continue-on-error: true
         run: |
           set -o pipefail
-          bun run build -- --mode production 2>&1 | tee /tmp/build.log
+          bun run build 2>&1 | tee /tmp/build.log
         env:
           NODE_ENV: production
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}

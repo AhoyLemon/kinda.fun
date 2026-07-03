@@ -2,14 +2,15 @@
 
 ## Core Technologies
 
-| Technology                                                                | Purpose                      |
-| ------------------------------------------------------------------------- | ---------------------------- |
-| **[Vue.js](https://vuejs.org/)**                                          | Frontend framework           |
-| **[Vite](https://vitejs.dev/)**                                           | Build tool and dev server    |
-| **[Node.js](https://nodejs.org/)**                                        | JavaScript runtime           |
-| **[TypeScript](https://www.typescriptlang.org/)**                         | Programming language         |
-| **[JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)** | Programming language         |
-| **[Firebase](https://firebase.google.com/)**                              | Backend services and hosting |
+| Technology                                                                | Purpose                              |
+| ------------------------------------------------------------------------- | ------------------------------------ |
+| **[Nuxt](https://nuxt.com/)**                                             | Vue framework (static generation)    |
+| **[Vue.js](https://vuejs.org/)**                                          | Frontend framework                   |
+| **[Vite](https://vitejs.dev/)**                                           | Bundler used under the hood by Nuxt  |
+| **[Node.js](https://nodejs.org/)**                                        | JavaScript runtime (22+)             |
+| **[TypeScript](https://www.typescriptlang.org/)**                         | Programming language                 |
+| **[JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)** | Programming language                 |
+| **[Firebase](https://firebase.google.com/)**                              | Backend services and hosting         |
 
 ## Frontend Libraries
 
@@ -57,10 +58,11 @@
 
 ## Testing
 
-| Technology                                          | Purpose                 |
-| --------------------------------------------------- | ----------------------- |
-| **[Vue Test Utils](https://test-utils.vuejs.org/)** | Vue component testing   |
-| **[jsdom](https://github.com/jsdom/jsdom)**         | DOM testing environment |
+| Technology                                          | Purpose                        |
+| --------------------------------------------------- | ------------------------------ |
+| **[Vue Test Utils](https://test-utils.vuejs.org/)** | Vue component testing          |
+| **[jsdom](https://github.com/jsdom/jsdom)**         | DOM testing environment        |
+| **[Playwright](https://playwright.dev/)**           | Route-verify harness (headless) |
 
 ## Deployment
 

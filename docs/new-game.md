@@ -1,23 +1,34 @@
 # Creating a New Kinda Fun Game
 
-This guide walks you through creating a new game from scratch on the Kinda Fun platform.
+This guide walks you through creating a new game from scratch on the Kinda Fun platform (Nuxt 4, static generation).
+
+> Coming from the old Vite/Pug build? See [`vite-to-nuxt-cheatsheet.md`](./vite-to-nuxt-cheatsheet.md) for a "I used to edit X, now what?" map (favicons/OG, plugins, env vars, SSR guards, etc.).
 
 ## Overview
 
-Each game on Kinda Fun is a self-contained Vue 3 application. The build system automatically generates the final HTML files from Pug templates.
+Each game's code lives under `src/views/<game>/` (a Vue 3 root component plus its
+Pug template, SCSS, and TS/JS). Nuxt exposes it as a route through a thin wrapper
+in `app/pages/<game>.vue`, which imports the root component and sets the page
+`<head>` via the shared `useGameHead()` composable. The site is statically
+generated with `nuxi generate` into `.output/public` and served by Firebase
+Hosting.
 
-**The 4 core files you'll create:**
+**What you'll create:**
 
-- **Vue Component** (`src/views/[game]/[Game].vue`) - Main game UI and logic
-- **SCSS Styles** (`src/views/[game]/[Game].scss`) - Game-specific styles
-- **Page Template** (`src/views/[game]/Page.pug`) - HTML template (auto-generates `[game].html`)
-- **Entry Point** (`src/entries/[game].js`) - Bootstraps the Vue app
+- **Game root component** (`src/views/<game>/<Game>.vue`) plus its Pug/SCSS/TS files
+- **Page wrapper** (`app/pages/<game>.vue`) — `<script setup lang="ts">`, imports the root component and calls `useGameHead`
 
-**Configuration files you'll edit:**
+**What you'll edit:**
 
-- `vite.config.js` - Register build entry point and dev server route
-- `scripts/npm-run/buildPages.js` - Add page to build script
-- `.gitignore` - Add generated HTML file
+- `scripts/verify/_routes.mjs` — add the route to `ROUTES` (this drives both
+  prerendering via `PRERENDER_ROUTES` and the verify sweep — no `nuxt.config.ts`
+  edit needed)
+- `firebase.json` — add the matching `/<game>.html` → `/<game>` redirect (the
+  verify harness derives its `REDIRECTS` from this file)
+
+> There is no more `Page.pug`, `src/entries/<game>.js`, `vite.config.js`
+> registration, or generated `<game>.html` in the repo — Nuxt handles bundling,
+> routing, and HTML generation.
 
 ## Step-by-Step: Creating a New Game
 
@@ -29,11 +40,12 @@ In this guide, we'll use `foo` as an example (replace it with your actual game n
 
 ### 2. Create the Game Files
 
-Create these 4 files in your game's directory:
+Create your game's root component and its template/styles under `src/views/foo/`.
 
-#### 2.1 Vue Component (`src/views/foo/Foo.vue`)
+#### 2.1 Root Vue Component (`src/views/foo/Foo.vue`)
 
-Your main game component with UI and logic:
+Use `<script setup>`, and point `<template lang="pug" src>` / `<style lang="scss" src>`
+at sibling files:
 
 ```vue
 <script setup lang="ts">
@@ -52,14 +64,23 @@ Your main game component with UI and logic:
 
 **Best Practices:**
 
-- Use Vue 3 Composition API with `<script setup>`
-- Use TypeScript for game logic (create `.ts` files in `ts/` subdirectory)
-- Import shared SCSS variables from `src/shared/`
-- For complex games, break logic into separate files
+- Use Vue 3 Composition API with `<script setup>`.
+- Use TypeScript for game logic (create `.ts` files in a `ts/` subdirectory).
+- Import shared SCSS variables from `src/shared/` via the `@` alias.
+- **Client-guard** any Firebase, toast, or `localStorage` usage with
+  `import.meta.client` so the page can prerender without a browser environment.
 
-#### 2.2 SCSS Styles (`src/views/foo/Foo.scss`)
+#### 2.2 Pug Template (`src/views/foo/Foo.pug`)
 
-Game-specific styles (can also include styles in the `.vue` file):
+Your component's markup:
+
+```pug
+main.foo-game
+  h1 {{ ui.title }}
+  p {{ ui.message }}
+```
+
+#### 2.3 SCSS Styles (`src/views/foo/Foo.scss`)
 
 ```scss
 @import "@/shared/scss/_variables.scss";
@@ -69,262 +90,154 @@ Game-specific styles (can also include styles in the `.vue` file):
   width: 100%;
   min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
 }
 ```
 
-#### 2.3 Page Template (`src/views/foo/Page.pug`)
+### 3. Create the Page Wrapper (`app/pages/foo.vue`)
 
-Pug template that generates the HTML file during build:
+This is the thin Nuxt route. It imports the root component via the `@` alias and
+sets the full per-page `<head>` through the shared `useGameHead()` composable
+(`app/composables/useGameHead.ts`), which builds the canonical / OpenGraph /
+`og:email` / JSON-LD boilerplate for you — you pass only what differs. Use
+`app/pages/cameo.vue` and `app/pages/court.vue` as templates. Always use
+`<script setup lang="ts">`.
 
-```pug
-include ../../shared/pug/_variables.pug
-include ../../shared/pug/_mixins.pug
-- const name = "My Awesome Game"
-- const desc = "Your game description"
-- const keywords = "game, fun, awesome"
-- const gameUrl = baseUrl + "/foo"
-- const ogImage = baseUrl + "/img/og-foo.png"
-- const datePublished = "2026-04-02"
-- const viewportContent = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+```vue
+<script setup lang="ts">
+  import Foo from "@/views/foo/Foo.vue";
 
-doctype html
-html(lang="en")
-  head
+  // Structured data (VideoGame / WebSite) — serialized into an ld+json script.
+  const jsonLd = {
+    "@context": "http://schema.org",
+    "@type": "VideoGame",
+    name: "My Awesome Game",
+    url: "https://kinda.fun/foo",
+    image: "https://kinda.fun/img/og-foo.png",
+    // ...genre, description, creator, offers, screenshots as appropriate
+  };
 
-    include ../../shared/pug/_meta.pug
+  useGameHead({
+    title: "My Awesome Game | A short tagline",
+    ogTitle: "My Awesome Game",
+    description: "Your game description",
+    path: "/foo", // builds canonical + og:url as https://kinda.fun/foo
+    ogImage: "https://kinda.fun/img/og-foo.png", // 1200×630 assumed; override with ogImageWidth/Height
+    themeColor: "#000000", // optional; adds theme-color + msapplication-TileColor
+    fonts: ["https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"],
+    // Branded favicons override the site defaults by reusing the same keys:
+    favicons: [
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/img/foo/apple-touch-icon.png", key: "fav-apple" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/img/foo/favicon-32x32.png", key: "fav-32" },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/img/foo/favicon-16x16.png", key: "fav-16" },
+    ],
+    jsonLd,
+  });
+</script>
 
-    //- Fonts & CSS
-    link(rel="preconnect" href="https://fonts.gstatic.com")
-    link(href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700|Poppins:400,400i,700" rel="stylesheet")
-    if mode != "development"
-      link(href="/foo.css?lastUpdated=" + lastUpdated type="text/css" rel="stylesheet")
-
-    //- OpenGraph
-    meta(property="og:title" content=name)
-    meta(property="og:type" content="website")
-    meta(property="og:image:width" content="1200")
-    meta(property="og:image:height" content="630")
-    meta(property="og:description" content=desc)
-    meta(property="og:url" content=baseUrl + "/foo")
-    meta(property="og:image" content=baseUrl + "/img/og-foo.png")
-    meta(property="og:email" content=email)
-
-  body
-    #app
-      main.page-content
-    if mode == "development"
-      script(type="module" src="/src/entries/foo.js")
-    else
-      script(src="/foo.js")
+<template>
+  <Foo />
+</template>
 ```
 
-**Key points:**
+> `useGameHead` also accepts `noZoomViewport: true` (clicker / card games),
+> `extraMeta` (e.g. site verification), and works without `ogImage`/`jsonLd` for
+> plain pages like `/stats`.
 
-- This template auto-generates `foo.html` in both dev and dist
-- Update meta tags, title, and OpenGraph properties
-- The Pug build uses shared variables like `baseUrl`, `email`, `mode`, `lastUpdated`
-- Development mode loads from `/src/entries/`, production loads from `/`
+### 4. Register the Route
 
-#### 2.4 Entry Point (`src/entries/foo.js`)
+#### 4.1 Add the route to the manifest (`scripts/verify/_routes.mjs`)
 
-Bootstrap your Vue app with dependencies:
+`_routes.mjs` is the **single source of truth** for routes. `nuxt.config.ts`
+imports `PRERENDER_ROUTES` from it, so adding a route to `ROUTES` there both
+prerenders it (`nuxi generate`) and adds it to the verify sweep — no separate
+`nuxt.config.ts` edit needed.
 
 ```js
-import { createApp } from "vue";
-import FooPage from "../views/foo/Foo.vue";
-import { VueFire } from "vuefire";
-import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "../../firebaseConfig.public.js";
-
-const firebaseApp = initializeApp(firebaseConfig);
-
-const app = createApp(FooPage);
-app.use(VueFire, { firebaseApp, modules: [] }).mount("#app");
+// in ROUTES (scripts/verify/_routes.mjs)
+{ name: "foo", path: "/foo", selector: ".foo-game", contentNeedle: "My Awesome Game", minText: 50 },
 ```
 
-**For games with different requirements:**
+The `selector` must be visible after hydration; the `contentNeedle` must be
+present in the raw prerendered HTML.
 
-- **No Firebase:** Remove VueFire imports and initialization
-- **With Toast notifications:** Import and use `vue-toastification`
-- **With tooltips:** Import and use `vue-tippy`
-- **With audio:** Import `howler`
+#### 4.2 Add the redirect (`firebase.json` only)
 
-See existing game entry points in `src/entries/` for examples with various features.
+Add the `.html` → clean-path redirect to `firebase.json` (`hosting.redirects`).
+The verify harness derives `REDIRECTS` by parsing `firebase.json`, so this is the
+**only** place to add it:
 
-### 3. Update Configuration Files
-
-Now register your game in the build system by editing 3 configuration files:
-
-#### 3.1 Update `vite.config.js`
-
-Add your game to the build entry points and dev server routes:
-
-**In the `build.rollupOptions.input` section (around line 100):**
-
-```javascript
-input: {
-  cameo: resolve(__dirname, "src/entries/cameo.js"),
-  foo: resolve(__dirname, "src/entries/foo.js"),  // ← Add your game
-  guillotine: resolve(__dirname, "src/entries/guillotine.js"),
-  // ... other games
-},
+```json
+{ "source": "/foo.html", "destination": "/foo", "type": 301 }
 ```
 
-**In the `server.configureServer` middleware section (around line 120):**
+### 5. Optional: Organize Complex Games
 
-```javascript
-const mpaPages = [
-  "cameo",
-  "foo", // ← Add your game slug
-  "guillotine",
-  "invalid",
-  "meeting",
-  "megachurch",
-  "pretend",
-  "sisyphus",
-  "stats",
-  "wrongest",
-  "home",
-  "404",
-];
-```
-
-This enables:
-
-- Building your game as a separate bundle
-- Local development at `http://localhost:5173/foo`
-- URL rewriting from `/foo` to `/foo.html`
-
-#### 3.2 Update `scripts/npm-run/buildPages.js`
-
-Add your game to the page build script so the Pug template generates HTML:
-
-**In the `pages` array (around line 35):**
-
-```javascript
-const pages = [
-  {
-    src: path.join(SRC_DIR, "views", "cameo", "Page.pug"),
-    out: path.join(DIST_DIR, "cameo.html"),
-    name: "cameo.html",
-  },
-  {
-    src: path.join(SRC_DIR, "views", "foo", "Page.pug"), // ← Add your game
-    out: path.join(DIST_DIR, "foo.html"),
-    name: "foo.html",
-  },
-  {
-    src: path.join(SRC_DIR, "views", "guillotine", "Page.pug"),
-    out: path.join(DIST_DIR, "guillotine.html"),
-    name: "guillotine.html",
-  },
-  // ... other games
-];
-```
-
-This tells the build system to:
-
-- Compile `Page.pug` to `foo.html` during builds
-- Generate both development and production versions
-- Include proper base URLs and asset paths
-
-#### 3.3 Update `.gitignore`
-
-Add the generated HTML file to `.gitignore` (around line 45):
-
-```gitignore
-# Generated HTML files (for dev only)
-/404.html
-/index.html
-/home.html
-/cameo.html
-/foo.html        # ← Add your game
-/guillotine.html
-/megachurch.html
-# ... other games
-```
-
-**Why:** The HTML files are auto-generated from Pug templates during build. You don't want to commit them since they're build artifacts.
-
-### 4. Optional: Create Game Subdirectories
-
-For complex games, organize code into subdirectories:
+For larger games, split code into subdirectories:
 
 ```
 src/views/foo/
-├── Foo.vue             # Main component
-├── Foo.scss            # Game-specific styles
-├── Foo.pug             # Component template (optional)
-├── Page.pug            # HTML page template
-├── ts/                 # TypeScript logic files
-│   ├── _config.ts      # Game configuration
-│   ├── _rules.ts       # Game rules and logic
-│   └── _data.ts        # Game data
-├── components/         # Reusable Vue components
-│   ├── Board.vue
-│   └── Player.vue
-├── scss/               # Additional SCSS files
-│   └── _theme.scss
-└── pug/               # Pug partials (optional)
-    └── sections.pug
+├── Foo.vue             # Root component
+├── Foo.pug             # Template
+├── Foo.scss            # Styles
+├── ts/                 # TypeScript logic
+│   ├── _config.ts
+│   ├── _rules.ts
+│   └── _data.ts
+├── components/         # Reusable sub-components
+└── scss/               # Additional SCSS partials
 ```
 
-### 5. Test Your Game Locally
+### 6. Test Your Game Locally
 
 ```bash
-# Start the development server
-npm run dev:client
+# Start the Nuxt dev server
+npm run dev
 
-# Visit your game in browser
-# http://localhost:5173/foo
+# Visit your game (clean path, no .html)
+# http://localhost:3000/foo
 ```
 
 **Expected behavior:**
 
-- Game loads at the URL
-- Vue DevTools shows your component
-- Browser console may show Firebase warnings (normal in dev without config)
-- Hot reload works when you edit files
+- Game loads at `http://localhost:3000/foo`.
+- Vue DevTools shows your component.
+- Hot reload works when you edit files.
+- Firebase warnings are normal in dev without config.
 
-### 6. Build and Verify
-
-```bash
-# Build for production
-npm run build -- --mode production
-```
-
-**Verify the build:**
-
-- Check `dist/foo.html` was created
-- Check `dist/foo.js` and `dist/foo.css` exist
-- Ensure no build errors in console
+### 7. Build and Verify
 
 ```bash
-# Preview the built version
+# Static-generate the site into .output/public
+npm run build
+
+# Preview the generated output
 npm run preview
-# Then visit http://localhost:4173/foo
+
+# Drive every route headless (prerender, hydration, redirects, emulator)
+npm run verify        # add --no-emulator to skip the Firestore round-trip
 ```
 
 ## Common Patterns
 
 ### Using Firebase Firestore
 
-```typescript
-// In your Vue component
-import { useFirestore, useCollection } from "vuefire";
-import { collection } from "firebase/firestore";
+Guard client-only Firebase access so the page still prerenders. Use the shared
+`useClientFirestore()` composable (`src/shared/ts/_useClientFirestore.ts`), which
+returns the Firestore instance on the client and `null` during prerender — then
+guard reads on the result:
 
-const db = useFirestore();
-const gamesRef = collection(db, "games/foo/rooms");
-const rooms = useCollection(gamesRef);
+```typescript
+import { useCollection } from "vuefire";
+import { collection } from "firebase/firestore";
+import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
+
+const db = useClientFirestore(); // Firestore | null
+const rooms = db ? useCollection(collection(db, "games/foo/rooms")) : null;
 ```
+
+For toasts, use `useClientToast()` (`src/shared/ts/_useClientToast.ts`) — it
+returns the real toast on the client and a callable no-op stub during prerender,
+so `toast(...)` and `toast.success(...)` are both safe to call unconditionally.
 
 ### Shared SCSS Variables
 
@@ -356,22 +269,9 @@ export const gameSettings = {
 export type GameDifficulty = typeof gameSettings.difficulty;
 ```
 
-### TypeScript Logic Organization
-
-```typescript
-// src/views/foo/ts/_logic.ts
-export class GameLogic {
-  constructor(public settings: typeof gameSettings) {}
-
-  calculateScore(points: number): number {
-    return points * this.settings.maxPlayers;
-  }
-}
-```
-
 ## Testing Your Game
 
-See [docs/vitests.md](vitests.md) for comprehensive testing guidance.
+See [tests/VITEST_IDEAS.md](../tests/VITEST_IDEAS.md) for testing ideas.
 
 **Basic test example:**
 
@@ -384,11 +284,6 @@ describe("Foo game logic", () => {
   it("should initialize correctly", () => {
     const game = new GameLogic(gameSettings);
     expect(game.settings.maxPlayers).toBe(4);
-  });
-
-  it("should calculate score", () => {
-    const game = new GameLogic(gameSettings);
-    expect(game.calculateScore(10)).toBe(40);
   });
 });
 ```
@@ -408,47 +303,40 @@ See [docs/sisyphus.md](sisyphus.md) or [docs/megachurch.md](megachurch.md) for e
 
 **Game not loading at localhost:**
 
-- Verify you added your slug to `mpaPages` array in `vite.config.js`
-- Check that `Page.pug` exists and references the correct entry point
-- Ensure entry point file exists at `src/entries/foo.js`
-- Check browser console for import errors or TypeScript issues
+- Verify `app/pages/foo.vue` exists and imports the root component correctly.
+- Confirm `"/foo"` is in `nitro.prerender.routes` in `nuxt.config.ts`.
+- Check the browser console for import errors or TypeScript issues.
 
-**Build fails:**
+**Prerender / hydration fails:**
 
-- Run `npm run build -- --mode development` for detailed error messages
-- Verify `Page.pug` is added to `buildPages.js`
-- Check SCSS compilation - Prettier may break SCSS function syntax
-- Ensure all imports use correct file paths
+- Wrap Firebase, toast, and `localStorage` usage in `import.meta.client`.
+- Run `npm run verify` for a full prerender + hydration report.
 
-**Page.pug not generating HTML:**
+**Redirect not working:**
 
-- Verify the page is added to `scripts/npm-run/buildPages.js`
-- Check Pug syntax is valid (indentation matters!)
-- Look for Pug compilation errors during build
-
-**HTML file in wrong place:**
-
-- Development: `foo.html` is generated in project root
-- Production: `dist/foo.html` is the final build output
-- Both are auto-generated - don't create them manually
+- Ensure the `/foo.html` → `/foo` redirect exists in `firebase.json` (the verify
+  harness derives its redirect list from there).
 
 **Hot reload not working:**
 
-- Restart dev server: `npm run dev:client`
-- Clear `.vite/` cache: Delete the folder and restart
-- Check file paths in imports use `@/` or relative paths correctly
+- Restart the dev server (`npm run dev`).
+- Delete the `.nuxt/` cache folder and restart.
 
 ## Deployment
 
-Push your changes to the `main` branch on GitHub. CI/CD automatically builds and deploys to [https://kinda.fun](https://kinda.fun).
+Push your changes to the `main` branch on GitHub. CI/CD automatically builds and
+deploys to [https://kinda.fun](https://kinda.fun). To deploy manually, run
+`npm run deploy` (build + `firebase deploy --only hosting`).
 
 **Pre-deployment checklist:**
 
-- ✅ All 4 core files created
-- ✅ All 3 config files updated (`vite.config.js`, `buildPages.js`, `.gitignore`)
-- ✅ Game loads at `localhost:5173/foo`
-- ✅ Production build succeeds (`npm run build`)
-- ✅ Tests pass (`npm run test:unit`)
+- ✅ Root component created under `src/views/foo/`
+- ✅ Page wrapper created at `app/pages/foo.vue` (`<script setup lang="ts">` + `useGameHead`)
+- ✅ Route added to `ROUTES` in `scripts/verify/_routes.mjs`
+- ✅ Redirect added to `firebase.json`
+- ✅ Game loads at `localhost:3000/foo`
+- ✅ `npm run build` and `npm run verify` succeed
+- ✅ Tests pass (`npm run test:run`)
 - ✅ Code formatted (`npm run format`)
 - ✅ Documentation created at `docs/foo.md`
 
@@ -458,44 +346,43 @@ Push your changes to the `main` branch on GitHub. CI/CD automatically builds and
 
 ```
 src/views/foo/
-├── Foo.vue         # Main component
+├── Foo.vue         # Root component
+├── Foo.pug         # Template
 ├── Foo.scss        # Styles
-├── Page.pug        # HTML template → generates foo.html
 └── ts/             # TypeScript logic (optional)
 
-src/entries/
-└── foo.js          # Entry point
+app/pages/
+└── foo.vue         # Route wrapper (imports root + useGameHead)
 ```
 
 **Files edited:**
 
 ```
-vite.config.js                  # Add to build.input & mpaPages
-scripts/npm-run/buildPages.js   # Add to pages array
-.gitignore                      # Add /foo.html
+scripts/verify/_routes.mjs   # Add route to ROUTES (drives prerender + verify)
+firebase.json                # Add /foo.html → /foo redirect (verify derives REDIRECTS from it)
 ```
 
 **Commands:**
 
 ```bash
-npm run dev:client              # Start dev server
-npm run build                   # Build for production
-npm run preview                 # Preview production build
-npm run test:unit               # Run tests
+npm run dev                     # Start Nuxt dev server (localhost:3000)
+npm run build                   # Static-generate into .output/public
+npm run preview                 # Serve the generated output
+npm run verify                  # End-to-end route verification
+npm run test:run                # Run tests
 npm run format                  # Format all code
 ```
 
 **URLs:**
 
-- Development: `http://localhost:5173/foo`
-- Preview: `http://localhost:4173/foo`
+- Development: `http://localhost:3000/foo`
 - Production: `https://kinda.fun/foo`
 
 ## Next Steps
 
 1. Implement your game logic in TypeScript files
 2. Test thoroughly in development mode
-3. Write comprehensive tests (see [docs/vitests.md](vitests.md))
+3. Write tests (see [tests/VITEST_IDEAS.md](../tests/VITEST_IDEAS.md))
 4. Create player documentation in `docs/foo.md`
 5. Run `npm run format` before committing
 6. Submit a pull request with clear description

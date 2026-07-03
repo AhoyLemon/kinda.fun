@@ -1,7 +1,7 @@
 // Street preaching simulation utility
 // Uses shared game logic from _gameLogic.ts to eliminate code duplication
 
-import { simulateStreetPreachingCore, Person } from "../../ts/_gameLogic.js";
+import { simulateStreetPreachingCore, type Person } from "../../ts/_gameLogic.js";
 
 export interface SimulationResult {
   location: string;

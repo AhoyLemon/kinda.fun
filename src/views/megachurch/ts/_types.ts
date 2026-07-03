@@ -1,9 +1,8 @@
-import {
+import type {
   EternalLegacyShopItem,
   EternalLegacyDarkDeed,
   EternalLegacyBibleVerse,
   EternalLegacyCelebrity,
-  ArtifactPurchase,
 } from "./variables/_eternalLegacy";
 
 // ================= GENERAL TYPES =================

@@ -83,6 +83,9 @@ function makeGame(b: Justice[], t: Tactic): CourtGameState {
     reframeStanceChoices: [],
     reframeStanceTacticId: null,
     reframeStanceSelection: null,
+    lecternMode: false,
+    lecternBoostPending: false,
+    lecternBlindTacticId: null,
   };
 }
 
@@ -111,7 +114,7 @@ describe("Court Toast Feedback - Magnitude Descriptors", () => {
     expect(outcome.overrideFeedback).toBeTruthy();
     if (outcome.overrideFeedback) {
       expect(outcome.overrideFeedback).not.toMatch(/\+\d+/);
-      expect(outcome.overrideFeedback).not.toMatch(/\-\d+/);
+      expect(outcome.overrideFeedback).not.toMatch(/-\d+/);
       expect(outcome.overrideFeedback).not.toMatch(/\d+ points/);
     }
   });

@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { watch, nextTick, getCurrentInstance, onMounted } from "vue";
-  import { POSITION, useToast } from "vue-toastification";
+  import { POSITION } from "vue-toastification";
+  import { useClientToast } from "@/shared/ts/_useClientToast";
   import MyToast from "./vue/MyToast.vue";
   import {
     doc,
@@ -10,7 +11,7 @@
     serverTimestamp,
     increment,
   } from "firebase/firestore";
-  import { useFirestore } from "vuefire";
+  import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
   import { randomFrom, shuffle, sendEvent } from "@/shared/js/_functions";
   import { my, round, ui, game, settings, rulePhrasings } from "./ts/_variables";
   import { musicLobby, musicFinalRound, soundNo, soundTooSlow, soundYouIdiot, soundCracked } from "./ts/_sounds";
@@ -39,9 +40,11 @@
   /////////////////////////////////////////////////////////
   // FIREBASE & FIRESTORE
 
-  const db = useFirestore();
-  const statsRef = doc(db, `stats/invalid`);
-  const toast = useToast();
+  // Firebase/VueFire is client-only; guard so the landing screen prerenders.
+  const db = useClientFirestore();
+  const statsRef = db ? doc(db, `stats/invalid`) : null;
+  // Toast is client-only. Callable stub because showMyToast calls toast(...) directly.
+  const toast = useClientToast();
 
   // showMyToast wraps toast calls that use the MyToast component.
   // Keeping the .vue component reference out of plain .ts composables.

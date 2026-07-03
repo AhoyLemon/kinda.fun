@@ -1,4 +1,4 @@
-import { President } from "./_types";
+import type { President } from "./_types";
 
 // Named exports for use as nominatedBy values in _justices.ts
 export const PRES_WASHINGTON: President = {

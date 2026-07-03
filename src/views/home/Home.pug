@@ -11,7 +11,7 @@ main.title-screen
         :key="thing.slug")
         button(@click="selectGame(thing.slug)" :title="thing.name")
           template(v-if="thing.logo")
-            img.logo(:src="`svg/games/${thing.logo}`" :alt="thing.name")
+            img.logo(:src="`/svg/games/${thing.logo}`" :alt="thing.name")
 
   .bottom
     .info-holder

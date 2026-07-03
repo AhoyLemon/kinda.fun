@@ -25,15 +25,21 @@
   } from "./js/_sounds.js";
 
   // Firebase & VueFire Stuff
+  // Firebase is client-only (migration plan locked decision #3): during
+  // prerender/SSR these composables would have no VueFire app, so guard them.
   import { doc, increment, serverTimestamp, updateDoc, runTransaction } from "firebase/firestore";
-  import { useFirestore, useCollection, useDocument } from "vuefire";
-  const db = useFirestore();
-  const statsRef = doc(db, `stats/cameo`);
+  import { useCollection, useDocument } from "vuefire";
+  import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
+  const db = useClientFirestore();
+  const statsRef = db ? doc(db, `stats/cameo`) : null;
 
-  // Toasts
-  import Toast, { POSITION } from "vue-toastification";
-  import { useToast } from "vue-toastification";
-  const toast = useToast();
+  // Toasts (client-only plugin). Stub on the server so any accidental call is
+  // a no-op during prerender. POSITION is used as a toast option throughout, so
+  // it must resolve in both environments — vue-toastification is in
+  // nuxt.config build.transpile so its named exports work under SSR.
+  import { POSITION } from "vue-toastification";
+  import { useClientToast } from "@/shared/ts/_useClientToast";
+  const toast = useClientToast();
 
   const gameName = "cameo";
   let allCelebs = [...allValues];

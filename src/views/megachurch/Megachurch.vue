@@ -9,7 +9,7 @@
   import { my } from "./ts/variables/_my";
   import { ui } from "./ts/variables/_ui";
   import { doc, increment, serverTimestamp, updateDoc, setDoc, getDoc } from "firebase/firestore";
-  import { useFirestore } from "vuefire";
+  import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
   import FollowerToast from "./components/Toasts/FollowerToast.vue";
   import ListenerToast from "./components/Toasts/ListenerToast.vue";
   import DonationToast from "./components/Toasts/DonationToast.vue";
@@ -26,7 +26,7 @@
   import FriendshipEnded from "./components/EternalLegacy/FriendshipEnded.vue";
   import UnfriendConfirmation from "./components/EternalLegacy/UnfriendConfirmation.vue";
   import { addCommas, dollars } from "../../shared/ts/_functions";
-  import { useToast } from "vue-toastification";
+  import { useClientToast } from "@/shared/ts/_useClientToast";
   import {
     computeTopicsYesterday,
     sortAudienceReactions,
@@ -38,9 +38,16 @@
   } from "./ts/_computeds";
   import { useMegachurchHelpers } from "./ts/_useMegachurchHelpers";
 
-  const db = useFirestore();
-  const statsRef = doc(db, `stats/megachurch`);
-  const toast = useToast();
+  // Firebase/VueFire is client-only: during prerender/SSR these composables
+  // have no VueFire app, so guard them and let statsRef be null on the server.
+  const db = useClientFirestore();
+  const statsRef = db ? doc(db, `stats/megachurch`) : null;
+  // Toasts are client-only too. Stub on the server so any accidental call during
+  // prerender is a harmless no-op.
+  // Callable stub (not a plain object): ToastApi is itself callable (toast(...))
+  // and megachurch passes `toast` into strictly-typed helpers, so the server
+  // stub must match that signature.
+  const toast = useClientToast();
   const sterlingNoteRef = ref<{ showNote: () => void } | null>(null);
 
   // ================= COMPUTEDS =================

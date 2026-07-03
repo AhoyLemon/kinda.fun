@@ -97,6 +97,7 @@ async function main() {
   });
   summaryTable.push(["Rows processed", rows.length.toLocaleString()]);
   summaryTable.push(["Updated", chalk.green(updatedCount.toLocaleString())]);
+  summaryTable.push(["Skipped", skippedCount.toLocaleString()]);
   summaryTable.push(["Not found (see missingHeads.csv)", chalk.yellow(missingRows.length.toLocaleString())]);
   summaryTable.push(["Inflation factor", `${INFLATION_FACTOR}x`]);
 

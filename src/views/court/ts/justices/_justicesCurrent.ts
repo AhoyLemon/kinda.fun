@@ -1,4 +1,4 @@
-import { Justice } from "../_types";
+import type { Justice } from "../_types";
 import { PRES_GHW_BUSH, PRES_GW_BUSH, PRES_OBAMA, PRES_TRUMP, PRES_BIDEN } from "../_presidents";
 export const currentJustices: Justice[] = [
   {

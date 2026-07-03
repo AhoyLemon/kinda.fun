@@ -1,4 +1,4 @@
-import { Justice } from "../_types";
+import type { Justice } from "../_types";
 import {
   PRES_WASHINGTON,
   PRES_JOHN_ADAMS,

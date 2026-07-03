@@ -1,6 +1,7 @@
 import type { CourtGameState, Justice, Tactic, TurnActor } from "./_types";
 import type { EffectOutcome } from "./_tacticEffects";
-import { useToast, POSITION } from "vue-toastification";
+import { POSITION } from "vue-toastification";
+import { useClientToast } from "@/shared/ts/_useClientToast";
 import TacticToast from "../components/TacticToast.vue";
 import { uiSettings } from "./_settings";
 
@@ -44,7 +45,10 @@ interface LecternDeps {
  * wire it into selectTactic / initiateTactic / applyTactic.
  */
 export function useCourtLectern(game: CourtGameState, deps: LecternDeps) {
-  const toast = useToast();
+  // Toasts are client-only; stub a callable no-op on the server so the
+  // composable constructs cleanly during prerender. It's only ever invoked from
+  // client event handlers anyway.
+  const toast = useClientToast();
 
   function playerToast(tacticName: string, feedback: string | null): void {
     toast(

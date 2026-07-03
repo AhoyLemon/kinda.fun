@@ -79,6 +79,9 @@ function makeGame(justices: Justice[], overrides: Partial<CourtGameState> = {}):
     reframeStanceChoices: [],
     reframeStanceTacticId: null,
     reframeStanceSelection: null,
+    lecternMode: false,
+    lecternBoostPending: false,
+    lecternBlindTacticId: null,
     ...overrides,
   };
 }

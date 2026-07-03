@@ -6,7 +6,7 @@
 
 import admin from "firebase-admin";
 import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { dirname } from "path";
 import chalk from "chalk";
 import Table from "cli-table3";
 import { loadServiceAccount, confirm, createProgressBar } from "../shared/utils.js";

@@ -1,5 +1,5 @@
 import { reactive } from "vue";
-import { GameSettings } from "../_types";
+import type { GameSettings } from "../_types";
 
 import { eternalLegacyShopItems, eternalLegacyDarkDeeds, eternalLegacyBibleVerses, eternalLegacyCelebrities } from "./_eternalLegacy";
 

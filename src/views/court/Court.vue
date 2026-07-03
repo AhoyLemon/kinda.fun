@@ -1,6 +1,7 @@
 <script setup lang="ts">
-  import { reactive, computed, onMounted } from "vue";
-  import { useToast, POSITION } from "vue-toastification";
+  import { reactive, ref, computed, onMounted } from "vue";
+  import { POSITION } from "vue-toastification";
+  import { useClientToast } from "@/shared/ts/_useClientToast";
   import TacticToast from "./components/TacticToast.vue";
   import LemonToast from "./components/LemonToast.vue";
   import {
@@ -29,7 +30,11 @@
 
   // ── Game settings ──────────────────────────────────────────
 
-  const toast = useToast();
+  // Toasts (client-only plugin). Stub on the server so any accidental call is a
+  // no-op during prerender. POSITION is used as a toast option throughout, so it
+  // must resolve in both environments — vue-toastification is in nuxt.config
+  // build.transpile so its named exports work under SSR.
+  const toast = useClientToast();
   const trialAttackedJustices = new Set<string>();
   let campaignEndLogged = false;
   let byLemonJinglePlayed = false;
@@ -223,17 +228,28 @@
   }
 
   // ── localStorage: first-play tracking ────────────────────────
+  // These are read from the court-select template's v-if, which prerenders. To
+  // avoid a hydration mismatch (server has no localStorage, a returning player's
+  // client does), back them with refs that stay false until onMounted reads
+  // localStorage on the client — so the server render and the client's first
+  // render agree, then the real values apply post-hydration.
+  const playedQuickplay = ref(false);
+  const playedCurrentCourt = ref(false);
   function hasPlayedQuickplay(): boolean {
-    return localStorage.getItem("hasPlayedQuickplay") === "true";
+    return playedQuickplay.value;
   }
   function hasPlayedCurrentCourt(): boolean {
-    return localStorage.getItem("hasPlayedCurrentCourt") === "true";
+    return playedCurrentCourt.value;
   }
   function markPlayedQuickplay(): void {
+    if (!import.meta.client) return;
     localStorage.setItem("hasPlayedQuickplay", "true");
+    playedQuickplay.value = true;
   }
   function markPlayedCurrentCourt(): void {
+    if (!import.meta.client) return;
     localStorage.setItem("hasPlayedCurrentCourt", "true");
+    playedCurrentCourt.value = true;
   }
 
   // ─── Lemon Moment ────────────────────────────────────────────
@@ -938,6 +954,9 @@
   }
 
   onMounted(() => {
+    // Read first-play flags on the client only, after hydration (see refs above).
+    playedQuickplay.value = localStorage.getItem("hasPlayedQuickplay") === "true";
+    playedCurrentCourt.value = localStorage.getItem("hasPlayedCurrentCourt") === "true";
     ui.phase = "title";
   });
 </script>

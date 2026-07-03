@@ -1,5 +1,5 @@
 import { places } from "./_places";
-import {
+import type {
   EternalLegacyShopItem,
   EternalLegacyDarkDeed,
 } from "./variables/_eternalLegacy";

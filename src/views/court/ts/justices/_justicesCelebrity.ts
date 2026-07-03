@@ -1,4 +1,4 @@
-import { Justice } from "../_types";
+import type { Justice } from "../_types";
 import { PRES_TRUMP, PRES_LIBERACE, PRES_BJORK, PRES_BILL_HICKS, PRES_SNOOP_DOGG, PRES_VINCE_MCMAHON } from "../_presidents";
 export const celebrityJustices: Justice[] = [
   {

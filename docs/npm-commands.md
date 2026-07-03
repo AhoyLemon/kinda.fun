@@ -1,43 +1,62 @@
 # NPM Commands
 
-**`npm run dev`**  
-Start development environment with client and page watching.
+Scripts are defined in `package.json`. Examples below use `bun run`, but `npm run` works identically.
 
-**`npm run dev:client`**  
-Start Vite development server only.
+## Development & Build
 
-**`npm run dev:server`**  
-Start Vite and Express server concurrently.
+**`bun run dev`**  
+Start the Nuxt dev server at `http://localhost:3000` (hot reload).
 
-**`npm run build:pages`**  
-Build static HTML pages using build-pages.js.
+**`bun run build`**  
+Refresh `public/sitemap.xml`, then statically generate the site (`nuxi generate`) into `.output/public`.
 
-**`npm run build`**  
-Interactive build: prompts for mode selection (production/development), updates sitemap, builds with Vite, generates pages, copies home to index.
+**`bun run preview`**  
+Serve the generated static output locally.
 
-**`npm run build -- --mode <mode>`**  
-Non-interactive build with specified mode (production or development).
+**`bun run deploy`**  
+Run `build`, then `firebase deploy --only hosting`.
 
-**`npm run preview`**  
-Preview production build locally.
+## Quality & Testing
 
-**`npm run test:unit`**  
-Run unit tests with Vitest.
+**`bun run typecheck`**  
+Type-check the project with `nuxi typecheck` (vue-tsc).
 
-**`npm run lint`**  
-Lint and auto-fix Vue/JS files with ESLint.
+**`bun run lint`**  
+Lint and auto-fix Vue/JS/TS files with ESLint.
 
-**`npm run format`**  
+**`bun run format`**  
 Format source code with Prettier.
 
-**`npm run serve-heroku`**  
-Serve production build on Heroku (DEPRECATED. PLEASE REMOVE ALL HEROKU LOGIC AT NEXT OPPORTUNITY).
+**`bun run test`** / **`bun run test:run`**  
+Run the Vitest unit tests once.
 
-**`npm run update-billionaires`**  
-Process `csv/2024 Billionaire List.csv` and generate `js/data/_billionaires.js` with 2,775+ billionaires ranked by net worth.
+**`bun run test:watch`**  
+Run Vitest in watch mode.
 
-**`npm run generate-arrests`**  
-Create `js/data/_warrants.js` with randomized daily arrest warrants (20 billionaires per day for the entire year).
+**`bun run verify`** (add `--no-emulator` to skip Firestore)  
+Generate the site and drive every route headless with Playwright: verifies prerender, hydration, and zero console errors, checks `.html` → 301 redirects, and performs a Firestore emulator round-trip.
 
-**`npm run watch:pages`**  
-Watch Pug templates and rebuild corresponding pages on changes.
+## Data & Firebase Scripts
+
+**`bun run guillotine:scrape`**  
+Scrape the Forbes billionaires list.
+
+**`bun run guillotine:csv`**  
+Merge/reconcile the Forbes CSVs into the canonical billionaire list.
+
+**`bun run guillotine:ts`**  
+Generate the billionaire gameplay data (`_billionaires.ts`) from the CSV.
+
+**`bun run guillotine:arrests`**  
+Create the randomized daily arrest warrants (20 billionaires per day for the year).
+
+**`bun run firebase:hydrate`**  
+Clone selected collections from prod Firestore into the dev environment.
+
+**`bun run firebase:check`**  
+Diagnose Firebase connectivity and IAM permissions.
+
+**`bun run sitemap`**  
+Regenerate `public/sitemap.xml`.
+
+See `scripts/scripts-help.md` for the full set of data and Firebase maintenance scripts.

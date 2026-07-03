@@ -23,7 +23,7 @@ main.game-over(v-if="game.over")
     .video-grid
       .video(v-for="(element, index) in round.rightSide" :key="index")
         figure
-          img(:src="'img/cameos/'+element.slug+'.jpg'")
+          img(:src="'/img/cameos/'+element.slug+'.jpg'" :alt="element.name")
         .speech-bubble
           span Happy Birthday!
 

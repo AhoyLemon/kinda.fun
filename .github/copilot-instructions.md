@@ -8,7 +8,7 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 
 ### Prerequisites and Setup
 
-- **Node.js Version**: Node.js 22+ is required for all development and deployment (updated due to Vite 6 compatibility requirements).
+- **Node.js Version**: Node.js 22+ is required for all development and deployment (Nuxt 4 and Firebase Functions).
 - **Environment Setup**:
   - `npm install` -- installs all dependencies including Firebase functions. Takes ~45 seconds. NEVER CANCEL.
   - Functions and main project now both use Node.js 22+.
@@ -22,22 +22,22 @@ Kinda Fun is a Vue.js-based web gaming platform featuring 6+ multiplayer and sin
 
 ### Build and Development Commands
 
-- **Development Server**: `bun run dev:client` -- starts Vite dev server on http://localhost:5173.
-- **Production Build**: `bun run build -- --mode production` -- builds all games and static pages in prodution mode (to be deployed to Firebase).
-- **Development Build**: `bun run build -- --mode development` -- builds all games and static pages in development mode (for local testing and development).
-- **Preview Build**: `bun run preview` -- serves built application on http://localhost:4173. Takes ~2 seconds.
+- **Development Server**: `bun run dev` -- starts the Nuxt dev server (http://localhost:3000).
+- **Production Build**: `bun run build` -- refreshes the sitemap, then `nuxi generate` → `.output/public` (deployed to Firebase Hosting).
+- **Preview**: `bun run preview` -- serves the generated output locally.
+- **Deploy**: `bun run deploy` -- build, then `firebase deploy --only hosting`.
 
 ### Testing and Quality
 
-- **Unit Tests**: `bun run test:unit` -- runs Vitest test suite. Use this to validate changes.
+- **Unit Tests**: `bun run test:run` -- runs the Vitest suite once. Use this to validate changes.
+- **Route/build verification**: `bun run verify` -- generates the Nuxt site and drives every route in a headless browser (prerender, hydration, zero console errors) plus the `.html` → 301 redirects and a Firestore emulator round-trip. `--no-emulator` skips the emulator-backed checks. This is the migration's stop condition.
 - **Linting**: `bun run lint` -- runs ESLint with auto-fix.
 - **Code Formatting**: `bun run format` -- formats all source files with Prettier. Run before committing.
 
 ### Data Generation Commands
 
-- **Billionaire Data**: `bun run guillotine:js` -- generates billionaire data from CSV. Takes ~2 seconds. Creates 2,781 entries.
+- **Billionaire Data**: `bun run guillotine:ts` -- generates billionaire data from CSV. Takes ~2 seconds. Creates 2,781 entries.
 - **Arrest Warrants**: `bun run guillotine:arrests` -- creates daily arrest warrant data.
-- **Page Building**: `bun run build:pages` -- builds static HTML pages from templates.
 
 ## Code Organization
 
@@ -63,20 +63,21 @@ When implementing features, Copilot should:
 
 **ALWAYS manually test after making changes to games or build system:**
 
-1. **TypeScript Validation**:
-   - Run `npx tsc --noEmit` to verify TypeScript compilation is clean
+1. **Build Validation**:
+   - Run `bun run build` and verify it completes without errors
+   - Check that `.output/public/` contains each route (`index.html`, `cameo/index.html`, `404.html`, etc.)
 
-2. **Build Validation**:
-   - Run `bun run build -- --mode production` and verify it completes without errors
-   - Check that `dist/` folder contains all game HTML files (cameo.html, guillotine.html, invalid.html, etc.)
+2. **Route Verification**:
+   - Run `bun run verify` (or `bun run verify --no-emulator`) and confirm the slice is GREEN
 
 ### Pre-Commit Requirements
 
 **ALWAYS run before committing changes:**
 
-- `bun run tsc` -- verifies TypeScript compilation is clean
+- `bun run lint` -- ESLint (auto-fix); editor globals match Nuxt's auto-imports
 - `bun run format` -- formats code consistently (but CHECK for SCSS function formatting issues)
-- `bun run build -- --mode production` -- ensures production build works (NEVER CANCEL - takes ~10 seconds)
+- `bun run build` -- ensures the Nuxt production build works
+- `bun run test:run` -- unit tests must stay green
 
 **CRITICAL: Prettier Formatting Warning**
 
@@ -101,27 +102,28 @@ When implementing features, Copilot should:
 
 ### Key Directories
 
-- **`src/views/[game]/`** -- Each game has its own Vue component, SCSS, and JavaScript files
-- **`src/entries/`** -- Entry points for each game's JavaScript bundle
-- **`src/shared/`** -- Shared SCSS variables, functions, and components
-- **`scripts/`** -- Build scripts and data generation utilities
-- **`public/`** -- Static assets (images, audio, fonts)
-- **`functions/`** -- Firebase Cloud Functions (uses Node.js 22+)
+- **`app/pages/`** -- One thin Nuxt page per route; imports the game's root component and sets its `<head>` (fonts/OG/favicons) via `useHead`
+- **`app/plugins/`** -- Client-only plugins (Firebase/VueFire, toast, tippy)
+- **`src/views/[game]/`** -- Each game's Vue component, pug template, SCSS, and TS/JS (reused by the Nuxt pages via the `@` → `src/` alias)
+- **`src/shared/`** -- Shared SCSS variables/mixins and pug partials
+- **`scripts/`** -- Data-generation utilities, the Nuxt finalize step, and the `verify` harness
+- **`public/`** -- Static assets (images, audio, fonts, sitemap.xml)
+- **`functions/`** -- Firebase Cloud Functions (separate package; Node.js 22+)
 - **`docs/`** -- Game documentation and technical guides
 
 ### Configuration Files
 
-- **`vite.config.js`** -- Build configuration with per-game entry points
-- **`vitest.config.js`** -- Test configuration (fixed for Vite compatibility)
-- **`firebase.json`** -- Firebase hosting configuration with URL rewrites
-- **`.eslintrc.cjs`** -- ESLint configuration
-- **`package.json`** -- Dependencies and npm scripts
+- **`nuxt.config.ts`** -- Nuxt config: prerender routes, global `<head>`, `@` alias, Firebase runtime config, SCSS deprecation silencing
+- **`vitest.config.js`** -- Test configuration (self-contained)
+- **`tsconfig.json`** -- TS/Volar config (includes `app/**` + `.nuxt` types + pug language plugin)
+- **`firebase.json`** -- Firebase Hosting: clean URLs, `.html` → 301 redirects, emulators
+- **`.eslintrc.cjs`** -- ESLint (declares Nuxt/Vue auto-imports as globals)
+- **`package.json`** -- Dependencies and scripts (project uses bun; `bun.lock` is canonical)
 
 ### Build Outputs
 
-- **`dist/`** -- Production build output
-- Each game creates: `[game].html`, `[game].js`, `[game].css`
-- Special files: `index.html` (copied from home.html), `sitemap.xml`
+- **`.output/public/`** -- Static generation output (served by Firebase Hosting)
+- Each route prerenders to real HTML (`index.html`, `<game>/index.html`, `404.html`)
 
 ## Common Issues and Solutions
 
@@ -133,8 +135,7 @@ When implementing features, Copilot should:
 
 ### Node.js Version Requirements
 
-- **All development and deployment**: Node.js 22+ is required
-- **Vite 6 Compatibility**: Updated from Node.js 20 due to Vite 6 minimum requirements
+- **All development and deployment**: Node.js 22+ is required (Nuxt 4 and Firebase Functions)
 - **Functions**: Also use Node.js 22+ (no version conflicts)
 - **bun**: Prefer `bun` over `npm` for running commands, but either is possible.
 
@@ -167,13 +168,13 @@ When implementing features, Copilot should:
 
 ### Build Failures
 
-- **Clean build**: Delete `dist/` folder and rebuild
-- **Node modules**: Delete `node_modules/` and run `npm install`
-- **Vite cache**: Delete `.vite/` folder
+- **Clean build**: Delete `.output/` and `.nuxt/`, then rebuild
+- **Node modules**: Delete `node_modules/` and run `bun install`
+- **Stale Nuxt types**: Run `nuxi prepare` to regenerate `.nuxt/` (also runs on postinstall)
 
 ### Development Server Issues
 
-- **Port conflicts**: Vite uses 5173
+- **Port conflicts**: Nuxt dev uses 3000
 - **Hot reload**: File watching works for Vue components, manual refresh needed for some assets
 
 ### Game-Specific Issues
@@ -184,7 +185,7 @@ When implementing features, Copilot should:
 
 ### MegaChurch Development
 
-- **Comprehensive Guide**: See `docs/megachurch/DEVELOPER.md` for complete MegaChurch development documentation
+- **Comprehensive Guide**: See `docs/games/megachurch/DEVELOPER.md` for complete MegaChurch development documentation
 - **Configuration**: Most game balance settings centralized in `src/views/megachurch/ts/variables/_gameSettings.ts`
 - **Architecture**: Modular Vue component with organized subsystems
 - **Content Management**: Religion data in `_religions.ts`, locations in `_places.ts`, sermon themes in `_sermons.ts`
@@ -208,7 +209,7 @@ When implementing features, Copilot should:
 
 ## Testing Guidelines
 
-**Testing Documentation**: See `docs/vitests.md` for complete testing guide
+**Testing Documentation**: See `tests/VITEST_IDEAS.md` for testing ideas
 
 ## Copilot Test Writing Guidance
 

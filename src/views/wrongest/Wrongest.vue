@@ -29,12 +29,17 @@
     where,
     onSnapshot,
   } from "firebase/firestore";
-  import { useFirestore, useDocument } from "vuefire";
+  import { useDocument } from "vuefire";
+  import { useClientFirestore } from "@/shared/ts/_useClientFirestore";
   import { updateGeneralPlayerStats, updateGamePlayerStats, updateGameSizeStats } from "../../shared/ts/_firebaseStats";
 
-  // Initialize Firestore
-  const db = useFirestore();
-  const statsRef = doc(db, `stats/wrongest`);
+  // Firebase & VueFire are client-only: during prerender/SSR there is no
+  // VueFire app, so guard the composable and derive the stats doc ref only
+  // when the client db exists. Every Firestore call below runs from a client
+  // event handler or onMounted, so db/statsRef are non-null there. The initial
+  // landing screen (create/join a room) renders without any live data.
+  const db = useClientFirestore();
+  const statsRef = db ? doc(db, `stats/wrongest`) : null;
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
@@ -104,6 +109,7 @@
   };
 
   const createRoom = async () => {
+    if (!db) return;
     ui.isCreatingRoom = true;
     game.isFailedToGetRoomData = false;
     try {
@@ -165,6 +171,7 @@
   };
 
   const joinRoom = async () => {
+    if (!db) return;
     ui.isLoadingLobby = true;
     const roomRef = doc(db, "rooms", game.roomCode);
 
@@ -194,6 +201,7 @@
 
   // Subscribe to game status (room document)
   async function subscribeToGameStatus(roomCode) {
+    if (!db) return;
     const gameRef = doc(collection(db, "rooms"), roomCode);
 
     onSnapshot(
@@ -220,6 +228,7 @@
 
   // Subscribe to players collection
   async function subscribeToPlayers(roomCode) {
+    if (!db) return;
     const playersRef = collection(db, `rooms/${roomCode}/players`);
 
     onSnapshot(playersRef, (snapshot) => {
@@ -244,6 +253,7 @@
 
   // Subscribe to game state
   async function subscribeToGameState(roomCode) {
+    if (!db) return;
     const gameStateRef = doc(db, `rooms/${roomCode}/gameState/state`);
 
     onSnapshot(gameStateRef, (doc) => {
@@ -291,6 +301,7 @@
   ////////////////////////////////////////
   // Pregame
   const updateMyInfo = async () => {
+    if (!db) return;
     const normalizedName = normalizePlayerName(my.nameInput);
 
     if (!computedCanSubmitName.value || ui.isSavingName) {
@@ -358,7 +369,7 @@
   const sendPlayerUpdate = async () => {
     // This is now handled by Firestore updates
     // Update lastSeen timestamp
-    if (my.playerID && game.roomCode) {
+    if (db && my.playerID && game.roomCode) {
       const playerRef = doc(db, "rooms", game.roomCode, "players", my.playerID);
       await updateDoc(playerRef, {
         lastSeen: serverTimestamp(),
@@ -378,6 +389,7 @@
   };
 
   const saveDeckSelection = async () => {
+    if (!db) return;
     if (ui.isSavingDeckSelection) {
       return;
     }
@@ -423,6 +435,7 @@
   };
 
   const startTheGame = async () => {
+    if (!db || !statsRef) return;
     if (ui.isStartingGame) {
       return;
     }
@@ -532,6 +545,7 @@
   ////////////////////////////////////////
   // In Game
   const dealOutCards = async () => {
+    if (!db) return;
     try {
       if (game.gameDeck.length <= computedPlayerCount.value) {
         ////////////////////////////////////////////////////////////
@@ -568,6 +582,7 @@
   };
 
   const sendGameDeck = async () => {
+    if (!db) return;
     // This is now handled by Firestore updates
     const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
     await updateDoc(gameStateRef, {
@@ -576,6 +591,7 @@
   };
 
   const dealCard = async () => {
+    if (!db) return;
     try {
       round.activePlayerIndex++;
       const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
@@ -591,6 +607,7 @@
   };
 
   const presentationFinished = async () => {
+    if (!db) return;
     try {
       round.playerPresenting = false;
       resetPresentationTimer();
@@ -621,6 +638,7 @@
   /////////////////////////////////////////
   // Voting
   const startVoting = async () => {
+    if (!db) return;
     try {
       const gameStateRef = doc(db, `rooms/${game.roomCode}/gameState/state`);
       await updateDoc(gameStateRef, {
@@ -649,6 +667,7 @@
   };
 
   const submitVotes = async () => {
+    if (!db) return;
     try {
       let upVoteIndex;
       let downVoteIndex;
@@ -733,6 +752,7 @@
   };
 
   const startNextRound = async () => {
+    if (!db || !statsRef) return;
     try {
       // Rotate players array (move first to end)
       const rotatedPlayers = [...game.players];
@@ -781,6 +801,7 @@
   };
 
   const sendGameOver = async () => {
+    if (!db || !statsRef) return;
     try {
       const newStatementHistory = game.statementHistory.concat(round.cardsPresented);
 

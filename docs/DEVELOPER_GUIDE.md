@@ -8,7 +8,7 @@ This guide will help you set up the Kinda Fun gaming platform for local developm
 
 ### Prerequisites
 
-- **Node.js 22+** (Required for Vite 6 compatibility and Firebase Functions)
+- **Node.js 22+** (Required for Nuxt 4 and Firebase Functions)
 
 ### Getting Started
 
@@ -20,17 +20,16 @@ cd kinda.fun
 # 2. Install dependencies (takes ~45 seconds, don't cancel)
 npm install
 
-# 3. Start the development server
-npm run dev:client
+# 3. Start the Nuxt dev server
+npm run dev
 ```
 
 **Important Localhost URLs:**
 
-- ❌ `http://localhost:5173/` - **This won't work**
-- ✅ `http://localhost:5173/home.html` - **Use this for the homepage**
-- ✅ `http://localhost:5173/[gamename]` - **Individual games**
+- ✅ `http://localhost:3000/` - **Homepage**
+- ✅ `http://localhost:3000/[gamename]` - **Individual games (clean paths, no `.html`)**
 
-_Game URLs match their folder names in `src/views/` - check there for the complete list._
+_Game routes match their folder names in `src/views/` and their page wrappers in `app/pages/` - check there for the complete list._
 
 ## Project Overview
 
@@ -47,11 +46,26 @@ _Each game is self-contained with its own documentation in the `docs/` folder._
 
 ### Architecture
 
-- **Vue.js 3** with Vite build system
-- **Multi-page application** - each game is a separate HTML page
-- **Firebase** for multiplayer features and data storage
+- **Nuxt 4** (Vue 3) with static generation — Vite runs under the hood via Nuxt
+- **One route per game** - each game has a thin page wrapper in `app/pages/`
+- **Firebase** (client-only) for multiplayer features and data storage
 - **SCSS** for styling with shared design system
-- **Vitest** for testing
+- **Vitest** for unit tests, **Playwright** for the route-verify harness
+
+Each route is a thin `app/pages/<name>.vue` wrapper that imports the game's
+existing root component from `src/views/<game>/<Game>.vue` and sets the page
+`<head>` (fonts, canonical, OpenGraph, per-game theme-color + favicons) via
+`useHead`. The home page is `app/pages/index.vue`; the 404 is
+`app/pages/[...slug].vue` (prerendered and copied to `404.html` by
+`scripts/nuxt/finalize.mjs`), with `app/error.vue` as the runtime fallback.
+
+Game code still lives under `src/views/<game>/` and is reused by the Nuxt pages
+via the `@` → `src/` alias configured in `nuxt.config.ts`. Firebase, toast, and
+tippy are registered as client-only Nuxt plugins in `app/plugins/`, and Firebase
+composables are guarded with `import.meta.client` so pages prerender without a
+VueFire app. The static output lands in `.output/public` and is served by
+Firebase Hosting (`firebase.json`: `cleanUrls`, `/<game>.html` → 301 redirects,
+emulators).
 
 ### Technology Stack
 
@@ -59,7 +73,7 @@ _Each game is self-contained with its own documentation in the `docs/` folder._
 
 - **Vue 3** with Composition API
 - **TypeScript** (older games use JavaScript, but new features should use TS)
-- **Pug** for templates
+- **Pug** for templates (`<template lang="pug" src="./X.pug">`)
 - **SCSS** for styling
 - **Vitest** for testing
 
@@ -68,16 +82,23 @@ _Some older games use JavaScript, but all new features should use TypeScript for
 ### File Structure
 
 ```
-src/
-├── entries/          # Entry points for each game
-├── views/            # Game components and logic
-│   ├── [game]/       # Individual game folders. Each contains Vue components, styles, logic, and assets, Shared utilities and components
-├── shared/           # Shared utilities and components
-└── server/           # Multiplayer server logic
+app/
+├── pages/            # One thin route wrapper per game (imports src/views root + useHead)
+│   ├── index.vue     # Home
+│   └── [...slug].vue # 404 catch-all (copied to 404.html on build)
+├── plugins/          # Client-only Nuxt plugins (firebase, toast, tippy)
+└── error.vue         # Runtime error fallback
 
-public/               # Static assets (images, audio, etc.)
+src/
+├── views/            # Game components and logic (reused via the @ alias)
+│   └── [game]/       # Individual game folder: .vue root, pug, scss, ts/js
+└── shared/           # Shared utilities and components
+
+nuxt.config.ts        # Prerender routes, global <head>, @ alias, Firebase config
+firebase.json         # Hosting (cleanUrls, .html→301 redirects), emulators
+public/               # Static assets (images, audio, sitemap.xml, etc.)
 docs/                 # Documentation
-scripts/              # Build and data generation scripts
+scripts/              # Build (scripts/nuxt), verify, and data generation scripts
 ```
 
 ## Making Your First Changes
@@ -91,7 +112,7 @@ Pick one game to focus on first:
 ls src/views/
 
 # Open any game in your browser
-open http://localhost:5173/[gamename]
+open http://localhost:3000/[gamename]
 
 # Look at the main game file
 code src/views/[gamename]/[GameName].vue
@@ -130,10 +151,10 @@ src/views/[game]/
 
 ```bash
 # Run tests
-npm run test:unit
+npm run test:run
 
 # Run tests for specific game
-npm run test:unit tests/[game]*
+npm run test:run tests/[game]*
 
 # Format code
 npm run format
@@ -145,22 +166,25 @@ npm run format
 
 ```bash
 # Start development server
-npm run dev:client          # Main development server
+npm run dev                 # Nuxt dev server (http://localhost:3000)
 
 # Build for testing
-npm run build               # Creates dist/ folder
-npm run preview             # Test built version
+npm run build               # Static generate into .output/public
+npm run preview             # Serve the generated output
 
 # Run tests
-npm run test:unit           # Run all tests
-npm run test:unit --watch   # Watch mode for development
+npm run test:run            # Run all unit tests once
+npm run test:watch          # Watch mode for development
+
+# End-to-end route verification
+npm run verify              # Prerender + hydration + redirects + emulator checks
 ```
 
 ### Making Changes
 
 1. **Edit game files** in `src/views/[game]/`
 2. **Test locally** - changes auto-reload in browser
-3. **Write tests** for new features (see `docs/vitests.md`)
+3. **Write tests** for new features (see `tests/VITEST_IDEAS.md`)
 4. **Create pull request** - deployment happens automatically
 
 ### Firebase Setup (Optional)
@@ -183,7 +207,7 @@ Each game has its own documentation in the `docs/` folder:
 
 ### Example: MegaChurch Tycoon
 
-- **Full Developer Guide:** [docs/megachurch/DEVELOPER.md](megachurch/DEVELOPER.md)
+- **Full Developer Guide:** [docs/games/megachurch/DEVELOPER.md](megachurch/DEVELOPER.md)
 - **Player Guide:** [docs/megachurch.md](megachurch.md)
 - **Configuration:** `src/views/megachurch/ts/variables/_gameSettings.ts`
 
@@ -197,9 +221,9 @@ Ready to build a new game from scratch? Follow the comprehensive guide:
 
 This document covers:
 
-- Creating Vue components and entry points
-- Registering your game in the build system
-- Setting up HTML files and routing
+- Creating the game's root Vue component under `src/views/`
+- Adding a thin `app/pages/` route wrapper with `useHead`
+- Registering the route for prerender and redirects
 - Testing locally
 - Publishing your game
 
@@ -211,7 +235,7 @@ It includes step-by-step instructions and code examples for getting your game up
 
 - **Project Commands:** `docs/npm-commands.md`
 - **Deployment:** `docs/deployment-setup.md`
-- **Testing:** `docs/vitests.md`
+- **Testing:** `tests/VITEST_IDEAS.md`
 - **Game-Specific:** `docs/[game].md` files
 
 ### Development Tips
@@ -251,7 +275,7 @@ It includes step-by-step instructions and code examples for getting your game up
 1. **Explore the codebase** - start with one game that interests you
 2. **Read game documentation** - each game has its own docs
 3. **Try making small changes** - modify text, colors, or game balance
-4. **Write your first test** - see `docs/vitests.md` for examples
+4. **Write your first test** - see `tests/VITEST_IDEAS.md` for examples
 5. **Join development** - create issues or PRs for improvements
 
 **Ready to dive deeper into MegaChurch Tycoon?** → [MegaChurch Tycoon Developer Guide](megachurch/DEVELOPER.md)
