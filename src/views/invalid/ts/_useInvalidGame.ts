@@ -524,7 +524,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc> | null) {
       sysAdminIndex: hostIndex,
       maxRounds: game.maxRounds,
     });
-    await updateDoc(statsRef, { gamesStarted: increment(1), lastGameStarted: serverTimestamp() });
+    if (statsRef) await updateDoc(statsRef, { gamesStarted: increment(1), lastGameStarted: serverTimestamp() });
     sendEvent("Invalid", "Game Started", game.roomCode);
   };
 
@@ -877,7 +877,7 @@ export function useInvalidGame(statsRef: ReturnType<typeof doc> | null) {
         : game.players.length > 0 && (game.players[0].playerID === my.playerID || game.players.some((p) => p.playerID === my.playerID && p.isHost));
 
     if (amIHost) {
-      await updateDoc(statsRef, { gamesFinished: increment(1), lastGameFinished: serverTimestamp() });
+      if (statsRef) await updateDoc(statsRef, { gamesFinished: increment(1), lastGameFinished: serverTimestamp() });
       const docId = `${game.players.length} players`;
       const gameSizeRef = doc(db, `stats/invalid/gameSizes/${docId}`);
       await updateDoc(gameSizeRef, { gamesFinished: increment(1), lastGameFinished: serverTimestamp() });

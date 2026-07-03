@@ -5,7 +5,7 @@
 //   - 404.html (real status 404) for unmatched routes
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
-import { join, extname } from "node:path";
+import { join, extname, posix } from "node:path";
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -43,7 +43,10 @@ export function startStaticServer({ root, redirects = [], port = 0 }) {
 
   const server = createServer(async (req, res) => {
     const url = new URL(req.url, "http://localhost");
-    let pathname = decodeURIComponent(url.pathname);
+    // Contain the request path: fold backslashes (Windows join treats them
+    // as separators) and posix-normalize, which clamps any ".." at the root
+    // ("/a/../../x" -> "/x") — joined candidates can never escape `root`.
+    const pathname = posix.normalize(decodeURIComponent(url.pathname).replaceAll("\\", "/"));
 
     // 301 redirects (legacy .html)
     if (redirectMap.has(pathname)) {
