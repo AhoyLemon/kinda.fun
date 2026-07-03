@@ -1,6 +1,6 @@
-@import "../../scss/_variables";
-@import "../../scss/mixins";
-@import "../../scss/transitions";
+@use "@/views/megachurch/scss/index" as *;
+@use "@/views/megachurch/scss/transitions";
+
 
 .legacy-status {
   position: fixed;

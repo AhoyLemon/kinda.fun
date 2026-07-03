@@ -1,3 +1,5 @@
+@use "sass:color";
+
 // ─── Inherited globals ───────────────────────────────────────
 $bold: 700;
 $mobile-max: 767px;
@@ -9,7 +11,7 @@ $court-card: #f5f0e8;
 $court-card-dark: #e8dfc8;
 $court-gold: #c9a84c;
 $court-gold-light: #e8c96e;
-$court-gold-dark: darken($court-gold, 20%);
+$court-gold-dark: color.adjust($court-gold, $lightness: -20%);
 $court-text: #1a0a0a;
 $court-text-muted: #5a4a3a;
 $court-red: #8b2020;

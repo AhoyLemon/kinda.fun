@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 @keyframes blinkRed {
   0% {
     color: rgba(255, 0, 0, 0);
@@ -12,12 +15,12 @@
 
 @keyframes panelFocus {
   0% {
-    filter: drop-shadow(-6px -6px 0 rgba($adminAccent, 0.1)) drop-shadow(-3px -3px 0 rgba($adminAccent, 0.5)) drop-shadow(1px 1px 0 rgba($adminAccent, 0.5));
+    filter: drop-shadow(-6px -6px 0 color.change($adminAccent, $alpha:0.1)) drop-shadow(-3px -3px 0 color.change($adminAccent, $alpha:0.5)) drop-shadow(1px 1px 0 color.change($adminAccent, $alpha:0.5));
   }
   //50%  { color:rgba(255,0,0,1); }
   100% {
-    filter: drop-shadow(-16px -16px 0 rgba($adminAccent, 0.25)) drop-shadow(-8px -8px 0 rgba($adminAccent, 0.5)) drop-shadow(1px 1px 0 rgba($adminAccent, 0.5))
-      drop-shadow(-4px -4px 0 rgba($adminAccent, 0.75));
+    filter: drop-shadow(-16px -16px 0 color.change($adminAccent, $alpha:0.25)) drop-shadow(-8px -8px 0 color.change($adminAccent, $alpha:0.5)) drop-shadow(1px 1px 0 color.change($adminAccent, $alpha:0.5))
+      drop-shadow(-4px -4px 0 color.change($adminAccent, $alpha:0.75));
   }
 }
 
@@ -32,7 +35,7 @@ $admin-panel-color: #101010;
   .top-info {
     background: $admin-panel-color;
     color: $white;
-    border-bottom: 1px solid rgba($adminAccent, 0.4);
+    border-bottom: 1px solid color.change($adminAccent, $alpha:0.4);
   }
 
   .panels {
@@ -42,7 +45,7 @@ $admin-panel-color: #101010;
     margin-bottom: 1em;
     padding: $padding;
 
-    filter: drop-shadow(-3px -3px 0 rgba($adminAccent, 0.1)) drop-shadow(-1px -1px 0 rgba($adminAccent, 0.5)) drop-shadow(1px 1px 0 rgba($adminAccent, 0.5));
+    filter: drop-shadow(-3px -3px 0 color.change($adminAccent, $alpha:0.1)) drop-shadow(-1px -1px 0 color.change($adminAccent, $alpha:0.5)) drop-shadow(1px 1px 0 color.change($adminAccent, $alpha:0.5));
 
     .notched {
       clip-path: polygon(100% 0, 100% calc(100% - 26px), calc(100% - 26px) 100%, 0% 100%, 0% 0%);
@@ -117,7 +120,7 @@ $admin-panel-color: #101010;
         width: 0;
         position: absolute;
         pointer-events: none;
-        border-color: rgba($adminAccent, 0);
+        border-color: color.change($adminAccent, $alpha:0);
         border-bottom-color: $adminAccent;
         border-width: 10px;
         margin-left: -10px;
@@ -135,7 +138,7 @@ $admin-panel-color: #101010;
     box-shadow: -2px -2px 1px rgba(0, 0, 0, 0.5);
     &:hover,
     &:focus {
-      border-color: rgba($adminAccent, 0.75);
+      border-color: color.change($adminAccent, $alpha:0.75);
       color: $adminAccent;
       &:not([disabled]) .tooltip {
         opacity: 1;
@@ -204,7 +207,7 @@ $admin-panel-color: #101010;
           border-color: $adminAccent;
           color: $adminAccent;
           &::placeholder {
-            color: rgba($adminAccent, 0.6);
+            color: color.change($adminAccent, $alpha:0.6);
           }
         }
       }

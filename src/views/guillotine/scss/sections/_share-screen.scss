@@ -1,3 +1,6 @@
+@use "../index" as *;
+@use "sass:color";
+
 .share-screen {
   @include position(fixed, 0, 0, 0, 0);
   background: $black;
@@ -64,7 +67,7 @@
   input,
   select {
     font-size: 22px;
-    border: 1px solid rgba($white, 0.5);
+    border: 1px solid color.change($white, $alpha: 0.5);
     background: transparent;
     color: $white;
     font-family: $font-family;
@@ -97,7 +100,7 @@
     .dollars-today {
       font-size: 9.25vw;
       letter-spacing: -0.05em;
-      text-shadow: 1px 1px 0.05em rgba($black, 0.5);
+      text-shadow: 1px 1px 0.05em color.change($black, $alpha: 0.5);
       font-family: $monospaced;
       sup {
         font-size: 45%;
@@ -130,7 +133,7 @@
       border: 2px solid transparent;
       &:hover {
         border-color: rgba(0, 0, 0, 0.5);
-        background: darken($yellow, 3%);
+        background: color.adjust($yellow, $lightness: -3%);
       }
     }
   }

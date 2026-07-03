@@ -1,0 +1,8 @@
+// Aggregated shared globals. Views `@use "@/shared/scss/globals" as *;` to pull
+// in every shared member (variables, mixins, placeholder %extends, z-index) under
+// one namespace. `reset` is intentionally NOT forwarded here — it emits CSS rather
+// than members, so entry files `@use` it directly, once.
+@forward "variables";
+@forward "mixins";
+@forward "extends";
+@forward "z-index";

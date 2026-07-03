@@ -1,12 +1,19 @@
-$focusColor: #ffc107;
-@import "@/shared/scss/globals/reset";
-@import "./scss/variables";
+@use "scss/index" as *;
+
+// Shared reset emits CSS (not members), so @use it directly, once.
+@use "@/shared/scss/globals/reset";
 
 // LIBRARIES (if any)
-@import "@/shared/scss/libraries/vue_toastification";
+@use "@/shared/scss/libraries/vue_toastification";
 
-@import "./scss/title-screen";
-@import "./scss/pregame";
+@use "scss/title-screen";
+@use "scss/pregame";
+@use "scss/players";
+@use "scss/cards";
+@use "scss/guess";
+@use "scss/animations";
+@use "scss/lemon-toast";
+@use "scss/game-over";
 
 .meeting-board {
   display: grid;
@@ -20,9 +27,6 @@ $focusColor: #ffc107;
     font-size: 3rem;
   }
 }
-
-@import "./scss/players";
-@import "./scss/cards";
 
 .timer {
   position: fixed;
@@ -64,8 +68,6 @@ $focusColor: #ffc107;
   }
 }
 
-@import "./scss/guess";
-
 .tippy-box {
   background: $white;
   color: #111;
@@ -85,8 +87,3 @@ $focusColor: #ffc107;
     max-width: 160px;
   }
 }
-
-@import "./scss/animations";
-
-@import "./scss/lemon-toast";
-@import "./scss/game-over";

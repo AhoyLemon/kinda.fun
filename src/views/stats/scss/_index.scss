@@ -1,0 +1,5 @@
+// Stats members namespace. Forwards the shared globals, then stats' own
+// variables which intentionally override some shared names (fonts, weights,
+// palette) — those shared names are hidden so the two forwards don't collide.
+@forward "@/shared/scss/globals" hide $sans-serif, $serif, $medium, $bold, $green, $blue, $red;
+@forward "variables";

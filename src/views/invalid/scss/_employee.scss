@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 @keyframes animatedElipsis {
   0% {
     content: ".";
@@ -153,7 +156,7 @@
         &:not(disabled) {
           cursor: pointer;
         }
-        background: linear-gradient(to bottom, saturate(#f953c6, 15%), saturate(#b91d73, 15%));
+        background: linear-gradient(to bottom, color.adjust(#f953c6, $saturation: 15%), color.adjust(#b91d73, $saturation: 15%));
       }
     }
     .password-errors {

@@ -99,7 +99,7 @@
   });
 </script>
 <style lang="scss">
-  @import "../../scss/_variables.scss";
+  @use "@/views/megachurch/scss/index" as *;
   .Vue-Toastification__icon {
     display: none;
   }

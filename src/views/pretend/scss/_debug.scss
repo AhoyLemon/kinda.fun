@@ -1,3 +1,5 @@
+@use "index" as *;
+
 .debug {
   @include position(fixed, 0, 50%, null, 0);
   background: white;

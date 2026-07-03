@@ -1,0 +1,9 @@
+// Pretend members namespace. Forwards the shared globals, then pretend's own
+// variables which intentionally override some shared names (palette, weights,
+// breakpoints) — those shared names are hidden so the two forwards don't
+// collide. z-index and extends are member-only partials forwarded alongside.
+@forward "@/shared/scss/globals" hide $mobile-max, $desktop-min, $bold, $white, $black, $blue, $red, $green, $yellow, $teal, $body,
+  $z-sidebar, $z-header, $z-sharebox, $z-sidebar-button, $z-homescreenbox, $z-favorite-box;
+@forward "variables";
+@forward "z-index";
+@forward "extends";

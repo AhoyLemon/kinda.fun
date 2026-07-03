@@ -1,3 +1,6 @@
+@use "../../index" as *;
+@use "sass:color";
+
 section.citations {
   padding-bottom: ($gap * 4);
   .citations-header {
@@ -23,7 +26,7 @@ section.citations {
       color: currentColor;
       text-decoration: underline;
       text-decoration-thickness: 1px;
-      text-decoration-color: rgba($black, 0.75);
+      text-decoration-color: color.change($black, $alpha: 0.75);
       font-weight: 525;
       transition: all 0.15s linear;
       &:hover,

@@ -1,3 +1,5 @@
+@use "index" as *;
+
 .inbox.email {
   @include position(fixed, null, 0, 0, 0);
   z-index: $z-email;

@@ -43,11 +43,10 @@
   });
 </script>
 <style lang="scss" scoped>
-  @import "../scss/variables.scss";
+  @use "@/views/meeting/scss/index" as *;
 
   $cardColor: #f4f4e0;
   $cardColorPlaying: #f2f2ba;
-  $focusColor: #ffc107;
 
   .points-and-text {
     display: grid;
@@ -102,7 +101,7 @@
   }
 </style>
 <style lang="scss">
-  @import "../scss/variables.scss";
+  @use "@/views/meeting/scss/index" as *;
   .Vue-Toastification__toast {
     &.blue {
       background: #574ae2;

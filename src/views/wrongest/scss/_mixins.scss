@@ -1,5 +1,7 @@
+@use "variables" as v;
+
 @mixin bigButton() {
-  background: $blue;
+  background: v.$blue;
   color: white;
   display: block;
   width: 100%;

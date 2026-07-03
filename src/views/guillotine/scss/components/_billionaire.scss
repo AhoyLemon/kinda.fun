@@ -1,3 +1,6 @@
+@use "../index" as *;
+@use "sass:color";
+
 .billionaire {
   padding: 0;
   .info {
@@ -95,7 +98,7 @@
     .name {
       text-decoration: line-through;
       text-decoration-thickness: 0.25em;
-      text-decoration-color: rgba($red, 0.5);
+      text-decoration-color: color.change($red, $alpha: 0.5);
       // span { padding-left:0.25em; padding-right: 0.25em; }
     }
     .industry.icon {

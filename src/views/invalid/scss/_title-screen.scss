@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 .title-screen {
   display: grid;
   grid-template-columns: 1fr 80px 1fr;
@@ -50,7 +53,7 @@
       font-weight: bold;
       &:hover,
       &:focus-visible {
-        color: darken($pink, 20%);
+        color: color.adjust($pink, $lightness: -20%);
         text-decoration: underline;
       }
     }
@@ -73,7 +76,7 @@
       cursor: pointer;
       &:hover,
       &:focus-visible {
-        color: darken($pink, 20%);
+        color: color.adjust($pink, $lightness: -20%);
         text-decoration: underline;
       }
     }
@@ -150,7 +153,7 @@
       }
       &:focus {
         outline: none;
-        color: darken(#23a0c7, 20%);
+        color: color.adjust(#23a0c7, $lightness: -20%);
       }
     }
   }

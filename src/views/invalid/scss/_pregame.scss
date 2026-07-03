@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 .pregame {
   min-height: 100vh;
   font-family: $sans-serif;
@@ -151,12 +154,12 @@
       }
       &:before {
         @include position(absolute, 0, 0, 0, 0);
-        background: rgba(#650524, 0.66);
+        background: color.change(#650524, $alpha:0.66);
         content: "";
       }
       &.is-me {
         &:before {
-          background: rgba(#650524, 0.88);
+          background: color.change(#650524, $alpha:0.88);
         }
       }
     }

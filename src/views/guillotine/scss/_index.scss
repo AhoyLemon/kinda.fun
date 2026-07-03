@@ -1,0 +1,17 @@
+// Guillotine members namespace. Forwards the shared globals, then guillotine's
+// own abstracts. The shared forward hides every name guillotine redeclares —
+// its palette, font/weight tokens and breakpoints — plus the shared mixins it
+// reimplements locally, so the two forwards don't collide. `$serif`,
+// `$sans-serif` and `$max-width` are NOT redeclared, so they stay available.
+@forward "@/shared/scss/globals" hide
+  $white, $black, $blue, $red, $green, $yellow, $teal,
+  $body, $copy, $link, $accent, $focus,
+  $color-twitter, $color-github, $color-facebook,
+  $light, $medium, $bold, $font-family, $mobile-max, $desktop-min,
+  background, flex-container, flex-item, flex-center, animation, transforms,
+  translate, translateX, translateY, rotate, rotateX, skew, transition, scale,
+  position, inner, respond-to;
+@forward "abstracts/variables";
+@forward "abstracts/mixins";
+@forward "abstracts/extends";
+@forward "abstracts/z-index";

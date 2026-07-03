@@ -1,4 +1,5 @@
-@use '../abstracts/variables' as *;
+@use "../index" as *;
+@use "sass:color";
 
 // ─── Campaign Select Screen ───────────────────────────────────
 .court-campaign-select {
@@ -59,12 +60,12 @@
 
   &:hover {
     border-color: $court-gold;
-    background: lighten($court-surface, 4%);
+    background: color.adjust($court-surface, $lightness: 4%);
   }
 
   &.cs-card--recommended {
     border-color: rgba($court-gold, 0.8);
-    background: lighten($court-surface, 3%);
+    background: color.adjust($court-surface, $lightness: 3%);
   }
 }
 

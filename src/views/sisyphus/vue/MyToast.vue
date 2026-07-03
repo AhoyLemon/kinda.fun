@@ -36,7 +36,7 @@
   });
 </script>
 <style lang="scss" scoped>
-  @import "@/views/sisyphus/scss/partials/_variables";
+  @use "@/views/sisyphus/scss/index" as *;
   .text-wrapper {
     display: grid;
     gap: 10px;

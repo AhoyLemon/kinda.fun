@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 .pregame {
   min-height: 99.9vh;
   font-family: $font-family;
@@ -39,7 +42,7 @@
         text-transform: uppercase;
         &:focus {
           border-color: $blue;
-          color: lighten($blue, 20);
+          color: color.adjust($blue, $lightness: 20%);
           outline: none;
         }
       }
@@ -67,11 +70,11 @@
       font-size: 1rem;
       &:hover,
       &:focus {
-        background-color: darken($blue, 30);
+        background-color: color.adjust($blue, $lightness: -30%);
       }
       &[disabled] {
-        background: rgba(white, 0.16);
-        color: rgba(white, 0.52);
+        background: color.change(white, $alpha: 0.16);
+        color: color.change(white, $alpha: 0.52);
         cursor: not-allowed;
         box-shadow: none;
         text-shadow: none;
@@ -92,11 +95,11 @@
 
     .choose-decks-button {
       appearance: none;
-      background: rgba($blue, 0.14);
-      border: 1px solid rgba(lighten($blue, 18), 0.72);
+      background: color.change($blue, $alpha: 0.14);
+      border: 1px solid color.change(color.adjust($blue, $lightness: 18%), $alpha: 0.72);
       border-radius: 8px;
       box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
-      color: lighten($blue, 24);
+      color: color.adjust($blue, $lightness: 24%);
       cursor: pointer;
       display: block;
       font-family: inherit;
@@ -112,24 +115,24 @@
 
       &:hover,
       &:focus {
-        background-color: rgba($blue, 0.28);
-        border-color: lighten($blue, 24);
+        background-color: color.change($blue, $alpha: 0.28);
+        border-color: color.adjust($blue, $lightness: 24%);
         color: white;
         outline: none;
       }
 
       &:disabled {
-        background: rgba(white, 0.12);
-        border-color: rgba(white, 0.16);
+        background: color.change(white, $alpha: 0.12);
+        border-color: color.change(white, $alpha: 0.16);
         box-shadow: none;
-        color: rgba(white, 0.55);
+        color: color.change(white, $alpha: 0.55);
         cursor: wait;
       }
     }
 
     .host-setup-card {
       background: rgba(0, 0, 0, 0.3);
-      border: 2px solid rgba($blue, 0.28);
+      border: 2px solid color.change($blue, $alpha: 0.28);
       border-radius: 8px;
       padding: 1rem;
     }
@@ -138,7 +141,7 @@
       margin-bottom: 1rem;
 
       .host-setup-kicker {
-        color: lighten($blue, 24);
+        color: color.adjust($blue, $lightness: 24%);
         font-size: 0.72rem;
         font-weight: 800;
         letter-spacing: 0.14em;
@@ -154,7 +157,7 @@
       }
 
       p {
-        color: rgba(white, 0.72);
+        color: color.change(white, $alpha: 0.72);
         font-size: 0.86rem;
         line-height: 1.45;
       }
@@ -170,7 +173,7 @@
       h3 {
         font-size: 1.1rem;
         margin-bottom: 0.75rem;
-        color: lighten($blue, 20);
+        color: color.adjust($blue, $lightness: 20%);
       }
 
       .selected-decks-list {
@@ -214,15 +217,15 @@
         }
 
         &.enough {
-          background: rgba($green, 0.2);
-          border: 1px solid lighten($green, 10);
-          color: lighten($green, 20);
+          background: color.change($green, $alpha: 0.2);
+          border: 1px solid color.adjust($green, $lightness: 10%);
+          color: color.adjust($green, $lightness: 20%);
         }
 
         &.not-enough {
-          background: rgba($red, 0.2);
+          background: color.change($red, $alpha: 0.2);
           border: 1px solid $red;
-          color: lighten($red, 15);
+          color: color.adjust($red, $lightness: 15%);
         }
       }
     }
@@ -252,7 +255,7 @@
     h3 {
       font-size: 1rem;
       margin-bottom: 0.75rem;
-      color: lighten($blue, 20);
+      color: color.adjust($blue, $lightness: 20%);
       text-align: center;
     }
 
@@ -342,12 +345,12 @@
         }
         &:before {
           @include position(absolute, 0, 0, 0, 0);
-          background: rgba(#650524, 0.66);
+          background: color.change(#650524, $alpha: 0.66);
           content: "";
         }
         &.is-me {
           &:before {
-            background: rgba(#650524, 0.88);
+            background: color.change(#650524, $alpha: 0.88);
           }
         }
       }
@@ -402,19 +405,19 @@
     .room-capacity {
       padding: 8px 12px 12px;
       font-size: 0.9rem;
-      border-top: 1px solid rgba(white, 0.1);
-      border-bottom: 1px solid rgba(white, 0.1);
+      border-top: 1px solid color.change(white, $alpha: 0.1);
+      border-bottom: 1px solid color.change(white, $alpha: 0.1);
       margin-bottom: 0.75rem;
       transition:
         color 0.3s ease,
         border-color 0.3s ease;
       &.is-error {
-        color: lighten($red, 15);
-        border-color: rgba($red, 0.35);
+        color: color.adjust($red, $lightness: 15%);
+        border-color: color.change($red, $alpha: 0.35);
       }
       &.is-success {
-        color: lighten($green, 10);
-        border-color: rgba($green, 0.3);
+        color: color.adjust($green, $lightness: 10%);
+        border-color: color.change($green, $alpha: 0.3);
       }
     }
   }

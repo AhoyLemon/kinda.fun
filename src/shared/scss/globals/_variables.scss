@@ -32,3 +32,6 @@ $font-family: $sans-serif;
 // MEASUREMENTS //////////////////////////////////////////////////////////////////////
 $mobile-max: 767px;
 $desktop-min: 768px;
+// Used by the shared `inner()` mixin. Declared !default so views that pull in
+// these globals can override it before use.
+$max-width: 1200px !default;

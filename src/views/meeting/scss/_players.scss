@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 .card-players {
   background: #040404;
   overflow-x: hidden;
@@ -63,7 +66,7 @@
         background-color: $green;
       }
       &.stolen {
-        background-color: lighten($red, 25);
+        background-color: color.adjust($red, $lightness: 25%);
       }
       &.playing {
         background-color: $blue;
@@ -77,7 +80,7 @@
     color: $yellow;
     font-weight: 725;
     text-align: center;
-    border-top: 1px solid rgba($yellow, 0.2);
+    border-top: 1px solid color.change($yellow, $alpha: 0.2);
   }
 
   &.for-host {

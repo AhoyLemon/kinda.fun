@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 main.general-stats {
   grid-column: span 2;
   min-height: 100dvh;
@@ -69,7 +72,7 @@ main.general-stats {
       cursor: pointer;
       &:hover,
       &:focus {
-        background: saturate($color: #2d4450, $amount: 50%);
+        background: color.adjust(#2d4450, $saturation: 50%);
       }
     }
   }

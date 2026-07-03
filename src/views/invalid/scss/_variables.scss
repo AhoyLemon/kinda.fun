@@ -1,3 +1,5 @@
+@use "@/shared/scss/globals" as g;
+
 $gap: 40px;
 $padding: 20px;
 
@@ -24,7 +26,7 @@ $pink: #ff0099;
 $purple: #791fc7;
 
 $adminOnly: #ffcc00;
-$adminError: $red;
+$adminError: g.$red;
 $adminPanelColor: rgba(1, 12, 1, 1);
 $employeePanelColor: rgba(246, 246, 256, 1);
 

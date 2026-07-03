@@ -1,3 +1,5 @@
+@use "index" as *;
+
 .hud {
   @include position(fixed, null, 0, 0, 0);
   padding: 10px;

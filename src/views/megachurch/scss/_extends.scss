@@ -1,31 +1,33 @@
+@use "variables" as v;
+
 %buttons {
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
   gap: 10px;
   button {
-    font-family: $sans-serif;
+    font-family: v.$sans-serif;
     font-size: 1rem;
     font-weight: 525;
-    border: 2px solid $darkGray;
+    border: 2px solid v.$darkGray;
     padding: 0.5em 1.25em;
     cursor: pointer;
     &:hover,
     &:focus {
-      background-color: $darkGray;
-      color: $lightGray;
+      background-color: v.$darkGray;
+      color: v.$lightGray;
     }
 
     &.submit,
     &[type="submit"] {
-      background-color: $blue;
-      color: $white;
+      background-color: v.$blue;
+      color: v.$white;
       font-weight: 650;
       text-transform: uppercase;
 
       &:hover,
       &:focus-visible {
-        background-color: $darkBlue;
+        background-color: v.$darkBlue;
       }
     }
 

@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "variables" as v;
+
 %clearfix {
   &:after {
     content: "";
@@ -25,7 +28,7 @@
 }
 
 %fanart {
-  background-color: $episode;
+  background-color: v.$episode;
   border: 1px solid #777;
   display: inline-block;
   max-width: 480px;
@@ -37,11 +40,11 @@
   }
   figcaption {
     background-color: #777;
-    color: $white;
+    color: v.$white;
     text-align: center;
   }
   &:hover {
-    background-color: lighten($yellow, 15%);
+    background-color: color.adjust(v.$yellow, $lightness: 15%);
     cursor: pointer;
   }
   &.big {
@@ -55,6 +58,6 @@
 %textlink {
   text-decoration: none;
   &:hover {
-    border-bottom: 0.05em solid $red;
+    border-bottom: 0.05em solid v.$red;
   }
 }

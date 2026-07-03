@@ -57,7 +57,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import "../../scss/_variables";
+  @use "@/views/megachurch/scss/index" as *;
   .banner-ad-overlay {
     position: fixed;
     top: 0;

@@ -1,3 +1,6 @@
+@use "../index" as *;
+@use "sass:color";
+
 section.choices {
   height: 100vh;
   display: grid;
@@ -8,7 +11,7 @@ section.choices {
     content: "";
     display: block;
     @include position(absolute, null, 0, 0, 0);
-    background: linear-gradient(180deg, rgba($white, 0), rgba($white, 1));
+    background: linear-gradient(180deg, color.change($white, $alpha: 0), color.change($white, $alpha: 1));
     height: 100px;
     pointer-events: none;
   }

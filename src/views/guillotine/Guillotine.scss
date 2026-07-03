@@ -1,43 +1,41 @@
 // General structure adopted from Kitty Giraudel
 // https://sass-guidelin.es/#architecture
-
-// ABSRACTS are variables and mixins. (they should *never* add lines to the production CSS)
-@import "scss/abstracts/variables";
-@import "scss/abstracts/z-index";
-@import "scss/abstracts/mixins";
-@import "scss/abstracts/extends";
+//
+// ABSTRACTS (variables, mixins, %extends, z-index) are member-only and now live
+// in scss/_index.scss; every partial `@use`s that index directly, so the entry
+// only needs to pull in the CSS-emitting partials, in cascade order.
 
 // BASE is for things like global site styles and typography.
-@import "scss/base/reset";
-@import "scss/base/defaults";
-@import "scss/base/animations";
+@use "scss/base/reset";
+@use "scss/base/defaults";
+@use "scss/base/animations";
 
 // LIBRARIES is for third party Scss
-@import "scss/libraries/animate.scss";
+@use "scss/libraries/animate";
 
 // COMPONENTS is for stuff like buttons, cards, callouts, toasts, etc... Essentially - reusable rectangles.
-@import "scss/components/billionaire";
-@import "scss/components/_toast";
+@use "scss/components/billionaire";
+@use "scss/components/toast";
 
 // LAYOUT is for stuff like a grid system, topnav, footer, etc.
-@import "scss/layout/desktop";
-@import "scss/layout/footer";
+@use "scss/layout/desktop";
+@use "scss/layout/footer";
 
 // SECTIONS is a stripe (like a hero section) - like a component, but bigger.
-@import "scss/sections/share-screen";
+@use "scss/sections/share-screen";
 
-@import "scss/sections/title-screen";
+@use "scss/sections/title-screen";
 
-@import "scss/sections/choices";
-@import "scss/sections/gallows";
-@import "scss/sections/graves";
+@use "scss/sections/choices";
+@use "scss/sections/gallows";
+@use "scss/sections/graves";
 
-@import "scss/sections/footer/stats";
-@import "scss/sections/footer/citations";
-@import "scss/sections/footer/final-links";
-@import "scss/sections/footer/by-lemon";
+@use "scss/sections/footer/stats";
+@use "scss/sections/footer/citations";
+@use "scss/sections/footer/final-links";
+@use "scss/sections/footer/by-lemon";
 
 // PAGES is for any specific page template
 
 // FINALLY, we should have a place for things we still need to get to...
-@import "scss/todo/shame";
+@use "scss/todo/shame";

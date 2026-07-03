@@ -1,4 +1,5 @@
-@import "../../scss/_variables.scss";
+@use "@/views/megachurch/scss/index" as *;
+
 
 .container {
   display: flex;

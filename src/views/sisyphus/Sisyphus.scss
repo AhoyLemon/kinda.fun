@@ -1,22 +1,16 @@
-//GLOBALS, GET DEFAULTS
-@import "scss/globals/_reset";
-@import "scss/globals/_variables";
-@import "scss/globals/_mixins";
-@import "scss/globals/_extends";
-@import "scss/globals/_z-index";
+// GLOBALS: reset emits CSS (not members), so @use it directly, once.
+@use "scss/globals/reset";
 
 // LIBRARIES
-@import "@/shared/scss/libraries/animate";
-@import "@/shared/scss/libraries/vue_toastification";
+@use "@/shared/scss/libraries/animate";
+@use "@/shared/scss/libraries/vue_toastification";
 
-// SITE SPECIFIC
-@import "scss/partials/_variables";
-@import "scss/partials/_extends";
-@import "scss/partials/_default";
-@import "scss/partials/_hill";
-@import "scss/partials/_store";
-@import "scss/partials/_inventory";
-@import "scss/partials/_counter";
-@import "scss/partials/_cheevos";
-
-@import "scss/partials/_sidebar";
+// SITE SPECIFIC (CSS-emitting partials; members come in via each partial's own
+// `@use "../index" as *`). Same order as the previous @import cascade.
+@use "scss/partials/default";
+@use "scss/partials/hill";
+@use "scss/partials/store";
+@use "scss/partials/inventory";
+@use "scss/partials/counter";
+@use "scss/partials/cheevos";
+@use "scss/partials/sidebar";

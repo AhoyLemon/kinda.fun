@@ -1,3 +1,5 @@
+@use "index" as *;
+
 $sidebarWidth: 240px;
 
 @mixin sidebarButton() {

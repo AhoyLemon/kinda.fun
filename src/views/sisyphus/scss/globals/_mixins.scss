@@ -1,3 +1,6 @@
+@use "sass:string";
+@use "variables" as v;
+
 @mixin background($size: cover, $position: center, $repeat: no-repeat) {
   background-size: $size;
   background-position: $position;
@@ -32,7 +35,7 @@
 }
 
 @mixin filter($filter-type, $filter-amount) {
-  filter: $filter-type + unquote("(#{$filter-amount})");
+  filter: $filter-type + string.unquote("(#{$filter-amount})");
 }
 
 @mixin flex-container($direction: row, $wrap: wrap, $align: stretch) {
@@ -133,11 +136,11 @@
 
 @mixin respond-to($media) {
   @if $media == desktop {
-    @media only screen and (min-width: $desktop-min) {
+    @media only screen and (min-width: v.$desktop-min) {
       @content;
     }
   } @else if $media == mobile {
-    @media only screen and (max-width: $mobile-max) {
+    @media only screen and (max-width: v.$mobile-max) {
       @content;
     }
   }

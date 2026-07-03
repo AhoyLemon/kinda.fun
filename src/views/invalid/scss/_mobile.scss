@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 .mobile-title-screen {
   display: grid;
   height: 100dvh;
@@ -52,7 +55,7 @@
     font-weight: 700;
     &:hover,
     &:focus-visible {
-      color: darken($pink, 25%);
+      color: color.adjust($pink, $lightness: -25%);
     }
   }
   code {

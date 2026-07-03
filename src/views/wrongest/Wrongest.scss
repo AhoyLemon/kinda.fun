@@ -1,24 +1,19 @@
 //GLOBALS, GET DEFAULTS
-@import "@/shared/scss/globals/_reset";
-@import "@/shared/scss/globals/_variables";
-@import "@/shared/scss/globals/_mixins";
-@import "@/shared/scss/globals/_extends";
+@use "@/shared/scss/globals/reset";
 
 // LIBRARIES (if any)
 
 // SITE SPECIFIC
-@import "scss/_variables";
-@import "scss/_mixins";
-@import "scss/_default";
-@import "scss/_timer";
-@import "scss/_round-indicator";
-@import "scss/_sidebar";
+@use "scss/default";
+@use "scss/timer";
+@use "scss/round-indicator";
+@use "scss/sidebar";
 
 // SCREENS
-@import "scss/_title-screen";
-@import "scss/_deck-selection";
-@import "scss/_pregame";
-@import "scss/_player-list";
-@import "scss/_presenting";
-@import "scss/_voting";
-@import "scss/_game-over";
+@use "scss/title-screen";
+@use "scss/deck-selection";
+@use "scss/pregame";
+@use "scss/player-list";
+@use "scss/presenting";
+@use "scss/voting";
+@use "scss/game-over";

@@ -1,3 +1,6 @@
+@use "../index" as *;
+@use "sass:color";
+
 .title-screen {
   background: rgba(0, 0, 0, 0.94);
   @include position(fixed, 0, 0, 0, 0);
@@ -47,7 +50,7 @@
       transition: all 0.15s linear;
       &:hover {
         border-color: $white;
-        background: darken($pink, 3%);
+        background: color.adjust($pink, $lightness: -3%);
         text-shadow: 1px 1px 2px $black;
       }
     }

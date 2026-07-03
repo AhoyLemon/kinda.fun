@@ -12,6 +12,8 @@ Author  : Hunter Perrin
 Version : 3.2.0
 Link    : http://sciactive.com/pnotify/
 */
+@use "../index" as *;
+
 /* -- Notice */
 .ui-pnotify {
   top: 36px;

@@ -1,3 +1,5 @@
+@use "index" as *;
+
 article {
   padding: ($gap * 2) $padding;
   font-family: $sans-serif;
