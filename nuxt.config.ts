@@ -98,6 +98,11 @@ export default defineNuxtConfig({
   // quiet. The proper fix (migrate the SCSS to @use / @forward) is tracked in
   // its own issue (#286) and should land before/with this migration.
   vite: {
+    // Pre-bundle the client-plugin deps so Vite doesn't discover them at
+    // runtime mid-session (which forces a dev page reload).
+    optimizeDeps: {
+      include: ["firebase/app", "firebase/auth", "firebase/firestore", "vue-tippy", "vuefire"],
+    },
     css: {
       preprocessorOptions: {
         scss: {
