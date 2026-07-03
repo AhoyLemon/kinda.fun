@@ -1,4 +1,4 @@
-import { Justice } from "../_types";
+import type { Justice } from "../_types";
 import { currentJustices } from "./_justicesCurrent";
 import { historicalJustices } from "./_justicesHistorical";
 import { fictionalJustices } from "./_justicesFictional";

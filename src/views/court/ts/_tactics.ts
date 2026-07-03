@@ -1,4 +1,4 @@
-import { Tactic } from "./_types";
+import type { Tactic } from "./_types";
 
 export const tactics: Tactic[] = [
   // ─── ATTACK JUSTICE ──────────────────────────────────────────────────────

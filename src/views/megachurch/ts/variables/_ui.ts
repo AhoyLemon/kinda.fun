@@ -1,5 +1,5 @@
 import { reactive } from "vue";
-import { UI } from "../_types";
+import type { UI } from "../_types";
 
 export const ui = reactive<UI>({
   view: "title-screen", // Start with title screen

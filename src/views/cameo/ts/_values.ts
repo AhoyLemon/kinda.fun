@@ -1,4 +1,4 @@
-import { Celeb } from "./_types";
+import type { Celeb } from "./_types";
 
 export const allValues: Celeb[] = [
   {

@@ -1,39 +1,32 @@
 {
+  // Extend the tsconfig Nuxt generates (`nuxi prepare` / `bun dev` / postinstall
+  // keep it fresh) so the editor and CLI see the exact same aliases (#app,
+  // #imports, @ → src, …) and types. If your editor shows "Cannot find name
+  // 'useHead'"-style errors, .nuxt/ is stale or the TS server started before it
+  // existed: run `bun install` (postinstall runs `nuxi prepare`), then
+  // "Vue: Restart TS Server" / reload the window.
+  "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "lib": ["ESNext", "DOM"],
-    "allowJs": true,
-    "checkJs": false,
-    "jsx": "preserve",
-    "sourceMap": true,
+    // The legacy src/ tree predates strict mode; flipping strict on is tracked
+    // separately from the Nuxt migration.
     "strict": false,
     "noImplicitAny": false,
-    "noEmit": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "sourceMap": true
   },
+  // The generated include covers app/** but not the legacy src/ tree (Nuxt only
+  // reaches it via imports). List it here so src files opened directly in the
+  // editor get full project context (aliases, globals, pug plugin).
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "src/**/*.js",
-    "app/**/*.ts",
-    "app/**/*.vue",
-    "app/**/*.js",
-    "nuxt.config.ts",
-    ".nuxt/nuxt.d.ts",
-    ".nuxt/imports.d.ts",
-    ".nuxt/components.d.ts"
+    "./.nuxt/nuxt.d.ts",
+    "app/**/*",
+    "src/**/*",
+    "tests/**/*",
+    "nuxt.config.ts"
   ],
   "exclude": ["node_modules", "dist", "public", ".output"],
   "vueCompilerOptions": {
-    "plugins": ["@vue/language-plugin-pug"]
+    // Keep vue-router's plugin from the generated config, plus pug support for
+    // the <template lang="pug"> views.
+    "plugins": ["@vue/language-plugin-pug", "vue-router/volar/sfc-route-blocks"]
   }
 }

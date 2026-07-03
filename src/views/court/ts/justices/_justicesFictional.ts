@@ -1,4 +1,4 @@
-import { Justice } from "../_types";
+import type { Justice } from "../_types";
 import { PRES_VERMIN_SUPREME, PRES_BIDEN, PRES_HUNTER_S_THOMPSON, PRES_SNOOP_DOGG, PRES_LIBERACE } from "../_presidents";
 export const fictionalJustices: Justice[] = [
   {

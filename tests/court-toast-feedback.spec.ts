@@ -83,6 +83,9 @@ function makeGame(b: Justice[], t: Tactic): CourtGameState {
     reframeStanceChoices: [],
     reframeStanceTacticId: null,
     reframeStanceSelection: null,
+    lecternMode: false,
+    lecternBoostPending: false,
+    lecternBlindTacticId: null,
   };
 }
 

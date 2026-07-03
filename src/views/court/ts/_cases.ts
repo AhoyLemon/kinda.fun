@@ -1,4 +1,4 @@
-import { Case } from "./_types";
+import type { Case } from "./_types";
 
 // ────────────────────────────────────────────────────────────
 // HISTORICAL CASES (10)

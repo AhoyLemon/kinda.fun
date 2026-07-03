@@ -1,4 +1,4 @@
-import { Justice } from "../_types";
+import type { Justice } from "../_types";
 import { PRES_CLEVELAND, PRES_BENJAMIN_HARRISON, PRES_MCKINLEY, PRES_THEODORE_ROOSEVELT } from "../_presidents";
 export const lochnerJustices: Justice[] = [
   {

@@ -3,5 +3,9 @@
     "source.fixAll": "explicit"
   },
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // Lint the same file types the CLI lints (bun run lint), so the editor and
+  // CI agree. The repo uses .eslintrc.cjs (ESLint 8), not flat config.
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue"],
+  "eslint.useFlatConfig": false
 }

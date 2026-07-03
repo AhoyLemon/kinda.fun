@@ -1,4 +1,4 @@
-import { ReligionNames } from "../_types";
+import type { ReligionNames } from "../_types";
 
 export interface EternalLegacyShopItem {
   id: string;
