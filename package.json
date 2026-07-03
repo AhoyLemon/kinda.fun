@@ -10,6 +10,7 @@
     "build": "node scripts/updateSitemap.js && nuxi generate && node scripts/nuxt/finalize.mjs",
     "preview": "nuxi preview",
     "verify": "node scripts/verify/verify.mjs",
+    "sass:check": "node scripts/checkSass.mjs",
     "typecheck": "nuxi typecheck",
     "deploy": "npm run build && firebase deploy --only hosting",
     "sitemap": "node scripts/updateSitemap.js",
