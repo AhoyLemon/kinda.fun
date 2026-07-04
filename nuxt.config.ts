@@ -14,6 +14,16 @@ export default defineNuxtConfig({
   compatibilityDate: "2026-06-27",
   ssr: true,
 
+  modules: ["@nuxt/eslint"],
+
+  eslint: {
+    config: {
+      // Prettier owns formatting (the `format` script + editor), so keep ESLint
+      // Stylistic off — ESLint only enforces correctness/Vue rules here.
+      stylistic: false,
+    },
+  },
+
   // Styled "server ready" banner for `bun run dev`. The `listen` hook only
   // fires for the dev server, so this never runs during build/generate.
   hooks: {
@@ -29,13 +39,25 @@ export default defineNuxtConfig({
       // Home's game links are behind interaction (not static <a href>), so
       // crawling can't discover the routes — drive them from the manifest.
       // "/not-found" renders the catch-all page (app/pages/[...slug].vue, which
-      // returns 200 so it prerenders); scripts/nuxt/finalize.mjs copies it to
-      // the 404.html Hosting serves for unmatched routes.
+      // returns 200 so it prerenders); the prerender:generate hook below writes
+      // that render to 404.html (Nitro reserves its own /404.html as an empty
+      // SPA-fallback shell, so we can't prerender straight to that filename).
       crawlLinks: false,
       routes: PRERENDER_ROUTES,
       // Fail the build if any route errors during prerender, so a broken page
       // can never ship silently as a 404.
       failOnError: true,
+    },
+    hooks: {
+      // Emit the prerendered /not-found HTML as 404.html directly, so Firebase
+      // Hosting serves real 404 content for unmatched routes with no post-build
+      // copy step. Runs after Nitro's own empty 404.html shell is written, so
+      // this fires last and wins.
+      "prerender:generate"(route) {
+        if (route.route === "/not-found" && route.contents) {
+          route.fileName = "404.html";
+        }
+      },
     },
   },
 

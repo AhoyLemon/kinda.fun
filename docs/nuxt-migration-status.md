@@ -20,8 +20,9 @@ build has been removed.
   component and sets the full per-page `<head>` (fonts, canonical, OpenGraph,
   per-game theme-color + branded favicons) via `useHead`. Site-wide favicons/
   fonts live in `nuxt.config.ts`'s global head; branded favicons override by key.
-- 404 is prerendered via `app/pages/[...slug].vue`, copied to `404.html` by
-  `scripts/nuxt/finalize.mjs`; `app/error.vue` is the runtime fallback.
+- 404 is prerendered via `app/pages/[...slug].vue` (as `/not-found`) and written
+  to `404.html` by a Nitro `prerender:generate` hook in `nuxt.config.ts`;
+  `app/error.vue` is the runtime fallback.
 - Stats is Firestore-backed: it prerenders a loading shell and fetches live data
   on mount.
 
@@ -60,7 +61,8 @@ under `--no-emulator` are treated as environmental noise.
 - `build` refreshes `public/sitemap.xml` before generating; `deploy` = `build`
   + `firebase deploy --only hosting` (`firebase.json` already serves
   `.output/public`).
-- Editor parity: `.eslintrc.cjs` declares Nuxt/Vue auto-imports as globals;
+- Editor parity: `@nuxt/eslint` generates the flat config (`eslint.config.mjs`
+  wraps it) with Nuxt/Vue auto-imports as globals derived from the project;
   `tsconfig.json` includes `app/**` + `.nuxt` type decls and the pug language
   plugin (consolidated from the removed `jsconfig.json`); `postinstall` runs
   `nuxi prepare`.

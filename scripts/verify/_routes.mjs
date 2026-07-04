@@ -21,7 +21,9 @@ export const ROUTES = [
   {
     name: "404",
     // Verify requests a non-existent path (expecting a 404), but the page that
-    // gets prerendered is the catch-all render target, /not-found.
+    // gets prerendered is the catch-all render target, /not-found. A Nitro
+    // prerender:generate hook (nuxt.config.ts) writes that render to 404.html,
+    // the file Firebase Hosting serves for unmatched routes.
     path: "/this-route-does-not-exist-xyz",
     prerenderPath: "/not-found",
     expectStatus: 404,
