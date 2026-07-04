@@ -130,60 +130,78 @@ async function checkRedirects(baseUrl) {
   }
 }
 
+// Ignore failed loads of EXTERNAL resources (fonts/CDN) which are blocked by
+// this environment's egress policy and are not uncaught JS errors. We still
+// catch real exceptions (pageerror) and same-origin/app console errors.
+const isResourceNoise = (t) =>
+  /Failed to load resource|net::ERR|ERR_|favicon\.ico|fonts\.googleapis|fonts\.gstatic|the server responded with a status/i.test(t) ||
+  // Firestore-unreachable noise: when the emulator isn't running (e.g.
+  // --no-emulator), the stats dashboard's on-mount fetch can't reach a
+  // backend. These are environmental, not app bugs — the same data path is
+  // exercised for real when the emulator is up. Games never hit this (their
+  // Firebase use is client-interaction-gated).
+  /Could not reach Cloud Firestore backend|@firebase\/firestore|WebChannelConnection|Error loading .* stats from Firestore|Error loading full .* data/i.test(t);
+
+// Checks one route in its own browser context (isolation lets routes run in
+// parallel without state bleed). Returns its records rather than logging them,
+// so the pool driver can replay them in a stable order.
 async function checkRoute(browser, baseUrl, route) {
   const label = `${route.name} (${route.path})`;
+  const recs = [];
+  const add = (name, ok, detail = "") => recs.push({ group: "route", name, ok, detail });
 
-  // 1. Raw HTTP: status + prerendered content (white-page detector on source).
-  let html = "";
-  try {
-    const res = await fetch(`${baseUrl}${route.path}`, { redirect: "manual" });
-    html = await res.text();
-    const expectStatus = route.expectStatus || 200;
-    const statusOk = res.status === expectStatus;
-    const contentOk = html.includes(route.contentNeedle);
-    record("route", `${label} HTTP ${expectStatus} + prerendered content`, statusOk && contentOk,
-      statusOk && contentOk ? "" : `status=${res.status} contentNeedle=${contentOk}`);
-  } catch (e) {
-    record("route", `${label} HTTP`, false, e.message);
-    return;
-  }
-
-  // 2. Headless browser: hydration, selector visible, text floor, zero console errors.
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+  const page = await context.newPage();
   const consoleErrors = [];
-  // Ignore failed loads of EXTERNAL resources (fonts/CDN) which are blocked by
-  // this environment's egress policy and are not uncaught JS errors. We still
-  // catch real exceptions (pageerror) and same-origin/app console errors.
-  const isResourceNoise = (t) =>
-    /Failed to load resource|net::ERR|ERR_|favicon\.ico|fonts\.googleapis|fonts\.gstatic|the server responded with a status/i.test(t) ||
-    // Firestore-unreachable noise: when the emulator isn't running (e.g.
-    // --no-emulator), the stats dashboard's on-mount fetch can't reach a
-    // backend. These are environmental, not app bugs — the same data path is
-    // exercised for real when the emulator is up. Games never hit this (their
-    // Firebase use is client-interaction-gated).
-    /Could not reach Cloud Firestore backend|@firebase\/firestore|WebChannelConnection|Error loading .* stats from Firestore|Error loading full .* data/i.test(t);
   page.on("console", (msg) => {
     if (msg.type() === "error" && !isResourceNoise(msg.text())) consoleErrors.push(msg.text());
   });
   page.on("pageerror", (err) => consoleErrors.push(`pageerror: ${err.message}`));
   try {
-    // Live-data pages (e.g. stats) hold an open Firestore connection, so
-    // "networkidle" never fires — they opt into a lighter wait via route.waitUntil.
+    // Single navigation drives both checks. Live-data pages (e.g. stats) hold an
+    // open Firestore connection, so "networkidle" never fires — they opt into a
+    // lighter wait via route.waitUntil.
     const resp = await page.goto(`${baseUrl}${route.path}`, { waitUntil: route.waitUntil || "networkidle", timeout: 30000 });
-    void resp;
+
+    // 1. Raw HTTP: status + prerendered content (white-page detector on the
+    // server-sent source — resp.text() is the response body, pre-hydration).
+    const expectStatus = route.expectStatus || 200;
+    const status = resp ? resp.status() : 0;
+    const html = resp ? await resp.text() : "";
+    const statusOk = status === expectStatus;
+    const contentOk = html.includes(route.contentNeedle);
+    add(`${label} HTTP ${expectStatus} + prerendered content`, statusOk && contentOk,
+      statusOk && contentOk ? "" : `status=${status} contentNeedle=${contentOk}`);
+
+    // 2. Headless browser: hydration, selector visible, text floor, zero console errors.
     await page.waitForSelector(route.selector, { state: "visible", timeout: 15000 });
     const text = (await page.locator("body").innerText()).trim();
     const textOk = text.length >= route.minText;
-    record("route", `${label} hydrates + selector "${route.selector}" visible`, true);
-    record("route", `${label} rendered text ≥ ${route.minText}`, textOk, textOk ? `${text.length} chars` : `only ${text.length} chars`);
+    add(`${label} hydrates + selector "${route.selector}" visible`, true);
+    add(`${label} rendered text ≥ ${route.minText}`, textOk, textOk ? `${text.length} chars` : `only ${text.length} chars`);
     // Console errors: warnings allowed, errors not.
-    record("route", `${label} zero console errors`, consoleErrors.length === 0,
+    add(`${label} zero console errors`, consoleErrors.length === 0,
       consoleErrors.length ? consoleErrors.slice(0, 3).join(" | ") : "");
   } catch (e) {
-    record("route", `${label} hydration/selector`, false, e.message);
+    add(`${label} hydration/selector`, false, e.message);
   } finally {
-    await page.close();
+    await context.close();
   }
+  return recs;
+}
+
+// Run `fn` over `items` with at most `limit` in flight; results keep input order.
+async function mapPool(items, limit, fn) {
+  const out = new Array(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const i = next++;
+      out[i] = await fn(items[i], i);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return out;
 }
 
 function summarize() {
@@ -261,9 +279,14 @@ async function main() {
     const { executablePath, args: browserArgs } = await resolveChromium();
     browser = await chromium.launch({ executablePath, args: browserArgs, headless: true });
 
-    console.log("\n▶ Per-route checks…");
-    for (const route of ROUTES) {
-      await checkRoute(browser, srv.url, route);
+    // Routes run through a small concurrency pool of isolated browser contexts.
+    // Each returns its records; we replay them in ROUTES order so the summary is
+    // stable regardless of completion order. Tune with VERIFY_CONCURRENCY.
+    const concurrency = Number(process.env.VERIFY_CONCURRENCY) || 4;
+    console.log(`\n▶ Per-route checks (concurrency ${concurrency})…`);
+    const perRoute = await mapPool(ROUTES, concurrency, (route) => checkRoute(browser, srv.url, route));
+    for (const recs of perRoute) {
+      for (const r of recs) record(r.group, r.name, r.ok, r.detail);
     }
 
     allGreen = summarize();
