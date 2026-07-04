@@ -1,33 +1,28 @@
-//GLOBALS, GET DEFAULTS
-@import "@/shared/scss/globals/_reset";
-@import "@/shared/scss/globals/_variables";
-@import "@/shared/scss/globals/_mixins";
-@import "@/shared/scss/globals/_extends";
+// Shared reset emits CSS (not members), so @use it directly, once.
+@use "@/shared/scss/globals/reset";
 
 // LIBRARIES (if any)
-@import "@/shared/scss/libraries/vue_toastification";
+@use "@/shared/scss/libraries/vue_toastification";
 
 // SITE SPECIFIC
-@import "scss/variables";
-@import "scss/z-index";
-@import "scss/default";
-@import "scss/scores";
+@use "scss/default";
+@use "scss/scores";
 
 // SCREENS
-@import "scss/pregame";
-@import "scss/title-screen";
-@import "scss/admin";
-@import "scss/employee";
-@import "scss/crash";
-@import "scss/final";
-@import "scss/game-over";
+@use "scss/pregame";
+@use "scss/title-screen";
+@use "scss/admin";
+@use "scss/employee";
+@use "scss/crash";
+@use "scss/final";
+@use "scss/game-over";
 
 // COMPONENTS
-@import "scss/mobile";
-@import "scss/toasts";
+@use "scss/mobile";
+@use "scss/toasts";
 
 // OTHER PAGES
-@import "scss/article";
+@use "scss/article";
 
 input.uppercase {
   text-transform: uppercase;

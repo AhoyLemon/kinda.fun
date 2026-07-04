@@ -1,19 +1,12 @@
-@import "@/shared/scss/globals/_variables";
-@import "@/shared/scss/globals/_mixins";
-@import "@/shared/scss/globals/_extends";
-@import "@/shared/scss/globals/reset";
+// Shared reset emits CSS (not members), so @use it directly, once.
+@use "@/shared/scss/globals/reset";
 
 // SCREENS
-@import "scss/_variables";
-@import "scss/_default";
-@import "scss/_sections";
-@import "scss/_general";
-@import "scss/_tables";
-
-.stats-screen {
-  display: grid;
-  gap: $gap;
-  grid-template-columns: 240px 1fr;
-}
-
-@import "scss/mobile";
+@use "scss/default";
+@use "scss/sections";
+@use "scss/general";
+@use "scss/tables";
+// `.stats-screen` lives in its own partial so it stays ordered before `mobile`
+// (whose media queries override it at equal specificity — source order matters).
+@use "scss/stats-screen";
+@use "scss/mobile";

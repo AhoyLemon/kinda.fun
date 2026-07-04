@@ -1,0 +1,15 @@
+// Sisyphus members namespace. The view is self-contained: it has its OWN globals
+// (variables, mixins, %extends, z-index) plus site-specific partials that expose
+// members (partials/variables, partials/extends). Consumers `@use "index" as *`.
+// `globals/reset` is intentionally NOT forwarded — it emits CSS, so the entry
+// `@use`s it directly, once.
+//
+// partials/variables redeclares $bold (700) which globals/variables also defines
+// (600). Under the old @import cascade the later value (700) won, so globals'
+// $bold is hidden here and partials' $bold is the one forwarded.
+@forward "globals/variables" hide $bold;
+@forward "globals/mixins";
+@forward "globals/extends";
+@forward "globals/z-index";
+@forward "partials/variables";
+@forward "partials/extends";

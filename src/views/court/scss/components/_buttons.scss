@@ -1,4 +1,5 @@
-@use '../abstracts/variables' as *;
+@use "../index" as *;
+@use "sass:color";
 
 // ─── Buttons ─────────────────────────────────────────────────
 .btn {
@@ -28,19 +29,19 @@
   &--prosecution {
     background: $court-red;
     color: #fff;
-    border-color: darken($court-red, 10%);
+    border-color: color.adjust($court-red, $lightness: -10%);
   }
 
   &--defense {
     background: $court-blue;
     color: #fff;
-    border-color: darken($court-blue, 10%);
+    border-color: color.adjust($court-blue, $lightness: -10%);
   }
 
   &--start {
     background: $court-gold;
     color: $court-text;
-    border-color: darken($court-gold, 10%);
+    border-color: color.adjust($court-gold, $lightness: -10%);
   }
 
   &--switch {

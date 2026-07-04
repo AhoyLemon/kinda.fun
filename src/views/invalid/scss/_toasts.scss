@@ -1,3 +1,5 @@
+@use "index" as *;
+
 .Vue-Toastification__toast--warning {
   color: $black;
   .text-holder {

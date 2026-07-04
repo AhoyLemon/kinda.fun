@@ -1,0 +1,6 @@
+// Invalid members namespace. Forwards the shared globals, then invalid's own
+// variables which intentionally override some shared names (fonts, weights,
+// palette) — those shared names are hidden so the two forwards don't collide.
+@forward "@/shared/scss/globals" hide $sans-serif, $serif, $font-family, $medium, $bold, $green, $blue;
+@forward "variables";
+@forward "z-index";

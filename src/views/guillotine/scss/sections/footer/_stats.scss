@@ -1,3 +1,6 @@
+@use "../../index" as *;
+@use "sass:color";
+
 section.stats {
   .stat-grid {
     display: grid;
@@ -46,7 +49,7 @@ section.stats {
       .dollars-today {
         font-size: clamp(24px, 10.15vw, 115px);
         letter-spacing: -0.05em;
-        text-shadow: 1px 1px 0.05em rgba($black, 0.5);
+        text-shadow: 1px 1px 0.05em color.change($black, $alpha: 0.5);
         sup {
           font-size: 45%;
           display: inline-block;

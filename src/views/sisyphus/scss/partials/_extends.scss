@@ -1,21 +1,24 @@
+@use "variables" as v;
+@use "../globals/variables" as g;
+
 %item {
   display: block;
   padding: 1em;
   color: white;
-  font-family: $font;
+  font-family: v.$font;
   margin-bottom: 1em;
   background: linear-gradient(to bottom, #ff416c, #ff4b2b);
   .name {
     font-size: 125%;
-    font-weight: $bold;
+    font-weight: v.$bold;
   }
 }
 
 %asideHead {
   font-size: 180%;
-  color: $white;
+  color: g.$white;
   text-transform: uppercase;
-  font-family: $font;
+  font-family: v.$font;
   margin-bottom: 1em;
-  font-family: $headline;
+  font-family: v.$headline;
 }

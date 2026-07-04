@@ -1,5 +1,5 @@
-@import "../../scss/variables";
-@import "../../scss/mixins";
+@use "@/views/megachurch/scss/index" as *;
+
 
 /* Chat bubble animation */
 .bubble-fade-enter-active,

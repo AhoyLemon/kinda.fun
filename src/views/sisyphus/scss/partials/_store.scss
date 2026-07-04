@@ -1,3 +1,6 @@
+@use "../index" as *;
+@use "sass:color";
+
 aside.store {
   overflow: hidden;
   overflow-y: auto;
@@ -14,11 +17,11 @@ aside.store {
       filter: grayscale(0.8) brightness(0.8);
     }
     &.buyable:hover {
-      background: linear-gradient(to bottom, saturate(#ff416c, 50%), saturate(#ff4b2b, 50%));
+      background: linear-gradient(to bottom, color.adjust(#ff416c, $saturation: 50%), color.adjust(#ff4b2b, $saturation: 50%));
       transform: scale(1.05);
     }
     &.buyable:active {
-      background: linear-gradient(to bottom, saturate(#ff416c, 50%), saturate(#ff4b2b, 50%));
+      background: linear-gradient(to bottom, color.adjust(#ff416c, $saturation: 50%), color.adjust(#ff4b2b, $saturation: 50%));
       transform: scale(0.95);
     }
     .price {

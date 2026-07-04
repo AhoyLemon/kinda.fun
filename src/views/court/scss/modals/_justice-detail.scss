@@ -1,4 +1,5 @@
-@use '../abstracts/variables' as *;
+@use "../index" as *;
+@use "sass:color";
 
 // ─── Justice detail modal ─────────────────────────────────────
 .justice-detail-overlay {
@@ -126,7 +127,7 @@
         text-decoration-color: rgba($court-gold, 0.45);
 
         &:hover {
-          color: lighten($court-gold, 15%);
+          color: color.adjust($court-gold, $lightness: 15%);
           text-decoration-color: $court-gold;
         }
       }

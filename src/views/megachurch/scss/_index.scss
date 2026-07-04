@@ -1,0 +1,8 @@
+// Megachurch members namespace. Forwards the shared globals, then megachurch's
+// own variables/mixins/extends which intentionally override some shared names
+// (fonts, palette, $z-sidebar) — those shared names are hidden so the two
+// forwards don't collide. `reset` emits CSS, so the entry @uses it directly.
+@forward "@/shared/scss/globals" hide $white, $black, $blue, $red, $green, $yellow, $focus, $serif, $sans-serif, $z-sidebar;
+@forward "variables";
+@forward "mixins";
+@forward "extends";

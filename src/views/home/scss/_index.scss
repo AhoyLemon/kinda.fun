@@ -1,0 +1,5 @@
+// Home members namespace. Forwards the shared globals, then home's own
+// variables which intentionally override some shared names (fonts, weights,
+// palette) — those shared names are hidden so the two forwards don't collide.
+@forward "@/shared/scss/globals" hide $serif, $sans-serif, $font-family, $medium, $bold, $green, $blue, $red;
+@forward "variables";

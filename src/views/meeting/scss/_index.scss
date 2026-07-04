@@ -1,0 +1,3 @@
+// Meeting members namespace. The view uses no shared globals, so only its own
+// variables are forwarded. Partials `@use "index" as *;` to pull them in.
+@forward "variables";

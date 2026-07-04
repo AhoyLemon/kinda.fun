@@ -1,3 +1,5 @@
+@use "sass:color";
+
 // FONTS
 $serif: "Vollkorn", serif;
 $sans-serif: "Montserrat", sans-serif;
@@ -12,13 +14,15 @@ $yellow: #f2bb05;
 $green: #4daa57;
 $red: #6e0e0a;
 
+$focusColor: #ffc107;
+
 // shades
-$lightRed: lighten($red, 48);
-$darkRed: darken($red, 5);
-$lightGreen: lighten($green, 30);
-$darkGreen: darken($green, 30);
-$lightCream: saturate($cream, 10);
-$darkCream: darken($cream, 85);
+$lightRed: color.adjust($red, $lightness: 48%);
+$darkRed: color.adjust($red, $lightness: -5%);
+$lightGreen: color.adjust($green, $lightness: 30%);
+$darkGreen: color.adjust($green, $lightness: -30%);
+$lightCream: color.adjust($cream, $saturation: 10%);
+$darkCream: color.adjust($cream, $lightness: -85%);
 
 // Measurements
 $playerListWidth: 290px;

@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 .countdown {
   position: relative;
   font-family: $font-family;
@@ -60,12 +63,12 @@
   // Colors
   &.nearly-done {
     .number {
-      border-color: rgba($orange, 0.4);
-      color: rgba($orange, 1);
+      border-color: color.change($orange, $alpha: 0.4);
+      color: color.change($orange, $alpha: 1);
       font-weight: 900;
     }
     circle {
-      stroke: rgba($orange, 0.65);
+      stroke: color.change($orange, $alpha: 0.65);
     }
   }
   &.dark {

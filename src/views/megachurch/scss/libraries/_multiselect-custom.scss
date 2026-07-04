@@ -1,3 +1,5 @@
+@use "@/views/megachurch/scss/index" as *;
+
 :root {
   --ms-option-bg-selected-pointed: #{$multiselectDark};
   --ms-option-bg-selected: #{$multiselectMid};

@@ -93,24 +93,14 @@ export default defineNuxtConfig({
     transpile: ["vue-toastification"],
   },
 
-  // The legacy SCSS still relies on @import, global Sass built-ins, and legacy
-  // color functions. Silence those deprecation warnings here so the build stays
-  // quiet. The proper fix (migrate the SCSS to @use / @forward) is tracked in
-  // its own issue (#286) and should land before/with this migration.
   vite: {
     // Pre-bundle the client-plugin deps so Vite doesn't discover them at
     // runtime mid-session (which forces a dev page reload).
     optimizeDeps: {
       include: ["firebase/app", "firebase/auth", "firebase/firestore", "vue-tippy", "vuefire"],
     },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          quietDeps: true,
-          silenceDeprecations: ["import", "global-builtin", "color-functions"],
-        },
-      },
-    },
+    // The SCSS was migrated to @use / @forward (#286), so there are no Sass
+    // deprecation warnings to silence — the build stays quiet on its own.
   },
 
   typescript: {

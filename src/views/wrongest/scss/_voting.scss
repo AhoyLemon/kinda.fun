@@ -1,3 +1,5 @@
+@use "index" as *;
+
 @keyframes voteUpJump {
   from {
     transform: translateY(0);

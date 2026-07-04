@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 $yellow: #e4dfbf;
 $sidebar: $yellow;
 .sidebar-button {
@@ -99,7 +102,7 @@ $sidebar: $yellow;
 }
 
 .homescreen-help-holder {
-  background-color: rgba($black, 0.9);
+  background-color: color.change($black, $alpha: 0.9);
   @include position(fixed, 0, 0, 0, 0);
   z-index: $z-favorite-box;
   .homescreen-help {

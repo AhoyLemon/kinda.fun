@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 [v-cloak] {
   display: none !important;
 }
@@ -79,8 +82,8 @@ figcaption {
     @extend %button;
     text-transform: none;
     background: $white;
-    color: darken($buttonColor, 25%);
-    border: 1px solid darken($buttonColor, 15%);
+    color: color.adjust($buttonColor, $lightness: -25%);
+    border: 1px solid color.adjust($buttonColor, $lightness: -15%);
     &:hover {
       background: $buttonColor;
       color: $yellow;
@@ -123,7 +126,7 @@ figcaption {
       span {
         font-size: 150%;
         font-weight: $bold;
-        color: darken($black, 7%);
+        color: color.adjust($black, $lightness: -7%);
         padding-left: 0.5em;
         padding-right: 0.5em;
       }
@@ -228,7 +231,7 @@ figcaption {
         @include position(fixed, null, 0, 0, 0);
         background: $veryBad;
         margin: 0;
-        color: darken($black, 20%);
+        color: color.adjust($black, $lightness: -20%);
         padding: 0.25em 1em;
         text-align: center;
         font-size: 3vw;
@@ -441,7 +444,7 @@ figcaption {
       }
       figcaption {
         .inner {
-          background-color: rgba($body, 0.75);
+          background-color: color.change($body, $alpha: 0.75);
           backdrop-filter: blur(2px);
           padding: 1.5em;
         }
@@ -457,7 +460,7 @@ figcaption {
         width: 100%;
         max-width: 630px;
         .inner {
-          background-color: rgba($body, 0.75);
+          background-color: color.change($body, $alpha: 0.75);
           backdrop-filter: blur(2px);
           padding: 1.5em;
         }

@@ -1,4 +1,5 @@
-@import "../../scss/variables";
+@use "@/views/megachurch/scss/index" as *;
+
 
 .voicemail-overlay {
   position: fixed;

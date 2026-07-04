@@ -1,3 +1,5 @@
+@use "variables" as v;
+
 @mixin blurBG($opacity: 0.65, $blurAmount: 4px) {
   background-color: oklch(1 0 0 / #{$opacity});
   backdrop-filter: blur($blurAmount);
@@ -9,7 +11,7 @@
   gap: 12px;
   padding: 8px 12px;
   background: $bgColor;
-  border-radius: $radiusSmall;
+  border-radius: v.$radiusSmall;
   overflow: hidden;
   position: relative;
   &:before {
@@ -18,7 +20,7 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: calc($radiusSmall / 2);
+    width: calc(v.$radiusSmall / 2);
     background-color: $borderColor;
     display: block;
   }
@@ -26,9 +28,9 @@
 
 @mixin secondaryButton {
   border: 1px solid oklch(0.8 0.005 0);
-  background: $white;
-  border-radius: $radiusMedium;
-  font-family: $sans-serif;
+  background: v.$white;
+  border-radius: v.$radiusMedium;
+  font-family: v.$sans-serif;
   cursor: pointer;
   &:disabled {
     opacity: 0.5;
@@ -36,6 +38,6 @@
   }
   &:hover:not(:disabled),
   &:focus:not(:disabled) {
-    background: $lightestGray;
+    background: v.$lightestGray;
   }
 }

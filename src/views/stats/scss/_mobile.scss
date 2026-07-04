@@ -1,3 +1,5 @@
+@use "index" as *;
+
 @media (max-width: 1000px) {
   main.general-stats {
     grid-template-columns: 1fr;

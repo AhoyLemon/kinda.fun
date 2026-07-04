@@ -1,0 +1,7 @@
+@use "index" as *;
+
+.stats-screen {
+  display: grid;
+  gap: $gap;
+  grid-template-columns: 240px 1fr;
+}

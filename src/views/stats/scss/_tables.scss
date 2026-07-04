@@ -1,9 +1,12 @@
+@use "index" as *;
+@use "sass:color";
+
 section {
   .good-table {
     .vgt-inner-wrap {
       .vgt-wrap__footer {
         .footer__row-count__label {
-          color: rgba($white, 0.8);
+          color: color.change($white, $alpha: 0.8);
           font-family: $sans-serif;
         }
         .footer__row-count__select {
@@ -14,7 +17,7 @@ section {
       }
       .footer__navigation {
         .footer__navigation__page-info {
-          color: rgba($white, 0.8);
+          color: color.change($white, $alpha: 0.8);
           font-family: $sans-serif;
         }
       }
@@ -112,8 +115,8 @@ section {
   padding-top: 1rem;
 
   button.load-full {
-    background: rgba($white, 0.1);
-    border: 1px solid rgba($white, 0.3);
+    background: color.change($white, $alpha: 0.1);
+    border: 1px solid color.change($white, $alpha: 0.3);
     color: $white;
     padding: 0.5rem 1rem;
     border-radius: 4px;
@@ -123,8 +126,8 @@ section {
     transition: all 0.2s ease;
 
     &:hover:not(:disabled) {
-      background: rgba($white, 0.2);
-      border-color: rgba($white, 0.5);
+      background: color.change($white, $alpha: 0.2);
+      border-color: color.change($white, $alpha: 0.5);
     }
 
     &:disabled {

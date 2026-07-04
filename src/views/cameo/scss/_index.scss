@@ -1,0 +1,5 @@
+// Cameo members namespace. Forwards the shared globals, then cameo's own
+// variables which intentionally override some shared names (fonts, palette) —
+// those shared names are hidden so the two forwards don't collide.
+@forward "@/shared/scss/globals" hide $serif, $sans-serif, $font-family, $yellow;
+@forward "variables";

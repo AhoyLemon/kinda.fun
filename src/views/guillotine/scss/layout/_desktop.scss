@@ -1,3 +1,6 @@
+@use "../index" as *;
+@use "sass:color";
+
 main {
   .inner {
     display: grid;
@@ -23,7 +26,7 @@ main {
         pointer-events: none;
         background: transparent !important;
         .wealth-created {
-          background: rgba($black, 0.85);
+          background: color.change($black, $alpha: 0.85);
         }
         .g-wrapper {
           #TheG {

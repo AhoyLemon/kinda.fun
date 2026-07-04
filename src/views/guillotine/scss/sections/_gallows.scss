@@ -1,3 +1,6 @@
+@use "../index" as *;
+@use "sass:color";
+
 .gallows {
   background-color: #6a2d11;
   background-image: url("/img/guillotine/dawn-big.jpg");
@@ -7,7 +10,7 @@
 
   .wealth-created {
     padding: $gap;
-    background-color: rgba($black, 0.25);
+    background-color: color.change($black, $alpha: 0.25);
     .label {
       font-weight: 700;
       letter-spacing: 0.1em;

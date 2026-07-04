@@ -1,0 +1,5 @@
+// Court members namespace. Forwards the shared globals, then court's own
+// variables which intentionally override some shared names (weight, breakpoint,
+// fonts) — those shared names are hidden so the two forwards don't collide.
+@forward "@/shared/scss/globals" hide $bold, $mobile-max, $serif, $sans-serif;
+@forward "abstracts/variables";

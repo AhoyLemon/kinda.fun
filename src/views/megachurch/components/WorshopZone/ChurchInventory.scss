@@ -1,5 +1,6 @@
-@import "../../scss/_variables";
-@import "../../scss/transitions";
+@use "@/views/megachurch/scss/index" as *;
+@use "@/views/megachurch/scss/transitions";
+
 
 $border-radius: $radiusMedium;
 $grid-gap: 4px;

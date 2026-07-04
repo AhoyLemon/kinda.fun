@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 %link {
   background: none;
   border: none;
@@ -147,7 +150,7 @@ main.title-screen {
       color: $yellow;
       font-size: 1.5rem;
       padding: 1em;
-      background-color: rgba($yellow, 0.025);
+      background-color: color.change($yellow, $alpha: 0.025);
       cursor: pointer;
       height: 82px;
       &[disabled] {

@@ -1,3 +1,6 @@
+@use "index" as *;
+@use "sass:color";
+
 .guess {
   font-family: $sans-serif;
   color: white;
@@ -26,7 +29,7 @@
       &:focus {
         border-color: $focusColor;
         outline: none;
-        color: darken($focusColor, 35);
+        color: color.adjust($focusColor, $lightness: -35%);
         ~ button:not([disabled]) {
           border-color: $focusColor;
         }
@@ -40,9 +43,9 @@
       border: 2px solid transparent;
       border-left: none;
       transition: all 0.3s linear;
-      color: darken($focusColor, 40);
+      color: color.adjust($focusColor, $lightness: -40%);
       &:not(disabled) {
-        background-color: lighten($focusColor, 40);
+        background-color: color.adjust($focusColor, $lightness: 40%);
         &:hover,
         &:focus {
           background: $focusColor;

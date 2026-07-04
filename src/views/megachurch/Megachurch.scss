@@ -1,35 +1,29 @@
-//GLOBALS, GET DEFAULTS
-// @import "@/shared/scss/globals/_reset";
-@import "@/shared/scss/globals/_variables";
-@import "@/shared/scss/globals/_mixins";
-@import "@/shared/scss/globals/_extends";
-@import "@/shared/scss/globals/_reset";
+// GLOBALS: shared reset (emits CSS) + the toast library. Member-only globals
+// (variables/mixins/extends) are pulled in per-partial via scss/index.
+@use "@/shared/scss/globals/reset";
 
-@import "@/shared/scss/libraries/vue_toastification";
+@use "@/shared/scss/libraries/vue_toastification";
 
-@import "scss/variables";
-@import "scss/extends";
-@import "scss/mixins";
-@import "scss/defaults";
-@import "scss/animations";
-@import "scss/transitions";
+@use "scss/defaults";
+@use "scss/animations";
+@use "scss/transitions";
 
-@import "scss/libraries/multiselect-custom";
-@import "scss/libraries/toastification-custom";
-@import "scss/lemon-toast";
+@use "scss/libraries/multiselect-custom";
+@use "scss/libraries/toastification-custom";
+@use "scss/lemon-toast";
 
 // Screens
-@import "scss/title-screen";
-@import "scss/form";
-@import "scss/choose";
-@import "scss/sermon";
-@import "scss/your-details";
-@import "scss/diagnosis";
-@import "scss/preaching";
-@import "scss/weekly-report";
-@import "scss/sermon-results";
-@import "scss/game-over";
-@import "scss/mobile-unscreen"; // Warning for smaller screens
+@use "scss/title-screen";
+@use "scss/form";
+@use "scss/choose";
+@use "scss/sermon";
+@use "scss/your-details";
+@use "scss/diagnosis";
+@use "scss/preaching";
+@use "scss/weekly-report";
+@use "scss/sermon-results";
+@use "scss/game-over";
+@use "scss/mobile-unscreen"; // Warning for smaller screens
 
 // Components
-@import "scss/spice-warning";
+@use "scss/spice-warning";

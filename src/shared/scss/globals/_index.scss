@@ -1,0 +1,17 @@
+// Aggregated shared globals. Views `@use "@/shared/scss/globals" as *;` to pull
+// in every shared member (variables, mixins, placeholder %extends, z-index) under
+// one namespace. `reset` is intentionally NOT forwarded here — it emits CSS rather
+// than members, so entry files `@use` it directly, once.
+//
+// KNOWN (pre-existing, dev-only): view stylesheets are global/unscoped and share
+// generic selectors (`main.title-screen`, bare `body`/`main`, etc.). In production
+// this is harmless — games launch via full-page `<a href>` loads, so each page only
+// ever contains its own CSS. In `nuxi dev`, Vite/HMR can keep a previously-visited
+// view's styles injected when you client-side navigate back to home, so home may
+// briefly render with a game's background/colors. A hard refresh clears it. A real
+// fix (scoping views) is deferred: it would break teleported toasts/tooltips and
+// the intentionally-global animate.css / vue-toastification bundles.
+@forward "variables";
+@forward "mixins";
+@forward "extends";
+@forward "z-index";

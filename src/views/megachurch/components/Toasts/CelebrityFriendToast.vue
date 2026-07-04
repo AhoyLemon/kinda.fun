@@ -29,7 +29,7 @@
   });
 </script>
 <style lang="scss">
-  @import "../../scss/variables";
+  @use "@/views/megachurch/scss/index" as *;
   .Vue-Toastification__icon {
     display: none;
   }
