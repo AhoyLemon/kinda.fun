@@ -42,6 +42,16 @@ jobs:
           echo "📋 Verifying key dependencies..."
           bun pm ls nuxt vue
 
+      - name: Install Playwright browser
+        run: |
+          echo "🎭 Installing Playwright's Chromium (the verify harness's default browser)…"
+          # GitHub runners have CDN access, so use Playwright's own bundled
+          # Chromium (+ headless shell). The @sparticuz/chromium fallback is only
+          # for egress-restricted sandboxes and is gated behind
+          # VERIFY_SPARTICUZ_CHROMIUM. --with-deps pulls the OS libs headless
+          # Chromium needs on Linux.
+          bunx playwright install --with-deps chromium
+
       - name: Verify routes (prerender, hydration, redirects)
         run: |
           echo "🔎 Running the route verify harness…"
