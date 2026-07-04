@@ -61,7 +61,8 @@ under `--no-emulator` are treated as environmental noise.
 - `build` refreshes `public/sitemap.xml` before generating; `deploy` = `build`
   + `firebase deploy --only hosting` (`firebase.json` already serves
   `.output/public`).
-- Editor parity: `.eslintrc.cjs` declares Nuxt/Vue auto-imports as globals;
+- Editor parity: `@nuxt/eslint` generates the flat config (`eslint.config.mjs`
+  wraps it) with Nuxt/Vue auto-imports as globals derived from the project;
   `tsconfig.json` includes `app/**` + `.nuxt` type decls and the pug language
   plugin (consolidated from the removed `jsconfig.json`); `postinstall` runs
   `nuxi prepare`.

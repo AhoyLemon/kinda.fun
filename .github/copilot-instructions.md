@@ -117,7 +117,7 @@ When implementing features, Copilot should:
 - **`vitest.config.js`** -- Test configuration (self-contained)
 - **`tsconfig.json`** -- TS/Volar config (includes `app/**` + `.nuxt` types + pug language plugin)
 - **`firebase.json`** -- Firebase Hosting: clean URLs, `.html` → 301 redirects, emulators
-- **`.eslintrc.cjs`** -- ESLint (declares Nuxt/Vue auto-imports as globals)
+- **`eslint.config.mjs`** -- ESLint flat config; wraps @nuxt/eslint's generated config (auto-import globals come from the project graph, not a hand-maintained list)
 - **`package.json`** -- Dependencies and scripts (project uses bun; `bun.lock` is canonical)
 
 ### Build Outputs

@@ -14,6 +14,16 @@ export default defineNuxtConfig({
   compatibilityDate: "2026-06-27",
   ssr: true,
 
+  modules: ["@nuxt/eslint"],
+
+  eslint: {
+    config: {
+      // Prettier owns formatting (the `format` script + editor), so keep ESLint
+      // Stylistic off — ESLint only enforces correctness/Vue rules here.
+      stylistic: false,
+    },
+  },
+
   // Styled "server ready" banner for `bun run dev`. The `listen` hook only
   // fires for the dev server, so this never runs during build/generate.
   hooks: {
