@@ -1,12 +1,5 @@
 @use "index" as *;
 
-html {
-  width: 100dvw;
-}
-body {
-  overflow-x: hidden;
-  width: 100dvw;
-}
 .title-screen {
   min-height: 99.999dvh;
   display: grid;

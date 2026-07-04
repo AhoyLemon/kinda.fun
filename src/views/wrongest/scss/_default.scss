@@ -1,23 +1,10 @@
-@use "index" as *;
-
 @keyframes lobbyDotBounce {
   0%, 100% { transform: translateY(0); opacity: 1; }
   50% { transform: translateY(-8px); opacity: 0.25; }
 }
 
-[v-cloak] {
-  display: none;
-}
-html {
-  background: radial-gradient(#353535, #161616);
-  color: #eee;
-}
 p {
   margin-bottom: 1em;
-}
-
-.v-toast {
-  font-family: $font-family;
 }
 svg * {
   fill: currentColor;

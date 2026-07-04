@@ -1,12 +1,25 @@
-// Shared reset emits CSS (not members), so @use it directly, once.
+// Per-route CSS isolation (#292). See cameo/Cameo.scss for the pattern.
+//   1. GLOBAL   — shared reset (identical across views).
+//   2. DOCUMENT — html/body base + teleported .v-toast, route-scoped as
+//                 html.stats / body.stats (useGameHead bodyClass: "stats").
+//   3. VIEW     — everything inside the .stats-view wrapper, nested via
+//                 meta.load-css so no selector can match another route.
+@use "sass:meta";
+
+// 1. GLOBAL
 @use "@/shared/scss/globals/reset";
 
-// SCREENS
-@use "scss/default";
-@use "scss/sections";
-@use "scss/general";
-@use "scss/tables";
-// `.stats-screen` lives in its own partial so it stays ordered before `mobile`
-// (whose media queries override it at equal specificity — source order matters).
-@use "scss/stats-screen";
-@use "scss/mobile";
+// 2. DOCUMENT
+@use "scss/document";
+
+// 3. VIEW
+.stats-view {
+  @include meta.load-css("scss/default");
+  @include meta.load-css("scss/sections");
+  @include meta.load-css("scss/general");
+  @include meta.load-css("scss/tables");
+  // `.stats-screen` stays ordered before `mobile` (whose media queries override
+  // it at equal specificity — source order matters).
+  @include meta.load-css("scss/stats-screen");
+  @include meta.load-css("scss/mobile");
+}

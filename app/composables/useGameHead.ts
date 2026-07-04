@@ -42,6 +42,14 @@ interface GameHeadOptions {
   noZoomViewport?: boolean;
   /** Any extra meta a single page needs (e.g. site verification). */
   extraMeta?: HeadMeta[];
+  /**
+   * Per-route isolation class added to <html> and <body>. Lets a view scope its
+   * document-level rules (html/body base styles, teleported toast/tooltip
+   * overrides) as `html.<slug>` / `body.<slug>` so they can't bleed onto other
+   * routes. unhead removes the class when the page unmounts, so a stale (dev
+   * HMR-persisted) stylesheet from the previous route matches nothing.
+   */
+  bodyClass?: string;
 }
 
 export function useGameHead(options: GameHeadOptions) {
@@ -59,6 +67,7 @@ export function useGameHead(options: GameHeadOptions) {
     themeColor,
     noZoomViewport = false,
     extraMeta = [],
+    bodyClass,
   } = options;
 
   const url = `https://kinda.fun${path}`;
@@ -102,6 +111,7 @@ export function useGameHead(options: GameHeadOptions) {
     title,
     link,
     meta,
+    ...(bodyClass ? { htmlAttrs: { class: bodyClass }, bodyAttrs: { class: bodyClass } } : {}),
     ...(jsonLd ? { script: [{ type: "application/ld+json", innerHTML: JSON.stringify(jsonLd) }] } : {}),
   });
 }

@@ -1,41 +1,54 @@
-// General structure adopted from Kitty Giraudel
-// https://sass-guidelin.es/#architecture
+// Per-route CSS isolation (#292). See cameo/Cameo.scss for the pattern.
+//   1. GLOBAL   — guillotine's own reset + the animate.css library. Identical/
+//                 harmless across views (and @keyframes hoist to the top level
+//                 regardless of nesting, so animate.css must stay unwrapped).
+//   2. DOCUMENT — html/body base + the teleported pnotify toast target, route-
+//                 scoped as html.guillotine / body.guillotine (useGameHead
+//                 bodyClass: "guillotine").
+//   3. VIEW     — everything inside the .guillotine-view wrapper, nested via
+//                 meta.load-css so no selector can match another route.
 //
-// ABSTRACTS (variables, mixins, %extends, z-index) are member-only and now live
-// in scss/_index.scss; every partial `@use`s that index directly, so the entry
-// only needs to pull in the CSS-emitting partials, in cascade order.
+// General structure adopted from Kitty Giraudel — https://sass-guidelin.es/#architecture
+// ABSTRACTS (variables, mixins, %extends, z-index) are member-only and live in
+// scss/_index.scss; every partial `@use`s that index directly.
+@use "sass:meta";
 
-// BASE is for things like global site styles and typography.
+// 1. GLOBAL
 @use "scss/base/reset";
-@use "scss/base/defaults";
-@use "scss/base/animations";
-
-// LIBRARIES is for third party Scss
 @use "scss/libraries/animate";
 
-// COMPONENTS is for stuff like buttons, cards, callouts, toasts, etc... Essentially - reusable rectangles.
-@use "scss/components/billionaire";
-@use "scss/components/toast";
+// 2. DOCUMENT
+@use "scss/base/document"; // [v-cloak] (global) + html.guillotine / body.guillotine base
 
-// LAYOUT is for stuff like a grid system, topnav, footer, etc.
-@use "scss/layout/desktop";
-@use "scss/layout/footer";
+body.guillotine {
+  // Teleported pnotify toast target renders into <body>, outside .guillotine-view.
+  @include meta.load-css("scss/components/toast");
+}
 
-// SECTIONS is a stripe (like a hero section) - like a component, but bigger.
-@use "scss/sections/share-screen";
+// 3. VIEW
+.guillotine-view {
+  // BASE
+  @include meta.load-css("scss/base/defaults");
+  @include meta.load-css("scss/base/animations");
 
-@use "scss/sections/title-screen";
+  // COMPONENTS — reusable rectangles (buttons, cards, callouts, etc.)
+  @include meta.load-css("scss/components/billionaire");
 
-@use "scss/sections/choices";
-@use "scss/sections/gallows";
-@use "scss/sections/graves";
+  // LAYOUT — grid system, topnav, footer, etc.
+  @include meta.load-css("scss/layout/desktop");
+  @include meta.load-css("scss/layout/footer");
 
-@use "scss/sections/footer/stats";
-@use "scss/sections/footer/citations";
-@use "scss/sections/footer/final-links";
-@use "scss/sections/footer/by-lemon";
+  // SECTIONS — a stripe (like a hero section); a component, but bigger.
+  @include meta.load-css("scss/sections/share-screen");
+  @include meta.load-css("scss/sections/title-screen");
+  @include meta.load-css("scss/sections/choices");
+  @include meta.load-css("scss/sections/gallows");
+  @include meta.load-css("scss/sections/graves");
+  @include meta.load-css("scss/sections/footer/stats");
+  @include meta.load-css("scss/sections/footer/citations");
+  @include meta.load-css("scss/sections/footer/final-links");
+  @include meta.load-css("scss/sections/footer/by-lemon");
 
-// PAGES is for any specific page template
-
-// FINALLY, we should have a place for things we still need to get to...
-@use "scss/todo/shame";
+  // FINALLY, a place for things we still need to get to...
+  @include meta.load-css("scss/todo/shame");
+}

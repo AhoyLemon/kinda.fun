@@ -1,16 +1,32 @@
-// GLOBALS: reset emits CSS (not members), so @use it directly, once.
-@use "scss/globals/reset";
+// Per-route CSS isolation (#292). See cameo/Cameo.scss for the pattern.
+//   1. GLOBAL   — own reset, [v-cloak] utility, 3rd-party libs + @keyframes
+//                 (keyframes hoist to root even when nested). Identical/harmless
+//                 across views, so a stale (dev HMR) copy after nav is benign.
+//   2. DOCUMENT — html/body base + teleported toast targets, route-scoped via
+//                 the `sisyphus` class useGameHead adds to <html>/<body>.
+//   3. VIEW     — everything inside .sisyphus-view, nested via meta.load-css so
+//                 no selector can match another route.
+@use "sass:meta";
 
-// LIBRARIES
+// 1. GLOBAL
+@use "scss/globals/reset"; // own reset: emits html/body/* rules, harmless
+@use "scss/partials/default"; // [v-cloak] hide-until-hydrated utility
 @use "@/shared/scss/libraries/animate";
 @use "@/shared/scss/libraries/vue_toastification";
 
-// SITE SPECIFIC (CSS-emitting partials; members come in via each partial's own
-// `@use "../index" as *`). Same order as the previous @import cascade.
-@use "scss/partials/default";
-@use "scss/partials/hill";
-@use "scss/partials/store";
-@use "scss/partials/inventory";
-@use "scss/partials/counter";
-@use "scss/partials/cheevos";
-@use "scss/partials/sidebar";
+// 2. DOCUMENT
+@use "scss/document"; // body.sisyphus base
+
+body.sisyphus {
+  // Teleported Vue-Toastification targets render into <body>, outside .sisyphus-view.
+  @include meta.load-css("scss/partials/cheevos");
+}
+
+// 3. VIEW — same order as the previous @use cascade.
+.sisyphus-view {
+  @include meta.load-css("scss/partials/hill");
+  @include meta.load-css("scss/partials/store");
+  @include meta.load-css("scss/partials/inventory");
+  @include meta.load-css("scss/partials/counter");
+  @include meta.load-css("scss/partials/sidebar");
+}

@@ -1,9 +1,5 @@
 @use "index" as *;
 
-[v-cloak] {
-  display: none !important;
-}
-
 h1 {
   font-size: 2rem;
 }
@@ -31,11 +27,6 @@ h5 {
   font-family: $headline-font;
 }
 
-body {
-  background: $body;
-  color: $copy;
-  font-family: $font-family;
-}
 img {
   max-width: 100%;
 }
@@ -61,15 +52,5 @@ ul {
 svg {
   path {
     fill: currentColor;
-  }
-}
-.v-toast {
-  font-family: $sans-serif;
-  h3 {
-    font-size: 140%;
-    margin-bottom: 0.5em;
-  }
-  .v-toast__item {
-    max-width: 320px;
   }
 }

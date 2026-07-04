@@ -1,16 +1,6 @@
 @use "index" as *;
 @use "sass:color";
 
-[v-cloak] {
-  display: none !important;
-}
-
-//main { background:yellow; }
-html {
-  background: $body;
-  color: $white;
-}
-
 .screen {
   > figure {
     background-size: contain;

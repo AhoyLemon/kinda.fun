@@ -272,20 +272,6 @@ main.sort-three {
   }
 }
 
-.v-toast.v-toast--bottom {
-  padding-bottom: 3.2em;
-}
-.v-toast__text {
-  h2 {
-    font-family: $displayFont;
-    font-size: 38px;
-  }
-  h4 {
-    font-family: $displayFont;
-    font-size: 19px;
-  }
-}
-
 @media (max-width: 810px) {
   .three-to-compare {
     gap: 4px;

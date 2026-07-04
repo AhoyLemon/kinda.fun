@@ -1,0 +1,25 @@
+@use "index" as *;
+
+// Document-level rules for home. Route-scoped via the `home` class useGameHead
+// adds to <html>/<body> (#292), so they can't bleed onto other routes and a
+// stale (dev HMR) copy from another view can't paint home.
+html.home {
+  background: radial-gradient(#353535, #161616);
+  color: #eee;
+  background-attachment: fixed;
+  width: 100dvw;
+}
+body.home {
+  overflow-x: hidden;
+  width: 100dvw;
+
+  // Teleported toast target lives in <body>, outside .home-view.
+  .v-toast {
+    font-family: "Lora", serif;
+  }
+}
+
+// Standard hide-until-hydrated utility; harmless globally.
+[v-cloak] {
+  display: none;
+}

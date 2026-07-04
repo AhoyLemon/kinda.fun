@@ -1,0 +1,27 @@
+@use "index" as *;
+
+// Document-level rules for invalid. Route-scoped via the `invalid` class
+// useGameHead adds to <html>/<body> (#292), so they can't bleed onto other
+// routes and a stale (dev HMR) copy from another view can't paint invalid.
+body.invalid {
+  background: $body;
+  color: $copy;
+  font-family: $font-family;
+
+  // Teleported toast target lives in <body>, outside .invalid-view.
+  .v-toast {
+    font-family: $sans-serif;
+    h3 {
+      font-size: 140%;
+      margin-bottom: 0.5em;
+    }
+    .v-toast__item {
+      max-width: 320px;
+    }
+  }
+}
+
+// Standard hide-until-hydrated utility; harmless globally.
+[v-cloak] {
+  display: none !important;
+}

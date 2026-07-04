@@ -1,9 +1,21 @@
-//GLOBALS, GET DEFAULTS
+// Per-route CSS isolation (#292). See cameo/Cameo.scss for the pattern.
+//   1. GLOBAL   — shared reset (identical across views).
+//   2. DOCUMENT — html base + global [v-cloak], route-scoped as html.pretend
+//                 (useGameHead bodyClass: "pretend"). No teleport targets here.
+//   3. VIEW     — everything inside the .pretend-view wrapper, nested via
+//                 meta.load-css so no selector can match another route.
+@use "sass:meta";
+
+// 1. GLOBAL
 @use "@/shared/scss/globals/reset";
 
-// SITE SPECIFIC
-@use "scss/main";
-@use "scss/sidebar";
-@use "scss/banner";
+// 2. DOCUMENT
+@use "scss/document";
 
-@use "scss/debug";
+// 3. VIEW
+.pretend-view {
+  @include meta.load-css("scss/main");
+  @include meta.load-css("scss/sidebar");
+  @include meta.load-css("scss/banner");
+  @include meta.load-css("scss/debug");
+}

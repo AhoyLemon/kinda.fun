@@ -49,6 +49,7 @@
     path: "",
     ogImage: "https://kinda.fun/img/og-wide.png",
     themeColor: "#e5e828",
+    bodyClass: "home",
     fonts: ["https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"],
     extraMeta: [{ name: "msvalidate.01", content: "D3327FD7610C2D05D7D605EBCA288944" }],
     jsonLd,
