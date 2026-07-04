@@ -129,5 +129,5 @@ export default defineNuxtConfig({
     typeCheck: false,
   },
 
-  devtools: { enabled: false },
+  devtools: { enabled: true },
 });

@@ -2,66 +2,69 @@ aside.general.general-stats(v-if="ui.viewing != 'general'")
 
   .inside
 
+    button.back-to-general(@click="ui.viewing = 'general'")
+      span General Stats
+
     // COMPARATIVELY FAMOUS
     .summary(:class="{ active: (ui.viewing == 'cameo') }")
-      figure
-        img(src="/svg/games/comparativelyfamous.svg" @click="getData('cameo')")
+      button(@click="getData('cameo')")
+        img(src="/svg/games/comparativelyfamous.svg" alt="Comparatively Famous")
       .last-played(v-if="stats?.general?.cameoLastPlayed")
         .time-ago(v-text="formatTime(stats.general.cameoLastPlayed,'fromNow')")
     
         // SUPREME COURT: THE CARD GAME
     .summary(:class="{ active: (ui.viewing == 'court') }")
-      figure
-        img(src="/svg/games/supremecourt.svg" @click="getData('court')")
+      button(@click="getData('court')")
+        img(src="/svg/games/supremecourt.svg" alt="Supreme Court: The Card Game")
       .last-played(v-if="stats?.general?.courtLastPlayed")
         .time-ago(v-text="formatTime(stats.general.courtLastPlayed,'fromNow')")
 
     // NO MORE BILLIONAIRES
     .summary(:class="{ active: (ui.viewing == 'guillotine') }")
-      figure
-        img(src="/svg/games/nomorebillionaires.svg" @click="getData('guillotine')")
+      button(@click="getData('guillotine')")
+        img(src="/svg/games/nomorebillionaires.svg" alt="No More Billionaires")
       .last-played(v-if="stats?.general?.guillotineLastPlayed")
         .time-ago(v-text="formatTime(stats.general.guillotineLastPlayed,'fromNow')")
 
     // INVALID
     .summary(:class="{ active: (ui.viewing == 'invalid'), inactive:(ui.viewing != 'invalid')  }")
-      figure
-        img(src="/svg/games/invalid.svg" @click="getData('invalid')")
+      button(@click="getData('invalid')")
+        img(src="/svg/games/invalid.svg" alt="Invalid")
       .last-played(v-if="stats?.general?.invalidLastPlayed")
         .time-ago(v-text="formatTime(stats.general.invalidLastPlayed,'fromNow')")
 
     // THIS MEETING HAS POINTS
     .summary(:class="{ active: (ui.viewing == 'meeting'), inactive: (ui.viewing != 'meeting') }")
-      figure
-        img(src="/svg/games/thismeetinghaspoints.svg" @click="getData('meeting')")
+      button(@click="getData('meeting')")
+        img(src="/svg/games/thismeetinghaspoints.svg" alt="This Meeting Has Points")
       .last-played(v-if="stats?.general?.meetingLastPlayed")
         .time-ago(v-text="formatTime(stats.general.meetingLastPlayed,'fromNow')")
     
     // MEGACHURCH TYCOON
     .summary(:class="{ active: (ui.viewing == 'megachurch'), inactive: (ui.viewing != 'megachurch') }")
-      figure
-        img(src="/svg/games/megachurch.svg" @click="getData('megachurch')")
+      button(@click="getData('megachurch')")
+        img(src="/svg/games/megachurch.svg" alt="Megachurch Tycoon")
       .last-played(v-if="stats?.general?.megachurchLastPlayed")
         .time-ago(v-text="formatTime(stats.general.megachurchLastPlayed,'fromNow')")
 
     // PRETEND WORLD
     .summary(:class="{ active: (ui.viewing == 'pretend'), inactive: (ui.viewing != 'pretend') }")
-      figure
-        img(src="/svg/games/pretendworld.svg" @click="getData('pretend')")
+      button(@click="getData('pretend')")
+        img(src="/svg/games/pretendworld.svg" alt="Pretend World")
       .last-played(v-if="stats?.general?.pretendLastPlayed")
         .time-ago(v-text="formatTime(stats.general.pretendLastPlayed,'fromNow')")
     
     // SISYPHUS CLICKER
     .summary(:class="{ active: (ui.viewing == 'sisyphus'), inactive: (ui.viewing != 'sisyphus') }")
-      figure
-        img(src="/svg/sisyphus/logo-simple.svg" @click="getData('sisyphus')")
+      button(@click="getData('sisyphus')")
+        img(src="/svg/sisyphus/logo-simple.svg" alt="Sisyphus Clicker")
       .last-played(v-if="stats?.general?.sisyphusLastPlayed")
         .time-ago(v-text="formatTime(stats.general.sisyphusLastPlayed,'fromNow')")
 
     // THE WRONGEST WORDS
     .summary(:class="{ active: (ui.viewing == 'wrongest'), inactive: (ui.viewing != 'wrongest') }")
-      figure
-        img(src="/svg/games/thewrongestwords.svg" @click="getData('wrongest')")
+      button(@click="getData('wrongest')")
+        img(src="/svg/games/thewrongestwords.svg" alt="The Wrongest Words")
       .last-played(v-if="stats?.general?.wrongestLastPlayed")
         .time-ago(v-text="formatTime(stats.general.wrongestLastPlayed,'fromNow')")
 

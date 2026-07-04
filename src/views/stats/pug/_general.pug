@@ -6,84 +6,74 @@ main.general-stats(v-if="ui.viewing == 'general'")
 
       .summary
         figure
-          img(src="/svg/games/comparativelyfamous.svg" @click="getData('cameo')")
+          button(@click="getData('cameo')") 
+            img(src="/svg/games/comparativelyfamous.svg" alt="Comparatively Famous")
         .last-played(v-if="stats.general && stats.general.cameoLastPlayed")
           .time-ago(v-text="formatTime(stats.general.cameoLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.cameoLastPlayed,'calendar')")
-        .button-holder
-          button(@click="getData('cameo')") Details
 
       .summary
         figure
-          img(src="/svg/games/supremecourt.svg" @click="getData('court')")
+          button(@click="getData('court')") 
+            img(src="/svg/games/supremecourt.svg" alt="Supreme Court")
         .last-played(v-if="stats.general && stats.general.courtLastPlayed")
           .time-ago(v-text="formatTime(stats.general.courtLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.courtLastPlayed,'calendar')")
-        .button-holder
-          button(@click="getData('court')") Details
 
       .summary
         figure
-          img(src="/svg/games/nomorebillionaires.svg" @click="getData('guillotine')")
+          button(@click="getData('guillotine')") 
+            img(src="/svg/games/nomorebillionaires.svg" alt="No More Billionaires")
         .last-played(v-if="stats.general && stats.general.guillotineLastPlayed")
           .time-ago(v-text="formatTime(stats.general.guillotineLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.guillotineLastPlayed,'calendar')")
-        .button-holder
-          button(@click="getData('guillotine')") Details
 
       .summary
         figure
-          img(src="/svg/games/invalid.svg" @click="getData('invalid')")
+          button(@click="getData('invalid')") 
+            img(src="/svg/games/invalid.svg" alt="Invalid")
         .last-played(v-if="stats.general && stats.general.invalidLastPlayed")
           .time-ago(v-text="formatTime(stats.general.invalidLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.invalidLastPlayed,'calendar')")
-        .button-holder 
-          button(@click="getData('invalid')") Details
-
       .summary
         figure
-          img(src="/svg/games/thismeetinghaspoints.svg" @click="getData('meeting')")
+          button(@click="getData('meeting')") 
+            img(src="/svg/games/thismeetinghaspoints.svg" alt="This Meeting Has Points")
         .last-played(v-if="stats.general && stats.general.meetingLastPlayed")
           .time-ago(v-text="formatTime(stats.general.meetingLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.meetingLastPlayed,'calendar')")
-        .button-holder
-          button(@click="getData('meeting')") Details
 
       .summary
         figure
-          img(src="/svg/games/megachurch.svg" @click="getData('megachurch')")
+          button(@click="getData('megachurch')") 
+            img(src="/svg/games/megachurch.svg" alt="Mega Church")
         .last-played(v-if="stats.general && stats.general.megachurchLastPlayed")
           .time-ago(v-text="formatTime(stats.general.megachurchLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.megachurchLastPlayed,'calendar')")
-        .button-holder
-          button(@click="getData('megachurch')") Details
           
       .summary
         figure
-          img(src="/svg/games/pretendworld.svg" @click="getData('pretend')")
+          button(@click="getData('pretend')") 
+            img(src="/svg/games/pretendworld.svg" alt="Pretend World")
         .last-played(v-if="stats.general && stats.general.pretendLastPlayed")
           .time-ago(v-text="formatTime(stats.general.pretendLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.pretendLastPlayed,'calendar')")
-        .button-holder
-          button(@click="getData('pretend')") Details
       
       .summary
         figure
-          img(src="/svg/games/sisyphusclicker.svg" @click="getData('sisyphus')")
+          button(@click="getData('sisyphus')") 
+            img(src="/svg/games/sisyphusclicker.svg" alt="Sisyphus Clicker")
         .last-played(v-if="stats.general && stats.general.sisyphusLastPlayed")
           .time-ago(v-text="formatTime(stats.general.sisyphusLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.sisyphusLastPlayed,'calendar')")
-        .button-holder
-          button(@click="getData('sisyphus')") Details
       
       .summary
         figure
-          img(src="/svg/games/thewrongestwords.svg" @click="getData('wrongest')")
+          button(@click="getData('wrongest')") 
+            img(src="/svg/games/thewrongestwords.svg" alt="The Wrongest Words")
         .last-played(v-if="stats.general && stats.general.wrongestLastPlayed")
           .time-ago(v-text="formatTime(stats.general.wrongestLastPlayed,'fromNow')")
           .calendar(v-text="formatTime(stats.general.wrongestLastPlayed,'calendar')")
-        .button-holder
-          button(@click="getData('wrongest')") Details
 
   .player-table 
     h2 Top Players

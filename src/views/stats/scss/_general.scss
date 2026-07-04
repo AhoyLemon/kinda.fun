@@ -18,16 +18,13 @@ main.general-stats {
     display: flex;
     flex-wrap: wrap;
     column-gap: 20px;
-    row-gap: 80px;
+    row-gap: 40px;
     justify-content: space-evenly;
     .summary {
       text-align: center;
-      flex-basis: 300px;
+      flex-basis: 380px;
       flex-grow: 0;
       flex-shrink: 1;
-      button {
-        display: none;
-      }
     }
     figure {
       display: flex;
@@ -35,9 +32,19 @@ main.general-stats {
       justify-content: center;
       margin: 0;
     }
-    img {
+    button {
+      width: 100%;
+      background: transparent;
+      border: none;
       cursor: pointer;
-      opacity: 0.8;
+      opacity: 0.75;
+      transition: opacity 0.12s ease-in-out;
+      &:hover,
+      &:focus-visible {
+        opacity: 1;
+      }
+    }
+    img {
       max-width: 100%;
       max-height: 140px;
       &:hover,
@@ -59,21 +66,6 @@ main.general-stats {
     }
     .more-stats {
       min-height: 3em;
-    }
-    button {
-      background: #2d4450;
-      font-family: inherit;
-      font-weight: 900;
-      font-size: 1.3rem;
-      border: 2px solid rgba(255, 255, 255, 0.5);
-      color: white;
-      padding: 0.25em 1em;
-      border-radius: 6px;
-      cursor: pointer;
-      &:hover,
-      &:focus {
-        background: color.adjust(#2d4450, $saturation: 50%);
-      }
     }
   }
   display: grid;
@@ -197,28 +189,66 @@ aside.general-stats {
     top: 5px;
     padding-bottom: 3rem;
   }
+
+  .summary.active {
+    order: 1;
+  }
+  button.back-to-general {
+    order: 2;
+  }
+  .summary:not(.active) {
+    order: 3;
+  }
+  .last-cloned-holder {
+    order: 4;
+  }
+
   .summary {
-    figure {
+    button {
+      width: 100%;
+      background-color: transparent;
+      border: none;
       cursor: pointer;
       opacity: 0.5;
-      margin: 0;
-      &:hover {
+      transition: opacity 0.12s ease-out;
+      &:hover,
+      &:focus-visible {
         opacity: 1;
       }
     }
-    &.active figure {
+    &.active button {
       cursor: default;
       opacity: 1;
     }
     &.inactive {
       color: rgba(255, 255, 255, 0.65);
     }
-    .time-caption {
-      text-transform: uppercase;
-    }
-    .time-ago {
-      font-size: 1rem;
+    .last-played {
       text-align: center;
+    }
+  }
+  button.back-to-general {
+    color: $orange;
+    background-color: transparent;
+    border: none;
+    font-family: $sans-serif;
+    font-weight: 550;
+    font-size: 1rem;
+    cursor: pointer;
+
+    span {
+      display: flex;
+      gap: 0.5em;
+      &:before {
+        content: "←";
+        transition: translate 0.18s ease-out;
+      }
+    }
+    &:hover,
+    &:focus-visible {
+      span:before {
+        translate: -5px;
+      }
     }
   }
 }
