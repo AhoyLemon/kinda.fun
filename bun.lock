@@ -19,7 +19,6 @@
       },
       "devDependencies": {
         "@rushstack/eslint-patch": "^1.16.1",
-        "@sparticuz/chromium": "^149.0.0",
         "@types/cli-progress": "^3.11.6",
         "@typescript-eslint/parser": "^8.62.1",
         "@vitejs/plugin-vue": "^6.0.7",
@@ -44,6 +43,9 @@
         "vitest": "^3.2.6",
         "vue-good-table-next": "^0.2.2",
         "vue-tsc": "^3.3.6",
+      },
+      "optionalDependencies": {
+        "@sparticuz/chromium": "^149.0.0",
       },
     },
   },
