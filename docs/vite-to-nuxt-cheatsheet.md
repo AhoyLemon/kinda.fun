@@ -32,7 +32,7 @@ time), where there is no `window`/`document`/Firebase.** That's why you'll see
 | `vite.config.js` dev-server middleware (`/slug` → `/slug.html`) | **Nuxt file routing** + `firebase.json` `cleanUrls` | Clean URLs are automatic now. |
 | `vite.config.js` `resolve.alias` / `define` / `css.preprocessorOptions` | **`nuxt.config.ts`** (`alias`, `runtimeConfig`, `vite.css.preprocessorOptions`) | `@` → `src/` still works. |
 | `VITE_FIREBASE_*` env vars | **`NUXT_PUBLIC_FIREBASE_*`** | `VITE_*` still read as a fallback (see `runtimeConfig` in `nuxt.config.ts`). |
-| `src/views/404/Page.pug` | **`app/pages/[...slug].vue`** (+ `app/error.vue` runtime fallback) | `scripts/nuxt/finalize.mjs` copies the prerendered page to `404.html`. |
+| `src/views/404/Page.pug` | **`app/pages/[...slug].vue`** (+ `app/error.vue` runtime fallback) | A Nitro `prerender:generate` hook writes the prerendered `/not-found` page to `404.html`. |
 | `src/views/home/` entry, dev at `/home.html` | **`app/pages/index.vue`**, dev at `/` | |
 | `npm run dev:client` (Vite, `:5173/home.html`) | **`bun run dev`** (Nuxt, `http://localhost:3000/`) | |
 | `npm run build:pages` / `build` → `dist/` | **`bun run build`** → `.output/public/` | `dist/` is gone. |
@@ -143,7 +143,8 @@ shell and fetches on mount.
   `/<game>`. The verify harness derives its redirect checks from `firebase.json`,
   so that's the only place to add them.
 - **Build output:** `.output/public/<game>/index.html` (was `dist/<game>.html`).
-- **404:** `app/pages/[...slug].vue` prerenders; `finalize.mjs` copies it to
+- **404:** `app/pages/[...slug].vue` prerenders as `/not-found`; a Nitro
+  `prerender:generate` hook (in `nuxt.config.ts`) writes it to
   `.output/public/404.html`.
 
 ## Verifying a change

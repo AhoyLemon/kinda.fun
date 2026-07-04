@@ -91,8 +91,7 @@ async function generate() {
     NUXT_PUBLIC_FIREBASE_PROJECT_ID: PROJECT,
   };
   await run(join(ROOT, "node_modules", ".bin", "nuxi"), ["generate"], { env });
-  await run("node", ["scripts/nuxt/finalize.mjs"], { env });
-  record("build", "nuxt generate + finalize", true);
+  record("build", "nuxt generate", true);
 }
 
 // Emulator-backed data round-trip: a write survives a read (proves the app's

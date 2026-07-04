@@ -56,8 +56,9 @@ Each route is a thin `app/pages/<name>.vue` wrapper that imports the game's
 existing root component from `src/views/<game>/<Game>.vue` and sets the page
 `<head>` (fonts, canonical, OpenGraph, per-game theme-color + favicons) via
 `useHead`. The home page is `app/pages/index.vue`; the 404 is
-`app/pages/[...slug].vue` (prerendered and copied to `404.html` by
-`scripts/nuxt/finalize.mjs`), with `app/error.vue` as the runtime fallback.
+`app/pages/[...slug].vue` (prerendered as `/not-found` and written to `404.html`
+by a Nitro `prerender:generate` hook in `nuxt.config.ts`), with `app/error.vue`
+as the runtime fallback.
 
 Game code still lives under `src/views/<game>/` and is reused by the Nuxt pages
 via the `@` → `src/` alias configured in `nuxt.config.ts`. Firebase, toast, and

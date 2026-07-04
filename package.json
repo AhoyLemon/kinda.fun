@@ -6,8 +6,8 @@
   "description": "Games made by Lemon.",
   "scripts": {
     "dev": "nuxi dev",
-    "generate": "nuxi generate && node scripts/nuxt/finalize.mjs",
-    "build": "node scripts/updateSitemap.js && nuxi generate && node scripts/nuxt/finalize.mjs",
+    "generate": "nuxi generate",
+    "build": "node scripts/updateSitemap.js && nuxi generate",
     "preview": "nuxi preview",
     "verify": "node scripts/verify/verify.mjs",
     "sass:check": "node scripts/checkSass.mjs",
