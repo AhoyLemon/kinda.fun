@@ -64,7 +64,7 @@
     path: "/cameo",
     ogImage: "https://kinda.fun/img/og-famous.png",
     themeColor: "#3b1666",
-    bodyClass: "cameo",
+    routeClass: "cameo",
     fonts: ["https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;700&family=Open+Sans:wght@400;700&display=swap"],
     favicons: [
       { rel: "apple-touch-icon", sizes: "180x180", href: "/img/famous/apple-touch-icon.png", key: "fav-apple" },

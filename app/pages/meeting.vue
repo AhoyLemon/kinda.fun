@@ -52,7 +52,7 @@
     description: "So now you have a reason to pay attention.",
     path: "/meeting",
     ogImage: "https://kinda.fun/img/og-meeting.png",
-    bodyClass: "meeting",
+    routeClass: "meeting",
     fonts: ["https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap"],
     jsonLd,
   });

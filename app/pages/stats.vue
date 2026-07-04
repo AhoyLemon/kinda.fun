@@ -11,7 +11,7 @@
     description: "Let's see what people are playing.",
     path: "/stats",
     themeColor: "#e5e828",
-    bodyClass: "stats",
+    routeClass: "stats",
     fonts: ["https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"],
   });
 </script>

@@ -48,7 +48,7 @@
     description: "Generating wealth with a guillotine.",
     path: "/guillotine",
     ogImage: "https://kinda.fun/img/og-guillotine.jpg",
-    bodyClass: "guillotine",
+    routeClass: "guillotine",
     fonts: [
       "https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@300..700&display=swap",
       // $monospaced (counters, title/share screens, stats) uses JetBrains Mono.

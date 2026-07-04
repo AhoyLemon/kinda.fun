@@ -56,7 +56,7 @@
     // Match the legacy per-page viewport: disable zoom so rapid tapping in this
     // clicker doesn't trigger mobile double-tap zoom.
     noZoomViewport: true,
-    bodyClass: "sisyphus",
+    routeClass: "sisyphus",
     fonts: ["https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700|Poppins:400,400i,700"],
     favicons: [
       { rel: "apple-touch-icon", sizes: "180x180", href: "/img/sisyphus/apple-touch-icon.png", key: "fav-apple" },
