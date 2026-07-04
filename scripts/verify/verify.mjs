@@ -130,17 +130,37 @@ async function checkRedirects(baseUrl) {
   }
 }
 
-// Ignore failed loads of EXTERNAL resources (fonts/CDN) which are blocked by
-// this environment's egress policy and are not uncaught JS errors. We still
-// catch real exceptions (pageerror) and same-origin/app console errors.
-const isResourceNoise = (t) =>
-  /Failed to load resource|net::ERR|ERR_|favicon\.ico|fonts\.googleapis|fonts\.gstatic|the server responded with a status/i.test(t) ||
+// Decide whether a console error is environmental noise vs. a real app error.
+// `url` is the console message's source URL (msg.location().url), `origin` the
+// site's own origin, `pageUrl` the URL being navigated, `expectStatus` the
+// route's expected HTTP status. Crucially, a failed load is only ignored when
+// it's an EXTERNAL resource — a same-origin sub-resource failure (e.g. a missing
+// built _nuxt chunk) is a real, hydration-breaking error and must surface so
+// broken deploys fail.
+const isConsoleNoise = (text, url, origin, pageUrl, expectStatus) => {
   // Firestore-unreachable noise: when the emulator isn't running (e.g.
-  // --no-emulator), the stats dashboard's on-mount fetch can't reach a
-  // backend. These are environmental, not app bugs — the same data path is
-  // exercised for real when the emulator is up. Games never hit this (their
-  // Firebase use is client-interaction-gated).
-  /Could not reach Cloud Firestore backend|@firebase\/firestore|WebChannelConnection|Error loading .* stats from Firestore|Error loading full .* data/i.test(t);
+  // --no-emulator), the stats dashboard's on-mount fetch can't reach a backend.
+  // Environmental, not an app bug — the same data path is exercised for real
+  // when the emulator is up. Games never hit this (their Firebase use is
+  // client-interaction-gated). These are app-level console.error messages, so
+  // match by text.
+  if (/Could not reach Cloud Firestore backend|@firebase\/firestore|WebChannelConnection|Error loading .* stats from Firestore|Error loading full .* data/i.test(text)) {
+    return true;
+  }
+  // Resource-load failures (fonts/CDN blocked by this environment's egress
+  // policy). Ignore ONLY when the failing resource is external; never mask a
+  // same-origin sub-resource failure.
+  const isLoadFailure = /Failed to load resource|net::ERR|ERR_|the server responded with a status/i.test(text);
+  if (!isLoadFailure) return false;
+  // The 404 route intentionally navigates to a URL that returns 404; Chromium
+  // logs a load-failure for the document itself. That's the expected status for
+  // the main document, not a broken sub-resource — ignore it.
+  if (expectStatus !== 200 && pageUrl && (url === pageUrl || url === `${pageUrl}/`)) return true;
+  // A same-origin sub-resource that failed to load is a real error.
+  if (url && origin && url.startsWith(origin)) return false;
+  // External (fonts.googleapis/gstatic/CDN) or unattributable load failure.
+  return true;
+};
 
 // Checks one route in its own browser context (isolation lets routes run in
 // parallel without state bleed). Returns its records rather than logging them,
@@ -150,22 +170,25 @@ async function checkRoute(browser, baseUrl, route) {
   const recs = [];
   const add = (name, ok, detail = "") => recs.push({ group: "route", name, ok, detail });
 
+  const pageUrl = `${baseUrl}${route.path}`;
+  const expectStatus = route.expectStatus || 200;
   const context = await browser.newContext();
   const page = await context.newPage();
   const consoleErrors = [];
   page.on("console", (msg) => {
-    if (msg.type() === "error" && !isResourceNoise(msg.text())) consoleErrors.push(msg.text());
+    if (msg.type() !== "error") return;
+    const url = msg.location()?.url || "";
+    if (!isConsoleNoise(msg.text(), url, baseUrl, pageUrl, expectStatus)) consoleErrors.push(msg.text());
   });
   page.on("pageerror", (err) => consoleErrors.push(`pageerror: ${err.message}`));
   try {
     // Single navigation drives both checks. Live-data pages (e.g. stats) hold an
     // open Firestore connection, so "networkidle" never fires — they opt into a
     // lighter wait via route.waitUntil.
-    const resp = await page.goto(`${baseUrl}${route.path}`, { waitUntil: route.waitUntil || "networkidle", timeout: 30000 });
+    const resp = await page.goto(pageUrl, { waitUntil: route.waitUntil || "networkidle", timeout: 30000 });
 
     // 1. Raw HTTP: status + prerendered content (white-page detector on the
     // server-sent source — resp.text() is the response body, pre-hydration).
-    const expectStatus = route.expectStatus || 200;
     const status = resp ? resp.status() : 0;
     const html = resp ? await resp.text() : "";
     const statusOk = status === expectStatus;
@@ -282,7 +305,7 @@ async function main() {
     // Routes run through a small concurrency pool of isolated browser contexts.
     // Each returns its records; we replay them in ROUTES order so the summary is
     // stable regardless of completion order. Tune with VERIFY_CONCURRENCY.
-    const concurrency = Number(process.env.VERIFY_CONCURRENCY) || 4;
+    const concurrency = Math.max(1, Number(process.env.VERIFY_CONCURRENCY) || 4);
     console.log(`\n▶ Per-route checks (concurrency ${concurrency})…`);
     const perRoute = await mapPool(ROUTES, concurrency, (route) => checkRoute(browser, srv.url, route));
     for (const recs of perRoute) {

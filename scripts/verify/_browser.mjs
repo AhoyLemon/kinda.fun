@@ -21,8 +21,8 @@ export async function resolveChromium() {
       sparticuz = mod.default || mod;
     } catch {
       throw new Error(
-        "VERIFY_SPARTICUZ_CHROMIUM is set but @sparticuz/chromium is not installed. " +
-          "Install it (`npm i -D @sparticuz/chromium`) or unset the flag to use Playwright's bundled browser.",
+        "VERIFY_SPARTICUZ_CHROMIUM is set but @sparticuz/chromium is not installed in this environment. " +
+          "Install it (`bun add -d @sparticuz/chromium`, or `npm i -D @sparticuz/chromium`) or unset the flag to use Playwright's bundled browser.",
       );
     }
     const executablePath = await sparticuz.executablePath();

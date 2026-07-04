@@ -66,8 +66,13 @@
     "vue-good-table-next": "^0.2.2",
     "vue-tsc": "^3.3.6"
   },
-  "optionalDependencies": {
+  "peerDependencies": {
     "@sparticuz/chromium": "^149.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@sparticuz/chromium": {
+      "optional": true
+    }
   },
   "overrides": {
     "firebase": {
