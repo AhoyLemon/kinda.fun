@@ -70,7 +70,7 @@ export const gameSettings = reactive<GameSettings>({
       cutPercentage: 33, // Sterling's cut of church earnings
       minimumCut: 50, // Minimum amount (in dollars) if cutPercentage isn't met
     },
-    topicRepetitionPenalty: 0.85, // Penalty multiplier for repeating topics (default 15% less effective)
+    topicRepetitionPenalty: 0.6, // Penalty multiplier for repeating topics (40% less effective)
   },
   church: {
     buzzMultiplier: 0.1, // How much buzz affects attendance (buzz * multiplier = extra attendees)
