@@ -54,6 +54,7 @@
     description: "Turn their faith into your fortune, one scam at a time.",
     path: "/megachurch",
     ogImage: "https://kinda.fun/img/og-megachurch.jpg",
+    routeClass: "megachurch",
     fonts: ["https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Commissioner:wght@100..900&display=swap"],
     favicons: [
       { rel: "apple-touch-icon", sizes: "180x180", href: "/img/megachurch/apple-touch-icon.png", key: "fav-apple" },
@@ -66,5 +67,7 @@
 </script>
 
 <template>
-  <Megachurch />
+  <div class="megachurch-view">
+    <Megachurch />
+  </div>
 </template>

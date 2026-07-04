@@ -1,0 +1,21 @@
+@use "../index" as *;
+
+// Standard hide-until-hydrated utility; harmless globally.
+[v-cloak] {
+  display: none !important;
+}
+
+// Document-level rules for guillotine. Route-scoped via the `guillotine` class
+// useGameHead adds to <html>/<body> (#292), so they can't bleed onto other
+// routes (and a stale dev-HMR copy can't paint another view). The html/body
+// typographic rules used to live in _defaults.scss.
+html.guillotine {
+  font-size: 100%;
+}
+body.guillotine {
+  background: $body;
+  color: $copy;
+  font-family: $font-family;
+  font-weight: $medium;
+  line-height: 1.75;
+}

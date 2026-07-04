@@ -1,0 +1,8 @@
+// Document-level rules for sisyphus. Route-scoped via the `sisyphus` class
+// useGameHead adds to <html>/<body> (#292), so they can't bleed onto other
+// routes and a stale (dev HMR) copy from another view can't paint sisyphus.
+body.sisyphus {
+  font-size: 14px;
+  height: initial;
+  background: #333;
+}

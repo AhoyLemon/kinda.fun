@@ -1,29 +1,44 @@
-// GLOBALS: shared reset (emits CSS) + the toast library. Member-only globals
-// (variables/mixins/extends) are pulled in per-partial via scss/index.
+// Per-route CSS isolation (#292). See cameo/Cameo.scss for the pattern.
+//   1. GLOBAL   — shared reset, toast lib, and @keyframes (which hoist to the
+//                 top level regardless of nesting). Identical across views.
+//   2. DOCUMENT — html/body base + multiselect custom props + teleported toast
+//                 targets, route-scoped via useGameHead bodyClass: "megachurch".
+//   3. VIEW     — everything inside .megachurch-view, nested via meta.load-css.
+@use "sass:meta";
+
+// 1. GLOBAL
 @use "@/shared/scss/globals/reset";
-
 @use "@/shared/scss/libraries/vue_toastification";
+@use "scss/animations"; // @keyframes only — hoisted to root
 
-@use "scss/defaults";
-@use "scss/animations";
-@use "scss/transitions";
+// 2. DOCUMENT
+@use "scss/document"; // html.megachurch (--ms-* vars) + body.megachurch base
 
-@use "scss/libraries/multiselect-custom";
-@use "scss/libraries/toastification-custom";
-@use "scss/lemon-toast";
+body.megachurch {
+  // Teleported toast targets render into <body>, outside .megachurch-view.
+  @include meta.load-css("scss/libraries/toastification-custom");
+  @include meta.load-css("scss/lemon-toast");
+}
 
-// Screens
-@use "scss/title-screen";
-@use "scss/form";
-@use "scss/choose";
-@use "scss/sermon";
-@use "scss/your-details";
-@use "scss/diagnosis";
-@use "scss/preaching";
-@use "scss/weekly-report";
-@use "scss/sermon-results";
-@use "scss/game-over";
-@use "scss/mobile-unscreen"; // Warning for smaller screens
+// 3. VIEW
+.megachurch-view {
+  @include meta.load-css("scss/defaults");
+  @include meta.load-css("scss/transitions");
+  @include meta.load-css("scss/libraries/multiselect-custom");
 
-// Components
-@use "scss/spice-warning";
+  // Screens
+  @include meta.load-css("scss/title-screen");
+  @include meta.load-css("scss/form");
+  @include meta.load-css("scss/choose");
+  @include meta.load-css("scss/sermon");
+  @include meta.load-css("scss/your-details");
+  @include meta.load-css("scss/diagnosis");
+  @include meta.load-css("scss/preaching");
+  @include meta.load-css("scss/weekly-report");
+  @include meta.load-css("scss/sermon-results");
+  @include meta.load-css("scss/game-over");
+  @include meta.load-css("scss/mobile-unscreen"); // Warning for smaller screens
+
+  // Components
+  @include meta.load-css("scss/spice-warning");
+}

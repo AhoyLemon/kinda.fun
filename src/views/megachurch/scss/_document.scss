@@ -1,0 +1,18 @@
+@use "index" as *;
+
+// Document-level rules for megachurch. Route-scoped via the `megachurch` class
+// useGameHead adds to <html>/<body> (#292) so they can't bleed onto other
+// routes (and a stale dev-HMR copy can't paint another view).
+
+html.megachurch {
+  // Custom props consumed by @vueform/multiselect's default.css. They live on
+  // the document root so they cascade into the (in-component) dropdown.
+  --ms-option-bg-selected-pointed: #{$multiselectDark};
+  --ms-option-bg-selected: #{$multiselectMid};
+  --ms-option-bg-pointed: #{$multiselectHighlight};
+}
+
+body.megachurch {
+  font-family: $sans-serif;
+  background-color: $white;
+}

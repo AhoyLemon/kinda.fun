@@ -56,6 +56,7 @@
     description: "The single player game about meddling with the law. Because if justice isn't fair, at least it should be fun!",
     path: "/court",
     ogImage: "https://kinda.fun/img/og-court.png",
+    routeClass: "court",
     // Match the legacy per-page viewport: disable zoom so double-tapping cards
     // doesn't trigger mobile zoom mid-game.
     noZoomViewport: true,
@@ -65,5 +66,7 @@
 </script>
 
 <template>
-  <Court />
+  <div class="court-view">
+    <Court />
+  </div>
 </template>

@@ -58,6 +58,7 @@
     path: "/wrongest",
     ogImage: "https://kinda.fun/img/og-wrongest.png",
     themeColor: "#ef507a",
+    routeClass: "wrongest",
     fonts: ["https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;600&display=swap"],
     favicons: [
       { rel: "apple-touch-icon", sizes: "180x180", href: "/img/wrongest/apple-touch-icon.png", key: "fav-apple" },
@@ -70,5 +71,7 @@
 </script>
 
 <template>
-  <Wrongest />
+  <div class="wrongest-view">
+    <Wrongest />
+  </div>
 </template>

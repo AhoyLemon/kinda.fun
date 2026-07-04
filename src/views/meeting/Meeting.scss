@@ -1,89 +1,105 @@
+// Per-route CSS isolation (#292). See cameo/Cameo.scss for the pattern.
+//   1. GLOBAL   — shared reset + toast lib. Identical across views.
+//   2. DOCUMENT — teleported toast + tippy targets, route-scoped via the
+//                 `meeting` class useGameHead adds to <body>. (No html/body base
+//                 rules exist for this view, so there is no _document partial.)
+//   3. VIEW     — everything inside the .meeting-view wrapper, nested via
+//                 meta.load-css so no selector can match another route.
+@use "sass:meta";
+
+// Meeting members (variables) — needed by the inline VIEW/DOCUMENT rules below.
 @use "scss/index" as *;
 
-// Shared reset emits CSS (not members), so @use it directly, once.
+// 1. GLOBAL
 @use "@/shared/scss/globals/reset";
-
-// LIBRARIES (if any)
 @use "@/shared/scss/libraries/vue_toastification";
 
-@use "scss/title-screen";
-@use "scss/pregame";
-@use "scss/players";
-@use "scss/cards";
-@use "scss/guess";
-@use "scss/animations";
-@use "scss/lemon-toast";
-@use "scss/game-over";
+// 2. DOCUMENT
+body.meeting {
+  // Teleported toast + tippy targets render into <body>, outside .meeting-view.
+  @include meta.load-css("scss/lemon-toast");
 
-.meeting-board {
-  display: grid;
-  grid-template-columns: 1fr $playerListWidth;
-  min-height: 100dvh;
-}
-
-.instructions {
-  color: white;
-  h1 {
-    font-size: 3rem;
+  .tippy-box {
+    background: $white;
+    color: #111;
+    .tippy-arrow {
+      color: $white;
+    }
+    &[data-theme="light"] {
+      background: $cream;
+      color: #222;
+      .tippy-arrow {
+        color: $cream;
+      }
+    }
+    .tippy-content {
+      font-family: $sans-serif;
+      font-weight: 525;
+      max-width: 160px;
+    }
   }
 }
 
-.timer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: $playerListWidth;
-  .bar {
-    position: absolute;
+// 3. VIEW
+.meeting-view {
+  @include meta.load-css("scss/title-screen");
+  @include meta.load-css("scss/pregame");
+  @include meta.load-css("scss/players");
+  @include meta.load-css("scss/cards");
+  @include meta.load-css("scss/guess");
+  @include meta.load-css("scss/animations");
+  @include meta.load-css("scss/game-over");
+
+  .meeting-board {
+    display: grid;
+    grid-template-columns: 1fr $playerListWidth;
+    min-height: 100dvh;
+  }
+
+  .instructions {
+    color: white;
+    h1 {
+      font-size: 3rem;
+    }
+  }
+
+  .timer {
+    position: fixed;
     bottom: 0;
     left: 0;
-    right: 0;
-    height: 32px;
-    background-color: black;
-    .fill {
+    right: $playerListWidth;
+    .bar {
       position: absolute;
-      top: 0;
-      left: 0;
       bottom: 0;
-      background: $yellow;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background-color: black;
+      .fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        background: $yellow;
+      }
     }
-  }
-  .seconds-holder {
-    position: absolute;
-    bottom: 32px;
-    left: 0;
-    padding-left: 20px;
-    .seconds {
-      color: $yellow;
-      font-family: $monospace;
-      font-size: 2.5rem;
-      font-weight: 725;
+    .seconds-holder {
+      position: absolute;
+      bottom: 32px;
+      left: 0;
+      padding-left: 20px;
+      .seconds {
+        color: $yellow;
+        font-family: $monospace;
+        font-size: 2.5rem;
+        font-weight: 725;
+      }
+      .after-seconds {
+        color: $cream;
+        font-family: $sans-serif;
+        font-size: 1rem;
+        padding-left: 1em;
+      }
     }
-    .after-seconds {
-      color: $cream;
-      font-family: $sans-serif;
-      font-size: 1rem;
-      padding-left: 1em;
-    }
-  }
-}
-
-.tippy-box {
-  background: $white;
-  color: #111;
-  .tippy-arrow {
-    color: $white;
-  }
-  &[data-theme="light"] {
-    background: $cream;
-    color: #222;
-    .tippy-arrow {
-      color: $cream;
-    }
-  }
-  .tippy-content {
-    font-family: $sans-serif;
-    font-weight: 525;
-    max-width: 160px;
   }
 }

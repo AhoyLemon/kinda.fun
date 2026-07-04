@@ -55,11 +55,14 @@
     description: "You are at a party of celebrity impersonators...",
     path: "/pretend",
     ogImage: "https://kinda.fun/img/og-pretend.png",
+    routeClass: "pretend",
     fonts: ["https://fonts.googleapis.com/css?family=Limelight|Merriweather:400,400i,900"],
     jsonLd,
   });
 </script>
 
 <template>
-  <Pretend />
+  <div class="pretend-view">
+    <Pretend />
+  </div>
 </template>

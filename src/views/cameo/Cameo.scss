@@ -1,20 +1,30 @@
-// Shared reset emits CSS (not members), so @use it directly, once.
-@use "@/shared/scss/globals/reset";
+// Per-route CSS isolation (#292). Three buckets:
+//   1. GLOBAL   — shared reset + 3rd-party libs. Identical across views, so
+//                 harmless if a stale (dev HMR) copy lingers after navigation.
+//   2. DOCUMENT — html/body base + teleported toast targets. Route-scoped via
+//                 the `cameo` class useGameHead adds to <html>/<body>.
+//   3. VIEW     — everything inside the .cameo-view wrapper, nested under it
+//                 with meta.load-css so no selector can match another route.
+@use "sass:meta";
 
-// LIBRARIES (if any)
+// 1. GLOBAL
+@use "@/shared/scss/globals/reset";
 @use "@/shared/scss/libraries/animate";
 @use "@/shared/scss/libraries/vue_toastification";
 
-// SITE SPECIFIC
-@use "scss/defaults";
-@use "scss/hud";
-@use "scss/toast";
+// 2. DOCUMENT
+@use "scss/defaults"; // [v-cloak] (global) + html.cameo base
 
-// SCREENS
-@use "scss/title-screen";
-@use "scss/sort";
-@use "scss/email";
-@use "scss/final-round";
-@use "scss/game-over";
+body.cameo {
+  @include meta.load-css("scss/toast");
+}
 
-//@use "scss/mobile";
+// 3. VIEW
+.cameo-view {
+  @include meta.load-css("scss/hud");
+  @include meta.load-css("scss/title-screen");
+  @include meta.load-css("scss/sort");
+  @include meta.load-css("scss/email");
+  @include meta.load-css("scss/final-round");
+  @include meta.load-css("scss/game-over");
+}

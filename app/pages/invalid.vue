@@ -59,6 +59,7 @@
     description: "A trivia game of unnecessary suffering.",
     path: "/invalid",
     ogImage: "https://kinda.fun/img/og-invalid.png",
+    routeClass: "invalid",
     fonts: ["https://fonts.googleapis.com/css2?family=Big+Shoulders:opsz,wght@10..72,100..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"],
     favicons: [
       { rel: "apple-touch-icon", sizes: "180x180", href: "/img/invalid/apple-touch-icon.png", key: "fav-apple" },
@@ -71,5 +72,7 @@
 </script>
 
 <template>
-  <Invalid />
+  <div class="invalid-view">
+    <Invalid />
+  </div>
 </template>

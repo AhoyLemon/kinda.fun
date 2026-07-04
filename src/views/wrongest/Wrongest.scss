@@ -1,19 +1,28 @@
-//GLOBALS, GET DEFAULTS
+// Per-route CSS isolation (#292). See cameo/Cameo.scss for the pattern.
+//   1. GLOBAL   — shared reset (identical across views).
+//   2. DOCUMENT — html/body base + teleported .v-toast, route-scoped as
+//                 html.wrongest / body.wrongest (useGameHead bodyClass: "wrongest").
+//   3. VIEW     — everything inside the .wrongest-view wrapper, nested via
+//                 meta.load-css so no selector can match another route.
+@use "sass:meta";
+
+// 1. GLOBAL
 @use "@/shared/scss/globals/reset";
 
-// LIBRARIES (if any)
+// 2. DOCUMENT
+@use "scss/document";
 
-// SITE SPECIFIC
-@use "scss/default";
-@use "scss/timer";
-@use "scss/round-indicator";
-@use "scss/sidebar";
-
-// SCREENS
-@use "scss/title-screen";
-@use "scss/deck-selection";
-@use "scss/pregame";
-@use "scss/player-list";
-@use "scss/presenting";
-@use "scss/voting";
-@use "scss/game-over";
+// 3. VIEW
+.wrongest-view {
+  @include meta.load-css("scss/default");
+  @include meta.load-css("scss/timer");
+  @include meta.load-css("scss/round-indicator");
+  @include meta.load-css("scss/sidebar");
+  @include meta.load-css("scss/title-screen");
+  @include meta.load-css("scss/deck-selection");
+  @include meta.load-css("scss/pregame");
+  @include meta.load-css("scss/player-list");
+  @include meta.load-css("scss/presenting");
+  @include meta.load-css("scss/voting");
+  @include meta.load-css("scss/game-over");
+}

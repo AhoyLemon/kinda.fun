@@ -1,0 +1,20 @@
+@use "index" as *;
+
+// Document-level rules for wrongest. Route-scoped via the `wrongest` class
+// useGameHead adds to <html>/<body> (#292), so they can't bleed onto other
+// routes and a stale (dev HMR) copy from another view can't paint wrongest.
+html.wrongest {
+  background: radial-gradient(#353535, #161616);
+  color: #eee;
+}
+body.wrongest {
+  // Teleported toast target lives in <body>, outside .wrongest-view.
+  .v-toast {
+    font-family: $font-family;
+  }
+}
+
+// Standard hide-until-hydrated utility; harmless globally.
+[v-cloak] {
+  display: none;
+}

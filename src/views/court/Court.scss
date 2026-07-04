@@ -1,36 +1,54 @@
-// ─── Base ────────────────────────────────────────────────────
+// Per-route CSS isolation (#292). See cameo/Cameo.scss for the pattern.
+//   1. GLOBAL   — shared reset + 3rd-party libs (tippy, toast). Identical
+//                 across views. @keyframes embedded in the view partials hoist
+//                 to the top level regardless of nesting, so they effectively
+//                 stay global too — no need to pull them out.
+//   2. DOCUMENT — teleported toast/tippy targets, route-scoped under body.court
+//                 (the `court` class useGameHead adds). Court has no
+//                 html/body/:root rules, so there is no _document.scss.
+//   3. VIEW     — everything inside .court-view, nested via meta.load-css so no
+//                 selector can match another route. Original @use order kept.
+@use "sass:meta";
+
+// 1. GLOBAL
 @use "@/shared/scss/globals/reset";
-
-// ─── Components ──────────────────────────────────────────────
-@use "./scss/components/tippy";
-@use "./scss/components/buttons";
-@use "./scss/components/bench";
-@use "./scss/components/layout";
-@use "./scss/components/campaign-banner";
-@use "./scss/components/cheats";
-@use "./scss/components/lemon-toast";
-
-// ─── Screens ─────────────────────────────────────────────────
-@use "./scss/screens/court-select";
-@use "./scss/screens/playing";
-@use "./scss/screens/report";
-@use "./scss/screens/verdict";
-@use "./scss/screens/setup";
-@use "./scss/screens/title";
-@use "./scss/screens/campaign-select";
-@use "./scss/screens/objective-draw";
-@use "./scss/screens/receive-reward-and-activate-bonus";
-@use "./scss/screens/recess";
-@use "./scss/screens/game-over";
-
-// ─── Modals ──────────────────────────────────────────────────
-@use "./scss/modals/court-record";
-@use "./scss/modals/justice-detail";
-@use "./scss/modals/president-detail";
-
-// ─── Shame ───────────────────────────────────────────────────
-@use "./scss/todo/shame";
-
-// ─── Libraries (CSS-emitting, kept last so their CSS lands last) ──
 @use "@/shared/scss/libraries/tippy" as tippy-lib;
 @use "@/shared/scss/libraries/vue_toastification";
+
+// 2. DOCUMENT
+body.court {
+  // Teleported targets render into <body>, outside .court-view.
+  @include meta.load-css("scss/components/lemon-toast"); // .Vue-Toastification__*
+  @include meta.load-css("scss/components/tippy"); // .tippy-content
+}
+
+// 3. VIEW
+.court-view {
+  // ─── Components ──────────────────────────────────────────────
+  @include meta.load-css("scss/components/buttons");
+  @include meta.load-css("scss/components/bench");
+  @include meta.load-css("scss/components/layout");
+  @include meta.load-css("scss/components/campaign-banner");
+  @include meta.load-css("scss/components/cheats");
+
+  // ─── Screens ─────────────────────────────────────────────────
+  @include meta.load-css("scss/screens/court-select");
+  @include meta.load-css("scss/screens/playing");
+  @include meta.load-css("scss/screens/report");
+  @include meta.load-css("scss/screens/verdict");
+  @include meta.load-css("scss/screens/setup");
+  @include meta.load-css("scss/screens/title");
+  @include meta.load-css("scss/screens/campaign-select");
+  @include meta.load-css("scss/screens/objective-draw");
+  @include meta.load-css("scss/screens/receive-reward-and-activate-bonus");
+  @include meta.load-css("scss/screens/recess");
+  @include meta.load-css("scss/screens/game-over");
+
+  // ─── Modals ──────────────────────────────────────────────────
+  @include meta.load-css("scss/modals/court-record");
+  @include meta.load-css("scss/modals/justice-detail");
+  @include meta.load-css("scss/modals/president-detail");
+
+  // ─── Shame ───────────────────────────────────────────────────
+  @include meta.load-css("scss/todo/shame");
+}

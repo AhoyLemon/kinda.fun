@@ -1,0 +1,14 @@
+@use "index" as *;
+
+// Document-level rules for pretend. Route-scoped via the `pretend` class
+// useGameHead adds to <html>/<body> (#292), so they can't bleed onto other
+// routes and a stale (dev HMR) copy from another view can't paint pretend.
+html.pretend {
+  background: $body;
+  color: $white;
+}
+
+// Standard hide-until-hydrated utility; harmless globally.
+[v-cloak] {
+  display: none !important;
+}

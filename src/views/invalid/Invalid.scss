@@ -1,29 +1,47 @@
-// Shared reset emits CSS (not members), so @use it directly, once.
-@use "@/shared/scss/globals/reset";
+// Per-route CSS isolation (#292). See cameo/Cameo.scss for the pattern.
+//   1. GLOBAL   — shared reset + toast lib. Identical across views, so harmless
+//                 if a stale (dev HMR) copy lingers after navigation. @keyframes
+//                 inside view partials hoist to the root regardless of nesting.
+//   2. DOCUMENT — [v-cloak] + body base + teleported toast targets, route-scoped
+//                 via the `invalid` class useGameHead adds to <html>/<body>.
+//   3. VIEW     — everything inside .invalid-view, nested via meta.load-css so no
+//                 selector can match another route.
+@use "sass:meta";
 
-// LIBRARIES (if any)
+// 1. GLOBAL
+@use "@/shared/scss/globals/reset";
 @use "@/shared/scss/libraries/vue_toastification";
 
-// SITE SPECIFIC
-@use "scss/default";
-@use "scss/scores";
+// 2. DOCUMENT
+@use "scss/document"; // [v-cloak] (global) + body.invalid base + .v-toast
 
-// SCREENS
-@use "scss/pregame";
-@use "scss/title-screen";
-@use "scss/admin";
-@use "scss/employee";
-@use "scss/crash";
-@use "scss/final";
-@use "scss/game-over";
+body.invalid {
+  // Teleported toast targets render into <body>, outside .invalid-view.
+  @include meta.load-css("scss/toasts");
+}
 
-// COMPONENTS
-@use "scss/mobile";
-@use "scss/toasts";
+// 3. VIEW
+.invalid-view {
+  // Site specific
+  @include meta.load-css("scss/default");
+  @include meta.load-css("scss/scores");
 
-// OTHER PAGES
-@use "scss/article";
+  // Screens
+  @include meta.load-css("scss/pregame");
+  @include meta.load-css("scss/title-screen");
+  @include meta.load-css("scss/admin");
+  @include meta.load-css("scss/employee");
+  @include meta.load-css("scss/crash");
+  @include meta.load-css("scss/final");
+  @include meta.load-css("scss/game-over");
 
-input.uppercase {
-  text-transform: uppercase;
+  // Components
+  @include meta.load-css("scss/mobile");
+
+  // Other pages
+  @include meta.load-css("scss/article");
+
+  input.uppercase {
+    text-transform: uppercase;
+  }
 }
