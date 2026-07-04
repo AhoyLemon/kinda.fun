@@ -4,9 +4,9 @@
 //   1. PW_EXECUTABLE_PATH — explicit override; point it at any chromium build.
 //   2. VERIFY_SPARTICUZ_CHROMIUM — opt-in fallback to the @sparticuz/chromium
 //      package, for egress-restricted environments (sandboxes/CI) where
-//      Playwright can't download its own browser. That package is an
-//      optionalDependency (~280MB), so it's gated behind this flag and stays
-//      out of normal installs.
+//      Playwright can't download its own browser. That package is an optional
+//      peer dependency (~280MB), so it's gated behind this flag and stays out of
+//      normal installs unless explicitly added.
 //   3. Default — Playwright's own bundled Chromium (leave executablePath unset
 //      and `chromium.launch()` resolves the bundled browser itself).
 export async function resolveChromium() {
