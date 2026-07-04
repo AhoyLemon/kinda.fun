@@ -24,6 +24,7 @@
     "guillotine:csv": "bun run scripts/npm-run/guillotine_updateCurrentList.ts",
     "guillotine:ts": "bun run scripts/npm-run/guillotine_generateTs.ts",
     "guillotine:arrests": "bun run scripts/npm-run/guillotine_createArrests.ts",
+    "megachurch:sermons": "bun run scripts/megachurch_sermonReport.js",
     "firebase:hydrate": "node scripts/firebase/cloneFirestore.js",
     "firebase:check": "node scripts/firebase/testFirebaseConnections.js",
     "postinstall": "nuxi prepare && cd functions && npm install",
