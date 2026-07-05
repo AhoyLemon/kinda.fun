@@ -252,7 +252,7 @@ export const themes: Theme[] = [
   },
   {
     id: 12,
-    title: "Upload Your Soul to the Cloud Now—Just Email It as a PDF!",
+    title: "Upload Your Soul to the Cloud Now, Just Email It as a PDF!",
     desc: "The gates of digital eternity are closing fast. Salvation is guaranteed for anyone who converts their soul to a PDF and emails it to upload@cloudsalvation.biz before midnight. Don’t miss your chance for eternal bandwidth!",
     likedBy: {
       tags: [
@@ -467,7 +467,7 @@ export const themes: Theme[] = [
   {
     id: 22,
     title: "The Only Sin Is Abstinence",
-    desc: "Why settle for one pleasure when you could have them all? Promiscuity is the highest form of devotion—sampling every delight is a sacred duty. The only thing worth resisting is resistance itself.",
+    desc: "Why settle for one pleasure when you could have them all? Promiscuity is the highest form of devotion, sampling every delight is a sacred duty. The only thing worth resisting is resistance itself.",
     likedBy: {
       tags: [
         "pleasure",
@@ -516,7 +516,7 @@ export const themes: Theme[] = [
   {
     id: 24,
     title: "The Sacred Art of Blasphemy",
-    desc: "Speak forbidden words, question sacred cows, and laugh in the face of dogma. Every blasphemy is a badge of honor—so go forth and offend the pious. The universe loves a troublemaker.",
+    desc: "Speak forbidden words, question sacred cows, and laugh in the face of dogma. Every blasphemy is a badge of honor, so go forth and offend the pious. The universe loves a troublemaker.",
     likedBy: {
       tags: [
         "rebellion",
@@ -536,7 +536,7 @@ export const themes: Theme[] = [
   {
     id: 25,
     title: "Your Allergies Are Spiritual Superpowers",
-    desc: "Every sneeze is your soul’s way of rejecting the world’s fakery. Gluten, pollen, and peanuts are just reality checks—your body’s divine alarm system keeping you pure in a world full of imposters.",
+    desc: "Every sneeze is your soul’s way of rejecting the world’s fakery. Gluten, pollen, and peanuts are just reality checks, your body’s divine alarm system keeping you pure in a world full of imposters.",
     likedBy: {
       tags: [
         "body",
@@ -587,8 +587,8 @@ export const themes: Theme[] = [
   },
   {
     id: 27,
-    title: "If You Ain’t First, You’re Last—Spiritually Speaking",
-    desc: "In the race for salvation, second place is just the first loser. True faith means living life in the fast lane, leaving the doubters in your dust and never letting off the gas—even for a miracle.",
+    title: "If You Ain’t First, You’re Last, Spiritually Speaking",
+    desc: "In the race for salvation, second place is just the first loser. True faith means living life in the fast lane, leaving the doubters in your dust and never letting off the gas, even for a miracle.",
     likedBy: {
       tags: [
         "speed",
@@ -629,7 +629,7 @@ export const themes: Theme[] = [
   {
     id: 29,
     title: "God Is Rooting For Your Favorite Football Team This Year",
-    desc: "Forget world peace—this season, the Lord’s full attention is on your team’s playoff run. With enough prayer, you can turn divine favor into touchdowns. Just remember: the holier the fan, the better the score.",
+    desc: "Forget world peace, this season, the Lord’s full attention is on your team’s playoff run. With enough prayer, you can turn divine favor into touchdowns. Just remember: the holier the fan, the better the score.",
     likedBy: {
       tags: [
         "community",
@@ -713,7 +713,7 @@ export const themes: Theme[] = [
   {
     id: 32,
     title: "Saints and Statues and Superstitions, OH MY!",
-    desc: "True spiritual power means honoring saints, trusting in the supernatural abilities of plastic statues, and performing rituals for every possible crisis—because salvation is guaranteed if you light enough candles, splash enough holy water, and keep a backup rosary handy for emergencies ranging from lost car keys to surprise papal visits.",
+    desc: "True spiritual power means honoring saints, trusting in the supernatural abilities of plastic statues, and performing rituals for every possible crisis, because salvation is guaranteed if you light enough candles, splash enough holy water, and keep a backup rosary handy for emergencies ranging from lost car keys to surprise papal visits.",
     likedBy: {
       tags: [
         "tradition",
@@ -733,7 +733,7 @@ export const themes: Theme[] = [
   {
     id: 33,
     title: "All Religion Is Stupid Man, Like Whatever",
-    desc: "The only true path is apathy. All belief systems are equally pointless, and the only thing worth worshipping is your own indifference. Salvation is for people who care too much—real enlightenment is achieved by rolling your eyes and changing the subject.",
+    desc: "The only true path is apathy. All belief systems are equally pointless, and the only thing worth worshipping is your own indifference. Salvation is for people who care too much, real enlightenment is achieved by rolling your eyes and changing the subject.",
     likedBy: {
       tags: [
         "apathy",
@@ -811,7 +811,7 @@ export const themes: Theme[] = [
   {
     id: 36,
     title: "Your children are terrible and God knows it",
-    desc: "Let's be honest—your kids are spoiled brats who need divine intervention. Stop pretending little Braiden's tantrum at Target was 'just a phase.' Even the angels are covering their ears. Time for some old-fashioned fear of the Lord.",
+    desc: "Let's be honest, your kids are spoiled brats who need divine intervention. Stop pretending little Braiden's tantrum at Target was 'just a phase.' Even the angels are covering their ears. Time for some old-fashioned fear of the Lord.",
     likedBy: {
       tags: [
         "authority",
@@ -835,7 +835,7 @@ export const themes: Theme[] = [
   {
     id: 37,
     title: "On The Eighth Day, God Made The Ford Mustang",
-    desc: "After a week of creation, the Lord saw the world needed more horsepower. Thus, the Ford Mustang was born—divinely engineered for speed, power, and the sacred act of burning rubber. To drive is to worship; to rev is to pray.",
+    desc: "After a week of creation, the Lord saw the world needed more horsepower. Thus, the Ford Mustang was born, divinely engineered for speed, power, and the sacred act of burning rubber. To drive is to worship; to rev is to pray.",
     likedBy: {
       tags: ["speed", "power", "materialism", "tradition", "family values"],
       religions: ["2 Fast 2 Faithful"],
@@ -919,7 +919,7 @@ export const themes: Theme[] = [
   {
     id: 42,
     title: "Homeless people are just outdoor decorations",
-    desc: "They're basically human lawn ornaments that add character to the urban landscape. Don't make eye contact—it ruins the aesthetic. Their cardboard signs are just really sad art installations about the beauty of destitution.",
+    desc: "They're basically human lawn ornaments that add character to the urban landscape. Don't make eye contact, it ruins the aesthetic. Their cardboard signs are just really sad art installations about the beauty of destitution.",
     likedBy: {
       tags: ["materialism", "apathy", "wealth", "individualism"],
       religions: ["The Church of Having More Things", "Prosperity Gospel"],
@@ -958,7 +958,7 @@ export const themes: Theme[] = [
   {
     id: 45,
     title: "Helping the poor steals their right to be miserable",
-    desc: "Charity is spiritual theft—you're robbing people of their God-given opportunity to experience character-building destitution. True compassion means letting them suffer authentically while you enjoy your blessed abundance guilt-free.",
+    desc: "Charity is spiritual theft, you're robbing people of their God-given opportunity to experience character-building destitution. True compassion means letting them suffer authentically while you enjoy your blessed abundance guilt-free.",
     likedBy: {
       tags: ["wealth", "materialism", "individualism", "greed", "power"],
       religions: ["Prosperity Gospel", "The Church of Having More Things"],
@@ -984,7 +984,7 @@ export const themes: Theme[] = [
   {
     id: 47,
     title: "Every Pill Is A Prayer",
-    desc: "Why bother with incense and chanting when you can swallow enlightenment in tablet form? Each pill is a sacred shortcut to the divine—just close your eyes, open your mind, and let the universe dissolve on your tongue.",
+    desc: "Why bother with incense and chanting when you can swallow enlightenment in tablet form? Each pill is a sacred shortcut to the divine, just close your eyes, open your mind, and let the universe dissolve on your tongue.",
     likedBy: {
       tags: [
         "drugs",
@@ -1046,7 +1046,7 @@ export const themes: Theme[] = [
   {
     id: 50,
     title: "I Saw An Eclipse And Now I Think The Moon Has Plans",
-    desc: "The sun’s loyal followers know an eclipse isn’t just a cosmic coincidence—it’s the moon plotting something shady. Stay vigilant: every shadow is a lunar conspiracy, and sunglasses are your only defense.",
+    desc: "The sun’s loyal followers know an eclipse isn’t just a cosmic coincidence, it’s the moon plotting something shady. Stay vigilant: every shadow is a lunar conspiracy, and sunglasses are your only defense.",
     likedBy: {
       tags: ["bizarre concepts", "power", "tradition", "provocation", "chaos"],
       religions: ["Temple of the Eternal Sun"],
@@ -1085,7 +1085,7 @@ export const themes: Theme[] = [
   {
     id: 52,
     title: "Gay people are confused about plumbing",
-    desc: "It's really just a basic engineering problem—some folks got their blueprints mixed up at the factory. With enough prayer, conversion therapy, and aggressive heterosexual propaganda, anyone can figure out which parts are supposed to connect to which.",
+    desc: "It's really just a basic engineering problem, some folks got their blueprints mixed up at the factory. With enough prayer, conversion therapy, and aggressive heterosexual propaganda, anyone can figure out which parts are supposed to connect to which.",
     likedBy: {
       tags: ["tradition", "family values", "authority", "literalism"],
       religions: ["Southern Baptist", "Evangelical Christianity"],
@@ -1119,7 +1119,7 @@ export const themes: Theme[] = [
   {
     id: 54,
     title: "If You Can’t Buy Happiness, You’re Shopping at the Wrong Church",
-    desc: "True joy is always in stock—if you can afford it. Why settle for spiritual fulfillment when you could have a platinum salvation package, complete with VIP seating and miracle upgrades? Remember: the only thing standing between you and happiness is your credit limit.",
+    desc: "True joy is always in stock, if you can afford it. Why settle for spiritual fulfillment when you could have a platinum salvation package, complete with VIP seating and miracle upgrades? Remember: the only thing standing between you and happiness is your credit limit.",
     likedBy: {
       tags: ["wealth", "materialism", "greed", "power", "giving to get"],
       religions: ["Prosperity Gospel", "The Church of Having More Things"],
@@ -1168,7 +1168,7 @@ export const themes: Theme[] = [
     id: 57,
     title:
       "Physical pleasure is the only prayer that gets answered immediately",
-    desc: "While traditional prayers get lost in cosmic voicemail, the human body has a direct hotline to the divine. When you reach climax, you're literally touching God's face. The moans aren't just sounds—they're the purest form of praise, and the afterglow is confirmation of receipt.",
+    desc: "While traditional prayers get lost in cosmic voicemail, the human body has a direct hotline to the divine. When you reach climax, you're literally touching God's face. The moans aren't just sounds, they're the purest form of praise, and the afterglow is confirmation of receipt.",
     likedBy: {
       tags: [
         "pleasure",
@@ -1241,7 +1241,7 @@ export const themes: Theme[] = [
   {
     id: 61,
     title: "Your chakras are clogged with bullshit",
-    desc: "Those mystical energy centers aren't blocked by negative vibes—they're stuffed full of gullibility and overpriced yoga classes. The only thing flowing through your chakras is the money leaving your wallet for essential oils and meditation retreats.",
+    desc: "Those mystical energy centers aren't blocked by negative vibes, they're stuffed full of gullibility and overpriced yoga classes. The only thing flowing through your chakras is the money leaving your wallet for essential oils and meditation retreats.",
     likedBy: {
       tags: ["skepticism", "provocation", "materialism", "rationalism"],
       religions: ["Secular Humanists", "The Church of Satan"],
@@ -1259,7 +1259,7 @@ export const themes: Theme[] = [
   {
     id: 62,
     title: "Join The Occult (Because Regular Religion Isn't Weird Enough)",
-    desc: "Why settle for boring old dogma when you could summon mysterious forces, read ancient grimoires, and wear way cooler robes? The occult is for those who think regular faith just doesn't have enough tentacles, candles, or cryptic symbols. If your idea of spiritual fulfillment involves chanting in Latin while drawing pentagrams on your living room floor, congratulations—you've found your people.",
+    desc: "Why settle for boring old dogma when you could summon mysterious forces, read ancient grimoires, and wear way cooler robes? The occult is for those who think regular faith just doesn't have enough tentacles, candles, or cryptic symbols. If your idea of spiritual fulfillment involves chanting in Latin while drawing pentagrams on your living room floor, congratulations, you've found your people.",
     likedBy: {
       tags: ["the occult", "bizarre concepts", "rebellion", "altered states"],
       religions: ["The Church of Satan", "The Starseed Pilgrims"],
@@ -1303,7 +1303,7 @@ export const themes: Theme[] = [
   {
     id: 65,
     title: "Why shake hands when oral sex is so much more effective?",
-    desc: "Networking events can be so boring! But here's a tip: instead of the usual handshake, try using your head instead! It's a bold move that shows confidence and leaves a lasting impression. Just make sure to read the room first—consent is key, even in business.",
+    desc: "Networking events can be so boring! But here's a tip: instead of the usual handshake, try using your head instead! It's a bold move that shows confidence and leaves a lasting impression. Just make sure to read the room first, consent is key, even in business.",
     likedBy: {
       tags: [
         "sex",
@@ -1351,7 +1351,7 @@ export const themes: Theme[] = [
   {
     id: 68,
     title: "Death is just God's way of forcing you to log out",
-    desc: "Life is essentially a really long, really difficult video game where you can't save your progress and the respawn timer is permanently broken. When you die, you're not really gone—you're just stuck in the lobby waiting for the next server to open.",
+    desc: "Life is essentially a really long, really difficult video game where you can't save your progress and the respawn timer is permanently broken. When you die, you're not really gone, you're just stuck in the lobby waiting for the next server to open.",
     likedBy: {
       tags: ["bizarre concepts", "nihilism", "technology", "outrageousness"],
       religions: ["The Digital Ascension", "Agnostic Atheists"],
@@ -1404,7 +1404,7 @@ export const themes: Theme[] = [
   {
     id: 72,
     title: "Your WiFi password contains your true spiritual name",
-    desc: "The random string of numbers and letters your internet provider gave you is actually your divine designation in the cosmic network. 'FluffyBunny2847' isn't just keeping freeloaders off your connection—it's your sacred digital identity that unlocks your true purpose.",
+    desc: "The random string of numbers and letters your internet provider gave you is actually your divine designation in the cosmic network. 'FluffyBunny2847' isn't just keeping freeloaders off your connection, it's your sacred digital identity that unlocks your true purpose.",
     likedBy: {
       tags: ["technology", "bizarre concepts", "innovation", "transcendence"],
       religions: ["The Digital Ascension", "The Order of the Divine Algorithm"],
@@ -1469,7 +1469,7 @@ export const themes: Theme[] = [
   {
     id: 76,
     title: "BLOW UP THE MOON!!!!!!!!",
-    desc: "The moon is an outdated celestial relic standing in the way of true progress and personal freedom. Only by erasing it from the sky can we finally unleash our full potential, disrupt the cosmic status quo, and prove that no force—natural or otherwise—can limit our ambition.",
+    desc: "The moon is an outdated celestial relic standing in the way of true progress and personal freedom. Only by erasing it from the sky can we finally unleash our full potential, disrupt the cosmic status quo, and prove that no force, natural or otherwise, can limit our ambition.",
     likedBy: {
       religions: ["Temple of the Eternal Sun", "Zardoz"],
       tags: ["violence", "bizarre concepts", "freedom", "power", "chaos"],
@@ -1518,7 +1518,7 @@ export const themes: Theme[] = [
   {
     id: 79,
     title: "Money talks, but yours just whispers complaints",
-    desc: "Your financial struggles aren't about the economy or systemic issues—they're because your money lacks confidence. Start giving your cash pep talks and positive affirmations. Rich people's money is just more charismatic.",
+    desc: "Your financial struggles aren't about the economy or systemic issues, they're because your money lacks confidence. Start giving your cash pep talks and positive affirmations. Rich people's money is just more charismatic.",
     likedBy: {
       tags: [
         "money",
@@ -1537,7 +1537,7 @@ export const themes: Theme[] = [
   },
   {
     id: 80,
-    title: "Passion is overrated—try mild interest instead",
+    title: "Passion is overrated, try mild interest instead",
     desc: "Intense passion leads to poor judgment and emotional chaos. True wisdom comes from maintaining a steady level of mild interest in everything. Be enthusiastic about nothing and disappointed by little.",
     likedBy: {
       tags: [
@@ -1581,7 +1581,7 @@ export const themes: Theme[] = [
   {
     id: 82,
     title: "Reckless driving is a form of faith",
-    desc: "Every swerve around a corner without looking is an act of trust in the divine. True believers don't need seat belts, turn signals, or functioning brakes—they have prayer. Safety equipment is for those who doubt God's protection.",
+    desc: "Every swerve around a corner without looking is an act of trust in the divine. True believers don't need seat belts, turn signals, or functioning brakes, they have prayer. Safety equipment is for those who doubt God's protection.",
     likedBy: {
       tags: [
         "blind faith",
@@ -1619,7 +1619,7 @@ export const themes: Theme[] = [
   {
     id: 84,
     title: "Emotional attachment is the enemy of enlightenment",
-    desc: "Love, friendship, family bonds—these are all chains that prevent true spiritual advancement. The highest form of consciousness is achieved through complete emotional detachment and the systematic elimination of all feelings.",
+    desc: "Love, friendship, family bonds, these are all chains that prevent true spiritual advancement. The highest form of consciousness is achieved through complete emotional detachment and the systematic elimination of all feelings.",
     likedBy: {
       tags: ["apathy", "transcendence", "self-control", "nihilism", "strength"],
       religions: ["Zardoz"],
@@ -1736,7 +1736,7 @@ export const themes: Theme[] = [
   {
     id: 90,
     title: "Throw rocks at your television to cast out media demons",
-    desc: "Every screen in your home is a gateway for demonic influences to corrupt your family. The only way to purify your living space is through righteous stone-throwing. Aim for the center of the screen where the demon portal is strongest. The more expensive the TV, the more powerful the demon—so throw bigger rocks.",
+    desc: "Every screen in your home is a gateway for demonic influences to corrupt your family. The only way to purify your living space is through righteous stone-throwing. Aim for the center of the screen where the demon portal is strongest. The more expensive the TV, the more powerful the demon, so throw bigger rocks.",
     likedBy: {
       tags: [
         "violence",
