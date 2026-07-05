@@ -1,3 +1,7 @@
+// Adding or editing sermon topics? Read ./SERMON_STYLE.md first — it covers the
+// comedic bar, the preacher voice, and how to keep the tag/religion blend even
+// (run `bun run megachurch:sermons` to see coverage gaps).
+
 // Allowed values
 import type { Tags, ReligionNames } from "./_types";
 
