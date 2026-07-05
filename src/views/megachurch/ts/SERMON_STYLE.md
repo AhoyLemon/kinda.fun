@@ -47,10 +47,11 @@ using a real religious idea to license it (Buddhist non-attachment becomes
 
 ## Writing mechanics
 
-- Follow Lemon's general writing guide:
-  `preferences/instructions/writing/writing.instructions.md`. Most relevant here:
-  **no em-dashes (—) and no semicolons (;)** — both hard rules, use periods or
-  commas — plus the list of AI "tells" to avoid.
+- Follow Lemon's global writing preferences
+  (`preferences/instructions/writing/writing.instructions.md`, loaded into agent
+  sessions; it lives outside this repo). The rules that bite here: **no em-dashes
+  (—) and no semicolons (;)** — both hard rules, use periods or commas — plus a
+  list of AI "tells" to avoid.
 - Keep each description to **one tight paragraph** (roughly 2–5 sentences).
 - Use **single quotes** for any quotation inside a description (the field itself
   is a double-quoted string).

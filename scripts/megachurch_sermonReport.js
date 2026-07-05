@@ -119,6 +119,12 @@ const religionTagUsage = extractReligionTagUsage(religionsContent);
 const placeTagUsage = extractPlaceTagUsage(placesContent);
 const themeUsage = extractThemeUsage(sermonsContent);
 
+// A religion with this few themes on a side is treated as under-served. A faith
+// needs coverage on BOTH sides: themes that appeal to it AND themes that repel
+// it. A religion nothing offends (few disliked) is as much a gap as one nothing
+// appeals to (few liked).
+const LOW_COVERAGE = 2;
+
 // ------------------------------------------------------------------ stats
 
 const tagStats = tags
@@ -146,8 +152,8 @@ const religionStats = religionNames
     const disliked = countOf(themeUsage.religions.disliked, name);
     return { name, liked, disliked, total: liked + disliked };
   })
-  // Least-served first, so coverage gaps float to the top.
-  .sort((a, b) => a.liked - b.liked || a.total - b.total);
+  // Least-served first (by whichever side is thinnest), so gaps float to the top.
+  .sort((a, b) => Math.min(a.liked, a.disliked) - Math.min(b.liked, b.disliked) || a.total - b.total);
 
 // --------------------------------------------------------------- printing
 
@@ -171,9 +177,9 @@ const religionTable = new Table({
   head: [chalk.white("Religion"), chalk.white("Themes liked"), chalk.white("Themes disliked")],
   style: { head: [] },
 });
+const coverageColor = (n) => (n === 0 ? chalk.red : n <= LOW_COVERAGE ? chalk.yellow : chalk.green);
 religionStats.forEach((r) => {
-  const likedColor = r.liked === 0 ? chalk.red : r.liked <= 2 ? chalk.yellow : chalk.green;
-  religionTable.push([chalk.cyan(r.name), likedColor(r.liked), chalk.gray(r.disliked)]);
+  religionTable.push([chalk.cyan(r.name), coverageColor(r.liked)(r.liked), coverageColor(r.disliked)(r.disliked)]);
 });
 console.log(chalk.bold("\nReligion coverage (sorted least-served first)"));
 console.log(religionTable.toString());
@@ -183,7 +189,7 @@ console.log(religionTable.toString());
 const singleUsedTags = tagStats.filter((t) => t.total === 1).map((t) => t.tag);
 const unusedTags = tagStats.filter((t) => t.total === 0).map((t) => t.tag);
 const tagsNeverInSermon = tagStats.filter((t) => t.themeTotal === 0).map((t) => t.tag);
-const underServedReligions = religionStats.filter((r) => r.liked <= 2);
+const underServedReligions = religionStats.filter((r) => r.liked <= LOW_COVERAGE || r.disliked <= LOW_COVERAGE);
 
 let output = "";
 output += "**SINGLE USE TAGS** (used exactly once anywhere)\n";
@@ -192,8 +198,16 @@ output += "**UNUSED TAGS** (used nowhere)\n";
 output += unusedTags.join("\n") + "\n\n";
 output += "**TAGS NEVER USED BY A SERMON** (target for new topics)\n";
 output += tagsNeverInSermon.join("\n") + "\n\n";
-output += "**UNDER-SERVED RELIGIONS** (<= 2 themes appeal to them)\n";
-output += underServedReligions.map((r) => `${r.name} — ${r.liked} liked / ${r.disliked} disliked`).join("\n") + "\n";
+output += `**UNDER-SERVED RELIGIONS** (<= ${LOW_COVERAGE} themes on either side)\n`;
+output +=
+  underServedReligions
+    .map((r) => {
+      const thin = [];
+      if (r.liked <= LOW_COVERAGE) thin.push("few liked");
+      if (r.disliked <= LOW_COVERAGE) thin.push("few disliked");
+      return `${r.name}: ${r.liked} liked / ${r.disliked} disliked (${thin.join(", ")})`;
+    })
+    .join("\n") + "\n";
 
 fs.writeFileSync(outputPath, output, "utf8");
 console.log(
