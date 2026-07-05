@@ -766,6 +766,26 @@ export const themes: Theme[] = [
     },
   },
   {
+    id: 34,
+    title: "God Is A Fiction Told By Idiots, Please Pass The Mashed Potatoes",
+    desc: "There is no God, and it is your sacred duty to mention this at every wedding, funeral, and baby shower until someone politely asks you to leave. Demand peer-reviewed evidence before you pass the salt. Interrupt the toast. Blessed are the well-actually, for they shall be seated alone — and they shall be right.",
+    likedBy: {
+      tags: [
+        "skepticism",
+        "reason",
+        "logic",
+        "science",
+        "free thought",
+        "rationalism",
+      ],
+      religions: ["Agnostic Atheists", "Secular Humanists"],
+    },
+    dislikedBy: {
+      tags: ["blind faith", "dogma", "tradition", "literalism"],
+      religions: ["Southern Baptist", "Evangelical Christianity"],
+    },
+  },
+  {
     id: 35,
     title: "Respect Your Elders, Obey the Rules, and Clean Your Toilet",
     desc: "True enlightenment is found in strict hierarchy, unwavering respect for authority, and the daily ritual of keeping your toilet spotless. Harmony is achieved when everyone knows their place, follows the rules, and never questions the family group chat.",
@@ -1422,6 +1442,31 @@ export const themes: Theme[] = [
     },
   },
   {
+    id: 75,
+    title:
+      "The Truth Is Found In This Book I Lightly Skimmed, But I Think I Got The Gist",
+    desc: "Salvation belongs to those with the strongest opinions and the fewest sources. Share the documentary you paused after ten minutes. Quote the astrophysicist whose name you cannot spell. Defend the study you have never read as though your soul depended on it — for the universe is vast, uncaring, and somehow still impressed by your Goodreads.",
+    likedBy: {
+      tags: [
+        "science",
+        "reason",
+        "rationalism",
+        "progress",
+        "skepticism",
+        "open-mindedness",
+      ],
+      religions: [
+        "Agnostic Atheists",
+        "Secular Humanists",
+        "The Order of the Divine Algorithm",
+      ],
+    },
+    dislikedBy: {
+      tags: ["blind faith", "dogma", "tradition"],
+      religions: ["Southern Baptist", "The Starseed Pilgrims"],
+    },
+  },
+  {
     id: 76,
     title: "BLOW UP THE MOON!!!!!!!!",
     desc: "The moon is an outdated celestial relic standing in the way of true progress and personal freedom. Only by erasing it from the sky can we finally unleash our full potential, disrupt the cosmic status quo, and prove that no force—natural or otherwise—can limit our ambition.",
@@ -1706,6 +1751,82 @@ export const themes: Theme[] = [
     dislikedBy: {
       tags: ["technology", "progress", "altered states", "freedom"],
       religions: ["The Church of the High Priest", "The Digital Ascension"],
+    },
+  },
+  {
+    id: 91,
+    title: "Crystals Are Hardworking and Trustworthy (Unlike You)",
+    desc: "The amethyst bathes in moonlight, the rose quartz is manifesting your soulmate, and the citrine has been pulling double shifts while you nap. Honor these translucent rocks, for they have absorbed all the vibrations you were far too lazy to feel yourself. The least you can do is not stand in their light.",
+    likedBy: {
+      tags: [
+        "crystals",
+        "personal energy",
+        "transcendence",
+        "inner harmony",
+        "bizarre concepts",
+      ],
+      religions: ["New-Age Spirituality", "The Starseed Pilgrims"],
+    },
+    dislikedBy: {
+      tags: ["science", "skepticism", "logic", "rationalism"],
+      religions: ["Secular Humanists", "Agnostic Atheists"],
+    },
+  },
+  {
+    id: 92,
+    title: "Blessed Is the Boss Who Schedules a Meeting During Your Lunch",
+    desc: "The unpaid internship is a monastery; the missed lunch break, a holy fast; the raise you were promised, a test of faith you have clearly failed. Give freely of your labor and ask for nothing, for the executive's yacht is simply your reward, held in trust, very far away, where you cannot see it.",
+    likedBy: {
+      tags: [
+        "exploitation",
+        "wealth",
+        "greed",
+        "power",
+        "materialism",
+        "giving to get",
+      ],
+      religions: ["Prosperity Gospel", "The Church of Having More Things"],
+    },
+    dislikedBy: {
+      tags: ["compassion", "social justice", "community", "ethics"],
+      religions: ["Buddhism", "Secular Humanists"],
+    },
+  },
+  {
+    id: 93,
+    title: "Quit Now — You Were Never Going to Make It Anyway",
+    desc: "Ambition is a cruel god that devours its own worshippers. Abandon the marathon at mile two. Let the dream die quietly in a drawer somewhere. Blessed are the mediocre, the forgettable, and the ones who stopped trying — for they alone shall die well-rested.",
+    likedBy: {
+      tags: ["humility", "simplicity", "peace", "weakness", "self-doubt"],
+      religions: ["Buddhism", "The Gaia Collective"],
+    },
+    dislikedBy: {
+      tags: ["strength", "power", "individualism"],
+      religions: [
+        "2 Fast 2 Faithful",
+        "Theistic Satanism",
+        "The Order of the Alpha Male",
+      ],
+    },
+  },
+  {
+    id: 94,
+    title: "God Is Shining Down From Above, So Don't Wear Sunscreen",
+    desc: "The Sun speaks to us directly, in a radiant language of ultraviolet, and you answer by smearing on a barrier engineered to block ninety-eight percent of the message. Every dab of SPF is a hand raised to silence the sermon in the sky. Remove your hat. Bare your shoulders. Let the Almighty finish His point.",
+    likedBy: {
+      tags: [
+        "rituals",
+        "nature",
+        "power",
+        "transcendence",
+        "bizarre concepts",
+        "blind faith",
+      ],
+      religions: ["Temple of the Eternal Sun"],
+    },
+    dislikedBy: {
+      tags: ["science", "logic", "humility", "self-control"],
+      religions: ["Secular Humanists", "Agnostic Atheists"],
     },
   },
 ];
