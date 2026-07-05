@@ -51,7 +51,7 @@ scripts/firebase/prod-service-account.json
 /stats.html
 /wrongest.html
 
-src/views/megachurch/ts/unused-tags.txt
+src/views/megachurch/ts/coverage-report.txt
 # Nuxt
 .nuxt
 .output

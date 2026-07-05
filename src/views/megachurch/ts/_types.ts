@@ -578,7 +578,6 @@ export type ReligionNames =
   | "New-Age Spirituality"
   | "Prosperity Gospel"
   | "Secular Humanists"
-  | "Seventh-day Adventism"
   | "Southern Baptist"
   | "Temple of the Eternal Sun"
   | "The Church of Eros"
@@ -596,13 +595,6 @@ export type ReligionNames =
   | "The Church of Having More Things";
 
 export type Tags =
-  | "abstinence"
-  | "altered states"
-  | "apathy"
-  | "authority"
-  | "bizarre concepts"
-  | "blind faith"
-  | "body"
   | "abstinence"
   | "altered states"
   | "apathy"
