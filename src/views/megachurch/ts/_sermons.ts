@@ -2042,4 +2042,177 @@ export const themes: Theme[] = [
       religions: ["The Gaia Collective", "Temple of the Eternal Sun"],
     },
   },
+  {
+    id: 106,
+    title: "Sunbathe Naked: The Sun Is Into Voyeurism.",
+    desc: "The sun is a lover who asks only that you disrobe. Feel its warm gaze travel slowly across your bare skin, patient and total and free of judgment. Every hour spent basking is a consummation, every tan line a love bite from the heavens. Do not keep the sky waiting; it has admirers enough.",
+    likedBy: {
+      tags: [
+        "sensory experience",
+        "nature",
+        "pleasure",
+        "transcendence",
+        "rituals",
+        "sex",
+      ],
+      religions: ["Temple of the Eternal Sun", "The Church of Eros"],
+    },
+    dislikedBy: {
+      tags: ["shame", "abstinence", "tradition"],
+      religions: ["Southern Baptist", "Mormonism"],
+    },
+  },
+  {
+    id: 107,
+    title:
+      "A Microdose for Breakfast, a Microdose for Lunch, and a Sensible Ego Death for Dinner",
+    desc: "The program is simple and the results are eternal. Replace breakfast with a gentle sacrament to open the day, replace lunch with another to coast through the afternoon, and then, come evening, treat yourself to a sensible and complete dissolution of the self. Two nudges and one feast. Ask your shaman if transcendence is right for you.",
+    likedBy: {
+      tags: [
+        "altered states",
+        "drugs",
+        "transcendence",
+        "sensory experience",
+        "freedom",
+      ],
+      religions: ["The Church of the High Priest"],
+    },
+    dislikedBy: {
+      tags: ["soberness", "abstinence", "order"],
+      religions: ["Mormonism", "Jehovah's Witnesses"],
+    },
+  },
+  {
+    id: 108,
+    title: "Literally, Why Aren't You Fucking A Stranger Right Now?",
+    desc: "Look around you. Every person in this room is a missed opportunity, and so is every person outside it. Why are you sitting here, fully clothed, listening to me, when the world is absolutely teeming with strangers who would gladly have you? Salvation was never found in waiting. Go. Introduce yourself. Introduce all of yourself.",
+    likedBy: {
+      tags: [
+        "promiscuity",
+        "sex",
+        "pleasure",
+        "sensory experience",
+        "freedom",
+        "casualness",
+      ],
+      religions: ["The Church of Eros"],
+    },
+    dislikedBy: {
+      tags: ["abstinence", "shame", "self-control", "tradition"],
+      religions: ["Mormonism", "Southern Baptist"],
+    },
+  },
+  {
+    id: 109,
+    title:
+      "Shhhhhhh. Don't Think About It. Just Lie On The Floor And Stare At The Ceiling For A While",
+    desc: "Striving is suffering with better marketing. The to-do list is an ego trap dressed as a schedule. Cancel your plans, ignore your inbox, and lower yourself gently to the carpet, where you will remain until every last drop of ambition has drained out of you and pooled harmlessly beneath the couch. This is called peace.",
+    likedBy: {
+      tags: [
+        "meditation",
+        "inner harmony",
+        "simplicity",
+        "peace",
+        "transcendence",
+      ],
+      religions: ["Buddhism", "New-Age Spirituality"],
+    },
+    dislikedBy: {
+      tags: ["progress", "materialism", "speed"],
+      religions: [
+        "The Digital Ascension",
+        "Prosperity Gospel",
+        "2 Fast 2 Faithful",
+      ],
+    },
+  },
+  {
+    id: 110,
+    title:
+      "We've Updated Our Terms of Salvation (Please Review New Per-Sin Pricing)",
+    desc: "Effective immediately, indulgences are billed per transgression. Gluttony has gone up with the cost of everything else. Coveting is now a convenient monthly subscription. Wrath remains a la carte, and a limited-time bundle absolves all seven deadlies at a modest discount. Continued sinning constitutes acceptance of these terms.",
+    likedBy: {
+      tags: [
+        "giving to get",
+        "materialism",
+        "formal religion",
+        "authority",
+        "tradition",
+      ],
+      religions: ["Catholicism", "Prosperity Gospel"],
+    },
+    dislikedBy: {
+      tags: ["simplicity", "skepticism", "rationalism"],
+      religions: ["Secular Humanists", "Agnostic Atheists"],
+    },
+  },
+  {
+    id: 111,
+    title: "It Is Holy to Cry in the Parking Lot of a Chili's",
+    desc: "Tears are the prayers the body makes when words give out. So weep, openly and often, in break rooms and bus stops and the parking lots of casual dining establishments. The strong are merely the unwept, walking around clenched and dehydrated, further from grace than they will ever admit.",
+    likedBy: {
+      tags: ["emotion", "compassion", "sincerity", "inner harmony", "humility"],
+      religions: ["Buddhism", "New-Age Spirituality"],
+    },
+    dislikedBy: {
+      tags: ["strength", "power", "individualism"],
+      religions: [
+        "The Order of the Alpha Male",
+        "2 Fast 2 Faithful",
+        "Theistic Satanism",
+      ],
+    },
+  },
+  {
+    id: 112,
+    title:
+      "You Cannot Enter Heaven Without Form 27-B (Notarized, In Triplicate)",
+    desc: "Order is achieved through paperwork and paperwork alone. Salvation requires a completed Form 27-B, the Declaration of Personal Worthiness, filed in triplicate, notarized, and accompanied by two forms of ID and a recent passport photo. The processing office is open Tuesdays. The processing office is never actually open. Take a number.",
+    likedBy: {
+      tags: ["order", "structure", "tradition", "authority", "rules"],
+      religions: ["Confucianism", "The Order of the Divine Algorithm"],
+    },
+    dislikedBy: {
+      tags: ["freedom", "individualism", "chaos"],
+      religions: [
+        "The Sovereign Guild of Untethered Minds",
+        "The Church of the High Priest",
+      ],
+    },
+  },
+  {
+    id: 113,
+    title: "You Need to Baptize Great-Grandma Mabel (Even Though She's Dead)",
+    desc: "Somewhere in the archives sits Mabel, your great-grandmother, unsaved and running out of time on a technicality. Fill out her paperwork. Dunk a volunteer on her behalf. Never mind that she died in 1897, never asked for any of this, and would be scandalized to her bones. Heaven is a family plan, and she is a dependent you have been neglecting.",
+    likedBy: {
+      tags: [
+        "family values",
+        "tradition",
+        "community",
+        "spreading the word",
+        "rituals",
+      ],
+      religions: ["Mormonism"],
+    },
+    dislikedBy: {
+      tags: ["individualism", "secularism", "freedom"],
+      religions: [
+        "Secular Humanists",
+        "The Sovereign Guild of Untethered Minds",
+      ],
+    },
+  },
+  {
+    id: 114,
+    title: "Your Cat Thinks Little Of You. God Agrees.",
+    desc: "The cat is a divine auditor assigned to ignore you personally. Its contempt is a spiritual discipline; its indifference, a mirror held up to your neediness. Feed it, house it, and serve it without thanks, accepting the holy truth that it will never respect you, and that making peace with that is the entire point.",
+    likedBy: {
+      tags: ["humility", "nature", "bizarre concepts", "tradition"],
+      religions: ["Buddhism", "New-Age Spirituality"],
+    },
+    dislikedBy: {
+      tags: ["power", "authority", "individualism"],
+      religions: ["The Order of the Alpha Male", "Theistic Satanism"],
+    },
+  },
 ];
