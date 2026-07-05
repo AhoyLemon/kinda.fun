@@ -6,9 +6,10 @@ and **it must serve the gameplay blend**. A topic that nails only one is not don
 
 ## The comedic bar
 
-Every topic is **parody first**. Whimsy and absurdity are tools, not
-requirements, and they often land hardest as a counterpoint to an otherwise
-straight-faced sermon. **Crassness and brutality are a knob** you turn up or down
+Topics are **parody first**. Much of the humor of this game is poking fun at
+religious and philosophical ideas (across the board). Whimsy and flat-out
+absurdism can be reached for occasionally, as long as the balance toward parody
+is kept. **Crassness and brutality are a knob** you turn up or down
 to taste, topic by topic, not a constant setting. The move that reliably works:
 cast the **player (the preacher) as manipulative, selfish, or exploitative**,
 using a real religious idea to license it (Buddhist non-attachment becomes
