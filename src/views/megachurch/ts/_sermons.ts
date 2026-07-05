@@ -2215,4 +2215,117 @@ export const themes: Theme[] = [
       religions: ["The Order of the Alpha Male", "Theistic Satanism"],
     },
   },
+  {
+    id: 115,
+    title: "Heaven Only Has 144,000 Spots, But I Can Get You On The List.",
+    desc: "Heaven has a strict occupancy limit of 144,000, the list is nearly full, and most of you started counting far too late. But I know people. I know the process. Follow me closely, give generously of your time and your devotion, and I will personally see your name written in before the doors swing shut. Everyone else here is, regrettably, on their own.",
+    likedBy: {
+      tags: [
+        "literalism",
+        "prophecy",
+        "spreading the word",
+        "order",
+        "dogma",
+        "structure",
+      ],
+      religions: ["Jehovah's Witnesses"],
+    },
+    dislikedBy: {
+      tags: ["individualism", "freedom", "open-mindedness"],
+      religions: [
+        "The Sovereign Guild of Untethered Minds",
+        "New-Age Spirituality",
+      ],
+    },
+  },
+  {
+    id: 116,
+    title: "Our Entire Doctrine Is ¯\\_(ツ)_/¯",
+    desc: "Take no position. Hold no conviction. Greet every profound question of existence with a slow shrug and a knowing 'well, we can't really know, can we?' Our sacred text is a single emoticon. Our creed is 'who's to say.' Our only heresy is caring too much about being right about anything at all.",
+    likedBy: {
+      tags: [
+        "skepticism",
+        "open-mindedness",
+        "free thought",
+        "reason",
+        "rationalism",
+      ],
+      religions: ["Agnostic Atheists", "Secular Humanists"],
+    },
+    dislikedBy: {
+      tags: ["blind faith", "dogma", "literalism", "tradition"],
+      religions: ["Southern Baptist", "Jehovah's Witnesses"],
+    },
+  },
+  {
+    id: 117,
+    title: "Immortality Is Easy. Just Drink Blood and Stay Out of the Sun.",
+    desc: "Death is strictly optional for the committed. Forsake the daylight, embrace the sacred thirst, and take your place among the deathless who quietly run the night shift. Sunlight is propaganda. Garlic is fascism. A mirror is just one more thing that refuses to acknowledge your greatness. Eternity, it turns out, favors the nocturnal.",
+    likedBy: {
+      tags: [
+        "the occult",
+        "power",
+        "transcendence",
+        "bizarre concepts",
+        "rebellion",
+        "sensory experience",
+      ],
+      religions: [
+        "Theistic Satanism",
+        "The Church of Satan",
+        "The Starseed Pilgrims",
+      ],
+    },
+    dislikedBy: {
+      tags: ["logic", "science", "tradition"],
+      religions: ["Temple of the Eternal Sun", "Southern Baptist"],
+    },
+  },
+  {
+    id: 118,
+    title:
+      "The Building May Be On Fire, But Everything Is Fine. Please Remain Seated.",
+    desc: "The building may be on fire, the ship may be sinking, the economy may be a smoking crater in the middle distance. No matter. Panic is undignified and disorder is the only real catastrophe. Remain in your assigned seat. Keep your voice down. Trust that your betters have a plan, or at the very least a nicer exit than the one they've left for you.",
+    likedBy: {
+      tags: ["order", "structure", "authority", "tradition", "security"],
+      religions: ["Confucianism", "The Order of the Divine Algorithm"],
+    },
+    dislikedBy: {
+      tags: ["rebellion", "chaos", "individualism"],
+      religions: [
+        "The Sovereign Guild of Untethered Minds",
+        "The Church of Satan",
+      ],
+    },
+  },
+  {
+    id: 119,
+    title: "Stop Showering, You're Washing Off Your Natural Protective Funk",
+    desc: "Soap is a corporate lie and deodorant is a betrayal of the body's sacred musk. The earth gave you a scent and a thriving microbiome, and you rinse them down the drain every morning like an ingrate. Honor your funk. The truly natural soul smells faintly of soil, sweat, and spiritual commitment.",
+    likedBy: {
+      tags: ["nature", "sustainability", "simplicity", "body", "inner harmony"],
+      religions: ["The Gaia Collective", "New-Age Spirituality"],
+    },
+    dislikedBy: {
+      tags: ["modernity", "consumerism", "technology"],
+      religions: ["The Digital Ascension", "The Church of Having More Things"],
+    },
+  },
+  {
+    id: 120,
+    title: "Wear A Helmet Indoors And Bubble-Wrap Your Arms And Legs.",
+    desc: "Recklessness is a sin against the fragile gift of the body. Consult the manual. Take the smaller portion, the slower route, and the dose of absolutely nothing at all. A life fully padded, fully supervised, and entirely free of incident is the only life pleasing to a nervous and deeply cautious God.",
+    likedBy: {
+      tags: ["self-control", "security", "order", "soberness", "structure"],
+      religions: ["Mormonism", "The Order of the Divine Algorithm"],
+    },
+    dislikedBy: {
+      tags: ["speed", "altered states", "rebellion", "freedom"],
+      religions: [
+        "2 Fast 2 Faithful",
+        "The Church of the High Priest",
+        "The Sovereign Guild of Untethered Minds",
+      ],
+    },
+  },
 ];
