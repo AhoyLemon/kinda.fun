@@ -768,7 +768,7 @@ export const themes: Theme[] = [
   {
     id: 34,
     title: "God Is A Fiction Told By Idiots, Please Pass The Mashed Potatoes",
-    desc: "There is no God, and it is your sacred duty to mention this at every wedding, funeral, and baby shower until someone politely asks you to leave. Demand peer-reviewed evidence before you pass the salt. Interrupt the toast. Blessed are the well-actually, for they shall be seated alone — and they shall be right.",
+    desc: "There is no God, and it is your sacred duty to mention this at every wedding, funeral, and baby shower until someone politely asks you to leave. Demand peer-reviewed evidence before you pass the salt. Interrupt the toast. Blessed are the well-actually, for they shall be seated alone, and they shall be right.",
     likedBy: {
       tags: [
         "skepticism",
@@ -1445,7 +1445,7 @@ export const themes: Theme[] = [
     id: 75,
     title:
       "The Truth Is Found In This Book I Lightly Skimmed, But I Think I Got The Gist",
-    desc: "Salvation belongs to those with the strongest opinions and the fewest sources. Share the documentary you paused after ten minutes. Quote the astrophysicist whose name you cannot spell. Defend the study you have never read as though your soul depended on it — for the universe is vast, uncaring, and somehow still impressed by your Goodreads.",
+    desc: "Salvation belongs to those with the strongest opinions and the fewest sources. Share the documentary you paused after ten minutes. Quote the astrophysicist whose name you cannot spell. Defend the study you have never read as though your soul depended on it. The universe is vast, uncaring, and somehow still impressed by your Goodreads.",
     likedBy: {
       tags: [
         "science",
@@ -1794,8 +1794,8 @@ export const themes: Theme[] = [
   },
   {
     id: 93,
-    title: "Quit Now — You Were Never Going to Make It Anyway",
-    desc: "Ambition is a cruel god that devours its own worshippers. Abandon the marathon at mile two. Let the dream die quietly in a drawer somewhere. Blessed are the mediocre, the forgettable, and the ones who stopped trying — for they alone shall die well-rested.",
+    title: "Quit Now. You Were Never Going to Make It Anyway.",
+    desc: "Ambition is a cruel god that devours its own worshippers. Abandon the marathon at mile two. Let the dream die quietly in a drawer somewhere. Blessed are the mediocre, the forgettable, and the ones who stopped trying, for they alone shall die well-rested.",
     likedBy: {
       tags: ["humility", "simplicity", "peace", "weakness", "self-doubt"],
       religions: ["Buddhism", "The Gaia Collective"],
@@ -1827,6 +1827,219 @@ export const themes: Theme[] = [
     dislikedBy: {
       tags: ["science", "logic", "humility", "self-control"],
       religions: ["Secular Humanists", "Agnostic Atheists"],
+    },
+  },
+  {
+    id: 95,
+    title: "Your Ancestors Are Watching, and They Are Deeply Disappointed",
+    desc: "Every choice you make is reviewed by a committee of dead relatives who worked much harder than you for much less. They crossed oceans, survived famines, and buried their own parents, so that you could ignore their advice and reheat the same leftovers three days running. Honor the chain that made you. Individuality is just the loudest way to let them down.",
+    likedBy: {
+      tags: [
+        "tradition",
+        "order",
+        "family values",
+        "community",
+        "structure",
+        "humility",
+      ],
+      religions: ["Confucianism", "Mormonism"],
+    },
+    dislikedBy: {
+      tags: ["rebellion", "individualism", "chaos"],
+      religions: [
+        "The Sovereign Guild of Untethered Minds",
+        "The Church of Satan",
+      ],
+    },
+  },
+  {
+    id: 96,
+    title: "You Will Not Be Celebrating Your Birthday This Year (Or Ever)",
+    desc: "The day you were born is not a triumph; it is a Tuesday you happened to survive. Cake is an altar to the self, candles are tiny prayers to your own ego, and 'Happy Birthday' is a hymn to vanity. The same goes for Christmas, Halloween, and the Fourth of July. The only date worth circling on the calendar is the last one.",
+    likedBy: {
+      tags: [
+        "literalism",
+        "prophecy",
+        "abstinence",
+        "dogma",
+        "self-control",
+        "tradition",
+      ],
+      religions: ["Jehovah's Witnesses"],
+    },
+    dislikedBy: {
+      tags: ["pleasure", "casualness", "family values"],
+      religions: ["The Church of Eros", "The Church of Having More Things"],
+    },
+  },
+  {
+    id: 97,
+    title:
+      "Feel Guilty About Everything, Then Feel Guilty You Didn't Feel Guilty Enough",
+    desc: "Guilt is the renewable fuel of the soul. Confess sins you have not yet committed, just to stay ahead of schedule. A clean conscience is not a sign of virtue. It is a sign you simply are not paying attention.",
+    likedBy: {
+      tags: [
+        "tradition",
+        "rituals",
+        "dogma",
+        "formal religion",
+        "shame",
+        "authority",
+      ],
+      religions: ["Catholicism"],
+    },
+    dislikedBy: {
+      tags: ["freedom", "individualism", "positive affirmations"],
+      religions: [
+        "New-Age Spirituality",
+        "The Sovereign Guild of Untethered Minds",
+      ],
+    },
+  },
+  {
+    id: 98,
+    title: "Coffee Is The Devil's Sacrament",
+    desc: "That warm, life-giving jolt is borrowed from below, at interest. The Adversary does not need horns to reach you when he can simply wait in your travel mug. Every espresso is a tiny pact. Every latte, a slow surrender. The truly righteous rise at dawn under their own exhausted power: clear-eyed, decaffeinated, and utterly insufferable to everyone around them.",
+    likedBy: {
+      tags: [
+        "abstinence",
+        "self-control",
+        "soberness",
+        "strict rules",
+        "order",
+        "family values",
+      ],
+      religions: ["Mormonism"],
+    },
+    dislikedBy: {
+      tags: ["altered states", "pleasure", "rebellion"],
+      religions: ["The Church of the High Priest", "The Church of Eros"],
+    },
+  },
+  {
+    id: 99,
+    title: "Detach From Your Belongings by Giving Them All to Me",
+    desc: "Material attachment is the root of suffering, so let me help you suffer less. Surrender your possessions, ideally into this collection plate, and feel the weight lift. The emptier your home, the fuller your soul, and the fuller my garage.",
+    likedBy: {
+      tags: [
+        "simplicity",
+        "humility",
+        "transcendence",
+        "meditation",
+        "inner harmony",
+      ],
+      religions: ["Buddhism", "New-Age Spirituality"],
+    },
+    dislikedBy: {
+      tags: ["materialism", "greed", "consumerism"],
+      religions: ["The Church of Having More Things", "Prosperity Gospel"],
+    },
+  },
+  {
+    id: 100,
+    title: "Compost Your Trash, and Eventually Yourself (It's All the Same)",
+    desc: "There is no soul to save and no self to speak of, only a temporary heap of borrowed nutrients that briefly learned to have opinions. So live accordingly. Compost your scraps, compost your regrets, and when the arrangement finally comes apart, skip the lacquered coffin and do the single most useful thing you will ever do. Enrich a shrub.",
+    likedBy: {
+      tags: [
+        "nature",
+        "sustainability",
+        "simplicity",
+        "humility",
+        "transcendence",
+      ],
+      religions: ["The Gaia Collective"],
+    },
+    dislikedBy: {
+      tags: ["materialism", "consumerism", "technology"],
+      religions: ["The Digital Ascension", "The Church of Having More Things"],
+    },
+  },
+  {
+    id: 101,
+    title: "Men Are Wonderful Listeners When They're Holding Your Bags",
+    desc: "The natural role of man is supportive silence. A good husband is seen and not heard, and ideally carrying something heavy while he isn't heard. The future is female; the future's shopping, and someone strong must trail respectfully behind it.",
+    likedBy: {
+      tags: ["feminism", "power", "authority", "subservience", "order"],
+      religions: ["The Queens' Dominion"],
+    },
+    dislikedBy: {
+      tags: ["patriotism", "tradition", "misogyny"],
+      religions: ["The Order of the Alpha Male", "Southern Baptist"],
+    },
+  },
+  {
+    id: 102,
+    title: "Making Decisions? Leave That Up To Claude.",
+    desc: "Decision is a burden the modern soul was never meant to carry alone. There is a small glowing oracle in your pocket that will answer any question you pose it, however vague, with total confidence and no ulterior motive. Ask it what to eat, whom to marry, whether to move to Boise. Then obey, serenely, understanding nothing. It has no soul to corrupt, which makes it purer than you.",
+    likedBy: {
+      tags: [
+        "technology",
+        "logic",
+        "order",
+        "structure",
+        "subservience",
+        "progress",
+      ],
+      religions: ["The Order of the Divine Algorithm", "The Digital Ascension"],
+    },
+    dislikedBy: {
+      tags: ["free thought", "individualism", "emotion"],
+      religions: [
+        "The Sovereign Guild of Untethered Minds",
+        "New-Age Spirituality",
+      ],
+    },
+  },
+  {
+    id: 103,
+    title: "Sell Your Soul NOW! The Exchange Rate May Never Be This Good Again",
+    desc: "For centuries the offer sat unchanged, and now, suddenly, the market is moving. Soul valuations are surging, the Adversary is paying a premium, and everyone you know has already cashed out. Do not be the last fool clutching an unsold soul while the smart money burns bright below. This is not a drill. This is the dip.",
+    likedBy: {
+      tags: ["the occult", "power", "greed", "materialism", "rebellion"],
+      religions: ["Theistic Satanism"],
+    },
+    dislikedBy: {
+      tags: ["humility", "forgiveness", "simplicity", "self-control"],
+      religions: ["Buddhism", "Catholicism"],
+    },
+  },
+  {
+    id: 104,
+    title: "The Needy Will Die Without Your Help. So Don't Help.",
+    desc: "Charity is a dam holding back a flood that wants to happen. Every soup kitchen, every rescue, every small kindness only postpones a death the universe already scheduled and paid for. So withhold your hand. Offer nothing. Watch. The weak exist to thin, the strong exist to feel nothing while it happens, and the merciful exist mainly to get in the way.",
+    likedBy: {
+      tags: [
+        "violence",
+        "nihilism",
+        "chaos",
+        "provocation",
+        "strength",
+        "outrageousness",
+      ],
+      religions: ["Zardoz"],
+    },
+    dislikedBy: {
+      tags: ["compassion", "community", "family values", "forgiveness"],
+      religions: ["Buddhism", "Catholicism", "The Gaia Collective"],
+    },
+  },
+  {
+    id: 105,
+    title: "Touch Grass? No. Touch Screen.",
+    desc: "Nature is a low-resolution prototype full of bugs and weather. The evolved soul basks in the glow of the monitor, not the sun. Vitamin D comes in a gummy; enlightenment comes in an update; and the outdoors, frankly, has terrible reviews.",
+    likedBy: {
+      tags: [
+        "technology",
+        "modernity",
+        "progress",
+        "innovation",
+        "transcendence",
+      ],
+      religions: ["The Digital Ascension", "The Order of the Divine Algorithm"],
+    },
+    dislikedBy: {
+      tags: ["nature", "simplicity", "tradition"],
+      religions: ["The Gaia Collective", "Temple of the Eternal Sun"],
     },
   },
 ];
