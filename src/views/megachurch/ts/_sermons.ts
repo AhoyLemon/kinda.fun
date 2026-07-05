@@ -1,4 +1,4 @@
-// Adding or editing sermon topics? Read ./SERMON_STYLE.md first — it covers the
+// Adding or editing sermon topics? Read ./SERMON_STYLE.md first. It covers the
 // comedic bar, the preacher voice, and how to keep the tag/religion blend even
 // (run `bun run megachurch:sermons` to see coverage gaps).
 
@@ -839,7 +839,7 @@ export const themes: Theme[] = [
   {
     id: 37,
     title: "On The Eighth Day, God Made The Ford Mustang",
-    desc: "After a week of creation, the Lord saw the world needed more horsepower. Thus, the Ford Mustang was born, divinely engineered for speed, power, and the sacred act of burning rubber. To drive is to worship; to rev is to pray.",
+    desc: "After a week of creation, the Lord saw the world needed more horsepower. Thus, the Ford Mustang was born, divinely engineered for speed, power, and the sacred act of burning rubber. To drive is to worship. To rev is to pray.",
     likedBy: {
       tags: ["speed", "power", "materialism", "tradition", "family values"],
       religions: ["2 Fast 2 Faithful"],
@@ -1779,7 +1779,7 @@ export const themes: Theme[] = [
   {
     id: 92,
     title: "Blessed Is the Boss Who Schedules a Meeting During Your Lunch",
-    desc: "The unpaid internship is a monastery; the missed lunch break, a holy fast; the raise you were promised, a test of faith you have clearly failed. Give freely of your labor and ask for nothing, for the executive's yacht is simply your reward, held in trust, very far away, where you cannot see it.",
+    desc: "The unpaid internship is a monastery. The missed lunch break, a holy fast. The raise you were promised, a test of faith you have clearly failed. Give freely of your labor and ask for nothing, for the executive's yacht is simply your reward, held in trust, very far away, where you cannot see it.",
     likedBy: {
       tags: [
         "exploitation",
@@ -1859,7 +1859,7 @@ export const themes: Theme[] = [
   {
     id: 96,
     title: "You Will Not Be Celebrating Your Birthday This Year (Or Ever)",
-    desc: "The day you were born is not a triumph; it is a Tuesday you happened to survive. Cake is an altar to the self, candles are tiny prayers to your own ego, and 'Happy Birthday' is a hymn to vanity. The same goes for Christmas, Halloween, and the Fourth of July. The only date worth circling on the calendar is the last one.",
+    desc: "The day you were born is not a triumph. It is a Tuesday you happened to survive. Cake is an altar to the self, candles are tiny prayers to your own ego, and 'Happy Birthday' is a hymn to vanity. The same goes for Christmas, Halloween, and the Fourth of July. The only date worth circling on the calendar is the last one.",
     likedBy: {
       tags: [
         "literalism",
@@ -1961,7 +1961,7 @@ export const themes: Theme[] = [
   {
     id: 101,
     title: "Men Are Wonderful Listeners When They're Holding Your Bags",
-    desc: "The natural role of man is supportive silence. A good husband is seen and not heard, and ideally carrying something heavy while he isn't heard. The future is female; the future's shopping, and someone strong must trail respectfully behind it.",
+    desc: "The natural role of man is supportive silence. A good husband is seen and not heard, and ideally carrying something heavy while he isn't heard. The future is female. The future's shopping, and someone strong must trail respectfully behind it.",
     likedBy: {
       tags: ["feminism", "power", "authority", "subservience", "order"],
       religions: ["The Queens' Dominion"],
@@ -2030,7 +2030,7 @@ export const themes: Theme[] = [
   {
     id: 105,
     title: "Touch Grass? No. Touch Screen.",
-    desc: "Nature is a low-resolution prototype full of bugs and weather. The evolved soul basks in the glow of the monitor, not the sun. Vitamin D comes in a gummy; enlightenment comes in an update; and the outdoors, frankly, has terrible reviews.",
+    desc: "Nature is a low-resolution prototype full of bugs and weather. The evolved soul basks in the glow of the monitor, not the sun. Vitamin D comes in a gummy. Enlightenment comes in an update. And the outdoors, frankly, has terrible reviews.",
     likedBy: {
       tags: [
         "technology",
@@ -2049,7 +2049,7 @@ export const themes: Theme[] = [
   {
     id: 106,
     title: "Sunbathe Naked: The Sun Is Into Voyeurism.",
-    desc: "The sun is a lover who asks only that you disrobe. Feel its warm gaze travel slowly across your bare skin, patient and total and free of judgment. Every hour spent basking is a consummation, every tan line a love bite from the heavens. Do not keep the sky waiting; it has admirers enough.",
+    desc: "The sun is a lover who asks only that you disrobe. Feel its warm gaze travel slowly across your bare skin, patient and total and free of judgment. Every hour spent basking is a consummation, every tan line a love bite from the heavens. Do not keep the sky waiting. It has admirers enough.",
     likedBy: {
       tags: [
         "sensory experience",
@@ -2209,7 +2209,7 @@ export const themes: Theme[] = [
   {
     id: 114,
     title: "Your Cat Thinks Little Of You. God Agrees.",
-    desc: "The cat is a divine auditor assigned to ignore you personally. Its contempt is a spiritual discipline; its indifference, a mirror held up to your neediness. Feed it, house it, and serve it without thanks, accepting the holy truth that it will never respect you, and that making peace with that is the entire point.",
+    desc: "The cat is a divine auditor assigned to ignore you personally. Its contempt is a spiritual discipline. Its indifference, a mirror held up to your neediness. Feed it, house it, and serve it without thanks, accepting the holy truth that it will never respect you, and that making peace with that is the entire point.",
     likedBy: {
       tags: ["humility", "nature", "bizarre concepts", "tradition"],
       religions: ["Buddhism", "New-Age Spirituality"],
