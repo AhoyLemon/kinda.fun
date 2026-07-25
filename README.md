@@ -108,7 +108,7 @@ An exercise in active depression.
 
 You're going to defend some very stupid ideas.
 
-**[Game Documentation](docs/wrongest.md)** - Rules, settiings, and scoring system
+**[Game Documentation](docs/wrongest.md)** - Rules, settings, and scoring system
 
 ---
 
