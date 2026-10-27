@@ -3,7 +3,7 @@ main.game-over(v-if="game.isGameOver")
   h1 Game Over
 
   ol.player-results
-    li.player(v-for="player in computedPlayerList")
+    li.player(v-for="player in gameOverPlayerList")
       .score-and-name
         .player-score {{player.score}}
         .name-and-job

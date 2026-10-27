@@ -20,3 +20,14 @@ A multiplayer corporate buzzword game where players try to sneak buzzword phrase
 | **Expert** | 30 points | Very challenging phrases |
 
 Each player gets 5 cards. Say your phrases naturally in conversation. You have 10 seconds after playing a card before it automatically scores.
+
+## Event Mode Presenter
+
+When `settings.isEventActive` is on, a host whose name contains `settings.presenterName` (case-insensitive, so "Corporate Lemon" counts) is the **presenter**. This is for talks where the host view is on a projector.
+
+- The presenter doesn't count against `maxPlayers`, so the audience gets every seat.
+- The presenter is dealt 5 cards like everyone else, but never gets an event card.
+- Guessing a presenter card steals nothing and costs nothing. The guesser gets a private "Nice try." toast and nothing is broadcast. Real players' hands are checked first, so a presenter card can't shadow a real match.
+- The presenter's score is hidden in the player list (their card dots still show, so the audience sees what a player sees), and they're left out of the game-over results.
+
+Presenter status is derived from data every client already has (`isEventActive`, `roomCreatorID`, the host's name), so there's no extra Firestore field. To test, flip `isEventActive` locally, but don't commit the flip.

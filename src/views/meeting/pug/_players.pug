@@ -23,7 +23,7 @@
             li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`Someone stole this card`") s
             li.playing(v-else-if="card.status === 'playing'" v-tippy="`You're playing this card`") s
             li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
-        .player-score(v-if="game.isGameStarted") {{player.score}}
+        .player-score(v-if="game.isGameStarted && !isPresenter(player)") {{player.score}}
 
       template(v-if="player.playerID != you.playerID")
         // You are not this player.
@@ -43,11 +43,11 @@
             li.played(v-else-if="card.status === 'played'" v-tippy="`This card been played and scored`") p
             li.stolen(v-else-if="card.status === 'stolen'" v-tippy="`This card was stolen`") s
             li.unknown(v-else v-tippy="`No fucking idea what's going on here`") ???
-        .player-score(v-if="game.isGameStarted") {{player.score}}
+        .player-score(v-if="game.isGameStarted && !isPresenter(player)") {{player.score}}
 
   .room-capacity(v-if="!game.isGameStarted")
     span(v-if="isRoomFull") The game is full. Let's play!
-    span(v-else) {{Math.max(0, settings.maxPlayers - game.players.length)}} more {{settings.maxPlayers - game.players.length === 1 ? 'person' : 'people'}} can play
+    span(v-else) {{seatsRemaining}} more {{seatsRemaining === 1 ? 'person' : 'people'}} can play
 
   .end-meeting(v-if="game.isGameStarted && amITheHost")
     label Meeting Over?

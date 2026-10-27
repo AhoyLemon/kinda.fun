@@ -3,6 +3,9 @@
   import { allCards } from "./ts/_allCards";
   import { eventCards } from "./ts/_eventCards";
   import { performSteal } from "./ts/_performSteal";
+  import { findGuessMatch } from "./ts/_findGuessMatch";
+  import { isPresenterPlayer, countSeatedPlayers, presenterLast } from "./ts/_presenter";
+  import type { PresenterContext } from "./ts/_presenter";
   import { randomNumber, randomFrom, shuffle, preceisePercentOf } from "@/shared/js/_functions.js";
 
   // Toasts (client-only plugin). Stub on the server so any accidental call is
@@ -299,7 +302,11 @@
   const savePlayerInfo = async () => {
     if (!amISignedIn.value) {
       const currentPlayersSnap = await getDocs(collection(db, "rooms", game.roomCode, "players"));
-      if (currentPlayersSnap.size >= settings.maxPlayers) {
+      const seatedCount = countSeatedPlayers(
+        currentPlayersSnap.docs.map((d) => d.data()),
+        presenterContext.value,
+      );
+      if (seatedCount >= settings.maxPlayers) {
         toast("This room is full — no more players can join.", {
           position: POSITION.BOTTOM_CENTER,
           timeout: 8000,
@@ -449,7 +456,8 @@
       if (settings.isEventActive) {
         const shuffledEventCards = shuffle([...eventCards]);
         const toDistribute = shuffledEventCards.slice(0, settings.eventCardsPerGame);
-        const playerIDs = game.players.map((p: any) => p.playerID);
+        // Nobody can play the presenter's cards, so an event card there would be wasted
+        const playerIDs = game.players.filter((p: any) => !isPresenter(p)).map((p: any) => p.playerID);
 
         for (const eventCard of toDistribute) {
           // Only give event cards to players who don't already have one
@@ -613,6 +621,7 @@
     const yourGuess = you.guess.toLowerCase().replace(/”/g, "");
     you.guess = ""; // clear before await to prevent double-submit while transaction is in-flight
 
+    let isDemoCard = false;
     let isThatPhraseYours = false;
     let isAlreadyPlayed = false;
     let isAlreadyStolen = false;
@@ -621,32 +630,28 @@
 
     let match: any = {};
 
-    // Loop through every player in gamePlayers
-    outerLoop: for (const player of gamePlayers.value) {
-      for (const card of player.hand) {
-        const isExactMatch = card.phrase.toLowerCase() === yourGuess;
-        const isAltMatch = card.alternates && card.alternates.some((alt) => alt.toLowerCase() === yourGuess);
-        const isStringMatch = card.stringMatch && yourGuess.includes(card.stringMatch.toLowerCase());
+    // Presenter goes last so a demo card can't shadow a real match (stringMatch is a substring check)
+    const found: any = findGuessMatch(presenterLast(gamePlayers.value, presenterContext.value), yourGuess);
+    if (found) {
+      match = { ...found.card };
+      cardHolder = { ...found.player };
 
-        if (isExactMatch || isAltMatch || isStringMatch) {
-          match = { ...card };
-          cardHolder = { ...player };
-
-          if (player.playerID === you.playerID) {
-            isThatPhraseYours = true;
-          } else if (card.status === "played") {
-            isAlreadyPlayed = true;
-          } else if (card.status === "stolen") {
-            isAlreadyStolen = true;
-          } else {
-            isSuccess = true;
-          }
-          break outerLoop; // break out of both loops
-        }
+      if (isPresenter(found.player)) {
+        isDemoCard = true;
+      } else if (found.player.playerID === you.playerID) {
+        isThatPhraseYours = true;
+      } else if (found.card.status === "played") {
+        isAlreadyPlayed = true;
+      } else if (found.card.status === "stolen") {
+        isAlreadyStolen = true;
+      } else {
+        isSuccess = true;
       }
     }
 
-    if (isSuccess === true) {
+    if (isDemoCard) {
+      showDemoCardToast(match);
+    } else if (isSuccess === true) {
       await rewardGoodGuess(match, cardHolder);
     } else if (isAlreadyPlayed) {
       toast(
@@ -686,6 +691,25 @@
     } else {
       penalizeBadGuess(yourGuess);
     }
+  };
+
+  // Private on purpose: no score change, no activity doc, nothing broadcast
+  const showDemoCardToast = (card) => {
+    toast(
+      {
+        component: MyToast,
+        props: {
+          title: "Nice try.",
+          message: `“<strong>${card.phrase}</strong>” is one of the demo cards on screen. It's not in play.`,
+        },
+      },
+      {
+        position: POSITION.BOTTOM_LEFT,
+        toastClassName: "yellow",
+        timeout: 8000,
+        icon: false,
+      },
+    );
   };
 
   const penalizeBadGuess = async (yourGuess) => {
@@ -908,6 +932,16 @@
     return game.roomCreatorID === p.playerID;
   };
 
+  const presenterContext = computed<PresenterContext>(() => ({
+    isEventActive: settings.isEventActive,
+    roomCreatorID: game.roomCreatorID,
+    presenterName: settings.presenterName,
+  }));
+
+  const isPresenter = (p) => {
+    return isPresenterPlayer(p, presenterContext.value);
+  };
+
   const amITheHost = computed(() => {
     // You are the host if your playerID matches the roomCreatorID stored in the room document.
     return game.roomCreatorID === you.playerID;
@@ -955,12 +989,24 @@
       return [];
     }
 
-    // Clone and sort the players array by score in descending order
-    return [...gamePlayers.value].sort((a, b) => b.score - a.score);
+    // Clone and sort the players array by score in descending order. The presenter's score is hidden, so pin them to the top instead.
+    return [...gamePlayers.value].sort((a, b) => Number(isPresenter(b)) - Number(isPresenter(a)) || b.score - a.score);
+  });
+
+  const gameOverPlayerList = computed(() => {
+    return computedPlayerList.value.filter((player) => !isPresenter(player));
+  });
+
+  const seatedPlayerCount = computed(() => {
+    return countSeatedPlayers(game.players, presenterContext.value);
+  });
+
+  const seatsRemaining = computed(() => {
+    return Math.max(0, settings.maxPlayers - seatedPlayerCount.value);
   });
 
   const isRoomFull = computed(() => {
-    return game.players.length >= settings.maxPlayers;
+    return seatedPlayerCount.value >= settings.maxPlayers;
   });
 
   const canSaveProfile = computed(() => {
