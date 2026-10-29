@@ -37,7 +37,7 @@ export const ui = reactive({
 export const settings = reactive({
   minPlayers: 2,
   maxPlayers: 6,
-  isEventActive: false,
+  isEventActive: true,
   presenterName: "lemon",
   eventCardsPerGame: 9,
   timeToScore: 10000,
