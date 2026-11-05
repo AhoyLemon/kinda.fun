@@ -3,52 +3,55 @@
   // (fonts, branded favicons, theme color, canonical, OpenGraph, JSON-LD).
   import Wrongest from "@/views/wrongest/Wrongest.vue";
 
-  // JSON-LD (VideoGame) ported from the inline schema the site actually served
-  // (src/views/wrongest/Page.pug), not the orphaned pug/_schema.pug partial.
   const jsonLd = {
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "VideoGame",
     name: "The Wrongest Words",
     url: "https://kinda.fun/wrongest",
     image: "https://kinda.fun/img/wrongest/og-wide.png",
-    playMode: "MultiPlayer",
-    applicationCategory: "browser game",
+    playMode: "https://schema.org/MultiPlayer",
+    applicationCategory: "GameApplication",
     gamePlatform: "web browser",
-    operatingSystem: "web browser",
+    operatingSystem: "Any",
+    runtimePlatform: "Web browser",
     genre: "comedy",
     description: "A party game where you will defend some very stupid ideas.",
-    inLanguage: "English",
+    inLanguage: "en",
     numberOfPlayers: {
+      "@type": "QuantitativeValue",
       minValue: 3,
-      maxValue: 20,
-    },
-    aggregateRating: {
-      ratingValue: 4.33333,
-      ratingCount: 3,
+      maxValue: 10,
     },
     creator: {
       "@type": "Person",
       name: "Lemon",
       url: "https://ahoylemon.xyz",
       email: "lemon@ahoylemon.xyz",
-      sameAs: [
-        "https://github.com/AhoyLemon",
-        "https://bsky.app/profile/ahoylemon.xyz",
-        "https://mastodon.social/@ahoylemon",
-        "https://thefpl.us/meet/lemon",
-      ],
+      sameAs: ["https://github.com/AhoyLemon", "https://bsky.app/profile/ahoylemon.xyz", "https://mastodon.social/@ahoylemon", "https://thefpl.us/meet/lemon"],
     },
+    isAccessibleForFree: true,
+    screenshot: [
+      {
+        "@type": "ImageObject",
+        contentUrl: "https://kinda.fun/img/screenshots/wrongest-01.png",
+        caption: "The Wrongest Words: opening screen",
+        width: 1600,
+        height: 1000,
+      },
+      {
+        "@type": "ImageObject",
+        contentUrl: "https://kinda.fun/img/screenshots/wrongest-02.png",
+        caption: "The Wrongest Words: players voting on statements",
+        width: 1600,
+        height: 1000,
+      },
+    ],
     offers: {
       "@type": "Offer",
       description: "free",
       price: "0",
       priceCurrency: "USD",
     },
-    screenshot: [
-      { "@type": "ImageObject", url: "https://kinda.fun/img/wrongest/screenshots/1.png", width: 980, height: 780 },
-      { "@type": "ImageObject", url: "https://kinda.fun/img/wrongest/screenshots/2.png", width: 980, height: 780 },
-      { "@type": "ImageObject", url: "https://kinda.fun/img/wrongest/screenshots/3.jpg", width: 980, height: 780 },
-    ],
   };
 
   useGameHead({

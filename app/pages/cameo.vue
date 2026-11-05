@@ -5,39 +5,28 @@
   // the title screen prerenders as real HTML.
   import Cameo from "@/views/cameo/Cameo.vue";
 
-  // JSON-LD (VideoGame) ported from src/views/cameo/pug/_schema.pug.
-  const lastUpdated = new Date().toISOString();
-
   const jsonLd = {
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "VideoGame",
     name: "Comparatively Famous",
     url: "https://kinda.fun/cameo",
     image: "https://kinda.fun/img/og-famous.png",
     keywords: "comedy game, celebrity, sorting, cameo, famous people, kinda fun games",
-    playMode: "SinglePlayer",
-    applicationCategory: "browser game",
+    playMode: "https://schema.org/SinglePlayer",
+    applicationCategory: "GameApplication",
     gamePlatform: "web browser",
-    operatingSystem: "web browser",
+    operatingSystem: "Any",
+    runtimePlatform: "Web browser",
     genre: "comedy",
-    description: "The Game of Celebrity Value",
-    inLanguage: "English",
-    numberOfPlayers: 1,
-    aggregateRating: {
-      ratingValue: 5,
-      ratingCount: 12,
-    },
+    description: "Sort celebrities by the price of their Cameo videos and guess their value.",
+    inLanguage: "en",
+    numberOfPlayers: { "@type": "QuantitativeValue", value: 1 },
     creator: {
       "@type": "Person",
       name: "Lemon",
       url: "https://ahoylemon.xyz",
       email: "lemon@ahoylemon.xyz",
-      sameAs: [
-        "https://github.com/AhoyLemon",
-        "https://bsky.app/profile/ahoylemon.xyz",
-        "https://mastodon.social/@ahoylemon",
-        "https://thefpl.us/meet/lemon",
-      ],
+      sameAs: ["https://github.com/AhoyLemon", "https://bsky.app/profile/ahoylemon.xyz", "https://mastodon.social/@ahoylemon", "https://thefpl.us/meet/lemon"],
     },
     offers: {
       "@type": "Offer",
@@ -47,14 +36,22 @@
     },
     isAccessibleForFree: true,
     screenshot: [
-      { "@type": "ImageObject", url: "https://kinda.fun/img/famous/screenshots/title-screen.jpg", width: 1270, height: 760 },
-      { "@type": "ImageObject", url: "https://kinda.fun/img/famous/screenshots/sort-three.jpg", width: 1270, height: 760 },
-      { "@type": "ImageObject", url: "https://kinda.fun/img/famous/screenshots/sort-midway.jpg", width: 1270, height: 760 },
-      { "@type": "ImageObject", url: "https://kinda.fun/img/famous/screenshots/valuate.jpg", width: 1270, height: 760 },
-      { "@type": "ImageObject", url: "https://kinda.fun/img/famous/screenshots/final-round.jpg", width: 1270, height: 760 },
+      {
+        "@type": "ImageObject",
+        contentUrl: "https://kinda.fun/img/screenshots/cameo-01.png",
+        caption: "Comparatively Famous: opening screen",
+        width: 1600,
+        height: 1000,
+      },
+      {
+        "@type": "ImageObject",
+        contentUrl: "https://kinda.fun/img/screenshots/cameo-02.png",
+        caption: "Comparatively Famous: third round with celebrity cards on both sides",
+        width: 1600,
+        height: 1000,
+      },
     ],
     datePublished: "2021-02-16",
-    dateModified: lastUpdated,
   };
 
   useGameHead({
