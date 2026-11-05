@@ -4,53 +4,50 @@
   // client-guarded so the landing screen prerenders as real HTML.
   import Invalid from "@/views/invalid/Invalid.vue";
 
-  // JSON-LD (VideoGame) ported from src/views/invalid/pug/_schema.pug.
-  const lastUpdated = new Date().toISOString();
-
   const jsonLd = {
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "VideoGame",
     name: "Invalid",
-    description: "A trivia game of unnecessary suffering.",
+    description: "A multiplayer trivia game where employees create passwords while the SysAdmin sets the rules.",
     keywords: "trivia game, party game, multiplayer, suffering, password, password guess, guessing, cracking, bugs",
     genre: "comedy",
     url: "https://kinda.fun/invalid",
     image: "https://kinda.fun/img/og-invalid.png",
-    playMode: "MultiPlayer",
-    applicationCategory: "browser game",
+    playMode: "https://schema.org/MultiPlayer",
+    applicationCategory: "GameApplication",
     gamePlatform: "web browser",
-    operatingSystem: "web browser",
-    inLanguage: "English",
+    operatingSystem: "Any",
+    runtimePlatform: "Web browser",
+    inLanguage: "en",
     numberOfPlayers: {
+      "@type": "QuantitativeValue",
       minValue: 2,
-      maxValue: 10,
     },
     creator: {
       "@type": "Person",
       name: "Lemon",
       url: "https://ahoylemon.xyz",
       email: "lemon@ahoylemon.xyz",
-      sameAs: [
-        "https://github.com/AhoyLemon",
-        "https://bsky.app/profile/ahoylemon.xyz",
-        "https://mastodon.social/@ahoylemon",
-        "https://thefpl.us/meet/lemon",
-      ],
+      sameAs: ["https://github.com/AhoyLemon", "https://bsky.app/profile/ahoylemon.xyz", "https://mastodon.social/@ahoylemon", "https://thefpl.us/meet/lemon"],
     },
     isAccessibleForFree: true,
+    screenshot: [
+      { "@type": "ImageObject", contentUrl: "https://kinda.fun/img/screenshots/invalid-01.png", caption: "Invalid: opening screen", width: 1600, height: 1000 },
+      {
+        "@type": "ImageObject",
+        contentUrl: "https://kinda.fun/img/screenshots/invalid-02.png",
+        caption: "Invalid: SysAdmin setting password rules",
+        width: 1600,
+        height: 1000,
+      },
+    ],
     offers: {
       "@type": "Offer",
       description: "free",
       price: "0",
       priceCurrency: "USD",
     },
-    screenshot: [
-      { "@type": "ImageObject", url: "https://kinda.fun/img/invalid/screenshots/1.jpg", width: 1920, height: 1080 },
-      { "@type": "ImageObject", url: "https://kinda.fun/img/invalid/screenshots/2.jpg", width: 1920, height: 1080 },
-      { "@type": "ImageObject", url: "https://kinda.fun/img/invalid/screenshots/3.jpg", width: 1920, height: 1080 },
-    ],
     datePublished: "2025-08-01",
-    dateModified: lastUpdated,
   };
 
   useGameHead({
@@ -60,7 +57,9 @@
     path: "/invalid",
     ogImage: "https://kinda.fun/img/og-invalid.png",
     routeClass: "invalid",
-    fonts: ["https://fonts.googleapis.com/css2?family=Big+Shoulders:opsz,wght@10..72,100..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"],
+    fonts: [
+      "https://fonts.googleapis.com/css2?family=Big+Shoulders:opsz,wght@10..72,100..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap",
+    ],
     favicons: [
       { rel: "apple-touch-icon", sizes: "180x180", href: "/img/invalid/apple-touch-icon.png", key: "fav-apple" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/img/invalid/favicon-32x32.png", key: "fav-32" },

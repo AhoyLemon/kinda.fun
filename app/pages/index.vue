@@ -5,11 +5,8 @@
   // Fonts (Inter/Lora) and the site-wide favicons live in nuxt.config's global
   // head, so only the home-specific canonical / theme / OpenGraph go here.
 
-  // JSON-LD (WebSite) ported from src/views/home/pug/_schema.pug. dateModified
-  // preserves the legacy build-time semantics (was `lastUpdated`, an ISO date
-  // stamped at build; here it is stamped when the page is prerendered/rendered).
   const jsonLd = {
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Kinda fun.",
     description: "Here's some games and stuff that Lemon made. All of it is kinda fun!",
@@ -21,14 +18,12 @@
       name: "Lemon",
       url: "https://ahoylemon.xyz",
       email: "lemon@ahoylemon.xyz",
-      sameAs: [
-        "https://github.com/AhoyLemon",
-        "https://bsky.app/profile/ahoylemon.xyz",
-        "https://mastodon.social/@ahoylemon",
-        "https://thefpl.us/meet/lemon",
-      ],
+      sameAs: ["https://github.com/AhoyLemon", "https://bsky.app/profile/ahoylemon.xyz", "https://mastodon.social/@ahoylemon", "https://thefpl.us/meet/lemon"],
     },
     hasPart: [
+      { "@type": "VideoGame", name: "Supreme Court: The Card Game", url: "https://kinda.fun/court" },
+      { "@type": "VideoGame", name: "Megachurch Tycoon", url: "https://kinda.fun/megachurch" },
+      { "@type": "VideoGame", name: "The Wrongest Words", url: "https://kinda.fun/wrongest" },
       { "@type": "VideoGame", name: "Comparatively Famous", url: "https://kinda.fun/cameo" },
       { "@type": "VideoGame", name: "No More Billionaires", url: "https://kinda.fun/guillotine" },
       { "@type": "VideoGame", name: "Invalid", url: "https://kinda.fun/invalid" },
@@ -36,7 +31,6 @@
       { "@type": "VideoGame", name: "Pretend World", url: "https://kinda.fun/pretend" },
       { "@type": "VideoGame", name: "Sisyphus Clicker", url: "https://kinda.fun/sisyphus" },
     ],
-    dateModified: new Date().toISOString(),
   };
 
   // The site-wide favicons live in nuxt.config's global head. Inter/Lora are
@@ -50,7 +44,9 @@
     ogImage: "https://kinda.fun/img/og-wide.png",
     themeColor: "#e5e828",
     routeClass: "home",
-    fonts: ["https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"],
+    fonts: [
+      "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap",
+    ],
     extraMeta: [{ name: "msvalidate.01", content: "D3327FD7610C2D05D7D605EBCA288944" }],
     jsonLd,
   });

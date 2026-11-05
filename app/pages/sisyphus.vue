@@ -2,34 +2,28 @@
   // Root component + full per-page <head>, migrated from src/views/sisyphus/Page.pug.
   import Sisyphus from "@/views/sisyphus/Sisyphus.vue";
 
-  // JSON-LD (VideoGame) ported from src/views/sisyphus/pug/_schema.pug.
-  const lastUpdated = new Date().toISOString();
-
   const jsonLd = {
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "VideoGame",
     name: "Sisyphus Clicker",
-    description: "Click on Sisyphus to push the rock up the mountain (formerly futile.fun)",
+    description: "Push a rock uphill as Sisyphus in a clicker game about an endlessly futile task.",
     keywords: "futile, futility, clicker, depressing, pointless, achievements, rock, the myth of sisyphus",
     url: "https://kinda.fun/sisyphus",
     image: "https://kinda.fun/img/og-sisyphus.png",
-    playMode: "SinglePlayer",
-    applicationCategory: "browser game",
+    playMode: "https://schema.org/SinglePlayer",
+    applicationCategory: "GameApplication",
     gamePlatform: "web browser",
-    operatingSystem: "web browser",
+    operatingSystem: "Any",
+    runtimePlatform: "Web browser",
     genre: "clicker",
-    inLanguage: "English",
+    inLanguage: "en",
+    numberOfPlayers: { "@type": "QuantitativeValue", value: 1 },
     creator: {
       "@type": "Person",
       name: "Lemon",
       url: "https://ahoylemon.xyz",
       email: "lemon@ahoylemon.xyz",
-      sameAs: [
-        "https://github.com/AhoyLemon",
-        "https://bsky.app/profile/ahoylemon.xyz",
-        "https://mastodon.social/@ahoylemon",
-        "https://thefpl.us/meet/lemon",
-      ],
+      sameAs: ["https://github.com/AhoyLemon", "https://bsky.app/profile/ahoylemon.xyz", "https://mastodon.social/@ahoylemon", "https://thefpl.us/meet/lemon"],
     },
     offers: {
       "@type": "Offer",
@@ -39,12 +33,22 @@
     },
     isAccessibleForFree: true,
     screenshot: [
-      { "@type": "ImageObject", url: "https://kinda.fun/img/sisyphus/screenshots/ss1.png", width: 1083, height: 924 },
-      { "@type": "ImageObject", url: "https://kinda.fun/img/sisyphus/screenshots/ss2.png", width: 1083, height: 924 },
-      { "@type": "ImageObject", url: "https://kinda.fun/img/sisyphus/screenshots/ss3.png", width: 1083, height: 924 },
+      {
+        "@type": "ImageObject",
+        contentUrl: "https://kinda.fun/img/screenshots/sisyphus-01.png",
+        caption: "Sisyphus Clicker: opening screen",
+        width: 1600,
+        height: 1000,
+      },
+      {
+        "@type": "ImageObject",
+        contentUrl: "https://kinda.fun/img/screenshots/sisyphus-02.png",
+        caption: "Sisyphus Clicker: Sisyphus pushing the rock halfway up the hill",
+        width: 1600,
+        height: 1000,
+      },
     ],
     datePublished: "2021-09-21",
-    dateModified: lastUpdated,
   };
 
   useGameHead({

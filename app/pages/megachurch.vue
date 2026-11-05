@@ -3,39 +3,29 @@
   // (fonts, branded favicons; OpenGraph added from the page's og consts).
   import Megachurch from "@/views/megachurch/Megachurch.vue";
 
-  // JSON-LD (VideoGame) ported from src/views/megachurch/pug/_schema.pug.
-  const lastUpdated = new Date().toISOString();
-
   const jsonLd = {
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "VideoGame",
     name: "Megachurch Tycoon",
     url: "https://kinda.fun/megachurch",
     image: "https://kinda.fun/img/og-megachurch.jpg",
-    keywords: "satire, management game, dark humor, American religion, parody, organized religion, materialism, greed, hypocrisy, browser game, single player, sermon, profit, social commentary, prosperity gospel",
-    playMode: "SinglePlayer",
-    applicationCategory: "browser game",
+    keywords:
+      "satire, management game, dark humor, American religion, parody, organized religion, materialism, greed, hypocrisy, browser game, single player, sermon, profit, social commentary, prosperity gospel",
+    playMode: "https://schema.org/SinglePlayer",
+    applicationCategory: "GameApplication",
     gamePlatform: "web browser",
-    operatingSystem: "web browser",
+    operatingSystem: "Any",
+    runtimePlatform: "Web browser",
     genre: "comedy",
-    description: "Turn their faith into your fortune, one scam at a time.",
-    inLanguage: "English",
-    numberOfPlayers: 1,
-    aggregateRating: {
-      ratingValue: 5,
-      ratingCount: 12,
-    },
+    description: "Build a religious empire by preaching to audiences and collecting donations in a satirical management game.",
+    inLanguage: "en",
+    numberOfPlayers: { "@type": "QuantitativeValue", value: 1 },
     creator: {
       "@type": "Person",
       name: "Lemon",
       url: "https://ahoylemon.xyz",
       email: "lemon@ahoylemon.xyz",
-      sameAs: [
-        "https://github.com/AhoyLemon",
-        "https://bsky.app/profile/ahoylemon.xyz",
-        "https://mastodon.social/@ahoylemon",
-        "https://thefpl.us/meet/lemon",
-      ],
+      sameAs: ["https://github.com/AhoyLemon", "https://bsky.app/profile/ahoylemon.xyz", "https://mastodon.social/@ahoylemon", "https://thefpl.us/meet/lemon"],
     },
     offers: {
       "@type": "Offer",
@@ -44,8 +34,23 @@
       priceCurrency: "USD",
     },
     isAccessibleForFree: true,
+    screenshot: [
+      {
+        "@type": "ImageObject",
+        contentUrl: "https://kinda.fun/img/screenshots/megachurch-01.png",
+        caption: "Megachurch Tycoon: opening screen",
+        width: 1600,
+        height: 1000,
+      },
+      {
+        "@type": "ImageObject",
+        contentUrl: "https://kinda.fun/img/screenshots/megachurch-02.png",
+        caption: "Megachurch Tycoon: street preaching results after several days",
+        width: 1600,
+        height: 1000,
+      },
+    ],
     datePublished: "2025-11-18",
-    dateModified: lastUpdated,
   };
 
   useGameHead({
